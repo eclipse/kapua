@@ -279,14 +279,14 @@ public class DockerSteps {
      * @return Container configuration for specific boroker instance
      */
     private ContainerConfig getBrokerContainerConfig(String brokerAddr, String brokerIp,
-            String clusterName,
-            String controlMessageForwarding,
-            int mqttPort, int mqttHostPort,
-            int mqttsPort, int mqttsHostPort,
-            int webPort, int webHostPort,
-            int debugPort, int debugHostPort,
-            int brokerInternalDebugPort,
-            String dockerImage) {
+                                                     String clusterName,
+                                                     String controlMessageForwarding,
+                                                     int mqttPort, int mqttHostPort,
+                                                     int mqttsPort, int mqttsHostPort,
+                                                     int webPort, int webHostPort,
+                                                     int debugPort, int debugHostPort,
+                                                     int brokerInternalDebugPort,
+                                                     String dockerImage) {
 
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
         addHostPort(ALL_IP, portBindings, mqttPort, mqttHostPort);
@@ -299,9 +299,9 @@ public class DockerSteps {
         List<String> envVars = Lists.newArrayList("commons.db.schema.update=true",
                 "commons.db.connection.host=db",
                 "commons.db.connection.port=3306",
-                "datastore.elasticsearch.nodes=es",
+                "datastore.elasticsearch.node=es",
                 "datastore.elasticsearch.port=9200",
-                "datastore.client.class=org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient",
+                "datastore.elasticsearch.provider=org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider",
                 "commons.eventbus.url=failover:(amqp://events-broker:5672)?jms.sendTimeout=1000",
                 "certificate.jwt.private.key=file:///var/opt/activemq/key.pk8",
                 "certificate.jwt.certificate=file:///var/opt/activemq/cert.pem",
@@ -415,7 +415,7 @@ public class DockerSteps {
      * @param hostPort     port on host
      */
     private void addHostPort(String host, Map<String, List<PortBinding>> portBindings,
-            int port, int hostPort) {
+                             int port, int hostPort) {
 
         List<PortBinding> hostPorts = new ArrayList<>();
         hostPorts.add(PortBinding.of(host, hostPort));

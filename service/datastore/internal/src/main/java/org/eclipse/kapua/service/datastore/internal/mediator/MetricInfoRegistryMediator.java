@@ -12,9 +12,9 @@
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.client.ClientException;
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 
 /**
  * Metric information registry mediator definition

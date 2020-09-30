@@ -19,8 +19,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
-import org.eclipse.kapua.service.datastore.client.ClientException;
-import org.eclipse.kapua.service.datastore.client.QueryMappingException;
 import org.eclipse.kapua.service.datastore.internal.ChannelInfoRegistryFacade;
 import org.eclipse.kapua.service.datastore.internal.ClientInfoRegistryFacade;
 import org.eclipse.kapua.service.datastore.internal.DatastoreCacheManager;
@@ -36,6 +34,8 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
 
 import java.util.Map;
 
@@ -137,7 +137,7 @@ public class DatastoreMediator implements MessageStoreMediator,
 
     @Override
     public void onAfterMessageStore(MessageInfo messageInfo,
-            DatastoreMessage message)
+                                    DatastoreMessage message)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
             ClientException {

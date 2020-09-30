@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.datastore.internal;
 
 import com.codahale.metrics.Counter;
-
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
@@ -23,15 +22,6 @@ import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.internal.device.data.KapuaDataChannelImpl;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.client.ClientException;
-import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
-import org.eclipse.kapua.service.datastore.client.DatastoreClient;
-import org.eclipse.kapua.service.datastore.client.QueryMappingException;
-import org.eclipse.kapua.service.datastore.client.model.IndexRequest;
-import org.eclipse.kapua.service.datastore.client.model.InsertRequest;
-import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
-import org.eclipse.kapua.service.datastore.client.model.ResultList;
-import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreChannel;
@@ -65,15 +55,20 @@ import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
-
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
+import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
+import org.eclipse.kapua.service.elasticsearch.client.model.InsertResponse;
+import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
+import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -89,7 +84,6 @@ public final class MessageStoreFacade {
 
     private final MessageStoreMediator mediator;
     private final ConfigurationProvider configProvider;
-    private DatastoreClient<?> client;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -103,10 +97,10 @@ public final class MessageStoreFacade {
      * @throws ClientUnavailableException
      * @since 1.0.0
      */
-    public MessageStoreFacade(ConfigurationProvider confProvider, MessageStoreMediator mediator) throws ClientUnavailableException {
-        configProvider = confProvider;
+    public MessageStoreFacade(ConfigurationProvider confProvider, MessageStoreMediator mediator) {
+        this.configProvider = confProvider;
         this.mediator = mediator;
-        client = DatastoreClientFactory.getInstance();
+
         MetricsService metricService = MetricServiceFactory.getInstance();
         metricMessagesAlreadyInTheDatastoreCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_ALREADY_IN_THE_DATASTORE, DataStoreDriverMetrics.METRIC_COUNT);
     }
@@ -189,7 +183,7 @@ public final class MessageStoreFacade {
         }
         mediator.onUpdatedMappings(message.getScopeId(), indexedOn, metrics);
 
-        InsertResponse insertResponse = client.insert(insertRequest);
+        InsertResponse insertResponse = getElasticsearchClient().insert(insertRequest);
         messageToStore.setDatastoreId(new StorableIdImpl(insertResponse.getId()));
 
         mediator.onAfterMessageStore(messageInfo, messageToStore);
@@ -228,7 +222,7 @@ public final class MessageStoreFacade {
             Metadata schemaMetadata = mediator.getMetadata(scopeId, messageToBeDeleted.getTimestamp().getTime());
             String indexName = schemaMetadata.getDataIndexName();
             TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
-            client.delete(typeDescriptor, id.toString());
+            getElasticsearchClient().delete(typeDescriptor, id.toString());
         } else {
             logger.warn("Cannot find the message to be deleted. scopeId: '{}' - id: '{}'", scopeId, id);
         }
@@ -262,7 +256,7 @@ public final class MessageStoreFacade {
 
         String indexName = SchemaUtil.getDataIndexName(scopeId);
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
-        return client.find(typeDescriptor, idsQuery, DatastoreMessage.class);
+        return getElasticsearchClient().find(typeDescriptor, idsQuery, DatastoreMessage.class);
     }
 
     /**
@@ -292,7 +286,7 @@ public final class MessageStoreFacade {
 
         String dataIndexName = SchemaUtil.getDataIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, MessageSchema.MESSAGE_TYPE_NAME);
-        MessageListResult result = new MessageListResultImpl(client.query(typeDescriptor, query, DatastoreMessage.class));
+        MessageListResult result = new MessageListResultImpl(getElasticsearchClient().query(typeDescriptor, query, DatastoreMessage.class));
         Integer offset = query.getOffset();
         result.setLimitExceeded((offset == null ? 0 : offset) + result.getSize() < result.getTotalCount());
         return result;
@@ -325,7 +319,7 @@ public final class MessageStoreFacade {
 
         String indexName = SchemaUtil.getDataIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
-        return client.count(typeDescriptor, query);
+        return getElasticsearchClient().count(typeDescriptor, query);
     }
 
     /**
@@ -356,13 +350,12 @@ public final class MessageStoreFacade {
 
         String indexName = SchemaUtil.getDataIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
-        client.deleteByQuery(typeDescriptor, query);
+        getElasticsearchClient().deleteByQuery(typeDescriptor, query);
     }
 
     // TODO cache will not be reset from the client code it should be automatically reset
     // after some time.
-    private void resetCache(KapuaId scopeId, KapuaId deviceId, String channel, String clientId)
-            throws Exception {
+    private void resetCache(KapuaId scopeId, KapuaId deviceId, String channel, String clientId) throws Exception {
 
         boolean isAnyClientId;
         boolean isClientToDelete = false;
@@ -398,7 +391,7 @@ public final class MessageStoreFacade {
         // Remove metrics
         while (totalHits > 0) {
             TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, MetricInfoSchema.METRIC_TYPE_NAME);
-            ResultList<MetricInfo> metrics = client.query(typeDescriptor, metricQuery, MetricInfo.class);
+            ResultList<MetricInfo> metrics = getElasticsearchClient().query(typeDescriptor, metricQuery, MetricInfo.class);
 
             totalHits = metrics.getTotalCount();
             LocalCache<String, Boolean> metricsCache = DatastoreCacheManager.getInstance().getMetricsCache();
@@ -417,7 +410,7 @@ public final class MessageStoreFacade {
         }
         logger.debug("Removed cached channel metrics for: {}", channel);
         TypeDescriptor typeMetricDescriptor = new TypeDescriptor(dataIndexName, MetricInfoSchema.METRIC_TYPE_NAME);
-        client.deleteByQuery(typeMetricDescriptor, metricQuery);
+        getElasticsearchClient().deleteByQuery(typeMetricDescriptor, metricQuery);
         logger.debug("Removed channel metrics for: {}", channel);
         ChannelInfoQueryImpl channelQuery = new ChannelInfoQueryImpl(scopeId);
         channelQuery.setLimit(pageSize + 1);
@@ -431,7 +424,7 @@ public final class MessageStoreFacade {
         totalHits = 1;
         while (totalHits > 0) {
             TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-            ResultList<ChannelInfo> channels = client.query(typeDescriptor, channelQuery, ChannelInfo.class);
+            ResultList<ChannelInfo> channels = getElasticsearchClient().query(typeDescriptor, channelQuery, ChannelInfo.class);
 
             totalHits = channels.getTotalCount();
             LocalCache<String, Boolean> channelsCache = DatastoreCacheManager.getInstance().getChannelsCache();
@@ -450,7 +443,7 @@ public final class MessageStoreFacade {
 
         logger.debug("Removed cached channels for: {}", channel);
         TypeDescriptor typeChannelDescriptor = new TypeDescriptor(dataIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        client.deleteByQuery(typeChannelDescriptor, channelQuery);
+        getElasticsearchClient().deleteByQuery(typeChannelDescriptor, channelQuery);
 
         logger.debug("Removed channels for: {}", channel);
         // Remove client
@@ -465,7 +458,7 @@ public final class MessageStoreFacade {
             totalHits = 1;
             while (totalHits > 0) {
                 TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-                ResultList<ClientInfo> clients = client.query(typeDescriptor, clientInfoQuery, ClientInfo.class);
+                ResultList<ClientInfo> clients = getElasticsearchClient().query(typeDescriptor, clientInfoQuery, ClientInfo.class);
 
                 totalHits = clients.getTotalCount();
                 LocalCache<String, Boolean> clientsCache = DatastoreCacheManager.getInstance().getClientsCache();
@@ -484,24 +477,13 @@ public final class MessageStoreFacade {
 
             logger.debug("Removed cached clients for: {}", channel);
             TypeDescriptor typeClientDescriptor = new TypeDescriptor(dataIndexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-            client.deleteByQuery(typeClientDescriptor, clientInfoQuery);
+            getElasticsearchClient().deleteByQuery(typeClientDescriptor, clientInfoQuery);
 
             logger.debug("Removed clients for: {}", channel);
         }
     }
 
     // Utility methods
-
-    /**
-     * Check if the full channel admit any account (so if the channel starts with a specific wildcard).<br>
-     * In the MQTT word this method return true if the topic starts with '+/'.
-     *
-     * @return
-     * @since 1.0.0
-     */
-    private boolean isAnyAccount(String accountPart) {
-        return DatastoreChannel.SINGLE_LEVEL_WCARD.equals(accountPart);
-    }
 
     /**
      * Check if the channel admit any client identifier (so if the channel has a specific wildcard in the second topic level).<br>
@@ -542,21 +524,19 @@ public final class MessageStoreFacade {
         return datastoreMessage;
     }
 
-    private List<String> getDataIndexesByAccount(KapuaId scopeId) throws ClientException {
-        List<String> result = new ArrayList<>();
-        result.addAll(Arrays.asList(client.findIndexes(new IndexRequest(scopeId.toStringId() + "-*")).getIndexes()));
-        return result;
-    }
-
     public void refreshAllIndexes() throws ClientException {
-        client.refreshAllIndexes();
+        getElasticsearchClient().refreshAllIndexes();
     }
 
     public void deleteAllIndexes() throws ClientException {
-        client.deleteAllIndexes();
+        getElasticsearchClient().deleteAllIndexes();
     }
 
     public void deleteIndexes(String indexExp) throws ClientException {
-        client.deleteIndexes(indexExp);
+        getElasticsearchClient().deleteIndexes(indexExp);
+    }
+
+    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException, ClientUnavailableException {
+        return DatastoreClientFactory.getElasticsearchClient();
     }
 }

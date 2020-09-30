@@ -30,8 +30,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
-import org.eclipse.kapua.service.datastore.client.ClientException;
-
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,15 +119,15 @@ public class KapuaExceptionHandler {
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.DUPLICATE_EXTERNAL_ID.name())) {
             logger.warn("Entity already exist with the same externalId", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_EXTERNAL_ID, t, t.getLocalizedMessage());
-        } else if(t instanceof KapuaConfigurationException && ((KapuaConfigurationException) t).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
+        } else if (t instanceof KapuaConfigurationException && ((KapuaConfigurationException) t).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             logger.warn("Parent account limitation error", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, t, t.getLocalizedMessage());
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.DOWNLOAD_PACKAGE_EXCEPTION.name())) {
             logger.warn("Another resource is currently downloading", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.DOWNLOAD_PACKAGE_EXCEPTION, t, t.getLocalizedMessage());
-        } else if(t instanceof KapuaEntityNotFoundException) {
+        } else if (t instanceof KapuaEntityNotFoundException) {
             logger.warn("Entity not found", t);
-            KapuaEntityNotFoundException kapuaEntityNotFoundException = (KapuaEntityNotFoundException)t;
+            KapuaEntityNotFoundException kapuaEntityNotFoundException = (KapuaEntityNotFoundException) t;
             throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_NOT_FOUND, t, kapuaEntityNotFoundException.getEntityType(), kapuaEntityNotFoundException.getEntityName());
         } else if (t instanceof KapuaEntityUniquenessException) {
             logger.warn("Entity uniqueness error", t);
@@ -145,29 +144,29 @@ public class KapuaExceptionHandler {
 
             throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_UNIQUENESS, t, errorFieldsSb.toString());
         } else if (t instanceof KapuaIllegalArgumentException) {
-            KapuaIllegalArgumentException kiae = (KapuaIllegalArgumentException)t;
-            if(kiae.getArgumentName().equals("name") && kiae.getArgumentValue().equals(SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME))) {
+            KapuaIllegalArgumentException kiae = (KapuaIllegalArgumentException) t;
+            if (kiae.getArgumentName().equals("name") && kiae.getArgumentValue().equals(SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME))) {
                 throw new GwtKapuaException(GwtKapuaErrorCode.OPERATION_NOT_ALLOWED_ON_ADMIN_USER, t);
             } else {
                 throw new GwtKapuaException(GwtKapuaErrorCode.ILLEGAL_ARGUMENT, t, ((KapuaIllegalArgumentException) t).getArgumentName(), ((KapuaIllegalArgumentException) t).getArgumentValue());
             }
-        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR.name())){
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR.name())) {
             logger.warn("Bundle could not be started", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_START_ERROR, t, t.getLocalizedMessage());
-        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_STOP_ERROR.name())){
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.BUNDLE_STOP_ERROR.name())) {
             logger.warn("Bundle could not be stoped", t);
             throw new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_STOP_ERROR, t, t.getLocalizedMessage());
-        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.PACKAGE_URI_SYNTAX_ERROR)){
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode().equals(KapuaErrorCodes.PACKAGE_URI_SYNTAX_ERROR)) {
             throw new GwtKapuaException(GwtKapuaErrorCode.PACKAGE_URI_SYNTAX_ERROR, t, t.getLocalizedMessage());
-        } else if (t instanceof KapuaMaxNumberOfItemsReachedException){
+        } else if (t instanceof KapuaMaxNumberOfItemsReachedException) {
             throw new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, t, ((KapuaMaxNumberOfItemsReachedException) t).getArgValue());
         } else if (t instanceof DeviceMenagementException) {
-            throw new GwtKapuaException(GwtKapuaErrorCode.valueOf(((DeviceMenagementException)t).getCode().name()), t, t.getLocalizedMessage());
-        } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.SAME_START_AND_DATE)){
+            throw new GwtKapuaException(GwtKapuaErrorCode.valueOf(((DeviceMenagementException) t).getCode().name()), t, t.getLocalizedMessage());
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.SAME_START_AND_DATE)) {
             throw new GwtKapuaException(GwtKapuaErrorCode.SAME_START_AND_DATE, t, t.getLocalizedMessage());
-        } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.RETRY_AND_CRON_BOTH_SELECTED)){
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.RETRY_AND_CRON_BOTH_SELECTED)) {
             throw new GwtKapuaException(GwtKapuaErrorCode.RETRY_AND_CRON_BOTH_SELECTED, t, t.getLocalizedMessage());
-        } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.TRIGGER_NEVER_FIRE)){
+        } else if (t instanceof KapuaException && ((KapuaException) t).getCode() == (KapuaErrorCodes.TRIGGER_NEVER_FIRE)) {
             throw new GwtKapuaException(GwtKapuaErrorCode.TRIGGER_NEVER_FIRE, t, t.getLocalizedMessage());
         } else if (t instanceof KapuaException && ((KapuaException) t).getCode().name().equals(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED.name())) {
             throw new GwtKapuaException(GwtKapuaErrorCode.PERMISSION_DELETE_NOT_ALLOWED, t, t.getLocalizedMessage());

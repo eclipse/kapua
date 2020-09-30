@@ -25,6 +25,7 @@ import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.kapua.commons.liquibase.settings.LiquibaseClientSettingKeys;
 import org.eclipse.kapua.commons.liquibase.settings.LiquibaseClientSettings;
 import org.eclipse.kapua.commons.util.SemanticVersion;
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.slf4j.Logger;
@@ -115,17 +116,24 @@ public class KapuaLiquibaseClient {
 
         runTimestampsFix = (currentLiquibaseVersion.afterOrMatches(LIQUIBASE_TIMESTAMP_FIX_VERSION) || forceTimestampFix);
 
-        LOG.info("=================== KapuaLiquibaseClient configuration ===================");
-        LOG.info("|\tLiquibase Version: {}", currentLiquibaseVersionString);
-        LOG.info("|\tDB connection info");
-        LOG.info("|\t\tJDBC URL: {}", jdbcUrl);
-        LOG.info("|\t\tUsername: {}", username);
-        LOG.info("|\t\tPassword: ******");
-        LOG.info("|\t\tSchema:   {}", schema);
-        LOG.info("|\tTimestamp(3) fix info (eclipse/kapua#2889)");
-        LOG.info("|\t\tForce timestamp fix: {}", forceTimestampFix);
-        LOG.info("|\t\tApply timestamp fix: {}", runTimestampsFix);
-        LOG.info("==========================================================================");
+        // Print Configurations
+        ConfigurationPrinter
+                .create()
+                .withLogger(LOG)
+                .withTitle("KapuaLiquibaseClient Configuration")
+                .addParameter("Liquibase Version", currentLiquibaseVersionString)
+                .addHeader("DB connection info")
+                .increaseIndentation()
+                .addParameter("JDBC URL", jdbcUrl)
+                .addParameter("Username", username)
+                .addParameter("Password", "******")
+                .addParameter("Schema", schema)
+                .decreaseIndentation()
+                .addHeader("Timestamp(3) fix info (eclipse/kapua#2889)")
+                .increaseIndentation()
+                .addParameter("Force timestamp fix", forceTimestampFix)
+                .addParameter("Apply timestamp fix", runTimestampsFix)
+                .printLog();
     }
 
     /**

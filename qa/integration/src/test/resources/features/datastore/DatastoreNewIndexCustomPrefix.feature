@@ -22,7 +22,7 @@ Feature: Datastore tests
     And System property "datastore.index.prefix" with value "custom-prefix"
     And System property "kapua.config.url" with value "null"
     And System property "broker.ip" with value "192.168.33.10"
-    And System property "datastore.client.class" with value "org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient"
+    And System property "datastore.elasticsearch.provider" with value "org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider"
 
   Scenario: Start datastore for all scenarios
 

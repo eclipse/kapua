@@ -15,15 +15,12 @@
 <beans
         xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:util="http://www.springframework.org/schema/util"
         xsi:schemaLocation="http://www.springframework.org/schema/beans
          http://www.springframework.org/schema/beans/spring-beans.xsd
-         http://activemq.apache.org/schema/core
-         http://activemq.apache.org/schema/core/activemq-core.xsd
+
+
          http://camel.apache.org/schema/spring
-         http://camel.apache.org/schema/spring/camel-spring-2.15.1.xsd
-         http://www.springframework.org/schema/util
-         http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+         http://camel.apache.org/schema/spring/camel-spring-2.15.1.xsd">
 
     <!-- Configure the ActiveMQ broker connection -->
     <!-- we can use also the tcp regular connection. it should be no performance difference! -->
@@ -98,8 +95,8 @@
                       deadLetterUri="activemq:queue:notProcessableMessage"
                       useOriginalMessage="true">
         </errorHandler>
-        <redeliveryPolicyProfile id="kapuaRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true" />
-        <redeliveryPolicyProfile id="kapuaErrorRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true" />
+        <redeliveryPolicyProfile id="kapuaRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true"/>
+        <redeliveryPolicyProfile id="kapuaErrorRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true"/>
         <!--
         For the transaction/acknowledge mode please follow http://stackoverflow.com/questions/13498652/camel-jms-client-acknowledge-mode
 
@@ -159,7 +156,7 @@
                 <doTry>
                     <bean ref="kapuaCamelFilter" method="bindSession"/>
                     <dynamicRouter>
-                        <method ref="kapuaCamelDefaultRouter" method="defaultRoute" ></method>
+                        <method ref="kapuaCamelDefaultRouter" method="defaultRoute"></method>
                     </dynamicRouter>
                     <doFinally>
                         <bean ref="kapuaCamelFilter" method="unbindSession"/>
@@ -203,7 +200,7 @@
                 <bean ref="kapuaCamelFilter" method="unbindSession"/>
             </pipeline>
         </route>
-        <route id="notProcessableMessage" >
+        <route id="notProcessableMessage">
             <from uri="activemq:queue:notProcessableMessage?asyncConsumer=false&amp;acknowledgementModeName=CLIENT_ACKNOWLEDGE&amp;transacted=false&amp;concurrentConsumers=2&amp;maxConcurrentConsumers=5"/>
             <pipeline>
                 <bean ref="kapuaCamelFilter" method="bindSession"/>

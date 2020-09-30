@@ -575,26 +575,6 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-datastore-client-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-datastore-client-embedded</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-datastore-client-transport</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-datastore-client-rest</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-datastore-test</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -861,6 +841,26 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-service-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-service-elasticsearch-client-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-service-elasticsearch-client-rest</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-service-elasticsearch-client-transport</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-service-elasticsearch-server-embedded</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -1715,6 +1715,12 @@
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>artemis-junit</artifactId>
                 <version>${artemis.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-simple</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>

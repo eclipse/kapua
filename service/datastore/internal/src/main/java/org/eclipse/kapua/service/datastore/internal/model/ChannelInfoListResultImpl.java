@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
-import org.eclipse.kapua.service.datastore.client.model.ResultList;
 import org.eclipse.kapua.service.datastore.internal.model.query.AbstractStorableListResult;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
+import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 
 /**
  * Channel information query result list implementation
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class ChannelInfoListResultImpl extends AbstractStorableListResult<ChannelInfo> implements ChannelInfoListResult {
 
@@ -35,7 +34,7 @@ public class ChannelInfoListResultImpl extends AbstractStorableListResult<Channe
 
     /**
      * Construct the channel info result list from the provided list
-     * 
+     *
      * @param resultList
      */
     public ChannelInfoListResultImpl(ResultList<ChannelInfo> resultList) {

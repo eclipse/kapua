@@ -11,88 +11,95 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.client;
 
-import org.eclipse.kapua.service.datastore.client.ClientException;
-import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
-import org.eclipse.kapua.service.datastore.client.DatastoreClient;
+import org.eclipse.kapua.service.datastore.exception.DatastoreInternalError;
 import org.eclipse.kapua.service.datastore.internal.converter.ModelContextImpl;
 import org.eclipse.kapua.service.datastore.internal.converter.QueryConverterImpl;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClientProvider;
+import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 
 /**
- * Datastore client factory. It returns the singleton client instance.<br>
- * The datastore client is instantiated by reflection using class implementation provided by {@link DatastoreSettingKey#CONFIG_CLIENT_CLASS}
+ * Manages the {@link ElasticsearchClientProvider} as a singleton for the message store.
  *
- * @since 1.0
+ * @since 1.0.0
  */
-@SuppressWarnings("rawtypes")
 public class DatastoreClientFactory {
 
-    private static final String CANNOT_LOAD_CLIENT_ERROR_MSG = "Cannot load the provided client class name [%s]. Check the configuration.";
-    private static final String CLIENT_CLASS_NAME;
-    private static DatastoreClient instance;
+    private static final Logger LOG = LoggerFactory.getLogger(DatastoreClientFactory.class);
 
-    static {
-        DatastoreSettings config = DatastoreSettings.getInstance();
-        CLIENT_CLASS_NAME = config.getString(DatastoreSettingKey.CONFIG_CLIENT_CLASS);
-    }
+    private static ElasticsearchClientProvider<?> elasticsearchClientProviderInstance;
 
     private DatastoreClientFactory() {
     }
 
     /**
-     * Return the client instance. The implementation is specified by {@link DatastoreSettingKey#CONFIG_CLIENT_CLASS}.
+     * Gets the {@link ElasticsearchClientProvider} instance.
+     * <p>
+     * The implementation is specified by {@link DatastoreElasticsearchClientConfiguration#getProviderClassName()}.
      *
-     * @return The {@link DatastoreClient} instance
-     * @throws ClientUnavailableException
+     * @return An Elasticsearch client.
      */
-    public static DatastoreClient getInstance() throws ClientUnavailableException {
-        //lazy synchronization
-        if (instance == null) {
+    public static ElasticsearchClientProvider<?> getInstance() {
+        if (elasticsearchClientProviderInstance == null) {
             synchronized (DatastoreClientFactory.class) {
-                if (instance == null) {
-                    Class<DatastoreClient> datastoreClientInstance;
-                    try {
-                        datastoreClientInstance = (Class<DatastoreClient>) Class.forName(CLIENT_CLASS_NAME);
-                    } catch (ClassNotFoundException e) {
-                        throw new ClientUnavailableException(String.format(CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
-                    }
-                    try {
-                        // this is a cleaner way to instatiate the client
-                        // return INSTANCE.getConstructor(ModelContext.class, QueryConverter.class).newInstance(new ModelContextImpl(), new QueryConverterImpl());
-                        // but in that way who implements the interface is not advised to expose a constructor with the 2 needed parameters
-                        // so I prefer to instantiate the object using the empty constructor then setting the converter using the setters (provided by the interface)
-                        // instance = datastoreClientinstance.newInstance();
+                if (elasticsearchClientProviderInstance == null) {
 
-                        Method getInstanceMethod = datastoreClientInstance.getMethod("getInstance", new Class[0]);
-                        instance = (DatastoreClient) getInstanceMethod.invoke(null, new Object[0]);
-                        instance.setModelContext(new ModelContextImpl());
-                        instance.setQueryConverter(new QueryConverterImpl());
-                    } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-                        throw new ClientUnavailableException(String.format(CANNOT_LOAD_CLIENT_ERROR_MSG, CLIENT_CLASS_NAME), e);
+                    ElasticsearchClientProvider<?> elasticsearchClientProvider;
+                    try {
+                        ElasticsearchClientConfiguration esClientConfiguration = DatastoreElasticsearchClientConfiguration.getInstance();
+
+                        Class<ElasticsearchClientProvider<?>> providerClass = (Class<ElasticsearchClientProvider<?>>) Class.forName(esClientConfiguration.getProviderClassName());
+                        Constructor<?> constructor = providerClass.getConstructor();
+                        elasticsearchClientProvider = (ElasticsearchClientProvider<?>) constructor.newInstance();
+
+                        elasticsearchClientProvider
+                                .withClientConfiguration(esClientConfiguration)
+                                .withModelContext(new ModelContextImpl())
+                                .withModelConverter(new QueryConverterImpl())
+                                .init();
+                    } catch (Exception e) {
+                        throw new DatastoreInternalError(e, "Cannot instantiate Elasticsearch Client");
                     }
+
+                    elasticsearchClientProviderInstance = elasticsearchClientProvider;
                 }
             }
         }
-        return instance;
+
+        return elasticsearchClientProviderInstance;
     }
 
     /**
-     * Close the client instance
+     * Gets the {@link ElasticsearchClient} instance.
      *
-     * @throws ClientException
+     * @return The {@link ElasticsearchClient} instance.
+     * @throws ClientUnavailableException see {@link ElasticsearchClientProvider#getElasticsearchClient()}
+     * @since 1.3.0
      */
-    public static void close() throws ClientException {
-        if (instance != null) {
+    public static ElasticsearchClient<?> getElasticsearchClient() throws ClientUnavailableException {
+        return getInstance().getElasticsearchClient();
+    }
+
+    /**
+     * Closes the {@link ElasticsearchClientProvider} instance.
+     *
+     * @since 1.0.0
+     */
+    public static void close() {
+        if (elasticsearchClientProviderInstance != null) {
             synchronized (DatastoreClientFactory.class) {
-                if (instance != null) {
+                if (elasticsearchClientProviderInstance != null) {
                     try {
-                        instance.close();
+                        elasticsearchClientProviderInstance.close();
+                    } catch (Exception e) {
+                        LOG.error("Unable to close ElasticsearchClientProvider instance.", e);
                     } finally {
-                        instance = null;
+                        elasticsearchClientProviderInstance = null;
                     }
                 }
             }

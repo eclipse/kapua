@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.datastore.model.query;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 
 /**
  * Storable query predicate definition

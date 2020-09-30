@@ -27,7 +27,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.DatastoreDomains;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
-import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.internal.mediator.ChannelInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
@@ -37,8 +36,8 @@ import org.eclipse.kapua.service.datastore.internal.model.query.RangePredicateIm
 import org.eclipse.kapua.service.datastore.internal.model.query.StorableFieldImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
@@ -51,6 +50,8 @@ import org.eclipse.kapua.service.datastore.model.query.SortField;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +84,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
      *
      * @throws ClientUnavailableException
      */
-    public ChannelInfoRegistryServiceImpl() throws ClientUnavailableException {
+    public ChannelInfoRegistryServiceImpl() throws ClientInitializationException {
         super(DatastoreEntityManagerFactory.getInstance());
 
         KapuaLocator locator = KapuaLocator.getInstance();
@@ -257,7 +258,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
 
     @Override
     protected boolean isServiceEnabled(KapuaId scopeId) {
-        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingKey.DISABLE_DATASTORE, false);
+        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
     }
 
 }

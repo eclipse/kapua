@@ -12,15 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common.utils;
 
-import java.io.IOException;
-import java.time.Duration;
-
 import cucumber.api.java.en.Given;
-import org.eclipse.kapua.service.datastore.client.embedded.EsEmbeddedEngine;
+import cucumber.runtime.java.guice.ScenarioScoped;
+import org.eclipse.kapua.service.elasticsearch.server.embedded.EsEmbeddedEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cucumber.runtime.java.guice.ScenarioScoped;
+import java.io.IOException;
+import java.time.Duration;
 
 /**
  * Singleton for managing datastore creation and deletion inside Gherkin scenarios.
@@ -28,7 +27,7 @@ import cucumber.runtime.java.guice.ScenarioScoped;
 @ScenarioScoped
 public class EmbeddedDatastore {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmbeddedDatastore.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EmbeddedDatastore.class);
 
     private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.datastore.extraStartupDelay", 0);
 
@@ -43,8 +42,10 @@ public class EmbeddedDatastore {
         if (NO_EMBEDDED_SERVERS) {
             return;
         }
-        logger.info("starting embedded datastore");
+
+        LOG.info("Starting embedded datastore...");
         esEmbeddedEngine = new EsEmbeddedEngine();
+
         if (EXTRA_STARTUP_DELAY > 0) {
             try {
                 Thread.sleep(Duration.ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
@@ -52,7 +53,8 @@ public class EmbeddedDatastore {
                 e.printStackTrace();
             }
         }
-        logger.info("starting embedded datastore DONE");
+
+        LOG.info("Starting embedded datastore... DONE!");
     }
 
     @Given("^Stop Datastore$")
@@ -61,7 +63,8 @@ public class EmbeddedDatastore {
         if (NO_EMBEDDED_SERVERS) {
             return;
         }
-        logger.info("closing embedded datastore");
+
+        LOG.info("Stopping embedded datastore...");
         if (EXTRA_STARTUP_DELAY > 0) {
             try {
                 Thread.sleep(Duration.ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
@@ -69,9 +72,11 @@ public class EmbeddedDatastore {
                 e.printStackTrace();
             }
         }
+
         if (esEmbeddedEngine != null) {
             esEmbeddedEngine.close();
         }
-        logger.info("closing embedded datastore DONE");
+
+        LOG.info("Stopping embedded datastore... DONE!");
     }
 }

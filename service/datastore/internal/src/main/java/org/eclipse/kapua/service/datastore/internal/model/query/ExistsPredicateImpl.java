@@ -11,18 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
-import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.ExistsPredicate;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 
 /**
  * Implementation of query predicate for checking if a field exists
  *
  * @since 1.0
- *
  */
 public class ExistsPredicateImpl implements ExistsPredicate {
 
@@ -68,7 +66,7 @@ public class ExistsPredicateImpl implements ExistsPredicate {
      */
     public ObjectNode toSerializedMap() throws DatamodelMappingException {
         ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(PredicateConstants.FIELD_KEY, name) });
+        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(PredicateConstants.FIELD_KEY, name)});
         rootNode.set(PredicateConstants.EXISTS_KEY, termNode);
         return rootNode;
     }

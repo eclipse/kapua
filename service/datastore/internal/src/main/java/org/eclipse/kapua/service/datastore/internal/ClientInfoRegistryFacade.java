@@ -14,15 +14,6 @@ package org.eclipse.kapua.service.datastore.internal;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.datastore.client.ClientException;
-import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
-import org.eclipse.kapua.service.datastore.client.DatastoreClient;
-import org.eclipse.kapua.service.datastore.client.ClientErrorCodes;
-import org.eclipse.kapua.service.datastore.client.ClientErrorMessages;
-import org.eclipse.kapua.service.datastore.client.QueryMappingException;
-import org.eclipse.kapua.service.datastore.client.model.TypeDescriptor;
-import org.eclipse.kapua.service.datastore.client.model.UpdateRequest;
-import org.eclipse.kapua.service.datastore.client.model.UpdateResponse;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoRegistryMediator;
@@ -39,6 +30,13 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
+import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
+import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
+import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,12 +47,11 @@ import org.slf4j.LoggerFactory;
  */
 public class ClientInfoRegistryFacade {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClientInfoRegistryFacade.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClientInfoRegistryFacade.class);
 
     private final ClientInfoRegistryMediator mediator;
     private final ConfigurationProvider configProvider;
     private final Object metadataUpdateSync = new Object();
-    private DatastoreClient client;
 
     private static final String QUERY = "query";
     private static final String QUERY_SCOPE_ID = "query.scopeId";
@@ -65,13 +62,11 @@ public class ClientInfoRegistryFacade {
      * @param configProvider
      * @param mediator
      * @throws ClientUnavailableException
-     *
      * @since 1.0.0
      */
-    public ClientInfoRegistryFacade(ConfigurationProvider configProvider, ClientInfoRegistryMediator mediator) throws ClientUnavailableException {
+    public ClientInfoRegistryFacade(ConfigurationProvider configProvider, ClientInfoRegistryMediator mediator) throws ClientInitializationException {
         this.configProvider = configProvider;
         this.mediator = mediator;
-        client = DatastoreClientFactory.getInstance();
     }
 
     /**
@@ -82,12 +77,9 @@ public class ClientInfoRegistryFacade {
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
-     *
      * @since 1.0.0
      */
-    public StorableId upstore(ClientInfo clientInfo)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException, ClientException {
+    public StorableId upstore(ClientInfo clientInfo) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(clientInfo, "clientInfo");
         ArgumentValidator.notNull(clientInfo.getScopeId(), "clientInfo.scopeId");
         ArgumentValidator.notNull(clientInfo.getFirstMessageId(), "clientInfo.firstPublishedMessageId");
@@ -112,16 +104,11 @@ public class ClientInfoRegistryFacade {
                         String kapuaIndexName = metadata.getRegistryIndexName();
 
                         UpdateRequest request = new UpdateRequest(clientInfo.getId().toString(), new TypeDescriptor(kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME), clientInfo);
-                        response = client.upsert(request);
+                        response = getElasticsearchClient().upsert(request);
 
-                        if (!clientInfoId.equals(response.getId())) {
-                            // this condition shouldn't happens
-                            throw new ClientException(ClientErrorCodes.ACTION_ERROR, String.format(ClientErrorMessages.CRUD_INTERNAL_ERROR, "ClientInfoRegistry - upstore"));
-                        }
-                        logger.debug(String.format("Upsert on asset succesfully executed [%s.%s, %s]", kapuaIndexName,
-                                ClientInfoSchema.CLIENT_TYPE_NAME, response.getId()));
-                        // Update cache if asset update is completed successfully
+                        LOG.debug("Upsert on asset successfully executed [{}.{}, {} - {}]", kapuaIndexName, ClientInfoSchema.CLIENT_TYPE_NAME, response.getId(), response.getId());
                     }
+                    // Update cache if client update is completed successfully
                     DatastoreCacheManager.getInstance().getClientsCache().put(clientInfo.getClientId(), true);
                 }
             }
@@ -140,9 +127,7 @@ public class ClientInfoRegistryFacade {
      * @throws ConfigurationException
      * @throws ClientException
      */
-    public void delete(KapuaId scopeId, StorableId id)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException, ClientException {
+    public void delete(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
@@ -150,13 +135,13 @@ public class ClientInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, return", scopeId);
+            LOG.debug("Storage not enabled for account {}, return", scopeId);
             return;
         }
 
         String indexName = SchemaUtil.getKapuaIndexName(scopeId);
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        client.delete(typeDescriptor, id.toString());
+        getElasticsearchClient().delete(typeDescriptor, id.toString());
     }
 
     /**
@@ -167,14 +152,9 @@ public class ClientInfoRegistryFacade {
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public ClientInfo find(KapuaId scopeId, StorableId id)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public ClientInfo find(KapuaId scopeId, StorableId id) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(scopeId, "scopeId");
         ArgumentValidator.notNull(id, "id");
 
@@ -196,14 +176,9 @@ public class ClientInfoRegistryFacade {
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public ClientInfoListResult query(ClientInfoQuery query)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public ClientInfoListResult query(ClientInfoQuery query) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
@@ -211,13 +186,13 @@ public class ClientInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
+            LOG.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return new ClientInfoListResultImpl();
         }
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        return new ClientInfoListResultImpl(client.query(typeDescriptor, query, ClientInfo.class));
+        return new ClientInfoListResultImpl(getElasticsearchClient().query(typeDescriptor, query, ClientInfo.class));
     }
 
     /**
@@ -227,14 +202,9 @@ public class ClientInfoRegistryFacade {
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public long count(ClientInfoQuery query)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public long count(ClientInfoQuery query) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
@@ -242,13 +212,13 @@ public class ClientInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
+            LOG.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return 0;
         }
 
         String dataIndexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        return client.count(typeDescriptor, query);
+        return getElasticsearchClient().count(typeDescriptor, query);
     }
 
     /**
@@ -259,14 +229,9 @@ public class ClientInfoRegistryFacade {
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
-    public void delete(ClientInfoQuery query)
-            throws KapuaIllegalArgumentException,
-            ConfigurationException,
-            QueryMappingException,
-            ClientException {
+    public void delete(ClientInfoQuery query) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
         ArgumentValidator.notNull(query, QUERY);
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
@@ -274,13 +239,16 @@ public class ClientInfoRegistryFacade {
         long ttl = accountServicePlan.getDataTimeToLiveMilliseconds();
 
         if (!accountServicePlan.getDataStorageEnabled() || ttl == MessageStoreConfiguration.DISABLED) {
-            logger.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
+            LOG.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
             return;
         }
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        client.deleteByQuery(typeDescriptor, query);
+        getElasticsearchClient().deleteByQuery(typeDescriptor, query);
     }
 
+    private ElasticsearchClient<?> getElasticsearchClient() throws ClientInitializationException, ClientUnavailableException {
+        return DatastoreClientFactory.getElasticsearchClient();
+    }
 }

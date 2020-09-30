@@ -20,12 +20,13 @@
         <version>1.3.0-SNAPSHOT</version>
     </parent>
 
-    <packaging>pom</packaging>
-
     <artifactId>kapua-service</artifactId>
+    <packaging>pom</packaging>
 
     <modules>
         <module>api</module>
+
+        <module>commons</module>
 
         <module>account</module>
         <module>datastore</module>

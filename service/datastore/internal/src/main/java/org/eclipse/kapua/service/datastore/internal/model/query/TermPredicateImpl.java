@@ -11,19 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
-import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.schema.KeyValueEntry;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.StorableField;
 import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 
 /**
  * Implementation of query predicate for matching field value
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public class TermPredicateImpl implements TermPredicate {
 
@@ -38,7 +36,7 @@ public class TermPredicateImpl implements TermPredicate {
 
     /**
      * Construct a term predicate given the field and value
-     * 
+     *
      * @param field
      * @param value
      */
@@ -54,7 +52,7 @@ public class TermPredicateImpl implements TermPredicate {
 
     /**
      * Return the field
-     * 
+     *
      * @return
      */
     public TermPredicate setField(StorableField field) {
@@ -74,7 +72,7 @@ public class TermPredicateImpl implements TermPredicate {
 
     /**
      * Set the value
-     * 
+     *
      * @param value
      * @return
      */
@@ -88,14 +86,14 @@ public class TermPredicateImpl implements TermPredicate {
      * <pre>
      *  {
      *    "query": {
-     *      "term" : { "user" : "kapua" } 
+     *      "term" : { "user" : "kapua" }
      *    }
      *  }
      * </pre>
      */
     public ObjectNode toSerializedMap() throws DatamodelMappingException {
         ObjectNode rootNode = SchemaUtil.getObjectNode();
-        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[] { new KeyValueEntry(field.field(), value) });
+        ObjectNode termNode = SchemaUtil.getField(new KeyValueEntry[]{new KeyValueEntry(field.field(), value)});
         rootNode.set(PredicateConstants.TERM_KEY, termNode);
         return rootNode;
     }

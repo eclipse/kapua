@@ -26,13 +26,15 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.service.tag.steps",
                 "org.eclipse.kapua.service.datastore.steps",
                 "org.eclipse.kapua.service.device.registry.steps"
-               },
-        plugin = {"pretty", 
-                  "html:target/cucumber/DeviceDataI9n",
-                  "json:target/DeviceDataI9n_cucumber.json"
-                 },
+        },
+        plugin = {"pretty",
+                "html:target/cucumber/DeviceDataI9n",
+                "json:target/DeviceDataI9n_cucumber.json"
+        },
         strict = true,
-        monochrome = true )
-@CucumberProperty(key="broker.ip", value="192.168.33.10")
-@CucumberProperty(key="kapua.config.url", value="")
-public class RunDeviceDataI9nTest {}
+        monochrome = true)
+@CucumberProperty(key = "broker.ip", value = "192.168.33.10")
+@CucumberProperty(key = "datastore.elasticsearch.node", value = "127.0.0.1")
+@CucumberProperty(key = "kapua.config.url", value = "")
+public class RunDeviceDataI9nTest {
+}

@@ -11,13 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
 import org.eclipse.kapua.service.datastore.model.query.StorableField;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 
 /**
  * Implementation of query predicate for matching range values
@@ -146,9 +145,10 @@ public class RangePredicateImpl implements RangePredicate {
      *      }
      *  }
      * </pre>
-     * 
+     *
      * @throws DatamodelMappingException
      */
+    @Override
     public ObjectNode toSerializedMap() throws DatamodelMappingException {
         ObjectNode rootNode = SchemaUtil.getObjectNode();
         ObjectNode valuesNode = SchemaUtil.getObjectNode();

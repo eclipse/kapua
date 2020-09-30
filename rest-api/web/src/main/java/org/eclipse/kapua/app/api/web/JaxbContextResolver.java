@@ -95,7 +95,6 @@ import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 import org.eclipse.kapua.service.config.ServiceComponentConfiguration;
 import org.eclipse.kapua.service.config.ServiceConfiguration;
 import org.eclipse.kapua.service.config.ServiceConfigurationXmlRegistry;
-import org.eclipse.kapua.service.datastore.client.model.InsertResponse;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -308,7 +307,6 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     DatastoreMessage.class,
                     DatastoreMessageXmlRegistry.class,
-                    InsertResponse.class,
                     StorableEntityId.class,
                     StorableId.class,
                     SortField.class,

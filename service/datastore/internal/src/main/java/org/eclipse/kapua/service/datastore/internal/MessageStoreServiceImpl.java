@@ -32,19 +32,19 @@ import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.DatastoreDomains;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
-import org.eclipse.kapua.service.datastore.client.ClientCommunicationException;
-import org.eclipse.kapua.service.datastore.client.ClientUnavailableException;
 import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientCommunicationException;
+import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
 
 import java.util.UUID;
 
@@ -73,16 +73,16 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     protected final AccountService accountService = LOCATOR.getService(AccountService.class);
     protected final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
     protected final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
-    protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingKey.CONFIG_MAX_ENTRIES_ON_DELETE);
+    protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
 
     protected final MessageStoreFacade messageStoreFacade;
 
     /**
      * Default constructor
      *
-     * @throws ClientUnavailableException
+     * @throws ClientInitializationException
      */
-    public MessageStoreServiceImpl() throws ClientUnavailableException {
+    public MessageStoreServiceImpl() throws ClientInitializationException {
         super(MessageStoreService.class.getName(), DatastoreDomains.DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());
@@ -227,7 +227,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
     @Override
     protected boolean isServiceEnabled(KapuaId scopeId) {
-        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingKey.DISABLE_DATASTORE, false);
+        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
     }
 
 }

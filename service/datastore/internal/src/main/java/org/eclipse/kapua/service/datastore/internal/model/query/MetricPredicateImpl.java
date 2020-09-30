@@ -11,18 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query;
 
-import org.eclipse.kapua.service.datastore.client.DatamodelMappingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.internal.schema.SchemaUtil;
 import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
 
 /**
  * Implementation of query predicate for matching range values
  *
  * @since 1.0
- *
  */
 public class MetricPredicateImpl extends RangePredicateImpl implements MetricPredicate {
 
@@ -60,6 +58,7 @@ public class MetricPredicateImpl extends RangePredicateImpl implements MetricPre
      *
      * @throws DatamodelMappingException
      */
+    @Override
     public ObjectNode toSerializedMap() throws DatamodelMappingException {
         ObjectNode rootNode = SchemaUtil.getObjectNode();
         ObjectNode valuesNode = SchemaUtil.getObjectNode();

@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.user;
 
+import cucumber.api.CucumberOptions;
 import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
 import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
-import cucumber.api.CucumberOptions;
 
 @RunWith(CucumberWithProperties.class)
 @CucumberOptions(
@@ -38,8 +38,11 @@ import cucumber.api.CucumberOptions;
         },
         strict = true,
         monochrome = true)
-@CucumberProperty(key="kapua.config.url", value="")
-@CucumberProperty(key="datastore.client.class", value="org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient")
-@CucumberProperty(key="org.eclipse.kapua.qa.datastore.extraStartupDelay", value="5")
-@CucumberProperty(key="org.eclipse.kapua.qa.broker.extraStartupDelay", value="5")
-public class RunUserPermissionI9nTest {}
+@CucumberProperty(key = "kapua.config.url", value = "")
+@CucumberProperty(key = "datastore.elasticsearch.provider", value = "org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider")
+@CucumberProperty(key = "datastore.elasticsearch.node", value = "127.0.0.1")
+@CucumberProperty(key = "datastore.elasticsearch.port", value = "9200")
+@CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "5")
+@CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "5")
+public class RunUserPermissionI9nTest {
+}

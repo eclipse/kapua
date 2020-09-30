@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.console.core.server;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
@@ -63,11 +62,10 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingKey;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
+import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,7 +103,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             LoginCredentials credentials = null;
             AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
-            if(gwtLoginCredentials.getUsername() != null && gwtLoginCredentials.getPassword() != null) {
+            if (gwtLoginCredentials.getUsername() != null && gwtLoginCredentials.getPassword() != null) {
                 credentials = credentialsFactory.newUsernamePasswordCredentials(gwtLoginCredentials.getUsername(), gwtLoginCredentials.getPassword());
             }
 
@@ -276,7 +274,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setBuildVersion(commonsConfig.getString(SystemSettingKey.BUILD_VERSION));
         gwtSession.setBuildNumber(commonsConfig.getString(SystemSettingKey.BUILD_NUMBER));
         gwtSession.setSsoEnabled(SsoLocator.getLocator(this).getService().isEnabled());
-        gwtSession.setDatastoreDisabled(DatastoreSettings.getInstance().getBoolean(DatastoreSettingKey.DISABLE_DATASTORE, false));
+        gwtSession.setDatastoreDisabled(DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false));
 
         // User info
         gwtSession.setUserId(gwtUser.getId());
