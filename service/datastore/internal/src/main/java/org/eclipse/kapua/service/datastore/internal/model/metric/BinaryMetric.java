@@ -9,20 +9,20 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model;
+package org.eclipse.kapua.service.datastore.internal.model.metric;
 
-import org.eclipse.kapua.service.datastore.model.Metric;
+import org.eclipse.kapua.service.datastore.model.metric.Metric;
 
 /**
  * Binary metric implementation
- * 
+ *
  * @since 1.0
  */
 public class BinaryMetric extends MetricImpl<Byte[]> implements Metric<Byte[]> {
 
     /**
      * Construct a binary metric with the provided name and value
-     * 
+     *
      * @param name
      * @param value
      */

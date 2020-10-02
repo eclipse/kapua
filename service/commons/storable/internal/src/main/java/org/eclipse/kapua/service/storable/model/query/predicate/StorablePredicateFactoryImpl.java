@@ -16,9 +16,15 @@ import org.eclipse.kapua.service.storable.model.query.StorableField;
 
 @KapuaProvider
 public class StorablePredicateFactoryImpl implements StorablePredicateFactory {
+
     @Override
     public AndPredicate newAndPredicate() {
         return new AndPredicateImpl();
+    }
+
+    @Override
+    public OrPredicate newOrPredicate() {
+        return new OrPredicateImpl();
     }
 
     @Override
@@ -32,17 +38,12 @@ public class StorablePredicateFactoryImpl implements StorablePredicateFactory {
     }
 
     @Override
-    public MatchPredicate newMatchPredicate(String field, String expression) {
+    public MatchPredicate newMatchPredicate(StorableField field, String expression) {
         return new MatchPredicateImpl(field, expression);
     }
 
     @Override
-    public OrPredicate newOrPredicate() {
-        return new OrPredicateImpl();
-    }
-
-    @Override
-    public <V extends Comparable<V>> RangePredicate newRangePredicate(String fieldName, V minValue, V maxValue) {
+    public <V extends Comparable<V>> RangePredicate newRangePredicate(StorableField fieldName, V minValue, V maxValue) {
         return new RangePredicateImpl(fieldName, minValue, maxValue);
     }
 

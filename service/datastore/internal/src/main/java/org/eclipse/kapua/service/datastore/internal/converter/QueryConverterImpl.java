@@ -34,12 +34,12 @@ public class QueryConverterImpl implements QueryConverter {
 
     @Override
     public JsonNode convertQuery(Object query) throws QueryMappingException, DatamodelMappingException, KapuaException {
-        if (!(query instanceof AbstractStorableQuery<?>)) {
+        if (!(query instanceof AbstractStorableQuery)) {
             throw new QueryMappingException();
         }
 
         ObjectNode rootNode = MappingUtils.newObjectNode();
-        AbstractStorableQuery<?> storableQuery = (AbstractStorableQuery<?>) query;
+        AbstractStorableQuery storableQuery = (AbstractStorableQuery) query;
         // includes/excludes
         ObjectNode includesFields = MappingUtils.newObjectNode();
         includesFields.set(SchemaKeys.KEY_INCLUDES, MappingUtils.newArrayNode(storableQuery.getIncludes(storableQuery.getFetchStyle())));
@@ -58,7 +58,7 @@ public class QueryConverterImpl implements QueryConverter {
         List<SortField> sortFields = storableQuery.getSortFields();
         if (sortFields != null) {
             for (SortField field : sortFields) {
-                sortNode.add(MappingUtils.getField(field.getField(), field.getSortDirection().name()));
+                sortNode.add(MappingUtils.newObjectNode(field.getField(), field.getSortDirection().name()));
             }
         }
         // offset and limit settings
@@ -76,10 +76,11 @@ public class QueryConverterImpl implements QueryConverter {
 
     @Override
     public Object getFetchStyle(Object query) throws QueryMappingException {
-        if (!(query instanceof AbstractStorableQuery<?>)) {
+        if (!(query instanceof AbstractStorableQuery)) {
             throw new QueryMappingException();
         }
-        return ((AbstractStorableQuery<?>) query).getFetchStyle();
+
+        return ((AbstractStorableQuery) query).getFetchStyle();
     }
 
 }

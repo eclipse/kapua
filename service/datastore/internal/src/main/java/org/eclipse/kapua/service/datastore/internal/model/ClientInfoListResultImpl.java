@@ -19,7 +19,7 @@ import org.eclipse.kapua.service.storable.model.AbstractStorableListResult;
 /**
  * Client information query result list implementation
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ClientInfoListResultImpl extends AbstractStorableListResult<ClientInfo> implements ClientInfoListResult {
 
@@ -27,6 +27,8 @@ public class ClientInfoListResultImpl extends AbstractStorableListResult<ClientI
 
     /**
      * Construct a client info result list
+     *
+     * @since 1.0.0
      */
     public ClientInfoListResultImpl() {
         super();
@@ -36,10 +38,10 @@ public class ClientInfoListResultImpl extends AbstractStorableListResult<ClientI
      * Construct the client info result list from the provided list
      *
      * @param resultList
+     * @since 1.0.0
      */
     public ClientInfoListResultImpl(ResultList<ClientInfo> resultList) {
-        addItems(resultList.getResult());
-        setTotalCount(resultList.getTotalCount());
+        super(resultList.getResult(), resultList.getTotalCount());
     }
 
 }

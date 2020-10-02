@@ -14,9 +14,9 @@ package org.eclipse.kapua.service.storable.model.id;
 import org.eclipse.kapua.locator.KapuaProvider;
 
 /**
- * Storable identifier factory reference implementation.
+ * {@link StorableIdFactory} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class StorableIdFactoryImpl implements StorableIdFactory {

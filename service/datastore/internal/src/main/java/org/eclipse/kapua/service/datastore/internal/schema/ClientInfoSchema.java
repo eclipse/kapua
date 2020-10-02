@@ -81,24 +81,24 @@ public class ClientInfoSchema {
 
         ObjectNode clientNodeName = MappingUtils.newObjectNode();
         {
-            ObjectNode sourceClient = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable)});
+            ObjectNode sourceClient = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, sourceEnable)});
             clientNodeName.set(SchemaKeys.KEY_SOURCE, sourceClient);
 
-            ObjectNode allClient = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable)});
+            ObjectNode allClient = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_ENABLED, allEnable)});
             clientNodeName.set(SchemaKeys.KEY_ALL, allClient);
 
             ObjectNode propertiesNode = MappingUtils.newObjectNode();
             {
-                ObjectNode clientId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                ObjectNode clientId = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
                 propertiesNode.set(CLIENT_ID, clientId);
 
-                ObjectNode clientTimestamp = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
+                ObjectNode clientTimestamp = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
                 propertiesNode.set(CLIENT_TIMESTAMP, clientTimestamp);
 
-                ObjectNode clientScopeId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                ObjectNode clientScopeId = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
                 propertiesNode.set(CLIENT_SCOPE_ID, clientScopeId);
 
-                ObjectNode clientMessageId = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                ObjectNode clientMessageId = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
                 propertiesNode.set(CLIENT_MESSAGE_ID, clientMessageId);
             }
             clientNodeName.set(SchemaKeys.FIELD_NAME_PROPERTIES, propertiesNode);

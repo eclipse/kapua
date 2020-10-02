@@ -17,9 +17,9 @@ import org.eclipse.kapua.service.storable.model.query.StorableField;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 
 /**
- * Implementation of query predicate for matching field value
+ * {@link TermPredicate} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class TermPredicateImpl extends StorablePredicateImpl implements TermPredicate {
 
@@ -27,20 +27,25 @@ public class TermPredicateImpl extends StorablePredicateImpl implements TermPred
     private Object value;
 
     /**
-     * Default constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public TermPredicateImpl() {
     }
 
     /**
-     * Construct a term predicate given the field and value
+     * Constructor.
      *
-     * @param field
-     * @param value
+     * @param field The {@link StorableField}.
+     * @param value The value to match.
+     * @since 1.0.0
      */
     public <V> TermPredicateImpl(StorableField field, V value) {
-        this.field = field;
-        this.value = value;
+        this();
+
+        setField(field);
+        setValue(value);
     }
 
     @Override
@@ -48,13 +53,10 @@ public class TermPredicateImpl extends StorablePredicateImpl implements TermPred
         return this.field;
     }
 
-    /**
-     * Return the field
-     *
-     * @return
-     */
+    @Override
     public TermPredicate setField(StorableField field) {
         this.field = field;
+
         return this;
     }
 
@@ -68,14 +70,10 @@ public class TermPredicateImpl extends StorablePredicateImpl implements TermPred
         return clazz.cast(value);
     }
 
-    /**
-     * Set the value
-     *
-     * @param value
-     * @return
-     */
-    public <V> TermPredicate setValue(V value) {
+    @Override
+    public TermPredicate setValue(Object value) {
         this.value = value;
+
         return this;
     }
 
@@ -90,7 +88,7 @@ public class TermPredicateImpl extends StorablePredicateImpl implements TermPred
      * </pre>
      */
     public ObjectNode toSerializedMap() throws MappingException {
-        ObjectNode termNode = getField(new KeyValueEntry[]{new KeyValueEntry(field.field(), value)});
+        ObjectNode termNode = newObjectNode(new KeyValueEntry[]{new KeyValueEntry(getField().field(), value)});
 
         ObjectNode rootNode = newObjectNode();
         rootNode.set(PredicateConstants.TERM_KEY, termNode);

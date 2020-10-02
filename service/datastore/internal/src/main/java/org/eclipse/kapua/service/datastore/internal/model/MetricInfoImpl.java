@@ -38,24 +38,19 @@ public class MetricInfoImpl implements MetricInfo {
     private StorableId lastMessageId;
     private Date lastMessageOn;
 
+
+    public MetricInfoImpl() {
+    }
+
     /**
      * Construct a metric information for the given scope
      *
      * @param scopeId
      */
     public MetricInfoImpl(KapuaId scopeId) {
-        setScopeId(scopeId);
-    }
+        this();
 
-    /**
-     * Construct a metric information for the given scope and storable identifier
-     *
-     * @param scopeId
-     * @param id
-     */
-    public MetricInfoImpl(KapuaId scopeId, StorableId id) {
-        this(scopeId);
-        this.id = id;
+        setScopeId(scopeId);
     }
 
     @Override
@@ -73,8 +68,9 @@ public class MetricInfoImpl implements MetricInfo {
         return scopeId;
     }
 
-    protected void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId != null ? scopeId : null;
+    @Override
+    public void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId;
     }
 
     @Override

@@ -9,21 +9,31 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model.query;
+package org.eclipse.kapua.service.datastore.internal.model.metric;
 
-import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
+import org.eclipse.kapua.service.datastore.model.metric.Metric;
 
 /**
- * Query predicate definition for matching the channel value
+ * Double metric implementation
  *
  * @since 1.0
  */
-public interface ChannelMatchPredicate extends StorablePredicate {
+public class DoubleMetric extends MetricImpl<Double> implements Metric<Double> {
 
     /**
-     * Get the channel expression (may use wildcard)
+     * Construct a double metric with the provided name and value
      *
-     * @return
+     * @param name
+     * @param value
      */
-    String getExpression();
+    public DoubleMetric(String name, Object value) {
+        setName(name);
+        setType(Double.class);
+        setValue((Double) value);
+    }
+
+    @Override
+    public int compareTo(Double o) {
+        return getValue().compareTo(o);
+    }
 }

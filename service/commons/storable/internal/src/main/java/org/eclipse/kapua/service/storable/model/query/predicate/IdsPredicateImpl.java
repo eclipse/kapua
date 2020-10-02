@@ -15,45 +15,37 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Implementation of query predicate for matching identifier values fields
+ * {@link IdsPredicate} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class IdsPredicateImpl extends StorablePredicateImpl implements IdsPredicate {
 
     private String type;
-    private Set<StorableId> idSet = new HashSet<>();
+    private List<StorableId> ids;
 
     /**
-     * Default constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public IdsPredicateImpl() {
     }
 
     /**
-     * Construct an identifier predicate given the type
+     * Constructor.
      *
-     * @param type
+     * @param type The type descriptor.
+     * @since 1.0.0
      */
     public IdsPredicateImpl(String type) {
         this();
-        this.type = type;
-    }
 
-    /**
-     * Construct an identifier predicate given the type and the identifier collection
-     *
-     * @param type
-     * @param ids
-     */
-    public IdsPredicateImpl(String type, Collection<StorableId> ids) {
-        this(type);
-        this.idSet.addAll(ids);
+        setType(type);
     }
 
     @Override
@@ -61,48 +53,41 @@ public class IdsPredicateImpl extends StorablePredicateImpl implements IdsPredic
         return this.type;
     }
 
-    /**
-     * Set the identifier type
-     *
-     * @param type
-     * @return
-     */
+    @Override
     public IdsPredicate setType(String type) {
         this.type = type;
+
         return this;
     }
 
     @Override
-    public Set<StorableId> getIdSet() {
-        return this.idSet;
+    public List<StorableId> getIds() {
+        if (ids == null) {
+            ids = new ArrayList<>();
+        }
+
+        return ids;
     }
 
 
     @Override
     public IdsPredicate addId(StorableId id) {
-        this.idSet.add(id);
+        getIds().add(id);
+
         return this;
     }
 
-    /**
-     * Add the storable identifier list to the identifier set
-     *
-     * @param ids
-     * @return
-     * @since 1.0.0
-     */
-    public IdsPredicate addIds(Collection<StorableId> ids) {
-        this.idSet.addAll(ids);
+    @Override
+    public IdsPredicate addIds(List<StorableId> ids) {
+        getIds().addAll(ids);
+
         return this;
     }
 
-    /**
-     * Clear the storable identifier set
-     *
-     * @return
-     */
-    public IdsPredicate clearValues() {
-        this.idSet.clear();
+    @Override
+    public IdsPredicate setIds(List<StorableId> ids) {
+        this.ids = ids;
+
         return this;
     }
 
@@ -120,7 +105,7 @@ public class IdsPredicateImpl extends StorablePredicateImpl implements IdsPredic
      * </pre>
      */
     public ObjectNode toSerializedMap() {
-        ArrayNode idsList = newArrayNode(idSet);
+        ArrayNode idsList = newArrayNode(ids);
 
         ObjectNode idsNode = newObjectNode();
         idsNode.set(PredicateConstants.TYPE_KEY, newTextNode(type));

@@ -12,17 +12,29 @@
 package org.eclipse.kapua.service.storable.model.query.predicate;
 
 /**
- * Query predicate definition for checking if a field exists
+ * Exists {@link StorablePredicate} defintion.
+ * <p>
+ * It matches that a field exists.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface ExistsPredicate extends StorablePredicate {
 
     /**
-     * Returns the field name to check
+     * Gets the field name to check existence.
      *
-     * @return
+     * @return The field name to check existence.
+     * @since 1.0.0
      */
     String getName();
+
+    /**
+     * Sets the field name to check existence.
+     *
+     * @param name The field name to check existence.
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
+     */
+    ExistsPredicate setName(String name);
 
 }

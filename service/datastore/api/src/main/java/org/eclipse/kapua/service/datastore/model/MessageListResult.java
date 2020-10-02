@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  */
 @XmlRootElement(name = "datastoreMessages")
-@XmlType(factoryClass = DatastoreMessageXmlRegistry.class, factoryMethod = "newDatastoreMessageListResult")
+@XmlType(factoryClass = DatastoreMessageXmlRegistry.class, factoryMethod = "newListResult")
 public interface MessageListResult extends StorableListResult<DatastoreMessage> {
 
 }

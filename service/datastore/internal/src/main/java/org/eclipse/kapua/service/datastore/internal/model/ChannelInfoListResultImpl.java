@@ -19,7 +19,7 @@ import org.eclipse.kapua.service.storable.model.AbstractStorableListResult;
 /**
  * Channel information query result list implementation
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ChannelInfoListResultImpl extends AbstractStorableListResult<ChannelInfo> implements ChannelInfoListResult {
 
@@ -27,6 +27,8 @@ public class ChannelInfoListResultImpl extends AbstractStorableListResult<Channe
 
     /**
      * Construct a channel info result list
+     *
+     * @since 1.0.0
      */
     public ChannelInfoListResultImpl() {
         super();
@@ -36,10 +38,10 @@ public class ChannelInfoListResultImpl extends AbstractStorableListResult<Channe
      * Construct the channel info result list from the provided list
      *
      * @param resultList
+     * @since 1.0.0
      */
     public ChannelInfoListResultImpl(ResultList<ChannelInfo> resultList) {
-        addItems(resultList.getResult());
-        setTotalCount(resultList.getTotalCount());
+        super(resultList.getResult(), resultList.getTotalCount());
     }
 
 }

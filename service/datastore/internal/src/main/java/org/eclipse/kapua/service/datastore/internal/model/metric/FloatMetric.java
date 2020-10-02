@@ -9,31 +9,31 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model;
+package org.eclipse.kapua.service.datastore.internal.model.metric;
 
-import org.eclipse.kapua.service.datastore.model.Metric;
+import org.eclipse.kapua.service.datastore.model.metric.Metric;
 
 /**
- * String metric implementation
- * 
+ * Float metric implementation
+ *
  * @since 1.0
  */
-public class StringMetric extends MetricImpl<String> implements Metric<String> {
+public class FloatMetric extends MetricImpl<Float> implements Metric<Float> {
 
     /**
-     * Construct an integer metric with the provided name and value
-     * 
+     * Construct a float metric with the provided name and value
+     *
      * @param name
      * @param value
      */
-    public StringMetric(String name, Object value) {
+    public FloatMetric(String name, Object value) {
         setName(name);
-        setType(String.class);
-        setValue(String.valueOf((String) value));
+        setType(Float.class);
+        setValue((Float) value);
     }
 
     @Override
-    public int compareTo(String o) {
+    public int compareTo(Float o) {
         return getValue().compareTo(o);
     }
 }

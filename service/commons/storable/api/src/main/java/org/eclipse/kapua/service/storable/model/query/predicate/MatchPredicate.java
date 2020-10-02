@@ -11,17 +11,48 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.storable.model.query.predicate;
 
+import org.eclipse.kapua.service.storable.model.query.StorableField;
+
 /**
- * Query predicate definition for matching the channel value
+ * Match {@link StorablePredicate}.
+ * <p>
+ * It matches an expression against a {@link StorableField}.
  *
- * @since 1.0
+ * @since 1.3.0
  */
 public interface MatchPredicate extends StorablePredicate {
 
     /**
-     * Get the channel expression (may use wildcard)
+     * Gets the {@link StorableField} to match against.
      *
-     * @return
+     * @return The {@link StorableField} to match against
+     * @since 1.3.0
+     */
+    StorableField getField();
+
+    /**
+     * Sets the {@link StorableField} to match against.
+     *
+     * @param storableField The {@link StorableField} to match against.
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
+     */
+    MatchPredicate setField(StorableField storableField);
+
+    /**
+     * Gets the expression to apply to the {@link StorableField}
+     *
+     * @return The expression to apply to the {@link StorableField}
+     * @since 1.3.0
      */
     String getExpression();
+
+    /**
+     * Sets the expression to apply to the {@link StorableField}
+     *
+     * @param expression The expression to apply to the {@link StorableField}.
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
+     */
+    MatchPredicate setExpression(String expression);
 }

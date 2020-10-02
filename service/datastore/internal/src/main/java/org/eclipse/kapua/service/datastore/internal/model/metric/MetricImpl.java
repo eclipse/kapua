@@ -9,16 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model;
+package org.eclipse.kapua.service.datastore.internal.model.metric;
 
-import org.eclipse.kapua.service.datastore.model.Metric;
+import org.eclipse.kapua.service.datastore.model.metric.Metric;
 
 /**
  * Metric base implementation
- * 
- * @param <T>
- *            metric value type
- * 
+ *
+ * @param <T> metric value type
  * @since 1.0
  */
 public abstract class MetricImpl<T> implements Metric<T> {

@@ -13,61 +13,59 @@ package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
- * Implementation of query "or" aggregation
+ * {@link OrPredicate} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class OrPredicateImpl extends StorablePredicateImpl implements OrPredicate {
 
-    private List<StorablePredicate> predicates = new ArrayList<>();
+    private List<StorablePredicate> predicates;
 
     /**
-     * Default constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public OrPredicateImpl() {
     }
 
     /**
-     * Creates an "or" predicate for the given predicates collection
+     * Constructor.
      *
-     * @param predicates
+     * @param storablePredicates The {@link StorablePredicate}s to add.
+     * @since 1.0.0
      */
-    public OrPredicateImpl(Collection<StorablePredicate> predicates) {
-        predicates.addAll(predicates);
+    public OrPredicateImpl(StorablePredicate... storablePredicates) {
+        this();
+
+        setPredicates(Lists.newArrayList(storablePredicates));
     }
 
     @Override
     public List<StorablePredicate> getPredicates() {
+        if (predicates == null) {
+            predicates = new ArrayList<>();
+        }
+
         return this.predicates;
     }
 
-    /**
-     * Add the storable predicate to the predicates collection
-     *
-     * @param predicate
-     * @return
-     */
-    public OrPredicate addPredicate(StorablePredicate predicate) {
-        this.predicates.add(predicate);
+    @Override
+    public OrPredicate addPredicate(StorablePredicate storablePredicate) {
+        getPredicates().add(storablePredicate);
         return this;
-
     }
 
-    /**
-     * Clear the predicates collection
-     *
-     * @return
-     */
-    public OrPredicate clearPredicates() {
-        this.predicates.clear();
-        return this;
+    @Override
+    public void setPredicates(List<StorablePredicate> predicates) {
+        this.predicates = predicates;
     }
 
     @Override

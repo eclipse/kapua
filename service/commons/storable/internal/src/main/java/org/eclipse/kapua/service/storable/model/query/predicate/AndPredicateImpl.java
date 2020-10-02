@@ -13,66 +13,64 @@ package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.Lists;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
- * Implementation of query "and" aggregation
+ * {@link AndPredicate} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class AndPredicateImpl extends StorablePredicateImpl implements AndPredicate {
 
-    private List<StorablePredicate> predicates = new ArrayList<>();
+    private List<StorablePredicate> predicates;
 
     /**
-     * Default constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public AndPredicateImpl() {
     }
 
     /**
-     * Creates an and predicate for the given predicates collection
+     * Constructor.
      *
-     * @param predicates
+     * @param storablePredicates The {@link StorablePredicate}s to add.
+     * @since 1.0.0
      */
-    public AndPredicateImpl(Collection<StorablePredicate> predicates) {
-        predicates.addAll(predicates);
+    public AndPredicateImpl(StorablePredicate... storablePredicates) {
+        this();
+
+        setPredicates(Lists.newArrayList(storablePredicates));
     }
 
     @Override
     public List<StorablePredicate> getPredicates() {
+        if (predicates == null) {
+            predicates = new ArrayList<>();
+        }
+
         return this.predicates;
     }
 
-    /**
-     * Add the storable predicate to the predicates collection
-     *
-     * @param predicate
-     * @return
-     */
-    public AndPredicate addPredicate(StorablePredicate predicate) {
-        this.predicates.add(predicate);
-        return this;
-
-    }
-
-    /**
-     * Clear the predicates collection
-     *
-     * @return
-     */
-    public AndPredicate clearPredicates() {
-        this.predicates.clear();
+    @Override
+    public AndPredicate addPredicate(StorablePredicate storablePredicate) {
+        getPredicates().add(storablePredicate);
         return this;
     }
 
     @Override
+    public void setPredicates(List<StorablePredicate> predicates) {
+        this.predicates = predicates;
+    }
+
+    @Override
     public ObjectNode toSerializedMap() throws MappingException {
-        ArrayNode conditionsNode = newArrayNodeFromPredicates(predicates);
+        ArrayNode conditionsNode = newArrayNodeFromPredicates(getPredicates());
 
         ObjectNode termNode = newObjectNode();
         termNode.set(PredicateConstants.MUST_KEY, conditionsNode);

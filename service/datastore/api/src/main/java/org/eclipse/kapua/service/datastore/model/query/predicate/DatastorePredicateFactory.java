@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model.query;
+package org.eclipse.kapua.service.datastore.model.query.predicate;
 
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory;
 
@@ -19,26 +19,34 @@ import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicat
 public interface DatastorePredicateFactory extends StorablePredicateFactory {
 
     /**
-     * Returns a new instance of {@link ChannelMatchPredicate}.
+     * Instantiates a {@link ChannelMatchPredicate}.
      *
-     * @param expression The expression to match with the channel name.
+     * @param expression The expression.
      * @return The newly instantiated {@link ChannelMatchPredicate}.
      * @since 1.0.0
      */
     ChannelMatchPredicate newChannelMatchPredicate(String expression);
 
     /**
-     * Return a new instance of {@link MetricPredicate}
+     * Instantiates a {@link MetricPredicate}
      *
-     * @param fieldName The metric name to filter.
-     * @param type      The type of the metric to filter
-     * @param minValue  The lower limit. Can be {@code null}.
-     * @param maxValue  The upper limit. Can be {@code null}.
+     * @param metricName The metric name to filter.
+     * @param type       The type of the metric to filter
+     * @param minValue   The lower limit. Can be {@code null}.
+     * @param maxValue   The upper limit. Can be {@code null}.
      * @return The newly instantiated {@link MetricPredicate}.
      * @since 1.0.0
      */
-    <V extends Comparable<V>> MetricPredicate newMetricPredicate(String fieldName, Class<V> type, V minValue, V maxValue);
+    <V extends Comparable<V>> MetricPredicate newMetricPredicate(String metricName, Class<V> type, V minValue, V maxValue);
 
-
-    <V extends Comparable<V>> MetricExistsPredicate newMetricExistsPredicate(String fieldName, Class<V> type);
+    /**
+     * Instantiates a {@link MetricExistsPredicate}.
+     *
+     * @param metricName The metric name to look for.
+     * @param type       The {@link Class} type of the Metric.
+     * @param <V>        The {@link Comparable} type.
+     * @return The newly instantiated {@link MetricExistsPredicate}
+     * @since 1.0.0
+     */
+    <V extends Comparable<V>> MetricExistsPredicate newMetricExistsPredicate(String metricName, Class<V> type);
 }

@@ -15,52 +15,72 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.storable.model.query.StorableField;
 
 /**
- * {@link KapuaObjectFactory} for {@link StorablePredicate}s
+ * {@link StorablePredicate}'s {@link KapuaObjectFactory}.
  *
  * @since 1.0.0
  */
 public interface StorablePredicateFactory extends KapuaObjectFactory {
 
     /**
-     * Returns a new instance of {@link AndPredicate}.
+     * Instantiates a {@link AndPredicate}.
      *
      * @return The newly instantiated {@link AndPredicate}.
      * @since 1.0.0
      */
     AndPredicate newAndPredicate();
 
-    ExistsPredicate newExistsPredicate(String... fields);
-
-    IdsPredicate newIdsPredicate(String type);
-
     /**
-     * Returns a new instance of {@link MatchPredicate}.
+     * Instantiates a {@link OrPredicate}.
      *
-     * @param field      The field name
-     * @param expression The expression to match with the channel name.
-     * @return The newly instantiated {@link MatchPredicate}.
-     * @since 1.3.0
+     * @return The newly instantiated {@link OrPredicate}.
+     * @since 1.0.0
      */
-    MatchPredicate newMatchPredicate(String field, String expression);
-
     OrPredicate newOrPredicate();
 
     /**
-     * Return a new instance of {@link RangePredicate}
+     * Instantiates an {@link ExistsPredicate}.
      *
-     * @param fieldName The field name to filter.
-     * @param minValue  The lower limit. Can be {@code null}.
-     * @param maxValue  The upper limit. Can be {@code null}.
+     * @param fields The {@link java.util.List} of fields to match existence.
+     * @return The newly instantiated {@link ExistsPredicate}
+     * @since 1.3.0
+     */
+    ExistsPredicate newExistsPredicate(String... fields);
+
+    /**
+     * Instantiates an {@link IdsPredicate}.
+     *
+     * @param typeDescriptor The type descriptor
+     * @return The newly instantiated {@link IdsPredicate}
+     * @since 1.3.0
+     */
+    IdsPredicate newIdsPredicate(String typeDescriptor);
+
+    /**
+     * Instantiates a {@link MatchPredicate}.
+     *
+     * @param field      The {@link StorableField}.
+     * @param expression The expression to match against the {@link StorableField}
+     * @return The newly instantiated {@link MatchPredicate}.
+     * @since 1.3.0
+     */
+    MatchPredicate newMatchPredicate(StorableField field, String expression);
+
+    /**
+     * Instantiates a {@link RangePredicate}
+     *
+     * @param field    The {@link StorableField}.
+     * @param minValue The lower limit. Can be {@code null}.
+     * @param maxValue The upper limit. Can be {@code null}.
      * @return The newly instantiated {@link RangePredicate}.
      * @since 1.0.0
      */
-    <V extends Comparable<V>> RangePredicate newRangePredicate(String fieldName, V minValue, V maxValue);
+    <V extends Comparable<V>> RangePredicate newRangePredicate(StorableField field, V minValue, V maxValue);
 
     /**
-     * Return a new instance of {@link TermPredicate}
+     * Instantiates a {@link TermPredicate}
      *
-     * @param field The field name to filter
-     * @param value The value to filter
+     * @param field The {@link StorableField}.
+     * @param value The value match.
      * @return The newly instantiated {@link TermPredicate}.
      * @since 1.0.0
      */

@@ -16,9 +16,11 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
- * Kapua identifier adapter. It marshal and unmarshal the Kapua identifier in a proper way.
+ * {@link StorableId} {@link XmlAdapter}.
+ * <p>
+ * It marshals and unmarshals the {@link StorableId}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class StorableIdXmlAdapter extends XmlAdapter<String, StorableId> {
 
@@ -26,13 +28,13 @@ public class StorableIdXmlAdapter extends XmlAdapter<String, StorableId> {
     private static final StorableIdFactory STORABLE_ID_FACTORY = LOCATOR.getFactory(StorableIdFactory.class);
 
     @Override
-    public String marshal(StorableId v) throws Exception {
-        return v.toString();
+    public String marshal(StorableId storableId) {
+        return storableId.toString();
     }
 
     @Override
-    public StorableId unmarshal(String v) throws Exception {
-        return STORABLE_ID_FACTORY.newStorableId(v);
+    public StorableId unmarshal(String storableIdString) {
+        return STORABLE_ID_FACTORY.newStorableId(storableIdString);
     }
 
 }

@@ -14,16 +14,34 @@ package org.eclipse.kapua.service.storable.model.query.predicate;
 import java.util.List;
 
 /**
- * Query "or" aggregation definition
+ * {@link StorablePredicate} "OR" aggregation definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface OrPredicate extends StorablePredicate {
 
     /**
-     * Get the {@link StorablePredicate} list
+     * Gets the {@link StorablePredicate} {@link List}
      *
-     * @return
+     * @return The {@link StorablePredicate} {@link List}
+     * @since 1.0.0
      */
     List<StorablePredicate> getPredicates();
+
+    /**
+     * Adds a {@link StorablePredicate} to the {@link List}.
+     *
+     * @param storablePredicate The {@link StorablePredicate} to add.
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
+     */
+    OrPredicate addPredicate(StorablePredicate storablePredicate);
+
+    /**
+     * Sets the {@link StorablePredicate} {@link List}
+     *
+     * @param storablePredicates The {@link StorablePredicate} {@link List}
+     * @since 1.3.0
+     */
+    void setPredicates(List<StorablePredicate> storablePredicates);
 }

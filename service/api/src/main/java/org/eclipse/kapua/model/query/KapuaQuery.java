@@ -28,7 +28,6 @@ import java.util.List;
 
 /**
  * {@link KapuaQuery} definition.
- *
  */
 public interface KapuaQuery {
 
@@ -123,9 +122,11 @@ public interface KapuaQuery {
     Integer getOffset();
 
     /**
-     * Set the {@link KapuaQuery} offset in the result set from which start query.<br>
+     * Set the {@link KapuaQuery} offset in the result set from which start query.
+     * <p>
      * If set to {@code null} the {@link KapuaQuery} will start from the first result found.
-     * This also mean that {@link #setOffset(Integer)} with {@code 0} or {@code null} will produce the same result.<br>
+     * This also mean that {@link #setOffset(Integer)} with {@code 0} or {@code null} will produce the same result.
+     * <p>
      * This method and {@link #setLimit(Integer)} are meant to be used to paginate through the result set.
      *
      * @param offset The {@link KapuaQuery} offset.
@@ -143,8 +144,10 @@ public interface KapuaQuery {
     Integer getLimit();
 
     /**
-     * Sets max number of result that will be fetched by this {@link KapuaEntity}.<br>
-     * If set to {@code null} the {@link KapuaQuery} will be unlimited.<br>
+     * Sets max number of result that will be fetched by this {@link KapuaEntity}.
+     * <p>
+     * If set to {@code null} the {@link KapuaQuery} will be unlimited.
+     * <p>
      * This method and {@link #setOffset(Integer)} are meant to be used to paginate through the result set.
      *
      * @param limit The max number of result that will be fetched by this {@link KapuaEntity}.
@@ -157,8 +160,8 @@ public interface KapuaQuery {
      * the {@code totalCount} field, indicating how many entries matched the query regardless of {@code limit} and
      * {@code offset}. If {@literal false}, {@code totalCount} will be {@literal null}.
      *
-     * @since 1.2.0
      * @return The value of {@code askTotalCount}
+     * @since 1.2.0
      */
     Boolean getAskTotalCount();
 
@@ -175,53 +178,60 @@ public interface KapuaQuery {
 
     /**
      * Creates a new {@link AttributePredicate}
-     * @param attributeName     The name of the attribute
-     * @param attributeValue    The value of the attribute
-     * @param <T>               The type of {@code attributeValue}
-     * @return                  A new {@link AttributePredicate} for the given parameters
+     *
+     * @param attributeName  The name of the attribute
+     * @param attributeValue The value of the attribute
+     * @param <T>            The type of {@code attributeValue}
+     * @return A new {@link AttributePredicate} for the given parameters
      */
     <T> AttributePredicate<T> attributePredicate(String attributeName, T attributeValue);
 
     /**
      * Creates a new {@link AttributePredicate}
-     * @param attributeName     The name of the attribute
-     * @param attributeValue    The value of the attribute
-     * @param operator          The operator to apply
-     * @param <T>               The type of {@code attributeValue}
-     * @return                  A new {@link AttributePredicate} for the given parameters
+     *
+     * @param attributeName  The name of the attribute
+     * @param attributeValue The value of the attribute
+     * @param operator       The operator to apply
+     * @param <T>            The type of {@code attributeValue}
+     * @return A new {@link AttributePredicate} for the given parameters
      */
     <T> AttributePredicate<T> attributePredicate(String attributeName, T attributeValue, AttributePredicate.Operator operator);
 
     /**
      * Creates a new, empty {@link AndPredicate}
-     * @return      A new, empty {@link AndPredicate}
+     *
+     * @return A new, empty {@link AndPredicate}
      */
     AndPredicate andPredicate();
 
     /**
      * Creates a new {@link AndPredicate} creating a logical AND with all the provided {@link QueryPredicate}
-     * @param queryPredicates       A list of {@link QueryPredicate}s to create the {@link AndPredicate}
-     * @return                      A new {@link AndPredicate}
+     *
+     * @param queryPredicates A list of {@link QueryPredicate}s to create the {@link AndPredicate}
+     * @return A new {@link AndPredicate}
      */
     AndPredicate andPredicate(QueryPredicate... queryPredicates);
 
     /**
      * Creates a new, empty {@link OrPredicate}
-     * @return      A new, empty {@link OrPredicate}
+     *
+     * @return A new, empty {@link OrPredicate}
      */
     OrPredicate orPredicate();
 
     /**
      * Creates a new {@link OrPredicate} creating a logical OR with all the provided {@link QueryPredicate}
-     * @param queryPredicates       A list of {@link QueryPredicate}s to create the {@link OrPredicate}
-     * @return                      A new {@link OrPredicate}
+     *
+     * @param queryPredicates A list of {@link QueryPredicate}s to create the {@link OrPredicate}
+     * @return A new {@link OrPredicate}
      */
     OrPredicate orPredicate(QueryPredicate... queryPredicates);
 
     /**
      * Creates a new {@link FieldSortCriteria}
-     * @param attributeName         The name of the attribute
-     * @param sortOrder             The {@link SortOrder}
+     *
+     * @param attributeName The name of the attribute
+     * @param sortOrder     The {@link SortOrder}
      * @return
      */
     FieldSortCriteria fieldSortCriteria(String attributeName, SortOrder sortOrder);

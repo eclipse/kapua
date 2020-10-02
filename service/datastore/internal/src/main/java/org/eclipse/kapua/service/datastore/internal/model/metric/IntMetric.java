@@ -9,31 +9,31 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model;
+package org.eclipse.kapua.service.datastore.internal.model.metric;
 
-import org.eclipse.kapua.service.datastore.model.Metric;
+import org.eclipse.kapua.service.datastore.model.metric.Metric;
 
 /**
- * Long metric implementation
+ * Integer metric implementation
  *
  * @since 1.0
  */
-public class LongMetric extends MetricImpl<Long> implements Metric<Long> {
+public class IntMetric extends MetricImpl<Integer> implements Metric<Integer> {
 
     /**
-     * Construct a long metric with the provided name and value
+     * Construct an integer metric with the provided name and value
      *
      * @param name
      * @param value
      */
-    public LongMetric(String name, Object value) {
+    public IntMetric(String name, Object value) {
         setName(name);
-        setType(Long.class);
-        setValue((Long) value);
+        setType(Integer.class);
+        setValue((Integer) value);
     }
 
     @Override
-    public int compareTo(Long o) {
-        return getValue().compareTo(o);
+    public int compareTo(Integer o) {
+        return super.getValue().compareTo(o);
     }
 }

@@ -12,18 +12,19 @@
 package org.eclipse.kapua.service.storable.model.query;
 
 /**
- * Storable field implementation
+ * {@link StorableField} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class StorableFieldImpl implements StorableField {
 
-    private String field;
+    private final String field;
 
     /**
-     * Construct a storable field given the field name
+     * Constructor.
      *
-     * @param field
+     * @param field The {@link StorableField} name.
+     * @since 1.0.0
      */
     public StorableFieldImpl(String field) {
         this.field = field;
@@ -31,6 +32,11 @@ public class StorableFieldImpl implements StorableField {
 
     @Override
     public String field() {
+        return field;
+    }
+
+    @Override
+    public String name() {
         return field;
     }
 

@@ -9,15 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model;
+package org.eclipse.kapua.service.datastore.internal.model.metric;
 
 import javax.xml.bind.annotation.XmlEnum;
 
 /**
  * Metrics index by options
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 @XmlEnum
 public enum MetricsIndexBy {
@@ -33,5 +32,5 @@ public enum MetricsIndexBy {
     /**
      * No indexing
      */
-    NONE;
+    NONE
 }

@@ -11,12 +11,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.storable.model;
 
+import org.eclipse.kapua.model.id.KapuaId;
+
 /**
- * Storable object creator definition
+ * {@link StorableCreator} definition.
+ * <p>
+ * It is the base {@code interface} for all {@link Object} creators that are {@link Storable}.
  *
- * @param <E>
- * @since 1.0
+ * @param <E> The {@link Storable} for which this is a {@link StorableCreator} for.
+ * @since 1.0.0
  */
 public interface StorableCreator<E extends Storable> {
 
+    /**
+     * Gets the scope {@link KapuaId}.
+     *
+     * @return The scope {@link KapuaId}.
+     * @since 1.0.0
+     */
+    KapuaId getScopeId();
+
+    /**
+     * Sets the scope {@link KapuaId}.
+     *
+     * @param scopeId The scope {@link KapuaId}.
+     * @since 1.3.0
+     */
+    void setScopeId(KapuaId scopeId);
 }

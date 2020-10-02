@@ -12,9 +12,10 @@
 package org.eclipse.kapua.service.storable.model;
 
 import org.eclipse.kapua.KapuaSerializable;
-import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,9 +26,11 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Storable object list definition
+ * {@link StorableListResult} definition.
+ * <p>
+ * It is the base {@code interface} for all list of {@link Storable}s
  *
- * @param <E>
+ * @param <E> The {@link Storable} for which this is a {@link StorableListResult} for.
  * @since 1.0.0
  */
 @XmlRootElement(name = "result")
@@ -36,26 +39,28 @@ import java.util.List;
 public interface StorableListResult<E extends Storable> extends KapuaSerializable {
 
     /**
-     * Get the limit exceeded flag
+     * Gets whether or not  the {@link StorableQuery#getLimit()} has been exceeded.
+     * <p>
+     * When {@code true} it means that there are more {@link Storable}s to fetch.
      *
-     * @return
+     * @return {@code true} if the {@link StorableQuery#getLimit()} has been exceeded, {@code false} otherwise.
      * @since 1.0.0
      */
     @XmlElement(name = "limitExceeded")
     boolean isLimitExceeded();
 
     /**
-     * Set the limit exceeded flag
+     * Sets whether or not  the {@link StorableQuery#getLimit()} has been exceeded.
      *
-     * @param limitExceeded true if the query matching elements are more than {@link KapuaQuery#setLimit(Integer)} value
+     * @param limitExceeded {@code true} if the {@link StorableQuery#getLimit()} has been exceeded, {@code false} otherwise.
      * @since 1.0.0
      */
     void setLimitExceeded(boolean limitExceeded);
 
     /**
-     * Return the result list
+     * Gets the {@link Storable}s
      *
-     * @return
+     * @return The {@link Storable}s
      * @since 1.0.0
      */
     @XmlElementWrapper(name = "items")
@@ -63,79 +68,92 @@ public interface StorableListResult<E extends Storable> extends KapuaSerializabl
     List<E> getItems();
 
     /**
-     * Return the element at i position (zero based)
+     * Gets the {@link Storable} at the given position in the {@link StorableListResult}.
      *
-     * @param i
-     * @return
+     * @param i The position in the {@link StorableListResult}
+     * @return The {@link Storable} at the position
+     * @throws IndexOutOfBoundsException If position is not available.
+     * @see List#get(int)
      * @since 1.0.0
      */
     E getItem(int i);
 
     /**
-     * Returns the first element in the {@link KapuaListResult}.<br>
+     * Returns the first element in the {@link StorableListResult}.
+     * <p>
      * It returns {@code null} if first element does not exist.
      *
-     * @return The first element in the {@link KapuaListResult} or {@code null} if not present.
+     * @return The first element in the {@link Storable} or {@code null} if not present.
      * @since 1.0.0
      */
     E getFirstItem();
 
     /**
-     * Return the result list size
+     * Gets the result {@link StorableListResult} size.
      *
-     * @return
+     * @return The result list size.
+     * @see List#size()
      * @since 1.0.0
      */
     @XmlElement(name = "size")
     int getSize();
 
     /**
-     * Check if the result list is empty
+     * Checks if the result {@link StorableListResult} is empty.
      *
-     * @return
+     * @return {@code true} if the result list is empty, {@code false} otherwise.
+     * @see List#isEmpty()
      * @since 1.0.0
      */
     boolean isEmpty();
 
     /**
-     * Add items to the result list
+     * Adds {@link Storable}s to the result {@link StorableListResult}
      *
-     * @param items
+     * @param items The {@link Storable}s to add.
+     * @see List#addAll(Collection)
      * @since 1.0.0
      */
     void addItems(Collection<? extends E> items);
 
     /**
-     * Clear item result list
+     * Adds a {@link Storable} to the {@link StorableListResult}.
      *
+     * @param item The {@link Storable} to add.
+     * @since 1.3.0
+     */
+    void addItem(@NotNull E item);
+
+    /**
+     * Clears {@link Storable} result {@link StorableListResult}
+     *
+     * @see List#clear()
      * @since 1.0.0
      */
     void clearItems();
 
     /**
-     * Get the next key.<br>
+     * Get the next key.
+     * <p>
      * If a limit is set into the query parameters (limit) and the messages count matching the query is higher than the limit, so the next key is the key of the first next object not included in the
      * result set.
      *
-     * @return
+     * @return The next key.
      * @since 1.0.0
      */
     @XmlElement(name = "nextKey")
     Object getNextKey();
 
     /**
-     * Get the total count.<br>
-     * The total count may be higher that the result set since the extracted result set can be limited by the query (limit) parameter
+     * Gets the total count of {@link Storable}s that match the {@link StorableQuery#getPredicate()}s regardless of {@link StorableQuery#getLimit()} and {@link StorableQuery#getOffset()}
      *
-     * @return
+     * @return The total count
      * @since 1.0.0
      */
-    @XmlElement(name = "totalCount")
     Long getTotalCount();
 
     /**
-     * Set the total count.<br>
-     * The total count may be higher that the result set since the extracted result set can be limited by the query (limit) parameter
+     * Sets the total count of {@link Storable}s that match the {@link KapuaQuery#getPredicate()}s regardless of {@code limit} and {@code offset}
      *
      * @param totalCount
      * @since 1.0.0

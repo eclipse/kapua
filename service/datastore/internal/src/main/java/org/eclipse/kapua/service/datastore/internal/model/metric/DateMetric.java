@@ -9,31 +9,33 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model;
+package org.eclipse.kapua.service.datastore.internal.model.metric;
 
-import org.eclipse.kapua.service.datastore.model.Metric;
+import org.eclipse.kapua.service.datastore.model.metric.Metric;
+
+import java.util.Date;
 
 /**
- * Float metric implementation
+ * Date metric implementation
  *
  * @since 1.0
  */
-public class FloatMetric extends MetricImpl<Float> implements Metric<Float> {
+public class DateMetric extends MetricImpl<Date> implements Metric<Date> {
 
     /**
-     * Construct a float metric with the provided name and value
+     * Construct a date metric with the provided name and value
      *
      * @param name
      * @param value
      */
-    public FloatMetric(String name, Object value) {
+    public DateMetric(String name, Object value) {
         setName(name);
-        setType(Float.class);
-        setValue((Float)value);
+        setType(Date.class);
+        setValue((Date) value);
     }
 
     @Override
-    public int compareTo(Float o) {
+    public int compareTo(Date o) {
         return getValue().compareTo(o);
     }
 }

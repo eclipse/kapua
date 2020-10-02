@@ -12,73 +12,45 @@
 package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.query.StorableField;
 
 /**
- * Implementation of query predicate for matching range values
+ * {@link RangePredicate} implementation.
  *
  * @since 1.0.0
  */
 public class RangePredicateImpl extends StorablePredicateImpl implements RangePredicate {
 
-    protected String field;
-    protected Object minValue;
-    protected Object maxValue;
-
-    private <V extends Comparable<V>> void checkRange(Class<V> clazz) throws KapuaException {
-        if (minValue == null || maxValue == null) {
-            return;
-        }
-
-        V min = clazz.cast(minValue);
-        V max = clazz.cast(maxValue);
-        if (min.compareTo(max) > 0) {
-            throw KapuaException.internalError("Min value must not be graeter than max value");
-        }
-    }
+    private StorableField storableField;
+    private Object minValue;
+    private Object maxValue;
 
     /**
-     * Default constructor
-     */
-    public RangePredicateImpl() {
-    }
-
-    public <V extends Comparable<V>> RangePredicateImpl(StorableField field, V minValue, V maxValue) {
-        this(field.field(), minValue, maxValue);
-    }
-
-    /**
-     * Construct a range predicate given the field and the values
+     * Constructor.
      *
-     * @param field
-     * @param minValue
-     * @param maxValue
+     * @param field    The {@link StorableField}.
+     * @param minValue The lower bound.
+     * @param maxValue The upper bound.
+     * @param <V>      The {@link Comparable} type.
+     * @since 1.0.0
      */
-    public <V extends Comparable<V>> RangePredicateImpl(String field, V minValue, V maxValue) {
-        this.field = field;
-        this.minValue = minValue;
-        this.maxValue = maxValue;
+    public <V extends Comparable<V>> RangePredicateImpl(StorableField field, V minValue, V maxValue) {
+        setField(field);
+
+        setMinValue(minValue);
+        setMaxValue(maxValue);
     }
 
     @Override
-    public String getField() {
-        return field;
+    public StorableField getField() {
+        return storableField;
     }
 
-    public RangePredicate setField(StorableField field) {
-        return setField(field.field());
-    }
+    @Override
+    public RangePredicate setField(StorableField storableField) {
+        this.storableField = storableField;
 
-    /**
-     * Get the field
-     *
-     * @param field
-     * @return
-     */
-    public RangePredicate setField(String field) {
-        this.field = field;
         return this;
     }
 
@@ -92,17 +64,10 @@ public class RangePredicateImpl extends StorablePredicateImpl implements RangePr
         return clazz.cast(minValue);
     }
 
-    /**
-     * Set the minimum value (typed)
-     *
-     * @param clazz
-     * @param minValue
-     * @return
-     * @throws KapuaException
-     */
-    public <V extends Comparable<V>> RangePredicate setMinValue(Class<V> clazz, V minValue) throws KapuaException {
+    @Override
+    public <V extends Comparable<V>> RangePredicate setMinValue(V minValue) {
         this.minValue = minValue;
-        checkRange(clazz);
+
         return this;
     }
 
@@ -116,17 +81,10 @@ public class RangePredicateImpl extends StorablePredicateImpl implements RangePr
         return clazz.cast(maxValue);
     }
 
-    /**
-     * Set the maximum value (typed)
-     *
-     * @param clazz
-     * @param maxValue
-     * @return
-     * @throws KapuaException
-     */
-    public <V extends Comparable<V>> RangePredicate setMaxValue(Class<V> clazz, V maxValue) throws KapuaException {
+    @Override
+    public <V extends Comparable<V>> RangePredicate setMaxValue(V maxValue) {
         this.maxValue = maxValue;
-        checkRange(clazz);
+
         return this;
     }
 
@@ -143,26 +101,23 @@ public class RangePredicateImpl extends StorablePredicateImpl implements RangePr
      *      }
      *  }
      * </pre>
-     *
-     * @throws KapuaException
      */
     @Override
     public ObjectNode toSerializedMap() throws MappingException {
 
         ObjectNode valuesNode = newObjectNode();
-        if (maxValue != null) {
-            appendField(valuesNode, PredicateConstants.LTE_KEY, maxValue);
+        if (getMaxValue() != null) {
+            appendField(valuesNode, PredicateConstants.LTE_KEY, getMaxValue());
         }
-        if (minValue != null) {
-            appendField(valuesNode, PredicateConstants.GTE_KEY, minValue);
+        if (getMinValue() != null) {
+            appendField(valuesNode, PredicateConstants.GTE_KEY, getMinValue());
         }
 
         ObjectNode termNode = newObjectNode();
-        termNode.set(field, valuesNode);
+        termNode.set(getField().field(), valuesNode);
 
         ObjectNode rootNode = newObjectNode();
         rootNode.set(PredicateConstants.RANGE_KEY, termNode);
         return rootNode;
     }
-
 }

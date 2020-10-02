@@ -13,10 +13,11 @@ package org.eclipse.kapua.service.storable.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.storable.exception.MappingException;
-import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 
 /**
- * {@link StorableQuery} predicate definition.
+ * {@link StorablePredicate} definition.
+ * <p>
+ * Is the base {@code interface} for {@link StorablePredicate}s.
  *
  * @since 1.0.0
  */

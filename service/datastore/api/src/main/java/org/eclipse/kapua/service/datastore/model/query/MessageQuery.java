@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model.query;
 
-import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.xml.DatastoreMessageXmlRegistry;
 import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 
@@ -28,6 +27,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DatastoreMessageXmlRegistry.class, factoryMethod = "newQuery")
-public interface MessageQuery extends StorableQuery<DatastoreMessage> {
+public interface MessageQuery extends StorableQuery {
 
 }

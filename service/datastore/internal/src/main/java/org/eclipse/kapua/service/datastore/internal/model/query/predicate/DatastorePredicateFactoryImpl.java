@@ -9,13 +9,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.service.datastore.internal.model.query.predicate;
 
 import org.eclipse.kapua.locator.KapuaProvider;
-import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
-import org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory;
-import org.eclipse.kapua.service.datastore.model.query.MetricExistsPredicate;
-import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
+import org.eclipse.kapua.service.datastore.model.query.predicate.ChannelMatchPredicate;
+import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
+import org.eclipse.kapua.service.datastore.model.query.predicate.MetricExistsPredicate;
+import org.eclipse.kapua.service.datastore.model.query.predicate.MetricPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactoryImpl;
 
 @KapuaProvider
@@ -27,12 +27,12 @@ public class DatastorePredicateFactoryImpl extends StorablePredicateFactoryImpl 
     }
 
     @Override
-    public <V extends Comparable<V>> MetricPredicate newMetricPredicate(String fieldName, Class<V> type, V minValue, V maxValue) {
-        return new MetricPredicateImpl(fieldName, type, minValue, maxValue);
+    public <V extends Comparable<V>> MetricPredicate newMetricPredicate(String field, Class<V> type, V minValue, V maxValue) {
+        return new MetricPredicateImpl(field, type, minValue, maxValue);
     }
 
     @Override
-    public <V extends Comparable<V>> MetricExistsPredicate newMetricExistsPredicate(String fieldName, Class<V> type) {
-        return new MetricExistsPredicateImpl(fieldName, type);
+    public <V extends Comparable<V>> MetricExistsPredicate newMetricExistsPredicate(String metricName, Class<V> type) {
+        return new MetricExistsPredicateImpl(metricName, type);
     }
 }

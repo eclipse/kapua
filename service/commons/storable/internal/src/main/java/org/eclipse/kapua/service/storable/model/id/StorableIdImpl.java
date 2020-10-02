@@ -14,26 +14,27 @@ package org.eclipse.kapua.service.storable.model.id;
 import java.util.Objects;
 
 /**
- * Storable identifier implementation
+ * {@link StorableId} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class StorableIdImpl implements StorableId {
 
-    private final String sid;
+    private final String id;
 
     /**
-     * Construct a storable id with the provided id
+     * Constructor.
      *
-     * @param id
+     * @param id The {@link StorableId} in {@link String} form.
+     * @since 1.0.0
      */
     public StorableIdImpl(String id) {
-        sid = id;
+        this.id = id;
     }
 
     @Override
     public String toString() {
-        return sid;
+        return id;
     }
 
     @Override
@@ -48,18 +49,15 @@ public class StorableIdImpl implements StorableId {
             return false;
         }
         StorableIdImpl other = (StorableIdImpl) obj;
-        if (sid == null) {
-            if (other.sid != null) {
-                return false;
-            }
-        } else if (!sid.equals(other.sid)) {
-            return false;
+        if (id == null) {
+            return other.id == null;
         }
-        return true;
+
+        return id.equals(other.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sid);
+        return Objects.hash(id);
     }
 }

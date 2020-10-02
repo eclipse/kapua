@@ -14,21 +14,38 @@ package org.eclipse.kapua.service.storable.model.query;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 
 /**
- * Query sort behavior
+ * {@link SortDirection} definition.
+ * <p>
+ * It define which sorting direction to use when processing {@link StorableQuery}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public enum SortDirection {
+
     /**
-     * Ascending
+     * Ascending.
+     *
+     * @since 1.0.0
      */
     ASC,
 
     /**
-     * Descending
+     * Descending.
+     *
+     * @since 1.0.0
      */
     DESC;
 
+    /**
+     * It returns a {@link SortDirection} from the given {@link String}
+     * <p>
+     * It is case insensitive.
+     *
+     * @param value The {@link String} to convert.
+     * @return The converted {@link SortDirection}.
+     * @throws KapuaIllegalArgumentException If given {@link String} cannot be converted.
+     * @since 1.0.0
+     */
     public static SortDirection fromString(String value) throws KapuaIllegalArgumentException {
         String ucValue = value.toUpperCase();
         try {

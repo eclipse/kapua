@@ -9,12 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.service.datastore.internal.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.eclipse.kapua.service.datastore.model.query.MetricPredicate;
-import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
+import org.eclipse.kapua.service.datastore.model.query.predicate.MetricPredicate;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.query.predicate.PredicateConstants;
 import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicateImpl;
@@ -27,12 +27,24 @@ import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
  */
 public class MetricPredicateImpl extends RangePredicateImpl implements MetricPredicate {
 
+    private String name;
     private Class<?> type;
 
-    public <V extends Comparable<V>> MetricPredicateImpl(String fieldName, Class<V> type, V minValue, V maxValue) {
-        super(fieldName, minValue, maxValue);
+    public <V extends Comparable<V>> MetricPredicateImpl(String metricName, Class<V> type, V minValue, V maxValue) {
+        super(MessageField.METRICS, minValue, maxValue);
 
-        this.type = type;
+        setName(metricName);
+        setType(type);
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -58,21 +70,27 @@ public class MetricPredicateImpl extends RangePredicateImpl implements MetricPre
      *      }
      *  }
      * </pre>
-     *
-     * @throws DatamodelMappingException
      */
     @Override
     public ObjectNode toSerializedMap() throws MappingException {
-        ObjectNode rootNode = MappingUtils.newObjectNode();
         ObjectNode valuesNode = MappingUtils.newObjectNode();
-        if (maxValue != null) {
-            MappingUtils.appendField(valuesNode, PredicateConstants.LTE_KEY, maxValue);
+        if (getMaxValue() != null) {
+            MappingUtils.appendField(valuesNode, PredicateConstants.LTE_KEY, getMaxValue());
         }
-        if (minValue != null) {
-            MappingUtils.appendField(valuesNode, PredicateConstants.GTE_KEY, minValue);
+        if (getMinValue() != null) {
+            MappingUtils.appendField(valuesNode, PredicateConstants.GTE_KEY, getMinValue());
         }
+
         ObjectNode termNode = MappingUtils.newObjectNode();
-        termNode.set(String.format("metrics.%s.%s", field, DatastoreUtils.getClientMetricFromAcronym(type.getSimpleName().toLowerCase())), valuesNode);
+        termNode.set(
+                getField().field()
+                        .concat(".")
+                        .concat(getName())
+                        .concat(".")
+                        .concat(DatastoreUtils.getClientMetricFromAcronym(getType().getSimpleName().toLowerCase())),
+                valuesNode);
+
+        ObjectNode rootNode = MappingUtils.newObjectNode();
         rootNode.set(PredicateConstants.RANGE_KEY, termNode);
         return rootNode;
     }

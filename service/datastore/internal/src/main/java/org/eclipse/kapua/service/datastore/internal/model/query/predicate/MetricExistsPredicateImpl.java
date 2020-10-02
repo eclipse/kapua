@@ -9,11 +9,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.service.datastore.internal.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.eclipse.kapua.service.datastore.model.query.MetricExistsPredicate;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
+import org.eclipse.kapua.service.datastore.model.query.predicate.MetricExistsPredicate;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.query.predicate.ExistsPredicateImpl;
 import org.eclipse.kapua.service.storable.model.query.predicate.PredicateConstants;
@@ -32,7 +33,7 @@ public class MetricExistsPredicateImpl extends ExistsPredicateImpl implements Me
     public <V extends Comparable<V>> MetricExistsPredicateImpl(String fieldName, Class<V> type) {
         super(fieldName);
 
-        this.type = type;
+        setType(type);
     }
 
     @Override
@@ -55,15 +56,26 @@ public class MetricExistsPredicateImpl extends ExistsPredicateImpl implements Me
      * <pre>
      *  {
      *      "query": {
-     *          "exists" : { "field" : "metrics.metric.typ" }
+     *          "exists" : { "field" : "metrics.metric.type" }
      *      }
      *   }
      * </pre>
      */
     public ObjectNode toSerializedMap() throws MappingException {
+        StringBuilder fieldNameSb = new StringBuilder();
+
+        fieldNameSb.append(MessageField.METRICS.field())
+                .append(".")
+                .append(getName());
+
+        if (getType() != null) {
+            fieldNameSb.append(".")
+                    .append(DatastoreUtils.getClientMetricFromAcronym(type.getSimpleName().toLowerCase()));
+        }
+
+        ObjectNode termNode = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(PredicateConstants.FIELD_KEY, fieldNameSb.toString())});
+
         ObjectNode rootNode = MappingUtils.newObjectNode();
-        String fieldName = type == null ? String.format("metrics.%s", name) : String.format("metrics.%s.%s", name, DatastoreUtils.getClientMetricFromAcronym(type.getSimpleName().toLowerCase()));
-        ObjectNode termNode = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(PredicateConstants.FIELD_KEY, fieldName)});
         rootNode.set(PredicateConstants.EXISTS_KEY, termNode);
         return rootNode;
     }

@@ -35,6 +35,9 @@ public class ChannelInfoImpl implements ChannelInfo {
     private StorableId lastMessageId;
     private Date lastMessageOn;
 
+    public ChannelInfoImpl() {
+    }
+
     /**
      * Construct a channel information for the given scope
      *
@@ -42,17 +45,6 @@ public class ChannelInfoImpl implements ChannelInfo {
      */
     public ChannelInfoImpl(KapuaId scope) {
         setScopeId(scope);
-    }
-
-    /**
-     * Construct a channel information for the given scope and storable identifier
-     *
-     * @param scopeId
-     * @param id
-     */
-    public ChannelInfoImpl(KapuaId scopeId, StorableId id) {
-        this(scopeId);
-        this.id = id;
     }
 
     @Override
@@ -70,8 +62,9 @@ public class ChannelInfoImpl implements ChannelInfo {
         return scopeId;
     }
 
-    protected void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId != null ? scopeId : null;
+    @Override
+    public void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId;
     }
 
     @Override

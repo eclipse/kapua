@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  */
 @XmlRootElement(name = "metricInfos")
-@XmlType(factoryClass = MetricInfoXmlRegistry.class, factoryMethod = "newMetricInfoListResult")
+@XmlType(factoryClass = MetricInfoXmlRegistry.class, factoryMethod = "newListResult")
 public interface MetricInfoListResult extends StorableListResult<MetricInfo> {
 
 }

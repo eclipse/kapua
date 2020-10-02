@@ -14,18 +14,19 @@ package org.eclipse.kapua.service.storable.model.utils;
 /**
  * Field entry
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class KeyValueEntry {
 
-    private String key;
-    private Object value;
+    private final String key;
+    private final Object value;
 
     /**
      * Construct a key/value entry with the provided key and value
      *
-     * @param key
-     * @param value
+     * @param key   The key of the field.
+     * @param value The value of the field.
+     * @since 1.0.0
      */
     public KeyValueEntry(String key, Object value) {
         this.key = key;
@@ -33,18 +34,20 @@ public class KeyValueEntry {
     }
 
     /**
-     * Get the key
+     * Gets the key of the field.
      *
-     * @return
+     * @return The key of the field.
+     * @since 1.0.0
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * Get the value
+     * Gets the value of the field.
      *
-     * @return
+     * @return The value of the field.
+     * @since 1.0.0
      */
     public Object getValue() {
         return value;

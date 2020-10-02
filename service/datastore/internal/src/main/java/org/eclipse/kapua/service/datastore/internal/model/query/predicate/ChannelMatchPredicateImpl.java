@@ -9,12 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model.query;
+package org.eclipse.kapua.service.datastore.internal.model.query.predicate;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
-import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
+import org.eclipse.kapua.service.datastore.model.query.predicate.ChannelMatchPredicate;
 import org.eclipse.kapua.service.storable.exception.MappingException;
+import org.eclipse.kapua.service.storable.model.query.StorableField;
+import org.eclipse.kapua.service.storable.model.query.predicate.MatchPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.PredicateConstants;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateImpl;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
@@ -26,7 +28,7 @@ import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
  */
 public class ChannelMatchPredicateImpl extends StorablePredicateImpl implements ChannelMatchPredicate {
 
-    private String field;
+    private StorableField field;
     private String expression;
 
     /**
@@ -35,8 +37,7 @@ public class ChannelMatchPredicateImpl extends StorablePredicateImpl implements 
      * @param expression the channel expression (may use wildcard)
      */
     public ChannelMatchPredicateImpl(String expression) {
-        this.field = MessageField.CHANNEL.field();
-        this.expression = expression;
+        this(MessageField.CHANNEL, expression);
     }
 
     /**
@@ -45,9 +46,21 @@ public class ChannelMatchPredicateImpl extends StorablePredicateImpl implements 
      * @param field      the field name
      * @param expression the channel expression (may use wildcard)
      */
-    public ChannelMatchPredicateImpl(String field, String expression) {
+    public ChannelMatchPredicateImpl(StorableField field, String expression) {
+        setField(field);
+        setExpression(expression);
+    }
+
+    @Override
+    public StorableField getField() {
+        return field;
+    }
+
+    @Override
+    public MatchPredicate setField(StorableField field) {
         this.field = field;
-        this.expression = expression;
+
+        return this;
     }
 
     @Override
@@ -56,9 +69,17 @@ public class ChannelMatchPredicateImpl extends StorablePredicateImpl implements 
     }
 
     @Override
+    public MatchPredicate setExpression(String expression) {
+        this.expression = expression;
+
+        return this;
+    }
+
+    @Override
     public ObjectNode toSerializedMap() throws MappingException {
+        ObjectNode expressionNode = newObjectNode(new KeyValueEntry[]{new KeyValueEntry(getField().field(), getExpression())});
+
         ObjectNode rootNode = newObjectNode();
-        ObjectNode expressionNode = getField(new KeyValueEntry[]{new KeyValueEntry(field, expression)});
         rootNode.set(PredicateConstants.PREFIX_KEY, expressionNode);
         return rootNode;
     }

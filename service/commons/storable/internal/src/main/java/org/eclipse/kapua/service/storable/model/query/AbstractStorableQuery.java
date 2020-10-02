@@ -14,19 +14,19 @@ package org.eclipse.kapua.service.storable.model.query;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.storable.model.Storable;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Abstract storable query implementation.
+ * {@link StorableQuery} {@code abstract} implementation.
+ * <p>
+ * Is the base for all {@link StorableQuery} implementations.
  *
- * @param <S> persisted object type (such as messages, channels information...)
  * @since 1.0.0
  */
-public abstract class AbstractStorableQuery<S extends Storable> implements StorableQuery<S> {
+public abstract class AbstractStorableQuery implements StorableQuery {
 
     private StorablePredicate predicate;
 
@@ -39,22 +39,22 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
     private List<String> fetchAttributes;
 
     /**
-     * Default constructor
+     * Constructor.
+     * <p>
+     * Forces the {@link StorableFetchStyle} to {@link StorableFetchStyle#SOURCE_FULL}
      *
      * @since 1.0.0
      */
     public AbstractStorableQuery() {
         super();
 
-        fetchStyle = StorableFetchStyle.SOURCE_FULL;
-        fetchAttributes = new ArrayList<>();
-        askTotalCount = false;
+        setFetchStyle(StorableFetchStyle.SOURCE_FULL);
     }
 
     /**
      * Constructor.
      *
-     * @param scopeId The scopeId of the query
+     * @param scopeId The scope KapuaId.
      * @since 1.0.0
      */
     public AbstractStorableQuery(KapuaId scopeId) {
@@ -64,25 +64,28 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
     }
 
     /**
-     * Get the includes fields by fetchStyle
+     * Gets the included {@link StorableField}s according to the {@link StorableFetchStyle}.
      *
-     * @param fetchStyle
-     * @return
+     * @param fetchStyle The {@link StorableFetchStyle}.
+     * @return The included {@link StorableField}s according to the {@link StorableFetchStyle}.
+     * @since 1.0.0
      */
     public abstract String[] getIncludes(StorableFetchStyle fetchStyle);
 
     /**
-     * Get the excludes fields by fetchStyle
+     * Gets the excluded {@link StorableField}s according to the {@link StorableFetchStyle}.
      *
-     * @param fetchStyle
-     * @return
+     * @param fetchStyle The {@link StorableFetchStyle}.
+     * @return The excluded {@link StorableField}s according to the {@link StorableFetchStyle}.
+     * @since 1.0.0
      */
     public abstract String[] getExcludes(StorableFetchStyle fetchStyle);
 
     /**
-     * Get the fields list
+     * Gets the {@link StorableField}s.
      *
-     * @return
+     * @return The {@link StorableField}s.
+     * @since 1.0.0
      */
     public abstract String[] getFields();
 
@@ -138,6 +141,10 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
     @Override
     public List<SortField> getSortFields() {
+        if (sortFields == null) {
+            sortFields = new ArrayList<>();
+        }
+
         return sortFields;
     }
 
@@ -158,12 +165,16 @@ public abstract class AbstractStorableQuery<S extends Storable> implements Stora
 
     @Override
     public List<String> getFetchAttributes() {
+        if (fetchAttributes == null) {
+            fetchAttributes = new ArrayList<>();
+        }
+
         return fetchAttributes;
     }
 
     @Override
     public void addFetchAttributes(String fetchAttribute) {
-        fetchAttributes.add(fetchAttribute);
+        getFetchAttributes().add(fetchAttribute);
     }
 
     @Override

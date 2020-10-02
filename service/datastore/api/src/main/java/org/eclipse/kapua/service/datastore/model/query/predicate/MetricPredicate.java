@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model.query;
+package org.eclipse.kapua.service.datastore.model.query.predicate;
 
 import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
 
@@ -19,6 +19,22 @@ import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
  * @since 1.0.0
  */
 public interface MetricPredicate extends RangePredicate {
+
+    /**
+     * The metric name.
+     *
+     * @return The metric name
+     * @since 1.3.0
+     */
+    String getName();
+
+    /**
+     * Sets the metric name
+     *
+     * @param name The metric name
+     * @since 1.3.0
+     */
+    void setName(String name);
 
     /**
      * Gets the metric type to search.

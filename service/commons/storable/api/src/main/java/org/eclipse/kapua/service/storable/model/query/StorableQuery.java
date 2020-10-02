@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.storable.model.query;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.storable.model.StorableListResult;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -23,13 +24,12 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
 
 /**
- * Storable query definition.<br>
- * It defines the queries applicable to the persisted objects (such as messages, channeles information...)
+ * {@link StorableQuery} definition.
+ * <p>
  *
- * @param <S> persisted object type (such as messages, channeles information...)
  * @since 1.0.0
  */
-public interface StorableQuery<S extends Object> {
+public interface StorableQuery {
 
     /**
      * Gets the fetch attribute names list.
@@ -58,9 +58,9 @@ public interface StorableQuery<S extends Object> {
     public void setFetchAttributes(List<String> fetchAttributeNames);
 
     /**
-     * Gets the scope id
+     * Gets the scope {@link KapuaId}.
      *
-     * @return
+     * @return The scope {@link KapuaId}.
      * @since 1.0.0
      */
     @XmlElement(name = "scopeId")
@@ -70,109 +70,119 @@ public interface StorableQuery<S extends Object> {
     /**
      * Sets the scope id
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}.
      * @since 1.0.0
      */
     void setScopeId(KapuaId scopeId);
 
     /**
-     * Get the predicate
+     * Gets the {@link StorablePredicate}s
      *
-     * @return
+     * @return The {@link StorablePredicate}s
      * @since 1.0.0
      */
     @XmlTransient
     StorablePredicate getPredicate();
 
     /**
-     * Set the predicate
+     * Sets the {@link StorablePredicate}s
      *
-     * @param predicate
+     * @param predicate The {@link StorablePredicate}s
      * @since 1.0.0
      */
     void setPredicate(StorablePredicate predicate);
 
     /**
-     * Get the query result list offset
+     * Gets the {@link StorableQuery} offset.
      *
-     * @return
+     * @return The {@link StorableQuery} offset.
      * @since 1.0.0
      */
     @XmlElement(name = "offset")
     Integer getOffset();
 
     /**
-     * Set the query result list offset
+     * Set the {@link StorableQuery} offset in the result set from which start query.
+     * <p>
+     * If set to {@code null} the {@link StorableQuery} will start from the first result found.
+     * This also mean that {@link #setOffset(Integer)} with {@code 0} or {@code null} will produce the same result.
+     * <p>
+     * This method and {@link #setLimit(Integer)} are meant to be used to paginate through the result set.
      *
-     * @param offset
+     * @param offset The {@link StorableQuery} offset.
      * @since 1.0.0
      */
     void setOffset(Integer offset);
 
+
     /**
-     * Get the result list limit count
+     * Gets the {@link StorableQuery} limit.
      *
-     * @return
+     * @return The {@link StorableQuery} limit.
      * @since 1.0.0
      */
     @XmlElement(name = "limit")
     Integer getLimit();
 
     /**
-     * Set the result list limit count
+     * Sets max number of result that will be fetched by this {@link KapuaEntity}.
+     * <p>
+     * If set to {@code null} the {@link StorableQuery} will be unlimited.
+     * <p>
+     * This method and {@link #setOffset(Integer)} are meant to be used to paginate through the result set.
      *
-     * @param limit
+     * @param limit The max number of result that will be fetched by this {@link KapuaEntity}.
      * @since 1.0.0
      */
     void setLimit(Integer limit);
 
     /**
-     * Get the ask for the total count matching query objects
+     * Whether or not add the {@link StorableListResult#getTotalCount()} when processing the {@link StorableQuery}.
      *
-     * @return
+     * @return {@code true} to include the StorableListResult#getTotalCount(), {@code false} otherwise.
      * @since 1.0.0
      */
     @XmlElement(name = "askTotalCount")
     boolean isAskTotalCount();
 
     /**
-     * Set the ask for the total count matching query objects
+     * Sets whether or not add the {@link StorableListResult#getTotalCount()} when processing the {@link StorableQuery}.
      *
-     * @param askTotalCount
+     * @param askTotalCount {@code true} to include the StorableListResult#getTotalCount(), {@code false} otherwise.
      * @since 1.0.0
      */
     void setAskTotalCount(boolean askTotalCount);
 
     /**
-     * Get the fetch style
+     * Gets the {@link StorableFetchStyle}.
      *
-     * @return
+     * @return The {@link StorableFetchStyle}.
      * @since 1.0.0
      */
     @XmlTransient
     StorableFetchStyle getFetchStyle();
 
     /**
-     * Set the fetch style
+     * Sets the {@link StorableFetchStyle}.
      *
-     * @param fetchStyle
+     * @param fetchStyle The {@link StorableFetchStyle}.
      * @since 1.0.0
      */
     void setFetchStyle(StorableFetchStyle fetchStyle);
 
     /**
-     * Get the sort fields list
+     * Gets the {@link List} of {@link SortField}s
      *
-     * @return
+     * @return The {@link List} of {@link SortField}s
      * @since 1.0.0
      */
     @XmlJavaTypeAdapter(SortFieldXmlAdapter.class)
     List<SortField> getSortFields();
 
     /**
-     * Set the sort fields list
+     * Sets the {@link List} of {@link SortField}s
      *
-     * @param sortFields
+     * @param sortFields The {@link List} of {@link SortField}s
      * @since 1.0.0
      */
     void setSortFields(List<SortField> sortFields);

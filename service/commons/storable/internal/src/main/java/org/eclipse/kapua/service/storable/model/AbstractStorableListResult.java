@@ -13,13 +13,14 @@ package org.eclipse.kapua.service.storable.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
- * Storable object list implementation
+ * {@link StorableListResult} {@code abstract} implementation.
+ * <p>
+ * This is the base for all {@link StorableListResult}'s implementations.
  *
- * @param <E> storable list result type
+ * @param <E> The {@link Storable} for which this is a {@link StorableListResult} for.
  * @since 1.0.0
  */
 public class AbstractStorableListResult<E extends Storable> implements StorableListResult<E> {
@@ -32,34 +33,49 @@ public class AbstractStorableListResult<E extends Storable> implements StorableL
     private Long totalCount;
 
     /**
-     * Default constructor.
+     * Constructor.
      *
      * @since 1.0.0
      */
     public AbstractStorableListResult() {
-        items = new ArrayList<>();
-        nextKey = null;
-        totalCount = null;
     }
 
     /**
-     * Construct a result list linking the next result list
+     * Constructor.
      *
-     * @param nextKey
-     * @since 1.0.0
+     * @param storables  The {@link Storable}s to add to the {@link StorableListResult}.
+     * @param totalCount The total count of the {@link Storable}s matched.
+     * @since 1.3.0
      */
+    public AbstractStorableListResult(List<E> storables, Long totalCount) {
+        this();
+
+        addItems(storables);
+        setTotalCount(totalCount);
+    }
+
+    /**
+     * Constructors.
+     *
+     * @param nextKey The {@link StorableListResult#getNextKey()}.
+     * @since 1.0.0
+     * @deprecated Since 1.3.0, this is not used!
+     */
+    @Deprecated
     public AbstractStorableListResult(Object nextKey) {
         this();
         this.nextKey = nextKey;
     }
 
     /**
-     * Construct a result list linking the next result list and setting the total count
+     * Constructor.
      *
-     * @param nextKeyOffset
-     * @param totalCount
+     * @param nextKeyOffset The {@link StorableListResult#getNextKey()}.
+     * @param totalCount    The {@link StorableListResult#getTotalCount()}.
      * @since 1.0.0
+     * @deprecated Since 1.3.0, this is not used!
      */
+    @Deprecated
     public AbstractStorableListResult(Object nextKeyOffset, Long totalCount) {
         this(nextKeyOffset);
         this.totalCount = totalCount;
@@ -77,7 +93,7 @@ public class AbstractStorableListResult<E extends Storable> implements StorableL
 
     @Override
     public E getItem(int index) {
-        return this.items.get(index);
+        return getItems().get(index);
     }
 
     @Override
@@ -87,27 +103,36 @@ public class AbstractStorableListResult<E extends Storable> implements StorableL
 
     @Override
     public int getSize() {
-        return this.items.size();
+        return getItems().size();
     }
 
     @Override
     public boolean isEmpty() {
-        return this.items.isEmpty();
+        return getItems().isEmpty();
     }
 
     @Override
     public List<E> getItems() {
-        return Collections.unmodifiableList(items);
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+
+        return items;
     }
 
     @Override
     public void addItems(Collection<? extends E> items) {
-        this.items.addAll(items);
+        getItems().addAll(items);
+    }
+
+    @Override
+    public void addItem(E item) {
+        getItems().add(item);
     }
 
     @Override
     public void clearItems() {
-        this.items.clear();
+        getItems().clear();
     }
 
     @Override
@@ -120,11 +145,6 @@ public class AbstractStorableListResult<E extends Storable> implements StorableL
         return totalCount;
     }
 
-    /**
-     * Set the total count
-     *
-     * @param totalCount
-     */
     @Override
     public void setTotalCount(Long totalCount) {
         this.totalCount = totalCount;

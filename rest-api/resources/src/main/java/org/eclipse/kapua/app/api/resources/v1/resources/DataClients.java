@@ -18,13 +18,13 @@ import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.datastore.ClientInfoFactory;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory;
+import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
 import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 
@@ -43,7 +43,7 @@ public class DataClients extends AbstractKapuaResource {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final ClientInfoRegistryService CLIENT_INFO_REGISTRY_SERVICE = LOCATOR.getService(ClientInfoRegistryService.class);
-    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
+    private static final ClientInfoFactory CLIENT_INFO_FACTORY = LOCATOR.getFactory(ClientInfoFactory.class);
     private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
 
     /**
@@ -57,21 +57,20 @@ public class DataClients extends AbstractKapuaResource {
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public ClientInfoListResult simpleQuery( //
-                                             @PathParam("scopeId") ScopeId scopeId,//
-                                             @QueryParam("clientId") String clientId, //
-                                             @QueryParam("offset") @DefaultValue("0") int offset,//
-                                             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
+    public ClientInfoListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId,
+                                            @QueryParam("clientId") String clientId,
+                                            @QueryParam("offset") @DefaultValue("0") int offset,
+                                            @QueryParam("limit") @DefaultValue("50") int limit)
+            throws KapuaException {
         AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
         if (!Strings.isNullOrEmpty(clientId)) {
             TermPredicate clientIdPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(ClientInfoField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientIdPredicate);
         }
 
-        ClientInfoQuery query = DATASTORE_OBJECT_FACTORY.newClientInfoQuery(scopeId);
+        ClientInfoQuery query = CLIENT_INFO_FACTORY.newQuery(scopeId);
 
         query.setPredicate(andPredicate);
 
@@ -94,9 +93,9 @@ public class DataClients extends AbstractKapuaResource {
     @Path("_query")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public ClientInfoListResult query(
-            @PathParam("scopeId") ScopeId scopeId, //
-            ClientInfoQuery query) throws KapuaException {
+    public ClientInfoListResult query(@PathParam("scopeId") ScopeId scopeId,
+                                      ClientInfoQuery query)
+            throws KapuaException {
         query.setScopeId(scopeId);
         query.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
         return CLIENT_INFO_REGISTRY_SERVICE.query(query);
@@ -115,10 +114,9 @@ public class DataClients extends AbstractKapuaResource {
     @Path("_count")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-
-    public CountResult count( //
-                              @PathParam("scopeId") ScopeId scopeId, //
-                              ClientInfoQuery query) throws KapuaException {
+    public CountResult count(@PathParam("scopeId") ScopeId scopeId,
+                             ClientInfoQuery query)
+            throws KapuaException {
         query.setScopeId(scopeId);
 
         return new CountResult(CLIENT_INFO_REGISTRY_SERVICE.count(query));
@@ -135,10 +133,9 @@ public class DataClients extends AbstractKapuaResource {
     @GET
     @Path("{clientInfoId}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-
-    public ClientInfo find( //
-                            @PathParam("scopeId") ScopeId scopeId, //
-                            @PathParam("clientInfoId") StorableEntityId clientInfoId) throws KapuaException {
+    public ClientInfo find(@PathParam("scopeId") ScopeId scopeId,
+                           @PathParam("clientInfoId") StorableEntityId clientInfoId)
+            throws KapuaException {
         ClientInfo clientInfo = CLIENT_INFO_REGISTRY_SERVICE.find(scopeId, clientInfoId);
 
         return returnNotNullEntity(clientInfo);

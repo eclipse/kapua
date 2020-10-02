@@ -34,24 +34,18 @@ public class ClientInfoImpl implements ClientInfo {
     private StorableId lastMessageId;
     private Date lastMessageOn;
 
+    public ClientInfoImpl() {
+    }
+
     /**
      * Construct a client information for the given account
      *
      * @param scopeId
      */
     public ClientInfoImpl(KapuaId scopeId) {
-        setScopeId(scopeId);
-    }
+        this();
 
-    /**
-     * Construct a client information for the given account and storable identifier
-     *
-     * @param scopeId
-     * @param id
-     */
-    public ClientInfoImpl(KapuaId scopeId, StorableId id) {
-        this(scopeId);
-        this.id = id;
+        setScopeId(scopeId);
     }
 
     @Override
@@ -59,8 +53,9 @@ public class ClientInfoImpl implements ClientInfo {
         return scopeId;
     }
 
-    protected void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId != null ? scopeId : null;
+    @Override
+    public void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId;
     }
 
     @Override

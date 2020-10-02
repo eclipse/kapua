@@ -23,7 +23,7 @@ import org.eclipse.kapua.service.storable.model.query.StorableQuery;
  * @param <Q> query object
  * @since 1.0
  */
-public abstract class AbstractStorableQueryConverter<S extends Storable, Q extends StorableQuery<S>> {
+public abstract class AbstractStorableQueryConverter<S extends Storable, Q extends StorableQuery> {
 
     /**
      * Query included fields list.<br>

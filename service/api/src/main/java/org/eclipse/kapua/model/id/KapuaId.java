@@ -11,14 +11,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.id;
 
+import org.eclipse.kapua.model.KapuaEntity;
+
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Base64;
 
 /**
- * Kapua identifier object.<br>
- * This object it's used to identify each entity.<br>
+ * {@link KapuaEntity} identifier definition.
+ * <p>
+ * This object it's used to identify each entity.
  * <b>It should be unique within the same entity.</b>
  *
  * @since 1.0.0

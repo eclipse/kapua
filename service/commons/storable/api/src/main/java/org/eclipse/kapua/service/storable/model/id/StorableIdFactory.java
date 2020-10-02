@@ -14,7 +14,9 @@ package org.eclipse.kapua.service.storable.model.id;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
 /**
- * {@link StorableId} factory definition.
+ * {@link StorableIdFactory} definition.
+ * <p>
+ * It is the {@link KapuaObjectFactory} for {@link StorableId}s.
  *
  * @since 1.0.0
  */

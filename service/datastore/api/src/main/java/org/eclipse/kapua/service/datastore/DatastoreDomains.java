@@ -11,9 +11,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore;
 
+/**
+ * All {@link org.eclipse.kapua.model.domain.Domain}s available for this module
+ *
+ * @since 1.0.0
+ */
 public class DatastoreDomains {
 
-    private DatastoreDomains() { }
+    private DatastoreDomains() {
+    }
 
+    /**
+     * The {@link DatastoreDomain}
+     *
+     * @since 1.0.0
+     */
     public static final DatastoreDomain DATASTORE_DOMAIN = new DatastoreDomain();
 }

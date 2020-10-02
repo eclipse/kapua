@@ -12,74 +12,100 @@
 package org.eclipse.kapua.service.storable.model.query.predicate;
 
 /**
- * Predicates constants (keys and fields names)
+ * {@link StorablePredicate}s constants.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface PredicateConstants {
 
     /**
-     * Boolean term
+     * Boolean term.
+     *
+     * @since 1.0.0
      */
     String BOOL_KEY = "bool";
 
     /**
-     * Exists term
+     * Exists term.
+     *
+     * @since 1.0.0
      */
     String EXISTS_KEY = "exists";
 
     /**
-     * Field
+     * Field.
+     *
+     * @since 1.0.0
      */
     String FIELD_KEY = "field";
 
     /**
-     * Ids term
+     * Ids term.
+     *
+     * @since 1.0.0
      */
     String IDS_KEY = "ids";
 
     /**
-     * Must term
+     * Must term.
+     *
+     * @since 1.0.0
      */
     String MUST_KEY = "must";
 
     /**
-     * Must term
+     * Must term.
+     *
+     * @since 1.0.0
      */
     String SHOULD_KEY = "should";
 
     /**
-     * Prefix term
+     * Prefix term.
+     *
+     * @since 1.0.0
      */
     String PREFIX_KEY = "prefix";
 
     /**
-     * Range term
+     * Range term.
+     *
+     * @since 1.0.0
      */
     String RANGE_KEY = "range";
 
     /**
-     * Term
+     * Term.
+     *
+     * @since 1.0.0
      */
     String TERM_KEY = "term";
 
     /**
-     * Type term
+     * Type term.
+     *
+     * @since 1.0.0
      */
     String TYPE_KEY = "type";
 
     /**
-     * Values term
+     * Values term.
+     *
+     * @since 1.0.0
      */
     String VALUES_KEY = "values";
 
     /**
-     * Greater than comparator term
+     * Greater than comparator term.
+     *
+     * @since 1.0.0
      */
     String GTE_KEY = "gte";
 
     /**
-     * Less than comparator term
+     * Less than comparator term.
+     *
+     * @since 1.0.0
      */
     String LTE_KEY = "lte";
 }

@@ -15,22 +15,28 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * {@link SortField}s {@link XmlAdapter}.
+ *
+ * @since 1.0.0
+ */
 public class SortFieldXmlAdapter extends XmlAdapter<XmlAdaptedSortFields, List<SortField>> {
-    @Override
-    public List<SortField> unmarshal(XmlAdaptedSortFields v) throws Exception {
-        List<SortField> sortFields = new ArrayList<>();
-        for (XmlAdaptedSortField xmlAdaptedSortField : v.getAdaptedSortFields()) {
-            sortFields.add(SortField.of(xmlAdaptedSortField.getDirection(), xmlAdaptedSortField.getField()));
-        }
-        return sortFields;
-    }
 
     @Override
-    public XmlAdaptedSortFields marshal(List<SortField> v) throws Exception {
+    public XmlAdaptedSortFields marshal(List<SortField> sortFields) {
         XmlAdaptedSortFields xmlAdaptedSortFields = new XmlAdaptedSortFields();
-        for (SortField sortField : v) {
+        for (SortField sortField : sortFields) {
             xmlAdaptedSortFields.getAdaptedSortFields().add(new XmlAdaptedSortField(sortField.getSortDirection(), sortField.getField()));
         }
         return xmlAdaptedSortFields;
+    }
+
+    @Override
+    public List<SortField> unmarshal(XmlAdaptedSortFields xmlAdaptedSortFields) throws Exception {
+        List<SortField> sortFields = new ArrayList<>();
+        for (XmlAdaptedSortField xmlAdaptedSortField : xmlAdaptedSortFields.getAdaptedSortFields()) {
+            sortFields.add(SortField.of(xmlAdaptedSortField.getField(), xmlAdaptedSortField.getDirection()));
+        }
+        return sortFields;
     }
 }

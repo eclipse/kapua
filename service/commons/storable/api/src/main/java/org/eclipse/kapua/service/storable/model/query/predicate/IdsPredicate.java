@@ -14,42 +14,64 @@ package org.eclipse.kapua.service.storable.model.query.predicate;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 /**
- * Query predicate definition for matching identifier values fields
+ * {@link StorableId} {@link StorablePredicate}.
+ * <p>
+ * It matches that {@link StorableId}s are matched.
  *
  * @since 1.0.0
  */
 public interface IdsPredicate extends StorablePredicate {
 
     /**
-     * Get the identifier type
+     * Gets the identifier type
      *
-     * @return
+     * @return The identifier type
      * @since 1.0.0
      */
     String getType();
 
     /**
-     * @param storableId
+     * Sets the identifier type
+     *
+     * @param type The identifier type
+     * @return Itself, to chain method invocations.
+     * @since 1.3.0
+     */
+    IdsPredicate setType(String type);
+
+    /**
+     * Gets the {@link StorableId}s {@link List}.
+     *
+     * @return The {@link StorableId}s {@link List}.
+     * @since 1.0.0
+     */
+    List<StorableId> getIds();
+
+    /**
+     * Adds a {@link StorableId} to the {@link List}.
+     *
+     * @param storableId The {@link StorableId} to add.
      * @since 1.3.0
      */
     IdsPredicate addId(StorableId storableId);
 
-
     /**
-     * @param storableId
+     * Adds a {@link Collection} of {@link StorableId}s to the {@link List}.
+     *
+     * @param storableIds The {@link Collection} of {@link StorableId} to add.
      * @since 1.3.0
      */
-    IdsPredicate addIds(Collection<StorableId> storableId);
+    IdsPredicate addIds(List<StorableId> storableIds);
 
     /**
-     * Get the identifier set.<br>
-     * This set is used a comparison term by the query predicate.
+     * Sets the {@link StorableId}s
      *
-     * @return
-     * @since 1.0.0
+     * @param storableIds The {@link StorableId}s
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
      */
-    Set<StorableId> getIdSet();
+    IdsPredicate setIds(List<StorableId> storableIds);
 }

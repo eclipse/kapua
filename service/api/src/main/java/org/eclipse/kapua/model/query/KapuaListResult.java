@@ -82,7 +82,8 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
     E getItem(int i);
 
     /**
-     * Gets the first {@link KapuaEntity} in the {@link KapuaListResult}.<br>
+     * Gets the first {@link KapuaEntity} in the {@link KapuaListResult}.
+     * <p>
      * It returns {@code null} if {@link KapuaListResult#isEmpty()}.
      *
      * @return The first element in the {@link KapuaListResult} or {@code null} if not present.
@@ -91,7 +92,7 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
     E getFirstItem();
 
     /**
-     * Gets the result {@link List} size
+     * Gets the result {@link KapuaListResult} size
      *
      * @return The result list size
      * @see List#size()
@@ -101,7 +102,7 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
     int getSize();
 
     /**
-     * Checks if the result {@link List} is empty
+     * Checks if the result {@link KapuaListResult} is empty
      *
      * @return {@code true} if the result list is empty, {@code false} otherwise
      * @see List#isEmpty()
@@ -110,7 +111,7 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
     boolean isEmpty();
 
     /**
-     * Adds {@link KapuaEntity}s to the result {@link List}
+     * Adds {@link KapuaEntity}s to the result {@link KapuaListResult}
      *
      * @param items The {@link KapuaEntity}s to add.
      * @see List#addAll(Collection)
@@ -119,14 +120,14 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
     void addItems(@NotNull Collection<? extends E> items);
 
     /**
-     * Add the item to the result list
+     * Adds a {@link KapuaEntity} to the {@link KapuaListResult}.
      *
-     * @param item The item to add.
+     * @param item The {@link KapuaEntity} to add.
      */
     void addItem(@NotNull E item);
 
     /**
-     * Clears {@link KapuaEntity} result {@link List}
+     * Clears {@link KapuaEntity} result {@link KapuaListResult}
      *
      * @see List#clear()
      * @since 1.0.0
@@ -144,15 +145,15 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
     void sort(@NotNull Comparator<E> comparator);
 
     /**
-     * Gets the total count of entries that match the predicate regardless of {@code limit} and {@code offset}
+     * Gets the total count of entries that match the {@link KapuaQuery#getPredicate()}s regardless of {@link KapuaQuery#getLimit()} and {@link KapuaQuery#getOffset()}
      *
-     * @since 1.2.0
      * @return The total count
+     * @since 1.2.0
      */
     Long getTotalCount();
 
     /**
-     * Sets the total count of entries that match the predicate regardless of {@code limit} and {@code offset}
+     * Sets the total count of entries that match the {@link KapuaQuery#getPredicate()}s regardless of {@link KapuaQuery#getLimit()} and {@link KapuaQuery#getOffset()}.
      *
      * @since 1.2.0
      */

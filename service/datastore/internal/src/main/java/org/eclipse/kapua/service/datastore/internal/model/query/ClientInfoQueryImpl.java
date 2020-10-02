@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.datastore.internal.model.query;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.ClientInfoField;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
-import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.storable.model.query.AbstractStorableQuery;
 import org.eclipse.kapua.service.storable.model.query.SortField;
@@ -27,7 +26,7 @@ import java.util.Collections;
  *
  * @since 1.0.0
  */
-public class ClientInfoQueryImpl extends AbstractStorableQuery<ClientInfo> implements ClientInfoQuery {
+public class ClientInfoQueryImpl extends AbstractStorableQuery implements ClientInfoQuery {
 
     /**
      * Constructor
@@ -37,6 +36,7 @@ public class ClientInfoQueryImpl extends AbstractStorableQuery<ClientInfo> imple
      */
     public ClientInfoQueryImpl(KapuaId scopeId) {
         super(scopeId);
+
         setSortFields(Collections.singletonList(SortField.ascending(ClientInfoSchema.CLIENT_ID)));
     }
 

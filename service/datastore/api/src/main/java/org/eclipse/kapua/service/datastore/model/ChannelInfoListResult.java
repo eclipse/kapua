@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  */
 @XmlRootElement(name = "channelInfos")
-@XmlType(factoryClass = ChannelInfoXmlRegistry.class, factoryMethod = "newChannelInfoListResult")
+@XmlType(factoryClass = ChannelInfoXmlRegistry.class, factoryMethod = "newListResult")
 public interface ChannelInfoListResult extends StorableListResult<ChannelInfo> {
 
 }

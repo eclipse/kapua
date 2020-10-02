@@ -37,11 +37,10 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
-import org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
+import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
@@ -84,7 +83,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     /**
      * Default constructor
      *
-     * @throws ClientUnavailableException
+     * @throws ClientInitializationException
      */
     public MetricInfoRegistryServiceImpl() throws ClientInitializationException {
         super(DatastoreEntityManagerFactory.getInstance());
@@ -103,8 +102,12 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     }
 
     @Override
-    public MetricInfo find(KapuaId scopeId, StorableId id)
-            throws KapuaException {
+    public MetricInfo find(KapuaId scopeId, StorableId id) throws KapuaException {
+        return find(scopeId, id, StorableFetchStyle.SOURCE_FULL);
+    }
+
+    @Override
+    public MetricInfo find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle) throws KapuaException {
         if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
@@ -226,7 +229,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
         messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
 
-        RangePredicate messageIdPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MetricInfoField.TIMESTAMP.field(), metricInfo.getFirstMessageOn(), null);
+        RangePredicate messageIdPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MetricInfoField.TIMESTAMP, metricInfo.getFirstMessageOn(), null);
         TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, metricInfo.getClientId());
         ExistsPredicate metricPredicate = STORABLE_PREDICATE_FACTORY.newExistsPredicate(MessageField.METRICS.field(), metricInfo.getName());
 

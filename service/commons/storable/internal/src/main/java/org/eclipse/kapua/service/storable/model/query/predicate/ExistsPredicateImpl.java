@@ -16,31 +16,35 @@ import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 
 /**
- * Implementation of query predicate for checking if a field exists
+ * {@link ExistsPredicate} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ExistsPredicateImpl extends StorablePredicateImpl implements ExistsPredicate {
 
     protected String name;
 
     /**
-     * Creates an exists predicate for the given field name
+     * Constructor.
      *
-     * @param name
+     * @param name The field name to check existence.
+     * @since 1.0.0
      */
     public ExistsPredicateImpl(String name) {
         this.name = name;
     }
 
     /**
+     * Constructor.
+     * <p>
      * Creates an exists predicate concatenating the given fields name with a dot (useful for composite fileds)
      *
-     * @param paths
+     * @param names The field names to check existence.
+     * @since 1.0.0
      */
-    public ExistsPredicateImpl(String... paths) {
+    public ExistsPredicateImpl(String... names) {
         StringBuilder builder = new StringBuilder();
-        for (String str : paths) {
+        for (String str : names) {
             builder.append(str);
             builder.append('.');
         }
@@ -50,6 +54,13 @@ public class ExistsPredicateImpl extends StorablePredicateImpl implements Exists
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public ExistsPredicate setName(String name) {
+        this.name = name;
+
+        return this;
     }
 
     @Override
@@ -63,7 +74,7 @@ public class ExistsPredicateImpl extends StorablePredicateImpl implements Exists
      * </pre>
      */
     public ObjectNode toSerializedMap() throws MappingException {
-        ObjectNode termNode = getField(new KeyValueEntry[]{new KeyValueEntry(PredicateConstants.FIELD_KEY, name)});
+        ObjectNode termNode = newObjectNode(new KeyValueEntry[]{new KeyValueEntry(PredicateConstants.FIELD_KEY, name)});
 
         ObjectNode rootNode = newObjectNode();
         rootNode.set(PredicateConstants.EXISTS_KEY, termNode);

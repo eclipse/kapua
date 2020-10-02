@@ -37,21 +37,35 @@ import java.util.UUID;
  */
 @XmlRootElement(name = "message")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "id", //
-        "datastoreId", //
-        "timestamp", //
-        "scopeId", //
-        "deviceId", //
-        "clientId", //
-        "receivedOn", //
-        "sentOn", //
-        "capturedOn", //
-        "position", //
-        "channel", //
-        "payload", //
-}) //
+@XmlType(propOrder = {
+        "id",
+        "datastoreId",
+        "timestamp",
+        "deviceId",
+        "clientId",
+        "receivedOn",
+        "sentOn",
+        "capturedOn",
+        "position",
+        "channel",
+        "payload",
+})
 public interface DatastoreMessage extends Storable {
+
+    /**
+     * Get the message identifier
+     *
+     * @return
+     */
+    @XmlElement(name = "id")
+    UUID getId();
+
+    /**
+     * Set the message identifier
+     *
+     * @param id
+     */
+    void setId(UUID id);
 
     /**
      * Stored message identifier
@@ -78,37 +92,6 @@ public interface DatastoreMessage extends Storable {
      * Stored message timestamp
      */
     void setTimestamp(Date timestamp);
-
-    /**
-     * Get the message identifier
-     *
-     * @return
-     */
-    @XmlElement(name = "id")
-    UUID getId();
-
-    /**
-     * Set the message identifier
-     *
-     * @param id
-     */
-    void setId(UUID id);
-
-    /**
-     * Get scope identifier
-     *
-     * @return
-     */
-    @XmlElement(name = "scopeId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    KapuaId getScopeId();
-
-    /**
-     * Set scope identifier
-     *
-     * @param scopeId
-     */
-    void setScopeId(KapuaId scopeId);
 
     /**
      * Get client identifier

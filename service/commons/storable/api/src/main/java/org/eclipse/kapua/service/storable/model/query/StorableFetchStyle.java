@@ -11,24 +11,34 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.storable.model.query;
 
+import org.eclipse.kapua.service.storable.model.Storable;
+
 /**
- * Fetch style behavior
+ * {@link StorableFetchStyle} definition.
+ * <p>
+ * According to the value it fetches less or more {@link Storable} fields
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public enum StorableFetchStyle {
     /**
-     * Only indexed fields
+     * Only indexed fields.
+     *
+     * @since 1.0.0
      */
     FIELDS,
 
     /**
-     * Full document (except the message body)
+     * Full document (except the {@link Storable} body).
+     *
+     * @since 1.0.0
      */
     SOURCE_SELECT,
 
     /**
-     * Full document
+     * Full document.
+     *
+     * @since 1.0.0
      */
     SOURCE_FULL
 }

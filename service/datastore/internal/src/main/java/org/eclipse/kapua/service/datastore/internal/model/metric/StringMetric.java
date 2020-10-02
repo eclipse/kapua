@@ -9,33 +9,31 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.internal.model;
+package org.eclipse.kapua.service.datastore.internal.model.metric;
 
-import java.util.Date;
-
-import org.eclipse.kapua.service.datastore.model.Metric;
+import org.eclipse.kapua.service.datastore.model.metric.Metric;
 
 /**
- * Date metric implementation
- * 
+ * String metric implementation
+ *
  * @since 1.0
  */
-public class DateMetric extends MetricImpl<Date> implements Metric<Date> {
+public class StringMetric extends MetricImpl<String> implements Metric<String> {
 
     /**
-     * Construct a date metric with the provided name and value
-     * 
+     * Construct an integer metric with the provided name and value
+     *
      * @param name
      * @param value
      */
-    public DateMetric(String name, Object value) {
+    public StringMetric(String name, Object value) {
         setName(name);
-        setType(Date.class);
-        setValue((Date) value);
+        setType(String.class);
+        setValue(String.valueOf(value));
     }
 
     @Override
-    public int compareTo(Date o) {
+    public int compareTo(String o) {
         return getValue().compareTo(o);
     }
 }

@@ -37,7 +37,7 @@ public class ChannelInfoCreatorImpl implements ChannelInfoCreator {
      * @since 1.0.0
      */
     public ChannelInfoCreatorImpl(KapuaId scopeId) {
-        this.scopeId = scopeId;
+        setScopeId(scopeId);
     }
 
     @Override
@@ -45,8 +45,9 @@ public class ChannelInfoCreatorImpl implements ChannelInfoCreator {
         return scopeId;
     }
 
-    protected void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId != null ? scopeId : null;
+    @Override
+    public void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId;
     }
 
     @Override
@@ -54,11 +55,7 @@ public class ChannelInfoCreatorImpl implements ChannelInfoCreator {
         return this.clientId;
     }
 
-    /**
-     * Set the client identifier
-     *
-     * @param clientId
-     */
+    @Override
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }

@@ -107,7 +107,7 @@ public enum MessageField implements StorableField {
 
     private String field;
 
-    private MessageField(String name) {
+    MessageField(String name) {
         this.field = name;
     }
 

@@ -37,10 +37,10 @@ import org.eclipse.kapua.service.datastore.internal.model.DataIndexBy;
 import org.eclipse.kapua.service.datastore.internal.model.DatastoreMessageImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MessageListResultImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ChannelInfoQueryImpl;
-import org.eclipse.kapua.service.datastore.internal.model.query.ChannelMatchPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.ClientInfoQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.model.query.MetricInfoQueryImpl;
+import org.eclipse.kapua.service.datastore.internal.model.query.predicate.ChannelMatchPredicateImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
@@ -54,7 +54,6 @@ import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.InsertResponse;
@@ -80,7 +79,7 @@ import java.util.Map;
  */
 public final class MessageStoreFacade extends AbstractRegistryFacade {
 
-    private static final Logger logger = LoggerFactory.getLogger(MessageStoreFacade.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MessageStoreFacade.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final StorableIdFactory STORABLE_ID_FACTORY = LOCATOR.getFactory(StorableIdFactory.class);
@@ -99,7 +98,6 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
      *
      * @param confProvider
      * @param mediator
-     * @throws ClientUnavailableException
      * @since 1.0.0
      */
     public MessageStoreFacade(ConfigurationProvider confProvider, MessageStoreMediator mediator) {
@@ -145,7 +143,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
             if (capturedOn != null) {
                 indexedOn = capturedOn.getTime();
             } else {
-                logger.debug("The account is set to use, as date indexing, the device timestamp but the device timestamp is null! Current system date will be used to indexing the message by date!");
+                LOG.debug("The account is set to use, as date indexing, the device timestamp but the device timestamp is null! Current system date will be used to indexing the message by date!");
             }
         }
         // Extract schema metadata
@@ -158,7 +156,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
         if (!newInsert) {
             DatastoreMessage datastoreMessage = find(message.getScopeId(), STORABLE_ID_FACTORY.newStorableId(messageId), StorableFetchStyle.SOURCE_SELECT);
             if (datastoreMessage != null) {
-                logger.debug("Message with datatstore id '{}' already found", messageId);
+                LOG.debug("Message with datatstore id '{}' already found", messageId);
                 metricMessagesAlreadyInTheDatastoreCount.inc();
                 return STORABLE_ID_FACTORY.newStorableId(messageId);
             }
@@ -217,7 +215,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
         ArgumentValidator.notNull(id, "id");
 
         if (!isDatastoreServiceEnabled(scopeId)) {
-            logger.debug("Storage not enabled for account {}, return", scopeId);
+            LOG.debug("Storage not enabled for account {}, return", scopeId);
             return;
         }
 
@@ -234,7 +232,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
             TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);
             getElasticsearchClient().delete(typeDescriptor, id.toString());
         } else {
-            logger.warn("Cannot find the message to be deleted. scopeId: '{}' - id: '{}'", scopeId, id);
+            LOG.warn("Cannot find the message to be deleted. scopeId: '{}' - id: '{}'", scopeId, id);
         }
         // otherwise no message to be deleted found
     }
@@ -287,7 +285,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         if (!isDatastoreServiceEnabled(query.getScopeId())) {
-            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
+            LOG.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return new MessageListResultImpl();
         }
 
@@ -306,7 +304,6 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
      * @return
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
     public long count(MessageQuery query)
@@ -317,7 +314,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         if (!isDatastoreServiceEnabled(query.getScopeId())) {
-            logger.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
+            LOG.debug("Storage not enabled for account {}, returning empty result", query.getScopeId());
             return 0;
         }
 
@@ -334,7 +331,6 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
      * @param query
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
-     * @throws QueryMappingException
      * @throws ClientException
      */
     public void delete(MessageQuery query)
@@ -345,7 +341,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
         ArgumentValidator.notNull(query.getScopeId(), QUERY_SCOPE_ID);
 
         if (!isDatastoreServiceEnabled(query.getScopeId())) {
-            logger.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
+            LOG.debug("Storage not enabled for account {}, skipping delete", query.getScopeId());
             return;
         }
 
@@ -386,7 +382,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
         metricQuery.setLimit(pageSize + 1);
         metricQuery.setOffset(offset);
 
-        ChannelMatchPredicateImpl channelPredicate = new ChannelMatchPredicateImpl(MessageField.CHANNEL.field(), channel);
+        ChannelMatchPredicateImpl channelPredicate = new ChannelMatchPredicateImpl(MessageField.CHANNEL, channel);
         metricQuery.setPredicate(channelPredicate);
 
         // Remove metrics
@@ -409,15 +405,15 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
                 offset += pageSize + 1;
             }
         }
-        logger.debug("Removed cached channel metrics for: {}", channel);
+        LOG.debug("Removed cached channel metrics for: {}", channel);
         TypeDescriptor typeMetricDescriptor = new TypeDescriptor(dataIndexName, MetricInfoSchema.METRIC_TYPE_NAME);
         getElasticsearchClient().deleteByQuery(typeMetricDescriptor, metricQuery);
-        logger.debug("Removed channel metrics for: {}", channel);
+        LOG.debug("Removed channel metrics for: {}", channel);
         ChannelInfoQueryImpl channelQuery = new ChannelInfoQueryImpl(scopeId);
         channelQuery.setLimit(pageSize + 1);
         channelQuery.setOffset(offset);
 
-        channelPredicate = new ChannelMatchPredicateImpl(MessageField.CHANNEL.field(), channel);
+        channelPredicate = new ChannelMatchPredicateImpl(MessageField.CHANNEL, channel);
         channelQuery.setPredicate(channelPredicate);
 
         // Remove channel
@@ -442,18 +438,18 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
             }
         }
 
-        logger.debug("Removed cached channels for: {}", channel);
+        LOG.debug("Removed cached channels for: {}", channel);
         TypeDescriptor typeChannelDescriptor = new TypeDescriptor(dataIndexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
         getElasticsearchClient().deleteByQuery(typeChannelDescriptor, channelQuery);
 
-        logger.debug("Removed channels for: {}", channel);
+        LOG.debug("Removed channels for: {}", channel);
         // Remove client
         if (isClientToDelete) {
             ClientInfoQueryImpl clientInfoQuery = new ClientInfoQueryImpl(scopeId);
             clientInfoQuery.setLimit(pageSize + 1);
             clientInfoQuery.setOffset(offset);
 
-            channelPredicate = new ChannelMatchPredicateImpl(MessageField.CHANNEL.field(), channel);
+            channelPredicate = new ChannelMatchPredicateImpl(MessageField.CHANNEL, channel);
             clientInfoQuery.setPredicate(channelPredicate);
             offset = 0;
             totalHits = 1;
@@ -476,11 +472,11 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
                 }
             }
 
-            logger.debug("Removed cached clients for: {}", channel);
+            LOG.debug("Removed cached clients for: {}", channel);
             TypeDescriptor typeClientDescriptor = new TypeDescriptor(dataIndexName, ClientInfoSchema.CLIENT_TYPE_NAME);
             getElasticsearchClient().deleteByQuery(typeClientDescriptor, clientInfoQuery);
 
-            logger.debug("Removed clients for: {}", channel);
+            LOG.debug("Removed clients for: {}", channel);
         }
     }
 

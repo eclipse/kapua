@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model.query;
 
-import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.xml.ChannelInfoXmlRegistry;
 import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 
@@ -28,6 +27,6 @@ import javax.xml.bind.annotation.XmlType;
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = ChannelInfoXmlRegistry.class, factoryMethod = "newQuery")
-public interface ChannelInfoQuery extends StorableQuery<ChannelInfo> {
+public interface ChannelInfoQuery extends StorableQuery {
 
 }

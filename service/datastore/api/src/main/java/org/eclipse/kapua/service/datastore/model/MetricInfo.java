@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
 import org.eclipse.kapua.service.storable.model.Storable;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
@@ -34,23 +32,23 @@ import java.util.Date;
  */
 @XmlRootElement(name = "metricInfo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "id", //
-        "scopeId", //
-        "clientId", //
-        "channel", //
-        "name", //
-        "metricType", //
-        "firstMessageId", //
-        "firstMessageOn", //
-        "lastMessageId", //
+@XmlType(propOrder = {
+        "id",
+        "clientId",
+        "channel",
+        "name",
+        "metricType",
+        "firstMessageId",
+        "firstMessageOn",
+        "lastMessageId",
         "lastMessageOn"})
 public interface MetricInfo extends Storable {
 
+
     /**
-     * Get the record identifier
+     * Gets the {@link StorableId}
      *
-     * @return
+     * @return The {@link StorableId}
      * @since 1.0.0
      */
     @XmlElement(name = "id")
@@ -58,24 +56,14 @@ public interface MetricInfo extends Storable {
     StorableId getId();
 
     /**
-     * Set the record identifier
+     * Sets the {@link StorableId}
      *
-     * @param id
+     * @param id The {@link StorableId}
      * @since 1.0.0
      */
     @XmlElement(name = "id")
     @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     void setId(StorableId id);
-
-    /**
-     * Get the scope id
-     *
-     * @return
-     * @since 1.0.0
-     */
-    @XmlElement(name = "scopeId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    KapuaId getScopeId();
 
     /**
      * Get the client identifier

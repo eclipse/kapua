@@ -11,17 +11,33 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.storable.model.query;
 
+import org.eclipse.kapua.service.storable.model.Storable;
+
 /**
- * Storable field definition
+ * {@link StorableField }definition.
+ * <p>
+ * It identifies one of the fields of {@link Storable}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface StorableField {
 
     /**
-     * Return the field name
+     * Gets the {@link Storable} field name.
      *
-     * @return
+     * @return The {@link Storable} field name.
+     * @since 1.0.0
      */
     String field();
+
+    /**
+     * Watch out using this to get the {@link StorableField} actual name.
+     * Maybe {@link #field()} is what you are looking for!
+     *
+     * @return The {@link Enum#name()}
+     * @since 1.3.0
+     * @deprecated Since the beginning.
+     */
+    @Deprecated
+    String name();
 }

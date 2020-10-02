@@ -11,47 +11,83 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.storable.model.query.predicate;
 
+import org.eclipse.kapua.service.storable.model.query.StorableField;
+
 /**
- * Query predicate for matching range values implementation
+ * Range {@link StorablePredicate}.
+ * <p>
+ * Matches a {@link StorableField} against a min a max value.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface RangePredicate extends StorablePredicate {
 
     /**
-     * Get the field to be compared
+     * Gets the {@link StorableField}.
      *
-     * @return
+     * @return The {@link StorableField}.
+     * @since 1.0.0
      */
-    String getField();
+    StorableField getField();
 
     /**
-     * Return the desired minimum value
+     * Sets the {@link StorableField}.
      *
-     * @return
+     * @param field The {@link StorableField}.
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
+     */
+    RangePredicate setField(StorableField field);
+
+    /**
+     * Gets the min value to match.
+     *
+     * @return The min value to match.
+     * @since 1.0.0
      */
     Object getMinValue();
 
     /**
-     * Get the minimum value as {@link Comparable} (type)
+     * Gets the {@link #getMinValue()} as given {@link Class}.
      *
-     * @param clazz
-     * @return
+     * @param clazz The {@link Class} to cast the value to.
+     * @return The {@link #getMinValue()} as given {@link Class}.
+     * @since 1.0.0
      */
     <V extends Comparable<V>> V getMinValue(Class<V> clazz);
 
     /**
-     * Get the maximum value
+     * Sets the min value to match.
      *
-     * @return
+     * @param minValue The min value to match.
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
+     */
+    <V extends Comparable<V>> RangePredicate setMinValue(V minValue);
+
+    /**
+     * Gets the max value to match.
+     *
+     * @return The max value to match.
+     * @since 1.0.0
      */
     Object getMaxValue();
 
     /**
-     * Get the maximum value as {@link Comparable} (typed)
+     * Gets the {@link #getMaxValue()} as given {@link Class}.
      *
-     * @param clazz
-     * @return
+     * @param clazz The {@link Class} to cast the value to.
+     * @return The {@link #getMaxValue()} as given {@link Class}.
+     * @since 1.0.0
      */
     <V extends Comparable<V>> V getMaxValue(Class<V> clazz);
+
+    /**
+     * Sets the max value to match.
+     *
+     * @param maxValue The max value to match.
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
+     */
+    <V extends Comparable<V>> RangePredicate setMaxValue(V maxValue);
 }

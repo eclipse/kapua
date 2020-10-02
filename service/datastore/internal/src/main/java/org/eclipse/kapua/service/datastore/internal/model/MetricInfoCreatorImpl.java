@@ -41,7 +41,7 @@ public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
      * @since 1.0.0
      */
     public MetricInfoCreatorImpl(KapuaId scopeId) {
-        this.scopeId = scopeId;
+        setScopeId(scopeId);
     }
 
     @Override
@@ -49,8 +49,9 @@ public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
         return scopeId;
     }
 
-    protected void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId != null ? scopeId : null;
+    @Override
+    public void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId;
     }
 
     @Override

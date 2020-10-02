@@ -43,7 +43,8 @@ public class ClientInfoCreatorImpl implements ClientInfoCreator {
         return scopeId;
     }
 
-    protected void setScopeId(KapuaId scopeId) {
+    @Override
+    public void setScopeId(KapuaId scopeId) {
         this.scopeId = scopeId;
     }
 

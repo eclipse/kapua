@@ -29,6 +29,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 
+/**
+ * Utilities to manage the generation of the {@link ObjectNode}
+ *
+ * @since 1.3.0
+ */
 public class MappingUtils {
 
     private final static JsonNodeFactory JSON_NODE_FACTORY = JsonNodeFactory.instance;
@@ -41,12 +46,13 @@ public class MappingUtils {
     //
 
     /**
-     * Append the provided field/value to the object node
+     * Appends the provided field/value to the object node
      *
-     * @param node
-     * @param name
-     * @param value
-     * @throws MappingException
+     * @param node  The {@link ObjectNode} to appends the field to.
+     * @param name  The name of the node to append.
+     * @param value The value of the node to append.
+     * @throws UnsupportedTypeMappingException if the type of the given value is not one of the supported ones.
+     * @throws InvalidValueMappingException    if the object is a {@link Date} and its value is not compatible with a Date.
      * @since 1.3.0
      */
     public static void appendField(ObjectNode node, String name, Object value) throws MappingException {
@@ -80,63 +86,52 @@ public class MappingUtils {
     }
 
     //
-    // Getters
-    //
-
-    /**
-     * Create a new object node with the provided fields/values
-     *
-     * @param entries
-     * @return
-     * @throws MappingException
-     * @since 1.3.0
-     */
-    public static ObjectNode getField(KeyValueEntry[] entries) throws MappingException {
-        ObjectNode objectNode = newObjectNode();
-
-        for (KeyValueEntry entry : entries) {
-            appendField(objectNode, entry.getKey(), entry.getValue());
-        }
-        return objectNode;
-    }
-
-    /**
-     * Create a new object node with the provided field/value
-     *
-     * @param name
-     * @param value
-     * @return
-     * @throws MappingException
-     * @since 1.3.0
-     */
-    public static ObjectNode getField(String name, Object value) throws MappingException {
-        ObjectNode objectNode = newObjectNode();
-
-        appendField(objectNode, name, value);
-
-        return objectNode;
-    }
-
-    //
     // New
     //
 
+    /**
+     * Instantiates a new {@link ArrayNode}.
+     *
+     * @return The newly instantiated {@link ArrayNode}.
+     * @since 1.3.0
+     */
     public static ArrayNode newArrayNode() {
         return JSON_NODE_FACTORY.arrayNode();
     }
 
+    /**
+     * Instantiates a new {@link ArrayNode}.
+     *
+     * @param fields The fields to add to the {@link ArrayNode}.
+     * @return The newly instantiated {@link ArrayNode}.
+     * @since 1.3.0
+     */
     public static ArrayNode newArrayNode(Object[] fields) {
         return newArrayNode(Arrays.asList(fields));
     }
 
-    public static ArrayNode newArrayNode(Collection<?> collections) {
+    /**
+     * Instantiates a new {@link ArrayNode}.
+     *
+     * @param collection The {@link Collection} to add to the {@link ArrayNode}.
+     * @return The newly instantiated {@link ArrayNode}.
+     * @since 1.3.0
+     */
+    public static ArrayNode newArrayNode(Collection<?> collection) {
         ArrayNode arrayNode = newArrayNode();
 
-        collections.stream().map(Object::toString).forEach(arrayNode::add);
+        collection.stream().map(Object::toString).forEach(arrayNode::add);
 
         return arrayNode;
     }
 
+    /**
+     * Instantiates a new {@link ArrayNode}.
+     *
+     * @param storablePredicates The {@link Collection} of {@link StorablePredicate} to add to the {@link ArrayNode}.
+     * @return The newly instantiated {@link ArrayNode}.
+     * @since 1.3.0
+     */
     public static ArrayNode newArrayNodeFromPredicates(Collection<StorablePredicate> storablePredicates) throws MappingException {
         ArrayNode arrayNode = newArrayNode();
 
@@ -147,15 +142,70 @@ public class MappingUtils {
         return arrayNode;
     }
 
+    /**
+     * Instantiates a new {@link ObjectNode}
+     *
+     * @return The newly instantiated {@link ObjectNode}
+     * @since 1.3.0
+     */
     public static ObjectNode newObjectNode() {
         return JSON_NODE_FACTORY.objectNode();
     }
 
+    /**
+     * Instantiates a new {@link ObjectNode} adding the given {@link KeyValueEntry}es.
+     *
+     * @param entries The {@link KeyValueEntry}es to be added.
+     * @return A newly instantiated {@link ObjectNode} with the {@link KeyValueEntry}es added.
+     * @throws MappingException if {@link #appendField(ObjectNode, String, Object)} {@code throws} {@link MappingException}
+     * @since 1.3.0
+     */
+    public static ObjectNode newObjectNode(KeyValueEntry[] entries) throws MappingException {
+        ObjectNode objectNode = newObjectNode();
+
+        for (KeyValueEntry entry : entries) {
+            appendField(objectNode, entry.getKey(), entry.getValue());
+        }
+
+        return objectNode;
+    }
+
+    /**
+     * Instantiates a new {@link ObjectNode} with the given name and value added as a field.
+     *
+     * @param name  The name of the field to add.
+     * @param value The value of the field to add.
+     * @return A newly instantiated {@link ObjectNode} with the field added.
+     * @throws MappingException if {@link #appendField(ObjectNode, String, Object)} {@code throws} {@link MappingException}
+     * @since 1.3.0
+     */
+    public static ObjectNode newObjectNode(String name, Object value) throws MappingException {
+        ObjectNode objectNode = newObjectNode();
+
+        appendField(objectNode, name, value);
+
+        return objectNode;
+    }
+
+    /**
+     * Instantiates a new {@link NumericNode} with the given value.
+     *
+     * @param number The value to add to the {@link NumericNode}.
+     * @return The The newly instantiated {@link NumericNode}
+     * @since 1.3.0
+     */
     public static NumericNode newNumericNode(long number) {
         return JSON_NODE_FACTORY.numberNode(number);
     }
 
-    public static TextNode newTextNode(String value) {
-        return JSON_NODE_FACTORY.textNode(value);
+    /**
+     * Instantiates a new {@link TextNode} with the given text.
+     *
+     * @param text The text to add to the {@link NumericNode}.
+     * @return The The newly instantiated {@link NumericNode}
+     * @since 1.3.0
+     */
+    public static TextNode newTextNode(String text) {
+        return JSON_NODE_FACTORY.textNode(text);
     }
 }

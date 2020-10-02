@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  */
 @XmlRootElement(name = "clientInfos")
-@XmlType(factoryClass = ClientInfoXmlRegistry.class, factoryMethod = "newClientInfoListResult")
+@XmlType(factoryClass = ClientInfoXmlRegistry.class, factoryMethod = "newListResult")
 public interface ClientInfoListResult extends StorableListResult<ClientInfo> {
 
 }

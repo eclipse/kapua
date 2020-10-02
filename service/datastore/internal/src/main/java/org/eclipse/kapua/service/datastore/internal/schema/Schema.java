@@ -184,21 +184,21 @@ public class Schema {
         ObjectNode metricMapping;
         for (Entry<String, Metric> esMetric : esMetrics.entrySet()) {
             Metric metric = esMetric.getValue();
-            metricMapping = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, SchemaKeys.VALUE_TRUE)});
+            metricMapping = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_DYNAMIC, SchemaKeys.VALUE_TRUE)});
 
             ObjectNode matricMappingPropertiesNode = MappingUtils.newObjectNode(); // properties (inside metric name)
             ObjectNode valueMappingNode;
 
             switch (metric.getType()) {
                 case SchemaKeys.TYPE_STRING:
-                    valueMappingNode = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
+                    valueMappingNode = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_KEYWORD), new KeyValueEntry(SchemaKeys.KEY_INDEX, SchemaKeys.VALUE_TRUE)});
                     break;
                 case SchemaKeys.TYPE_DATE:
-                    valueMappingNode = MappingUtils.getField(
+                    valueMappingNode = MappingUtils.newObjectNode(
                             new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, SchemaKeys.TYPE_DATE), new KeyValueEntry(SchemaKeys.KEY_FORMAT, KapuaDateUtils.ISO_DATE_PATTERN)});
                     break;
                 default:
-                    valueMappingNode = MappingUtils.getField(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, metric.getType())});
+                    valueMappingNode = MappingUtils.newObjectNode(new KeyValueEntry[]{new KeyValueEntry(SchemaKeys.KEY_TYPE, metric.getType())});
                     break;
             }
 
@@ -246,7 +246,7 @@ public class Schema {
         Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.INDEX_REPLICA_NUMBER, 0);
 
         ObjectNode rootNode = MappingUtils.newObjectNode();
-        ObjectNode refreshIntervalNode = MappingUtils.getField(new KeyValueEntry[]{
+        ObjectNode refreshIntervalNode = MappingUtils.newObjectNode(new KeyValueEntry[]{
                 new KeyValueEntry(SchemaKeys.KEY_REFRESH_INTERVAL, idxRefreshInterval),
                 new KeyValueEntry(SchemaKeys.KEY_SHARD_NUMBER, idxShardNumber),
                 new KeyValueEntry(SchemaKeys.KEY_REPLICA_NUMBER, idxReplicaNumber)});

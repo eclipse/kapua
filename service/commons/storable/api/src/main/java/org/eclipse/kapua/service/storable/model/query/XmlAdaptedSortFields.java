@@ -18,25 +18,45 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * {@link List} of {@link SortField} XML adaptation definition.
+ *
+ * @since 1.0.0
+ */
 @XmlRootElement(name = "sortFields")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public class XmlAdaptedSortFields {
 
     private List<XmlAdaptedSortField> adaptedSortFields;
 
+    /**
+     * Constructor.
+     * <p>
+     * Required by JAXB.
+     *
+     * @since 1.0.0
+     */
     public XmlAdaptedSortFields() {
         super();
     }
 
-    public XmlAdaptedSortFields(List<XmlAdaptedSortField> adaptedItems) {
-        setAdaptedSortFields(adaptedItems);
-    }
-
+    /**
+     * Gets the {@link List} of {@link SortField}s.
+     *
+     * @return The {@link List} of {@link SortField}s.
+     * @since 1.0.0
+     */
     @XmlElement(name = "sortField")
     public List<XmlAdaptedSortField> getAdaptedSortFields() {
         return adaptedSortFields != null ? adaptedSortFields : new ArrayList<>();
     }
 
+    /**
+     * Sets the {@link List} of {@link SortField}s.
+     *
+     * @param adaptedSortFields The {@link List} of {@link SortField}s.
+     * @since 1.0.0
+     */
     public void setAdaptedSortFields(List<XmlAdaptedSortField> adaptedSortFields) {
         this.adaptedSortFields = adaptedSortFields;
     }

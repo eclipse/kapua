@@ -38,10 +38,9 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.DatastorePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
+import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
@@ -83,7 +82,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaService implemen
     /**
      * Default constructor
      *
-     * @throws ClientUnavailableException
+     * @throws ClientInitializationException
      */
     public ClientInfoRegistryServiceImpl() throws ClientInitializationException {
         super(DatastoreEntityManagerFactory.getInstance());
@@ -102,8 +101,12 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaService implemen
     }
 
     @Override
-    public ClientInfo find(KapuaId scopeId, StorableId id)
-            throws KapuaException {
+    public ClientInfo find(KapuaId scopeId, StorableId id) throws KapuaException {
+        return find(scopeId, id, StorableFetchStyle.SOURCE_FULL);
+    }
+
+    @Override
+    public ClientInfo find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle) throws KapuaException {
         if (!isServiceEnabled(scopeId)) {
             throw new KapuaServiceDisabledException(this.getClass().getName());
         }
@@ -225,7 +228,7 @@ public class ClientInfoRegistryServiceImpl extends AbstractKapuaService implemen
         messageQuery.setOffset(0);
         messageQuery.setSortFields(sort);
 
-        RangePredicate messageIdPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(ClientInfoField.TIMESTAMP.field(), clientInfo.getFirstMessageOn(), null);
+        RangePredicate messageIdPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(ClientInfoField.TIMESTAMP, clientInfo.getFirstMessageOn(), null);
         TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, clientInfo.getClientId());
 
         AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();

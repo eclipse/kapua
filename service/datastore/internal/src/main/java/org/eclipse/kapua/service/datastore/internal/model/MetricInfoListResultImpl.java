@@ -19,7 +19,7 @@ import org.eclipse.kapua.service.storable.model.AbstractStorableListResult;
 /**
  * Metric information query result list implementation
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricInfo> implements MetricInfoListResult {
 
@@ -27,6 +27,8 @@ public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricI
 
     /**
      * Construct a metric info result list
+     *
+     * @since 1.0.0
      */
     public MetricInfoListResultImpl() {
         super();
@@ -36,10 +38,10 @@ public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricI
      * Construct the metric info result list from the provided list
      *
      * @param resultList
+     * @since 1.0.0
      */
     public MetricInfoListResultImpl(ResultList<MetricInfo> resultList) {
-        addItems(resultList.getResult());
-        setTotalCount(resultList.getTotalCount());
+        super(resultList.getResult(), resultList.getTotalCount());
     }
 
 }

@@ -27,4 +27,21 @@ public interface AndPredicate extends StorablePredicate {
      * @since 1.0.0
      */
     List<StorablePredicate> getPredicates();
+
+    /**
+     * Adds a {@link StorablePredicate} to the {@link List}.
+     *
+     * @param storablePredicate The {@link StorablePredicate} to add.
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
+     */
+    AndPredicate addPredicate(StorablePredicate storablePredicate);
+
+    /**
+     * Sets the {@link StorablePredicate} {@link List}
+     *
+     * @param storablePredicates The {@link StorablePredicate} {@link List}
+     * @since 1.3.0
+     */
+    void setPredicates(List<StorablePredicate> storablePredicates);
 }

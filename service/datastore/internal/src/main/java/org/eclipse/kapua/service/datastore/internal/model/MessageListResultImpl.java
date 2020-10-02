@@ -19,7 +19,7 @@ import org.eclipse.kapua.service.storable.model.AbstractStorableListResult;
 /**
  * Message query result list implementation
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class MessageListResultImpl extends AbstractStorableListResult<DatastoreMessage> implements MessageListResult {
 
@@ -27,6 +27,8 @@ public class MessageListResultImpl extends AbstractStorableListResult<DatastoreM
 
     /**
      * Construct a message result list
+     *
+     * @since 1.0.0
      */
     public MessageListResultImpl() {
         super();
@@ -36,10 +38,10 @@ public class MessageListResultImpl extends AbstractStorableListResult<DatastoreM
      * Construct the message result list from the provided list
      *
      * @param resultList
+     * @since 1.0.0
      */
     public MessageListResultImpl(ResultList<DatastoreMessage> resultList) {
-        addItems(resultList.getResult());
-        setTotalCount(resultList.getTotalCount());
+        super(resultList.getResult(), resultList.getTotalCount());
     }
 
 }

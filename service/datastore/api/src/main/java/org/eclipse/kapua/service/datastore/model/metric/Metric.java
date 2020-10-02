@@ -9,8 +9,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.datastore.model;
+package org.eclipse.kapua.service.datastore.model.metric;
 
+import org.eclipse.kapua.service.datastore.model.MetricInfoTypeAdapter;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -21,39 +22,37 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * Metric definition
+ * {@link Metric} definition.
  *
- * @param <T>
- * @since 1.0
+ * @param <T> The {@link Class} type.
+ * @since 1.0.0
  */
 @XmlRootElement(name = "metric")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "name",
-        "type",
-        "value" })
+@XmlType(propOrder = {"name", "type", "value"})
 public interface Metric<T> extends Comparable<T> {
 
     /**
-     * Get the name
+     * Gets the name.
      *
-     * @return
+     * @return The name.
      * @since 1.0.0
      */
     @XmlElement(name = "name")
     String getName();
 
     /**
-     * Set the name
+     * Sets the name.
      *
-     * @param name
+     * @param name The name.
      * @since 1.0.0
      */
     void setName(String name);
 
     /**
-     * Get the type
+     * Gets the {@link Class}.
      *
-     * @return
+     * @return The {@link Class}.
      * @since 1.0.0
      */
     @XmlElement(name = "type")
@@ -61,17 +60,17 @@ public interface Metric<T> extends Comparable<T> {
     Class<T> getType();
 
     /**
-     * Set the type
+     * Sets the {@link Class}.
      *
-     * @param type
+     * @param type The {@link Class}.
      * @since 1.0.0
      */
     void setType(Class<T> type);
 
     /**
-     * Get the metric value
+     * Gets the value.
      *
-     * @return
+     * @return The value.
      * @since 1.0.0
      */
     @XmlElement(name = "value")
@@ -79,9 +78,9 @@ public interface Metric<T> extends Comparable<T> {
     T getValue();
 
     /**
-     * Set the metric value
+     * Sets the value.
      *
-     * @param value
+     * @param value The value.
      * @since 1.0.0
      */
     void setValue(T value);

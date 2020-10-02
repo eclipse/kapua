@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.datastore.internal.model.query;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
-import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.storable.model.query.AbstractStorableQuery;
 import org.eclipse.kapua.service.storable.model.query.SortField;
@@ -27,7 +26,7 @@ import java.util.Collections;
  *
  * @since 1.0.0
  */
-public class MessageQueryImpl extends AbstractStorableQuery<DatastoreMessage> implements MessageQuery {
+public class MessageQueryImpl extends AbstractStorableQuery implements MessageQuery {
 
     /**
      * Constructor.
@@ -37,6 +36,7 @@ public class MessageQueryImpl extends AbstractStorableQuery<DatastoreMessage> im
      */
     public MessageQueryImpl(KapuaId scopeId) {
         super(scopeId);
+
         setSortFields(Collections.singletonList(SortField.descending(MessageSchema.MESSAGE_TIMESTAMP)));
     }
 

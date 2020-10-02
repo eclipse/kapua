@@ -12,19 +12,22 @@
 package org.eclipse.kapua.service.storable.model.id;
 
 import org.eclipse.kapua.KapuaSerializable;
+import org.eclipse.kapua.service.storable.model.Storable;
 
 /**
- * Storable identifier definition.<br>
- * It defines the identifier of every object that can be stored in a datastore schema.
+ * {@link Storable} identifier definition.
+ * <p>
+ * It defines the identifier of every {@link Storable}s.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface StorableId extends KapuaSerializable {
 
     /**
-     * Return the storable identifier as a string
+     * Return the {@link StorableId} in {@link String} form.
      *
-     * @return
+     * @return The {@link StorableId} in {@link String} form.
+     * @since 1.0.0
      */
     @Override
     String toString();
