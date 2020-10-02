@@ -155,7 +155,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
         }
 
-        if (user.getStatus() != UserStatus.ENABLED || user.getExpirationDate() != null || !currentUser.getName().equals(user.getName())) {
+        if (user.getExpirationDate() != null || !currentUser.getName().equals(user.getName())) {
             //
             // Check not deleting environment admin
             validateSystemUser(user.getName());
