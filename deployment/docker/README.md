@@ -122,3 +122,16 @@ Again, All the values should be exported as inline values. e.g.:
 export KAPUA_KEYSTORE=$(base64 /path/to/keystore.pkcs)
 export KAPUA_KEYSTORE_PASSWORD=keystore_password
 ```
+
+##### Providing custom logging level
+
+The `info` logging level is used as default root level in container logs.
+To provide a different logging level you can set the following environment variable:
+
+- **LOGBACK_LOG_LEVEL**: The logging level value
+
+Allowed logging level values are: `trace`, `debug`, `info`, `warn`, `error`, `all` or `off`.  e.g.:
+
+```bash
+export LOGBACK_LOG_LEVEL=debug
+```

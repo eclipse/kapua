@@ -39,6 +39,7 @@ services:
       - KAPUA_KEY_PASSWORD
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
+      - LOGBACK_LOG_LEVEL
   kapua-console:
     image: kapua/kapua-console:sso
     ports:
@@ -59,6 +60,7 @@ services:
       - KAPUA_KEY_PASSWORD
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
+      - LOGBACK_LOG_LEVEL
   kapua-api:
     image: kapua/kapua-api:${IMAGE_VERSION}
     ports:
@@ -77,6 +79,7 @@ services:
       - KAPUA_KEY_PASSWORD
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
+      - LOGBACK_LOG_LEVEL
   keycloak:
     image: keycloak:sso
     ports:
