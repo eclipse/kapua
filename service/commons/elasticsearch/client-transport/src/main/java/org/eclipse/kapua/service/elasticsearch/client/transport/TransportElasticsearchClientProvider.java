@@ -72,6 +72,7 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
                     ConfigurationPrinter
                             .create()
                             .withLogger(LOG)
+                            .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                             .withTitle("Elasticsearch Transport Provider Configuration")
                             .addParameter("Module Name", getClientConfiguration().getModuleName())
                             .addParameter("Cluster Name", getClientConfiguration().getClusterName())
