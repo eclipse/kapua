@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.console.core.servlet;
 import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.sso.SingleSignOnLocator;
 import org.eclipse.kapua.sso.exception.SsoAccessTokenException;
 import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
@@ -55,15 +56,21 @@ public class SsoCallbackServlet extends HttpServlet {
         final String authCode = req.getParameter("code");
 
         String homeUri = "";
-        StringBuilder logStr = new StringBuilder();
-        logStr.append("SSO Servlet Log:");
-        logStr.append("\n\tSSO servlet request:");
-        logStr.append("\n\t\tRequest URL: ").append(req.getRequestURL());
-        logStr.append("\n\t\tAuthCode: ").append(HIDDEN_SECRET);
-        logStr.append("\n\tSSO servlet response:");
+        ConfigurationPrinter httpReqLogger =
+                ConfigurationPrinter
+                        .create()
+                        .withLogger(logger)
+                        .withLogLevel(ConfigurationPrinter.LogLevel.DEBUG)
+                        .withTitle("SSO Servlet Log")
+                        .addHeader("SSO servlet request:")
+                        .increaseIndentation()
+                        .addParameter("Request URL", req.getRequestURL())
+                        .addParameter("AuthCode", HIDDEN_SECRET)
+                        .decreaseIndentation();
         try {
             homeUri = SsoHelper.getHomeUri();
-            logStr.append("\n\t\tResponse URI: ").append(homeUri);
+            httpReqLogger.addHeader("SSO servlet response:");
+            httpReqLogger.increaseIndentation().addParameter("Response URI", homeUri);
             final URIBuilder redirect = new URIBuilder(homeUri);
 
             if (authCode != null) {
@@ -77,8 +84,8 @@ public class SsoCallbackServlet extends HttpServlet {
                 redirect.addParameter(ID_TOKEN_PARAM, idToken);
                 resp.sendRedirect(redirect.toString());
 
-                logStr.append("\n\t\t").append(ACCESS_TOKEN_PARAM).append(": ").append(HIDDEN_SECRET);
-                logStr.append("\n\t\t").append(ID_TOKEN_PARAM).append(": ").append(HIDDEN_SECRET);
+                httpReqLogger.addParameter(ACCESS_TOKEN_PARAM, HIDDEN_SECRET);
+                httpReqLogger.addParameter(ID_TOKEN_PARAM, HIDDEN_SECRET);
                 logger.debug("Successfully sent the redirect response to {}", homeUri);
             } else {
 
@@ -90,12 +97,12 @@ public class SsoCallbackServlet extends HttpServlet {
                     redirect.addParameter(ERROR_DESCRIPTION_PARAM, errorDescription);
                     resp.sendRedirect(redirect.toString());
 
-                    logStr.append("\n\t\t").append(ERROR_PARAM).append(": ").append(error);
-                    logStr.append("\n\t\t").append(ERROR_DESCRIPTION_PARAM).append(": ").append(errorDescription);
+                    httpReqLogger.addParameter(ERROR_PARAM, error);
+                    httpReqLogger.addParameter(ERROR_DESCRIPTION_PARAM, errorDescription);
                     logger.warn("Failed to log in: {}, error_description: {}", error, errorDescription);
                 } else {
                     resp.sendError(400);
-                    logStr.append("\n\t\t").append("Error: 400 Bad Request");
+                    httpReqLogger.addParameter("Error", "400 Bad Request");
                     logger.error("Invalid HttpServletRequest, both 'access_token' and 'error' parameters are 'null'");
                 }
             }
@@ -106,7 +113,7 @@ public class SsoCallbackServlet extends HttpServlet {
         } catch (URISyntaxException use) {
             throw new ServletException("Failed to parse redirect URL " + homeUri + " : " + use.getMessage(), use);
         } finally {
-            logger.debug("{}", logStr);
+            httpReqLogger.printLog();
         }
     }
 }

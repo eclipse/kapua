@@ -12,6 +12,7 @@
 package org.eclipse.kapua.sso.provider;
 
 import com.google.common.base.Strings;
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.sso.exception.SsoIllegalArgumentException;
 import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
 import org.eclipse.kapua.sso.exception.uri.SsoJwtUriException;
@@ -46,7 +47,7 @@ public final class SingleSignOnUtils {
     }
 
     /**
-     * Attempts to retrieve a URI from the Well-Known OpenId Configuration using the given proeprty.
+     * Attempts to retrieve a URI from the Well-Known OpenId Configuration using the given property.
      *
      * @param property the property to get from the JSON response.
      * @param openIdConfPath the OpendID Connect configuration path.
@@ -57,8 +58,14 @@ public final class SingleSignOnUtils {
     public static Optional<URI> getConfigUri(String property, String openIdConfPath) throws SsoUriException {
         final JsonObject jsonObject;
 
-        StringBuilder logStr = new StringBuilder();
-        logStr.append("Requested property: ").append(property).append(" from openIdConfPath: ").append(openIdConfPath);
+        ConfigurationPrinter reqLogger =
+                ConfigurationPrinter
+                        .create()
+                        .withLogger(logger)
+                        .withLogLevel(ConfigurationPrinter.LogLevel.DEBUG)
+                        .withTitle("OpenID Provider Configuration Information")
+                        .addParameter("Requested property", property)
+                        .addParameter("From well-known path", openIdConfPath);
         try {
             // Read .well-known resource
             try (final InputStream stream = new URL(openIdConfPath).openStream()) {
@@ -72,12 +79,12 @@ public final class SingleSignOnUtils {
             // test result
             if (uriJsonValue instanceof JsonString) {
                 Optional<URI> optionalURI = Optional.of(new URI(((JsonString) uriJsonValue).getString()));
-                logStr.append(", result value: ").append(optionalURI.get());
+                reqLogger.addParameter("Result value", optionalURI.get());
                 return optionalURI;
             }
 
             // return
-            logStr.append(", no value found.");
+            reqLogger.addHeader("No value found");
             return Optional.empty();
         } catch (MalformedURLException mue) {
             logger.error("openIdConfPath parameter is malformed: {}", mue.getLocalizedMessage(), mue);
@@ -89,7 +96,7 @@ public final class SingleSignOnUtils {
             logger.error("Unable to extract the required property from the openIdConfPath: {}", urise.getLocalizedMessage(), urise);
             throw new SsoJwtUriException(urise);
         } finally {
-            logger.debug("{}", logStr);
+            reqLogger.printLog();
         }
 
     }
