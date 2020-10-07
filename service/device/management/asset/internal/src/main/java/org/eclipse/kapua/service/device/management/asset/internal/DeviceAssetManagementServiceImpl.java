@@ -29,8 +29,8 @@ import org.eclipse.kapua.service.device.management.asset.message.internal.AssetR
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementErrorCodes;
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.xml.sax.SAXException;
@@ -77,7 +77,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         try {
             assetRequestPayload.setDeviceAssets(deviceAssets);
         } catch (JAXBException | UnsupportedEncodingException e) {
-            throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_EXCEPTION, e, deviceAssets);
+            throw new DeviceManagementRequestException(e, deviceAssets);
         }
 
         AssetRequestMessage assetRequestMessage = new AssetRequestMessage();
@@ -104,7 +104,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
             try {
                 deviceAssetsResponse = responsePayload.getDeviceAssets();
             } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException | UnsupportedEncodingException e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload);
+                throw new DeviceManagementResponseException(e, responsePayload);
             }
 
             return deviceAssetsResponse;
@@ -139,7 +139,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         try {
             assetRequestPayload.setDeviceAssets(deviceAssets);
         } catch (JAXBException | UnsupportedEncodingException e) {
-            throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_EXCEPTION, e, deviceAssets);
+            throw new DeviceManagementRequestException(e, deviceAssets);
         }
 
         AssetRequestMessage assetRequestMessage = new AssetRequestMessage();
@@ -166,7 +166,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
             try {
                 deviceAssetsResponse = responsePayload.getDeviceAssets();
             } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException | UnsupportedEncodingException e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload);
+                throw new DeviceManagementResponseException(e, responsePayload);
             }
 
             return deviceAssetsResponse;
@@ -201,7 +201,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         try {
             assetRequestPayload.setDeviceAssets(deviceAssets);
         } catch (JAXBException | UnsupportedEncodingException e) {
-            throw new DeviceManagementException(DeviceManagementErrorCodes.REQUEST_EXCEPTION, e, deviceAssets);
+            throw new DeviceManagementRequestException(e, deviceAssets);
         }
 
         AssetRequestMessage assetRequestMessage = new AssetRequestMessage();
@@ -228,7 +228,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
             try {
                 deviceAssetsResponse = responsePayload.getDeviceAssets();
             } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException | UnsupportedEncodingException e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, responsePayload);
+                throw new DeviceManagementResponseException(e, responsePayload);
             }
 
             return deviceAssetsResponse;

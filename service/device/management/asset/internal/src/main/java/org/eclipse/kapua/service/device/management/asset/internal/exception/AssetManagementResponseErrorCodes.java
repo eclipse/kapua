@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.internal.exception;
 
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementResponseErrorCodes;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementErrorCodes;
 
-public enum AssetManagementResponseErrorCodes implements DeviceManagementResponseErrorCodes {
+public enum AssetManagementResponseErrorCodes implements DeviceManagementErrorCodes {
 
     /**
      * The device has returned an error when getting assets

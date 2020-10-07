@@ -24,8 +24,19 @@ import javax.validation.constraints.NotNull;
  */
 public class DeviceNotConnectedException extends DeviceManagementException {
 
+    private static final long serialVersionUID = 1216557444738236796L;
+
     private final KapuaId deviceId;
     private final DeviceConnectionStatus currentConnectionStatus;
+
+    /**
+     * Constructor.
+     */
+    public DeviceNotConnectedException() {
+        super(DeviceManagementGenericErrorCodes.DEVICE_NOT_CONNECTED);
+        this.deviceId = null;
+        this.currentConnectionStatus = null;
+    }
 
     /**
      * Constructor.
@@ -34,7 +45,7 @@ public class DeviceNotConnectedException extends DeviceManagementException {
      * @since 1.1.0
      */
     public DeviceNotConnectedException(@NotNull KapuaId deviceId) {
-        super(DeviceManagementErrorCodes.DEVICE_NOT_CONNECTED, null);
+        super(DeviceManagementGenericErrorCodes.DEVICE_NOT_CONNECTED, null);
         this.deviceId = deviceId;
         this.currentConnectionStatus = null;
     }
@@ -47,7 +58,7 @@ public class DeviceNotConnectedException extends DeviceManagementException {
      * @since 1.1.0
      */
     public DeviceNotConnectedException(@NotNull KapuaId deviceId, @NotNull DeviceConnectionStatus currentConnectionStatus) {
-        super(DeviceManagementErrorCodes.DEVICE_NOT_CONNECTED, deviceId, currentConnectionStatus);
+        super(DeviceManagementGenericErrorCodes.DEVICE_NOT_CONNECTED, deviceId, currentConnectionStatus);
         this.deviceId = deviceId;
         this.currentConnectionStatus = currentConnectionStatus;
     }

@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.internal.exception;
 
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementResponseErrorCodes;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementErrorCodes;
 
-public enum PackageManagementResponseErrorCodes implements DeviceManagementResponseErrorCodes {
+public enum PackageManagementResponseErrorCodes implements DeviceManagementErrorCodes {
 
     /**
      * The device has returned an error when getting the list of installed packages

@@ -11,9 +11,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.snapshot.internal.exception;
 
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementResponseErrorCodes;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementErrorCodes;
 
-public enum SnapshotManagementResponseErrorCodes implements DeviceManagementResponseErrorCodes {
+public enum SnapshotManagementResponseErrorCodes implements DeviceManagementErrorCodes {
 
     /**
      * The device has returned an error when getting snapshot

@@ -24,10 +24,9 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementErrorCodes;
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementException;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
@@ -136,13 +135,13 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
                 try {
                     body = new String(responsePayload.getBody(), charEncoding);
                 } catch (Exception e) {
-                    throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, (Object) responsePayload.getBody());
+                    throw new DeviceManagementResponseException(e, responsePayload.getBody());
                 }
 
                 try {
                     devicePackages = XmlUtil.unmarshal(body, DevicePackagesImpl.class);
                 } catch (Exception e) {
-                    throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, body);
+                    throw new DeviceManagementResponseException(e, body);
 
                 }
             } else {
@@ -494,7 +493,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             try {
                 body = new String(responsePayload.getBody(), charEncoding);
             } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, (Object) responsePayload.getBody());
+                throw new DeviceManagementResponseException(e, responsePayload.getBody());
 
             }
 
@@ -502,7 +501,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             try {
                 installOperation = XmlUtil.unmarshal(body, DevicePackageInstallOperationImpl.class);
             } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, body);
+                throw new DeviceManagementResponseException(e, body);
 
             }
 
@@ -646,7 +645,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             try {
                 body = new String(responsePayload.getBody(), charEncoding);
             } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, (Object) responsePayload.getBody());
+                throw new DeviceManagementResponseException(e, responsePayload.getBody());
 
             }
 
@@ -654,7 +653,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             try {
                 uninstallOperation = XmlUtil.unmarshal(body, DevicePackageUninstallOperationImpl.class);
             } catch (Exception e) {
-                throw new DeviceManagementException(DeviceManagementErrorCodes.RESPONSE_PARSE_EXCEPTION, e, body);
+                throw new DeviceManagementResponseException(e, body);
 
             }
 

@@ -38,6 +38,11 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-service-elasticsearch-client-api</artifactId>
         </dependency>
+        <dependency>
+            <!-- Required for exception management -->
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-api</artifactId>
+        </dependency>
 
         <!-- -->
         <!-- Testing dependencies -->

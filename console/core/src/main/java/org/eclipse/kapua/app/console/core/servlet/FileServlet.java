@@ -12,7 +12,6 @@
 package org.eclipse.kapua.app.console.core.servlet;
 
 import org.apache.commons.fileupload.FileItem;
-import org.eclipse.kapua.DeviceMenagementException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -29,6 +28,7 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandManagementService;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.CharEncoding;
@@ -123,8 +123,8 @@ public class FileServlet extends KapuaHttpServlet {
             resp.sendError(401, eiae.getMessage());
         } catch (KapuaIllegalAccessException eiae) {
             resp.sendError(403, eiae.getMessage());
-        } catch (DeviceMenagementException edme) {
-            logger.error("Device menagement exception", edme);
+        } catch (DeviceManagementException edme) {
+            logger.error("Device management exception", edme);
             resp.sendError(404, edme.getMessage());
         } catch (KapuaIllegalArgumentException kiae) {
             logger.error("Illegal argument exception", kiae);
@@ -222,8 +222,8 @@ public class FileServlet extends KapuaHttpServlet {
             resp.sendError(401, eiae.getMessage());
         } catch (KapuaIllegalAccessException eiae) {
             resp.sendError(403, eiae.getMessage());
-        } catch (DeviceMenagementException edme) {
-            logger.error("Device menagement exception", edme);
+        } catch (DeviceManagementException edme) {
+            logger.error("Device management exception", edme);
             resp.sendError(404, edme.getMessage());
         } catch (Exception e) {
             logger.error("Generic error", e);

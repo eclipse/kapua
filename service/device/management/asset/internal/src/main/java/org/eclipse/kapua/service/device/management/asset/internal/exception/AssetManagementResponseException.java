@@ -11,10 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.internal.exception;
 
-import org.eclipse.kapua.service.device.management.commons.exception.DeviceManagementResponseException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 
 public class AssetManagementResponseException extends DeviceManagementResponseException {
+
+    private static final long serialVersionUID = 1558850908553078621L;
 
     public AssetManagementResponseException(AssetManagementResponseErrorCodes code, KapuaResponseCode responseCode, String exceptionMessage, String exceptionStack, Object... arguments) {
         super(code, responseCode, exceptionMessage, exceptionStack, arguments);
