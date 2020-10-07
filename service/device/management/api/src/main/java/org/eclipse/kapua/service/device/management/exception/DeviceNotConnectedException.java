@@ -33,7 +33,7 @@ public class DeviceNotConnectedException extends DeviceManagementException {
      * Constructor.
      */
     public DeviceNotConnectedException() {
-        super(DeviceManagementGenericErrorCodes.DEVICE_NOT_CONNECTED);
+        super(DeviceManagementConnectionErrorCodes.DEVICE_NOT_CONNECTED);
         this.deviceId = null;
         this.currentConnectionStatus = null;
     }
@@ -45,7 +45,7 @@ public class DeviceNotConnectedException extends DeviceManagementException {
      * @since 1.1.0
      */
     public DeviceNotConnectedException(@NotNull KapuaId deviceId) {
-        super(DeviceManagementGenericErrorCodes.DEVICE_NOT_CONNECTED, null);
+        super(DeviceManagementConnectionErrorCodes.DEVICE_NOT_CONNECTED, null);
         this.deviceId = deviceId;
         this.currentConnectionStatus = null;
     }
@@ -58,7 +58,7 @@ public class DeviceNotConnectedException extends DeviceManagementException {
      * @since 1.1.0
      */
     public DeviceNotConnectedException(@NotNull KapuaId deviceId, @NotNull DeviceConnectionStatus currentConnectionStatus) {
-        super(DeviceManagementGenericErrorCodes.DEVICE_NOT_CONNECTED, deviceId, currentConnectionStatus);
+        super(DeviceManagementConnectionErrorCodes.DEVICE_NOT_CONNECTED, deviceId, currentConnectionStatus);
         this.deviceId = deviceId;
         this.currentConnectionStatus = currentConnectionStatus;
     }

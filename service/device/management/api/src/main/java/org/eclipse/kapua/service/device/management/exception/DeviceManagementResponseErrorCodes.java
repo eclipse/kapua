@@ -11,11 +11,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.exception;
 
-public class DeviceNeverConnectedException extends DeviceManagementException {
+public enum DeviceManagementResponseErrorCodes implements DeviceManagementErrorCodes {
 
-    private static final long serialVersionUID = -8225341071813065890L;
+    /**
+     * Response parse exception
+     */
+    RESPONSE_PARSE_EXCEPTION,
 
-    public DeviceNeverConnectedException() {
-        super(DeviceManagementConnectionErrorCodes.DEVICE_NEVER_CONNECTED);
-    }
+    /**
+     * Bad request
+     */
+    RESPONSE_BAD_REQUEST,
+
+    /**
+     * Response not found
+     */
+    RESPONSE_NOT_FOUND,
+
+    /**
+     * Response internal error
+     */
+    RESPONSE_INTERNAL_ERROR
 }
