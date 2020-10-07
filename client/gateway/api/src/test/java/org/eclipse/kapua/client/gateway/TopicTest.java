@@ -8,6 +8,7 @@
  *
  * Contributors:
  *     Red Hat Inc - initial API and implementation
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway;
 
@@ -15,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -25,161 +25,178 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
-public class TopicTest {
+public class TopicTest extends Assert {
+
+    String[] stringValues = {"!#$%&'()=?⁄@‹›€°·‚,.-;:_Èˇ¿<>«‘”’ÉØ∏{}|ÆæÒuF8FFÔÓÌÏÎÅ«»Ç◊Ñˆ¯Èˇ", "regularNaming", "regular Naming", "49", "regularNaming49", "NAMING", "246465494135646120009090049684646496468456468496846464968496844"};
 
     @Test
-    public void test1() {
-        final Topic topic = Topic.of("foo");
-        Assert.assertEquals(Arrays.asList("foo"), topic.getSegments());
+    public void topicOfOneParameterValidTest() {
+        for (String value : stringValues) {
+            Topic topic = Topic.of(new LinkedList<>(Arrays.asList(value, value)));
+            assertEquals("Expected and actual values should be the same!", Arrays.asList(value, value), topic.getSegments());
+        }
     }
 
     @Test
-    public void test2() {
-        final Topic topic = Topic.of("foo", "bar");
-        Assert.assertEquals(Arrays.asList("foo", "bar"), topic.getSegments());
+    public void topicOfOneParameterNullTest() {
+        Topic topic = Topic.of(null);
+        assertNull("Null expected!", topic);
     }
 
     @Test
-    public void test3() {
-        final Topic topic = Topic.of(new LinkedList<>(Arrays.asList("foo", "bar")));
-        Assert.assertEquals(Arrays.asList("foo", "bar"), topic.getSegments());
+    public void topicOfTwoParameterEmptyTest() {
+        Topic topic = Topic.of(Collections.emptyList());
+        assertNull("Null expected!", topic);
     }
 
     @Test
-    public void testEmpty1() {
-        final Topic topic = Topic.of((List<String>) null);
-        Assert.assertNull(topic);
+    public void topicOfTwoParameterValidTest() {
+        for (String value : stringValues) {
+            Topic topic = Topic.of(value);
+            assertEquals("Expected and actual values should be the same!", Collections.singletonList(value), topic.getSegments());
+        }
+        for (String value : stringValues) {
+            Topic topic = Topic.of(value, value);
+            assertEquals("Expected and actual values should be the same!", Arrays.asList(value, value), topic.getSegments());
+        }
     }
 
     @Test
-    public void testEmpty2() {
-        final Topic topic = Topic.of(Collections.emptyList());
-        Assert.assertNull(topic);
-    }
-
-    @Test
-    public void testEmpty3() {
-        final Topic topic = Topic.of((String) null);
-        Assert.assertNull(topic);
+    public void topicOfTwoParameterNullTest() {
+        Topic topic = Topic.of(null);
+        assertNull("Null expected!", topic);
+        for (String value : stringValues) {
+            Topic topic2 = Topic.of(null, value);
+            assertNull("Null expected!", topic2);
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testEmpty4() {
+    public void topicOfTwoParameterSecondNullTest() {
         Topic.of("foo", "bar", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSpecial1() {
+    public void ensureNotSpecialHashSymbolTest() {
         Topic.of("foo", "#");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSpecial2() {
+    public void ensureNotSpecialPlusSymbolTest() {
         Topic.of("foo", "+");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSpecial3() {
+    public void ensureNotSpecialEmptyStringTest() {
         Topic.of("foo", "");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSpecial4() {
+    public void ensureNotSpecialSlashSymbolTest() {
         Topic.of("foo", "foo/bar");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSpecial4a() {
+    public void ensureNotSpecialForwardSlashSymbolTest() {
         Topic.of("foo", "/bar");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSpecial4b() {
+    public void ensureNotSpecialTrailingSlashSymbolTest() {
         Topic.of("foo", "foo/");
     }
 
     @Test
-    public void testSplit1() {
-        final Topic topic = Topic.split("foo/bar");
-        Assert.assertEquals(Arrays.asList("foo", "bar"), topic.getSegments());
+    public void splitValidTest() {
+        for (String value : stringValues) {
+            Topic topic = Topic.split(value + "/" + value);
+            assertEquals("Expected and actual values should be the same!", Arrays.asList(value, value), topic.getSegments());
+        }
+        for (String value : stringValues) {
+            Topic topic = Topic.split(value + "//" + value);
+            assertEquals("Expected and actual values should be the same!", Arrays.asList(value, value), topic.getSegments());
+        }
+        for (String value : stringValues) {
+            Topic topic = Topic.split("/" + value + "//" + value);
+            assertEquals("Expected and actual values should be the same!", Arrays.asList(value, value), topic.getSegments());
+        }
+        for (String value : stringValues) {
+            Topic topic = Topic.split("/" + value + "//" + value + "//");
+            assertEquals("Expected and actual values should be the same!", Arrays.asList(value, value), topic.getSegments());
+        }
     }
 
     @Test
-    public void testSplit2() {
-        final Topic topic = Topic.split("foo//bar");
-        Assert.assertEquals(Arrays.asList("foo", "bar"), topic.getSegments());
+    public void splitValidTestNullOutcomeTest() {
+        Topic topic = Topic.split("//");
+        assertNull("Null expected!", topic);
     }
 
     @Test
-    public void testSplit3() {
-        final Topic topic = Topic.split("/foo//bar");
-        Assert.assertEquals(Arrays.asList("foo", "bar"), topic.getSegments());
+    public void splitNullTest() {
+        Topic topic = Topic.split(null);
+        assertNull("Null expected!", topic);
     }
 
     @Test
-    public void testSplit4() {
-        final Topic topic = Topic.split("/foo//bar//");
-        Assert.assertEquals(Arrays.asList("foo", "bar"), topic.getSegments());
+    public void splitEmptyTest() {
+        Topic topic = Topic.split("");
+        assertNull("Null expected!", topic);
     }
 
     @Test
-    public void testSplit5() {
-        final Topic topic = Topic.split("//");
-        Assert.assertNull(topic);
+    public void splitTest() {
+        Topic topic1 = Topic.split("foo/bar/baz");
+        Topic topic2 = Topic.split("foo/bar/baz");
+        assertEquals("Expected and actual values should be the same!", topic1, topic2);
     }
 
     @Test
-    public void testSplitNull() {
-        final Topic topic = Topic.split(null);
-        Assert.assertNull(topic);
+    public void splitAndOfTest() {
+        Topic topic1 = Topic.split("foo/bar/baz");
+        Topic topic2 = Topic.of("foo", "bar", "baz");
+        assertEquals("Expected and actual values should be the same!", topic1, topic2);
     }
 
     @Test
-    public void testSplitEmpty() {
-        final Topic topic = Topic.split("");
-        Assert.assertNull(topic);
+    public void splitInvalidTest() {
+        Topic topic1 = Topic.split("foo/bar");
+        Topic topic2 = Topic.split("foo/baz");
+        assertNotEquals("Expected and actual values should be the same!", topic1, topic2);
     }
 
     @Test
-    public void testEquals1() {
-        final Topic t1 = Topic.split("foo/bar/baz");
-        final Topic t2 = Topic.split("foo/bar/baz");
-        Assert.assertEquals(t1, t2);
+    public void streamValidTest() {
+        String result = Topic.split("foo/bar").stream().collect(Collectors.joining());
+        assertEquals("Expected and actual values should be the same!", "foobar", result);
     }
 
     @Test
-    public void testEquals2() {
-        final Topic t1 = Topic.split("foo/bar/baz");
-        final Topic t2 = Topic.of("foo", "bar", "baz");
-        Assert.assertEquals(t1, t2);
+    public void toStringTest() {
+        assertEquals("Expected and actual values should be the same!", "foo/bar", Topic.of("foo", "bar").toString());
     }
 
     @Test
-    public void testNotEquals1() {
-        final Topic t1 = Topic.split("foo/bar");
-        final Topic t2 = Topic.split("foo/baz");
-        Assert.assertNotEquals(t1, t2);
-    }
-
-    @Test
-    public void testStream() {
-        final String result = Topic.split("foo/bar").stream().collect(Collectors.joining());
-        Assert.assertEquals("foobar", result);
-    }
-
-    @Test
-    public void testToString() {
-        Assert.assertEquals("foo/bar", Topic.of("foo", "bar").toString());
-    }
-
-    @Test
-    public void testHashCode() {
-        final Map<Topic, Object> map = new HashMap<>();
+    public void hashCodeTest() {
+        Map<Topic, Object> map = new HashMap<>();
         map.put(Topic.of("foo", "bar"), 1);
         map.put(Topic.of("foo", "baz"), 2);
 
-        Assert.assertEquals(1, map.get(Topic.split("foo/bar")));
-        Assert.assertEquals(2, map.get(Topic.split("foo/baz")));
+        assertEquals("Expected and actual values should be the same!", 1, map.get(Topic.split("foo/bar")));
+        assertEquals("Expected and actual values should be the same!", 2, map.get(Topic.split("foo/baz")));
     }
 
+    @Test
+    public void equalsTest() {
+        Topic topic1 = Topic.split("String");
+        Topic topic2 = Topic.split("String");
+        Topic topic3 = Topic.split("StringString");
+        Object object = new Object();
+
+        assertTrue("True expected!",topic1.equals(topic1));
+        assertFalse("False expected!", topic1.equals(null));
+        assertFalse("False expected!", topic1.equals(object));
+        assertTrue("True expected!", topic1.equals(topic2));
+        assertFalse("False expected!", topic1.equals(topic3));
+    }
 }
