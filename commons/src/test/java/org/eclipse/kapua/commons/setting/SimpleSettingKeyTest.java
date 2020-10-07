@@ -20,13 +20,13 @@ import org.junit.experimental.categories.Category;
 public class SimpleSettingKeyTest extends Assert {
 
     @Test
-    public void constructorRegularTest() {
+    public void simpleSettingKeyTest() {
         SimpleSettingKey settingKey = new SimpleSettingKey("string");
         assertEquals("Expected and actual values should be the same!", "string", settingKey.key());
     }
 
     @Test
-    public void constructorNullTest() {
+    public void simpleSettingKeyNullTest() {
         SimpleSettingKey settingKey = new SimpleSettingKey(null);
         assertNull("Null expected!", settingKey.key());
     }
@@ -35,8 +35,8 @@ public class SimpleSettingKeyTest extends Assert {
     public void keyRegularTest() {
         String[] permittedValues = {"", "!#$%&'()=?⁄@‹›€°·‚,.-;:_Èˇ¿<>«‘”’ÉØ∏{}|ÆæÒuF8FFÔÓÌÏÎÅ«»Ç◊Ñˆ¯Èˇ", "regularNaming", "regular Naming", "49", "regularNaming49", "NAMING", "246465494135646120009090049684646496468456468496846464968496844"};
         for(String value : permittedValues) {
-            SimpleSettingKey key1 = new SimpleSettingKey(value);
-            assertEquals("Expected and actual values should be the same!", value, key1.key());
+            SimpleSettingKey key = new SimpleSettingKey(value);
+            assertEquals("Expected and actual values should be the same!", value, key.key());
         }
     }
 }

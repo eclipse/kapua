@@ -14,6 +14,7 @@ package org.eclipse.kapua.commons.util;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.event.ServiceEntry;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -26,7 +27,7 @@ public class ClassUtilTest extends Assert {
     String serviceName, address;
 
     @Test
-    public void constructorTest() throws Exception {
+    public void classUtilTest() throws Exception {
         Constructor<ClassUtil> classUtilConstructor = ClassUtil.class.getDeclaredConstructor();
         classUtilConstructor.setAccessible(true);
         classUtilConstructor.newInstance();
@@ -53,6 +54,12 @@ public class ClassUtilTest extends Assert {
     }
 
     @Test
+    public void newInstanceStringTest() throws KapuaException {
+        assertNotNull("Null not expected.", ClassUtil.newInstance("java.lang.String", String.class));
+        assertThat("Instance of String expected.", ClassUtil.newInstance("java.lang.String", String.class), IsInstanceOf.instanceOf(String.class));
+    }
+
+    @Test
     public void extendedNewInstanceTest() throws KapuaException {
         assertNotNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, new Class<?>[]{String.class, String.class}, new Object[]{serviceName, address}));
     }
@@ -65,6 +72,11 @@ public class ClassUtilTest extends Assert {
     @Test(expected = KapuaException.class)
     public void extendedNewInstanceParameterTypeNullTest() throws KapuaException {
         assertNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, null, new Object[]{serviceName, address}));
+    }
+
+    @Test(expected = KapuaException.class)
+    public void extendedNewInstanceEmptyParametersTypeTest() throws KapuaException {
+        ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, new Class<?>[]{}, new Object[]{serviceName, address});
     }
 
     @Test(expected = KapuaException.class)

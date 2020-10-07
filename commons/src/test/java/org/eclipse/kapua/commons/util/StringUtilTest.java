@@ -22,19 +22,38 @@ import org.junit.experimental.categories.Category;
 @Category(JUnitTests.class)
 public class StringUtilTest extends Assert {
 
-    // splitValues Method Tests
     @Test
-    public void splitValuesNullTest() throws Exception {
-
-        String stringValue = "string";
-        assertNull(StringUtil.splitValues(null));
+    public void splitValuesNullTest() {
+        assertNull("Null expected.", StringUtil.splitValues(null));
     }
 
-    // stringToValue Method Tests
+    @Test
+    public void splitValuesTest() {
+        String[] delimiterStrings = {"string ,aa", "s,tring", ",string", "string,", "string,,", ",,string", "str,in,g", ",str,in,g,"};
+        String[] escapeStrings = {"\\str \\ing", "\\string \\", "\\str ing", "s\\\\tring", " strin\\g", "st\\ring", "\\", "str\\ing", "stri\\ng", "strin\\g", "string\\", "\\\\"};
+        String[] regularStrings = {"ss  sss               s", "string", "", "s tring", "s tri ng", "!@#$%^&*()_/.'|<>?|:1234567890"};
+
+        String[][] expectedDelimiterStrings = {{"string", "aa"}, {"s", "tring"}, {"", "string"}, {"string", ""}, {"string", "", ""}, {"", "", "string"}, {"str", "in", "g"}, {"", "str", "in", "g", ""}};
+        String[][] expectedEscapeStrings = {{"str ing"}, {"string"}, {"str ing"}, {"s\\tring"}, {"string"}, {"string"}, {""}, {"string"}, {"string"}, {"string"}, {"string"}, {"\\"}};
+        String[][] expectedRegularStrings = {{"ss  sss               s"}, {"string"}, {""}, {"s tring"}, {"s tri ng"}, {"!@#$%^&*()_/.'|<>?|:1234567890"}};
+
+        for (int i = 0; i < delimiterStrings.length; i++) {
+            assertArrayEquals("Expected and actual values should be the same.", expectedDelimiterStrings[i], StringUtil.splitValues(delimiterStrings[i]));
+        }
+
+        for (int i = 0; i < escapeStrings.length; i++) {
+            assertArrayEquals("Expected and actual values should be the same.", expectedEscapeStrings[i], StringUtil.splitValues(escapeStrings[i]));
+        }
+
+        for (int i = 0; i < regularStrings.length; i++) {
+            assertArrayEquals("Expected and actual values should be the same.", expectedRegularStrings[i], StringUtil.splitValues(regularStrings[i]));
+        }
+    }
+
     @Test
     public void stringToValueNullStringTest() throws Exception {
         try {
-            assertNull(StringUtil.stringToValue("stringType", null));
+            assertNull("Null expected.", StringUtil.stringToValue("stringType", null));
         } catch (KapuaIllegalArgumentException e) {
             fail("No exception expected for NULL string in StringUtil.stringToValue method");
 
@@ -42,33 +61,41 @@ public class StringUtilTest extends Assert {
     }
 
     @Test
-    public void stringToValueNullTypeTest() throws Exception {
+    public void stringToValueNullTypeTest() {
         try {
             StringUtil.stringToValue(null, "string");
         } catch (KapuaException e) {
-            // Expected
+            assertEquals("Expected and actual values should be the same.", KapuaException.internalError("Invalid type").toString(), e.toString());
         }
     }
 
     @Test
-    public void stringToValueEmptyTypeTest() throws Exception {
+    public void stringToValueEmptyTypeTest() {
         try {
             StringUtil.stringToValue("", "string");
         } catch (KapuaException e) {
-            // Expected
+            assertEquals("Expected and actual values should be the same.", KapuaException.internalError("Invalid type").toString(), e.toString());
         }
     }
 
     @Test
-    public void stringTovalueStringTypeTest() throws Exception {
+    public void stringToValueIncorrectTypeTest() {
+        try {
+            StringUtil.stringToValue("Object", "string");
+        } catch (Exception e) {
+            assertEquals("Expected and actual values should be the same.", new IllegalArgumentException("Object").toString(), e.toString());
+        }
+    }
 
+    @Test
+    public void stringToValueStringTypeTest() throws Exception {
         String[] stringArray = new String[]{"a", "ab", "abc", "string", "String", "STRING", "!#$%&'()=?*QWERTYUIOPŠĐASDFGHJKLČĆŽZXCVBNM;:_>Z⁄@‹›€°·‚Test±}{∏Ø’”ÆæÒÔÓÌ~«¿ˇÈ¯Ñ◊"};
         String[] type = new String[]{"sTring", "strinG", "string", "STRING"};
 
         // Positive tests
         for (int k = 0; k < stringArray.length; k++) {
             try {
-                assertEquals(stringArray[k], StringUtil.stringToValue("String", stringArray[k]));
+                assertEquals("Expected and actual values should be the same.", stringArray[k], StringUtil.stringToValue("String", stringArray[k]));
             } catch (Exception e) {
                 fail("No exception expected for" + stringArray[k] + "string");
             }
@@ -78,10 +105,10 @@ public class StringUtilTest extends Assert {
         for (int i = 0; i < stringArray.length; i++) {
             for (int j = 0; j < type.length; j++) {
                 try {
-                    assertEquals(stringArray[i], StringUtil.stringToValue(type[j], stringArray[i]));
+                    StringUtil.stringToValue(type[j], stringArray[i]);
                     fail("Assert should fail as 'type' parameter is not valid");
                 } catch (Exception e) {
-                    // Expected
+                    assertEquals("IllegalArgumentException expected.", new IllegalArgumentException(type[j]).toString(), e.toString());
                 }
             }
         }
@@ -89,7 +116,6 @@ public class StringUtilTest extends Assert {
 
     @Test
     public void stringToValueBooleanTypeTest() throws Exception {
-
         String booleanNegativeType[] = new String[]{"bOolean", "booleaN", "BOOLEAN"};
 
         String booleanTrueValues[] = new String[]{"true", "True", "tRue", "truE", "TRUE"};
@@ -97,13 +123,13 @@ public class StringUtilTest extends Assert {
 
         // boolean.True positive tests
         for (int i = 0; i < booleanTrueValues.length; i++) {
-            assertEquals(Boolean.TRUE, StringUtil.stringToValue("Boolean", booleanTrueValues[i]));
+            assertEquals("Expected and actual values should be the same.", Boolean.TRUE, StringUtil.stringToValue("Boolean", booleanTrueValues[i]));
         }
 
         // bolean.True positive tests
         for (int i = 0; i < booleanTrueValues.length; i++) {
             try {
-                assertEquals(Boolean.TRUE, StringUtil.stringToValue("Boolean", booleanTrueValues[i]));
+                assertEquals("Expected and actual values should be the same.", Boolean.TRUE, StringUtil.stringToValue("Boolean", booleanTrueValues[i]));
             } catch (Exception e) {
                 fail("No exception expected for" + booleanTrueValues[i]);
             }
@@ -112,10 +138,10 @@ public class StringUtilTest extends Assert {
         for (int i = 0; i < booleanTrueValues.length; i++) {
             for (int j = 0; j < booleanNegativeType.length; j++) {
                 try {
-                    assertEquals(booleanTrueValues[i], StringUtil.stringToValue(booleanNegativeType[j], booleanTrueValues[i]));
+                    StringUtil.stringToValue(booleanNegativeType[j], booleanTrueValues[i]);
                     fail("Illegal argument provided for 'type' parameter in method stringToValue().");
                 } catch (Exception e) {
-                    // expected
+                    assertEquals("IllegalArgumentException expected.", new IllegalArgumentException(booleanNegativeType[j]).toString(), e.toString());
                 }
             }
         }
@@ -123,7 +149,7 @@ public class StringUtilTest extends Assert {
         //boolean.False positive tests
         for (int i = 0; i < booleanFalseValues.length; i++) {
             try {
-                assertEquals(Boolean.FALSE, StringUtil.stringToValue("Boolean", booleanFalseValues[i]));
+                assertEquals("Expected and actual values should be the same.", Boolean.FALSE, StringUtil.stringToValue("Boolean", booleanFalseValues[i]));
             } catch (Exception e) {
                 fail("No exception expected for" + booleanFalseValues[i]);
             }
@@ -133,10 +159,10 @@ public class StringUtilTest extends Assert {
         for (int i = 0; i < booleanFalseValues.length; i++) {
             for (int j = 0; j < booleanNegativeType.length; j++) {
                 try {
-                    assertEquals(booleanFalseValues[i], StringUtil.stringToValue(booleanNegativeType[j], booleanFalseValues[i]));
+                    StringUtil.stringToValue(booleanNegativeType[j], booleanFalseValues[i]);
                     fail("Illegal argument provided for 'type' parameter in method stringToValue().");
                 } catch (Exception e) {
-                    // expected
+                    assertEquals("IllegalArgumentException expected.", new IllegalArgumentException(booleanNegativeType[j]).toString(), e.toString());
                 }
 
             }
@@ -145,7 +171,6 @@ public class StringUtilTest extends Assert {
 
     @Test
     public void stringToValueByteTypeTest() throws Exception {
-
         String[] byteTypeInvalidValues = new String[]{"bYte", "bytE", "BYTE"};
         String byteTypeValidValues = "Byte";
         Byte[] byteValues = new Byte[]{-128, 127, 0};
@@ -153,7 +178,7 @@ public class StringUtilTest extends Assert {
         // Byte positive tests
         for (int i = 0; i < byteValues.length; i++) {
             try {
-                assertEquals(byteValues[i], StringUtil.stringToValue(byteTypeValidValues, byteValues[i].toString()));
+                assertEquals("Expected and actual values should be the same.", byteValues[i], StringUtil.stringToValue(byteTypeValidValues, byteValues[i].toString()));
             } catch (Exception e) {
                 fail("No exception expected for" + byteValues[i]);
             }
@@ -163,9 +188,9 @@ public class StringUtilTest extends Assert {
         for (int i = 0; i < byteTypeInvalidValues.length; i++) {
             for (int j = 0; j < byteValues.length; j++) {
                 try {
-                    assertEquals(byteValues[j], StringUtil.stringToValue(byteTypeInvalidValues[i], byteValues[j].toString()));
+                    StringUtil.stringToValue(byteTypeInvalidValues[i], byteValues[j].toString());
                 } catch (Exception e) {
-                    // expected
+                    assertEquals("IllegalArgumentException expected.", new IllegalArgumentException(byteTypeInvalidValues[i]).toString(), e.toString());
                 }
             }
         }
@@ -173,7 +198,6 @@ public class StringUtilTest extends Assert {
 
     @Test
     public void stringToValueCharTypeTest() throws Exception {
-
         Character[] characterArray = new Character[]{'!', '#', '$', '%', '&', '(', ')', '=', '?', '*', '/', '1', '2', '3', '4', 'A', 'B', 'C', 'a', 'b', 'c'};
         String[] charInvalidType = new String[]{"cHar", "chaR", "Character", "cHaracter", "CHARACTER", "CHAR"};
         String charValidType = "Char";
@@ -181,7 +205,7 @@ public class StringUtilTest extends Assert {
         // Character positive tests
         for (int i = 0; i < characterArray.length; i++) {
             try {
-                assertEquals(characterArray[i], StringUtil.stringToValue(charValidType, String.valueOf(characterArray[i])));
+                assertEquals("Expected and actual values should be the same.", characterArray[i], StringUtil.stringToValue(charValidType, String.valueOf(characterArray[i])));
             } catch (Exception e) {
                 fail("No exception expected for" + characterArray[i]);
             }
@@ -191,9 +215,9 @@ public class StringUtilTest extends Assert {
         for (int i = 0; i < characterArray.length; i++) {
             for (int j = 0; j < charInvalidType.length; j++) {
                 try {
-                    assertEquals(characterArray[i], StringUtil.stringToValue(charInvalidType[j], String.valueOf(characterArray[i])));
+                    StringUtil.stringToValue(charInvalidType[j], String.valueOf(characterArray[i]));
                 } catch (Exception e) {
-                    // expected
+                    assertEquals("IllegalArgumentException expected.", new IllegalArgumentException(charInvalidType[j]).toString(), e.toString());
                 }
             }
         }
@@ -201,7 +225,6 @@ public class StringUtilTest extends Assert {
 
     @Test
     public void stringToValueDoubleTypeTest() throws Exception {
-
         String doubleValidType = "Double";
         String[] doubleInvalidType = new String[]{"dOuble", "doublE", "DOUBLE"};
         Double[] doubleValues = new Double[]{-1.781273812737812731273129312, 1.781273812737812731273129312, 0.0};
@@ -209,7 +232,7 @@ public class StringUtilTest extends Assert {
         // Double positive tests
         for (int i = 0; i < doubleValues.length; i++) {
             try {
-                assertEquals(doubleValues[i], StringUtil.stringToValue(doubleValidType, String.valueOf(doubleValues[i])));
+                assertEquals("Expected and actual values should be the same.", doubleValues[i], StringUtil.stringToValue(doubleValidType, String.valueOf(doubleValues[i])));
             } catch (Exception e) {
                 fail("No exception expected for" + doubleValues[i]);
             }
@@ -219,9 +242,9 @@ public class StringUtilTest extends Assert {
         for (int i = 0; i < doubleValues.length; i++) {
             for (int j = 0; j < doubleInvalidType.length; j++) {
                 try {
-                    assertEquals(doubleValues[i], StringUtil.stringToValue(doubleInvalidType[j], String.valueOf(doubleValues[i])));
+                    StringUtil.stringToValue(doubleInvalidType[j], String.valueOf(doubleValues[i]));
                 } catch (Exception e) {
-                    // expected
+                    assertEquals("IllegalArgumentException expected.", new IllegalArgumentException(doubleInvalidType[j]).toString(), e.toString());
                 }
             }
         }
@@ -229,7 +252,6 @@ public class StringUtilTest extends Assert {
 
     @Test
     public void stringToValueFloatTypeTest() throws Exception {
-
         String floatValidType = "Float";
         String[] floatinvalidType = new String[]{"fLoat", "floaT", "FLOAT"};
         Float[] floatValues = new Float[]{-1.7811233F, 1.7811233F, 0F};
@@ -237,7 +259,7 @@ public class StringUtilTest extends Assert {
         // Float positive tests
         for (int i = 0; i < floatValues.length; i++) {
             try {
-                assertEquals(floatValues[i], StringUtil.stringToValue(floatValidType, String.valueOf(floatValues[i])));
+                assertEquals("Expected and actual values should be the same.", floatValues[i], StringUtil.stringToValue(floatValidType, String.valueOf(floatValues[i])));
             } catch (Exception e) {
                 fail("No exception expected for" + floatValues[i]);
             }
@@ -247,9 +269,9 @@ public class StringUtilTest extends Assert {
         for (int i = 0; i < floatValues.length; i++) {
             for (int j = 0; j < floatinvalidType.length; j++) {
                 try {
-                    assertEquals(floatValues[i], StringUtil.stringToValue(floatinvalidType[j], String.valueOf(floatValues[i])));
+                    StringUtil.stringToValue(floatinvalidType[j], String.valueOf(floatValues[i]));
                 } catch (Exception e) {
-                    // expected
+                    assertEquals("IllegalArgumentException expected.", new IllegalArgumentException(floatinvalidType[j]).toString(), e.toString());
                 }
             }
         }
@@ -257,7 +279,6 @@ public class StringUtilTest extends Assert {
 
     @Test
     public void stringToValueIntegerTypeTest() throws Exception {
-
         String integerValidType = "Integer";
         String[] integerInvalidType = new String[]{"iNteger", "integeR", "INTEGER"};
         Integer[] integerValues = new Integer[]{-2147483648, 2147483647, 0};
@@ -265,7 +286,7 @@ public class StringUtilTest extends Assert {
         // Float positive tests
         for (int i = 0; i < integerValues.length; i++) {
             try {
-                assertEquals(integerValues[i], StringUtil.stringToValue(integerValidType, String.valueOf(integerValues[i])));
+                assertEquals("Expected and actual values should be the same.", integerValues[i], StringUtil.stringToValue(integerValidType, String.valueOf(integerValues[i])));
             } catch (Exception e) {
                 fail("No exception expected for" + integerValues[i]);
             }
@@ -275,9 +296,9 @@ public class StringUtilTest extends Assert {
         for (int i = 0; i < integerValues.length; i++) {
             for (int j = 0; j < integerInvalidType.length; j++) {
                 try {
-                    assertEquals(integerValues[i], StringUtil.stringToValue(integerInvalidType[j], String.valueOf(integerValues[i])));
+                    StringUtil.stringToValue(integerInvalidType[j], String.valueOf(integerValues[i]));
                 } catch (Exception e) {
-                    // expected
+                    assertEquals("IllegalArgumentException expected.", new IllegalArgumentException(integerInvalidType[j]).toString(), e.toString());
                 }
             }
         }
@@ -285,7 +306,6 @@ public class StringUtilTest extends Assert {
 
     @Test
     public void stringToValueLongTypeTest() throws Exception {
-
         String longValidType = "Long";
         String[] longInvalidType = new String[]{"lOng", "lonG", "LONG"};
         Long[] longValues = new Long[]{-922337203685477600L, 922337203685477600L, 0L};
@@ -293,7 +313,7 @@ public class StringUtilTest extends Assert {
         // Long positive tests
         for (int i = 0; i < longValues.length; i++) {
             try {
-                assertEquals(longValues[i], StringUtil.stringToValue(longValidType, String.valueOf(longValues[i])));
+                assertEquals("Expected and actual values should be the same.", longValues[i], StringUtil.stringToValue(longValidType, String.valueOf(longValues[i])));
             } catch (Exception e) {
                 fail("No exception expected for" + longValues[i]);
             }
@@ -303,9 +323,9 @@ public class StringUtilTest extends Assert {
         for (int i = 0; i < longValues.length; i++) {
             for (int j = 0; j < longInvalidType.length; j++) {
                 try {
-                    assertEquals(longValues[i], StringUtil.stringToValue(longInvalidType[j], String.valueOf(longValues[i])));
+                    StringUtil.stringToValue(longInvalidType[j], String.valueOf(longValues[i]));
                 } catch (Exception e) {
-                    // expected
+                    assertEquals("IllegalArgumentException expected.", new IllegalArgumentException(longInvalidType[j]).toString(), e.toString());
                 }
             }
         }
@@ -313,7 +333,6 @@ public class StringUtilTest extends Assert {
 
     @Test
     public void stringToValueShortTypeTest() throws Exception {
-
         String shortValidType = "Short";
         String[] shortInvalidType = new String[]{"sHort", "shorT", "SHORT"};
         Short[] shortValues = new Short[]{-32768, 32767, 0};
@@ -321,7 +340,7 @@ public class StringUtilTest extends Assert {
         // Short positive tests
         for (int i = 0; i < shortValues.length; i++) {
             try {
-                assertEquals(shortValues[i], StringUtil.stringToValue(shortValidType, String.valueOf(shortValues[i])));
+                assertEquals("Expected and actual values should be the same.", shortValues[i], StringUtil.stringToValue(shortValidType, String.valueOf(shortValues[i])));
             } catch (Exception e) {
                 fail("No exception expected for" + shortValues[i]);
             }
@@ -331,9 +350,9 @@ public class StringUtilTest extends Assert {
         for (int i = 0; i < shortValues.length; i++) {
             for (int j = 0; j < shortInvalidType.length; j++) {
                 try {
-                    assertEquals(shortValues[i], StringUtil.stringToValue(shortInvalidType[j], String.valueOf(shortValues[i])));
+                    StringUtil.stringToValue(shortInvalidType[j], String.valueOf(shortValues[i]));
                 } catch (Exception e) {
-                    // expected
+                    assertEquals("IllegalArgumentException expected.", new IllegalArgumentException(shortInvalidType[j]).toString(), e.toString());
                 }
             }
         }
@@ -341,7 +360,6 @@ public class StringUtilTest extends Assert {
 
     @Test
     public void stringToValuePasswordTypeTest() throws Exception {
-
         String passwordValidType = "Password";
         String[] passwordInvalidType = new String[]{"pAssword", "passworD", "PASSWORD"};
         Password password1 = new Password("a");
@@ -353,7 +371,7 @@ public class StringUtilTest extends Assert {
         // Password positive tests
         for (int i = 0; i < passwordValues.length; i++) {
             try {
-                assertEquals(String.valueOf(passwordValues[i]), StringUtil.stringToValue(passwordValidType, String.valueOf(passwordValues[i])).toString());
+                assertEquals("Expected and actual values should be the same.", String.valueOf(passwordValues[i]), StringUtil.stringToValue(passwordValidType, String.valueOf(passwordValues[i])).toString());
             } catch (Exception e) {
                 fail("No exception expected for" + passwordValues[i]);
             }
@@ -363,29 +381,26 @@ public class StringUtilTest extends Assert {
         for (int i = 0; i < passwordValues.length; i++) {
             for (int j = 0; j < passwordInvalidType.length; j++) {
                 try {
-                    assertEquals(String.valueOf(passwordValues[i]), StringUtil.stringToValue(passwordInvalidType[j], String.valueOf(passwordValues[i])).toString());
+                    StringUtil.stringToValue(passwordInvalidType[j], String.valueOf(passwordValues[i])).toString();
                 } catch (Exception e) {
-                    // expected
+                    assertEquals("IllegalArgumentException expected.", new IllegalArgumentException(passwordInvalidType[j]).toString(), e.toString());
                 }
             }
         }
     }
 
-    // valueToString Method Tests
     @Test
-    public void valueToStringNullTest() throws Exception {
-
-        assertNull(StringUtil.valueToString(null));
+    public void valueToStringNullTest() {
+        assertNull("Null expected.", StringUtil.valueToString(null));
     }
 
     @Test
-    public void valueToStringTypeStringTest() throws Exception {
-
+    public void valueToStringTypeStringTest() {
         String[] stringValues = new String[]{"", "s", "string", "STRING", "abcdefgrtqyweuqywueuqeuuqweqabcdefgrtqyweuqywueuqeuuqweqabcdefgrtqyweuqywueuqeuuqweqabcdefgrtqyweuqywueuqeuuqweqabcdefgrtqyweuqywueuqeuuqweqabcdefgrtqyweuqywueuqeuuqweqabcdefgrtqyweuqywueuqeuuqweqabcdefgrtqyweuqywueuqeuuqweqabcdefgrtqyweuqywueuqeuuqweqabcdefgrtqyweuqywueuqeuuqweqabcdefgrtqyweuqywueuqeuuqweqabcdefgrtqyweuqywueuqeuuqweq"};
 
         for (int i = 0; i < stringValues.length; i++) {
             try {
-                assertEquals(stringValues[i], StringUtil.valueToString(stringValues[i]));
+                assertEquals("Expected and actual values should be the same.", stringValues[i], StringUtil.valueToString(stringValues[i]));
             } catch (Exception e) {
                 fail("Illegal argument provided for  method valueToString()");
             }
@@ -393,12 +408,11 @@ public class StringUtilTest extends Assert {
     }
 
     @Test
-    public void valueToStringTypeLongTest() throws Exception {
-
+    public void valueToStringTypeLongTest() {
         Long[] longValues = new Long[]{0L, 922337203685477600L, -922337203685477600L};
         for (int i = 0; i < longValues.length; i++) {
             try {
-                assertEquals(longValues[i].toString(), StringUtil.valueToString(longValues[i]));
+                assertEquals("Expected and actual values should be the same.", longValues[i].toString(), StringUtil.valueToString(longValues[i]));
             } catch (Exception e) {
                 fail("Illegal argument provided for  method valueToString()");
             }
@@ -406,12 +420,11 @@ public class StringUtilTest extends Assert {
     }
 
     @Test
-    public void valueToStringTypeDoubleTest() throws Exception {
-
+    public void valueToStringTypeDoubleTest() {
         Double[] doubleValues = new Double[]{0.0, 1.781273812737812731273129312, -1.781273812737812731273129312};
         for (int i = 0; i < doubleValues.length; i++) {
             try {
-                assertEquals(doubleValues[i].toString(), StringUtil.valueToString(doubleValues[i]));
+                assertEquals("Expected and actual values should be the same.", doubleValues[i].toString(), StringUtil.valueToString(doubleValues[i]));
             } catch (Exception e) {
                 fail("Illegal argument provided for  method valueToString()");
             }
@@ -419,12 +432,11 @@ public class StringUtilTest extends Assert {
     }
 
     @Test
-    public void valueToStringTypeFloatTest() throws Exception {
-
+    public void valueToStringTypeFloatTest() {
         Float[] floatValues = new Float[]{0F, 1.781123312321311231F, -1.7811233323123F};
         for (int i = 0; i < floatValues.length; i++) {
             try {
-                assertEquals(floatValues[i].toString(), StringUtil.valueToString(floatValues[i]));
+                assertEquals("Expected and actual values should be the same.", floatValues[i].toString(), StringUtil.valueToString(floatValues[i]));
             } catch (Exception e) {
                 fail("Illegal argument provided for  method valueToString()");
             }
@@ -432,12 +444,11 @@ public class StringUtilTest extends Assert {
     }
 
     @Test
-    public void valueToStringTypeIntegerTest() throws Exception {
-
+    public void valueToStringTypeIntegerTest() {
         Integer[] integerValues = new Integer[]{2147483647, -2147483647, 0};
         for (int i = 0; i < integerValues.length; i++) {
             try {
-                assertEquals(integerValues[i].toString(), StringUtil.valueToString(integerValues[i]));
+                assertEquals("Expected and actual values should be the same.", integerValues[i].toString(), StringUtil.valueToString(integerValues[i]));
             } catch (Exception e) {
                 fail("Illegal argument provided for  method valueToString()");
             }
@@ -445,12 +456,11 @@ public class StringUtilTest extends Assert {
     }
 
     @Test
-    public void valueToStringTypeByteTest() throws Exception {
-
+    public void valueToStringTypeByteTest() {
         Byte[] byteValues = new Byte[]{-128, 127, 0};
         for (int i = 0; i < byteValues.length; i++) {
             try {
-                assertEquals(byteValues[i].toString(), StringUtil.valueToString(byteValues[i]));
+                assertEquals("Expected and actual values should be the same.", byteValues[i].toString(), StringUtil.valueToString(byteValues[i]));
             } catch (Exception e) {
                 fail("Illegal argument provided for  method valueToString()");
             }
@@ -458,12 +468,11 @@ public class StringUtilTest extends Assert {
     }
 
     @Test
-    public void valueToStringTypeCharacterTest() throws Exception {
-
+    public void valueToStringTypeCharacterTest() {
         Character[] characterValues = new Character[]{'a', '1', '@'};
         for (int i = 0; i < characterValues.length; i++) {
             try {
-                assertEquals(characterValues[i].toString(), StringUtil.valueToString(characterValues[i]));
+                assertEquals("Expected and actual values should be the same.", characterValues[i].toString(), StringUtil.valueToString(characterValues[i]));
             } catch (Exception e) {
                 fail("Illegal argument provided for  method valueToString()");
             }
@@ -471,12 +480,11 @@ public class StringUtilTest extends Assert {
     }
 
     @Test
-    public void valueToStringTypeBooleanTest() throws Exception {
-
+    public void valueToStringTypeBooleanTest() {
         Boolean[] booleanValues = new Boolean[]{Boolean.TRUE, Boolean.FALSE};
         for (int i = 0; i < booleanValues.length; i++) {
             try {
-                assertEquals(booleanValues[i].toString(), StringUtil.valueToString(booleanValues[i]));
+                assertEquals("Expected and actual values should be the same.", booleanValues[i].toString(), StringUtil.valueToString(booleanValues[i]));
             } catch (Exception e) {
                 fail("Illegal argument provided for  method valueToString()");
             }
@@ -484,12 +492,11 @@ public class StringUtilTest extends Assert {
     }
 
     @Test
-    public void valueToStringTypeShortTest() throws Exception {
-
+    public void valueToStringTypeShortTest() {
         Short[] shortValues = new Short[]{-32768, 32767, 0};
         for (int i = 0; i < shortValues.length; i++) {
             try {
-                assertEquals(shortValues[i].toString(), StringUtil.valueToString(shortValues[i]));
+                assertEquals("Expected and actual values should be the same.", shortValues[i].toString(), StringUtil.valueToString(shortValues[i]));
             } catch (Exception e) {
                 fail("Illegal argument provided for  method valueToString()");
             }
@@ -497,15 +504,14 @@ public class StringUtilTest extends Assert {
     }
 
     @Test
-    public void valueToStringTypePassword() throws Exception {
-
+    public void valueToStringTypePassword() {
         Password password1 = new Password("abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPRQSTUVXYZ");
         Password password2 = new Password("01234567890");
         Password password3 = new Password("!#$%&'()=?*/+-.,<>;:_⁄@‹›€°·‚Password±}{∏¿ˇÈ~");
         Password[] passwordValue = new Password[]{password1, password2, password3};
         for (int i = 0; i < passwordValue.length; i++) {
             try {
-                assertEquals(passwordValue[i].toString(), StringUtil.valueToString(passwordValue[i]));
+                assertEquals("Expected and actual values should be the same.", passwordValue[i].toString(), StringUtil.valueToString(passwordValue[i]));
             } catch (Exception e) {
                 fail("Illegal argument provided for  method valueToString()");
             }
@@ -513,99 +519,119 @@ public class StringUtilTest extends Assert {
     }
 
     @Test
-    public void valueToStringTypeStringArraytest() throws Exception {
-
-        String[] stringArray = new String[]{"string", "string2", "string3"};
+    public void valueToStringTypeStringArrayTest() {
+        String[] stringArray = new String[]{null, "string", "string2", "string3"};
         String resultString = "string,string2,string3";
-        assertEquals(resultString, StringUtil.valueToString(stringArray));
+        assertEquals("Expected and actual values should be the same.", resultString, StringUtil.valueToString(stringArray));
     }
 
     @Test
-    public void valueToStringTypeLongArrayTest() throws Exception {
-
-        Long[] longArray = new Long[]{0L, 1L, 12L, 123L, 1234L, 12345L, 123456L, 1234567L, 922337203685477600L, -1L, -12L, -123L, -1234L, -12345L, -922337203685477600L};
+    public void valueToStringTypeLongArrayTest() {
+        Long[] longArray = new Long[]{null, 0L, 1L, 12L, 123L, 1234L, 12345L, 123456L, 1234567L, 922337203685477600L, -1L, -12L, -123L, -1234L, -12345L, -922337203685477600L};
         String resultString = "0,1,12,123,1234,12345,123456,1234567,922337203685477600,-1,-12,-123,-1234,-12345,-922337203685477600";
-        assertEquals(resultString, StringUtil.valueToString(longArray));
+        assertEquals("Expected and actual values should be the same.", resultString, StringUtil.valueToString(longArray));
     }
 
     @Test
-    public void valueToStringTypeDoubleArrayTest() throws Exception {
-
-        Double[] doubleArray = new Double[]{0.0, 1.1, 1.23, 1.234, 1.2345, 1.23456, 1.234567, 1.7812738127378127};
+    public void valueToStringTypeDoubleArrayTest() {
+        Double[] doubleArray = new Double[]{null, 0.0, 1.1, 1.23, 1.234, 1.2345, 1.23456, 1.234567, 1.7812738127378127};
         String resultString = "0.0,1.1,1.23,1.234,1.2345,1.23456,1.234567,1.7812738127378127";
-        assertEquals(resultString, StringUtil.valueToString(doubleArray));
+        assertEquals("Expected and actual values should be the same.", resultString, StringUtil.valueToString(doubleArray));
     }
 
     @Test
-    public void valueToStringTypeFloatArrayTest() throws Exception {
-
-        Float[] floatArray = new Float[]{0.0F, 1.0F, 1.2F, 12.34F, 123.45F, 1234.56F, 12345.6789F, 1.7811233F, -0.0F, -1.23F, -12345.12345F};
+    public void valueToStringTypeFloatArrayTest() {
+        Float[] floatArray = new Float[]{null, 0.0F, 1.0F, 1.2F, 12.34F, 123.45F, 1234.56F, 12345.6789F, 1.7811233F, -0.0F, -1.23F, -12345.12345F};
         String resultString = "0.0,1.0,1.2,12.34,123.45,1234.56,12345.679,1.7811233,-0.0,-1.23,-12345.123";
-        assertEquals(resultString, StringUtil.valueToString(floatArray));
+        assertEquals("Expected and actual values should be the same.", resultString, StringUtil.valueToString(floatArray));
     }
 
     @Test
-    public void valueToStringTypeIntegerArrayTest() throws Exception {
-
-        Integer[] integerArray = new Integer[]{0, 1, 123, 12345, 12345, 32678, -0, -1, -12, -1234, -12345, -32676};
+    public void valueToStringTypeIntegerArrayTest() {
+        Integer[] integerArray = new Integer[]{null, 0, 1, 123, 12345, 12345, 32678, -0, -1, -12, -1234, -12345, -32676};
         String resultString = "0,1,123,12345,12345,32678,0,-1,-12,-1234,-12345,-32676";
-        assertEquals(resultString, StringUtil.valueToString(integerArray));
+        assertEquals("Expected and actual values should be the same.", resultString, StringUtil.valueToString(integerArray));
     }
 
     @Test
-    public void valueToStringTypeByteArrayTest() throws Exception {
-
-        Byte[] byteArray = new Byte[]{0, 1, 12, 123, 127, -0, -1, -12, -123, -128};
+    public void valueToStringTypeByteArrayTest() {
+        Byte[] byteArray = new Byte[]{null, 0, 1, 12, 123, 127, -0, -1, -12, -123, -128};
         String resultString = "0,1,12,123,127,0,-1,-12,-123,-128";
-        assertEquals(resultString, StringUtil.valueToString(byteArray));
+        assertEquals("Expected and actual values should be the same.", resultString, StringUtil.valueToString(byteArray));
     }
 
     @Test
-    public void valueToStringTypeCharacterArrayTest() throws Exception {
-
-        Character[] characterArray = new Character[]{'a', 'A', 'z', 'Z', '@', '!'};
+    public void valueToStringTypeCharacterArrayTest() {
+        Character[] characterArray = new Character[]{null, 'a', 'A', 'z', 'Z', '@', '!'};
         String resultString = "a,A,z,Z,@,!";
-        assertEquals(resultString, StringUtil.valueToString(characterArray));
+        assertEquals("Expected and actual values should be the same.", resultString, StringUtil.valueToString(characterArray));
     }
 
     @Test
-    public void valueToStringTypeBooleanArrayTest() throws Exception {
-
-        Boolean[] booleanArray = new Boolean[]{Boolean.FALSE, Boolean.TRUE};
+    public void valueToStringTypeBooleanArrayTest() {
+        Boolean[] booleanArray = new Boolean[]{null, Boolean.FALSE, Boolean.TRUE};
         String resultString = "false,true";
-        assertEquals(resultString, StringUtil.valueToString(booleanArray));
+        assertEquals("Expected and actual values should be the same.", resultString, StringUtil.valueToString(booleanArray));
     }
 
     @Test
-    public void valueToStringTypeShortArrayTest() throws Exception {
-
-        Short[] shortArray = new Short[]{0, 1, 12, 123, 1234, 32767, -32768, -1234, -123, -12, -1, -0};
+    public void valueToStringTypeShortArrayTest() {
+        Short[] shortArray = new Short[]{null, 0, 1, 12, 123, 1234, 32767, -32768, -1234, -123, -12, -1, -0};
         String resultString = "0,1,12,123,1234,32767,-32768,-1234,-123,-12,-1,0";
-        assertEquals(resultString, StringUtil.valueToString(shortArray));
+        assertEquals("Expected and actual values should be the same.", resultString, StringUtil.valueToString(shortArray));
     }
 
     @Test
-    public void valueToStringTypePasswordArrayTest() throws Exception {
-
+    public void valueToStringTypePasswordArrayTest() {
         Password password1 = new Password("abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPRQSTUVXYZ");
         Password password2 = new Password("01234567890");
         Password password3 = new Password("!#$%&'()=?*/+-.<>;:_⁄@‹›€°·‚Password±}{∏¿ˇÈ~");
-        Password[] passwordArray = new Password[]{password1, password2, password3};
+        Password[] passwordArray = new Password[]{null, password1, password2, password3};
         String resultString = "abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPRQSTUVXYZ,01234567890,!#$%&'()=?*/+-.<>;:_⁄@‹›€°·‚Password±}{∏¿ˇÈ~";
-        assertEquals(resultString, StringUtil.valueToString(passwordArray));
+        assertEquals("Expected and actual values should be the same.", resultString, StringUtil.valueToString(passwordArray));
     }
 
     @Test
-    public void unescapeStringTest() throws Exception {
+    public void valueToStringObjectTest() {
+        Object object = new Object();
+        assertNull("Null expected.", StringUtil.valueToString(object));
+    }
 
-        String[] stringArray = new String[]{"        string", "string      "};
-        String[] resultString = new String[]{"string"};
+    @Test
+    public void escapeStringTest() {
+        String escapeString = "\\, ";
+        String expectedString = "\\\\\\,\\ ";
+        assertEquals("Expected and actual values should be the same.", expectedString, StringUtil.escapeString(escapeString));
+    }
+
+    @Test
+    public void escapeStringNullTest() {
+        try {
+            StringUtil.escapeString(null);
+        } catch (Exception e) {
+            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), e.toString());
+        }
+    }
+
+    @Test
+    public void unescapeStringTest() {
+        String[] stringArray = new String[]{"        string", "string      ", "   str  ing", "str  ing   ", "str ing", "str\\ ing", "str\\\\\\,ing", "   str\\ \\, ing   "};
+        String[] resultString = new String[]{"string", "string", "str  ing", "str  ing", "str ing", "str ing", "str,ing", "str , ing"};
         for (int i = 0; i < stringArray.length; i++) {
             try {
-                assertEquals(resultString[0], StringUtil.unescapeString(stringArray[i]));
+                assertEquals("Expected and actual values should be the same.", resultString[i], StringUtil.unescapeString(stringArray[i]));
             } catch (Exception e) {
                 fail("Illegal argument provided for method escapedString()");
             }
+        }
+    }
+
+    @Test
+    public void unescapeStringNullTest() {
+        try {
+            StringUtil.unescapeString(null);
+        } catch (Exception e) {
+            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), e.toString());
         }
     }
 }
