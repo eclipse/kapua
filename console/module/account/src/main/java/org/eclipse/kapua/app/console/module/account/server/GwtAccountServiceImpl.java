@@ -701,7 +701,8 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
 
                 for (Account a : accounts.getItems()) {
                     GwtAccount gwtAccount = KapuaGwtAccountModelConverter.convertAccount(a);
-                    gwtAccount.setModifiedByName(usernameMap.get(gwtAccount.getCreatedBy()));
+                    gwtAccount.setCreatedByName(usernameMap.get(gwtAccount.getCreatedBy()));
+                    gwtAccount.setModifiedByName(usernameMap.get(gwtAccount.getModifiedBy()));
                     gwtAccounts.add(gwtAccount);
                 }
             }
