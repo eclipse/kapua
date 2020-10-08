@@ -25,11 +25,20 @@ public class DeviceManagementResponseException extends DeviceManagementException
 
     /**
      * Constructor.
+     */
+    public DeviceManagementResponseException() {
+        super(DeviceManagementResponseErrorCodes.RESPONSE_PARSE_EXCEPTION);
+        this.responsePayload = null;
+        this.responsePayloadBody = null;
+    }
+
+    /**
+     * Constructor.
      *
      * @param cause the root cause of the {@link Exception}.
      */
     public DeviceManagementResponseException(@NotNull Throwable cause, @NotNull KapuaResponsePayload responsePayload) {
-        super(DeviceManagementGenericErrorCodes.RESPONSE_PARSE_EXCEPTION, cause, responsePayload);
+        super(DeviceManagementResponseErrorCodes.RESPONSE_PARSE_EXCEPTION, cause, responsePayload);
         this.responsePayload = responsePayload;
         this.responsePayloadBody = null;
     }
@@ -40,7 +49,7 @@ public class DeviceManagementResponseException extends DeviceManagementException
      * @param cause the root cause of the {@link Exception}.
      */
     public DeviceManagementResponseException(@NotNull Throwable cause, @NotNull Object responsePayloadBody) {
-        super(DeviceManagementGenericErrorCodes.RESPONSE_PARSE_EXCEPTION, cause, responsePayloadBody);
+        super(DeviceManagementResponseErrorCodes.RESPONSE_PARSE_EXCEPTION, cause, responsePayloadBody);
         this.responsePayload = null;
         this.responsePayloadBody = responsePayloadBody;
     }

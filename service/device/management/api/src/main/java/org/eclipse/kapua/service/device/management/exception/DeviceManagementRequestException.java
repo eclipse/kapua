@@ -29,7 +29,7 @@ public class DeviceManagementRequestException extends DeviceManagementException 
      * @since 1.1.0
      */
     public DeviceManagementRequestException(@NotNull Throwable cause, @NotNull KapuaSerializable kapuaSerializable) {
-        super(DeviceManagementGenericErrorCodes.REQUEST_EXCEPTION, cause, kapuaSerializable);
+        super(DeviceManagementRequestErrorCodes.REQUEST_EXCEPTION, cause, kapuaSerializable);
         this.kapuaSerializable = kapuaSerializable;
         this.object = null;
     }
@@ -41,7 +41,7 @@ public class DeviceManagementRequestException extends DeviceManagementException 
      * @since 1.1.0
      */
     public DeviceManagementRequestException(@NotNull Throwable cause, @NotNull Object object) {
-        super(DeviceManagementGenericErrorCodes.REQUEST_EXCEPTION, cause, object);
+        super(DeviceManagementRequestErrorCodes.REQUEST_EXCEPTION, cause, object);
         this.kapuaSerializable = null;
         this.object = object;
     }

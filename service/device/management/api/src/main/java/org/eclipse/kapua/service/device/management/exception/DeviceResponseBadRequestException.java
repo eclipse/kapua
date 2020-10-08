@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.exception;
 
-public class DeviceNeverConnectedException extends DeviceManagementException {
+public class DeviceResponseBadRequestException extends DeviceManagementException{
 
-    private static final long serialVersionUID = -8225341071813065890L;
+    private static final long serialVersionUID = 768897121791826654L;
 
-    public DeviceNeverConnectedException() {
-        super(DeviceManagementConnectionErrorCodes.DEVICE_NEVER_CONNECTED);
+    public DeviceResponseBadRequestException() {
+        super(DeviceManagementResponseErrorCodes.RESPONSE_BAD_REQUEST);
     }
 }

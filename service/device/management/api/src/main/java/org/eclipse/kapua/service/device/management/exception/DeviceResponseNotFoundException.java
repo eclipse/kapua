@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.exception;
 
-public class DeviceManagementRequestBadMethodException extends DeviceManagementException {
+public class DeviceResponseNotFoundException extends DeviceManagementException {
 
-    private static final long serialVersionUID = 2544641159548768773L;
+    private static final long serialVersionUID = 979552606398189720L;
 
-    public DeviceManagementRequestBadMethodException() {
-        super(DeviceManagementGenericErrorCodes.REQUEST_BAD_METHOD);
+    public DeviceResponseNotFoundException() {
+        super(DeviceManagementResponseErrorCodes.RESPONSE_NOT_FOUND);
     }
 }

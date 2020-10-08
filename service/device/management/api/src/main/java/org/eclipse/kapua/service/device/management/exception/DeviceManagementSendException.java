@@ -33,7 +33,7 @@ public class DeviceManagementSendException extends DeviceManagementException {
      * @since 1.1.0
      */
     public DeviceManagementSendException(@NotNull KapuaRequestMessage requestMessage) {
-        super(DeviceManagementGenericErrorCodes.SEND_ERROR, requestMessage);
+        super(DeviceManagementSendErrorCodes.SEND_ERROR, requestMessage);
         this.requestMessage = requestMessage;
     }
 
@@ -45,7 +45,7 @@ public class DeviceManagementSendException extends DeviceManagementException {
      * @since 1.1.0
      */
     public DeviceManagementSendException(@NotNull Throwable cause, @NotNull KapuaRequestMessage requestMessage) {
-        super(DeviceManagementGenericErrorCodes.SEND_ERROR, cause, requestMessage);
+        super(DeviceManagementSendErrorCodes.SEND_ERROR, cause, requestMessage);
         this.requestMessage = requestMessage;
     }
 

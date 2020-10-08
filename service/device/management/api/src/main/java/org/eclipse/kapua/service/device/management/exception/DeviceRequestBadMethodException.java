@@ -11,11 +11,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.exception;
 
-public class DeviceNeverConnectedException extends DeviceManagementException {
+public class DeviceRequestBadMethodException extends DeviceManagementException {
 
-    private static final long serialVersionUID = -8225341071813065890L;
+    private static final long serialVersionUID = 2544641159548768773L;
 
-    public DeviceNeverConnectedException() {
-        super(DeviceManagementConnectionErrorCodes.DEVICE_NEVER_CONNECTED);
+    public DeviceRequestBadMethodException() {
+        super(DeviceManagementRequestErrorCodes.REQUEST_BAD_METHOD);
     }
 }
