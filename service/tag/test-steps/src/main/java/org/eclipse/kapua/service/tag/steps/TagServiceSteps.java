@@ -151,8 +151,8 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @And("^Tag with name \"([^\"]*)\"$")
-    public void tagWithName(String tagName) throws Exception {
+    @And("^A tag with name \"([^\"]*)\" is created$")
+    public void creatingTagWithName(String tagName) throws Exception {
         try {
             TagCreator tagCreator = tagCreatorCreatorWithoutDescription(tagName);
             stepData.remove("tag");
@@ -168,6 +168,19 @@ public class TagServiceSteps extends TestBase {
 
         try {
             TagCreator tagCreator = tagCreatorCreatorWithDescription(tagName, tagDescription);
+            stepData.remove("tag");
+            Tag tag = tagService.create(tagCreator);
+            stepData.put("tag", tag);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @When("^I create tag with name \"([^\"]*)\"$")
+    public void tagWithNameIsCreatedWithoutDescription(String tagName) throws Exception {
+
+        try {
+            TagCreator tagCreator = tagCreatorCreatorWithDescription(tagName, null);
             stepData.remove("tag");
             Tag tag = tagService.create(tagCreator);
             stepData.put("tag", tag);

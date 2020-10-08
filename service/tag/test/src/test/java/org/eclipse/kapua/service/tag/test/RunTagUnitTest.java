@@ -20,7 +20,8 @@ import org.junit.runner.RunWith;
         features = { "classpath:features/TagService.feature"
                    },
         glue = { "org.eclipse.kapua.service.tag.steps",
-                 "org.eclipse.kapua.qa.common"
+                 "org.eclipse.kapua.qa.common",
+                 "org.eclipse.kapua.service.device.registry.steps"
                },
         plugin = { "pretty", 
                    "html:target/cucumber",
