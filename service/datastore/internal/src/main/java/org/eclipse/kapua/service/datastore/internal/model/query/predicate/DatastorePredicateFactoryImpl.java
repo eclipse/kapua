@@ -18,6 +18,11 @@ import org.eclipse.kapua.service.datastore.model.query.predicate.MetricExistsPre
 import org.eclipse.kapua.service.datastore.model.query.predicate.MetricPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactoryImpl;
 
+/**
+ * {@link DatastorePredicateFactory} implementation.
+ *
+ * @since 1.0.0
+ */
 @KapuaProvider
 public class DatastorePredicateFactoryImpl extends StorablePredicateFactoryImpl implements DatastorePredicateFactory {
 

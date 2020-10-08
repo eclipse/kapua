@@ -19,7 +19,9 @@ import org.eclipse.kapua.service.storable.model.id.StorableId;
 import java.util.Date;
 
 /**
- * Metric information schema implementation
+ * {@link MetricInfo} implementation.
+ *
+ * @since 1.0.0
  */
 public class MetricInfoImpl implements MetricInfo {
 
@@ -43,9 +45,10 @@ public class MetricInfoImpl implements MetricInfo {
     }
 
     /**
-     * Construct a metric information for the given scope
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}.
+     * @since 1.0.0
      */
     public MetricInfoImpl(KapuaId scopeId) {
         this();

@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
 
 /**
- * Implementation of query predicate for checking if a field exists
+ * {@link MetricExistsPredicate} implementation.
  *
  * @since 1.2.0
  */

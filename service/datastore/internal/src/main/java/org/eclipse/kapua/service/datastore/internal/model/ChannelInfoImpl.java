@@ -19,7 +19,9 @@ import org.eclipse.kapua.service.storable.model.id.StorableId;
 import java.util.Date;
 
 /**
- * Channel information schema implementation
+ * {@link ChannelInfo} implementation.
+ *
+ * @since 1.0.0
  */
 public class ChannelInfoImpl implements ChannelInfo {
 
@@ -35,16 +37,22 @@ public class ChannelInfoImpl implements ChannelInfo {
     private StorableId lastMessageId;
     private Date lastMessageOn;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public ChannelInfoImpl() {
     }
 
     /**
-     * Construct a channel information for the given scope
+     * Constructor.
      *
-     * @param scope
+     * @param scopeId The scope {@link KapuaId}
+     * @since 1.0.0
      */
-    public ChannelInfoImpl(KapuaId scope) {
-        setScopeId(scope);
+    public ChannelInfoImpl(KapuaId scopeId) {
+        setScopeId(scopeId);
     }
 
     @Override
@@ -72,11 +80,6 @@ public class ChannelInfoImpl implements ChannelInfo {
         return clientId;
     }
 
-    /**
-     * Set the client identifier
-     *
-     * @param clientId
-     */
     @Override
     public void setClientId(String clientId) {
         this.clientId = clientId;

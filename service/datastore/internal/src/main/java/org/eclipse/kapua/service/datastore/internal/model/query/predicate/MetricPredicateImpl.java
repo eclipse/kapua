@@ -21,9 +21,9 @@ import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicateIm
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
 
 /**
- * Implementation of query predicate for matching range values
+ * {@link MetricPredicate} implementation
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class MetricPredicateImpl extends RangePredicateImpl implements MetricPredicate {
 

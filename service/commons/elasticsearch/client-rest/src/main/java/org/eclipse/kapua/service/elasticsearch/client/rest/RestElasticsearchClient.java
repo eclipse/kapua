@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.RandomUtils;
@@ -265,13 +264,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     @Override
     public <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
-        JsonNode queryJsonNode = null;
-        try {
-            queryJsonNode = getModelConverter().convertQuery(query);
-        } catch (KapuaException e) {
-            e.printStackTrace();
-        }
-        Object queryFetchStyle = getModelConverter().getFetchStyle(query);
+        JsonNode queryJsonNode = getModelConverter().convertQuery(query);
         LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);
@@ -303,6 +296,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         }
 
         ResultList<T> resultList = new ResultList<>(totalCount);
+        Object queryFetchStyle = getModelConverter().getFetchStyle(query);
         if (resultsNode != null && !resultsNode.isEmpty()) {
             for (JsonNode result : resultsNode) {
                 Map<String, Object> object = objectMapper.convertValue(result.get(SchemaKeys.KEY_SOURCE), Map.class);
@@ -323,12 +317,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     @Override
     public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException {
-        JsonNode queryJsonNode = null;
-        try {
-            queryJsonNode = getModelConverter().convertQuery(query);
-        } catch (KapuaException e) {
-            e.printStackTrace();
-        }
+        JsonNode queryJsonNode = getModelConverter().convertQuery(query);
+
         LOG.debug(COUNT_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);
@@ -381,12 +371,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     @Override
     public void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException {
-        JsonNode queryJsonNode = null;
-        try {
-            queryJsonNode = getModelConverter().convertQuery(query);
-        } catch (KapuaException e) {
-            e.printStackTrace();
-        }
+        JsonNode queryJsonNode = getModelConverter().convertQuery(query);
+
         LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);

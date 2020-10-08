@@ -22,16 +22,16 @@ import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import java.util.Collections;
 
 /**
- * Client information query implementation
+ * {@link ClientInfoQuery} implementation.
  *
  * @since 1.0.0
  */
 public class ClientInfoQueryImpl extends AbstractStorableQuery implements ClientInfoQuery {
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}.
      * @since 1.0.0
      */
     public ClientInfoQueryImpl(KapuaId scopeId) {

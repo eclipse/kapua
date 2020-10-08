@@ -17,7 +17,7 @@ import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.model.AbstractStorableListResult;
 
 /**
- * Client information query result list implementation
+ * {@link ClientInfoListResult} implementation.
  *
  * @since 1.0.0
  */
@@ -26,7 +26,7 @@ public class ClientInfoListResultImpl extends AbstractStorableListResult<ClientI
     private static final long serialVersionUID = -1398721444405133343L;
 
     /**
-     * Construct a client info result list
+     * Constructor.
      *
      * @since 1.0.0
      */
@@ -35,9 +35,9 @@ public class ClientInfoListResultImpl extends AbstractStorableListResult<ClientI
     }
 
     /**
-     * Construct the client info result list from the provided list
+     * Constructor.
      *
-     * @param resultList
+     * @param resultList The {@link ResultList} to add.
      * @since 1.0.0
      */
     public ClientInfoListResultImpl(ResultList<ClientInfo> resultList) {

@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.MoreObjects;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.service.elasticsearch.client.AbstractElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
@@ -207,13 +206,7 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
 
     @Override
     public <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
-        JsonNode queryMap = null;
-        try {
-            queryMap = getModelConverter().convertQuery(query);
-        } catch (KapuaException e) {
-            e.printStackTrace();
-        }
-        Object queryFetchStyle = getModelConverter().getFetchStyle(query);
+        JsonNode queryMap = getModelConverter().convertQuery(query);
         LOG.debug("Query - converted query: '{}'", queryMap);
 
         ObjectNode fetchSourceFields = (ObjectNode) queryMap.path(SchemaKeys.KEY_SOURCE);
@@ -243,6 +236,7 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
         }
 
         ResultList<T> result = new ResultList<>(totalCount);
+        Object queryFetchStyle = getModelConverter().getFetchStyle(query);
         if (searchHits != null) {
             for (SearchHit searchHit : searchHits) {
                 Map<String, Object> object = searchHit.getSource();
@@ -258,13 +252,8 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
 
     @Override
     public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException {
-        // TODO check for fetch none
-        JsonNode queryMap = null;
-        try {
-            queryMap = getModelConverter().convertQuery(query);
-        } catch (KapuaException e) {
-            e.printStackTrace();
-        }
+        JsonNode queryMap = getModelConverter().convertQuery(query);
+
         SearchRequestBuilder searchReqBuilder = getClient().prepareSearch(typeDescriptor.getIndex());
         SearchHits searchHits = null;
         try {
@@ -303,12 +292,8 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
 
     @Override
     public void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException {
-        JsonNode queryMap = null;
-        try {
-            queryMap = getModelConverter().convertQuery(query);
-        } catch (KapuaException e) {
-            e.printStackTrace();
-        }
+        JsonNode queryMap = getModelConverter().convertQuery(query);
+
         TimeValue queryTimeout = getQueryTimeout();
         TimeValue scrollTimeout = getScrollTimeout();
 

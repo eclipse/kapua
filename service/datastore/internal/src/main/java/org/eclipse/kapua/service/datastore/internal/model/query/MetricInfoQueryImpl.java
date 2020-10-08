@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import java.util.Collections;
 
 /**
- * Metric information query implementation
+ * {@link MetricInfoQuery} implementation.
  *
  * @since 1.0.0
  */
@@ -31,7 +31,7 @@ public class MetricInfoQueryImpl extends AbstractStorableQuery implements Metric
     /**
      * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}.
      * @since 1.0.0
      */
     public MetricInfoQueryImpl(KapuaId scopeId) {

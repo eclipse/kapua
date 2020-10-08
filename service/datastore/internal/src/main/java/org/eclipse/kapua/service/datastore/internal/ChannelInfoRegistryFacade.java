@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -141,11 +140,8 @@ public class ChannelInfoRegistryFacade extends AbstractRegistryFacade {
         String indexName = SchemaUtil.getKapuaIndexName(scopeId);
         ChannelInfo channelInfo = find(scopeId, id);
         if (channelInfo != null) {
-            try {
-                mediator.onBeforeChannelInfoDelete(channelInfo);
-            } catch (KapuaException e) {
-                e.printStackTrace();
-            }
+            mediator.onBeforeChannelInfoDelete(channelInfo);
+
             TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
             getElasticsearchClient().delete(typeDescriptor, id.toString());
         }
@@ -244,13 +240,9 @@ public class ChannelInfoRegistryFacade extends AbstractRegistryFacade {
 
         String indexName = SchemaUtil.getKapuaIndexName(query.getScopeId());
         ChannelInfoListResult channels = query(query);
-        // TODO Improve performances
+
         for (ChannelInfo channelInfo : channels.getItems()) {
-            try {
-                mediator.onBeforeChannelInfoDelete(channelInfo);
-            } catch (KapuaException e) {
-                e.printStackTrace();
-            }
+            mediator.onBeforeChannelInfoDelete(channelInfo);
         }
 
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);

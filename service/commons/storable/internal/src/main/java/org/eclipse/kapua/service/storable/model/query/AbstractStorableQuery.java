@@ -64,24 +64,6 @@ public abstract class AbstractStorableQuery implements StorableQuery {
     }
 
     /**
-     * Gets the included {@link StorableField}s according to the {@link StorableFetchStyle}.
-     *
-     * @param fetchStyle The {@link StorableFetchStyle}.
-     * @return The included {@link StorableField}s according to the {@link StorableFetchStyle}.
-     * @since 1.0.0
-     */
-    public abstract String[] getIncludes(StorableFetchStyle fetchStyle);
-
-    /**
-     * Gets the excluded {@link StorableField}s according to the {@link StorableFetchStyle}.
-     *
-     * @param fetchStyle The {@link StorableFetchStyle}.
-     * @return The excluded {@link StorableField}s according to the {@link StorableFetchStyle}.
-     * @since 1.0.0
-     */
-    public abstract String[] getExcludes(StorableFetchStyle fetchStyle);
-
-    /**
      * Gets the {@link StorableField}s.
      *
      * @return The {@link StorableField}s.

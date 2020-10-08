@@ -17,7 +17,7 @@ import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.model.AbstractStorableListResult;
 
 /**
- * Metric information query result list implementation
+ * {@link MetricInfoListResult} implementation.
  *
  * @since 1.0.0
  */
@@ -26,7 +26,7 @@ public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricI
     private static final long serialVersionUID = 9057086672566426909L;
 
     /**
-     * Construct a metric info result list
+     * Constructor.
      *
      * @since 1.0.0
      */
@@ -35,9 +35,9 @@ public class MetricInfoListResultImpl extends AbstractStorableListResult<MetricI
     }
 
     /**
-     * Construct the metric info result list from the provided list
+     * Constructor.
      *
-     * @param resultList
+     * @param resultList The {@link ResultList} to add.
      * @since 1.0.0
      */
     public MetricInfoListResultImpl(ResultList<MetricInfo> resultList) {

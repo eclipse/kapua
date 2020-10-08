@@ -18,7 +18,7 @@ import org.eclipse.kapua.service.storable.model.id.StorableId;
 import java.util.Date;
 
 /**
- * Client information schema creator implementation
+ * {@link ClientInfoCreator} implementation.
  *
  * @since 1.0.0
  */
@@ -32,7 +32,8 @@ public class ClientInfoCreatorImpl implements ClientInfoCreator {
     /**
      * Construct a client information creator for the given account
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}
+     * @since 1.0.0
      */
     public ClientInfoCreatorImpl(KapuaId scopeId) {
         setScopeId(scopeId);

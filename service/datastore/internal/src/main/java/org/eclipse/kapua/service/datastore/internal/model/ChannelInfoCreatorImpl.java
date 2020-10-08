@@ -18,7 +18,7 @@ import org.eclipse.kapua.service.storable.model.id.StorableId;
 import java.util.Date;
 
 /**
- * Channel information schema creator implementation
+ * {@link ChannelInfoCreator} implementation.
  *
  * @since 1.0.0
  */
@@ -31,9 +31,9 @@ public class ChannelInfoCreatorImpl implements ChannelInfoCreator {
     private Date messageTimestamp;
 
     /**
-     * Construct a channel information creator for the given account
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}.
      * @since 1.0.0
      */
     public ChannelInfoCreatorImpl(KapuaId scopeId) {

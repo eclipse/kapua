@@ -16,7 +16,7 @@ import javax.xml.bind.annotation.XmlEnum;
 /**
  * Data index by options
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlEnum
 public enum DataIndexBy {

@@ -18,7 +18,7 @@ import org.eclipse.kapua.service.storable.model.id.StorableId;
 import java.util.Date;
 
 /**
- * Metric information schema creator implementation
+ * {@link MetricInfoCreator} implementation.
  *
  * @since 1.0.0
  */
@@ -35,9 +35,9 @@ public class MetricInfoCreatorImpl<T> implements MetricInfoCreator<T> {
     private Date messageTimestamp;
 
     /**
-     * Construct a metric information creator for the given account
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}
      * @since 1.0.0
      */
     public MetricInfoCreatorImpl(KapuaId scopeId) {

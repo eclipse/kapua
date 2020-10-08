@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -34,6 +33,7 @@ import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
 import org.eclipse.kapua.service.storable.model.query.predicate.IdsPredicate;
@@ -82,7 +82,7 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
      * @throws ConfigurationException
      * @throws ClientException
      */
-    public StorableId upstore(MetricInfo metricInfo) throws KapuaIllegalArgumentException, ConfigurationException, ClientException {
+    public StorableId upstore(MetricInfo metricInfo) throws KapuaIllegalArgumentException, ConfigurationException, ClientException, MappingException {
         ArgumentValidator.notNull(metricInfo, "metricInfo");
         ArgumentValidator.notNull(metricInfo.getScopeId(), "metricInfo.scopeId");
         ArgumentValidator.notNull(metricInfo.getFirstMessageId(), "metricInfoCreator.firstPublishedMessageId");
@@ -97,12 +97,8 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
             // fix #REPLACE_ISSUE_NUMBER
             MetricInfo storedField = find(metricInfo.getScopeId(), storableId);
             if (storedField == null) {
-                Metadata metadata = null;
-                try {
-                    metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
-                } catch (KapuaException e) {
-                    e.printStackTrace();
-                }
+                Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
+
                 String kapuaIndexName = metadata.getRegistryIndexName();
 
                 UpdateRequest request = new UpdateRequest(metricInfo.getId().toString(), new TypeDescriptor(metadata.getRegistryIndexName(), MetricInfoSchema.METRIC_TYPE_NAME), metricInfo);
@@ -128,7 +124,8 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
     public BulkUpdateResponse upstore(MetricInfo[] metricInfos)
             throws KapuaIllegalArgumentException,
             ConfigurationException,
-            ClientException {
+            ClientException,
+            MappingException {
         ArgumentValidator.notNull(metricInfos, "metricInfos");
 
         BulkUpdateRequest bulkRequest = new BulkUpdateRequest();
@@ -145,12 +142,8 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
                     continue;
                 }
                 performUpdate = true;
-                Metadata metadata = null;
-                try {
-                    metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
-                } catch (KapuaException e) {
-                    e.printStackTrace();
-                }
+                Metadata metadata = mediator.getMetadata(metricInfo.getScopeId(), metricInfo.getFirstMessageOn().getTime());
+
                 bulkRequest.add(
                         new UpdateRequest(
                                 metricInfo.getId().toString(),

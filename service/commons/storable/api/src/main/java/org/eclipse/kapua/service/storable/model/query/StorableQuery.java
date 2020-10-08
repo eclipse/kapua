@@ -25,7 +25,6 @@ import java.util.List;
 
 /**
  * {@link StorableQuery} definition.
- * <p>
  *
  * @since 1.0.0
  */
@@ -46,7 +45,7 @@ public interface StorableQuery {
      * @param fetchAttribute The fetch attribute to add to the list.
      * @since 1.0.0
      */
-    public void addFetchAttributes(String fetchAttribute);
+    void addFetchAttributes(String fetchAttribute);
 
     /**
      * Sets the fetch attribute names list.<br>
@@ -55,7 +54,7 @@ public interface StorableQuery {
      * @param fetchAttributeNames The fetch attribute names list.
      * @since 1.0.0
      */
-    public void setFetchAttributes(List<String> fetchAttributeNames);
+    void setFetchAttributes(List<String> fetchAttributeNames);
 
     /**
      * Gets the scope {@link KapuaId}.
@@ -187,4 +186,21 @@ public interface StorableQuery {
      */
     void setSortFields(List<SortField> sortFields);
 
+    /**
+     * Gets the included {@link StorableField}s according to the {@link StorableFetchStyle}.
+     *
+     * @param fetchStyle The {@link StorableFetchStyle}.
+     * @return The included {@link StorableField}s according to the {@link StorableFetchStyle}.
+     * @since 1.0.0
+     */
+    String[] getIncludes(StorableFetchStyle fetchStyle);
+
+    /**
+     * Gets the excluded {@link StorableField}s according to the {@link StorableFetchStyle}.
+     *
+     * @param fetchStyle The {@link StorableFetchStyle}.
+     * @return The excluded {@link StorableField}s according to the {@link StorableFetchStyle}.
+     * @since 1.0.0
+     */
+    String[] getExcludes(StorableFetchStyle fetchStyle);
 }

@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import java.util.Collections;
 
 /**
- * Message query implementation
+ * {@link MessageQuery} implementation
  *
  * @since 1.0.0
  */
@@ -31,7 +31,7 @@ public class MessageQueryImpl extends AbstractStorableQuery implements MessageQu
     /**
      * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}.
      * @since 1.0.0
      */
     public MessageQueryImpl(KapuaId scopeId) {

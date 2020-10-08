@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import java.util.Collections;
 
 /**
- * Channel information query implementation
+ * {@link ChannelInfoQuery} implementation.
  *
  * @since 1.0.0
  */
@@ -31,7 +31,7 @@ public class ChannelInfoQueryImpl extends AbstractStorableQuery implements Chann
     /**
      * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}.
      * @since 1.0.0
      */
     public ChannelInfoQueryImpl(KapuaId scopeId) {

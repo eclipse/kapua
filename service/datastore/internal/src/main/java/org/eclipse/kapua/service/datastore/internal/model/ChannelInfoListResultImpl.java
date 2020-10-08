@@ -17,7 +17,7 @@ import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.storable.model.AbstractStorableListResult;
 
 /**
- * Channel information query result list implementation
+ * {@link ChannelInfoListResult} implementation.
  *
  * @since 1.0.0
  */
@@ -26,7 +26,7 @@ public class ChannelInfoListResultImpl extends AbstractStorableListResult<Channe
     private static final long serialVersionUID = 1L;
 
     /**
-     * Construct a channel info result list
+     * Constructor.
      *
      * @since 1.0.0
      */
@@ -35,9 +35,9 @@ public class ChannelInfoListResultImpl extends AbstractStorableListResult<Channe
     }
 
     /**
-     * Construct the channel info result list from the provided list
+     * Constructor.
      *
-     * @param resultList
+     * @param resultList The {@link ResultList} to add.
      * @since 1.0.0
      */
     public ChannelInfoListResultImpl(ResultList<ChannelInfo> resultList) {

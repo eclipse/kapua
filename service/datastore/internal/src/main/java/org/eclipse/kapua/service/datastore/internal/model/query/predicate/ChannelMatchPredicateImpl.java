@@ -22,9 +22,9 @@ import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicat
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 
 /**
- * Implementation of query predicate for matching the channel value
+ * {@link ChannelMatchPredicate} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ChannelMatchPredicateImpl extends StorablePredicateImpl implements ChannelMatchPredicate {
 
@@ -32,19 +32,21 @@ public class ChannelMatchPredicateImpl extends StorablePredicateImpl implements 
     private String expression;
 
     /**
-     * Construct a channel match predicate for the given expression. The field name is {@link MessageField#CHANNEL}
+     * Constructor.
      *
      * @param expression the channel expression (may use wildcard)
+     * @since 1.0.0
      */
     public ChannelMatchPredicateImpl(String expression) {
         this(MessageField.CHANNEL, expression);
     }
 
     /**
-     * Construct a channel match predicate for the given expression
+     * Constructor.
      *
      * @param field      the field name
      * @param expression the channel expression (may use wildcard)
+     * @since 1.0.0
      */
     public ChannelMatchPredicateImpl(StorableField field, String expression) {
         setField(field);

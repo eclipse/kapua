@@ -21,7 +21,9 @@ import org.eclipse.kapua.service.storable.model.id.StorableId;
 import java.util.Date;
 
 /**
- * Implementation of the message returned by the data store find services
+ * {@link DatastoreMessage} implementation.
+ *
+ * @since 1.0.0
  */
 public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaDataChannel, KapuaPayload> implements DatastoreMessage {
 
@@ -45,11 +47,6 @@ public class DatastoreMessageImpl extends KapuaMessageImpl<KapuaDataChannel, Kap
         return this.timestamp;
     }
 
-    /**
-     * Set the message timestamp
-     *
-     * @param timestamp
-     */
     @Override
     public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
