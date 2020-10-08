@@ -18,7 +18,6 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -57,14 +56,8 @@ public class DeviceExporterCsv extends DeviceExporter {
         dateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SSS");
 
         OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName(CharEncoding.UTF_8));
-        try {
-            writer = new CSVWriter(osw);
-
-            List<String> cols = new ArrayList<String>(Arrays.asList(DEVICE_PROPERTIES));
-            writer.writeNext(cols.toArray(new String[]{ }));
-        } finally {
-            osw.close();
-        }
+        writer = new CSVWriter(osw);
+        writer.writeNext(DEVICE_PROPERTIES);
     }
 
     @Override
@@ -74,6 +67,7 @@ public class DeviceExporterCsv extends DeviceExporter {
         Account account;
         try {
             account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
+
                 @Override
                 public Account call() throws Exception {
                     return ACCOUNT_SERVICE.find(KapuaEid.parseCompactId(accountId));
@@ -174,7 +168,7 @@ public class DeviceExporterCsv extends DeviceExporter {
             // Custom attribute 5
             cols.add(device.getCustomAttribute5() != null ? device.getCustomAttribute5() : BLANK);
 
-            writer.writeNext(cols.toArray(new String[] {}));
+            writer.writeNext(cols.toArray(new String[]{ }));
         }
     }
 
@@ -190,4 +184,5 @@ public class DeviceExporterCsv extends DeviceExporter {
 
         writer.close();
     }
+
 }

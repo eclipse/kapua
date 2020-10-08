@@ -13,6 +13,7 @@ package org.eclipse.kapua.app.console.module.device.servlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.URLEncoder;
@@ -20,11 +21,17 @@ import java.nio.charset.Charset;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 
 import com.opencsv.CSVWriter;
@@ -36,6 +43,9 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
     private String clientId;
     private DateFormat dateFormat;
     private CSVWriter writer;
+    private String accountName;
+
+    private static final AccountService ACCOUNT_SERVICE = KapuaLocator.getInstance().getService(AccountService.class);
 
     public DeviceEventExporterCsv(HttpServletResponse response) {
         super(response);
@@ -54,18 +64,25 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
         response.setHeader("Cache-Control", "no-transform, max-age=0");
 
         OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName(CharEncoding.UTF_8));
-        try {
-            writer = new CSVWriter(osw);
-
-            List<String> cols = new ArrayList<String>(Arrays.asList(DEVICE_PROPERTIES));
-            writer.writeNext(cols.toArray(new String[]{ }));
-        } finally {
-            osw.close();
-        }
+        writer = new CSVWriter(osw);
+        writer.writeNext(DEVICE_PROPERTIES);
     }
 
     @Override
-    public void append(KapuaListResult<DeviceEvent> deviceEvents) {
+    public void append(KapuaListResult<DeviceEvent> deviceEvents) throws KapuaException {
+
+        Account account;
+        try {
+            account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
+
+                @Override
+                public Account call() throws Exception {
+                    return ACCOUNT_SERVICE.find(KapuaEid.parseCompactId(scopeId));
+                }
+            });
+        } catch (KapuaException e) {
+            throw KapuaException.internalError(e);
+        }
 
         for (final DeviceEvent deviceEvent : deviceEvents.getItems()) {
 
@@ -75,13 +92,19 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
             cols.add(scopeId);
 
             // Account name
-            cols.add(clientId);
+            cols.add(account != null ? account.getName() : BLANK);
 
             // Event id
             cols.add(deviceEvent.getId().toCompactId());
 
             // Created on
             cols.add(deviceEvent.getCreatedOn() != null ? dateFormat.format(deviceEvent.getCreatedOn()) : BLANK);
+
+            // Created By
+            cols.add(deviceEvent.getCreatedBy() != null ? deviceEvent.getCreatedBy().toCompactId() : BLANK);
+
+            // Client id
+            cols.add(clientId);
 
             // Device id
             cols.add(deviceEvent.getDeviceId() != null ? deviceEvent.getDeviceId().toCompactId() : BLANK);
@@ -145,7 +168,7 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
             // Event Message
             cols.add(deviceEvent.getEventMessage() != null ? deviceEvent.getEventMessage() : BLANK);
 
-            writer.writeNext(cols.toArray(new String[] {}));
+            writer.writeNext(cols.toArray(new String[]{ }));
         }
     }
 
@@ -156,4 +179,5 @@ public class DeviceEventExporterCsv extends DeviceEventExporter {
 
         writer.close();
     }
+
 }
