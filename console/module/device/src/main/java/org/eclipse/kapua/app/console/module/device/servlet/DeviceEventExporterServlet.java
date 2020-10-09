@@ -17,9 +17,12 @@ import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
@@ -86,7 +89,10 @@ public class DeviceEventExporterServlet extends HttpServlet {
             KapuaLocator locator = KapuaLocator.getInstance();
             DeviceEventService des = locator.getService(DeviceEventService.class);
             DeviceEventFactory def = locator.getFactory(DeviceEventFactory.class);
+
+            final AccountService as = locator.getService(AccountService.class);
             final DeviceRegistryService deviceRegistryService = locator.getService(DeviceRegistryService.class);
+            final KapuaIdFactory kif = locator.getFactory(KapuaIdFactory.class);
 
             Device device = KapuaSecurityUtils.doPrivileged(new Callable<Device>() {
                 @Override
@@ -94,6 +100,15 @@ public class DeviceEventExporterServlet extends HttpServlet {
                     return deviceRegistryService.find(KapuaEid.parseCompactId(scopeId), KapuaEid.parseCompactId(deviceId));
                 }
             });
+
+            Account account = KapuaSecurityUtils.doPrivileged(new Callable<Account>() {
+
+                @Override
+                public Account call() throws Exception {
+                    return as.find(kif.newKapuaId(scopeId));
+                }
+            });
+
             deviceEventExporter.init(scopeId, device.getClientId());
 
             int offset = 0;

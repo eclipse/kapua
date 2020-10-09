@@ -30,6 +30,7 @@ public abstract class DeviceEventExporter {
             "Event ID",
             "Created On (UTC)",
             "Created By",
+            "Client ID",
             "Device ID",
             "Received On (UTC)",
             "Sent On (UTC)",
@@ -58,7 +59,7 @@ public abstract class DeviceEventExporter {
             throws ServletException, IOException, KapuaException;
 
     public abstract void append(KapuaListResult<DeviceEvent> messages)
-            throws ServletException, IOException;
+            throws ServletException, IOException, KapuaException;
 
     public abstract void close()
             throws ServletException, IOException;
