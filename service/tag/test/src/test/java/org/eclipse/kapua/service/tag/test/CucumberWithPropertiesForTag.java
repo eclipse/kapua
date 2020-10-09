@@ -17,6 +17,8 @@ import com.google.inject.Injector;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.KapuaMessageFactory;
+import org.eclipse.kapua.message.internal.KapuaMessageFactoryImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
@@ -27,6 +29,19 @@ import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.device.registry.DeviceFactory;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
+import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionServiceImpl;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
+import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFactoryImpl;
+import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
+import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
+import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
+import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.tag.internal.TagEntityManagerFactory;
@@ -81,6 +96,20 @@ public class CucumberWithPropertiesForTag extends CucumberWithProperties {
                 bind(TagEntityManagerFactory.class).toInstance(tagEntityManagerFactory);
                 bind(TagService.class).toInstance(new TagServiceImpl());
                 bind(TagFactory.class).toInstance(new TagFactoryImpl());
+
+                //Inject actual Device service related services
+                DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.instance();
+                bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
+
+                bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl());
+                bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
+
+                bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl());
+                bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
+
+                bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());
+                bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
+                bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
             }
         };
 

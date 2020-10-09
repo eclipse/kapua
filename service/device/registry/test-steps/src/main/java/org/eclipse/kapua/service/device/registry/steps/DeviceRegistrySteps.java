@@ -2679,8 +2679,8 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
-    @And("^I asign tag \"([^\"]*)\" to device \"([^\"]*)\"$")
-    public void iAsignTagNamedToDevice(String tagName, String deviceName) throws Exception {
+    @And("^I assign tag \"([^\"]*)\" to device \"([^\"]*)\"$")
+    public void iAssignTagNamedToDevice(String tagName, String deviceName) throws Exception {
         try {
             DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
             tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));
@@ -2737,7 +2737,7 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @Given("^Tag \"([^\"]*)\" is assigned to device \"([^\"]*)\"$")
-    public void tagIsAsignedToDevice(String tagName, String deviceName) throws Throwable {
+    public void tagIsAssignedToDevice(String tagName, String deviceName) throws Throwable {
         try {
             DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
             tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));

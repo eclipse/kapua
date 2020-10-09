@@ -44,5 +44,10 @@
             <artifactId>kapua-account-internal</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-registry-internal</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
