@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.sso;
 
-import org.eclipse.kapua.sso.exception.SsoException;
+import org.eclipse.kapua.sso.exception.SsoAccessTokenException;
 import org.eclipse.kapua.sso.exception.uri.SsoUriException;
 
 import javax.json.JsonObject;
@@ -45,9 +45,9 @@ public interface SingleSignOnService {
      * @param authCode the authorization code from the HttpServletRequest.
      * @param redirectUri a URI object representing the redirect URI.
      * @return the access token in the form of a {@link JsonObject}.
-     * @throws SsoException if it fails to retrieve the access token.
+     * @throws SsoAccessTokenException if it fails to retrieve the access token.
      */
-    JsonObject getAccessToken(String authCode, URI redirectUri) throws SsoException;
+    JsonObject getAccessToken(String authCode, URI redirectUri) throws SsoAccessTokenException;
 
     /**
      * Get the Relying-Party-Initiated logout.

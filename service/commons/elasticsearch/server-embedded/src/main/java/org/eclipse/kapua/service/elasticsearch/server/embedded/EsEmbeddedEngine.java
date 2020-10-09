@@ -82,6 +82,7 @@ public class EsEmbeddedEngine implements Closeable {
                     ConfigurationPrinter
                             .create()
                             .withLogger(LOG)
+                            .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                             .withTitle("Elasticsearch Embedded Node Configuration")
                             .addParameter("Cluster name", clusterName)
                             .addParameter("Data Directory", defaultDataDirectory)

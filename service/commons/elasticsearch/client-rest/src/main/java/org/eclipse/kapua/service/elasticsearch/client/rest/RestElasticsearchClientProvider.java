@@ -102,6 +102,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
                     ConfigurationPrinter
                             .create()
                             .withLogger(LOG)
+                            .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                             .withTitle("Elasticsearch REST Provider Configuration")
                             .addParameter("Module Name", getClientConfiguration().getModuleName())
                             .addParameter("Cluster Name", getClientConfiguration().getClusterName())

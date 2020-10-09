@@ -120,6 +120,7 @@ public class KapuaLiquibaseClient {
         ConfigurationPrinter
                 .create()
                 .withLogger(LOG)
+                .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                 .withTitle("KapuaLiquibaseClient Configuration")
                 .addParameter("Liquibase Version", currentLiquibaseVersionString)
                 .addHeader("DB connection info")

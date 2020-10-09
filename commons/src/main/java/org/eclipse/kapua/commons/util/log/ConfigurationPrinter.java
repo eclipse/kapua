@@ -25,7 +25,6 @@ import java.util.List;
  * <p>
  * This can be used when starting a component (i.e. {@link KapuaLiquibaseClient}) and print its configuration on a given {@link Logger}
  * to print something like this:
- *
  * <pre>
  * 09:56:07.286 [main] INFO  o.e.k.c.l.KapuaLiquibaseClient - =================== KapuaLiquibaseClient Configuration ===================
  * 09:56:07.293 [main] INFO  o.e.k.c.l.KapuaLiquibaseClient - | Liquibase Version: 3.6.3
@@ -39,6 +38,30 @@ import java.util.List;
  * 09:56:07.301 [main] INFO  o.e.k.c.l.KapuaLiquibaseClient - |     Apply timestamp fix: true
  * 09:56:07.303 [main] INFO  o.e.k.c.l.KapuaLiquibaseClient - ==========================================================================
  * </pre>
+ * <p>
+ * Usage example:
+ * <pre>
+ * ConfigurationPrinter
+ *                 .create()
+ *                 .withLogger(LOG)
+ *                 .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
+ *                 .withTitle("KapuaLiquibaseClient Configuration")
+ *                 .addParameter("Liquibase Version", currentLiquibaseVersionString)
+ *                 .addHeader("DB connection info")
+ *                 .increaseIndentation()
+ *                 .addParameter("JDBC URL", jdbcUrl)
+ *                 .addParameter("Username", username)
+ *                 .addParameter("Password", "******")
+ *                 .addParameter("Schema", schema)
+ *                 .decreaseIndentation()
+ *                 .addHeader("Timestamp(3) fix info (eclipse/kapua#2889)")
+ *                 .increaseIndentation()
+ *                 .addParameter("Force timestamp fix", forceTimestampFix)
+ *                 .addParameter("Apply timestamp fix", runTimestampsFix)
+ *                 .printLog();
+ * </pre>
+ * <p>
+ * Example are from {@link KapuaLiquibaseClient} but can be generalized if needed.
  *
  * @since 1.3.0
  */
@@ -47,7 +70,11 @@ public class ConfigurationPrinter {
     private static final Logger LOG = LoggerFactory.getLogger(ConfigurationPrinter.class);
 
     private Logger parentLogger;
+    private LogLevel logLevel;
+
     private String title;
+    private TitleAlignment titleAlignment;
+
     private List<Configuration> configurations;
     private int currentIndentation;
 
@@ -73,6 +100,27 @@ public class ConfigurationPrinter {
         return this;
     }
 
+    /**
+     * Gets the {@link LogLevel} to be used to {@link #printLog()}
+     *
+     * @return The {@link LogLevel} to be used to {@link #printLog()}
+     * @since 1.3.0
+     */
+    protected LogLevel getLogLevel() {
+        return logLevel;
+    }
+
+    /**
+     * Sets the {@link LogLevel} to be used to {@link #printLog()}
+     *
+     * @param logLevel The {@link LogLevel} to use.
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
+     */
+    public ConfigurationPrinter withLogLevel(@NotNull LogLevel logLevel) {
+        this.logLevel = logLevel;
+        return this;
+    }
 
     /**
      * Gets the title of the configuration.
@@ -91,6 +139,7 @@ public class ConfigurationPrinter {
      * <pre>
      * =================== {title} ===================
      * </pre>
+     * according to the {@link #getTitleAlignment()}
      *
      * @param title The title of the configuration.
      * @return Itself, to chain method invocation.
@@ -98,6 +147,49 @@ public class ConfigurationPrinter {
      */
     public ConfigurationPrinter withTitle(@NotNull String title) {
         this.title = title;
+        return this;
+    }
+
+    /**
+     * Gets the {@link TitleAlignment}.
+     *
+     * @return The {@link TitleAlignment}.
+     * @since 1.3.0
+     */
+    protected TitleAlignment getTitleAlignment() {
+        if (titleAlignment == null) {
+            titleAlignment = TitleAlignment.CENTER;
+        }
+
+        return titleAlignment;
+    }
+
+    /**
+     * Sets the {@link TitleAlignment} to {@link #printLog()}.
+     * <p>
+     * {@link TitleAlignment#LEFT} will print as:
+     * <pre>
+     * = {title} =====================================
+     * </pre>
+     * <p>
+     * {@link TitleAlignment#CENTER} will print as:
+     * <pre>
+     * =================== {title} ===================
+     * </pre>
+     * <p>
+     * {@link TitleAlignment#RIGHT} will print as:
+     * <pre>
+     * ===================================== {title} =
+     * </pre>
+     * <p>
+     * It defaults to {@link TitleAlignment#CENTER}.
+     *
+     * @param titleAlignment The {@link TitleAlignment} to use.
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
+     */
+    public ConfigurationPrinter withTitleAlignment(@Nullable TitleAlignment titleAlignment) {
+        this.titleAlignment = titleAlignment;
         return this;
     }
 
@@ -187,25 +279,101 @@ public class ConfigurationPrinter {
      * @since 1.3.0
      */
     public void printLog() {
+        //
+        // Check Provided data
+        if (getTitle() == null) {
+            LOG.warn("Title was not provided. Using default 'Info'");
+            LOG.warn("To fix this please use .withTitle(java.lang.String) providing your own!");
+            withTitle("Info");
+        }
+
         if (getParentLogger() == null) {
             LOG.warn("External Logger not provided! Using the Configuration Printer's one!");
             LOG.warn("To fix this please use .withLogger(org.slf4j.Logger) providing your own!");
             withLogger(LOG);
         }
 
-        // Title
-        String titleLog = "=================== ".concat(title).concat(" ===================");
-        getParentLogger().info(titleLog);
-
-        // Parameters
-        for (Configuration configuration : getConfigurations()) {
-            getParentLogger().info("|  ".concat(configuration.toString()));
+        if (getLogLevel() == null) {
+            LOG.warn("Log level was not provided! Defaulting to LogLevel.INFO");
+            LOG.warn("To fix this please use .withLogLevel(org.eclipse.kapua.commons.util.log.ConfigurationPrinter.LogLevel) providing the desired level!");
+            withLogLevel(LogLevel.INFO);
         }
 
+        //
+        // Title
+        String alignedTitleFormat = buildAlignedTitleFormat();
+        printLogLeveled(alignedTitleFormat, getTitle());
+
+        //
+        // Parameters
+        for (Configuration configuration : getConfigurations()) {
+            printLogLeveled("|  {}", configuration);
+        }
+
+        //
         // End Line - Same length of Title
-        String footerLog = new String(new char[titleLog.length()]).replace('\0', '=');
-        getParentLogger().info(footerLog);
+        String footerLog = new String(new char[alignedTitleFormat.length()]).replace('\0', '=');
+        printLogLeveled(footerLog);
     }
+
+    /**
+     * Produces the log formar for the {@link #getTitle()} according to {@link #getTitleAlignment()}
+     *
+     * @return The {@link #getTitle()} aligned format.
+     * @since 1.3.0
+     */
+    private String buildAlignedTitleFormat() {
+        switch (getTitleAlignment()) {
+            case LEFT:
+                return "= {} =====================================";
+            case RIGHT:
+                return "===================================== {} =";
+            case CENTER:
+            default:
+                return "=================== {} ===================";
+        }
+    }
+
+    /**
+     * Prints the given log according to {@link #getLogLevel()}.
+     *
+     * @param log The log to print.
+     * @since 1.3.0
+     */
+    private void printLogLeveled(String log) {
+        printLogLeveled(log, null);
+    }
+
+    /**
+     * Prints the given logFormat with the given argument according to {@link #getLogLevel()}.
+     *
+     * @param logFormat The log format to print.
+     * @param arg       The argument to populate the format.
+     * @since 1.3.0
+     */
+    private void printLogLeveled(String logFormat, Object arg) {
+        switch (getLogLevel()) {
+            case DEBUG:
+                getParentLogger().debug(logFormat, arg);
+                break;
+            case ERROR:
+                getParentLogger().error(logFormat, arg);
+                break;
+            case INFO:
+                getParentLogger().info(logFormat, arg);
+                break;
+            case TRACE:
+                getParentLogger().trace(logFormat, arg);
+                break;
+            case WARN:
+                getParentLogger().warn(logFormat, arg);
+                break;
+        }
+    }
+
+    //
+    // Creator
+    //
 
     /**
      * Creates a {@code new} {@link ConfigurationPrinter}.
@@ -216,6 +384,11 @@ public class ConfigurationPrinter {
     public static ConfigurationPrinter create() {
         return new ConfigurationPrinter();
     }
+
+
+    //
+    // Configuration Classes
+    //
 
     /**
      * Base class of {@link Configuration}s which handles the {@link #indentation}.
@@ -280,6 +453,86 @@ public class ConfigurationPrinter {
         public String toString() {
             return super.toString().concat(": ").concat(value != null ? value.toString() : "N/A");
         }
+    }
+
+    //
+    // Log Level
+    //
+
+    /**
+     * Identifies the log level to use on {@link #printLog()}.
+     * <p>
+     * Works the same as common {@link Logger} implementations.
+     *
+     * @since 1.3.0
+     */
+    public enum LogLevel {
+        /**
+         * {@link #printLog()} will use {@link Logger#debug(String)}
+         *
+         * @since 1.3.0
+         */
+        DEBUG,
+
+        /**
+         * {@link #printLog()} will use {@link Logger#error(String)}
+         *
+         * @since 1.3.0
+         */
+        ERROR,
+
+        /**
+         * {@link #printLog()} will use {@link Logger#info(String)}
+         *
+         * @since 1.3.0
+         */
+        INFO,
+
+        /**
+         * {@link #printLog()} will use {@link Logger#trace(String)}
+         *
+         * @since 1.3.0
+         */
+        TRACE,
+
+        /**
+         * {@link #printLog()} will use {@link Logger#warn(String)}
+         *
+         * @since 1.3.0
+         */
+        WARN
+    }
+
+    //
+    // Title
+    //
+
+    /**
+     * Sets the alignement for {@link #getTitle()}
+     *
+     * @since 1.3.0
+     */
+    public enum TitleAlignment {
+        /**
+         * {@link #printLog()} will print the title on the left.
+         *
+         * @since 1.3.0
+         */
+        LEFT,
+
+        /**
+         * {@link #printLog()} will print the title centered.
+         *
+         * @since 1.3.0
+         */
+        CENTER,
+
+        /**
+         * {@link #printLog()} will print the title on the right.
+         *
+         * @since 1.3.0
+         */
+        RIGHT
     }
 }
 

@@ -15,23 +15,29 @@ package org.eclipse.kapua.sso.provider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonValue;
 
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.sso.SingleSignOnService;
 import org.eclipse.kapua.sso.exception.SsoAccessTokenException;
 import org.eclipse.kapua.sso.exception.SsoException;
 import org.eclipse.kapua.sso.exception.uri.SsoLoginUriException;
 import org.eclipse.kapua.sso.exception.uri.SsoLogoutUriException;
-import org.eclipse.kapua.sso.exception.uri.SsoUriException;
 import org.eclipse.kapua.sso.provider.setting.SsoSetting;
 import org.eclipse.kapua.sso.provider.setting.SsoSettingKeys;
 
@@ -52,6 +58,9 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
 
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractSingleSignOnService.class);
+
+    private static final String HIDDEN_SECRET = "****";
+    private static final List<String> SECRET_TOKENS = Arrays.asList("access_token", "id_token", "refresh_token");
 
     protected SsoSetting ssoSettings;
 
@@ -117,9 +126,17 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
     }
 
     @Override
-    public String getLoginUri(final String state, final URI redirectUri) throws SsoUriException {
+    public String getLoginUri(final String state, final URI redirectUri) throws SsoLoginUriException {
+        ConfigurationPrinter reqLogger =
+                ConfigurationPrinter
+                        .create()
+                        .withLogger(logger)
+                        .withLogLevel(ConfigurationPrinter.LogLevel.DEBUG)
+                        .withTitle("SSO login URI");
         try {
-            final URIBuilder uri = new URIBuilder(getAuthUri());
+            final String authUri = getAuthUri();
+            final URIBuilder uri = new URIBuilder(authUri);
+            reqLogger.addParameter("URI", authUri);
 
             uri.addParameter("scope", "openid");
             uri.addParameter("response_type", "code");
@@ -127,17 +144,36 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
             uri.addParameter("state", state);
             uri.addParameter("redirect_uri", redirectUri.toString());
 
+            // logging parameters
+            reqLogger.addHeader("Parameters:").increaseIndentation();
+            for (NameValuePair nameValuePair : uri.getQueryParams()) {
+                reqLogger.addParameter(nameValuePair.getName(), nameValuePair.getValue());
+            }
+
             return uri.toString();
-        } catch (URISyntaxException | SsoException e) {
-            throw new SsoLoginUriException(e);
+        } catch (URISyntaxException use) {
+            logger.error("Authentication URI is not a valid URI: {}", use.getLocalizedMessage(), use);
+            throw new SsoLoginUriException(use);
+        } catch (SsoException se) {
+            logger.error("Error while retrieving the authentication URI {}", se.getLocalizedMessage(), se);
+            throw new SsoLoginUriException(se);
+        } finally {
+            reqLogger.printLog();
         }
     }
 
     @Override
-    public String getLogoutUri(final String idTokenHint, final URI postLogoutRedirectUri, final String state)
-            throws SsoUriException {
+    public String getLogoutUri(final String idTokenHint, final URI postLogoutRedirectUri, final String state) throws SsoLogoutUriException {
+        ConfigurationPrinter reqLogger =
+                ConfigurationPrinter
+                        .create()
+                        .withLogger(logger)
+                        .withLogLevel(ConfigurationPrinter.LogLevel.DEBUG)
+                        .withTitle("SSO logout URI");
         try {
-            final URIBuilder uri = new URIBuilder(getLogoutUri());
+            final String logoutUri = getLogoutUri();
+            final URIBuilder uri = new URIBuilder(logoutUri);
+            reqLogger.addParameter("URI", logoutUri);
 
             if (idTokenHint != null) { // idTokenHint is recommended
                 uri.addParameter("id_token_hint", idTokenHint);
@@ -149,9 +185,26 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
                 uri.addParameter("state", state);
             }
 
+            // logging parameters
+            reqLogger.addHeader("Parameters:").increaseIndentation();
+            for (NameValuePair nameValuePair : uri.getQueryParams()) {
+                String name = nameValuePair.getName();
+                if (name.equals("id_token_hint")) {
+                    reqLogger.addParameter(name, HIDDEN_SECRET);
+                } else {
+                    reqLogger.addParameter(name, nameValuePair.getValue());
+                }
+            }
+
             return uri.toString();
-        } catch (URISyntaxException | SsoException e) {
-            throw new SsoLogoutUriException(e);
+        } catch (URISyntaxException use) {
+            logger.error("Logout URI is not a valid URI: {}", use.getLocalizedMessage(), use);
+            throw new SsoLogoutUriException(use);
+        } catch (SsoException se) {
+            logger.error("Error while retrieving the logout URI {}", se.getLocalizedMessage(), se);
+            throw new SsoLogoutUriException(se);
+        } finally {
+            reqLogger.printLog();
         }
     }
 
@@ -162,13 +215,21 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
     public JsonObject getAccessToken(final String authCode, final URI redirectUri) throws SsoAccessTokenException {
         // FIXME: switch to HttpClient implementation: better performance and connection caching
 
+        ConfigurationPrinter reqLogger =
+                ConfigurationPrinter
+                        .create()
+                        .withLogger(logger)
+                        .withLogLevel(ConfigurationPrinter.LogLevel.DEBUG)
+                        .withTitle("SSO access token HTTP request");
         try {
             URL url = new URL(getTokenUri());
+            reqLogger.addParameter("URL", url);
 
             final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty(HttpHeaders.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
+            reqLogger.addParameter("HTTP request method", urlConnection.getRequestMethod());
 
             final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
             parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
@@ -182,23 +243,57 @@ public abstract class AbstractSingleSignOnService implements SingleSignOnService
 
             parameters.add(new BasicNameValuePair("redirect_uri", redirectUri.toString()));
 
+            reqLogger.addHeader("Parameters:").increaseIndentation();
+            for (NameValuePair nameValuePair : parameters) {
+                String name = nameValuePair.getName();
+                if (name.equals("code") || name.equals("client_secret")) {
+                    reqLogger.addParameter(name, HIDDEN_SECRET);
+                } else {
+                    reqLogger.addParameter(name, nameValuePair.getValue());
+                }
+            }
+            reqLogger.decreaseIndentation();
+
             final UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters);
 
             // Send post request
-
             urlConnection.setDoOutput(true);
-
             try (final OutputStream outputStream = urlConnection.getOutputStream()) {
                 entity.writeTo(outputStream);
             }
 
             // parse result
-
             try (InputStream stream = urlConnection.getInputStream(); JsonReader jsonReader = Json.createReader(stream)) {
-                return jsonReader.readObject();
+                reqLogger.addParameter("Response code", urlConnection.getResponseCode());
+                JsonObject result = jsonReader.readObject();
+                reqLogger.addHeader("Response body:").increaseIndentation();
+                for (Map.Entry<String,JsonValue> entry : result.entrySet()) {
+                    if (SECRET_TOKENS.contains(entry.getKey())) {
+                        reqLogger.addParameter(entry.getKey(), HIDDEN_SECRET);
+                    } else {
+                        reqLogger.addParameter(entry.getKey(), entry.getValue());
+                    }
+                }
+                logger.debug("Successfully obtained access token.");
+                return result;
             }
-        } catch (SsoException | IOException e) {
-            throw new SsoAccessTokenException(e);
+        } catch (SsoException se) {
+            logger.error("Error while retrieving the String of the token API endpoint {}", se.getLocalizedMessage(), se);
+            throw new SsoAccessTokenException(se);
+        } catch (MalformedURLException mue) {
+            logger.error("Malformed token API endpoint URL {}", mue.getLocalizedMessage(), mue);
+            throw new SsoAccessTokenException(mue);
+        } catch (ProtocolException pe) {
+            logger.error("Wrong HTTP request method {}", pe.getLocalizedMessage(), pe);
+            throw new SsoAccessTokenException(pe);
+        } catch (UnsupportedEncodingException uee) {
+            logger.error("Unsupported HTTP request default encoding {}", uee.getLocalizedMessage(), uee);
+            throw new SsoAccessTokenException(uee);
+        } catch (IOException ioe) {
+            logger.error("Error while getting the access token {}", ioe.getLocalizedMessage(), ioe);
+            throw new SsoAccessTokenException(ioe);
+        } finally {
+            reqLogger.printLog();
         }
     }
 
