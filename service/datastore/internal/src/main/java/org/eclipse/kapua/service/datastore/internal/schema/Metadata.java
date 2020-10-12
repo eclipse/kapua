@@ -11,16 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.schema;
 
+import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.service.datastore.internal.mediator.Metric;
-
 /**
  * Metadata object
- * 
- * @since 1.0
  *
+ * @since 1.0.0
  */
 public class Metadata {
 
@@ -37,26 +36,30 @@ public class Metadata {
 
     /**
      * Get the mappings cache
-     * 
+     *
      * @return
+     * @since 1.0.0
      */
     public Map<String, Metric> getMessageMappingsCache() {
         return messageMappingsCache;
     }
 
     /**
-     * Contruct metadata
+     * Contructor.
+     *
+     * @since 1.0.0
      */
     public Metadata(String dataIndexName, String registryIndexName) {
-        messageMappingsCache = new HashMap<String, Metric>(100);
+        messageMappingsCache = new HashMap<>(100);
         this.dataIndexName = dataIndexName;
         this.registryIndexName = registryIndexName;
     }
 
     /**
      * Get the Elasticsearch data index name
-     * 
+     *
      * @return
+     * @since 1.0.0
      */
     public String getDataIndexName() {
         return dataIndexName;
@@ -64,8 +67,9 @@ public class Metadata {
 
     /**
      * Get the Kapua data index name
-     * 
+     *
      * @return
+     * @since 1.0.0
      */
     public String getRegistryIndexName() {
         return registryIndexName;

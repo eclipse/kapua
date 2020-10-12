@@ -26,5 +26,6 @@
 
     <modules>
         <module>elasticsearch</module>
+        <module>storable</module>
     </modules>
 </project>

@@ -11,6 +11,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources.model.data;
 
+import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
+import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
+import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.storable.model.query.XmlAdaptedSortField;
+import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -21,20 +30,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
-import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicate;
-import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortField;
-
 /**
  * Message query implementation
  *
  * @since 1.0.0
- *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -66,9 +65,7 @@ public class JsonMessageQuery {
     /**
      * Constructor.
      *
-     * @param scopeId
-     *            The scopeId of the query
-     *
+     * @param scopeId The scopeId of the query
      * @since 1.0.0
      */
     public JsonMessageQuery(KapuaId scopeId) {
@@ -161,14 +158,14 @@ public class JsonMessageQuery {
         // Fetch mode
         String[] includeSource = null;
         switch (fetchStyle) {
-        case FIELDS:
-            includeSource = getFields();
-            break;
-        case SOURCE_SELECT:
-            includeSource = new String[] { MessageSchema.MESSAGE_CAPTURED_ON, MessageSchema.MESSAGE_POSITION + ".*", MessageSchema.MESSAGE_METRICS + ".*" };
-            break;
-        case SOURCE_FULL:
-            includeSource = new String[] { "*" };
+            case FIELDS:
+                includeSource = getFields();
+                break;
+            case SOURCE_SELECT:
+                includeSource = new String[]{MessageSchema.MESSAGE_CAPTURED_ON, MessageSchema.MESSAGE_POSITION + ".*", MessageSchema.MESSAGE_METRICS + ".*"};
+                break;
+            case SOURCE_FULL:
+                includeSource = new String[]{"*"};
         }
         return includeSource;
     }
@@ -178,27 +175,27 @@ public class JsonMessageQuery {
         // Fetch mode
         String[] excludeSource = null;
         switch (fetchStyle) {
-        case FIELDS:
-            excludeSource = new String[] { "" };
-            break;
-        case SOURCE_SELECT:
-            excludeSource = new String[] { MessageSchema.MESSAGE_BODY };
-            break;
-        case SOURCE_FULL:
-            excludeSource = new String[] { "" };
+            case FIELDS:
+                excludeSource = new String[]{""};
+                break;
+            case SOURCE_SELECT:
+                excludeSource = new String[]{MessageSchema.MESSAGE_BODY};
+                break;
+            case SOURCE_FULL:
+                excludeSource = new String[]{""};
         }
         return excludeSource;
     }
 
     @XmlTransient
     public String[] getFields() {
-        return new String[] {
+        return new String[]{
                 MessageField.MESSAGE_ID.field(),
                 MessageField.SCOPE_ID.field(),
                 MessageField.DEVICE_ID.field(),
                 MessageField.CLIENT_ID.field(),
                 MessageField.CHANNEL.field(),
-                MessageField.TIMESTAMP.field() };
+                MessageField.TIMESTAMP.field()};
     }
 
 }

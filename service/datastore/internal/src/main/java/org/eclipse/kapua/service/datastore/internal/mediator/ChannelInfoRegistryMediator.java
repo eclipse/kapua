@@ -17,6 +17,7 @@ import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.QueryMappingException;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 
 /**
  * Channel information registry mediator definition
@@ -34,7 +35,7 @@ public interface ChannelInfoRegistryMediator {
      * @throws ClientException
      */
     Metadata getMetadata(KapuaId scopeId, long indexedOn)
-            throws ClientException;
+            throws ClientException, MappingException;
 
     /**
      * On before channel info delete event handler

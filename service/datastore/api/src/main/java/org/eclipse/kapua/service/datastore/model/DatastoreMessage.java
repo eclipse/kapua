@@ -17,6 +17,9 @@ import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.service.storable.model.Storable;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableIdXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,21 +37,35 @@ import java.util.UUID;
  */
 @XmlRootElement(name = "message")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { //
-        "id", //
-        "datastoreId", //
-        "timestamp", //
-        "scopeId", //
-        "deviceId", //
-        "clientId", //
-        "receivedOn", //
-        "sentOn", //
-        "capturedOn", //
-        "position", //
-        "channel", //
-        "payload", //
-}) //
+@XmlType(propOrder = {
+        "id",
+        "datastoreId",
+        "timestamp",
+        "deviceId",
+        "clientId",
+        "receivedOn",
+        "sentOn",
+        "capturedOn",
+        "position",
+        "channel",
+        "payload",
+})
 public interface DatastoreMessage extends Storable {
+
+    /**
+     * Get the message identifier
+     *
+     * @return
+     */
+    @XmlElement(name = "id")
+    UUID getId();
+
+    /**
+     * Set the message identifier
+     *
+     * @param id
+     */
+    void setId(UUID id);
 
     /**
      * Stored message identifier
@@ -56,7 +73,7 @@ public interface DatastoreMessage extends Storable {
      * @return
      */
     @XmlElement(name = "datastoreId")
-    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     StorableId getDatastoreId();
 
     /**
@@ -75,37 +92,6 @@ public interface DatastoreMessage extends Storable {
      * Stored message timestamp
      */
     void setTimestamp(Date timestamp);
-
-    /**
-     * Get the message identifier
-     *
-     * @return
-     */
-    @XmlElement(name = "id")
-    UUID getId();
-
-    /**
-     * Set the message identifier
-     *
-     * @param id
-     */
-    void setId(UUID id);
-
-    /**
-     * Get scope identifier
-     *
-     * @return
-     */
-    @XmlElement(name = "scopeId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    KapuaId getScopeId();
-
-    /**
-     * Set scope identifier
-     *
-     * @param scopeId
-     */
-    void setScopeId(KapuaId scopeId);
 
     /**
      * Get client identifier

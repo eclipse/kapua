@@ -40,11 +40,10 @@ import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreSettingsKey;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
-import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientCommunicationException;
-import org.eclipse.kapua.service.elasticsearch.client.exception.ClientInitializationException;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 
 import java.util.UUID;
 
@@ -56,7 +55,8 @@ import java.util.UUID;
 @KapuaProvider
 public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService implements MessageStoreService {
 
-    protected static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     // metrics
     private final Counter metricMessageCount;
     private final Counter metricCommunicationErrorCount;
@@ -78,15 +78,18 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     protected final MessageStoreFacade messageStoreFacade;
 
     /**
-     * Default constructor
+     * Constructor.
+     * <p>
+     * Initializes {@link ConfigurationProvider} and {@link MetricsService}
      *
-     * @throws ClientInitializationException
+     * @since 1.0.0
      */
-    public MessageStoreServiceImpl() throws ClientInitializationException {
+    public MessageStoreServiceImpl() {
         super(MessageStoreService.class.getName(), DatastoreDomains.DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());
         DatastoreMediator.getInstance().setMessageStoreFacade(messageStoreFacade);
+
         // data message
         MetricsService metricService = MetricServiceFactory.getInstance();
         metricMessageCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_COUNT);
@@ -94,10 +97,12 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         metricConfigurationErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_CONFIGURATION, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
         metricGenericErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_GENERIC, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
         metricValidationErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_VALIDATION, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
+
         // error messages queues size
         metricQueueCommunicationErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_QUEUE, DataStoreDriverMetrics.METRIC_COMMUNICATION, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
         metricQueueConfigurationErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_QUEUE, DataStoreDriverMetrics.METRIC_CONFIGURATION, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
         metricQueueGenericErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_QUEUE, DataStoreDriverMetrics.METRIC_GENERIC, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
+
         // store timers
         metricDataSaveTime = metricService.getTimer(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_TIME, DataStoreDriverMetrics.METRIC_S);
     }
@@ -163,19 +168,12 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     }
 
     @Override
-    public void delete(KapuaId scopeId, StorableId id)
-            throws KapuaException {
-        checkDataAccess(scopeId, Actions.delete);
-        try {
-            messageStoreFacade.delete(scopeId, id);
-        } catch (Exception e) {
-            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
-        }
+    public DatastoreMessage find(KapuaId scopeId, StorableId id) throws KapuaException {
+        return find(scopeId, id, StorableFetchStyle.SOURCE_FULL);
     }
 
     @Override
-    public DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle)
-            throws KapuaException {
+    public DatastoreMessage find(KapuaId scopeId, StorableId id, StorableFetchStyle fetchStyle) throws KapuaException {
         checkDataAccess(scopeId, Actions.read);
         try {
             return messageStoreFacade.find(scopeId, id, fetchStyle);
@@ -207,6 +205,17 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     }
 
     @Override
+    public void delete(KapuaId scopeId, StorableId id)
+            throws KapuaException {
+        checkDataAccess(scopeId, Actions.delete);
+        try {
+            messageStoreFacade.delete(scopeId, id);
+        } catch (Exception e) {
+            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
+        }
+    }
+
+    @Override
     public void delete(MessageQuery query)
             throws KapuaException {
         ArgumentValidator.numRange(query.getLimit(), 0, MAX_ENTRIES_ON_DELETE, "limit");
@@ -219,15 +228,15 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         }
     }
 
+    @Override
+    protected boolean isServiceEnabled(KapuaId scopeId) {
+        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
+    }
+
     protected void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
         Permission permission = permissionFactory.newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
         authorizationService.checkPermission(permission);
-    }
-
-    @Override
-    protected boolean isServiceEnabled(KapuaId scopeId) {
-        return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
     }
 
 }

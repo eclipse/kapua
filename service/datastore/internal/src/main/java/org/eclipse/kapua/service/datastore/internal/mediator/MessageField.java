@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
-import org.eclipse.kapua.service.datastore.model.query.StorableField;
+import org.eclipse.kapua.service.storable.model.query.StorableField;
 
 /**
  * This enumeration defines the fields names used in the {@link MessageField} client schema
@@ -107,7 +107,7 @@ public enum MessageField implements StorableField {
 
     private String field;
 
-    private MessageField(String name) {
+    MessageField(String name) {
         this.field = name;
     }
 

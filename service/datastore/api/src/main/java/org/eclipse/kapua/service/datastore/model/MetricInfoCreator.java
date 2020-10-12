@@ -12,6 +12,8 @@
 package org.eclipse.kapua.service.datastore.model;
 
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.storable.model.StorableCreator;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
 
 import java.util.Date;
 

@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.datastore.model;
 
 import org.eclipse.kapua.service.datastore.model.xml.ClientInfoXmlRegistry;
+import org.eclipse.kapua.service.storable.model.StorableListResult;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -23,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  */
 @XmlRootElement(name = "clientInfos")
-@XmlType(factoryClass = ClientInfoXmlRegistry.class, factoryMethod = "newClientInfoListResult")
+@XmlType(factoryClass = ClientInfoXmlRegistry.class, factoryMethod = "newListResult")
 public interface ClientInfoListResult extends StorableListResult<ClientInfo> {
 
 }

@@ -46,10 +46,13 @@ import org.eclipse.kapua.qa.common.cucumber.CucMessageRange;
 import org.eclipse.kapua.qa.common.cucumber.CucMetric;
 import org.eclipse.kapua.qa.common.cucumber.CucTopic;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.datastore.ChannelInfoFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
+import org.eclipse.kapua.service.datastore.ClientInfoFactory;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
+import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
+import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
 import org.eclipse.kapua.service.datastore.internal.ChannelInfoRegistryServiceProxy;
 import org.eclipse.kapua.service.datastore.internal.ClientInfoRegistryServiceProxy;
@@ -65,7 +68,7 @@ import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.datastore.internal.mediator.MetricInfoField;
 import org.eclipse.kapua.service.datastore.internal.model.DataIndexBy;
-import org.eclipse.kapua.service.datastore.internal.model.MetricsIndexBy;
+import org.eclipse.kapua.service.datastore.internal.model.metric.MetricsIndexBy;
 import org.eclipse.kapua.service.datastore.internal.model.query.MessageQueryImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
@@ -80,21 +83,12 @@ import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
-import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.eclipse.kapua.service.datastore.model.StorableIdFactory;
-import org.eclipse.kapua.service.datastore.model.StorableListResult;
-import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
-import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.SortDirection;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
-import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+import org.eclipse.kapua.service.datastore.model.query.predicate.ChannelMatchPredicate;
+import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
@@ -102,6 +96,15 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.IndexRequest;
+import org.eclipse.kapua.service.storable.model.StorableListResult;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
+import org.eclipse.kapua.service.storable.model.query.SortDirection;
+import org.eclipse.kapua.service.storable.model.query.SortField;
+import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -195,7 +198,7 @@ public class DatastoreSteps extends TestBase {
         try {
             for (String metricName : metricList) {
                 MessageQuery messageQuery = createBaseMessageQuery(account.getId(), 100);
-                messageQuery.setPredicate(storablePredicateFactory.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", metricName)));
+                messageQuery.setPredicate(datastorePredicateFactory.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", metricName)));
 
                 stepData.put(MESSAGE_QUERY, messageQuery);
                 listOfMessageQueries.add(messageQuery);
@@ -266,10 +269,13 @@ public class DatastoreSteps extends TestBase {
 
     private DeviceFactory deviceFactory;
 
-    private ElasticsearchClient elasticsearchClient;
+    private ElasticsearchClient<?> elasticsearchClient;
 
-    private DatastoreObjectFactory datastoreObjectFactory;
-    private StorablePredicateFactory storablePredicateFactory;
+    private ChannelInfoFactory channelInfoFactory;
+    private ClientInfoFactory clientInfoFactory;
+    private MessageStoreFactory messageStoreFactory;
+    private MetricInfoFactory metricInfoFactory;
+    private DatastorePredicateFactory datastorePredicateFactory;
     private StorableIdFactory storableIdFactory;
 
     private ChannelInfoRegistryService channelInfoRegistryService;
@@ -314,8 +320,11 @@ public class DatastoreSteps extends TestBase {
         messageStoreService = locator.getService(MessageStoreService.class);
         messageFactory = locator.getFactory(KapuaMessageFactory.class);
         elasticsearchClient = DatastoreClientFactory.getInstance().getElasticsearchClient();
-        storablePredicateFactory = locator.getFactory(StorablePredicateFactory.class);
-        datastoreObjectFactory = locator.getFactory(DatastoreObjectFactory.class);
+        channelInfoFactory = locator.getFactory(ChannelInfoFactory.class);
+        clientInfoFactory = locator.getFactory(ClientInfoFactory.class);
+        messageStoreFactory = locator.getFactory(MessageStoreFactory.class);
+        metricInfoFactory = locator.getFactory(MetricInfoFactory.class);
+        datastorePredicateFactory = locator.getFactory(DatastorePredicateFactory.class);
         storableIdFactory = locator.getFactory(StorableIdFactory.class);
         channelInfoRegistryService = locator.getService(ChannelInfoRegistryService.class);
         channelInfoRegistryServiceProxy = new ChannelInfoRegistryServiceProxy();
@@ -400,11 +409,11 @@ public class DatastoreSteps extends TestBase {
 
             // create new query
 
-            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            MessageQuery query = messageStoreFactory.newQuery(account.getId());
 
             // filter for client only
 
-            query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            query.setPredicate(datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
 
             // set query options
             query.setAskTotalCount(true);
@@ -412,7 +421,7 @@ public class DatastoreSteps extends TestBase {
 
             // perform query
 
-            final MessageListResult result = service.query(query);
+            MessageListResult result = service.query(query);
 
             // eval just the size
 
@@ -434,10 +443,10 @@ public class DatastoreSteps extends TestBase {
         session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
 
             // create new query
-            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            MessageQuery query = messageStoreFactory.newQuery(account.getId());
 
             // filter for client only
-            query.setPredicate(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            query.setPredicate(datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
 
             // set query options
             query.setAskTotalCount(true);
@@ -455,13 +464,13 @@ public class DatastoreSteps extends TestBase {
 
             // start a new query
 
-            final MessageQuery query = datastoreObjectFactory.newDatastoreMessageQuery(account.getId());
+            MessageQuery query = messageStoreFactory.newQuery(account.getId());
 
             // query for client and channel
 
-            final AndPredicate and = storablePredicateFactory.newAndPredicate();
-            and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
-            and.getPredicates().add(storablePredicateFactory.newTermPredicate(MessageField.CHANNEL, topic));
+            AndPredicate and = datastorePredicateFactory.newAndPredicate();
+            and.getPredicates().add(datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
+            and.getPredicates().add(datastorePredicateFactory.newTermPredicate(MessageField.CHANNEL, topic));
             query.setPredicate(and);
 
             // sort by captured time
@@ -470,18 +479,18 @@ public class DatastoreSteps extends TestBase {
 
             // perform the query
 
-            final MessageListResult result = service.query(query);
+            MessageListResult result = service.query(query);
 
             Assert.assertEquals(1, result.getSize());
 
             // get the first item
 
-            final DatastoreMessage message = result.getFirstItem();
+            DatastoreMessage message = result.getFirstItem();
             Assert.assertEquals(currentDevice.getClientId(), message.getClientId());
 
             // get payload structure
 
-            final KapuaPayload payload = message.getPayload();
+            KapuaPayload payload = message.getPayload();
 
             // assert metrics data
 
@@ -909,9 +918,8 @@ public class DatastoreSteps extends TestBase {
 
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfoQuery tmpQuery = createBaseChannelInfoQuery(account.getId(), 100);
-        RangePredicate timestampPredicate = storablePredicateFactory.newRangePredicate(ChannelInfoField.TIMESTAMP.field(),
-                KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
+        RangePredicate timestampPredicate = datastorePredicateFactory.newRangePredicate(ChannelInfoField.TIMESTAMP, KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(timestampPredicate);
         tmpQuery.setPredicate(andPredicate);
         tmpQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
@@ -925,8 +933,8 @@ public class DatastoreSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         DatastoreChannel datastoreChannel = new DatastoreChannel(filter);
         ChannelInfoQuery tmpQuery = createBaseChannelInfoQuery(account.getId(), 100);
-        ChannelMatchPredicate channelMatchPredicate = storablePredicateFactory.newChannelMatchPredicate(datastoreChannel.getChannelCleaned());
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
+        ChannelMatchPredicate channelMatchPredicate = datastorePredicateFactory.newChannelMatchPredicate(datastoreChannel.getChannelCleaned());
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(channelMatchPredicate);
         tmpQuery.setPredicate(andPredicate);
         tmpQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
@@ -1033,9 +1041,8 @@ public class DatastoreSteps extends TestBase {
 
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), 100);
-        RangePredicate timestampPredicate = storablePredicateFactory.newRangePredicate(MetricInfoField.TIMESTAMP_FULL.field(),
-                KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
+        RangePredicate timestampPredicate = datastorePredicateFactory.newRangePredicate(MetricInfoField.TIMESTAMP_FULL, KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(timestampPredicate);
         tmpQuery.setPredicate(andPredicate);
         tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
@@ -1050,9 +1057,8 @@ public class DatastoreSteps extends TestBase {
 
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), 100);
-        RangePredicate timestampPredicate = storablePredicateFactory.newRangePredicate(MetricInfoField.TIMESTAMP_FULL.field(),
-                KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
+        RangePredicate timestampPredicate = datastorePredicateFactory.newRangePredicate(MetricInfoField.TIMESTAMP_FULL, KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(timestampPredicate);
         tmpQuery.setPredicate(andPredicate);
         tmpQuery.setSortFields(getNamedMetricOrdering().stream().map(OrderConstraint::getField).collect(Collectors.toList()));
@@ -1092,8 +1098,8 @@ public class DatastoreSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), 100);
         tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
-        TermPredicate tmpPred = storablePredicateFactory.newTermPredicate(MetricInfoField.CHANNEL, topic);
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
+        TermPredicate tmpPred = datastorePredicateFactory.newTermPredicate(MetricInfoField.CHANNEL, topic);
         MetricInfoListResult tmpList = null;
 
         andPredicate.getPredicates().add(tmpPred);
@@ -1110,8 +1116,8 @@ public class DatastoreSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), 100);
         tmpQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
-        TermPredicate tmpPred = storablePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
+        TermPredicate tmpPred = datastorePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
         MetricInfoListResult tmpList = null;
 
         andPredicate.getPredicates().add(tmpPred);
@@ -1214,9 +1220,8 @@ public class DatastoreSteps extends TestBase {
 
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoQuery tmpQuery = createBaseClientInfoQuery(account.getId(), 100);
-        RangePredicate timestampPredicate = storablePredicateFactory.newRangePredicate(ClientInfoField.TIMESTAMP.field(),
-                KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
+        RangePredicate timestampPredicate = datastorePredicateFactory.newRangePredicate(ClientInfoField.TIMESTAMP, KapuaDateUtils.parseDate(start), KapuaDateUtils.parseDate(end));
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(timestampPredicate);
         tmpQuery.setPredicate(andPredicate);
         tmpQuery.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
@@ -1230,8 +1235,8 @@ public class DatastoreSteps extends TestBase {
 
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoQuery tmpQuery = createBaseClientInfoQuery(account.getId(), 100);
-        TermPredicate clientIdPredicate = storablePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
+        TermPredicate clientIdPredicate = datastorePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, clientId);
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
         andPredicate.getPredicates().add(clientIdPredicate);
         tmpQuery.setPredicate(andPredicate);
         tmpQuery.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
@@ -1246,7 +1251,7 @@ public class DatastoreSteps extends TestBase {
 
         try {
             MessageQuery messageQuery = createBaseMessageQuery(account.getId(), 100);
-            messageQuery.setPredicate(storablePredicateFactory.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", metricName)));
+            messageQuery.setPredicate(datastorePredicateFactory.newExistsPredicate(String.format(MessageSchema.MESSAGE_METRICS + ".%s", metricName)));
 
             stepData.put(MESSAGE_QUERY, messageQuery);
         } catch (Exception ex) {
@@ -1476,7 +1481,7 @@ public class DatastoreSteps extends TestBase {
             Date startDate = KapuaDateUtils.parseDate(fromDate);
             Date endDate = KapuaDateUtils.parseDate(toDate);
             MessageQuery messageQuery = createBaseMessageQuery(account.getId(), limit);
-            messageQuery.setPredicate(storablePredicateFactory.newRangePredicate(MessageField.TIMESTAMP.field(), startDate, endDate));
+            messageQuery.setPredicate(datastorePredicateFactory.newRangePredicate(MessageField.TIMESTAMP, startDate, endDate));
 
             stepData.put(MESSAGE_QUERY, messageQuery);
         } catch (Exception ex) {
@@ -1546,8 +1551,8 @@ public class DatastoreSteps extends TestBase {
 
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfoQuery channelInfoQuery = createBaseChannelInfoQuery(account.getId(), 100);
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
-        TermPredicate clientPredicate = storablePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
+        TermPredicate clientPredicate = datastorePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, clientId);
         andPredicate.getPredicates().add(clientPredicate);
         channelInfoQuery.setPredicate(andPredicate);
         channelInfoQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
@@ -1967,8 +1972,8 @@ public class DatastoreSteps extends TestBase {
 
         KapuaId tmpAccId = ((Account) stepData.get(LAST_ACCOUNT)).getId();
         String tmpClId = ((Device) stepData.get(LAST_DEVICE)).getClientId();
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
-        andPredicate.getPredicates().add(storablePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, tmpClId));
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
+        andPredicate.getPredicates().add(datastorePredicateFactory.newTermPredicate(ChannelInfoField.CLIENT_ID, tmpClId));
         ChannelInfoQuery channelInfoQuery = createBaseChannelInfoQuery(tmpAccId, 100);
         channelInfoQuery.setPredicate(andPredicate);
         channelInfoQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
@@ -1985,8 +1990,8 @@ public class DatastoreSteps extends TestBase {
 
         KapuaId tmpAccId = ((Account) stepData.get(LAST_ACCOUNT)).getId();
         String tmpClId = ((Device) stepData.get(LAST_DEVICE)).getClientId();
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
-        andPredicate.getPredicates().add(storablePredicateFactory.newTermPredicate(ClientInfoField.CLIENT_ID, tmpClId));
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
+        andPredicate.getPredicates().add(datastorePredicateFactory.newTermPredicate(ClientInfoField.CLIENT_ID, tmpClId));
         ClientInfoQuery clientInfoQuery = createBaseClientInfoQuery(tmpAccId, 100);
         clientInfoQuery.setPredicate(andPredicate);
         clientInfoQuery.addFetchAttributes(ClientInfoField.TIMESTAMP.field());
@@ -2004,8 +2009,8 @@ public class DatastoreSteps extends TestBase {
 
         KapuaId tmpAccId = ((Account) stepData.get(LAST_ACCOUNT)).getId();
         String tmpClId = ((Device) stepData.get(LAST_DEVICE)).getClientId();
-        AndPredicate andPredicate = storablePredicateFactory.newAndPredicate();
-        andPredicate.getPredicates().add(storablePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, tmpClId));
+        AndPredicate andPredicate = datastorePredicateFactory.newAndPredicate();
+        andPredicate.getPredicates().add(datastorePredicateFactory.newTermPredicate(MetricInfoField.CLIENT_ID, tmpClId));
         MetricInfoQuery metricInfoQuery = createBaseMetricInfoQuery(tmpAccId, 100);
         metricInfoQuery.setPredicate(andPredicate);
         metricInfoQuery.addFetchAttributes(MetricInfoField.TIMESTAMP_FULL.field());
@@ -2036,8 +2041,7 @@ public class DatastoreSteps extends TestBase {
     // create a basic message query with default parameters. Also set the requested ordering.
     private MessageQuery getBaseMessageQuery(KapuaId scopeId, int limit, List<OrderConstraint<?>> order) {
 
-        return createBaseMessageQuery(scopeId, limit,
-                order.stream().map(OrderConstraint::getField).collect(Collectors.toList()));
+        return createBaseMessageQuery(scopeId, limit, order.stream().map(OrderConstraint::getField).collect(Collectors.toList()));
     }
 
     // create a basic metric query with default parameters. Also set the requested ordering.
@@ -2187,16 +2191,12 @@ public class DatastoreSteps extends TestBase {
 
         List<SortField> order = new ArrayList<>();
         order.add(SortField.descending(MessageSchema.MESSAGE_TIMESTAMP));
-
         return sort;
     }
 
     private List<OrderConstraint<?>> getNamedMetricOrdering() {
-
         List<OrderConstraint<?>> sort = new ArrayList<>();
-
         sort.add(orderConstraint(SortField.ascending(MetricInfoSchema.METRIC_MTR_NAME_FULL), String.class));
-
         return sort;
     }
 
@@ -2445,6 +2445,7 @@ public class DatastoreSteps extends TestBase {
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(limit);
         query.setOffset(0);
+
         List<SortField> order = new ArrayList<>();
         order.add(SortField.descending(MessageSchema.MESSAGE_TIMESTAMP));
         query.setSortFields(order);
@@ -2481,11 +2482,12 @@ public class DatastoreSteps extends TestBase {
      */
     public ChannelInfoQuery createBaseChannelInfoQuery(KapuaId scopeId, int limit) {
 
-        ChannelInfoQuery query = datastoreObjectFactory.newChannelInfoQuery(scopeId);
+        ChannelInfoQuery query = channelInfoFactory.newQuery(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(limit);
         query.setOffset(0);
+
         List<SortField> order = new ArrayList<>();
         order.add(SortField.descending(ChannelInfoSchema.CHANNEL_TIMESTAMP));
         query.setSortFields(order);
@@ -2502,11 +2504,12 @@ public class DatastoreSteps extends TestBase {
      */
     public MetricInfoQuery createBaseMetricInfoQuery(KapuaId scopeId, int limit) {
 
-        MetricInfoQuery query = datastoreObjectFactory.newMetricInfoQuery(scopeId);
+        MetricInfoQuery query = metricInfoFactory.newQuery(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(limit);
         query.setOffset(0);
+
         List<SortField> order = new ArrayList<>();
         order.add(SortField.descending(MetricInfoSchema.METRIC_MTR_TIMESTAMP));
         query.setSortFields(order);
@@ -2523,11 +2526,12 @@ public class DatastoreSteps extends TestBase {
      */
     public ClientInfoQuery createBaseClientInfoQuery(KapuaId scopeId, int limit) {
 
-        ClientInfoQuery query = datastoreObjectFactory.newClientInfoQuery(scopeId);
+        ClientInfoQuery query = clientInfoFactory.newQuery(scopeId);
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
         query.setLimit(limit);
         query.setOffset(0);
+
         List<SortField> order = new ArrayList<>();
         order.add(SortField.descending(ClientInfoSchema.CLIENT_TIMESTAMP));
         query.setSortFields(order);

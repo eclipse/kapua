@@ -1,0 +1,111 @@
+/*******************************************************************************
+ * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.service.storable.model.query.predicate;
+
+/**
+ * {@link StorablePredicate}s constants.
+ *
+ * @since 1.0.0
+ */
+public interface PredicateConstants {
+
+    /**
+     * Boolean term.
+     *
+     * @since 1.0.0
+     */
+    String BOOL_KEY = "bool";
+
+    /**
+     * Exists term.
+     *
+     * @since 1.0.0
+     */
+    String EXISTS_KEY = "exists";
+
+    /**
+     * Field.
+     *
+     * @since 1.0.0
+     */
+    String FIELD_KEY = "field";
+
+    /**
+     * Ids term.
+     *
+     * @since 1.0.0
+     */
+    String IDS_KEY = "ids";
+
+    /**
+     * Must term.
+     *
+     * @since 1.0.0
+     */
+    String MUST_KEY = "must";
+
+    /**
+     * Must term.
+     *
+     * @since 1.0.0
+     */
+    String SHOULD_KEY = "should";
+
+    /**
+     * Prefix term.
+     *
+     * @since 1.0.0
+     */
+    String PREFIX_KEY = "prefix";
+
+    /**
+     * Range term.
+     *
+     * @since 1.0.0
+     */
+    String RANGE_KEY = "range";
+
+    /**
+     * Term.
+     *
+     * @since 1.0.0
+     */
+    String TERM_KEY = "term";
+
+    /**
+     * Type term.
+     *
+     * @since 1.0.0
+     */
+    String TYPE_KEY = "type";
+
+    /**
+     * Values term.
+     *
+     * @since 1.0.0
+     */
+    String VALUES_KEY = "values";
+
+    /**
+     * Greater than comparator term.
+     *
+     * @since 1.0.0
+     */
+    String GTE_KEY = "gte";
+
+    /**
+     * Less than comparator term.
+     *
+     * @since 1.0.0
+     */
+    String LTE_KEY = "lte";
+}

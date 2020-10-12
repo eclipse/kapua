@@ -265,7 +265,6 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
         JsonNode queryJsonNode = getModelConverter().convertQuery(query);
-        Object queryFetchStyle = getModelConverter().getFetchStyle(query);
         LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);
@@ -297,6 +296,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         }
 
         ResultList<T> resultList = new ResultList<>(totalCount);
+        Object queryFetchStyle = getModelConverter().getFetchStyle(query);
         if (resultsNode != null && !resultsNode.isEmpty()) {
             for (JsonNode result : resultsNode) {
                 Map<String, Object> object = objectMapper.convertValue(result.get(SchemaKeys.KEY_SOURCE), Map.class);
@@ -318,6 +318,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException {
         JsonNode queryJsonNode = getModelConverter().convertQuery(query);
+
         LOG.debug(COUNT_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);
@@ -371,6 +372,7 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException {
         JsonNode queryJsonNode = getModelConverter().convertQuery(query);
+
         LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);

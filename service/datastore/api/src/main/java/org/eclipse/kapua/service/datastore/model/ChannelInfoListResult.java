@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.datastore.model;
 
 import org.eclipse.kapua.service.datastore.model.xml.ChannelInfoXmlRegistry;
+import org.eclipse.kapua.service.storable.model.StorableListResult;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -23,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  * @since 1.0
  */
 @XmlRootElement(name = "channelInfos")
-@XmlType(factoryClass = ChannelInfoXmlRegistry.class, factoryMethod = "newChannelInfoListResult")
+@XmlType(factoryClass = ChannelInfoXmlRegistry.class, factoryMethod = "newListResult")
 public interface ChannelInfoListResult extends StorableListResult<ChannelInfo> {
 
 }

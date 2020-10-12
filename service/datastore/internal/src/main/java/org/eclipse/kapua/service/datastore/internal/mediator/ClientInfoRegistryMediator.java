@@ -16,6 +16,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.schema.Metadata;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.storable.exception.MappingException;
 
 /**
  * Client information registry mediator definition
@@ -32,8 +33,7 @@ public interface ClientInfoRegistryMediator {
      * @return
      * @throws ClientException
      */
-    Metadata getMetadata(KapuaId scopeId, long indexedOn)
-            throws ClientException;
+    Metadata getMetadata(KapuaId scopeId, long indexedOn) throws ClientException, MappingException;
 
     /**
      * On after client info delete event handler
@@ -42,6 +42,7 @@ public interface ClientInfoRegistryMediator {
      * @param clientInfo
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
+     * @throws ClientException
      */
     void onAfterClientInfoDelete(KapuaId scopeId, ClientInfo clientInfo)
             throws KapuaIllegalArgumentException,

@@ -26,26 +26,29 @@ import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
+import org.eclipse.kapua.service.datastore.ChannelInfoFactory;
+import org.eclipse.kapua.service.datastore.ClientInfoFactory;
+import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
+import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.internal.client.DatastoreClientFactory;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
-import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
-import org.eclipse.kapua.service.datastore.model.query.TermPredicate;
+import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.query.SortField;
+import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -73,10 +76,13 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
     private static final DeviceFactory DEVICE_FACTORY = LOCATOR.getFactory(DeviceFactory.class);
 
-    private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
-    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
+    private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
 
-    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
+    private static final ChannelInfoFactory CHANNEL_INFO_FACTORY = LOCATOR.getFactory(ChannelInfoFactory.class);
+    private static final ClientInfoFactory CLIENT_INFO_FACTORY = LOCATOR.getFactory(ClientInfoFactory.class);
+    private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
+    private static final MessageStoreFactory MESSAGE_STORE_FACTORY = LOCATOR.getFactory(MessageStoreFactory.class);
+    private static final MetricInfoFactory METRIC_INFO_FACTORY = LOCATOR.getFactory(MetricInfoFactory.class);
 
     private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
 
@@ -310,7 +316,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
      * @return
      */
     private MessageQuery getBaseMessageQuery(KapuaId scopeId, int limit) {
-        MessageQuery query = DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(scopeId);
+        MessageQuery query = MESSAGE_STORE_FACTORY.newQuery(scopeId);
 
         query.setAskTotalCount(true);
         query.setFetchStyle(StorableFetchStyle.SOURCE_FULL);
@@ -330,14 +336,14 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
      * @param dateRange
      */
     private void setMessageQueryBaseCriteria(MessageQuery messageQuery, String clientId, DateRange dateRange) {
-        AndPredicate andPredicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+        AndPredicate andPredicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
 
         if (!StringUtils.isEmpty(clientId)) {
-            TermPredicate clientPredicate = STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, clientId);
+            TermPredicate clientPredicate = DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, clientId);
             andPredicate.getPredicates().add(clientPredicate);
         }
         if (dateRange != null) {
-            RangePredicate timestampPredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.name(), dateRange.getLowerBound(), dateRange.getUpperBound());
+            RangePredicate timestampPredicate = DATASTORE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP, dateRange.getLowerBound(), dateRange.getUpperBound());
 
             andPredicate.getPredicates().add(timestampPredicate);
         }

@@ -45,8 +45,6 @@
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
 
-        <api>org.eclipse.kapua.service.datastore.model.StorableIdFactory</api>
-
         <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
         <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
         <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
@@ -88,12 +86,16 @@
 
         <api>org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService</api>
 
-        <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
         <api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>
+        <api>org.eclipse.kapua.service.datastore.ClientInfoFactory</api>
         <api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
+        <api>org.eclipse.kapua.service.datastore.ChannelInfoFactory</api>
+        <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
+        <api>org.eclipse.kapua.service.datastore.MessageStoreFactory</api>
         <api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
-        <api>org.eclipse.kapua.service.datastore.DatastoreObjectFactory</api>
-        <api>org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory</api>
+        <api>org.eclipse.kapua.service.datastore.MetricInfoFactory</api>
+
+        <api>org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory</api>
 
         <api>org.eclipse.kapua.service.endpoint.EndpointInfoFactory</api>
         <api>org.eclipse.kapua.service.endpoint.EndpointInfoService</api>
@@ -122,6 +124,8 @@
         <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService</api>
         <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory</api>
 
+        <api>org.eclipse.kapua.service.storable.model.id.StorableIdFactory</api>
+        <api>org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory</api>
 
         <api>org.eclipse.kapua.service.tag.TagFactory</api>
         <api>org.eclipse.kapua.service.tag.TagService</api>
@@ -134,12 +138,12 @@
         <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
         <api>org.eclipse.kapua.message.device.data.KapuaDataMessageFactory</api>
 
-        <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
-
         <api>org.eclipse.kapua.transport.TransportClientFactory</api>
 
-        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.service.config.ServiceConfigurationFactory</api>
+
+        <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
 
         <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
     </provided>

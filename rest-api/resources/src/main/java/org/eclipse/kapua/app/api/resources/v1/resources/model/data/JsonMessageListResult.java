@@ -11,13 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources.model.data;
 
-import org.eclipse.kapua.service.datastore.internal.model.query.AbstractStorableListResult;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
+import org.eclipse.kapua.service.storable.model.AbstractStorableListResult;
 
+/**
+ * @since 1.0.0
+ */
 public class JsonMessageListResult extends AbstractStorableListResult<JsonDatastoreMessage> {
 
     /**
      * Construct a message result list
+     *
+     * @since 1.0.0
      */
     public JsonMessageListResult() {
         super();
@@ -27,10 +32,10 @@ public class JsonMessageListResult extends AbstractStorableListResult<JsonDatast
      * Construct the message result list from the provided list
      *
      * @param resultList
+     * @since 1.0.0
      */
     public JsonMessageListResult(ResultList<JsonDatastoreMessage> resultList) {
-        addItems(resultList.getResult());
-        setTotalCount(resultList.getTotalCount());
+        super(resultList.getResult(), resultList.getTotalCount());
     }
 
 }

@@ -11,35 +11,37 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
-import org.eclipse.kapua.service.datastore.internal.model.query.AbstractStorableListResult;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
+import org.eclipse.kapua.service.storable.model.AbstractStorableListResult;
 
 /**
- * Channel information query result list implementation
+ * {@link ChannelInfoListResult} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ChannelInfoListResultImpl extends AbstractStorableListResult<ChannelInfo> implements ChannelInfoListResult {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * Construct a channel info result list
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public ChannelInfoListResultImpl() {
         super();
     }
 
     /**
-     * Construct the channel info result list from the provided list
+     * Constructor.
      *
-     * @param resultList
+     * @param resultList The {@link ResultList} to add.
+     * @since 1.0.0
      */
     public ChannelInfoListResultImpl(ResultList<ChannelInfo> resultList) {
-        addItems(resultList.getResult());
-        setTotalCount(resultList.getTotalCount());
+        super(resultList.getResult(), resultList.getTotalCount());
     }
 
 }

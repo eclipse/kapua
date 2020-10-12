@@ -12,7 +12,7 @@
 package org.eclipse.kapua.service.datastore.model.xml;
 
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
+import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 
@@ -27,15 +27,15 @@ import javax.xml.bind.annotation.XmlRegistry;
 public class DatastoreMessageXmlRegistry {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
+    private static final MessageStoreFactory MESSAGE_STORE_FACTORY = LOCATOR.getFactory(MessageStoreFactory.class);
 
     /**
      * Creates a {@link MessageListResult} instance
      *
      * @return
      */
-    public MessageListResult newDatastoreMessageListResult() {
-        return DATASTORE_OBJECT_FACTORY.newDatastoreMessageListResult();
+    public MessageListResult newListResult() {
+        return MESSAGE_STORE_FACTORY.newListResult();
     }
 
     /**
@@ -44,6 +44,6 @@ public class DatastoreMessageXmlRegistry {
      * @return
      */
     public MessageQuery newQuery() {
-        return DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(null);
+        return MESSAGE_STORE_FACTORY.newQuery(null);
     }
 }

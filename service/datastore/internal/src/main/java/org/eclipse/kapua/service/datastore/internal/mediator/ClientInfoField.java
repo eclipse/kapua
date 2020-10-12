@@ -14,13 +14,11 @@ package org.eclipse.kapua.service.datastore.internal.mediator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
-import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.eclipse.kapua.service.datastore.model.query.StorableField;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.query.StorableField;
 
 /**
  * This enumeration defines the fields names used in the {@link ClientInfo} schema
- * 
- * @since 1.0
  *
  * @since 1.0.0
  */
@@ -28,18 +26,29 @@ public enum ClientInfoField implements StorableField {
 
     /**
      * Scope id
+     *
+     * @since 1.0.0
      */
     SCOPE_ID(ClientInfoSchema.CLIENT_SCOPE_ID),
+
     /**
      * Client identifier
+     *
+     * @since 1.0.0
      */
     CLIENT_ID(ClientInfoSchema.CLIENT_ID),
+
     /**
      * Timestamp
+     *
+     * @since 1.0.0
      */
     TIMESTAMP(ClientInfoSchema.CLIENT_TIMESTAMP),
+
     /**
      * Message identifier
+     *
+     * @since 1.0.0
      */
     MESSAGE_ID(ClientInfoSchema.CLIENT_MESSAGE_ID);
 
@@ -57,7 +66,7 @@ public enum ClientInfoField implements StorableField {
     /**
      * Get the client identifier (combining accountName and clientId).<br>
      * <b>If the id is null then it is generated</b>
-     * 
+     *
      * @param id
      * @param scopeId
      * @param clientId
@@ -74,7 +83,7 @@ public enum ClientInfoField implements StorableField {
     /**
      * Get the client identifier (combining accountName and clientId).<br>
      * <b>If the id is null then it is generated</b>
-     * 
+     *
      * @param id
      * @param clientInfo
      * @return

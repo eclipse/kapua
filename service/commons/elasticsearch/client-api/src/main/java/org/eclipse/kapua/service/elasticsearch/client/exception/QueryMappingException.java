@@ -23,9 +23,21 @@ public class QueryMappingException extends ClientException {
     /**
      * Constructor.
      *
+     * @param reason The reason of this {@link QueryMappingException}.
      * @since 1.3.0
      */
-    public QueryMappingException() {
-        super(ClientErrorCodes.QUERY_MAPPING_EXCEPTION);
+    public QueryMappingException(String reason) {
+        this(null, reason);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param cause  The root cause of the {@link QueryMappingException}.
+     * @param reason The reason of this {@link QueryMappingException}.
+     * @since 1.3.0
+     */
+    public QueryMappingException(Throwable cause, String reason) {
+        super(ClientErrorCodes.QUERY_MAPPING_EXCEPTION, cause, reason);
     }
 }

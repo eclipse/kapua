@@ -36,7 +36,6 @@ public class DomainDAO extends ServiceDAO {
      * @param em      The {@link EntityManager} that holds the transaction.
      * @param creator The {@link DomainCreator} object from which create the new {@link Domain}.
      * @return The newly created {@link Domain}.
-     * @throws KapuaException
      * @since 1.0.0
      */
     public static Domain create(EntityManager em, DomainCreator creator) {

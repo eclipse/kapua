@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.datastore.internal.mediator;
 
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.service.datastore.internal.model.DataIndexBy;
-import org.eclipse.kapua.service.datastore.internal.model.MetricsIndexBy;
+import org.eclipse.kapua.service.datastore.internal.model.metric.MetricsIndexBy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

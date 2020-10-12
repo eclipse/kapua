@@ -11,9 +11,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.model;
 
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.service.storable.model.Storable;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableIdXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,7 +33,6 @@ import java.util.Date;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = { //
         "id", //
-        "scopeId", //
         "clientId", //
         "firstMessageId", //
         "firstMessageOn", //
@@ -42,34 +42,24 @@ import java.util.Date;
 public interface ClientInfo extends Storable {
 
     /**
-     * Get the record identifier
+     * Gets the {@link StorableId}
      *
-     * @return
+     * @return The {@link StorableId}
      * @since 1.0.0
      */
     @XmlElement(name = "id")
-    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     StorableId getId();
 
     /**
-     * Set the record identifier
+     * Sets the {@link StorableId}
      *
-     * @param id
+     * @param id The {@link StorableId}
      * @since 1.0.0
      */
     @XmlElement(name = "id")
-    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     void setId(StorableId id);
-
-    /**
-     * Get the scope id
-     *
-     * @return
-     * @since 1.0.0
-     */
-    @XmlElement(name = "scopeId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    KapuaId getScopeId();
 
     /**
      * Get the client identifier
@@ -95,7 +85,7 @@ public interface ClientInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "firstMessageId")
-    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     StorableId getFirstMessageId();
 
     /**
@@ -132,7 +122,7 @@ public interface ClientInfo extends Storable {
      * @since 1.0.0
      */
     @XmlElement(name = "lastMessageId")
-    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     StorableId getLastMessageId();
 
     /**

@@ -12,9 +12,9 @@
 package org.eclipse.kapua.app.api.resources.v1.resources.model.data;
 
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
-import org.eclipse.kapua.service.datastore.model.Storable;
-import org.eclipse.kapua.service.datastore.model.StorableId;
-import org.eclipse.kapua.service.datastore.model.StorableIdAdapter;
+import org.eclipse.kapua.service.storable.model.Storable;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableIdXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -56,7 +56,7 @@ public class JsonDatastoreMessage extends JsonKapuaDataMessage implements Storab
     }
 
     @XmlElement(name = "datastoreId")
-    @XmlJavaTypeAdapter(StorableIdAdapter.class)
+    @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
     public StorableId getDatastoreId() {
         return datastoreId;
     }

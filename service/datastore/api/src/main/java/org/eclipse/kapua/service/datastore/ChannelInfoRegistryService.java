@@ -11,50 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
-import org.eclipse.kapua.service.datastore.model.StorableId;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
+import org.eclipse.kapua.service.storable.StorableService;
 
 /**
- * Channel information registry service definition.<br>
- * The channel information binds information about the channels and the devices that published on these channels.
+ * {@link ChannelInfoRegistryService} definition.
+ * <p>
+ * {@link StorableService} for {@link ChannelInfo}
  *
  * @since 1.0.0
  */
-public interface ChannelInfoRegistryService extends KapuaService {
-
-    /**
-     * Find channel information by identifier
-     *
-     * @param scopeId
-     * @param id
-     * @return
-     * @throws KapuaException
-     * @since 1.0.0
-     */
-    ChannelInfo find(KapuaId scopeId, StorableId id) throws KapuaException;
-
-    /**
-     * Query for channels informations objects matching the given query
-     *
-     * @param query
-     * @return
-     * @throws KapuaException
-     * @since 1.0.0
-     */
-    ChannelInfoListResult query(ChannelInfoQuery query) throws KapuaException;
-
-    /**
-     * Get the channels informations count matching the given query
-     *
-     * @param query
-     * @return
-     * @throws KapuaException
-     * @since 1.0.0
-     */
-    long count(ChannelInfoQuery query) throws KapuaException;
+public interface ChannelInfoRegistryService extends KapuaService, StorableService<ChannelInfo, ChannelInfoListResult, ChannelInfoQuery> {
 }

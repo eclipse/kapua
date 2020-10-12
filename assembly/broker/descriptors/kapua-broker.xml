@@ -272,6 +272,8 @@
                 <include>${pom.groupId}:kapua-service-elasticsearch-client-api</include>
                 <include>${pom.groupId}:kapua-service-elasticsearch-client-rest</include>
                 <include>${pom.groupId}:kapua-service-elasticsearch-client-transport</include>
+                <include>${pom.groupId}:kapua-service-storable-api</include>
+                <include>${pom.groupId}:kapua-service-storable-internal</include>
                 <include>${pom.groupId}:kapua-tag-api</include>
                 <include>${pom.groupId}:kapua-tag-internal</include>
                 <include>${pom.groupId}:kapua-translator-api</include>

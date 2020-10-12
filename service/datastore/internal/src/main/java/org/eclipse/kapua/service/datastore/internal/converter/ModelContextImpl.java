@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.datastore.internal.converter;
 import com.fasterxml.jackson.core.Base64Variants;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.internal.KapuaPositionImpl;
@@ -25,7 +26,6 @@ import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.ClientInfoImpl;
 import org.eclipse.kapua.service.datastore.internal.model.DatastoreMessageImpl;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
-import org.eclipse.kapua.service.datastore.internal.model.StorableIdImpl;
 import org.eclipse.kapua.service.datastore.internal.schema.ChannelInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.ClientInfoSchema;
 import org.eclipse.kapua.service.datastore.internal.schema.MessageSchema;
@@ -34,10 +34,11 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MetricInfo;
-import org.eclipse.kapua.service.datastore.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.elasticsearch.client.ModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.QueryConverter;
 import org.eclipse.kapua.service.elasticsearch.client.exception.DatamodelMappingException;
+import org.eclipse.kapua.service.storable.model.id.StorableIdFactory;
+import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +58,9 @@ import java.util.UUID;
 public class ModelContextImpl implements ModelContext {
 
     private static final Logger logger = LoggerFactory.getLogger(ModelContextImpl.class);
+
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final StorableIdFactory STORABLE_ID_FACTORY = LOCATOR.getFactory(StorableIdFactory.class);
 
     private static final String UNSUPPORTED_OBJECT_TYPE_ERROR_MSG = "The conversion of object [%s] is not supported!";
     private static final String MARSHAL_INVALID_PARAMETERS_ERROR_MSG = "Object and/or object type cannot be null!";
@@ -127,7 +131,7 @@ public class ModelContextImpl implements ModelContext {
         StorableFetchStyle fetchStyle = getStorableFetchStyle(messageMap);
         DatastoreMessageImpl message = new DatastoreMessageImpl();
         String id = (String) messageMap.get(getIdKeyName());
-        message.setDatastoreId(new StorableIdImpl(id));
+        message.setDatastoreId(STORABLE_ID_FACTORY.newStorableId(id));
         String messageId = (String) messageMap.get(MessageSchema.MESSAGE_ID);
         if (messageId != null) {
             message.setId(UUID.fromString(messageId));
@@ -144,7 +148,7 @@ public class ModelContextImpl implements ModelContext {
         message.setDeviceId(deviceId);
         String clientId = (String) messageMap.get(MessageSchema.MESSAGE_CLIENT_ID);
         message.setClientId(clientId);
-        message.setDatastoreId(new StorableIdImpl(id));
+        message.setDatastoreId(STORABLE_ID_FACTORY.newStorableId(id));
 
         KapuaDataChannelImpl dataChannel = new KapuaDataChannelImpl();
         message.setChannel(dataChannel);
@@ -254,10 +258,10 @@ public class ModelContextImpl implements ModelContext {
         Date timestamp = KapuaDateUtils.parseDate(lastMsgTimestamp);
 
         MetricInfo metricInfo = new MetricInfoImpl(scopeId);
-        metricInfo.setId(new StorableIdImpl(id));
+        metricInfo.setId(STORABLE_ID_FACTORY.newStorableId(id));
         metricInfo.setClientId(clientId);
         metricInfo.setChannel(channel);
-        metricInfo.setFirstMessageId(new StorableIdImpl(lastMsgId));
+        metricInfo.setFirstMessageId(STORABLE_ID_FACTORY.newStorableId(lastMsgId));
         metricInfo.setName(metricName);
         metricInfo.setFirstMessageOn(timestamp);
         metricInfo.setMetricType(DatastoreUtils.convertToKapuaType(type));
@@ -270,10 +274,10 @@ public class ModelContextImpl implements ModelContext {
         String id = (String) channelInfoMap.get(getIdKeyName());
 
         ChannelInfo channelInfo = new ChannelInfoImpl(scopeId);
-        channelInfo.setId(new StorableIdImpl(id));
+        channelInfo.setId(STORABLE_ID_FACTORY.newStorableId(id));
         channelInfo.setClientId((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_CLIENT_ID));
         channelInfo.setName((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_NAME));
-        channelInfo.setFirstMessageId(new StorableIdImpl((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_MESSAGE_ID)));
+        channelInfo.setFirstMessageId(STORABLE_ID_FACTORY.newStorableId((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_MESSAGE_ID)));
         channelInfo.setFirstMessageOn(KapuaDateUtils.parseDate((String) channelInfoMap.get(ChannelInfoSchema.CHANNEL_TIMESTAMP)));
 
         return channelInfo;
@@ -284,9 +288,9 @@ public class ModelContextImpl implements ModelContext {
         String id = (String) clientInfoMap.get(getIdKeyName());
 
         ClientInfo clientInfo = new ClientInfoImpl(scopeId);
-        clientInfo.setId(new StorableIdImpl(id));
+        clientInfo.setId(STORABLE_ID_FACTORY.newStorableId(id));
         clientInfo.setClientId((String) clientInfoMap.get(ClientInfoSchema.CLIENT_ID));
-        clientInfo.setFirstMessageId(new StorableIdImpl((String) clientInfoMap.get(ClientInfoSchema.CLIENT_MESSAGE_ID)));
+        clientInfo.setFirstMessageId(STORABLE_ID_FACTORY.newStorableId((String) clientInfoMap.get(ClientInfoSchema.CLIENT_MESSAGE_ID)));
         clientInfo.setFirstMessageOn(KapuaDateUtils.parseDate((String) clientInfoMap.get(ClientInfoSchema.CLIENT_TIMESTAMP)));
 
         return clientInfo;

@@ -37,7 +37,7 @@ public enum DatastoreServiceErrorCodes implements KapuaErrorCode {
     /**
      * See {@link DatastoreOperationException}
      *
-     * @see 1.3.0
+     * @since 1.3.0
      */
     DATASTORE_OPERATION_EXCEPTION,
 

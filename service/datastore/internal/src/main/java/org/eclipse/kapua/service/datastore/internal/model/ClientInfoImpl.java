@@ -12,14 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model;
 
-import java.util.Date;
-
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
-import org.eclipse.kapua.service.datastore.model.StorableId;
+import org.eclipse.kapua.service.storable.model.id.StorableId;
+
+import java.util.Date;
 
 /**
- * Client information schema implementation
+ * {@link ClientInfo} implementation.
+ *
+ * @since 1.0.0
  */
 public class ClientInfoImpl implements ClientInfo {
 
@@ -34,24 +36,19 @@ public class ClientInfoImpl implements ClientInfo {
     private StorableId lastMessageId;
     private Date lastMessageOn;
 
-    /**
-     * Construct a client information for the given account
-     * 
-     * @param scopeId
-     */
-    public ClientInfoImpl(KapuaId scopeId) {
-        setScopeId(scopeId);
+    public ClientInfoImpl() {
     }
 
     /**
-     * Construct a client information for the given account and storable identifier
-     * 
-     * @param scopeId
-     * @param id
+     * Constructor.
+     *
+     * @param scopeId The scope {@link KapuaId}.
+     * @since 1.0.0
      */
-    public ClientInfoImpl(KapuaId scopeId, StorableId id) {
-        this(scopeId);
-        this.id = id;
+    public ClientInfoImpl(KapuaId scopeId) {
+        this();
+
+        setScopeId(scopeId);
     }
 
     @Override
@@ -59,8 +56,9 @@ public class ClientInfoImpl implements ClientInfo {
         return scopeId;
     }
 
-    protected void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId != null ? scopeId : null;
+    @Override
+    public void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId;
     }
 
     @Override

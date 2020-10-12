@@ -27,13 +27,13 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
+import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.datastore.model.query.SortDirection;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
-import org.eclipse.kapua.service.datastore.model.query.XmlAdaptedSortField;
+import org.eclipse.kapua.service.storable.model.query.SortDirection;
+import org.eclipse.kapua.service.storable.model.query.SortField;
+import org.eclipse.kapua.service.storable.model.query.XmlAdaptedSortField;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -58,7 +58,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
 
     private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
 
-    private static final DatastoreObjectFactory DATASTORE_OBJECT_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
+    private static final MessageStoreFactory MESSAGE_STORE_FACTORY = LOCATOR.getFactory(MessageStoreFactory.class);
 
     private static final DataMessages DATA_MESSAGES = new DataMessages();
 
@@ -80,20 +80,20 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public <V extends Comparable<V>> JsonMessageListResult simpleQueryJson(
-            @PathParam("scopeId") ScopeId scopeId,
-            @QueryParam("clientId") String clientId,
-            @QueryParam("channel") String channel,
-            @QueryParam("strictChannel") boolean strictChannel,
-            @QueryParam("startDate") DateParam startDateParam,
-            @QueryParam("endDate") DateParam endDateParam,
-            @QueryParam("metricName") String metricName,
-            @QueryParam("metricType") MetricType<V> metricType,
-            @QueryParam("metricMin") String metricMinValue,
-            @QueryParam("metricMax") String metricMaxValue,
-            @QueryParam("sortDir") @DefaultValue("DESC") SortDirection sortDir,
-            @QueryParam("offset") @DefaultValue("0") int offset,
-            @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
+    public <V extends Comparable<V>> JsonMessageListResult simpleQueryJson(@PathParam("scopeId") ScopeId scopeId,
+                                                                           @QueryParam("clientId") String clientId,
+                                                                           @QueryParam("channel") String channel,
+                                                                           @QueryParam("strictChannel") boolean strictChannel,
+                                                                           @QueryParam("startDate") DateParam startDateParam,
+                                                                           @QueryParam("endDate") DateParam endDateParam,
+                                                                           @QueryParam("metricName") String metricName,
+                                                                           @QueryParam("metricType") MetricType<V> metricType,
+                                                                           @QueryParam("metricMin") String metricMinValue,
+                                                                           @QueryParam("metricMax") String metricMaxValue,
+                                                                           @QueryParam("sortDir") @DefaultValue("DESC") SortDirection sortDir,
+                                                                           @QueryParam("offset") @DefaultValue("0") int offset,
+                                                                           @QueryParam("limit") @DefaultValue("50") int limit)
+            throws KapuaException {
 
         MessageListResult result = DATA_MESSAGES.simpleQuery(
                 scopeId,
@@ -128,15 +128,14 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
      * @return an {@link StorableEntityId} object encapsulating the response from
      * the datastore
      * @throws KapuaException Whenever something bad happens. See specific
-     *                   {@link KapuaService} exceptions.
+     *                        {@link KapuaService} exceptions.
      */
     @POST
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-
-    public Response storeMessageJson(
-            @PathParam("scopeId") ScopeId scopeId,
-            JsonKapuaDataMessage jsonKapuaDataMessage) throws KapuaException {
+    public Response storeMessageJson(@PathParam("scopeId") ScopeId scopeId,
+                                     JsonKapuaDataMessage jsonKapuaDataMessage)
+            throws KapuaException {
 
         KapuaDataMessage kapuaDataMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
 
@@ -181,10 +180,9 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
     @Path("_query")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-
-    public JsonMessageListResult queryJson(
-            @PathParam("scopeId") ScopeId scopeId,
-            JsonMessageQuery query) throws KapuaException {
+    public JsonMessageListResult queryJson(@PathParam("scopeId") ScopeId scopeId,
+                                           JsonMessageQuery query)
+            throws KapuaException {
         query.setScopeId(scopeId);
 
         MessageListResult result = DATA_MESSAGES.query(scopeId, convertQuery(query));
@@ -210,10 +208,9 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
     @GET
     @Path("{datastoreMessageId}")
     @Produces({MediaType.APPLICATION_JSON})
-
-    public JsonDatastoreMessage findJson(
-            @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId) throws KapuaException {
+    public JsonDatastoreMessage findJson(@PathParam("scopeId") ScopeId scopeId,
+                                         @PathParam("datastoreMessageId") StorableEntityId datastoreMessageId)
+            throws KapuaException {
         DatastoreMessage datastoreMessage = DATA_MESSAGES.find(scopeId, datastoreMessageId);
 
         JsonDatastoreMessage jsonDatastoreMessage = new JsonDatastoreMessage(datastoreMessage);
@@ -222,7 +219,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
     }
 
     private MessageQuery convertQuery(JsonMessageQuery query) {
-        MessageQuery messageQuery = DATASTORE_OBJECT_FACTORY.newDatastoreMessageQuery(query.getScopeId());
+        MessageQuery messageQuery = MESSAGE_STORE_FACTORY.newQuery(query.getScopeId());
         messageQuery.setAskTotalCount(query.isAskTotalCount());
         messageQuery.setFetchAttributes(query.getFetchAttributes());
         messageQuery.setFetchStyle(query.getFetchStyle());
@@ -233,7 +230,7 @@ public class DataMessagesJson extends AbstractKapuaResource implements JsonSeria
         List<SortField> sortFields = new ArrayList<>();
         if (query.getSortFields() != null) {
             for (XmlAdaptedSortField xmlAdaptedSortField : query.getSortFields()) {
-                sortFields.add(SortField.of(xmlAdaptedSortField.getDirection(), xmlAdaptedSortField.getField()));
+                sortFields.add(SortField.of(xmlAdaptedSortField.getField(), xmlAdaptedSortField.getDirection()));
             }
         }
         messageQuery.setSortFields(sortFields);

@@ -18,17 +18,17 @@ import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.datastore.DatastoreObjectFactory;
+import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageField;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.datastore.model.MessageListResult;
-import org.eclipse.kapua.service.datastore.model.query.AndPredicate;
 import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
-import org.eclipse.kapua.service.datastore.model.query.RangePredicate;
-import org.eclipse.kapua.service.datastore.model.query.SortDirection;
-import org.eclipse.kapua.service.datastore.model.query.SortField;
-import org.eclipse.kapua.service.datastore.model.query.StorablePredicateFactory;
+import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
+import org.eclipse.kapua.service.storable.model.query.SortDirection;
+import org.eclipse.kapua.service.storable.model.query.SortField;
+import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,13 +44,14 @@ import java.util.Date;
 public class DataExporterServlet extends HttpServlet {
 
     private static final long serialVersionUID = 226461063207179649L;
-    private static Logger logger = LoggerFactory.getLogger(DataExporterServlet.class);
+
+    private static final Logger LOG = LoggerFactory.getLogger(DataExporterServlet.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
-    private static final DatastoreObjectFactory DATASTORE_FACTORY = LOCATOR.getFactory(DatastoreObjectFactory.class);
+    private static final MessageStoreFactory MESSAGE_STORE_FACTORY = LOCATOR.getFactory(MessageStoreFactory.class);
 
-    private static final StorablePredicateFactory STORABLE_PREDICATE_FACTORY = LOCATOR.getFactory(StorablePredicateFactory.class);
+    private static final DatastorePredicateFactory DATASTORE_PREDICATE_FACTORY = LOCATOR.getFactory(DatastorePredicateFactory.class);
 
     private static final MessageStoreService MESSAGE_STORE_SERVICE = LOCATOR.getService(MessageStoreService.class);
 
@@ -85,16 +86,16 @@ public class DataExporterServlet extends HttpServlet {
             String sortDir = "ASC";
             String topicOrDevice;
 
-            AndPredicate predicate = STORABLE_PREDICATE_FACTORY.newAndPredicate();
+            AndPredicate predicate = DATASTORE_PREDICATE_FACTORY.newAndPredicate();
             if (topic != null) {
                 topicOrDevice = topic;
-                predicate.getPredicates().add(STORABLE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.replaceFirst("/#$", "")));
+                predicate.getPredicates().add(DATASTORE_PREDICATE_FACTORY.newChannelMatchPredicate(topic.replaceFirst("/#$", "")));
             } else if (device != null) {
                 topicOrDevice = device;
-                predicate.getPredicates().add(STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, device));
+                predicate.getPredicates().add(DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CLIENT_ID, device));
             } else if (asset != null) {
                 topicOrDevice = asset;
-                predicate.getPredicates().add(STORABLE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, asset));
+                predicate.getPredicates().add(DATASTORE_PREDICATE_FACTORY.newTermPredicate(MessageField.CHANNEL, asset));
             } else {
                 throw new IllegalArgumentException("topic, device");
             }
@@ -118,14 +119,14 @@ public class DataExporterServlet extends HttpServlet {
                 throw new IllegalArgumentException("format");
             }
             dataExporter.init(headers);
-            MessageQuery query = DATASTORE_FACTORY.newDatastoreMessageQuery(GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString));
+            MessageQuery query = MESSAGE_STORE_FACTORY.newQuery(GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString));
             Date start = new Date(Long.valueOf(startDate));
             Date end = new Date(Long.valueOf(endDate));
-            RangePredicate datePredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), start, end);
+            RangePredicate datePredicate = DATASTORE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP, start, end);
             predicate.getPredicates().add(datePredicate);
 
             if (sortField != null && sortDir != null) {
-                query.setSortFields(Collections.singletonList(SortField.of(SortDirection.valueOf(sortDir), sortField)));
+                query.setSortFields(Collections.singletonList(SortField.of(sortField, SortDirection.valueOf(sortDir))));
             }
 
             query.setPredicate(predicate);
@@ -149,7 +150,7 @@ public class DataExporterServlet extends HttpServlet {
                     DatastoreMessage lastMessage = result.getItems().get(result.getSize() - 1);
                     Date lastMessageDate = lastMessage.getTimestamp();
                     predicate.getPredicates().remove(datePredicate);
-                    datePredicate = STORABLE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP.field(), lastMessageDate, end);
+                    datePredicate = DATASTORE_PREDICATE_FACTORY.newRangePredicate(MessageField.TIMESTAMP, lastMessageDate, end);
                     predicate.getPredicates().add(datePredicate);
                 }
             } while (totalOffset < Long.min(totalCount, maxRows));
@@ -170,7 +171,7 @@ public class DataExporterServlet extends HttpServlet {
             response.sendError(403, eiae.getMessage());
             return;
         } catch (Exception e) {
-            logger.error("Error creating data export", e);
+            LOG.error("Error creating data export", e);
             throw new ServletException(e);
         }
     }

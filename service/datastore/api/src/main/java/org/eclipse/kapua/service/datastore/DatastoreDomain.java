@@ -20,9 +20,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * {@link ChannelInfoRegistryService}, {@link ClientInfoRegistryService},
- * {@link MessageStoreService} and {@link MetricInfoRegistryService} domain.<br>
- * Used to describe the {@link Domain} in all the Datastore Services
+ * {@link Domain} for:
+ *
+ * <ul>
+ *     <li>{@link ChannelInfoRegistryService}</li>
+ *     <li>{@link ClientInfoRegistryService}</li>
+ *     <li>{@link MessageStoreService} </li>
+ *     <li>{@link MetricInfoRegistryService}</li>
+ * </ul>
  *
  * @since 1.0.0
  */

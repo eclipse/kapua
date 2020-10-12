@@ -79,8 +79,6 @@ import java.util.Map;
 
 /**
  * Client implementation based on Elasticsearch transport client.
- * <p>
- * The Elasticsearch client provider is instantiated as singleton by reflection using those provided by {@link ClientSettingsKey#ELASTICSEARCH_CLIENT_PROVIDER}
  *
  * @since 1.0.0
  * @deprecated Since 1.0.0. Elasticsearch transport client will be removed in the next releases. Please use the Rest client instead.
@@ -209,7 +207,6 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
     @Override
     public <T> ResultList<T> query(TypeDescriptor typeDescriptor, Object query, Class<T> clazz) throws ClientException {
         JsonNode queryMap = getModelConverter().convertQuery(query);
-        Object queryFetchStyle = getModelConverter().getFetchStyle(query);
         LOG.debug("Query - converted query: '{}'", queryMap);
 
         ObjectNode fetchSourceFields = (ObjectNode) queryMap.path(SchemaKeys.KEY_SOURCE);
@@ -239,6 +236,7 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
         }
 
         ResultList<T> result = new ResultList<>(totalCount);
+        Object queryFetchStyle = getModelConverter().getFetchStyle(query);
         if (searchHits != null) {
             for (SearchHit searchHit : searchHits) {
                 Map<String, Object> object = searchHit.getSource();
@@ -254,8 +252,8 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
 
     @Override
     public long count(TypeDescriptor typeDescriptor, Object query) throws ClientException {
-        // TODO check for fetch none
         JsonNode queryMap = getModelConverter().convertQuery(query);
+
         SearchRequestBuilder searchReqBuilder = getClient().prepareSearch(typeDescriptor.getIndex());
         SearchHits searchHits = null;
         try {
@@ -295,6 +293,7 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
     @Override
     public void deleteByQuery(TypeDescriptor typeDescriptor, Object query) throws ClientException {
         JsonNode queryMap = getModelConverter().convertQuery(query);
+
         TimeValue queryTimeout = getQueryTimeout();
         TimeValue scrollTimeout = getScrollTimeout();
 
