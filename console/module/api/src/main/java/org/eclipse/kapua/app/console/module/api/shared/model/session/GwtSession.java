@@ -48,6 +48,8 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     private String tokenId;
 
+    private String trustKey;
+
     private List<GwtSessionPermission> sessionPermissions = new ArrayList<GwtSessionPermission>();
     private Map<GwtSessionPermission, Boolean> checkedPermissionsCache = new HashMap<GwtSessionPermission, Boolean>();
 
@@ -311,6 +313,14 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public void setSsoIdToken(String ssoIdToken) {
         this.ssoIdToken = ssoIdToken;
+    }
+
+    public String getTrustKey() {
+        return trustKey;
+    }
+
+    public void setTrustKey(String trustKey) {
+        this.trustKey = trustKey;
     }
 
 }
