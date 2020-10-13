@@ -16,8 +16,10 @@ import java.security.Principal;
 import java.security.cert.Certificate;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.activemq.command.ConnectionInfo;
@@ -47,6 +49,9 @@ public class KapuaSecurityContext extends SecurityContext {
     public static final int DATA_MANAGE_IDX = 3;
     public static final int DEVICE_VIEW_IDX = 4;
 
+    public static final String PARAM_KEY_PROFILE_ADMIN = "profile_admin";
+    public static final String PARAM_KEY_STATUS_MISSING = "status_missing";
+
     private KapuaPrincipal principal;
     private KapuaSession kapuaSession;
     private KapuaId kapuaConnectionId;
@@ -68,11 +73,7 @@ public class KapuaSecurityContext extends SecurityContext {
     private String brokerIpOrHostName;
     private Certificate[] clientCertificates;
 
-    private boolean admin;
-    private boolean provisioning;
-
-    //flag to help the correct lifecycle handling
-    private boolean missing;
+    private Map<String, Object> properties = new HashMap<>();
 
     // use to track the allowed destinations for debug purpose
     private List<String> authDestinations;
@@ -153,11 +154,11 @@ public class KapuaSecurityContext extends SecurityContext {
     }
 
     public void setMissing() {
-        missing = true;
+        setProperty(PARAM_KEY_STATUS_MISSING, Boolean.TRUE);
     }
 
     public boolean isMissing() {
-        return missing;
+        return getProperty(PARAM_KEY_STATUS_MISSING, Boolean.FALSE);
     }
 
     public void updatePermissions(boolean[] hasPermissions) {
@@ -228,20 +229,12 @@ public class KapuaSecurityContext extends SecurityContext {
         return hasPermissions;
     }
 
-    public boolean isAdmin() {
-        return admin;
-    }
-
     public void setAdmin(boolean admin) {
-        this.admin = admin;
+        setProperty(PARAM_KEY_PROFILE_ADMIN, admin);
     }
 
-    public boolean isProvisioning() {
-        return provisioning;
-    }
-
-    public void setProvisioning(boolean provisioning) {
-        this.provisioning = provisioning;
+    public boolean isAdmin() {
+        return getProperty(PARAM_KEY_PROFILE_ADMIN, Boolean.FALSE);
     }
 
     public boolean isBrokerConnect() {
@@ -266,6 +259,23 @@ public class KapuaSecurityContext extends SecurityContext {
 
     public String getBrokerIpOrHostName() {
         return brokerIpOrHostName;
+    }
+
+    public void setProperty(String key, Object value) {
+        properties.put(key, value);
+    }
+
+    /**
+     *
+     * @param key
+     * @param defaultValue
+     *
+     * @throws ClassCastException if the property object is different from what expected by the caller (in other words no check before casting is done!)
+     * @return
+     */
+    public <T> T getProperty(String key, T defaultValue) {
+        T value = (T)properties.get(key);
+        return value!=null ? value : defaultValue;
     }
 
     public void addAuthDestinationToLog(String message) {
