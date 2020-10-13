@@ -11,16 +11,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.shared.service;
 
-import com.google.gwt.user.client.rpc.RemoteService;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
+
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("credential")
 public interface GwtCredentialService extends RemoteService {
@@ -50,9 +50,10 @@ public interface GwtCredentialService extends RemoteService {
     public GwtCredential update(GwtXSRFToken gwtXsrfToken, GwtCredential gwtCredential)
             throws GwtKapuaException;
 
-    public void changePassword(GwtXSRFToken gwtXsrfToken, String oldPassword, String newPassword, String stringUserId, String stringScopeId)
+    public void changePassword(GwtXSRFToken gwtXsrfToken, String oldPassword, String newPassword, String mfaCode, String stringUserId, String stringScopeId)
             throws GwtKapuaException;
 
     public void unlock(GwtXSRFToken xsfrToken, String stringScopeId, String gwtCredentialId)
             throws GwtKapuaException;
+
 }

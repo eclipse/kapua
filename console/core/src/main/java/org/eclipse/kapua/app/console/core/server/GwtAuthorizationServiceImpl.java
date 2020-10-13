@@ -292,6 +292,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         gwtSession.setUserName(gwtUser.getUsername());
         gwtSession.setUserDisplayName(gwtUser.getDisplayName());
+        gwtSession.setAccountName(gwtAccount.getName());
         gwtSession.setRootAccountName(gwtAccount.getName());
         gwtSession.setSelectedAccountName(gwtAccount.getName());
 

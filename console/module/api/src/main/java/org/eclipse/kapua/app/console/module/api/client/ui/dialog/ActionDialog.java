@@ -34,6 +34,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
@@ -114,7 +115,7 @@ public abstract class ActionDialog extends KapuaDialog {
 
             @Override
             public void onKeyPress(ComponentEvent ce) {
-                if (ce.getKeyCode() == KeyCodes.KEY_TAB || ce.getKeyCode() == KeyCodes.KEY_ENTER ) {
+                if (ce.getKeyCode() == KeyCodes.KEY_TAB || ce.getKeyCode() == KeyCodes.KEY_ENTER) {
                     setSubmitButtonState();
                 }
             }
@@ -136,9 +137,7 @@ public abstract class ActionDialog extends KapuaDialog {
     }
 
     /**
-     *
      * Add the form listeners
-     *
      */
     protected abstract void addListeners();
 
@@ -194,14 +193,14 @@ public abstract class ActionDialog extends KapuaDialog {
 
             @Override
             public void onFailure(Throwable ex) {
-                 Timer timer = new Timer() {
+                Timer timer = new Timer() {
 
-                     @Override
-                     public void run() {
-                         Window.Location.reload();
-                     }
-                 };
-                 timer.schedule(5000);
+                    @Override
+                    public void run() {
+                        Window.Location.reload();
+                    }
+                };
+                timer.schedule(5000);
                 FailureHandler.handle(ex);
             }
 
@@ -242,10 +241,12 @@ public abstract class ActionDialog extends KapuaDialog {
     }
 
     public void setSubmitButtonState() {
-        if (formPanel.isDirty() || dateValueNotNull) {
-            submitButton.enable();
-        } else {
-            submitButton.disable();
+        if (submitButton != null) {
+            if (formPanel.isDirty() || dateValueNotNull) {
+                submitButton.enable();
+            } else {
+                submitButton.disable();
+            }
         }
     }
 
@@ -259,6 +260,7 @@ public abstract class ActionDialog extends KapuaDialog {
 
     /**
      * Method for checking the thrown exception for the SUBJECT_UNAUTHORIZED error code.
+     *
      * @param caught The exception thrown
      * @return In case of the SUBJECT_UNAUTHORIZED error code the returned value is true,
      * the dialog is closed and the exitMessage is set. For every other case the returned
@@ -280,6 +282,7 @@ public abstract class ActionDialog extends KapuaDialog {
      * The exception is handled by FailureHandler class's handle() method and the dialog is closed.
      */
     public class DialogLoadListener extends LoadListener {
+
         @Override
         public void loaderLoadException(LoadEvent loadEvent) {
             super.loaderLoadException(loadEvent);
@@ -288,5 +291,7 @@ public abstract class ActionDialog extends KapuaDialog {
                 hide();
             }
         }
+
     }
+
 }

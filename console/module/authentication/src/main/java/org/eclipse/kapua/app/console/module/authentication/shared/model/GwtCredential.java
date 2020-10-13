@@ -183,4 +183,13 @@ public class GwtCredential extends GwtUpdatableEntityModel {
     public void setLockoutReset(Date lockoutReset) {
         set("lockoutReset", lockoutReset);
     }
+
+    public GwtMfaCredentialOptions getMfaOptions() {
+        return get("mfaOptions");
+    }
+
+    public void setMfaOptions(GwtMfaCredentialOptions mfaOptions) {
+        set("mfaOptions", mfaOptions);
+    }
+
 }

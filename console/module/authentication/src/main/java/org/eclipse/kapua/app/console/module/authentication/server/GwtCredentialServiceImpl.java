@@ -35,7 +35,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
-import org.eclipse.kapua.service.authentication.LoginCredentials;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
@@ -200,7 +200,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
     }
 
     @Override
-    public void changePassword(GwtXSRFToken gwtXsrfToken, String oldPassword, final String newPassword, String stringUserId, String stringScopeId) throws GwtKapuaException {
+    public void changePassword(GwtXSRFToken gwtXsrfToken, String oldPassword, final String newPassword, String mfaCode, String stringUserId, String stringScopeId) throws GwtKapuaException {
         String username = null;
         try {
             final KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(stringScopeId);
@@ -220,8 +220,8 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             }
             username = user.getName();
             final String finalUsername = username;
-            LoginCredentials loginCredentials = CREDENTIALS_FACTORY.newUsernamePasswordCredentials(finalUsername, oldPassword);
-
+            UsernamePasswordCredentials loginCredentials = CREDENTIALS_FACTORY.newUsernamePasswordCredentials(finalUsername, oldPassword);
+            loginCredentials.setAuthenticationCode(mfaCode);
             AUTHENTICATION_SERVICE.verifyCredentials(loginCredentials);
 
             KapuaSecurityUtils.doPrivileged(new Callable<Void>() {

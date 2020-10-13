@@ -9,7 +9,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.core.client.util;
+package org.eclipse.kapua.app.console.module.api.client.util;
 
 import java.util.Date;
 

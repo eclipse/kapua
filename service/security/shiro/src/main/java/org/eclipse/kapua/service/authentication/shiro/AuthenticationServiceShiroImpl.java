@@ -253,9 +253,10 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         //
         // Parse login credentials
         AuthenticationToken shiroAuthenticationToken;
-        if (loginCredentials instanceof UsernamePasswordCredentialsImpl) {
-            shiroAuthenticationToken = new UsernamePasswordCredentialsImpl(((UsernamePasswordCredentialsImpl) loginCredentials).getUsername(),
-                    ((UsernamePasswordCredentialsImpl) loginCredentials).getPassword());
+        if (loginCredentials instanceof UsernamePasswordCredentials) {
+            UsernamePasswordCredentials usernamePasswordCredentials = (UsernamePasswordCredentials)loginCredentials;
+            shiroAuthenticationToken = new UsernamePasswordCredentialsImpl(usernamePasswordCredentials.getUsername(), usernamePasswordCredentials.getPassword());
+            ((UsernamePasswordCredentials)shiroAuthenticationToken).setAuthenticationCode(usernamePasswordCredentials.getAuthenticationCode());
         } else {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
         }

@@ -32,7 +32,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
-import org.eclipse.kapua.app.console.core.client.util.CookieUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.CookieUtils;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
@@ -336,6 +336,7 @@ public class LoginDialog extends Dialog {
             @Override
             public void onFailure(Throwable caught) {
                 ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
+                CookieUtils.removeCookie(CookieUtils.KAPUA_COOKIE_TRUST + username.getValue());
                 resetDialog();
             }
 

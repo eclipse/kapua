@@ -32,6 +32,10 @@ import org.eclipse.kapua.app.console.module.api.client.util.UserAgentUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtConsoleServiceAsync;
+import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptions;
+import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsService;
+import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsServiceAsync;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -58,10 +62,12 @@ import com.google.gwt.user.client.ui.Widget;
 public class NorthView extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleCredentialMessages CREDENTIAL_MSGS = GWT.create(ConsoleCredentialMessages.class);
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
     private final GwtConsoleServiceAsync gwtConsoleService = GWT.create(GwtConsoleService.class);
     private final GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
+    private final GwtMfaCredentialOptionsServiceAsync gwtMfaCredentialOptionsService = GWT.create(GwtMfaCredentialOptionsService.class);
 
     // UI stuff
     private KapuaCloudConsole parent;
@@ -168,14 +174,40 @@ public class NorthView extends LayoutContainer {
 
                         @Override
                         public void componentSelected(MenuEvent ce) {
-                            ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog(currentSession);
-                            changePasswordDialog.show();
+                            gwtMfaCredentialOptionsService.findByUserId(currentSession.getAccountId(), currentSession.getUserId(), true, new AsyncCallback<GwtMfaCredentialOptions>() {
+
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    FailureHandler.handle(caught);
+                                }
+
+                                @Override
+                                public void onSuccess(GwtMfaCredentialOptions gwtMfaCredentialOptions) {
+                                    ChangePasswordDialog changePasswordDialog = new ChangePasswordDialog(currentSession, gwtMfaCredentialOptions);
+                                    changePasswordDialog.show();
+                                }
+                            });
                         }
 
                     });
                     userActionMenu.add(changePassword);
                     userActionMenu.add(new SeparatorMenuItem());
                 }
+
+                KapuaMenuItem manageMfa = new KapuaMenuItem();
+                manageMfa.setText(CREDENTIAL_MSGS.manageMfaMenuItem());
+                manageMfa.setIcon(IconSet.LOCK);
+                manageMfa.addSelectionListener(new SelectionListener<MenuEvent>() {
+
+                    @Override
+                    public void componentSelected(MenuEvent ce) {
+                        MfaManagementDialog mfaManagementDialog = new MfaManagementDialog(currentSession);
+                        mfaManagementDialog.show();
+                    }
+
+                });
+                userActionMenu.add(manageMfa);
+                userActionMenu.add(new SeparatorMenuItem());
 
                 //
                 // Logout menu item

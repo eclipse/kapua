@@ -12,7 +12,7 @@
 package org.eclipse.kapua.app.console.core.client;
 
 import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
-import org.eclipse.kapua.app.console.core.client.util.CookieUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.CookieUtils;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
