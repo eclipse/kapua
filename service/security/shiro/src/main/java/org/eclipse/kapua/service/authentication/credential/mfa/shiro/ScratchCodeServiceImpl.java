@@ -34,6 +34,7 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticationService;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
+import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticationServiceLocator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.slf4j.Logger;
@@ -49,8 +50,8 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScratchCodeServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final MfaAuthenticationService MFA_AUTH_SERVICE = LOCATOR.getService(MfaAuthenticationService.class);
+    private static final MfaAuthenticationServiceLocator MFA_AUTH_SERVICE_LOCATOR = MfaAuthenticationServiceLocator.getInstance();
+    private static final MfaAuthenticationService MFA_AUTH_SERVICE = MFA_AUTH_SERVICE_LOCATOR.getMfaAuthenticationService();
 
     public ScratchCodeServiceImpl() {
         super(ScratchCodeEntityManagerFactory.getInstance());
