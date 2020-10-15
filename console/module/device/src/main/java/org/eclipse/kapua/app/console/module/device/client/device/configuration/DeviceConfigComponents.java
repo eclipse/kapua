@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.configuration;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaMessageBox;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -46,7 +44,6 @@ import com.google.gwt.dom.client.StyleInjector;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
@@ -57,6 +54,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaMessageBox;
 import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
@@ -77,7 +75,6 @@ import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceServi
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("Duplicates")
 public class DeviceConfigComponents extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
@@ -104,7 +101,6 @@ public class DeviceConfigComponents extends LayoutContainer {
     private DeviceConfigPanel devConfPanel;
     private BorderLayoutData centerData;
 
-    @SuppressWarnings("rawtypes")
     private BaseTreeLoader loader;
     private TreeStore<ModelData> treeStore;
     private TreePanel<ModelData> tree;
@@ -114,6 +110,38 @@ public class DeviceConfigComponents extends LayoutContainer {
     protected boolean applyProcess;
 
     private GwtSession gwtSession;
+
+    private final AsyncCallback<Void> applyConfigCallback = new AsyncCallback<Void>() {
+
+        @Override
+        public void onFailure(Throwable caught) {
+            if ((caught instanceof GwtKapuaException) &&
+                    GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED.equals(((GwtKapuaException) caught).getCode())) {
+                ConsoleInfo.display(MSGS.popupError(), caught.getLocalizedMessage());
+            } else if (!selectedDevice.isOnline()) {
+                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
+            }
+
+            devConfPanel.unmask();
+            tree.unmask();
+
+            apply.setEnabled(true);
+            reset.setEnabled(true);
+            refreshButton.setEnabled(true);
+        }
+
+        @Override
+        public void onSuccess(Void arg0) {
+            dirty = true;
+            String componentName = devConfPanel.getConfiguration().getComponentName();
+            final boolean isCloudUpdate = "CloudService".equals(componentName);
+            if (isCloudUpdate) {
+                refreshWhenOnline();
+            } else {
+                refresh();
+            }
+        }
+    };
 
     public DeviceConfigComponents(GwtSession currentSession, DeviceTabConfiguration tabConfig) {
         this.tabConfig = tabConfig;
@@ -222,7 +250,6 @@ public class DeviceConfigComponents extends LayoutContainer {
         toolBar.add(reset);
     }
 
-    @SuppressWarnings("unchecked")
     private void initConfigPanel() {
         configPanel = new ContentPanel();
         configPanel.setBorders(false);
@@ -295,7 +322,6 @@ public class DeviceConfigComponents extends LayoutContainer {
         // make sure the form is not dirty before switching.
         tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<BaseEvent>() {
 
-            @SuppressWarnings("rawtypes")
             @Override
             public void handleEvent(BaseEvent theEvent) {
 
@@ -507,33 +533,7 @@ public class DeviceConfigComponents extends LayoutContainer {
                                 @Override
                                 public void onSuccess(GwtXSRFToken token) {
                                     GwtConfigComponent configComponent = finalDevConfPanel.getUpdatedConfiguration();
-                                    gwtDeviceManagementService.updateComponentConfiguration(token,
-                                            selectedDevice,
-                                            configComponent,
-                                            new AsyncCallback<Void>() {
-
-                                                @Override
-                                                public void onFailure(Throwable caught) {
-                                                    if ((caught instanceof GwtKapuaException) && GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED
-                                                            .equals(((GwtKapuaException) caught).getCode())) {
-                                                        ConsoleInfo.display(MSGS.popupError(), caught.getLocalizedMessage());
-                                                    } else if (!selectedDevice.isOnline()) {
-                                                        ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
-                                                    }
-                                                    dirty = true;
-                                                    refresh();
-                                                }
-
-                                                @Override
-                                                public void onSuccess(Void arg0) {
-                                                    dirty = true;
-                                                    if (isCloudUpdate) {
-                                                        refreshWhenOnline();
-                                                    } else {
-                                                        refresh();
-                                                    }
-                                                }
-                                            });
+                                    gwtDeviceManagementService.updateComponentConfiguration(token, selectedDevice, configComponent, applyConfigCallback);
                                 }
                             });
 
@@ -640,11 +640,11 @@ public class DeviceConfigComponents extends LayoutContainer {
         @Override
         public void loaderLoadException(LoadEvent le) {
 
-                if(le.exception != null && le.exception instanceof GwtKapuaException) {
-                    FailureHandler.handle(le.exception);
-                } else {
-                    ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
-                }
+            if (le.exception != null && le.exception instanceof GwtKapuaException) {
+                FailureHandler.handle(le.exception);
+            } else {
+                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
+            }
 
             List<ModelData> comps = new ArrayList<ModelData>();
             GwtConfigComponent comp = new GwtConfigComponent();
