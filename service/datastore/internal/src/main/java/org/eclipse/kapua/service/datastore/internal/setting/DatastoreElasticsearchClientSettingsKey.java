@@ -39,13 +39,7 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
      */
     DATASTORE_ELASTICSEARCH_CLUSTER("datastore.elasticsearch.cluster"),
     /**
-     * Elasticsearch node.
-     *
-     * @since 1.3.0
-     */
-    DATASTORE_ELASTICSEARCH_NODE("datastore.elasticsearch.node"),
-    /**
-     * Elasticsearch nodes map.
+     * Elasticsearch nodes list.
      *
      * @since 1.3.0
      */

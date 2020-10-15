@@ -14,8 +14,14 @@ package org.eclipse.kapua.service.datastore.internal.client;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchClientConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class DatastoreElasticsearchClientConfiguration extends ElasticsearchClientConfiguration {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DatastoreElasticsearchClientConfiguration.class);
 
     private static final DatastoreElasticsearchClientSettings ELASTICSEARCH_CLIENT_SETTINGS = DatastoreElasticsearchClientSettings.getInstance();
 
@@ -24,10 +30,12 @@ public class DatastoreElasticsearchClientConfiguration extends ElasticsearchClie
         setModuleName(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_MODULE));
 
         setClusterName(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_CLUSTER));
-        addNode(
-                ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_NODE),
-                ELASTICSEARCH_CLIENT_SETTINGS.getInt(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_PORT)
-        );
+
+        List<String> nodesSplitted = ELASTICSEARCH_CLIENT_SETTINGS.getList(String.class, DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_NODES);
+        for (String node : nodesSplitted) {
+            String[] nodeSplitted = node.split(":");
+            addNode(nodeSplitted[0], nodeSplitted.length == 2 ? Integer.parseInt(nodeSplitted[1]) : 9200);
+        }
 
         setUsername(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_USERNAME));
         setPassword(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_PASSWORD));
