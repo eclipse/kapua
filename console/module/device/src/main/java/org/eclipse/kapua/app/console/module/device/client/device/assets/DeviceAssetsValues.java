@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.assets;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaMessageBox;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseTreeLoader;
@@ -44,7 +43,6 @@ import com.extjs.gxt.ui.client.widget.treepanel.TreePanelSelectionModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
@@ -52,6 +50,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog.InfoDialogType;
+import org.eclipse.kapua.app.console.module.api.client.ui.dialog.KapuaMessageBox;
 import org.eclipse.kapua.app.console.module.api.client.ui.label.Label;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
@@ -98,7 +97,6 @@ public class DeviceAssetsValues extends LayoutContainer {
     private DeviceAssetsPanel assetValuesPanel;
     private BorderLayoutData centerData;
 
-    @SuppressWarnings("rawtypes")
     private BaseTreeLoader loader;
     private TreeStore<ModelData> treeStore;
     private TreePanel<ModelData> tree;
@@ -108,7 +106,7 @@ public class DeviceAssetsValues extends LayoutContainer {
     protected boolean applyProcess;
 
     public DeviceAssetsValues(GwtSession currentSession,
-            DeviceTabAssets tabAssets) {
+                              DeviceTabAssets tabAssets) {
         this.currentSession = currentSession;
         this.tabAssets = tabAssets;
         dirty = false;
@@ -210,7 +208,6 @@ public class DeviceAssetsValues extends LayoutContainer {
         toolBar.add(reset);
     }
 
-    @SuppressWarnings("unchecked")
     private void initAssetPanel() {
         assetValuesContainer = new ContentPanel();
         assetValuesContainer.setBorders(false);
@@ -283,7 +280,6 @@ public class DeviceAssetsValues extends LayoutContainer {
         // make sure the form is not dirty before switching.
         tree.getSelectionModel().addListener(Events.BeforeSelect, new Listener<BaseEvent>() {
 
-            @SuppressWarnings("rawtypes")
             @Override
             public void handleEvent(BaseEvent be) {
 
@@ -443,8 +439,13 @@ public class DeviceAssetsValues extends LayoutContainer {
                                                 @Override
                                                 public void onFailure(Throwable caught) {
                                                     FailureHandler.handle(caught);
-                                                    dirty = true;
-                                                    refresh();
+
+                                                    assetValuesPanel.unmask();
+                                                    tree.unmask();
+
+                                                    apply.setEnabled(true);
+                                                    reset.setEnabled(true);
+                                                    refreshButton.setEnabled(true);
                                                 }
 
                                                 @Override
