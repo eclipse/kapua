@@ -49,6 +49,8 @@ public class ElasticsearchClientSslConfiguration {
 
     /**
      * Gets whether or not the SSL encryption is enabled.
+     * <p>
+     * Default value: false
      *
      * @return {@code true} if SSL encryption is enabled, {@code false} otherwise.
      * @since 1.3.0
