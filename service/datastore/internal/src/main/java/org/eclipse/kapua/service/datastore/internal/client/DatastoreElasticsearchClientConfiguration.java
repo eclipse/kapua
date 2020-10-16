@@ -26,24 +26,24 @@ public class DatastoreElasticsearchClientConfiguration extends ElasticsearchClie
     private static final DatastoreElasticsearchClientSettings ELASTICSEARCH_CLIENT_SETTINGS = DatastoreElasticsearchClientSettings.getInstance();
 
     public DatastoreElasticsearchClientConfiguration() {
-        setProviderClassName(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_PROVIDER));
-        setModuleName(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_MODULE));
+        setProviderClassName(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.PROVIDER));
+        setModuleName(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.MODULE));
 
-        setClusterName(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_CLUSTER));
+        setClusterName(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.CLUSTER));
 
-        List<String> nodesSplitted = ELASTICSEARCH_CLIENT_SETTINGS.getList(String.class, DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_NODES);
+        List<String> nodesSplitted = ELASTICSEARCH_CLIENT_SETTINGS.getList(String.class, DatastoreElasticsearchClientSettingsKey.NODES);
         for (String node : nodesSplitted) {
             String[] nodeSplitted = node.split(":");
             addNode(nodeSplitted[0], nodeSplitted.length == 2 ? Integer.parseInt(nodeSplitted[1]) : 9200);
         }
 
-        setUsername(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_USERNAME));
-        setPassword(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_PASSWORD));
-        getRequestConfiguration().setQueryTimeout(ELASTICSEARCH_CLIENT_SETTINGS.getInt(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_QUERY_TIMEOUT));
-        getRequestConfiguration().setScrollTimeout(ELASTICSEARCH_CLIENT_SETTINGS.getInt(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_SCROLL_TIMEOUT));
-        getRequestConfiguration().setRequestRetryAttemptMax(ELASTICSEARCH_CLIENT_SETTINGS.getInt(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_REST_TIMEOUT_MAX_RETRY));
-        getRequestConfiguration().setRequestRetryAttemptWait(ELASTICSEARCH_CLIENT_SETTINGS.getInt(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_REST_TIMEOUT_MAX_WAIT));
-        getSslConfiguration().setEnabled(ELASTICSEARCH_CLIENT_SETTINGS.getBoolean(DatastoreElasticsearchClientSettingsKey.DATASTORE_ELASTICSEARCH_SSL_ENABLED));
+        setUsername(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.USERNAME));
+        setPassword(ELASTICSEARCH_CLIENT_SETTINGS.getString(DatastoreElasticsearchClientSettingsKey.PASSWORD));
+        getRequestConfiguration().setQueryTimeout(ELASTICSEARCH_CLIENT_SETTINGS.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_QUERY_TIMEOUT));
+        getRequestConfiguration().setScrollTimeout(ELASTICSEARCH_CLIENT_SETTINGS.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_SCROLL_TIMEOUT));
+        getRequestConfiguration().setRequestRetryAttemptMax(ELASTICSEARCH_CLIENT_SETTINGS.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_RETRY_MAX));
+        getRequestConfiguration().setRequestRetryAttemptWait(ELASTICSEARCH_CLIENT_SETTINGS.getInt(DatastoreElasticsearchClientSettingsKey.REQUEST_RETRY_WAIT));
+        getSslConfiguration().setEnabled(ELASTICSEARCH_CLIENT_SETTINGS.getBoolean(DatastoreElasticsearchClientSettingsKey.SSL_ENABLED));
 
         getReconnectConfiguration().setReconnectDelay(30000);
     }
