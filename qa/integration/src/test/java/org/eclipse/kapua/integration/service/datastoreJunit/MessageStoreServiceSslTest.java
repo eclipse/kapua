@@ -109,11 +109,11 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     public void connectNoSsl() throws InterruptedException, KapuaException, ParseException {
         // datastore.elasticsearch.ssl.enabled=false
         // datastore.elasticsearch.ssl.trust_server_certificate=false
-        // datastore.elasticsearch.ssl.keystore_path=
-        // datastore.elasticsearch.ssl.keystore_password=
-        // datastore.elasticsearch.ssl.truststore_path=
-        // datastore.elasticsearch.ssl.truststore_password=
-        // datastore.elasticsearch.ssl.keystore_type=jks
+        // datastore.elasticsearch.ssl.keystore.path=
+        // datastore.elasticsearch.ssl.keystore.password=
+        // datastore.elasticsearch.ssl.keystore.type=jks
+        // datastore.elasticsearch.ssl.truststore.path=
+        // datastore.elasticsearch.ssl.truststore.password=
         try {
             DatastoreClientFactory.getInstance();
             storeMessage("ssl_test/no_ssl");
@@ -130,11 +130,11 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     public void connectSsl() throws InterruptedException, KapuaException, ParseException {
         // datastore.elasticsearch.ssl.enabled=true
         // datastore.elasticsearch.ssl.trust_server_certificate=false
-        // datastore.elasticsearch.ssl.keystore_path=
-        // datastore.elasticsearch.ssl.keystore_password=
-        // datastore.elasticsearch.ssl.truststore_path=
-        // datastore.elasticsearch.ssl.truststore_password=
-        // datastore.elasticsearch.ssl.keystore_type=jks
+        // datastore.elasticsearch.ssl.keystore.path=
+        // datastore.elasticsearch.ssl.keystore.password=
+        // datastore.elasticsearch.ssl.keystore.type=jks
+        // datastore.elasticsearch.ssl.truststore.path=
+        // datastore.elasticsearch.ssl.truststore.password=
         try {
             DatastoreClientFactory.getInstance();
             storeMessage("ssl_test/ssl");
@@ -150,11 +150,11 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     public void connectSslTrustServerNoTrustStoreSet() throws InterruptedException, KapuaException, ParseException {
         // datastore.elasticsearch.ssl.enabled=true
         // datastore.elasticsearch.ssl.trust_server_certificate=true
-        // datastore.elasticsearch.ssl.keystore_path=
-        // datastore.elasticsearch.ssl.keystore_password=
-        // datastore.elasticsearch.ssl.truststore_path=
-        // datastore.elasticsearch.ssl.truststore_password=
-        // datastore.elasticsearch.ssl.keystore_type=jks
+        // datastore.elasticsearch.ssl.keystore.path=
+        // datastore.elasticsearch.ssl.keystore.password=
+        // datastore.elasticsearch.ssl.keystore.type=jks
+        // datastore.elasticsearch.ssl.truststore.path=
+        // datastore.elasticsearch.ssl.truststore.password=
         try {
             DatastoreClientFactory.getInstance();
             storeMessage("ssl_test/ssl_trust_server_no_trust_store_set");
@@ -170,11 +170,11 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     public void connectSslTrustServerTrustStoreSet() throws InterruptedException, KapuaException, ParseException {
         // datastore.elasticsearch.ssl.enabled=false
         // datastore.elasticsearch.ssl.trust_server_certificate=false
-        // datastore.elasticsearch.ssl.keystore_path=
-        // datastore.elasticsearch.ssl.keystore_password=
-        // datastore.elasticsearch.ssl.truststore_path=some valid truststore path
-        // datastore.elasticsearch.ssl.truststore_password=trust store password
-        // datastore.elasticsearch.ssl.keystore_type=jks
+        // datastore.elasticsearch.ssl.keystore.path=
+        // datastore.elasticsearch.ssl.keystore.password=
+        // datastore.elasticsearch.ssl.keystore.type=jks
+        // datastore.elasticsearch.ssl.truststore.path=some valid truststore path
+        // datastore.elasticsearch.ssl.truststore.password=trust store password
         try {
             DatastoreClientFactory.getInstance();
             storeMessage("ssl_test/ssl_trust_server_default_trust_store_set");
@@ -190,11 +190,11 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     public void connectSslTrustServerSelfSignedTrustStore() throws InterruptedException, KapuaException, ParseException {
         // datastore.elasticsearch.ssl.enabled=false
         // datastore.elasticsearch.ssl.trust_server_certificate=false
-        // datastore.elasticsearch.ssl.keystore_path=
-        // datastore.elasticsearch.ssl.keystore_password=
-        // datastore.elasticsearch.ssl.truststore_path=self signed trust store
-        // datastore.elasticsearch.ssl.truststore_password=password
-        // datastore.elasticsearch.ssl.keystore_type=jks
+        // datastore.elasticsearch.ssl.keystore.path=
+        // datastore.elasticsearch.ssl.keystore.password=
+        // datastore.elasticsearch.ssl.keystore.type=jks
+        // datastore.elasticsearch.ssl.truststore.path=self signed trust store
+        // datastore.elasticsearch.ssl.truststore.password=password
         try {
             DatastoreClientFactory.getInstance();
             storeMessage("ssl_test/ssl_trust_server_self_signed_tust");

@@ -63,6 +63,12 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
      */
     PORT("datastore.elasticsearch.port"),
     /**
+     * Wait between client reconnection task executions.
+     *
+     * @since 1.3.0
+     */
+    CLIENT_RECONNECTION_WAIT_BETWEEN_EXECUTIONS("datastore.elasticsearch.client.reconnection_wait_between_exec"),
+    /**
      * Request query timeout.
      *
      * @since 1.3.0
@@ -101,41 +107,35 @@ public enum DatastoreElasticsearchClientSettingsKey implements SettingKey {
      */
     SSL_TRUST_SERVER_CERTIFICATE("datastore.elasticsearch.ssl.trust_server_certificate"),
     /**
-     * Set the keystore type.
+     * Elastichsearch client key store password (at the present only the rest client supports it).
      *
      * @since 1.3.0
      */
-    SSL_KEYSTORE_TYPE("datastore.elasticsearch.ssl.keystore_type"),
+    SSL_KEYSTORE_PASSWORD("datastore.elasticsearch.ssl.keystore.password"),
     /**
      * Elastichsearch client key store path (at the present only the rest client supports it).
      *
      * @since 1.3.0
      */
-    SSL_KEYSTORE_PATH("datastore.elasticsearch.ssl.keystore_path"),
+    SSL_KEYSTORE_PATH("datastore.elasticsearch.ssl.keystore.path"),
     /**
-     * Elastichsearch client key store password (at the present only the rest client supports it).
+     * Set the keystore type.
      *
      * @since 1.3.0
      */
-    SSL_KEYSTORE_PASSWORD("datastore.elasticsearch.ssl.keystore_password"),
+    SSL_KEYSTORE_TYPE("datastore.elasticsearch.ssl.keystore.type"),
     /**
      * Elastichsearch client trust store path (at the present only the rest client supports it)
      *
      * @since 1.3.0
      */
-    SSL_TRUSTSTORE_PATH("datastore.elasticsearch.ssl.truststore_path"),
+    SSL_TRUSTSTORE_PATH("datastore.elasticsearch.ssl.truststore.path"),
     /**
      * Elastichsearch client trust store password (at the present only the rest client supports it)
      *
      * @since 1.3.0
      */
-    SSL_TRUSTSTORE_PASSWORD("datastore.elasticsearch.ssl.truststore_password"),
-    /**
-     * Wait between client reconnection task executions.
-     *
-     * @since 1.3.0
-     */
-    RECONNECTION_WAIT_BETWEEN_EXECUTIONS("datastore.elasticsearch.client.reconnection_wait_between_exec");
+    SSL_TRUSTSTORE_PASSWORD("datastore.elasticsearch.ssl.truststore.password");
 
     /**
      * The key value in the configuration resources.
