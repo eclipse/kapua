@@ -16,31 +16,30 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 /**
- * {@link MfaCredentialOptionFactory} definition.
+ * {@link MfaOptionFactory} definition.
  *
  * @see KapuaEntityFactory
  */
-public interface MfaCredentialOptionFactory extends KapuaEntityFactory<MfaCredentialOption, MfaCredentialOptionCreator, MfaCredentialOptionQuery,
-        MfaCredentialOptionListResult> {
+public interface MfaOptionFactory extends KapuaEntityFactory<MfaOption, MfaOptionCreator, MfaOptionQuery, MfaOptionListResult> {
 
     /**
-     * Instantiates a new {@link MfaCredentialOption}.
+     * Instantiates a new {@link MfaOption}.
      *
-     * @param scopeId          The scope {@link KapuaId} to set into the {@link MfaCredentialOption}.
+     * @param scopeId          The scope {@link KapuaId} to set into the {@link MfaOption}.
      * @param userId           The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the{@link AccessToken}.
-     * @param mfaCredentialKey The key to set into the {@link MfaCredentialOption}.
-     * @return The newly instantiated {@link MfaCredentialOption}
+     * @param mfaSecretKey     The key to set into the {@link MfaOption}.
+     * @return The newly instantiated {@link MfaOption}
      */
-    MfaCredentialOption newMfaCredentialOption(KapuaId scopeId, KapuaId userId, String mfaCredentialKey);
+    MfaOption newMfaOption(KapuaId scopeId, KapuaId userId, String mfaSecretKey);
 
     /**
-     * Instantiates a new {@link MfaCredentialOptionCreator}.
+     * Instantiates a new {@link MfaOptionCreator}.
      *
-     * @param scopeId          The scope {@link KapuaId} to set into the {@link MfaCredentialOptionCreator}.
+     * @param scopeId          The scope {@link KapuaId} to set into the {@link MfaOptionCreator}.
      * @param userId           The {@link org.eclipse.kapua.service.user.User} {@link KapuaId} to set into the{@link AccessToken}.
-     * @param mfaCredentialKey The key to set into the {@link MfaCredentialOptionCreator}.
-     * @return The newly instantiated {@link MfaCredentialOptionCreator}
+     * @param mfaSecretKey     The key to set into the {@link MfaOptionCreator}.
+     * @return The newly instantiated {@link MfaOptionCreator}
      */
-    MfaCredentialOptionCreator newCreator(KapuaId scopeId, KapuaId userId, String mfaCredentialKey);
+    MfaOptionCreator newCreator(KapuaId scopeId, KapuaId userId, String mfaSecretKey);
 
 }

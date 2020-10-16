@@ -50,7 +50,7 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     // to enable the registration service
     AUTHENTICATION_REGISTRATION_SERVICE_ENABLED("authentication.registration.service.enabled"),
 
-    // mfa authentication service configuration
+    // mfa authenticator service configuration
     AUTHENTICATION_MFA_TIME_STEP_SIZE("authentication.mfa.time.step.size"),  // the time step size, in seconds, min > 0
     AUTHENTICATION_MFA_WINDOW_SIZE("authentication.mfa.window.size"),  // number of windows of size timeStepSizeInMillis checked during the validation, min > 0
     AUTHENTICATION_MFA_SCRATCH_CODES_NUMBER("authentication.mfa.scratch.codes.number"),  // number of scratch codes, min is 0 max is 1000

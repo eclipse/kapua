@@ -17,25 +17,25 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeCreator;
 
 /**
- * ScratchCode creator implementation.
+ * {@link ScratchCode} creator implementation.
  */
 public class ScratchCodeCreatorImpl extends AbstractKapuaEntityCreator<ScratchCode> implements ScratchCodeCreator {
 
     private static final long serialVersionUID = 3925204275937566004L;
 
     private String code;
-    private KapuaId mfaCredentialOptionId;
+    private KapuaId mfaOptionId;
 
     /**
      * Constructor
      *
-     * @param scopeId                scope identifier
-     * @param mfaCredentialOptionId credential identifier
+     * @param scopeId       scope identifier
+     * @param mfaOptionId   MfaOption identifier
      * @param code
      */
-    public ScratchCodeCreatorImpl(KapuaId scopeId, KapuaId mfaCredentialOptionId, String code) {
+    public ScratchCodeCreatorImpl(KapuaId scopeId, KapuaId mfaOptionId, String code) {
         super(scopeId);
-        this.mfaCredentialOptionId = mfaCredentialOptionId;
+        this.mfaOptionId = mfaOptionId;
         this.code = code;
     }
 
@@ -44,13 +44,13 @@ public class ScratchCodeCreatorImpl extends AbstractKapuaEntityCreator<ScratchCo
     }
 
     @Override
-    public KapuaId getMfaCredentialOptionId() {
-        return this.mfaCredentialOptionId;
+    public KapuaId getMfaOptionId() {
+        return this.mfaOptionId;
     }
 
     @Override
-    public void setMfaCredentialOptionId(KapuaId mfaCredentialOptionId) {
-        this.mfaCredentialOptionId = mfaCredentialOptionId;
+    public void setMfaOptionId(KapuaId mfaOptionId) {
+        this.mfaOptionId = mfaOptionId;
     }
 
     public String getCode() {

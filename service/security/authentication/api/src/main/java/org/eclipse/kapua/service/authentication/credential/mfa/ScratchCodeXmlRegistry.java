@@ -22,7 +22,7 @@ public class ScratchCodeXmlRegistry {
     private static final ScratchCodeFactory SCRATCH_CODE_FACTORY = LOCATOR.getFactory(ScratchCodeFactory.class);
 
     /**
-     * Creates a new ScratchCode instance
+     * Creates a new {@link ScratchCode} instance
      *
      * @return
      */
@@ -31,7 +31,7 @@ public class ScratchCodeXmlRegistry {
     }
 
     /**
-     * Creates a new ScratchCode list result instance
+     * Creates a new {@link ScratchCodeListResult} instance
      *
      * @return
      */
@@ -40,7 +40,7 @@ public class ScratchCodeXmlRegistry {
     }
 
     /**
-     * Creates a new ScratchCode creator instance
+     * Creates a new {@link ScratchCodeCreator} instance
      *
      * @return
      */

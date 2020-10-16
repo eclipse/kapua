@@ -16,7 +16,7 @@ import com.warrenstrange.googleauth.GoogleAuthenticatorConfig;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticationService;
+import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
@@ -29,12 +29,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The {@link MfaAuthenticationService} implementation that wraps code generation and authentication methods.
+ * An {@link MfaAuthenticator} implementation that wraps secret code generation and authentication methods.
  *
  */
-public class MfaAuthenticationServiceImpl implements MfaAuthenticationService {
+public class MfaAuthenticatorImpl implements MfaAuthenticator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MfaAuthenticationServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MfaAuthenticatorImpl.class);
 
     private static final GoogleAuthenticatorConfig GOOGLE_AUTHENTICATOR_CONFIG;
 

@@ -48,9 +48,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 
-public class ImageServlet extends HttpServlet {
+public class QRCodeServlet extends HttpServlet {
     private static final long serialVersionUID = -5016170117606322129L;
-    private static final Logger logger = LoggerFactory.getLogger(ImageServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(QRCodeServlet.class);
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final AccountService accountService = locator.getService(AccountService.class);
@@ -102,7 +102,7 @@ public class ImageServlet extends HttpServlet {
         logger.debug("req.getRequestURL(): {}", req.getRequestURL());
         logger.debug("req.getPathInfo(): {}", req.getPathInfo());
 
-        if (reqPathInfo.equals("/2FAQRcode")) {
+        if (reqPathInfo.equals("/MfaQRCode")) {
             doGetQRCode(req, resp);
         } else {
             resp.sendError(404);

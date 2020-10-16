@@ -16,39 +16,39 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
-public class MfaCredentialOptionXmlRegistry {
+public class MfaOptionXmlRegistry {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final MfaCredentialOptionFactory MFA_CREDENTIAL_OPTION_FACTORY = LOCATOR.getFactory(MfaCredentialOptionFactory.class);
+    private static final MfaOptionFactory MFA_OPTION_FACTORY = LOCATOR.getFactory(MfaOptionFactory.class);
 
     /**
-     * Creates a new MfaCredentialOption instance
+     * Creates a new {@link MfaOption} instance
      *
      * @return
      */
-    public MfaCredentialOption newMfaCredentialOption() {
-        return MFA_CREDENTIAL_OPTION_FACTORY.newEntity(null);
+    public MfaOption newMfaOption() {
+        return MFA_OPTION_FACTORY.newEntity(null);
     }
 
     /**
-     * Creates a new MfaCredentialOption list result instance
+     * Creates a new {@link MfaOption} list result instance
      *
      * @return
      */
-    public MfaCredentialOptionListResult newMfaCredentialOptionListResult() {
-        return MFA_CREDENTIAL_OPTION_FACTORY.newListResult();
+    public MfaOptionListResult newMfaOptionListResult() {
+        return MFA_OPTION_FACTORY.newListResult();
     }
 
     /**
-     * Creates a new MfaCredentialOption creator instance
+     * Creates a new {@link MfaOption} creator instance
      *
      * @return
      */
-    public MfaCredentialOptionCreator newMfaCredentialOptionCreator() {
-        return MFA_CREDENTIAL_OPTION_FACTORY.newCreator(null, null, null);
+    public MfaOptionCreator newMfaOptionCreator() {
+        return MFA_OPTION_FACTORY.newCreator(null, null, null);
     }
 
-    public MfaCredentialOptionQuery newQuery() {
-        return MFA_CREDENTIAL_OPTION_FACTORY.newQuery(null);
+    public MfaOptionQuery newQuery() {
+        return MFA_OPTION_FACTORY.newQuery(null);
     }
 }

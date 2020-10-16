@@ -14,10 +14,10 @@ package org.eclipse.kapua.service.authentication.credential.mfa;
 import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
 /**
- * ScratchCode predicates used to build query predicates.
+ * {@link ScratchCode} predicates used to build query predicates.
  */
 public class ScratchCodeAttributes extends KapuaUpdatableEntityAttributes {
 
-    public static final String MFA_CREDENTIAL_OPTION_ID = "mfaCredentialOptionId";
+    public static final String MFA_OPTION_ID = "mfaOptionId";
     public static final String CODE = "scratchCode";
 }

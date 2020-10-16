@@ -14,17 +14,17 @@ package org.eclipse.kapua.service.authentication.mfa;
 import java.util.List;
 
 /**
- * MfaAuthenticationService interface
+ * {@link MfaAuthenticator} interface
  */
-public interface MfaAuthenticationService {
+public interface MfaAuthenticator {
 
     /**
-     * @return true if the MfaAuthenticationService is enabled, false otherwise
+     * @return true if the {@link MfaAuthenticator} is enabled, false otherwise
      */
     boolean isEnabled();
 
     /**
-     * Validates a code generated with the Google Authenticator app
+     * Validates a code generated with the authenticator app
      *
      * @param encryptedSecret  the encoded secret key
      * @param verificationCode the verification code

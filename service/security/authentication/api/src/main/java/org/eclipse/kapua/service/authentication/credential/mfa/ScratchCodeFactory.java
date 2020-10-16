@@ -25,22 +25,22 @@ public interface ScratchCodeFactory extends KapuaEntityFactory<ScratchCode, Scra
      * Instantiates a new {@link ScratchCode}.
      *
      * @param scopeId               The scope {@link KapuaId} to set into the {@link ScratchCode}.
-     * @param mfaCredentialOptionId The {@link MfaCredentialOption} {@link KapuaId} to set into the
+     * @param mfaOptionId The {@link MfaOption} {@link KapuaId} to set into the
      *                              {@link ScratchCode}.
      * @param code                  The code to set into the {@link ScratchCode}.
      * @return The newly instantiated {@link ScratchCode}
      */
-    ScratchCode newScratchCode(KapuaId scopeId, KapuaId mfaCredentialOptionId, String code);
+    ScratchCode newScratchCode(KapuaId scopeId, KapuaId mfaOptionId, String code);
 
     /**
      * Instantiates a new {@link ScratchCodeCreator}.
      *
      * @param scopeId               The scope {@link KapuaId} to set into the {@link ScratchCodeCreator}.
-     * @param mfaCredentialOptionId The {@link MfaCredentialOption} {@link KapuaId} to set into the
+     * @param mfaOptionId The {@link MfaOption} {@link KapuaId} to set into the
      *                              {@link ScratchCode}.
      * @param code                  The code to set into the {@link ScratchCode}.
      * @return The newly instantiated {@link ScratchCodeCreator}
      */
-    ScratchCodeCreator newCreator(KapuaId scopeId, KapuaId mfaCredentialOptionId, String code);
+    ScratchCodeCreator newCreator(KapuaId scopeId, KapuaId mfaOptionId, String code);
 
 }

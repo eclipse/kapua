@@ -24,7 +24,7 @@
             </and>
             <and>
                 <tableExists tableName="atht_scratch_code"/>
-                <tableExists tableName="atht_mfa_credential_option"/>
+                <tableExists tableName="atht_mfa_option"/>
             </and>
         </preConditions>
         <addForeignKeyConstraint constraintName="fk_atht_scratch_code_scopeId"
@@ -34,10 +34,10 @@
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"/>
-        <addForeignKeyConstraint constraintName="fk_atht_scratch_code_mfaCredentialOptionId"
+        <addForeignKeyConstraint constraintName="fk_atht_scratch_code_mfaOptionId"
                                  baseTableName="atht_scratch_code"
-                                 baseColumnNames="mfa_credential_option_id"
-                                 referencedTableName="atht_mfa_credential_option"
+                                 baseColumnNames="mfa_option_id"
+                                 referencedTableName="atht_mfa_option"
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"
                                  onUpdate="RESTRICT"/>

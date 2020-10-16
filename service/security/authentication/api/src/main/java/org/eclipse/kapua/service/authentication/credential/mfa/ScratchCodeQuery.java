@@ -12,7 +12,6 @@
 package org.eclipse.kapua.service.authentication.credential.mfa;
 
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authentication.credential.CredentialXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,11 +19,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * ScratchCode query definition.
+ * {@link ScratchCode} query definition.
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = CredentialXmlRegistry.class, factoryMethod = "newQuery")
+@XmlType(factoryClass = ScratchCodeXmlRegistry.class, factoryMethod = "newQuery")
 public interface ScratchCodeQuery extends KapuaQuery {
 
 }

@@ -23,13 +23,13 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * MfaCredentialOption creator service definition.
+ * {@link MfaOption} creator service definition.
  */
-@XmlRootElement(name = "mfaCredentialOptionCreator")
+@XmlRootElement(name = "mfaOptionCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {"userId",
-        "mfaCredentialKey"}, factoryClass = MfaCredentialOptionXmlRegistry.class, factoryMethod = "newMfaCredentialOptionCreator")
-public interface MfaCredentialOptionCreator extends KapuaEntityCreator<MfaCredentialOption> {
+        "mfaSecretKey"}, factoryClass = MfaOptionXmlRegistry.class, factoryMethod = "newMfaOptionCreator")
+public interface MfaOptionCreator extends KapuaEntityCreator<MfaOption> {
 
     /**
      * Gets the user id owner of this token
@@ -50,17 +50,17 @@ public interface MfaCredentialOptionCreator extends KapuaEntityCreator<MfaCreden
     void setUserId(KapuaId userId);
 
     /**
-     * Return the MfaCredentialOption key
+     * Return the {@link MfaOption} key
      *
      * @return
      */
-    @XmlElement(name = "mfaCredentialKey")
-    String getMfaCredentialKey();
+    @XmlElement(name = "mfaSecretKey")
+    String getMfaSecretKey();
 
     /**
-     * Set the MfaCredentialOption key
+     * Set the {@link MfaOption} key
      *
-     * @param mfaCredentialKey
+     * @param mfaSecretKey
      */
-    void setMfaCredentialKey(String mfaCredentialKey);
+    void setMfaSecretKey(String mfaSecretKey);
 }

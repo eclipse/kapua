@@ -27,7 +27,7 @@
             <column name="id" type="bigint(21) unsigned">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="mfa_credential_option_id" type="bigint(21) unsigned">
+            <column name="mfa_option_id" type="bigint(21) unsigned">
                 <constraints nullable="false" />
             </column>
             <column name="scratch_code" type="varchar(255)">
@@ -49,19 +49,19 @@
         <createIndex tableName="atht_scratch_code" indexName="idx_atht_scratch_code_scope_id">
             <column name="scope_id"/>
         </createIndex>
-        <createIndex tableName="atht_scratch_code" indexName="idx_atht_scratch_code_mfa_credential_option_id">
+        <createIndex tableName="atht_scratch_code" indexName="idx_atht_scratch_code_mfa_option_id">
             <column name="scope_id"/>
-            <column name="mfa_credential_option_id"/>
+            <column name="mfa_option_id"/>
         </createIndex>
 
         <sql dbms="h2">ALTER TABLE atht_scratch_code ADD CHECK scope_id >= 0;</sql>
         <sql dbms="h2">ALTER TABLE atht_scratch_code ADD CHECK id >= 0;</sql>
-        <sql dbms="h2">ALTER TABLE atht_scratch_code ADD CHECK mfa_credential_option_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE atht_scratch_code ADD CHECK mfa_option_id >= 0;</sql>
         <sql dbms="h2">ALTER TABLE atht_scratch_code ADD CHECK created_by >= 0;</sql>
         <sql dbms="h2">ALTER TABLE atht_scratch_code ADD CHECK modified_by >= 0;</sql>
 
         <rollback>
-            <dropIndex tableName="atht_scratch_code" indexName="idx_atht_scratch_code_mfa_credential_option_id"/>
+            <dropIndex tableName="atht_scratch_code" indexName="idx_atht_scratch_code_mfa_option_id"/>
             <dropIndex tableName="atht_scratch_code" indexName="idx_atht_scratch_code_scope_id"/>
             <dropTable tableName="atht_scratch_code"/>
         </rollback>

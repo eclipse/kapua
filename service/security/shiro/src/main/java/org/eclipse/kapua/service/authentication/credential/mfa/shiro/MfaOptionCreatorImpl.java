@@ -13,33 +13,33 @@ package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOption;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOptionCreator;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 
 /**
- * MfaCredentialOption creator implementation.
+ * {@link MfaOption} creator implementation.
  */
-public class MfaCredentialOptionCreatorImpl extends AbstractKapuaEntityCreator<MfaCredentialOption> implements MfaCredentialOptionCreator {
+public class MfaOptionCreatorImpl extends AbstractKapuaEntityCreator<MfaOption> implements MfaOptionCreator {
 
     private static final long serialVersionUID = -4619585500941519330L;
 
     private KapuaId userId;
-    private String mfaCredentialKey;
+    private String mfaSecretKey;
 
     /**
      * Constructor
      *
      * @param scopeId          scope identifier
      * @param userId           user identifier
-     * @param mfaCredentialKey the secret key
+     * @param mfaSecretKey the secret key
      */
-    public MfaCredentialOptionCreatorImpl(KapuaId scopeId, KapuaId userId, String mfaCredentialKey) {
+    public MfaOptionCreatorImpl(KapuaId scopeId, KapuaId userId, String mfaSecretKey) {
         super(scopeId);
         this.userId = userId;
-        this.mfaCredentialKey = mfaCredentialKey;
+        this.mfaSecretKey = mfaSecretKey;
     }
 
-    public MfaCredentialOptionCreatorImpl(KapuaId scopeId) {
+    public MfaOptionCreatorImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
@@ -54,12 +54,12 @@ public class MfaCredentialOptionCreatorImpl extends AbstractKapuaEntityCreator<M
     }
 
     @Override
-    public String getMfaCredentialKey() {
-        return mfaCredentialKey;
+    public String getMfaSecretKey() {
+        return mfaSecretKey;
     }
 
     @Override
-    public void setMfaCredentialKey(String mfaCredentialKey) {
-        this.mfaCredentialKey = mfaCredentialKey;
+    public void setMfaSecretKey(String mfaSecretKey) {
+        this.mfaSecretKey = mfaSecretKey;
     }
 }

@@ -19,7 +19,7 @@
 
     <include relativeToChangelogFile="true" file="./atht-access_token-expires_index.xml"/>
     <include relativeToChangelogFile="true" file="./atht-access_token-refresh-expires_index.xml"/>
-    <include relativeToChangelogFile="true" file="./atht-mfa_credential_option.xml"/>
+    <include relativeToChangelogFile="true" file="./atht-mfa_option.xml"/>
     <include relativeToChangelogFile="true" file="./atht-scratch_code.xml"/>
 
 </databaseChangeLog>

@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.authentication.credential.mfa;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.service.authentication.credential.CredentialXmlRegistry;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,15 +24,14 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * Scratch Codes definition.<br>
- * Used to handle credentials needed by the various authentication algorithms.
+ * {@link ScratchCode} definition.<br>
  */
 @XmlRootElement(name = "scratchCode")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
-        "mfaCredentialOptionId", //
+        "mfaOptionId", //
         "scratchCode"}, //
-        factoryClass = CredentialXmlRegistry.class, //
+        factoryClass = ScratchCodeXmlRegistry.class, //
         factoryMethod = "newScratchCode") //
 public interface ScratchCode extends KapuaUpdatableEntity {
 
@@ -45,20 +43,20 @@ public interface ScratchCode extends KapuaUpdatableEntity {
     }
 
     /**
-     * Return the mfaCredentialOption identifier
+     * Return the {@link KapuaId} of the {@link MfaOption}
      *
-     * @return The mfaCredentialOption identifier.
+     * @return The {@link MfaOption} identifier.
      */
-    @XmlElement(name = "mfaCredentialOptionId")
+    @XmlElement(name = "mfaOptionId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    KapuaId getMfaCredentialOptionId();
+    KapuaId getMfaOptionId();
 
     /**
-     * Sets the {@link MfaCredentialOption} id of this {@link AccessToken}
+     * Sets the {@link MfaOption} id of this {@link AccessToken}
      *
-     * @param mfaCredentialOptionId The {@link MfaCredentialOption} id to set.
+     * @param mfaOptionId The {@link MfaOption} id to set.
      */
-    void setMfaCredentialOptionId(KapuaId mfaCredentialOptionId);
+    void setMfaOptionId(KapuaId mfaOptionId);
 
     /**
      * Return the scratch code

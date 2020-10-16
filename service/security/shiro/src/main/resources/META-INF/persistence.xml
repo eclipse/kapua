@@ -22,7 +22,7 @@
         <!-- Authentication -->
         <class>org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl</class>
         <class>org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl</class>
-        <class>org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaCredentialOptionImpl</class>
+        <class>org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionImpl</class>
         <class>org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeImpl</class>
 
         <!-- Base classes and External classes -->

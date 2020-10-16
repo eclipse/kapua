@@ -35,8 +35,8 @@ import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOption;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOptionService;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -107,7 +107,7 @@ import org.slf4j.MDC;
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final UserService userService = locator.getService(UserService.class);
     private final CredentialService credentialService = locator.getService(CredentialService.class);
-    private final MfaCredentialOptionService mfaCredentialOptionService = locator.getService(MfaCredentialOptionService.class);
+    private final MfaOptionService mfaOptionService = locator.getService(MfaOptionService.class);
     private final AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
     private final AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
     private final CertificateService certificateService = locator.getService(CertificateService.class);
@@ -174,8 +174,8 @@ import org.slf4j.MDC;
             if (enableTrust) {
                 AccessToken finalAccessToken = accessToken;
                 KapuaSecurityUtils.doPrivileged(() -> {
-                    MfaCredentialOption mfaCredentialOption = mfaCredentialOptionService.findByUserId(finalAccessToken.getScopeId(), finalAccessToken.getUserId());
-                    mfaCredentialOptionService.enableTrust(mfaCredentialOption);
+                    MfaOption mfaOption = mfaOptionService.findByUserId(finalAccessToken.getScopeId(), finalAccessToken.getUserId());
+                    mfaOptionService.enableTrust(mfaOption);
                 });
             }
 
