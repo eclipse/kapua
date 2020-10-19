@@ -29,6 +29,8 @@ public class ElasticsearchClientRequestConfiguration {
 
     /**
      * Gets the number of maximum attempts to retry a {@link Request}.
+     * <p>
+     * Default value: 3
      *
      * @return The number of maximum attempts to retry a {@link Request}.
      * @since 1.3.0
@@ -51,6 +53,8 @@ public class ElasticsearchClientRequestConfiguration {
 
     /**
      * Gets the wait time between {@link Request} retries.
+     * <p>
+     * Default value: 2500
      *
      * @return The wait time between {@link Request} retries.
      * @since 1.3.0
@@ -73,6 +77,8 @@ public class ElasticsearchClientRequestConfiguration {
 
     /**
      * Gets the query {@link Request} timeout.
+     * <p>
+     * Default value: 15000
      *
      * @return The query {@link Request} timeout.
      * @since 1.3.0
@@ -95,6 +101,8 @@ public class ElasticsearchClientRequestConfiguration {
 
     /**
      * Gets the scroll {@link Request} timeout.
+     * <p>
+     * Default value: 60000
      *
      * @return The scroll {@link Request} timeout.
      * @since 1.3.0

@@ -45,17 +45,17 @@ import org.junit.runner.RunWith;
         },
         strict = true,
         monochrome = true)
+
 @CucumberProperty(key = "DOCKER_HOST", value = "")
 @CucumberProperty(key = "DOCKER_CERT_PATH", value = "")
 @CucumberProperty(key = "commons.db.schema.update", value = "")
 @CucumberProperty(key = "commons.db.connection.host", value = "")
 @CucumberProperty(key = "commons.db.connection.port", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.node", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.port", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.provider", value = "")
 @CucumberProperty(key = "commons.eventbus.url", value = "")
+@CucumberProperty(key = "broker.ip", value = "")
 @CucumberProperty(key = "certificate.jwt.private.key", value = "")
 @CucumberProperty(key = "certificate.jwt.certificate", value = "")
-@CucumberProperty(key = "broker.ip", value = "")
+@CucumberProperty(key = "datastore.elasticsearch.nodes", value = "")
+@CucumberProperty(key = "datastore.elasticsearch.provider", value = "")
 public class RunAccountServiceI9nTest {
 }

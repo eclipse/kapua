@@ -32,19 +32,19 @@ import org.junit.runner.RunWith;
         },
         strict = true,
         monochrome = true)
-@CucumberProperty(key = "kapua.config.url", value = "")
+
 @CucumberProperty(key = "DOCKER_HOST", value = "")
 @CucumberProperty(key = "DOCKER_CERT_PATH", value = "")
 @CucumberProperty(key = "commons.db.schema.update", value = "")
 @CucumberProperty(key = "commons.db.connection.host", value = "")
 @CucumberProperty(key = "commons.db.connection.port", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.node", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.port", value = "")
-@CucumberProperty(key = "datastore.elasticsearch.provider", value = "")
 @CucumberProperty(key = "commons.eventbus.url", value = "")
+@CucumberProperty(key = "broker.ip", value = "192.168.33.10")
 @CucumberProperty(key = "certificate.jwt.private.key", value = "")
 @CucumberProperty(key = "certificate.jwt.certificate", value = "")
+@CucumberProperty(key = "datastore.elasticsearch.nodes", value = "")
+@CucumberProperty(key = "datastore.elasticsearch.provider", value = "")
+@CucumberProperty(key = "kapua.config.url", value = "")
 @CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "3")
-@CucumberProperty(key = "broker.ip", value = "192.168.33.10")
 public class RunBrokerACLDeviceManageI9nTest {
 }

@@ -15,8 +15,7 @@ FROM @docker.account@/java-base
 
 COPY maven /
 
-ENV DATASTORE_ADDR es
-ENV DATASTORE_PORT 9200
+ENV DATASTORE_ADDR es:9200
 ENV DATASTORE_CLIENT org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider
 
 ENV SQL_DB_ADDR db
@@ -33,8 +32,7 @@ RUN useradd -u 1002 -g 0 -d '/var/opt/activemq' -s '/sbin/nologin' activemq && \
 ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
                    -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
                    -Dcommons.db.connection.port=\${SQL_DB_PORT} \
-                   -Ddatastore.elasticsearch.node=\${DATASTORE_ADDR} \
-                   -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
+                   -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
                    -Ddatastore.elasticsearch.provider=\${DATASTORE_CLIENT} \
                    -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                    -Dcertificate.jwt.private.key=file:///var/opt/activemq/key.pk8 \
