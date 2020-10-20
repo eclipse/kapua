@@ -23,7 +23,7 @@ import org.apache.shiro.crypto.hash.Sha512Hash;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCodes;
+import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSettingKeys;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -51,8 +51,8 @@ public class AuthenticationUtils {
      * Encrypts and return the plain credential value (unencrypted value).
      * 
      * @param plainValue
-     * @return
-     * @throws KapuaException
+     * @return the encrypted credential
+     * @throws KapuaException when something goes wrong
      */
     public static String cryptCredential(CryptAlgorithm algorithm, String plainValue)
             throws KapuaException {

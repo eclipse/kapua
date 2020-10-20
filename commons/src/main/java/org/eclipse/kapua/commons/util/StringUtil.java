@@ -18,6 +18,8 @@ import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Utilities to manipulate string
  *
@@ -134,10 +136,10 @@ public class StringUtil {
     /**
      * Convert the string to the appropriate Object based on type
      *
-     * @param type   allowed values are {@link TscalarImpl}
-     * @param string
-     * @return
-     * @throws KapuaException
+     * @param type              allowed values are {@link TscalarImpl}
+     * @param string            the input value
+     * @return                  the output value
+     * @throws KapuaException   when something goes wrong
      */
     public static Object stringToValue(String type, String string) throws KapuaException {
         if (string == null) {
@@ -155,11 +157,11 @@ public class StringUtil {
         }
 
         if (TscalarImpl.BOOLEAN.equals(scalarType)) {
-            return Boolean.valueOf(string);
+            return StringUtils.isEmpty(string) ? null : Boolean.valueOf(string);
         }
 
         if (TscalarImpl.BYTE.equals(scalarType)) {
-            return Byte.valueOf(string);
+            return StringUtils.isEmpty(string) ? null : Byte.valueOf(string);
         }
 
         if (TscalarImpl.CHAR.equals(scalarType)) {
@@ -167,23 +169,23 @@ public class StringUtil {
         }
 
         if (TscalarImpl.DOUBLE.equals(scalarType)) {
-            return Double.valueOf(string);
+            return StringUtils.isEmpty(string) ? null : Double.valueOf(string);
         }
 
         if (TscalarImpl.FLOAT.equals(scalarType)) {
-            return Float.valueOf(string);
+            return StringUtils.isEmpty(string) ? null : Float.valueOf(string);
         }
 
         if (TscalarImpl.INTEGER.equals(scalarType)) {
-            return Integer.valueOf(string);
+            return StringUtils.isEmpty(string) ? null : Integer.valueOf(string);
         }
 
         if (TscalarImpl.LONG.equals(scalarType)) {
-            return Long.valueOf(string);
+            return StringUtils.isEmpty(string) ? null : Long.valueOf(string);
         }
 
         if (TscalarImpl.SHORT.equals(scalarType)) {
-            return Short.valueOf(string);
+            return StringUtils.isEmpty(string) ? null : Short.valueOf(string);
         }
 
         if (TscalarImpl.PASSWORD.equals(scalarType)) {

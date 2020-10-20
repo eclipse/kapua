@@ -180,7 +180,6 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void testIllegalCharacterPasswordRegExp() throws Exception {
-        String argRegExprPasswordRegExp = "^.*(?=.{12,})(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!\\~\\|]).*$";
         String permittedSymbols = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890-_@#$%^&+=!~|";
         String[] listOfFalseStringsPasswordRegExp = new String[]{"abcd1234ABCD€", "abcd1234ABCD¡", "abcd1234ABCD™",
                 "abcd1234ABCD£", "abcd1234ABCD¢", "abcd1234ABCD∞", "abcd1234ABCD§", "abcd1234ABCD¶", "abcd1234ABCD•",

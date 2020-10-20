@@ -21,6 +21,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -73,20 +74,31 @@ public class ChangePasswordDialog extends SimpleDialog {
         newPassword.setAllowBlank(false);
         newPassword.setName("newPassword");
         newPassword.setFieldLabel("* " + ActionDialog.MSGS.newPassword());
-        newPassword.setValidator(new PasswordFieldValidator(newPassword));
         newPassword.setPassword(true);
         credentialFormPanel.add(newPassword);
 
-        TextField<String> confirmPassword = new TextField<String>();
+        final TextField<String> confirmPassword = new TextField<String>();
         confirmPassword.setAllowBlank(false);
         confirmPassword.setName("confirmPassword");
         confirmPassword.setFieldLabel("* " + ActionDialog.MSGS.confirmPassword());
-        confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, newPassword));
         confirmPassword.setPassword(true);
         credentialFormPanel.add(confirmPassword);
 
         passwordTooltip = new LabelField();
-        passwordTooltip.setValue(ActionDialog.MSGS.dialogAddTooltipCredentialPassword());
+        credentialService.getMinPasswordLength(currentSession.getAccountId(), new AsyncCallback<Integer>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                FailureHandler.handle(caught);
+            }
+
+            @Override
+            public void onSuccess(Integer result) {
+                newPassword.setValidator(new PasswordFieldValidator(newPassword, result));
+                confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, newPassword, result));
+                passwordTooltip.setValue(MSGS.dialogAddTooltipCredentialPassword(result.toString()));
+            }
+        });
         passwordTooltip.setStyleAttribute("margin-top", "-5px");
         passwordTooltip.setStyleAttribute("color", "gray");
         passwordTooltip.setStyleAttribute("font-size", "10px");

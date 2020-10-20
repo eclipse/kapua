@@ -56,4 +56,7 @@ public interface GwtCredentialService extends RemoteService {
     public void unlock(GwtXSRFToken xsfrToken, String stringScopeId, String gwtCredentialId)
             throws GwtKapuaException;
 
+    Integer getMinPasswordLength(String scopeId)
+            throws GwtKapuaException;
+
 }

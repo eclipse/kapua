@@ -11,9 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.exceptions;
 
+import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
+
 public class JwtCertificateNotFoundException extends AuthenticationRuntimeException {
 
     public JwtCertificateNotFoundException() {
-        super(AuthenticationErrorCodes.JWT_CERTIFICATE_NOT_FOUND);
+        super(KapuaAuthenticationErrorCodes.JWT_CERTIFICATE_NOT_FOUND);
     }
+
 }

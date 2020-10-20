@@ -19,7 +19,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
@@ -276,6 +278,24 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
             CREDENTIAL_SERVICE.unlock(scopeId, credentialId);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
+        }
+    }
+
+    @Override
+    public Integer getMinPasswordLength(final String scopeId) throws GwtKapuaException {
+        try {
+            // Do privileged because the request may come from a user with no permission who just wants to change his own password
+            return KapuaSecurityUtils.doPrivileged(new Callable<Integer>() {
+
+                @Override
+                public Integer call() throws Exception {
+                    return CREDENTIAL_SERVICE.getMinimumPasswordLength(GwtKapuaCommonsModelConverter.convertKapuaId(scopeId));
+                }
+
+            });
+        } catch (KapuaException ex) {
+            FailureHandler.handle(ex);
+            return null;
         }
     }
 

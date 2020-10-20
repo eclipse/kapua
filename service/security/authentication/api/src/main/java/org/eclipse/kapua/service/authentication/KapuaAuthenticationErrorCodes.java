@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
+ * Copyright (c) 2020 Eurotech and/or its affiliates and others
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -9,15 +9,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.shiro;
+package org.eclipse.kapua.service.authentication;
 
 import org.eclipse.kapua.KapuaErrorCode;
 
 /**
  * Authentication error codes
- * 
+ *
  * since 1.0
- * 
  */
 public enum KapuaAuthenticationErrorCodes implements KapuaErrorCode {
     /**
@@ -99,12 +98,20 @@ public enum KapuaAuthenticationErrorCodes implements KapuaErrorCode {
      * Refresh error
      */
     REFRESH_ERROR,
+
     /**
      * JWK generation error
      */
     JWK_GENERATION_ERROR,
+
     /**
-     * JWT Certificate not found
+     * A Certificate with CertificateUsage equal to {@code JWT} is not present in the database.
+     * This certificate must be installed at deployment time.
      */
-    JWT_CERTIFICATE_NOT_FOUND
+    JWT_CERTIFICATE_NOT_FOUND,
+
+    /**
+     * The password cannot be changed
+     */
+    PASSWORD_CANNOT_BE_CHANGED;
 }

@@ -21,6 +21,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordUpdateFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordUpdateFieldValidator;
@@ -107,7 +108,6 @@ public class CredentialEditDialog extends CredentialAddDialog {
         credentialFormPanel.remove(credentialType);
         credentialTypeLabel.setVisible(true);
         credentialTypeLabel.setValue(selectedCredential.getCredentialType());
-        password.setValidator(new PasswordUpdateFieldValidator(password));
         password.setFieldLabel(MSGS.dialogEditFieldNewPassword());
         password.setAllowBlank(true);
         password.addListener(Events.Change, new Listener<BaseEvent>() {
@@ -117,13 +117,25 @@ public class CredentialEditDialog extends CredentialAddDialog {
                 confirmPassword.setAllowBlank(password.getValue() == null || password.getValue().equals(""));
             }
         });
-        confirmPassword.setValidator(new ConfirmPasswordUpdateFieldValidator(confirmPassword, password));
         confirmPassword.setFieldLabel(MSGS.dialogEditFieldConfirmNewPassword());
         confirmPassword.setAllowBlank(true);
         if (selectedCredential.getLockoutReset() != null && selectedCredential.getLockoutReset().after(new Date())) {
             lockedUntil.setText(MSGS.dialogEditLockedUntil(DateUtils.formatDateTime(selectedCredential.getLockoutReset())));
             credentialFormPanel.add(lockedUntil);
         }
+        GWT_CREDENTIAL_SERVICE.getMinPasswordLength(selectedCredential.getScopeId(), new AsyncCallback<Integer>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                FailureHandler.handle(caught);
+            }
+
+            @Override
+            public void onSuccess(Integer result) {
+                confirmPassword.setValidator(new ConfirmPasswordUpdateFieldValidator(confirmPassword, password, result));
+                password.setValidator(new PasswordUpdateFieldValidator(password, result));
+            }
+        });
     }
 
     @Override
