@@ -91,6 +91,10 @@ public enum SystemSettingKey implements SettingKey {
      */
     DB_CONNECTION_USE_SSL("commons.db.connection.useSsl"),
     /**
+     * Database TLS/SSL Protocol Version Selection (for MariaDB only)
+     */
+    DB_CONNECTION_ENABLED_SSL_PROTOCOL_SUITES("commons.db.connection.enabledSslProtocolSuites"),
+    /**
      * Database truststore url
      */
     DB_CONNECTION_TRUSTSTORE_URL("commons.db.connection.trust.store.url"),
