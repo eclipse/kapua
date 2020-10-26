@@ -80,6 +80,13 @@ public class MariaDBJdbcConnectionUrlResolver implements JdbcConnectionUrlResolv
                 .append(useSsl)
                 .append("&");
 
+        String enabledSslProtocolSuites = config.getString(SystemSettingKey.DB_CONNECTION_ENABLED_SSL_PROTOCOL_SUITES);
+        if (enabledSslProtocolSuites != null) {
+            dbConnectionString.append("enabledSslProtocolSuites=")
+                    .append(enabledSslProtocolSuites)
+                    .append("&");
+        }
+
         if (StringUtils.isNotBlank(trustStore)) {
             dbConnectionString.append("trustStore=")
                     .append(trustStore)
