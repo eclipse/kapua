@@ -20,6 +20,10 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
+import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
+import org.eclipse.kapua.service.authentication.credential.CredentialService;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
+import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -34,6 +38,11 @@ import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
+import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
+import org.eclipse.kapua.service.user.internal.UserServiceImpl;
+
 import org.junit.runners.model.InitializationError;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -82,6 +91,10 @@ public class CucumberWithPropertiesForSecurity extends CucumberWithProperties {
                 bind(RolePermissionFactory.class).toInstance(new RolePermissionFactoryImpl());
                 bind(GroupService.class).toInstance(new GroupServiceImpl());
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
+                bind(CredentialService.class).toInstance(new CredentialServiceImpl());
+                bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
+                bind(UserService.class).toInstance(new UserServiceImpl());
+                bind(UserFactory.class).toInstance(new UserFactoryImpl());
             }
         };
 

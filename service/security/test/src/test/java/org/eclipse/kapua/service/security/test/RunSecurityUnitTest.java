@@ -18,9 +18,11 @@ import org.junit.runner.RunWith;
 @RunWith(CucumberWithPropertiesForSecurity.class)
 @CucumberOptions(
         features = {"classpath:features/RoleServiceUnitTests.feature",
-                "classpath:features/GroupServiceUnitTests.feature"
+                    "classpath:features/GroupServiceUnitTests.feature",
+                    "classpath:features/CredentialServiceUnitTests.feature"
         },
         glue = {"org.eclipse.kapua.service.authorization.steps",
+                "org.eclipse.kapua.service.authentication.steps",
                 "org.eclipse.kapua.qa.common"
         },
         plugin = {"pretty",
