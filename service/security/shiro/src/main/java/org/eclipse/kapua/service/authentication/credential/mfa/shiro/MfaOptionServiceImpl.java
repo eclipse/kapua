@@ -26,6 +26,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authentication.AuthenticationDomains;
+import org.eclipse.kapua.service.authentication.credential.mfa.KapuaExistingMfaOptionException;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionAttributes;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
@@ -76,6 +77,13 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write,
                 mfaOptionCreator.getScopeId()));
+
+        //
+        // Check existing MfaOption
+        MfaOption existingMfaOption = findByUserId(mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId());
+        if (existingMfaOption != null) {
+            throw new KapuaExistingMfaOptionException();
+        }
 
         //
         // Do create

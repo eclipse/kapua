@@ -25,6 +25,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authentication.AuthenticationDomains;
+import org.eclipse.kapua.service.authentication.credential.mfa.KapuaExistingScratchCodesException;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeAttributes;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeCreator;
@@ -209,6 +210,13 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
 
         List<String> codes = MFA_AUTHENTICATOR.generateCodes();
         ScratchCodeListResult scratchCodeListResult = new ScratchCodeListResultImpl();
+
+        //
+        // Check existing ScratchCodes
+        ScratchCodeListResult existingScratchCodeListResult = findByMfaOptionId(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId());
+        if (!existingScratchCodeListResult.isEmpty()) {
+            throw new KapuaExistingScratchCodesException();
+        }
 
         for (String code : codes) {
             scratchCodeCreator.setCode(code);
