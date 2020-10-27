@@ -52,6 +52,14 @@ public enum BrokerSettingKey implements SettingKey {
      */
     AUTHENTICATOR_CLASS_NAME("broker.authenticator_class_name"),
     /**
+     * Admin authentication logic custom implementation
+     */
+    ADMIN_AUTHENTICATION_LOGIC_CLASS_NAME("broker.authentication_logic_admin_class_name"),
+    /**
+     * User authentication logic custom implementation
+     */
+    USER_AUTHENTICATION_LOGIC_CLASS_NAME("broker.authentication_logic_user_class_name"),
+    /**
      * Authorizer implementation
      */
     AUTHORIZER_CLASS_NAME("broker.authorizer_class_name"),
