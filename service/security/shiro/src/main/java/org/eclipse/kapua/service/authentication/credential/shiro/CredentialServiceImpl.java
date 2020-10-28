@@ -44,6 +44,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.KapuaExistingCredentialException;
+import org.eclipse.kapua.service.authentication.credential.KapuaPasswordTooLongException;
 import org.eclipse.kapua.service.authentication.credential.KapuaPasswordTooShortException;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
@@ -73,6 +74,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
      * The minimum password length specified for the whole system. If not defined, assume 12; if defined and less than 12, assume 12.
      */
     private final int systemMinimumPasswordLength;
+
+    private static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
 
     public CredentialServiceImpl() {
         super(CredentialService.class.getName(), AuthenticationDomains.CREDENTIAL_DOMAIN, AuthenticationEntityManagerFactory.getInstance());
@@ -117,7 +120,10 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             // Validate Password length
             int minPasswordLength = getMinimumPasswordLength(credentialCreator.getScopeId());
             if (credentialCreator.getCredentialPlainKey().length() < minPasswordLength) {
-                throw new KapuaPasswordTooShortException(credentialCreator.getCredentialPlainKey(), minPasswordLength);
+                throw new KapuaPasswordTooShortException(minPasswordLength);
+            }
+            if (credentialCreator.getCredentialPlainKey().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+                throw new KapuaPasswordTooLongException(SYSTEM_MAXIMUM_PASSWORD_LENGTH);
             }
 
             //
@@ -431,8 +437,8 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         if (updatedProps.get(PASSWORD_MIN_LENGTH) != null) {
             // If we're going to set a new limit, check that it's not less than system limit
             int newPasswordLimit = Integer.parseInt(updatedProps.get(PASSWORD_MIN_LENGTH).toString());
-            if (newPasswordLimit < systemMinimumPasswordLength) {
-                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG);
+            if (newPasswordLimit < systemMinimumPasswordLength || newPasswordLimit > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.ILLEGAL_ARGUMENT, PASSWORD_MIN_LENGTH, newPasswordLimit);
             }
         }
         return valid;

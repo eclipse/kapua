@@ -20,15 +20,15 @@ import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
  * @since 1.0
  * 
  */
-public class KapuaPasswordTooShortException extends KapuaException {
+public class KapuaPasswordTooLongException extends KapuaException {
 
     private static final long serialVersionUID = -2761138212317761216L;
-    private static final String MESSAGE_FORMAT = "The specified password doesn't meet the required minimum length: %s.";
+    private static final String MESSAGE_FORMAT = "The specified password is longer than %s characters.";
 
     /**
-     * Constructor for the {@link KapuaPasswordTooShortException} taking in the duplicated name.
+     * Constructor for the {@link KapuaPasswordTooLongException} taking in the duplicated name.
      */
-    public KapuaPasswordTooShortException(int length) {
+    public KapuaPasswordTooLongException(int length) {
         super(KapuaAuthenticationErrorCodes.PASSWORD_CANNOT_BE_CHANGED, String.format(MESSAGE_FORMAT, length));
     }
 
