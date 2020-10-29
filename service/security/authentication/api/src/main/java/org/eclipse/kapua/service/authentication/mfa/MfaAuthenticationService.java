@@ -11,14 +11,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.mfa;
 
-import org.eclipse.kapua.service.KapuaService;
-
 import java.util.List;
 
 /**
  * MfaAuthenticationService interface
  */
-public interface MfaAuthenticationService extends KapuaService {
+public interface MfaAuthenticationService {
 
     /**
      * @return true if the MfaAuthenticationService is enabled, false otherwise

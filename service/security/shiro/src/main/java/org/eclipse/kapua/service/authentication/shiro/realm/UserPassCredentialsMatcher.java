@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticationService;
+import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticationServiceLocator;
 import org.eclipse.kapua.service.user.User;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -39,9 +40,10 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final MfaAuthenticationService MFA_AUTH_SERVICE = LOCATOR.getService(MfaAuthenticationService.class);
     private static final MfaCredentialOptionService MFA_CREDENTIAL_OPTION_SERVICE = LOCATOR.getService(MfaCredentialOptionService.class);
     private static final ScratchCodeService SCRATCH_CODE_SERVICE = LOCATOR.getService(ScratchCodeService.class);
+    private static final MfaAuthenticationServiceLocator MFA_AUTH_SERVICE_LOCATOR = MfaAuthenticationServiceLocator.getInstance();
+    private static final MfaAuthenticationService MFA_AUTH_SERVICE = MFA_AUTH_SERVICE_LOCATOR.getMfaAuthenticationService();
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
