@@ -70,7 +70,8 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.SCRATCH_CODE_DOMAIN, Actions.write, scratchCodeCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write,
+                scratchCodeCreator.getScopeId()));
 
         //
         // Do create
@@ -113,7 +114,7 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.SCRATCH_CODE_DOMAIN, Actions.write, scratchCode.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, scratchCode.getScopeId()));
 
         return entityManagerSession.doTransactedAction(em -> {
             ScratchCode currentscratchCode = ScratchCodeDAO.find(em, scratchCode.getScopeId(), scratchCode.getId());
@@ -138,7 +139,7 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.SCRATCH_CODE_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
         return entityManagerSession.doAction(em -> ScratchCodeDAO.find(em, scopeId, scratchCodeId));
     }
@@ -154,7 +155,7 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.SCRATCH_CODE_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.doAction(em -> ScratchCodeDAO.query(em, query));
     }
@@ -170,7 +171,7 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.SCRATCH_CODE_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.doAction(em -> ScratchCodeDAO.count(em, query));
     }
@@ -187,7 +188,7 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.SCRATCH_CODE_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
 
         entityManagerSession.doTransactedAction(em -> {
             if (ScratchCodeDAO.find(em, scopeId, scratchCodeId) == null) {
@@ -229,7 +230,7 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.SCRATCH_CODE_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
         //
         // Build query

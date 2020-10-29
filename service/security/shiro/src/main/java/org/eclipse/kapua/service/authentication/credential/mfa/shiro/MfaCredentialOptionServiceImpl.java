@@ -73,7 +73,8 @@ public class MfaCredentialOptionServiceImpl extends AbstractKapuaService impleme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.MFA_CREDENTIAL_OPTION_DOMAIN, Actions.write, mfaCredentialOptionCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write,
+                mfaCredentialOptionCreator.getScopeId()));
 
         //
         // Do create
@@ -113,7 +114,7 @@ public class MfaCredentialOptionServiceImpl extends AbstractKapuaService impleme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.MFA_CREDENTIAL_OPTION_DOMAIN, Actions.write, mfaCredentialOption.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, mfaCredentialOption.getScopeId()));
 
         return entityManagerSession.doTransactedAction(em -> {
             MfaCredentialOption currentMfaCredentialOption = MfaCredentialOptionDAO.find(em, mfaCredentialOption.getScopeId(), mfaCredentialOption.getId());
@@ -138,7 +139,7 @@ public class MfaCredentialOptionServiceImpl extends AbstractKapuaService impleme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.MFA_CREDENTIAL_OPTION_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
         return entityManagerSession.doAction(em -> MfaCredentialOptionDAO.find(em, scopeId, mfaCredentialOptionId));
     }
@@ -154,7 +155,7 @@ public class MfaCredentialOptionServiceImpl extends AbstractKapuaService impleme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.MFA_CREDENTIAL_OPTION_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.doAction(em -> MfaCredentialOptionDAO.query(em, query));
     }
@@ -170,7 +171,7 @@ public class MfaCredentialOptionServiceImpl extends AbstractKapuaService impleme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.MFA_CREDENTIAL_OPTION_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, query.getScopeId()));
 
         return entityManagerSession.doAction(em -> MfaCredentialOptionDAO.count(em, query));
     }
@@ -187,7 +188,7 @@ public class MfaCredentialOptionServiceImpl extends AbstractKapuaService impleme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.MFA_CREDENTIAL_OPTION_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.delete, scopeId));
 
         entityManagerSession.doTransactedAction(em -> {
             if (MfaCredentialOptionDAO.find(em, scopeId, mfaCredentialOptionId) == null) {
@@ -209,7 +210,7 @@ public class MfaCredentialOptionServiceImpl extends AbstractKapuaService impleme
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.MFA_CREDENTIAL_OPTION_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, scopeId));
 
         //
         // Build query
