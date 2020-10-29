@@ -11,10 +11,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.shared.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptions;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtScratchCode;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtSubjectType;
 import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.user.User;
 
 public class KapuaGwtAuthenticationModelConverter {
@@ -45,4 +53,25 @@ public class KapuaGwtAuthenticationModelConverter {
         gwtCredential.setSubjectType(GwtSubjectType.USER.toString());
         return gwtCredential;
     }
+
+    public static GwtMfaCredentialOptions convertMfaCredentialOptions(MfaOption mfaCredentialOptions) {
+        GwtMfaCredentialOptions gwtMfaCredentialOptions = new GwtMfaCredentialOptions();
+        KapuaGwtCommonsModelConverter.convertEntity(mfaCredentialOptions,gwtMfaCredentialOptions);
+        gwtMfaCredentialOptions.setAuthenticationKey(mfaCredentialOptions.getMfaSecretKey());
+        gwtMfaCredentialOptions.setTrustKey(mfaCredentialOptions.getTrustKey());
+        gwtMfaCredentialOptions.setTrustExpirationDate(mfaCredentialOptions.getTrustExpirationDate());
+        // TODO Scratch Codes
+        return gwtMfaCredentialOptions;
+    }
+
+    public static List<GwtScratchCode> convertScratchCodeListResult(ScratchCodeListResult scratchCodeListResult) {
+        List<GwtScratchCode> scratchCodeList = new ArrayList<GwtScratchCode>();
+        if (!scratchCodeListResult.isEmpty()) {
+            for (ScratchCode scratchCode : scratchCodeListResult.getItems()) {
+                scratchCodeList.add(new GwtScratchCode(scratchCode.getCode()));
+            }
+        }
+        return scratchCodeList;
+    }
+
 }

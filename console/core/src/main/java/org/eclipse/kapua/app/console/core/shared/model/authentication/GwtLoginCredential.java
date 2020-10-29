@@ -65,4 +65,13 @@ public class GwtLoginCredential extends KapuaBaseModel {
     public void setTrustKey(String trustKey) {
         set("trustKey", trustKey);
     }
+
+    public boolean isTrustReq() {
+        return get("trustReq");
+    }
+
+    public void setTrustReq(boolean trustReq) {
+        set("trustReq", trustReq);
+    }
+
 }

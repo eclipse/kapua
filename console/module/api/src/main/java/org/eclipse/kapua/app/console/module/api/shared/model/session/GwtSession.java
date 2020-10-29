@@ -33,6 +33,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     // User info
     private String accountId;
+    private String accountName;
     private String accountPath;
     private String rootAccountId;
     private String rootAccountName;
@@ -47,6 +48,8 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String ssoIdToken;
 
     private String tokenId;
+
+    private String trustKey;
 
     private List<GwtSessionPermission> sessionPermissions = new ArrayList<GwtSessionPermission>();
     private Map<GwtSessionPermission, Boolean> checkedPermissionsCache = new HashMap<GwtSessionPermission, Boolean>();
@@ -113,6 +116,14 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public String getRootAccountId() {
         return rootAccountId;
+    }
+
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String name) {
+        this.accountName = name;
     }
 
     public void setSelectedAccountId(String selectedAccountId) {
@@ -311,6 +322,14 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public void setSsoIdToken(String ssoIdToken) {
         this.ssoIdToken = ssoIdToken;
+    }
+
+    public String getTrustKey() {
+        return trustKey;
+    }
+
+    public void setTrustKey(String trustKey) {
+        this.trustKey = trustKey;
     }
 
 }

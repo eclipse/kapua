@@ -33,7 +33,7 @@ public interface GwtAuthorizationService extends RemoteService {
      * @throws GwtKapuaException If credentials are not valid.
      * @since 1.0.0
      */
-    public GwtSession login(GwtLoginCredential gwtLoginCredentials) throws GwtKapuaException;
+    public GwtSession login(GwtLoginCredential gwtLoginCredentials, boolean trustReq) throws GwtKapuaException;
 
     /**
      * Logins a session based on the given access token. If the access token is correct a session is established and returned.
@@ -65,5 +65,7 @@ public interface GwtAuthorizationService extends RemoteService {
      */
     public void logout()
             throws GwtKapuaException;
+
+    public boolean hasMfa(String username) throws GwtKapuaException;
 
 }

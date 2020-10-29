@@ -16,6 +16,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
+
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
@@ -30,6 +31,7 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeServic
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
 import org.eclipse.kapua.service.user.User;
+
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 /**

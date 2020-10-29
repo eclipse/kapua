@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import com.google.common.base.Strings;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
@@ -101,7 +102,7 @@ import org.slf4j.MDC;
  * since 1.0
  */
 @KapuaProvider
-    public class AuthenticationServiceShiroImpl implements AuthenticationService {
+public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
     private final KapuaLocator locator = KapuaLocator.getInstance();
@@ -252,9 +253,10 @@ import org.slf4j.MDC;
         //
         // Parse login credentials
         AuthenticationToken shiroAuthenticationToken;
-        if (loginCredentials instanceof UsernamePasswordCredentialsImpl) {
-            shiroAuthenticationToken = new UsernamePasswordCredentialsImpl(((UsernamePasswordCredentialsImpl) loginCredentials).getUsername(),
-                    ((UsernamePasswordCredentialsImpl) loginCredentials).getPassword());
+        if (loginCredentials instanceof UsernamePasswordCredentials) {
+            UsernamePasswordCredentials usernamePasswordCredentials = (UsernamePasswordCredentials)loginCredentials;
+            shiroAuthenticationToken = new UsernamePasswordCredentialsImpl(usernamePasswordCredentials.getUsername(), usernamePasswordCredentials.getPassword());
+            ((UsernamePasswordCredentials)shiroAuthenticationToken).setAuthenticationCode(usernamePasswordCredentials.getAuthenticationCode());
         } else {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
         }
@@ -294,7 +296,7 @@ import org.slf4j.MDC;
 
                 if (accessToken != null) {
                     KapuaSecurityUtils.doPrivileged(() ->
-                        accessTokenService.invalidate(accessToken.getScopeId(), accessToken.getId())
+                            accessTokenService.invalidate(accessToken.getScopeId(), accessToken.getId())
                     );
                 }
             }
@@ -380,7 +382,7 @@ import org.slf4j.MDC;
 
         //
         // AccessInfo
-        AccessInfo accessInfo = KapuaSecurityUtils.doPrivileged(() -> accessInfoService.findByUserId(accessToken.getScopeId(),accessToken.getUserId()));
+        AccessInfo accessInfo = KapuaSecurityUtils.doPrivileged(() -> accessInfoService.findByUserId(accessToken.getScopeId(), accessToken.getUserId()));
 
         //
         // AccessRole
@@ -596,4 +598,5 @@ import org.slf4j.MDC;
         Date now = new Date();
         return (credential != null && credential.getLockoutReset() != null && now.before(credential.getLockoutReset()));
     }
+
 }
