@@ -30,10 +30,13 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOptionService;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -98,12 +101,13 @@ import org.slf4j.MDC;
  * since 1.0
  */
 @KapuaProvider
-public class AuthenticationServiceShiroImpl implements AuthenticationService {
+    public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final UserService userService = locator.getService(UserService.class);
     private final CredentialService credentialService = locator.getService(CredentialService.class);
+    private final MfaCredentialOptionService mfaCredentialOptionService = locator.getService(MfaCredentialOptionService.class);
     private final AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
     private final AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
     private final CertificateService certificateService = locator.getService(CertificateService.class);
@@ -118,6 +122,11 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     @Override
     public AccessToken login(LoginCredentials loginCredentials) throws KapuaException {
+        return login(loginCredentials, false);
+    }
+
+    @Override
+    public AccessToken login(LoginCredentials loginCredentials, boolean enableTrust) throws KapuaException {
 
         checkCurrentSubjectNotAuthenticated();
 
@@ -129,6 +138,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             UsernamePasswordCredentialsImpl usernamePasswordCredentials = (UsernamePasswordCredentialsImpl) loginCredentials;
 
             shiroAuthenticationToken = new UsernamePasswordCredentialsImpl(usernamePasswordCredentials.getUsername(), usernamePasswordCredentials.getPassword());
+            ((UsernamePasswordCredentials) shiroAuthenticationToken).setAuthenticationCode(usernamePasswordCredentials.getAuthenticationCode());
+            ((UsernamePasswordCredentials) shiroAuthenticationToken).setTrustKey(usernamePasswordCredentials.getTrustKey());
         } else if (loginCredentials instanceof ApiKeyCredentialsImpl) {
             shiroAuthenticationToken = new ApiKeyCredentialsImpl(((ApiKeyCredentialsImpl) loginCredentials).getApiKey());
         } else if (loginCredentials instanceof JwtCredentialsImpl) {
@@ -158,6 +169,15 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
             // Establish session
             establishSession(shiroSubject, accessToken, openIDidToken);
+
+            // Enable trust key
+            if (enableTrust) {
+                AccessToken finalAccessToken = accessToken;
+                KapuaSecurityUtils.doPrivileged(() -> {
+                    MfaCredentialOption mfaCredentialOption = mfaCredentialOptionService.findByUserId(finalAccessToken.getScopeId(), finalAccessToken.getUserId());
+                    mfaCredentialOptionService.enableTrust(mfaCredentialOption);
+                });
+            }
 
             // Set some logging
             MDC.put(KapuaSecurityUtils.MDC_USER_ID, accessToken.getUserId().toCompactId());

@@ -45,6 +45,7 @@ import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
@@ -105,6 +106,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             CredentialsFactory credentialsFactory = locator.getFactory(CredentialsFactory.class);
             if (gwtLoginCredentials.getUsername() != null && gwtLoginCredentials.getPassword() != null) {
                 credentials = credentialsFactory.newUsernamePasswordCredentials(gwtLoginCredentials.getUsername(), gwtLoginCredentials.getPassword());
+                ((UsernamePasswordCredentials) credentials).setAuthenticationCode(gwtLoginCredentials.getAuthenticationCode());
+                ((UsernamePasswordCredentials) credentials).setTrustKey(gwtLoginCredentials.getTrustKey());
             }
 
             // Login

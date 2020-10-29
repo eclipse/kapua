@@ -241,6 +241,14 @@
                 <artifactId>sanselan</artifactId>
                 <version>${sanselan.version}</version>
             </dependency>
+
+            <!-- QR code generation library -->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>3.4.1</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

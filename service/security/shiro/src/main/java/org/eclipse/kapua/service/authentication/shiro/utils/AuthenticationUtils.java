@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.utils;
 
+import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
@@ -26,6 +28,12 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSetting
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSettingKeys;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+
 /**
  * Authentication utilities.
  * 
@@ -33,6 +41,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
  * 
  */
 public class AuthenticationUtils {
+
+    private static final String CIPHER_ALGORITHM = "AES";
 
     private AuthenticationUtils() {
     }
@@ -121,5 +131,60 @@ public class AuthenticationUtils {
         } catch (NoSuchAlgorithmException e) {
             throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e, (Object[]) null);
         }
+    }
+
+    /**
+     * Encrypt the given string using the AES algorithm provided by {@link Cipher}
+     *
+     * @param value the string to encrypt
+     * @return the encrypted string
+     */
+    public static String encryptAes(String value) {
+        try {
+            Key key = generateKey();
+            Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
+            c.init(Cipher.ENCRYPT_MODE, key);
+
+            byte[] encryptedBytes = c.doFinal(value.getBytes());
+
+            return java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(encryptedBytes);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e);
+        }
+    }
+
+    /**
+     * Decrypt the given string using the AES algorithm provided by {@link Cipher}
+     *
+     * @param encryptedValue the string to decrypt
+     * @return the decrypted string
+     */
+    public static String decryptAes(String encryptedValue) {
+        try {
+            Key key = generateKey();
+            Cipher c = Cipher.getInstance(CIPHER_ALGORITHM);
+            c.init(Cipher.DECRYPT_MODE, key);
+
+            byte[] decodedValue = java.util.Base64.getUrlDecoder().decode(encryptedValue);
+            byte[] decryptedBytes = c.doFinal(decodedValue);
+
+            return new String(decryptedBytes);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
+            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, e);
+        }
+    }
+
+    /**
+     * Constructs a secret key from the given byte array.
+     *
+     * @return a {@link SecretKeySpec} object
+     */
+    private static Key generateKey() {
+
+        // Retrieve Cipher Settings
+        KapuaCryptoSetting settings = KapuaCryptoSetting.getInstance();
+        byte[] cipherSecretKey = settings.getString(KapuaCryptoSettingKeys.CIPHER_KEY).getBytes();
+
+        return new SecretKeySpec(cipherSecretKey, CIPHER_ALGORITHM);
     }
 }

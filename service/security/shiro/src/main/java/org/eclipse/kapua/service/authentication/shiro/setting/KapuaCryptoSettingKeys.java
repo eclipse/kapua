@@ -27,6 +27,8 @@ public enum KapuaCryptoSettingKeys implements SettingKey {
     CRYPTO_SHA_ALGORITHM("crypto.sha.algorithm"),
 
     CRYPTO_SHA_SALT_LENGTH("crypto.sha.salt.length"),
+
+    CIPHER_KEY("cipher.key"),
     ;
 
     private String key;

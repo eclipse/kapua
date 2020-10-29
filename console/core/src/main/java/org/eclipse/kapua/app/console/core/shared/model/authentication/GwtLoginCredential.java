@@ -43,4 +43,26 @@ public class GwtLoginCredential extends KapuaBaseModel {
     public void setPassword(String password) {
         set("password", password);
     }
+
+    public String getAuthenticationCode() {
+        if (get("authenticationCode") != null) {
+            return KapuaSafeHtmlUtils.htmlUnescape(get("authenticationCode").toString());
+        }
+        return null;
+    }
+
+    public void setAuthenticationCode(String authenticationCode) {
+        set("authenticationCode", authenticationCode);
+    }
+
+    public String getTrustKey() {
+        if (get("trustKey") != null) {
+            return KapuaSafeHtmlUtils.htmlUnescape(get("trustKey").toString());
+        }
+        return null;
+    }
+
+    public void setTrustKey(String trustKey) {
+        set("trustKey", trustKey);
+    }
 }

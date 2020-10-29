@@ -12,6 +12,8 @@
 package org.eclipse.kapua.service.authentication;
 
 import org.eclipse.kapua.service.authentication.credential.CredentialDomain;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOptionDomain;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeDomain;
 import org.eclipse.kapua.service.authentication.token.AccessTokenDomain;
 
 public class AuthenticationDomains {
@@ -21,4 +23,8 @@ public class AuthenticationDomains {
     public static final CredentialDomain CREDENTIAL_DOMAIN = new CredentialDomain();
 
     public static final AccessTokenDomain ACCESS_TOKEN_DOMAIN = new AccessTokenDomain();
+
+    public static final MfaCredentialOptionDomain MFA_CREDENTIAL_OPTION_DOMAIN = new MfaCredentialOptionDomain();
+
+    public static final ScratchCodeDomain SCRATCH_CODE_DOMAIN = new ScratchCodeDomain();
 }

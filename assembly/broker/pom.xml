@@ -402,6 +402,12 @@
             <artifactId>cache-api</artifactId>
         </dependency>
 
+        <!-- TOTP dependencies -->
+        <dependency>
+            <groupId>com.warrenstrange</groupId>
+            <artifactId>googleauth</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
