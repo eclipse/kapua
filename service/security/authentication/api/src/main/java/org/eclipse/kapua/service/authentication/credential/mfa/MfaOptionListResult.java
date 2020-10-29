@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa;
 
-import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authentication.credential.CredentialXmlRegistry;
+import org.eclipse.kapua.model.query.KapuaListResult;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -20,11 +19,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * MfaCredentialOption query definition.
+ * {@link MfaOption} list result definition.
  */
-@XmlRootElement(name = "query")
+@XmlRootElement(name = "mfaOptionListResult")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = CredentialXmlRegistry.class, factoryMethod = "newQuery")
-public interface MfaCredentialOptionQuery extends KapuaQuery {
+@XmlType(factoryClass = MfaOptionXmlRegistry.class, factoryMethod = "newMfaOptionListResult")
+public interface MfaOptionListResult extends KapuaListResult<MfaOption> {
 
 }

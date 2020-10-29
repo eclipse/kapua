@@ -16,7 +16,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
 
 /**
- * ScratchCode query implementation.
+ * {@link ScratchCodeQuery} query implementation.
  */
 public class ScratchCodeQueryImpl extends AbstractKapuaQuery implements ScratchCodeQuery {
 

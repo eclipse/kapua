@@ -15,7 +15,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 
 import javax.persistence.AttributeOverride;
@@ -42,9 +41,9 @@ public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements Scr
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "eid", column = @Column(name = "mfa_credential_option_id", updatable = false, nullable = false))
+            @AttributeOverride(name = "eid", column = @Column(name = "mfa_option_id", updatable = false, nullable = false))
     })
-    private KapuaEid mfaCredentialOptionId;
+    private KapuaEid mfaOptionId;
 
     @Basic
     @Column(name = "scratch_code", nullable = false)
@@ -60,7 +59,7 @@ public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements Scr
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link MfaCredentialOption}.
+     * @param scopeId The scope {@link KapuaId} to set into the {@link ScratchCode}.
      */
     public ScratchCodeImpl(KapuaId scopeId) {
         super(scopeId);
@@ -69,12 +68,12 @@ public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements Scr
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link MfaCredentialOption}.
-     * @param code    The credential key to set into the {@link MfaCredentialOption}.
+     * @param scopeId The scope {@link KapuaId} to set into the {@link ScratchCode}.
+     * @param code    The code to set into the {@link ScratchCode}.
      */
-    public ScratchCodeImpl(KapuaId scopeId, KapuaId mfaCredentialOptionId, String code) {
+    public ScratchCodeImpl(KapuaId scopeId, KapuaId mfaOptionId, String code) {
         super(scopeId);
-        this.mfaCredentialOptionId = (KapuaEid) mfaCredentialOptionId;
+        this.mfaOptionId = (KapuaEid) mfaOptionId;
         this.code = code;
     }
 
@@ -87,17 +86,17 @@ public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements Scr
     public ScratchCodeImpl(ScratchCode scratchCode) throws KapuaException {
         super(scratchCode);
         setCode(scratchCode.getCode());
-        setMfaCredentialOptionId(scratchCode.getMfaCredentialOptionId());
+        setMfaOptionId(scratchCode.getMfaOptionId());
     }
 
     @Override
-    public KapuaId getMfaCredentialOptionId() {
-        return this.mfaCredentialOptionId;
+    public KapuaId getMfaOptionId() {
+        return this.mfaOptionId;
     }
 
     @Override
-    public void setMfaCredentialOptionId(KapuaId mfaCredentialOptionId) {
-        this.mfaCredentialOptionId = KapuaEid.parseKapuaId(mfaCredentialOptionId);
+    public void setMfaOptionId(KapuaId mfaOptionId) {
+        this.mfaOptionId = KapuaEid.parseKapuaId(mfaOptionId);
     }
 
     @Override

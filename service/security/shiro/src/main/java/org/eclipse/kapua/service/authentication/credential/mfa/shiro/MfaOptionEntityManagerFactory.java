@@ -19,20 +19,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Entity manager factory for the {@link MfaCredentialOptionServiceImpl} module.
+ * Entity manager factory for the {@link MfaOptionServiceImpl} module.
  */
-public class MfaCredentialOptionEntityManagerFactory extends AbstractEntityManagerFactory {
+public class MfaOptionEntityManagerFactory extends AbstractEntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-authentication";
     private static final String DATASOURCE_NAME = "kapua-dbpool";
     private static final Map<String, String> UNIQUE_CONSTRAINTS = new HashMap<>();
 
-    private static MfaCredentialOptionEntityManagerFactory instance = new MfaCredentialOptionEntityManagerFactory();
+    private static MfaOptionEntityManagerFactory instance = new MfaOptionEntityManagerFactory();
 
     /**
      * Constructs a new entity manager factory and configure it to use the user persistence unit.
      */
-    private MfaCredentialOptionEntityManagerFactory() {
+    private MfaOptionEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME, DATASOURCE_NAME, UNIQUE_CONSTRAINTS);
     }
 

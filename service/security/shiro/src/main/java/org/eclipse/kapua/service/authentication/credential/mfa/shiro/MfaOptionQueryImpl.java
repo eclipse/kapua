@@ -13,17 +13,18 @@ package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOptionQuery;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionQuery;
 
 /**
- * MfaCredentialOption query implementation.
+ * {@link MfaOption} query implementation.
  */
-public class MfaCredentialOptionQueryImpl extends AbstractKapuaQuery implements MfaCredentialOptionQuery {
+public class MfaOptionQueryImpl extends AbstractKapuaQuery implements MfaOptionQuery {
 
     /**
      * Constructor
      */
-    public MfaCredentialOptionQueryImpl() {
+    public MfaOptionQueryImpl() {
         super();
     }
 
@@ -32,7 +33,7 @@ public class MfaCredentialOptionQueryImpl extends AbstractKapuaQuery implements 
      *
      * @param scopeId
      */
-    public MfaCredentialOptionQueryImpl(KapuaId scopeId) {
+    public MfaOptionQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
     }

@@ -32,9 +32,9 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeFactor
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
-import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticationService;
+import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
-import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticationServiceLocator;
+import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.slf4j.Logger;
@@ -50,8 +50,8 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScratchCodeServiceImpl.class);
 
-    private static final MfaAuthenticationServiceLocator MFA_AUTH_SERVICE_LOCATOR = MfaAuthenticationServiceLocator.getInstance();
-    private static final MfaAuthenticationService MFA_AUTH_SERVICE = MFA_AUTH_SERVICE_LOCATOR.getMfaAuthenticationService();
+    private static final MfaAuthenticatorServiceLocator MFA_AUTH_SERVICE_LOCATOR = MfaAuthenticatorServiceLocator.getInstance();
+    private static final MfaAuthenticator MFA_AUTHENTICATOR = MFA_AUTH_SERVICE_LOCATOR.getMfaAuthenticator();
 
     public ScratchCodeServiceImpl() {
         super(ScratchCodeEntityManagerFactory.getInstance());
@@ -63,8 +63,8 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         // Argument Validation
         ArgumentValidator.notNull(scratchCodeCreator, "scratchCodeCreator");
         ArgumentValidator.notNull(scratchCodeCreator.getScopeId(), "scratchCodeCreator.scopeId");
-        ArgumentValidator.notNull(scratchCodeCreator.getMfaCredentialOptionId(), "scratchCodeCreator.mfaCredentialOptionId");
-        ArgumentValidator.notEmptyOrNull(scratchCodeCreator.getCode(), "credentialCreator.code");
+        ArgumentValidator.notNull(scratchCodeCreator.getMfaOptionId(), "scratchCodeCreator.mfaOptionId");
+        ArgumentValidator.notEmptyOrNull(scratchCodeCreator.getCode(), "scratchCodeCreator.code");
 
         //
         // Check access
@@ -107,7 +107,7 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         ArgumentValidator.notNull(scratchCode, "scratchCode");
         ArgumentValidator.notNull(scratchCode.getId(), "scratchCode.id");
         ArgumentValidator.notNull(scratchCode.getScopeId(), "scratchCode.scopeId");
-        ArgumentValidator.notNull(scratchCode.getMfaCredentialOptionId(), "scratchCode.mfaCredentialOptionId");
+        ArgumentValidator.notNull(scratchCode.getMfaOptionId(), "scratchCode.mfaOptionId");
         ArgumentValidator.notEmptyOrNull(scratchCode.getCode(), "scratchCode.code");
 
         //
@@ -205,9 +205,9 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         // Argument Validation
         ArgumentValidator.notNull(scratchCodeCreator, "scratchCodeCreator");
         ArgumentValidator.notNull(scratchCodeCreator.getScopeId(), "scratchCodeCreator.scopeId");
-        ArgumentValidator.notNull(scratchCodeCreator.getMfaCredentialOptionId(), "scratchCodeCreator.mfaCredentialOptionId");
+        ArgumentValidator.notNull(scratchCodeCreator.getMfaOptionId(), "scratchCodeCreator.mfaOptionId");
 
-        List<String> codes = MFA_AUTH_SERVICE.generateCodes();
+        List<String> codes = MFA_AUTHENTICATOR.generateCodes();
         ScratchCodeListResult scratchCodeListResult = new ScratchCodeListResultImpl();
 
         for (String code : codes) {
@@ -220,11 +220,11 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
     }
 
     @Override
-    public ScratchCodeListResult findByMfaCredentialOptionId(KapuaId scopeId, KapuaId mfaCredentialOptionId) throws KapuaException {
+    public ScratchCodeListResult findByMfaOptionId(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
-        ArgumentValidator.notNull(mfaCredentialOptionId, ScratchCodeAttributes.MFA_CREDENTIAL_OPTION_ID);
+        ArgumentValidator.notNull(mfaOptionId, ScratchCodeAttributes.MFA_OPTION_ID);
 
         //
         // Check Access
@@ -236,7 +236,7 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         //
         // Build query
         ScratchCodeQuery query = new ScratchCodeQueryImpl(scopeId);
-        QueryPredicate predicate = query.attributePredicate(ScratchCodeAttributes.MFA_CREDENTIAL_OPTION_ID, mfaCredentialOptionId);
+        QueryPredicate predicate = query.attributePredicate(ScratchCodeAttributes.MFA_OPTION_ID, mfaOptionId);
         query.setPredicate(predicate);
 
         //
@@ -244,16 +244,16 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
         return query(query);
     }
 
-    private void deleteScratchCodeByMfaCredentialOptionId(KapuaId scopeId, KapuaId mfaCredentialOptionId) throws KapuaException {
+    private void deleteScratchCodeByMfaOptionId(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         ScratchCodeFactory scratchCodeFactory = locator.getFactory(ScratchCodeFactory.class);
 
         ScratchCodeQuery query = scratchCodeFactory.newQuery(scopeId);
-        query.setPredicate(query.attributePredicate(ScratchCodeAttributes.MFA_CREDENTIAL_OPTION_ID, mfaCredentialOptionId));
+        query.setPredicate(query.attributePredicate(ScratchCodeAttributes.MFA_OPTION_ID, mfaOptionId));
 
-        ScratchCodeListResult credentialsToDelete = query(query);
+        ScratchCodeListResult scratchCodesToDelete = query(query);
 
-        for (ScratchCode c : credentialsToDelete.getItems()) {
+        for (ScratchCode c : scratchCodesToDelete.getItems()) {
             delete(c.getScopeId(), c.getId());
         }
     }
@@ -264,9 +264,9 @@ public class ScratchCodeServiceImpl extends AbstractKapuaService implements Scra
 
         ScratchCodeQuery query = scratchCodeFactory.newQuery(accountId);
 
-        ScratchCodeListResult credentialsToDelete = query(query);
+        ScratchCodeListResult scratchCodesToDelete = query(query);
 
-        for (ScratchCode c : credentialsToDelete.getItems()) {
+        for (ScratchCode c : scratchCodesToDelete.getItems()) {
             delete(c.getScopeId(), c.getId());
         }
     }

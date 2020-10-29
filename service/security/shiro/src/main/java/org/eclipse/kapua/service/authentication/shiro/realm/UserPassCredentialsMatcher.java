@@ -22,13 +22,13 @@ import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOption;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOptionService;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
-import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticationService;
-import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticationServiceLocator;
+import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
+import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
 import org.eclipse.kapua.service.user.User;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -40,10 +40,10 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-    private static final MfaCredentialOptionService MFA_CREDENTIAL_OPTION_SERVICE = LOCATOR.getService(MfaCredentialOptionService.class);
+    private static final MfaOptionService MFA_OPTION_SERVICE = LOCATOR.getService(MfaOptionService.class);
     private static final ScratchCodeService SCRATCH_CODE_SERVICE = LOCATOR.getService(ScratchCodeService.class);
-    private static final MfaAuthenticationServiceLocator MFA_AUTH_SERVICE_LOCATOR = MfaAuthenticationServiceLocator.getInstance();
-    private static final MfaAuthenticationService MFA_AUTH_SERVICE = MFA_AUTH_SERVICE_LOCATOR.getMfaAuthenticationService();
+    private static final MfaAuthenticatorServiceLocator MFA_AUTH_SERVICE_LOCATOR = MfaAuthenticatorServiceLocator.getInstance();
+    private static final MfaAuthenticator MFA_AUTHENTICATOR = MFA_AUTH_SERVICE_LOCATOR.getMfaAuthenticator();
 
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
@@ -68,40 +68,40 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         if (tokenUsername.equals(infoUser.getName()) && CredentialType.PASSWORD.equals(infoCredential.getCredentialType()) && BCrypt.checkpw(
                 tokenPassword, infoCredential.getCredentialKey())) {
 
-            if (!MFA_AUTH_SERVICE.isEnabled()) {
+            if (!MFA_AUTHENTICATOR.isEnabled()) {
                 credentialMatch = true;
                 // FIXME: if true cache token password for authentication performance improvement
             } else {
 
                 // first check if 2FA is enabled for the current user
-                MfaCredentialOption mfaCredentialOption;
+                MfaOption mfaOption;
                 try {
-                    mfaCredentialOption = KapuaSecurityUtils.doPrivileged(() -> MFA_CREDENTIAL_OPTION_SERVICE.findByUserId(infoUser.getScopeId(),
+                    mfaOption = KapuaSecurityUtils.doPrivileged(() -> MFA_OPTION_SERVICE.findByUserId(infoUser.getScopeId(),
                             infoUser.getId()));
                 } catch (AuthenticationException ae) {
                     throw ae;
                 } catch (Exception e) {
-                    throw new ShiroException("Error while finding Mfa Credential!", e);
+                    throw new ShiroException("Error while finding Mfa Option!", e);
                 }
-                if (mfaCredentialOption != null) {
+                if (mfaOption != null) {
                     if (tokenAuthenticationCode != null) {
 
                         // do 2fa match
                         boolean isCodeValid;
                         try {
-                            isCodeValid = MFA_AUTH_SERVICE.authorize(mfaCredentialOption.getMfaCredentialKey(), Integer.parseInt(tokenAuthenticationCode));
+                            isCodeValid = MFA_AUTHENTICATOR.authorize(mfaOption.getMfaSecretKey(), Integer.parseInt(tokenAuthenticationCode));
                         } catch (AuthenticationException ae) {
                             throw ae;
                         } catch (Exception e) {
-                            throw new ShiroException("Error while authenticating Mfa Credential!", e);
+                            throw new ShiroException("Error while authenticating Mfa Option!", e);
                         }
 
                         //  code is not valid, try scratch code login
                         if (!isCodeValid) {
                             ScratchCodeListResult scratchCodeListResult;
                             try {
-                                scratchCodeListResult = KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.findByMfaCredentialOptionId(
-                                        mfaCredentialOption.getScopeId(), mfaCredentialOption.getId()));
+                                scratchCodeListResult = KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.findByMfaOptionId(
+                                        mfaOption.getScopeId(), mfaOption.getId()));
                             } catch (AuthenticationException ae) {
                                 throw ae;
                             } catch (Exception e) {
@@ -109,7 +109,7 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                             }
 
                             for (ScratchCode code : scratchCodeListResult.getItems()) {
-                                if (MFA_AUTH_SERVICE.authorize(code.getCode(), tokenAuthenticationCode)) {
+                                if (MFA_AUTHENTICATOR.authorize(code.getCode(), tokenAuthenticationCode)) {
                                     isCodeValid = true;
                                     try {
                                         KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.delete(code.getScopeId(), code.getId()));
@@ -127,8 +127,8 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                         // if authentication code is null then check the trust_key
                         if (tokenTrustKey != null) {
                             // check trust machine authentication on the server side
-                            if (mfaCredentialOption.getTrustKey() != null) {
-                                if (tokenTrustKey.equals(mfaCredentialOption.getTrustKey())) {
+                            if (mfaOption.getTrustKey() != null) {
+                                if (tokenTrustKey.equals(mfaOption.getTrustKey())) {
                                     credentialMatch = true;
                                 }
                             }

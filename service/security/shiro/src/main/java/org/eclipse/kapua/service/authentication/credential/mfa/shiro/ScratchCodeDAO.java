@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 public class ScratchCodeDAO extends ServiceDAO {
 
     /**
-     * Creates and return new ScratchCode
+     * Creates and return new {@link ScratchCode}
      *
      * @param em
      * @param scratchCodeCreator
@@ -44,14 +44,14 @@ public class ScratchCodeDAO extends ServiceDAO {
 
         //
         // Create code
-        ScratchCodeImpl codeImpl = new ScratchCodeImpl(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaCredentialOptionId(), cryptedCode);
+        ScratchCodeImpl codeImpl = new ScratchCodeImpl(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId(), cryptedCode);
         //
         // Do create
         return ServiceDAO.create(em, codeImpl);
     }
 
     /**
-     * Update the provided ScratchCode
+     * Update the provided {@link ScratchCode}
      *
      * @param em
      * @param code
@@ -59,14 +59,12 @@ public class ScratchCodeDAO extends ServiceDAO {
      * @throws KapuaException
      */
     public static ScratchCode update(EntityManager em, ScratchCode code) throws KapuaException {
-        //
-        // Update credential
         ScratchCodeImpl scratchCodeImpl = (ScratchCodeImpl) code;
         return ServiceDAO.update(em, ScratchCodeImpl.class, scratchCodeImpl);
     }
 
     /**
-     * Find the ScratchCode by ScratchCode identifier
+     * Find the {@link ScratchCode} by its {@link KapuaId}
      *
      * @param em
      * @param scopeId
@@ -78,7 +76,7 @@ public class ScratchCodeDAO extends ServiceDAO {
     }
 
     /**
-     * Return the ScratchCode list matching the provided query
+     * Return the {@link ScratchCode} list matching the provided query
      *
      * @param em
      * @param scratchCodeQuery
@@ -90,7 +88,7 @@ public class ScratchCodeDAO extends ServiceDAO {
     }
 
     /**
-     * Return the ScratchCode count matching the provided query
+     * Return the {@link ScratchCode} count matching the provided query
      *
      * @param em
      * @param scratchCodeQuery
@@ -102,7 +100,7 @@ public class ScratchCodeDAO extends ServiceDAO {
     }
 
     /**
-     * Delete the ScratchCode by ScratchCode identifier
+     * Delete the {@link ScratchCode} by its {@link KapuaId}
      *
      * @param em
      * @param scopeId

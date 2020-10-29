@@ -15,7 +15,6 @@ import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.service.authentication.credential.CredentialXmlRegistry;
 import org.eclipse.kapua.service.user.User;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,21 +26,21 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 
 /**
- * MfaCredentialOption definition.<br>
- * Used to handle MfaCredentialOption needed by the various authentication algorithms.
+ * {@link MfaOption} definition.<br>
+ * Used to handle {@link MfaOption} needed by the various authentication algorithms.
  */
-@XmlRootElement(name = "mfaCredentialOption")
+@XmlRootElement(name = "mfaOption")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(propOrder = {
         "userId",
-        "mfaCredentialKey",
+        "mfaSecretKey",
         "trustKey",
         "trustExpirationDate"}, //
-        factoryClass = CredentialXmlRegistry.class, //
-        factoryMethod = "newMfaCredentialOption") //
-public interface MfaCredentialOption extends KapuaUpdatableEntity {
+        factoryClass = MfaOptionXmlRegistry.class, //
+        factoryMethod = "newMfaOption") //
+public interface MfaOption extends KapuaUpdatableEntity {
 
-    String TYPE = "mfaCredentialOption";
+    String TYPE = "mfaOption";
 
     @Override
     default String getType() {
@@ -58,26 +57,26 @@ public interface MfaCredentialOption extends KapuaUpdatableEntity {
     KapuaId getUserId();
 
     /**
-     * Sets the {@link User} id of this {@link MfaCredentialOption}
+     * Sets the {@link User} id of this {@link MfaOption}
      *
      * @param userId The {@link User} id to set.
      */
     void setUserId(KapuaId userId);
 
     /**
-     * Return the MfaCredentialOption key
+     * Return the {@link MfaOption} key
      *
      * @return
      */
-    @XmlElement(name = "mfaCredentialKey")
-    String getMfaCredentialKey();
+    @XmlElement(name = "mfaSecretKey")
+    String getMfaSecretKey();
 
     /**
-     * Sets the MfaCredentialOption key
+     * Sets the {@link MfaOption} key
      *
-     * @param mfaCredentialKey
+     * @param mfaSecretKey
      */
-    void setMfaCredentialKey(String mfaCredentialKey);
+    void setMfaSecretKey(String mfaSecretKey);
 
     /**
      * Return the trust key

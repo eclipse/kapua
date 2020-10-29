@@ -23,29 +23,29 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * ScratchCode creator service definition.
+ * {@link ScratchCode} creator service definition.
  */
 @XmlRootElement(name = "scratchCodeCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {"mfaCredentialOptionId",
+@XmlType(propOrder = {"mfaOptionId",
         "scratchCode"}, factoryClass = ScratchCodeXmlRegistry.class, factoryMethod = "newScratchCodeCreator")
 public interface ScratchCodeCreator extends KapuaEntityCreator<ScratchCode> {
 
     /**
-     * Return the MfaCredentialOption identifier
+     * Return the {@link KapuaId} of the corresponding {@link MfaOption}
      *
      * @return
      */
-    @XmlElement(name = "mfaCredentialOptionId")
+    @XmlElement(name = "mfaOptionId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    KapuaId getMfaCredentialOptionId();
+    KapuaId getMfaOptionId();
 
     /**
-     * Set the mfaCredentialOption id
+     * Set the {@link KapuaId} of the corresponding {@link MfaOption}
      *
-     * @param mfaCredentialOptionId
+     * @param mfaOptionId
      */
-    void setMfaCredentialOptionId(KapuaId mfaCredentialOptionId);
+    void setMfaOptionId(KapuaId mfaOptionId);
 
     /**
      * Return the scratch code

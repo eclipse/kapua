@@ -15,7 +15,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -33,12 +33,12 @@ import java.util.Date;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@Entity(name = "MfaCredentialOption")
-@Table(name = "atht_mfa_credential_option")
+@Entity(name = "MfaOption")
+@Table(name = "atht_mfa_option")
 /**
- * {@link MfaCredentialOption} implementation.
+ * {@link MfaOption} implementation.
  */
-public class MfaCredentialOptionImpl extends AbstractKapuaUpdatableEntity implements MfaCredentialOption {
+public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOption {
 
     private static final long serialVersionUID = -1872939877726584407L;
 
@@ -49,8 +49,8 @@ public class MfaCredentialOptionImpl extends AbstractKapuaUpdatableEntity implem
     private KapuaEid userId;
 
     @Basic
-    @Column(name = "mfa_credential_key", nullable = false)
-    private String mfaCredentialKey;
+    @Column(name = "mfa_secret_key", nullable = false)
+    private String mfaSecretKey;
 
     @Basic
     @Column(name = "trust_key")
@@ -64,44 +64,44 @@ public class MfaCredentialOptionImpl extends AbstractKapuaUpdatableEntity implem
     /**
      * Constructor.
      */
-    public MfaCredentialOptionImpl() {
+    public MfaOptionImpl() {
         super();
     }
 
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link MfaCredentialOption}.
+     * @param scopeId The scope {@link KapuaId} to set into the {@link MfaOption}.
      */
-    public MfaCredentialOptionImpl(KapuaId scopeId) {
+    public MfaOptionImpl(KapuaId scopeId) {
         super(scopeId);
     }
 
     /**
      * Constructor.
      *
-     * @param scopeId          The scope {@link KapuaId} to set into the {@link MfaCredentialOption}.
+     * @param scopeId          The scope {@link KapuaId} to set into the {@link MfaOption}.
      * @param userId           user identifier
-     * @param mfaCredentialKey The credential key to set into the {@link MfaCredentialOption}.
+     * @param mfaSecretKey     The secret key to set into the {@link MfaOption}.
      */
-    public MfaCredentialOptionImpl(KapuaId scopeId, KapuaId userId, String mfaCredentialKey) {
+    public MfaOptionImpl(KapuaId scopeId, KapuaId userId, String mfaSecretKey) {
         super(scopeId);
         this.userId = (KapuaEid) userId;
-        this.mfaCredentialKey = mfaCredentialKey;
+        this.mfaSecretKey = mfaSecretKey;
     }
 
     /**
      * Clone constructor.
      *
-     * @param credential
+     * @param mfaOption
      * @throws KapuaException
      */
-    public MfaCredentialOptionImpl(MfaCredentialOption credential) throws KapuaException {
-        super(credential);
-        setUserId(credential.getUserId());
-        setMfaCredentialKey(credential.getMfaCredentialKey());
-        setTrustKey(credential.getTrustKey());
-        setTrustExpirationDate(credential.getTrustExpirationDate());
+    public MfaOptionImpl(MfaOption mfaOption) throws KapuaException {
+        super(mfaOption);
+        setUserId(mfaOption.getUserId());
+        setMfaSecretKey(mfaOption.getMfaSecretKey());
+        setTrustKey(mfaOption.getTrustKey());
+        setTrustExpirationDate(mfaOption.getTrustExpirationDate());
     }
 
     @Override
@@ -115,13 +115,13 @@ public class MfaCredentialOptionImpl extends AbstractKapuaUpdatableEntity implem
     }
 
     @Override
-    public String getMfaCredentialKey() {
-        return mfaCredentialKey;
+    public String getMfaSecretKey() {
+        return mfaSecretKey;
     }
 
     @Override
-    public void setMfaCredentialKey(String mfaCredentialKey) {
-        this.mfaCredentialKey = mfaCredentialKey;
+    public void setMfaSecretKey(String mfaSecretKey) {
+        this.mfaSecretKey = mfaSecretKey;
     }
 
     @Override

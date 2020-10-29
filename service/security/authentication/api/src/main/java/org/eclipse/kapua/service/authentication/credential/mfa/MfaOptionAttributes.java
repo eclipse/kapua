@@ -14,11 +14,11 @@ package org.eclipse.kapua.service.authentication.credential.mfa;
 import org.eclipse.kapua.model.KapuaUpdatableEntityAttributes;
 
 /**
- * MfaCredentialOption predicates used to build query predicates.
+ * {@link MfaOption} predicates used to build query predicates.
  */
-public class MfaCredentialOptionAttributes extends KapuaUpdatableEntityAttributes {
+public class MfaOptionAttributes extends KapuaUpdatableEntityAttributes {
 
     public static final String USER_ID = "userId";
-    public static final String MFA_CREDENTIAL_KEY = "mfaCredentialKey";
+    public static final String MFA_SECRET_KEY = "mfaSecretKey";
 
 }

@@ -16,7 +16,7 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
                    logicalFilePath="KapuaDB/changelog-foreignkeys-1.3.0.xml">
 
-    <include relativeToChangelogFile="true" file="./atht_mfa_credential_option-foreignkey_delete_cascade.xml"/>
+    <include relativeToChangelogFile="true" file="./atht_mfa_option-foreignkey_delete_cascade.xml"/>
     <include relativeToChangelogFile="true" file="./atht_scratch_code-foreignkey_delete_cascade.xml"/>
 
 </databaseChangeLog>

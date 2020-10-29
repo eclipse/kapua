@@ -27,8 +27,8 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
 public class ScratchCodeFactoryImpl implements ScratchCodeFactory {
 
     @Override
-    public ScratchCodeCreatorImpl newCreator(KapuaId scopeId, KapuaId credentialId, String mfaCredentialKey) {
-        return new ScratchCodeCreatorImpl(scopeId, credentialId, mfaCredentialKey);
+    public ScratchCodeCreatorImpl newCreator(KapuaId scopeId, KapuaId mfaOptionId, String code) {
+        return new ScratchCodeCreatorImpl(scopeId, mfaOptionId, code);
     }
 
     @Override
@@ -42,8 +42,8 @@ public class ScratchCodeFactoryImpl implements ScratchCodeFactory {
     }
 
     @Override
-    public ScratchCode newScratchCode(KapuaId scopeId, KapuaId mfaCredentialOptionId, String code) {
-        return new ScratchCodeImpl(scopeId, mfaCredentialOptionId, code);
+    public ScratchCode newScratchCode(KapuaId scopeId, KapuaId mfaOptionId, String code) {
+        return new ScratchCodeImpl(scopeId, mfaOptionId, code);
     }
 
     @Override

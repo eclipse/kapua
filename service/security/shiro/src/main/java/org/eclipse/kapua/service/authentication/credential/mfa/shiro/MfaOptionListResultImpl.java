@@ -12,13 +12,13 @@
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOption;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaCredentialOptionListResult;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResult;
 
 /**
- * MfaCredentialOption list result implementation.
+ * {@link MfaOption} list result implementation.
  */
-public class MfaCredentialOptionListResultImpl extends KapuaListResultImpl<MfaCredentialOption> implements MfaCredentialOptionListResult {
+public class MfaOptionListResultImpl extends KapuaListResultImpl<MfaOption> implements MfaOptionListResult {
 
     private static final long serialVersionUID = -4204695192086365901L;
 }

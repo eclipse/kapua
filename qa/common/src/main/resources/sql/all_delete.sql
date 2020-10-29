@@ -16,7 +16,7 @@ DELETE FROM atht_credential WHERE NOT (scope_id = 1 AND id IN (1,2,3));
 
 DELETE FROM atht_access_token;
 
-DELETE FROM atht_mfa_credential_option;
+DELETE FROM atht_mfa_option;
 
 DELETE FROM atht_scratch_code;
 

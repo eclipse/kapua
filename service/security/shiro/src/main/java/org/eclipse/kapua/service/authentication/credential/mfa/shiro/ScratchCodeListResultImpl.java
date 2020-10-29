@@ -16,7 +16,7 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 
 /**
- * ScratchCode list result implementation.
+ * {@link ScratchCode} list result implementation.
  */
 public class ScratchCodeListResultImpl extends KapuaListResultImpl<ScratchCode> implements ScratchCodeListResult {
 

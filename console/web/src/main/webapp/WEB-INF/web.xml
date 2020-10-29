@@ -83,7 +83,7 @@
         <url-pattern>/triggerDefinition/*</url-pattern>
         <url-pattern>/console/*</url-pattern>
         <url-pattern>/file/*</url-pattern>
-        <url-pattern>/image/*</url-pattern>
+        <url-pattern>/qrcode/*</url-pattern>
     </filter-mapping>
 
     <!-- Default page to serve -->
@@ -455,14 +455,14 @@
         <url-pattern>/file/*</url-pattern>
     </servlet-mapping>
 
-    <!-- Image servlet for QR code generation -->
+    <!-- QRCode servlet for QR code image generation -->
     <servlet>
-        <servlet-name>ImageServlet</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.core.servlet.ImageServlet</servlet-class>
+        <servlet-name>QRCodeServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.core.servlet.QRCodeServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>ImageServlet</servlet-name>
-        <url-pattern>/image/*</url-pattern>
+        <servlet-name>QRCodeServlet</servlet-name>
+        <url-pattern>/qrcode/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
