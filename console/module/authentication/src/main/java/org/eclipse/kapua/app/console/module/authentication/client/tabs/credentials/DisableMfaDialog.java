@@ -11,15 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
-import org.eclipse.kapua.app.console.module.api.client.util.CookieUtils;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
-import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
-import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
-import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsService;
-import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsServiceAsync;
-
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
@@ -27,11 +18,20 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.util.CookieUtils;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
+import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
+import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptions;
+import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsService;
+import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsServiceAsync;
 
 /**
- *
  * Trust machine - Forget dialog
- *
  */
 public class DisableMfaDialog extends Dialog {
 
@@ -59,9 +59,8 @@ public class DisableMfaDialog extends Dialog {
         // Events
         getButtonById("yes").addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(final ButtonEvent ce) {
-                mask(MSGS.maskDisableMfa());
-                // Ok - Confirm
-                securityTokenService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+
+                gwtMfaCredentialOptionsService.find(scopeId, mfaCredentialOptionsId, selfManagement, new AsyncCallback<GwtMfaCredentialOptions>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
@@ -70,22 +69,50 @@ public class DisableMfaDialog extends Dialog {
                     }
 
                     @Override
-                    public void onSuccess(GwtXSRFToken xsrfToken) {
-                        gwtMfaCredentialOptionsService.delete(xsrfToken, scopeId, mfaCredentialOptionsId, selfManagement, new AsyncCallback<Void>() {
-//
+                    public void onSuccess(GwtMfaCredentialOptions result) {
+                        if (result != null) {
+
+                            mask(MSGS.maskDisableMfa());
+                            // Ok - Confirm
+                            securityTokenService.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
+
                                 @Override
                                 public void onFailure(Throwable caught) {
-                                    FailureHandler.handle(caught);
                                     unmask();
+                                    FailureHandler.handle(caught);
                                 }
 
                                 @Override
-                                public void onSuccess(Void result) {
-                                    CookieUtils.removeCookie(CookieUtils.KAPUA_COOKIE_TRUST + username);
-                                    unmask();
-                                    hide(ce.getButton());
+                                public void onSuccess(GwtXSRFToken xsrfToken) {
+                                    gwtMfaCredentialOptionsService.delete(xsrfToken, scopeId, mfaCredentialOptionsId, selfManagement, new AsyncCallback<Void>() {
+
+                                        @Override
+                                        public void onFailure(Throwable caught) {
+                                            FailureHandler.handle(caught);
+                                            unmask();
+                                        }
+
+                                        @Override
+                                        public void onSuccess(Void result) {
+                                            CookieUtils.removeCookie(CookieUtils.KAPUA_COOKIE_TRUST + username);
+                                            unmask();
+                                            hide(ce.getButton());
+                                        }
+                                    });
                                 }
                             });
+
+                        } else {
+                            // This 'else' branch allows handling the case where the MfaOption has already been deisabled with the UserActionMenu,
+                            // but the MfaManagementPanel has not been updated. Thus, we throw here a 'dummy' exception.
+                            try {
+                                throw new GwtKapuaException(GwtKapuaErrorCode.ENTITY_NOT_FOUND, null, "MfaOption", null);
+                            } catch (GwtKapuaException e) {
+                                unmask();
+                                hide(ce.getButton());
+                                FailureHandler.handle(e);
+                            }
+                        }
                     }
                 });
 
