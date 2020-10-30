@@ -16,9 +16,14 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 
 public class PasswordFieldValidator extends TextFieldValidator {
 
-    public PasswordFieldValidator(TextField<String> passwordField) {
+    private final int minLength;
+
+    public PasswordFieldValidator(TextField<String> passwordField, int minLength) {
         super(passwordField, FieldType.PASSWORD);
         textField.setRegex(null);
+        this.minLength = minLength;
+        this.textField.getMessages().setRegexText(this.textField.getMessages().getRegexText().replace("{0}", Integer.toString(minLength)));
+        this.textField.setToolTip(this.textField.getToolTip().getToolTipConfig().getText().replace("{0}", Integer.toString(minLength)));
     }
 
     public String validate(Field<?> field, String value) {
@@ -28,13 +33,15 @@ public class PasswordFieldValidator extends TextFieldValidator {
         boolean isDirty = textField.isDirty();
         if (!isDirty) {
             textField.setRegex(null);
+            textField.setMinLength(0);
             return null;
         }
 
         if (textFieldType.getRegex() != null) {
             textField.setRegex(textFieldType.getRegex());
         }
-
+        textField.setMinLength(minLength);
         return super.validate(field, value);
     }
+
 }

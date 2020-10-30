@@ -12,18 +12,19 @@
 package org.eclipse.kapua.service.authentication.shiro.exceptions;
 
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 
 public class AuthenticationRuntimeException extends KapuaRuntimeException {
 
-    public AuthenticationRuntimeException(AuthenticationErrorCodes code) {
+    public AuthenticationRuntimeException(KapuaAuthenticationErrorCodes code) {
         super(code);
     }
 
-    public AuthenticationRuntimeException(AuthenticationErrorCodes code, Object... arguments) {
+    public AuthenticationRuntimeException(KapuaAuthenticationErrorCodes code, Object... arguments) {
         super(code, arguments);
     }
 
-    public AuthenticationRuntimeException(AuthenticationErrorCodes code, Throwable cause, Object... arguments) {
+    public AuthenticationRuntimeException(KapuaAuthenticationErrorCodes code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);
     }
 }

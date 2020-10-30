@@ -34,5 +34,10 @@
             <artifactId>cucumber-junit</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-user-internal</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

@@ -31,6 +31,8 @@ import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldV
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator.FieldType;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.permission.CredentialSessionPermission;
+import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialService;
+import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCredentialServiceAsync;
 import org.eclipse.kapua.app.console.module.user.client.messages.ConsoleUserMessages;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser.GwtUserStatus;
@@ -80,6 +82,7 @@ public class UserAddDialog extends EntityAddEditDialog {
     private Boolean externalIdIsShown = false;
 
     private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
+    private GwtCredentialServiceAsync gwtCredentialService = GWT.create(GwtCredentialService.class);
 
     public UserAddDialog(GwtSession currentSession) {
         super(currentSession);
@@ -164,8 +167,6 @@ public class UserAddDialog extends EntityAddEditDialog {
         password.setAllowBlank(false);
         password.setName("password");
         password.setFieldLabel("* " + USER_MSGS.dialogAddFieldPassword());
-        password.setValidator(new PasswordFieldValidator(password));
-        password.setToolTip(USER_MSGS.dialogAddTooltipPassword());
         password.setPassword(true);
         password.setMaxLength(255);
 
@@ -173,17 +174,30 @@ public class UserAddDialog extends EntityAddEditDialog {
         confirmPassword.setAllowBlank(false);
         confirmPassword.setName("confirmPassword");
         confirmPassword.setFieldLabel("* " + USER_MSGS.dialogAddFieldConfirmPassword());
-        confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, password));
-        confirmPassword.setToolTip(USER_MSGS.dialogAddTooltipPassword());
         confirmPassword.setPassword(true);
         confirmPassword.setMaxLength(255);
 
         passwordTooltip = new LabelField();
-        passwordTooltip.setValue(USER_MSGS.dialogAddTooltipPassword());
         passwordTooltip.setStyleAttribute("margin-top", "-5px");
         passwordTooltip.setStyleAttribute("color", "gray");
         passwordTooltip.setStyleAttribute("font-size", "10px");
 
+        if (currentSession.hasPermission(CredentialSessionPermission.read())) {
+            gwtCredentialService.getMinPasswordLength(specificAccountId != null ? specificAccountId : currentSession.getSelectedAccountId(), new AsyncCallback<Integer>() {
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    FailureHandler.handle(caught);
+                }
+
+                @Override
+                public void onSuccess(Integer result) {
+                    password.setValidator(new PasswordFieldValidator(password, result));
+                    confirmPassword.setValidator(new ConfirmPasswordFieldValidator(confirmPassword, password, result));
+                    passwordTooltip.setValue(MSGS.dialogAddTooltipCredentialPassword(result.toString()));
+                }
+            });
+        }
         userRadioGroup.setFieldLabel(USER_MSGS.dialogAddFieldUserTypeRadioButton());
         userRadioGroup.setOrientation(Style.Orientation.HORIZONTAL);
         userRadioGroup.setSelectionRequired(true);

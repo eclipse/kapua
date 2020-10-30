@@ -12,6 +12,7 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 
 /**
  * Authentication exception.

@@ -19,9 +19,8 @@ public class PasswordUpdateFieldValidator extends PasswordFieldValidator {
     /**
      * @param passwordField
      */
-    public PasswordUpdateFieldValidator(TextField<String> passwordField) {
-        super(passwordField);
-
+    public PasswordUpdateFieldValidator(TextField<String> passwordField, int minLength) {
+        super(passwordField, minLength);
     }
 
     /*
@@ -31,12 +30,10 @@ public class PasswordUpdateFieldValidator extends PasswordFieldValidator {
      */
     @Override
     public String validate(Field<?> field, String value) {
-
         if (value == null || value.equals("")) {
             textField.setRegex(null);
             return null;
         }
-
         return super.validate(field, value);
     }
 
