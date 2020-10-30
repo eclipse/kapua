@@ -56,6 +56,14 @@ if [ -n "$KAPUA_CONSOLE_URL" ] && [ -n "$OPENID_JWT_ISSUER" ] && [ -n "$OPENID_A
    JAVA_OPTS="$JAVA_OPTS -Dsso.generic.openid.server.endpoint.token=${OPENID_TOKEN_ENDPOINT}"
 fi
 
+# Multi Factor Authentication configurations
+
+test -n "${CIPHER_KEY}" && JAVA_OPTS="${JAVA_OPTS} -Dcipher.key=${CIPHER_KEY}"
+test -n "${MFA_TIME_STEP_SIZE}" && JAVA_OPTS="${JAVA_OPTS} -Dauthentication.mfa.time.step.size=${MFA_TIME_STEP_SIZE}"
+test -n "${MFA_WINDOW_SIZE}" && JAVA_OPTS="${JAVA_OPTS} -Dauthentication.mfa.window.size=${MFA_WINDOW_SIZE}"
+test -n "${MFA_SCRATCH_CODES_NUMBER}" && JAVA_OPTS="${JAVA_OPTS} -Dauthentication.mfa.scratch.codes.number=${MFA_SCRATCH_CODES_NUMBER}"
+test -n "${MFA_CODE_DIGITS_NUMBER}" && JAVA_OPTS="${JAVA_OPTS} -Dauthentication.mfa.code.digits.number=${MFA_CODE_DIGITS_NUMBER}"
+
 export JAVA_OPTS
 
 # Continue with startup
