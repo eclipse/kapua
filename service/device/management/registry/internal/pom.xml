@@ -16,7 +16,7 @@
     <parent>
         <artifactId>kapua-device-management-registry</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>1.3.0</version>
+        <version>1.3.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>kapua-device-management-registry-internal</artifactId>
