@@ -531,17 +531,22 @@ public class MfaManagementPanel extends ContentPanel {
     private void updateUIComponents(GwtMfaCredentialOptions gwtMfaCredentialOptions) {
         boolean multiFactorAuth = gwtMfaCredentialOptions != null && gwtMfaCredentialOptions.getAuthenticationKey() != null;
         boolean hasCredentialWrite = currentSession.hasPermission(CredentialSessionPermission.write());
+        boolean hasCredentialDelete = currentSession.hasPermission(CredentialSessionPermission.delete());
 
-        // Always enabled for self management (both by being in the standalone dialog or clicking the user in the tab,
-        // otherwise only allow to disable MFA if user has credential write
-        enableMfa.setEnabled(selfManagement || (username.equals(currentSession.getUserName())) || (hasCredentialWrite && gwtMfaCredentialOptions != null));
+        // MFA is enabled, user has credential:write or is managing himself, and there's a trust key defined: enable "revoke trust devices" button
         forgetTrustedMachine.setEnabled(multiFactorAuth && (hasCredentialWrite || selfManagement) && gwtMfaCredentialOptions.getTrustKey() != null);
 
         // MFA button icon & label
         if (multiFactorAuth) {
+            // Always enabled for self management (both by being in the standalone dialog or clicking the user in the tab),
+            // otherwise only allow to disable MFA if user has credential:delete
+            enableMfa.setEnabled(selfManagement || username.equals(currentSession.getUserName()) || hasCredentialDelete);
             enableMfa.setText(MSGS.mfaButtonDisable());
             enabledText.setText(MSGS.mfaEnabled(username));
         } else {
+            // Always enabled for self management (both by being in the standalone dialog or clicking the user in the tab),
+            // otherwise only allow to enable MFA if user has credential:write
+            enableMfa.setEnabled(selfManagement || username.equals(currentSession.getUserName()) || hasCredentialWrite);
             enableMfa.setText(MSGS.mfaButtonEnable());
             enabledText.setText(MSGS.mfaDisabled(username));
         }
@@ -552,7 +557,7 @@ public class MfaManagementPanel extends ContentPanel {
         if (selfManagement) {
             selfManagementDialog.mask(message);
         } else {
-            mask(MSGS.maskEnableMfa());
+            mask(message);
         }
     }
 
