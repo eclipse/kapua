@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -23,7 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * {@link KuraAssets} list definition.
- * 
+ *
  * @since 1.0.0
  */
 public class KuraAssets {
@@ -32,9 +33,9 @@ public class KuraAssets {
 
     /**
      * Get the assets list
-     * 
+     *
      * @return
-     * 
+     *
      * @since 1.0.0
      */
     public List<KuraAsset> getAssets() {
@@ -47,9 +48,9 @@ public class KuraAssets {
 
     /**
      * Set the assets list
-     * 
+     *
      * @param assets
-     * 
+     *
      * @since 1.0.0
      */
     public void setAssets(List<KuraAsset> assets) {
@@ -58,13 +59,13 @@ public class KuraAssets {
 
     /**
      * Parse a {@link JsonNode} that represent the {@link KuraAssets} object.
-     * 
+     *
      * @param jsonKuraAssets
      *            The {@link JsonNode} to parse
      * @return The parsed {@link KuraAssets} result.
-     * 
+     *
      * @throws KapuaException
-     * 
+     *
      * @since 1.0.0
      */
     public static KuraAssets readJsonNode(JsonNode jsonKuraAssets) throws KapuaException {
@@ -82,7 +83,7 @@ public class KuraAssets {
 
     /**
      * Serialize {@code  this} {@link KuraAssets} into json using the given {@link JsonGenerator}.
-     * 
+     *
      * @param jsonGenerator
      *            The {@link JsonGenerator} to put serialized {@link KuraAssets}.
      * @throws IOException

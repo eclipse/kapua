@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * <b>NOTE:<BR>
  * with virtual topic support the destinations are removed! The message destination will be coded inside send method!
  * </b>
- * 
+ *
  * @since 1.0
  */
 public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProducerWrapper> {
@@ -63,7 +64,7 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
 
     /**
      * Create a JmsAssistantProducerPool from the given factory
-     * 
+     *
      * @param factory
      */
     protected JmsAssistantProducerPool(JmsAssistantProducerWrapperFactory factory) {
@@ -88,7 +89,7 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
 
     /**
      * Return a JmsAssistantProducerPool for the given destination
-     * 
+     *
      * @param destination
      * @return
      */

@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -41,16 +42,16 @@ public interface GwtDeviceManagementService extends RemoteService {
     //
     /**
      * Returns the packages installed on a Device.
-     * 
+     *
      * @param scopeShortId
      *            device scope id in short form
      * @param deviceShortId
      *            device id in short form
-     * 
+     *
      * @return list of installed packages installed on the selected device
-     * 
+     *
      * @throws GwtKapuaException
-     * 
+     *
      * @since 1.0.0
      */
     public List<GwtDeploymentPackage> findDevicePackages(String scopeShortId, String deviceShortId)
@@ -58,14 +59,14 @@ public interface GwtDeviceManagementService extends RemoteService {
 
     /**
      * Install a package into a device.
-     * 
+     *
      * @param xsrfToken
      *            XARF token associated with the request
      * @param gwtPackageInstallRequest
      *            the package install request
-     * 
+     *
      * @throws GwtKapuaException
-     * 
+     *
      * @since 1.0.0
      */
     public void installPackage(GwtXSRFToken xsrfToken, GwtPackageInstallRequest gwtPackageInstallRequest)
@@ -73,15 +74,15 @@ public interface GwtDeviceManagementService extends RemoteService {
 
     /**
      * Get the status of downloads operations running on the device
-     * 
+     *
      * @param scopeShortId
      *            device scope id in short form
      * @param deviceShortId
      *            device id in short form
      * @return list of current running download operation on the device
-     * 
+     *
      * @throws GwtKapuaException
-     * 
+     *
      * @since 1.0.0
      */
     public ListLoadResult<GwtPackageOperation> getDownloadOperations(String scopeShortId, String deviceShortId)
@@ -89,14 +90,14 @@ public interface GwtDeviceManagementService extends RemoteService {
 
     /**
      * Uninstalls a package from a device.
-     * 
+     *
      * @param xsrfToken
      *            XARF token associated with the request
      * @param gwtPackageUninstallRequest
      *            the package uninstall request
-     * 
+     *
      * @throws GwtKapuaException
-     * 
+     *
      * @since 1.0.0
      */
     public void uninstallPackage(GwtXSRFToken xsrfToken, GwtPackageUninstallRequest gwtPackageUninstallRequest)
@@ -107,7 +108,7 @@ public interface GwtDeviceManagementService extends RemoteService {
     //
     /**
      * Returns the configuration of a Device as the list of all the configurable components.
-     * 
+     *
      * @param device
      * @return
      */
@@ -116,7 +117,7 @@ public interface GwtDeviceManagementService extends RemoteService {
 
     /**
      * Updates the configuration of the provided component.
-     * 
+     *
      * @param device
      * @param configComponent
      */
@@ -127,7 +128,7 @@ public interface GwtDeviceManagementService extends RemoteService {
     // Snapshots
     //
     /**
-     * 
+     *
      * @param device
      * @return
      * @throws GwtKapuaException
@@ -136,7 +137,7 @@ public interface GwtDeviceManagementService extends RemoteService {
             throws GwtKapuaException;
 
     /**
-     * 
+     *
      * @param device
      * @param snapshot
      * @throws GwtKapuaException
@@ -161,7 +162,7 @@ public interface GwtDeviceManagementService extends RemoteService {
     //
     /**
      * Executes a command on a remote Device.
-     * 
+     *
      * @param xsfrToken
      * @param device
      * @param commandInput

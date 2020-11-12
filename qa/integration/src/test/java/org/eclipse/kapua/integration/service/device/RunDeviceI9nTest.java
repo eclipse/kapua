@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2017, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech
@@ -27,7 +28,7 @@ import cucumber.api.CucumberOptions;
                 "org.eclipse.kapua.service.tag.steps",
                 "org.eclipse.kapua.service.device.registry.steps"
                },
-        plugin = {"pretty", 
+        plugin = {"pretty",
                   "html:target/cucumber/DeviceI9n",
                   "json:target/DeviceI9n_cucumber.json"
                  },

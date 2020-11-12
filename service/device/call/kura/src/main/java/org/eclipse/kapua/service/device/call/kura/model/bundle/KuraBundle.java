@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -19,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Kura bundle definition.
- * 
+ *
  * @since 1.0
  *
  */
@@ -49,7 +50,7 @@ public class KuraBundle {
 
     /**
      * Set bundle name
-     * 
+     *
      * @param name
      */
     public void setName(String name) {
@@ -58,7 +59,7 @@ public class KuraBundle {
 
     /**
      * Get bundle version
-     * 
+     *
      * @return
      */
     public String getVersion() {
@@ -67,7 +68,7 @@ public class KuraBundle {
 
     /**
      * Set bundle version
-     * 
+     *
      * @param version
      */
     public void setVersion(String version) {
@@ -76,7 +77,7 @@ public class KuraBundle {
 
     /**
      * Get bundle identifier
-     * 
+     *
      * @return
      */
     public long getId() {
@@ -85,7 +86,7 @@ public class KuraBundle {
 
     /**
      * Set bundle identifier
-     * 
+     *
      * @param id
      */
     public void setId(long id) {
@@ -94,7 +95,7 @@ public class KuraBundle {
 
     /**
      * Get bundle state
-     * 
+     *
      * @return
      */
     public String getState() {
@@ -103,7 +104,7 @@ public class KuraBundle {
 
     /**
      * Set bundle state
-     * 
+     *
      * @param state
      */
     public void setState(String state) {

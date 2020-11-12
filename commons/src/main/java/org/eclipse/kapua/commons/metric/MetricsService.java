@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -22,7 +23,7 @@ import com.codahale.metrics.Timer;
 
 /**
  * Metric service definition
- * 
+ *
  * @since 1.0
  *
  */
@@ -30,7 +31,7 @@ public interface MetricsService extends KapuaService {
 
     /**
      * Get a Counter for the specified name. If the counter doesn't exist the method should create a new one counter with the specified name.
-     * 
+     *
      * @param module
      * @param component
      * @param names
@@ -40,7 +41,7 @@ public interface MetricsService extends KapuaService {
 
     /**
      * Get a Histogram for the specified name. If the histogram doesn't exist the method should create a new one histogram with the specified name.
-     * 
+     *
      * @param module
      * @param component
      * @param names
@@ -50,7 +51,7 @@ public interface MetricsService extends KapuaService {
 
     /**
      * Get a Timer for the specified name. If the timer doesn't exist the method should create a new one timer with the specified name.
-     * 
+     *
      * @param module
      * @param component
      * @param names
@@ -60,7 +61,7 @@ public interface MetricsService extends KapuaService {
 
     /**
      * Register a Gauge for the specified name. If the Gauge exists the method throws exception.
-     * 
+     *
      * @param module
      * @param component
      * @param names
@@ -71,7 +72,7 @@ public interface MetricsService extends KapuaService {
 
     /**
      * Return the MetricRegistry containing all the metrics
-     * 
+     *
      * @return MetricRegistry
      */
     public MetricRegistry getMetricRegistry();

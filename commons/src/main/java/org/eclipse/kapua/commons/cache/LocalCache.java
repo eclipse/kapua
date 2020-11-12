@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -22,12 +23,12 @@ import com.google.common.cache.CacheBuilder;
 
 /**
  * Default Kapua cache implementation
- * 
+ *
  * @param <K>
  *            keys type
  * @param <V>
  *            values type
- * 
+ *
  * @since 1.0
  */
 public class LocalCache<K, V> implements Cache<K, V> {
@@ -41,7 +42,7 @@ public class LocalCache<K, V> implements Cache<K, V> {
 
     /**
      * Construct local cache setting the provided max size, expire time and default value
-     * 
+     *
      * @param sizeMax
      *            max cache size
      * @param expireAfter
@@ -56,7 +57,7 @@ public class LocalCache<K, V> implements Cache<K, V> {
 
     /**
      * Construct local cache setting the provided max size and default value. <b>ttl is disabled, so no time based eviction will be performed.</b>
-     * 
+     *
      * @param sizeMax
      *            max cache size
      * @param defaultValue
@@ -94,7 +95,7 @@ public class LocalCache<K, V> implements Cache<K, V> {
 
     /**
      * Return the list of all the keys present in the cache
-     * 
+     *
      * @return
      */
     public List<K> getAllKeys() {

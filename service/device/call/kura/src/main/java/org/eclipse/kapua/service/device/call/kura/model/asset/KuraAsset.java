@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -23,7 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * {@link KuraAsset} definition.
- * 
+ *
  * @since 1.0.0
  */
 public class KuraAsset {
@@ -33,9 +34,9 @@ public class KuraAsset {
 
     /**
      * Gets name.
-     * 
+     *
      * @return The name.
-     * 
+     *
      * @since 1.0.0
      */
     public String getName() {
@@ -44,10 +45,10 @@ public class KuraAsset {
 
     /**
      * Set asset name
-     * 
+     *
      * @param name
      *            The name to set.
-     * 
+     *
      * @since 1.0.0
      */
     public void setName(String name) {
@@ -56,9 +57,9 @@ public class KuraAsset {
 
     /**
      * Gets the channels available for this {@link KuraAsset}
-     * 
+     *
      * @return The channels available for this {@link KuraAsset}
-     * 
+     *
      * @since 1.0.0
      */
     public List<KuraAssetChannel> getChannels() {
@@ -71,10 +72,10 @@ public class KuraAsset {
 
     /**
      * Sets the channels for this {@link KuraAsset}.
-     * 
+     *
      * @param channels
      *            The channels to set for this {@link KuraAsset}.
-     * 
+     *
      * @since 1.0.0
      */
     public void setChannels(List<KuraAssetChannel> channels) {
@@ -83,13 +84,13 @@ public class KuraAsset {
 
     /**
      * Parse a {@link JsonNode} that represent the {@link KuraAsset} object.
-     * 
+     *
      * @param jsonKuraAsset
      *            The {@link JsonNode} to parse
      * @return The parsed {@link KuraAsset} result.
-     * 
+     *
      * @throws KapuaException
-     * 
+     *
      * @since 1.0.0
      */
     public static KuraAsset readJsonNode(JsonNode jsonKuraAsset) throws KapuaException {
@@ -110,7 +111,7 @@ public class KuraAsset {
 
     /**
      * Serialize {@code  this} {@link KuraAsset} into json using the given {@link JsonGenerator}.
-     * 
+     *
      * @param jsonGenerator
      *            The {@link JsonGenerator} to put serialized {@link KuraAsset}.
      * @throws IOException

@@ -1,10 +1,11 @@
 /*******************************************************************************
  * Copyright (c) 2016, 2020 Eurotech and/or its affiliates and others
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     Eurotech - initial API and implementation
@@ -19,14 +20,14 @@ import org.eclipse.kapua.KapuaException;
  *
  * @param <M>
  *            Message to process
- * 
+ *
  * @since 1.0
  */
 public abstract class AbstractProcessor<M> extends AbstractListener {
 
     /**
      * Creates a processor with the specified name (used by component metrics name)
-     * 
+     *
      * @param name
      */
     protected AbstractProcessor(String name) {
@@ -35,7 +36,7 @@ public abstract class AbstractProcessor<M> extends AbstractListener {
 
     /**
      * Process the incoming message
-     * 
+     *
      * @param message
      *            incoming message
      * @throws KapuaException

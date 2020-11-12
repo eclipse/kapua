@@ -1,10 +1,11 @@
 ###############################################################################
 # Copyright (c) 2020 Eurotech and/or its affiliates and others
 #
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the Eclipse Public License v1.0
-# which accompanies this distribution, and is available at
-# http://www.eclipse.org/legal/epl-v10.html
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
 #     Eurotech
@@ -59,11 +60,11 @@ Feature: Role Service
      When I create a new role entity from the existing creator
      Then I find a role with name "roleName"
      And No exception was thrown
-     
+
    Scenario: Creating a role wtih 255 characters long name
      Create a role with 255 characters long name and with a regular description e.g "roleDescription".
      Kapua should not return any errors.
-     
+
      Given I prepare a role creator with name "roleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNam" and description "roleDescription"
      When I create a new role entity from the existing creator
      Then I find a role with name "roleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNameroleNam"
@@ -81,7 +82,7 @@ Feature: Role Service
    Scenario: Creating a role with 255 characters long description
      Creating a role with a valid name and with 255 character long description.
      Kapua should not return any errors.
-     
+
      Given I prepare a role creator with name "roleName" and description "roleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescriptionroleDescription"
      When I create a new role entity from the existing creator
      Then I find a role with name "roleName"
@@ -172,7 +173,7 @@ Feature: Role Service
    Scenario: Changing role's name to a valid one
      Create a role with name e.g "roleName". After that try to edit it to e.g "roleName2.
      Kapua should not return any errors.
-     
+
      Given I prepare a role creator with name "roleName" and description "roleDescription"
      When I create a new role entity from the existing creator
      And I update the role name to "roleName2"
@@ -194,7 +195,7 @@ Feature: Role Service
      Create a role with a valid name (e.g "roleName") and with a valid description (e.g "roleDescription").
      After that delete it and try to update it.
      Kapua should return an error.
-     
+
      Given I prepare a role creator with name "roleName" and description "roleDescription"
      When I create a new role entity from the existing creator
      Then I delete the role with name "roleName"
@@ -233,7 +234,7 @@ Feature: Role Service
      But I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument role.name"
      Then I update the role name with special characters "!#$%&'()=»Ç>:;<.,⁄@‹›€*ı–°·‚±Œ„‰?“‘”’ÉØ∏{}|ÆæÒÔÓÌÏÎÍÅ«"
      And An exception was thrown
-     
+
    Scenario:  Change role name so it is too short
      Create a role with a valid name (e.g "roleName") and with a valid description (e.g "roleDescription").
      After that try to change role name to "ro".
