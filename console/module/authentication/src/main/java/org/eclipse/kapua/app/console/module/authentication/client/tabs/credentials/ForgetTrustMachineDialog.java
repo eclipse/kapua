@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.CookieUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
@@ -37,6 +38,7 @@ import com.google.gwt.user.client.ui.Label;
 public class ForgetTrustMachineDialog extends Dialog {
 
     private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
+    private static final ConsoleMessages C_MSGS = GWT.create(ConsoleMessages.class);
 
     private final GwtMfaCredentialOptionsServiceAsync gwtMfaCredentialOptionsService = GWT.create(GwtMfaCredentialOptionsService.class);
     private final GwtSecurityTokenServiceAsync securityTokenService = GWT.create(GwtSecurityTokenService.class);
@@ -44,7 +46,7 @@ public class ForgetTrustMachineDialog extends Dialog {
     public ForgetTrustMachineDialog(final String username, final String scopeId, final String mfaCredentialOptionsId, final boolean selfManagement) {
         super();
 
-        setHeading(MSGS.mfaForgetTrustComputer());
+        setHeading(MSGS.mfaForgetTrustDevice());
         setButtons(Dialog.YESNO);
         setModal(true);
         setBodyBorder(true);
@@ -54,8 +56,11 @@ public class ForgetTrustMachineDialog extends Dialog {
         setClosable(false);
 
         add(new HTML("<br/>"));
-        add(new Label(MSGS.mfaForgetTrustComputerText()));
+        add(new Label(MSGS.mfaForgetTrustDeviceText()));
         add(new HTML("<br/>"));
+
+        getButtonById("yes").setText(C_MSGS.submitButton());
+        getButtonById("no").setText(C_MSGS.cancelButton());
 
         // Events
         getButtonById("yes").addSelectionListener(new SelectionListener<ButtonEvent>() {

@@ -52,6 +52,8 @@ public class MfaLoginDialog extends Dialog {
 
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
 
+    private static final String BR = "<br/>";
+
     protected TextField<String> code;
     final CheckBox trustCheckbox;
 
@@ -99,11 +101,11 @@ public class MfaLoginDialog extends Dialog {
         add(title);
 
         // MFA presentation text
-        add(new HTML("<br/>"));
+        add(new HTML(BR));
         add(new Label(MSGS.loginMfa()));
-        add(new HTML("<br/>"));
+        add(new HTML(BR));
         add(new Label(MSGS.loginMfa1()));
-        add(new HTML("<br/>"));
+        add(new HTML(BR));
 
         // MFA code
         code = new TextField<String>();
@@ -125,7 +127,8 @@ public class MfaLoginDialog extends Dialog {
     protected void onSubmit() {
         status.show();
         getButtonBar().disable();
-
+        trustCheckbox.disable();
+        code.disable();
         GwtLoginCredential credentials = new GwtLoginCredential(loginDialog.getUsername().getValue(), loginDialog.getPassword().getValue());
         credentials.setAuthenticationCode(code.getValue());
 
@@ -220,9 +223,11 @@ public class MfaLoginDialog extends Dialog {
     }
 
     private void reset() {
+        code.enable();
         code.reset();
         code.focus();
 
+        trustCheckbox.enable();
         trustCheckbox.reset();
         status.hide();
         getButtonBar().enable();

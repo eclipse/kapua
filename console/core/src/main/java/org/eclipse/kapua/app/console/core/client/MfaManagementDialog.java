@@ -20,6 +20,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials.MfaManagementPanel;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -38,7 +39,8 @@ public class MfaManagementDialog extends SimpleDialog {
     public MfaManagementDialog(GwtSession currentSession) {
         this.currentSession = currentSession;
         this.mfaManagementPanel = new MfaManagementPanel(currentSession, this);
-        DialogUtils.resizeDialog(this, 600, 550);
+        DialogUtils.resizeDialog(this, 600, 560);
+        setScrollMode(Scroll.AUTOY);
     }
 
     @Override
