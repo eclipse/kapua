@@ -17,7 +17,7 @@ package org.eclipse.kapua.service.device.management.message.notification;
  *
  * @since 1.1.0
  */
-public enum OperationStatus {
+public enum NotifyStatus {
 
     /**
      * The operation is running.
@@ -44,6 +44,8 @@ public enum OperationStatus {
      * The operation has unknown status.
      *
      * @since 1.1.0
+     * @deprecated Since 1.3.0. The {@link KapuaNotifyPayload} will never send this value.
      */
+    @Deprecated
     STALE
 }

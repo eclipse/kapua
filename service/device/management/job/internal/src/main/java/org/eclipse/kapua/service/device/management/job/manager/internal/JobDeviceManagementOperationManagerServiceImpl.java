@@ -27,7 +27,7 @@ import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperat
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
 import org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService;
-import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
@@ -70,8 +70,8 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
     private static final JobTargetFactory JOB_TARGET_FACTORY = LOCATOR.getFactory(JobTargetFactory.class);
 
     @Override
-    public void processJobTargetOnNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource, OperationStatus status) throws KapuaException {
-        if (OperationStatus.RUNNING.equals(status)) {
+    public void processJobTargetOnNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource, NotifyStatus status) throws KapuaException {
+        if (NotifyStatus.RUNNING.equals(status)) {
             return;
         }
 
@@ -163,20 +163,20 @@ public class JobDeviceManagementOperationManagerServiceImpl implements JobDevice
     }
 
     /**
-     * This fixes the double {@link OperationStatus#COMPLETED} {@link ManagementOperationNotification} set from Kura
+     * This fixes the double {@link NotifyStatus#COMPLETED} {@link ManagementOperationNotification} set from Kura
      * when performing a Device package download with the 'install' flag is set to {@code true}.
      * <p>
      * If this is not the last {@link ManagementOperationNotification} the processing must stop.
      *
      * @param deviceManagementOperation The current {@link DeviceManagementOperation} which the {@link ManagementOperationNotification} refers to.
-     * @param status                    The {@link ManagementOperationNotification} {@link OperationStatus}.
+     * @param status                    The {@link ManagementOperationNotification} {@link NotifyStatus}.
      * @param resource                  The {@link ManagementOperationNotification} resource.
      * @return {@code true} if this is the last {@link ManagementOperationNotification} for the {@link DeviceManagementOperation}, {@code false} otherwise.
      * @since 1.1.0
      */
-    private boolean checkLastNotification(DeviceManagementOperation deviceManagementOperation, OperationStatus status, String resource) {
+    private boolean checkLastNotification(DeviceManagementOperation deviceManagementOperation, NotifyStatus status, String resource) {
         boolean isLastNotification = true;
-        if (!OperationStatus.FAILED.equals(status)) {
+        if (!NotifyStatus.FAILED.equals(status)) {
             for (DeviceManagementOperationProperty ip : deviceManagementOperation.getInputProperties()) {
                 if (ip.getName().equals("kapua.package.download.install")) {
                     if (resource.equals("download")) {

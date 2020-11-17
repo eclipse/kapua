@@ -25,7 +25,7 @@ import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperat
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationCreator;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
-import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
@@ -71,9 +71,9 @@ public abstract class AbstractDevicePackageTargetProcessor extends AbstractTarge
 
         if (deviceManagementOperation.getEndedOn() != null && deviceManagementOperation.getEndedOn().before(jobDeviceManagementOperation.getCreatedOn())) {
             JobTargetStatus jobTargetStatus;
-            if (OperationStatus.COMPLETED.equals(deviceManagementOperation.getStatus())) {
+            if (NotifyStatus.COMPLETED.equals(deviceManagementOperation.getStatus())) {
                 jobTargetStatus = JobTargetStatus.NOTIFIED_COMPLETION;
-            } else if (OperationStatus.FAILED.equals(deviceManagementOperation.getStatus())) {
+            } else if (NotifyStatus.FAILED.equals(deviceManagementOperation.getStatus())) {
                 jobTargetStatus = JobTargetStatus.PROCESS_FAILED;
             } else {
                 return;

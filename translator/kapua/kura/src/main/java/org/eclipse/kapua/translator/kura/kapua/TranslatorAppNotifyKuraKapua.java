@@ -36,7 +36,7 @@ import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyChannel;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyMessage;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyPayload;
-import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageAppProperties;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
@@ -144,13 +144,13 @@ public class TranslatorAppNotifyKuraKapua extends Translator<KuraNotifyMessage, 
 
             switch (kuraNotifyPayload.getStatus()) {
                 case "IN_PROGRESS":
-                    kapuaNotifyPayload.setStatus(OperationStatus.RUNNING);
+                    kapuaNotifyPayload.setStatus(NotifyStatus.RUNNING);
                     break;
                 case "COMPLETED":
-                    kapuaNotifyPayload.setStatus(OperationStatus.COMPLETED);
+                    kapuaNotifyPayload.setStatus(NotifyStatus.COMPLETED);
                     break;
                 case "FAILED":
-                    kapuaNotifyPayload.setStatus(OperationStatus.FAILED);
+                    kapuaNotifyPayload.setStatus(NotifyStatus.FAILED);
                     break;
             }
 

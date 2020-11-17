@@ -17,7 +17,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
-import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -143,13 +143,13 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
      * @since 1.0.0
      */
     @XmlElement(name = "status")
-    OperationStatus getStatus();
+    NotifyStatus getStatus();
 
     /**
      * @param status
      * @since 1.0.0
      */
-    void setStatus(OperationStatus status);
+    void setStatus(NotifyStatus status);
 
     /**
      * @param <P>
