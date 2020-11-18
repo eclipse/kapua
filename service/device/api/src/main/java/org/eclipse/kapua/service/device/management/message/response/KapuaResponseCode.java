@@ -41,6 +41,13 @@ public enum KapuaResponseCode {
     NOT_FOUND, // 404
 
     /**
+     * Request has been sent
+     *
+     * @since 1.5.0
+     */
+    SENT,
+
+    /**
      * Internal error.
      *
      * @since 1.0.0

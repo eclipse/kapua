@@ -33,7 +33,7 @@ import javax.validation.constraints.NotNull;
 public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends DeviceResponseMessage<?, ?>> {
 
     /**
-     * Executes a 'read' request.
+     * Performs a 'read' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.
@@ -45,7 +45,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
     RS read(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes a 'create' request.
+     * Performs a 'create' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.
@@ -57,7 +57,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
     RS create(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes a 'write' request.
+     * Performs a 'write' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.
@@ -69,7 +69,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
     RS write(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes a 'delete' request.
+     * Performs a 'delete' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.
@@ -81,7 +81,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
     RS delete(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes an 'execute' request.
+     * Performs an 'execute' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.
@@ -93,7 +93,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
     RS execute(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes an 'options' request.
+     * Performs an 'options' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.

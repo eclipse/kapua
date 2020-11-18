@@ -12,10 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.message;
 
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
+
 /**
- * Request method definition.
+ * {@link KapuaMethod} definition.
  * <p>
- * This object defines the request types that can be sent to a Device.
+ * Defines the {@link KapuaRequestMessage}s types that can be sent to a Device.
  *
  * @since 1.0.0
  */
@@ -92,11 +94,26 @@ public enum KapuaMethod {
     EXEC,
 
     /**
+     * Submit request
+     *
+     * @since 1.5.0
+     */
+    SUBMIT,
+
+    /**
      * Options request.
      *
      * @since 1.0.0
      */
-    OPTIONS;
+    OPTIONS,
+
+    /**
+     * Sent request
+     *
+     * @since 1.4.0
+     */
+    SENT,
+    ;
 
     /**
      * Normalizes the {@link KapuaMethod} value to match sibling {@link KapuaMethod}s

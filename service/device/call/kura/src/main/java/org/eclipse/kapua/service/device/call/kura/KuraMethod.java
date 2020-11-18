@@ -22,37 +22,44 @@ import org.eclipse.kapua.service.device.call.DeviceMethod;
 public enum KuraMethod implements DeviceMethod {
 
     /**
-     * Get command.
+     * Get request.
      *
      * @since 1.0.0
      */
     GET,
 
     /**
-     * Delete command
+     * Delete request
      *
      * @since 1.0.0
      */
     DEL,
 
     /**
-     * Execute command
+     * Execute request
      *
      * @since 1.0.0
      */
     EXEC,
 
     /**
-     * Post command
+     * Post request
      *
      * @since 1.0.0
      */
     POST,
 
     /**
-     * Put command
+     * Put request
      *
      * @since 1.0.0
      */
-    PUT
+    PUT,
+
+    /**
+     * Submit request.
+     *
+     * @since 1.3.0
+     */
+    SUBMIT
 }

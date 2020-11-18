@@ -14,6 +14,9 @@ package org.eclipse.kapua.service.device.management.commons.call;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.KapuaIllegalNullArgumentException;
+import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.DeviceCall;
 import org.eclipse.kapua.service.device.call.DeviceCallFactory;
@@ -37,24 +40,26 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.translator.Translator;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
- * {@link DeviceCallExecutor} definition.
+ * {@link DeviceCallBuilder} definition.
  * <p>
+ * It replaces {@link DeviceCallExecutor} providing:
+ * <ul>
+ *     <li>Support for {@link KapuaMethod#SUBMIT}</li>
+ *     <li>Sending {@link KapuaRequestMessage} without waiting for {@link KapuaResponseMessage}</li>
+ *     <li>Better API layout</li>
+ * </ul>
  * Invokes and manages the {@link DeviceCall}.
  *
  * @param <C>  The {@link KapuaRequestChannel} implementation.
  * @param <P>  The {@link KapuaRequestPayload} implementation.
  * @param <RQ> The {@link KapuaRequestMessage} implementation.
  * @param <RS> The {@link KapuaResponseMessage} implementation.
- * @since 1.0.0
- * @deprecated Since 1.4.0. Please use {@link DeviceCallBuilder} which supports {@link KapuaMethod#SUBMIT} and send request without waiting for a response
+ * @since 1.4.0
  */
-@Deprecated
-public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRequestPayload, RQ extends KapuaRequestMessage<C, P>, RS extends KapuaResponseMessage> {
+public class DeviceCallBuilder<C extends KapuaRequestChannel, P extends KapuaRequestPayload, RQ extends KapuaRequestMessage<C, P>, RS extends KapuaResponseMessage> {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -64,31 +69,34 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
 
     private static final Long DEFAULT_TIMEOUT = DeviceManagementSetting.getInstance().getLong(DeviceManagementSettingKey.REQUEST_TIMEOUT);
 
-    private final RQ requestMessage;
-    private final Long timeout;
+    private RQ requestMessage;
+    private Long timeout;
 
     /**
      * Constructor.
      *
-     * @param requestMessage The {@link KapuaRequestMessage}.
-     * @since 1.0.0
+     * @since 1.4.0
      */
-    public DeviceCallExecutor(@NotNull RQ requestMessage) {
-        this(requestMessage, null);
+    private DeviceCallBuilder() {
     }
 
-    /**
-     * Constructor.
-     * <p>
-     * If the {@code timeout} parameter is not given, the default one will be used.
-     *
-     * @param requestMessage The {@link KapuaRequestMessage} to send.
-     * @param timeout        The timeout of the request.
-     * @since 1.0.0
-     */
-    public DeviceCallExecutor(@NotNull RQ requestMessage, @Nullable Long timeout) {
+    public static DeviceCallBuilder newBuilder() {
+        return new DeviceCallBuilder();
+    }
+
+    public DeviceCallBuilder withRequestMessage(RQ requestMessage) {
         this.requestMessage = requestMessage;
+        return this;
+    }
+
+    public DeviceCallBuilder withTimeout(Long timeout) {
+        this.timeout = timeout;
+        return this;
+    }
+
+    public DeviceCallBuilder withTimeoutOrDefault(Long timeout) {
         this.timeout = timeout != null ? timeout : DEFAULT_TIMEOUT;
+        return this;
     }
 
     /**
@@ -96,36 +104,15 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
      *
      * @return The {@link KapuaResponseMessage}.
      * @throws KapuaEntityNotFoundException     If the {@link Device} is not found.
+     * @throws KapuaIllegalArgumentException    If {@link KapuaRequestMessage} has not been set.
      * @throws DeviceNotConnectedException      If the {@link Device} is not {@link DeviceConnectionStatus#CONNECTED}.
      * @throws DeviceManagementTimeoutException If waiting of the {@link KapuaResponseMessage} goes on timeout.
      * @throws DeviceManagementSendException    If sending the {@link KapuaRequestMessage} goes on error.
      * @since 1.0.0
      */
-    public RS send() throws KapuaEntityNotFoundException, DeviceNotConnectedException, DeviceManagementTimeoutException, DeviceManagementSendException {
+    public RS send() throws KapuaEntityNotFoundException, KapuaIllegalArgumentException, DeviceNotConnectedException, DeviceManagementTimeoutException, DeviceManagementSendException {
 
-        //
-        // Check Device existence
-        Device device;
-        try {
-            device = DEVICE_REGISTRY_SERVICE.find(requestMessage.getScopeId(), requestMessage.getDeviceId());
-        } catch (KapuaException e) {
-            throw new DeviceManagementSendException(e, requestMessage);
-        }
-        if (device == null) {
-            throw new KapuaEntityNotFoundException(Device.TYPE, requestMessage.getDeviceId());
-        }
-
-        //
-        // Check Device Connection
-        if (device.getConnection() == null) {
-            throw new DeviceNeverConnectedException(device.getId());
-        }
-
-        //
-        // Check Device Connection status
-        if (!DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus())) {
-            throw new DeviceNotConnectedException(device.getId(), device.getConnection().getStatus());
-        }
+        deviceCallPreChecks();
 
         //
         // Translate the request from Kapua to Device
@@ -138,7 +125,7 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
 
             //
             // Send the request
-            DeviceResponseMessage<?, ?> responseMessage = null;
+            DeviceResponseMessage<?, ?> responseMessage;
             switch (requestMessage.getChannel().getMethod()) {
                 case CREATE:
                 case POST:
@@ -163,6 +150,9 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
                 case PUT:
                     responseMessage = deviceCall.write(deviceRequestMessage, timeout);
                     break;
+                case SUBMIT:
+                    responseMessage = deviceCall.submit(deviceRequestMessage, timeout);
+                    break;
                 default:
                     throw new DeviceManagementRequestBadMethodException(requestMessage.getChannel().getMethod());
             }
@@ -175,6 +165,95 @@ public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRe
             throw new DeviceManagementTimeoutException(dcte, timeout);
         } catch (Exception e) {
             throw new DeviceManagementSendException(e, requestMessage);
+        }
+    }
+
+    /**
+     * Performs the {@link DeviceCall}.
+     *
+     * @throws KapuaEntityNotFoundException  If the {@link Device} is not found.
+     * @throws KapuaIllegalArgumentException If {@link KapuaRequestMessage} has not been set.
+     * @throws DeviceNotConnectedException   If the {@link Device} is not {@link DeviceConnectionStatus#CONNECTED}.
+     * @throws DeviceManagementSendException If sending the {@link KapuaRequestMessage} goes on error.
+     * @since 1.4.0
+     */
+    public void sendAndForget() throws KapuaEntityNotFoundException, KapuaIllegalArgumentException, DeviceNotConnectedException, DeviceManagementTimeoutException, DeviceManagementSendException {
+
+        deviceCallPreChecks();
+
+        //
+        // Translate the request from Kapua to Device
+        try {
+            requestMessage.setSentOn(new Date());
+
+            DeviceCall<DeviceRequestMessage<?, ?>, DeviceResponseMessage<?, ?>> deviceCall = DEVICE_CALL_FACTORY.newDeviceCall();
+            Translator<RQ, DeviceRequestMessage<?, ?>> tKapuaToClient = Translator.getTranslatorFor(requestMessage.getRequestClass(), deviceCall.getBaseMessageClass());
+            DeviceRequestMessage<?, ?> deviceRequestMessage = tKapuaToClient.translate(requestMessage);
+
+            //
+            // Send the request
+            switch (requestMessage.getChannel().getMethod()) {
+                case CREATE:
+                case POST:
+                    deviceCall.create(deviceRequestMessage, null);
+                    break;
+                case READ:
+                case GET:
+                    deviceCall.read(deviceRequestMessage, null);
+                    break;
+                case OPTIONS:
+                    deviceCall.options(deviceRequestMessage, null);
+                    break;
+                case DELETE:
+                case DEL:
+                    deviceCall.delete(deviceRequestMessage, null);
+                    break;
+                case EXECUTE:
+                case EXEC:
+                    deviceCall.execute(deviceRequestMessage, null);
+                    break;
+                case WRITE:
+                case PUT:
+                    deviceCall.write(deviceRequestMessage, null);
+                    break;
+                case SUBMIT:
+                    deviceCall.submit(deviceRequestMessage, null);
+                    break;
+                default:
+                    throw new DeviceManagementRequestBadMethodException(requestMessage.getChannel().getMethod());
+            }
+        } catch (Exception e) {
+            throw new DeviceManagementSendException(e, requestMessage);
+        }
+    }
+
+    private void deviceCallPreChecks() throws DeviceManagementSendException, KapuaEntityNotFoundException, DeviceNotConnectedException, KapuaIllegalNullArgumentException {
+        //
+        // Validate arguments
+        ArgumentValidator.notNull(requestMessage, "requestMessage");
+
+        //
+        // Check Device existence
+        Device device;
+        try {
+            device = DEVICE_REGISTRY_SERVICE.find(requestMessage.getScopeId(), requestMessage.getDeviceId());
+        } catch (KapuaException e) {
+            throw new DeviceManagementSendException(e, requestMessage);
+        }
+        if (device == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, requestMessage.getDeviceId());
+        }
+
+        //
+        // Check Device Connection
+        if (device.getConnection() == null) {
+            throw new DeviceNeverConnectedException(device.getId());
+        }
+
+        //
+        // Check Device Connection status
+        if (!DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus())) {
+            throw new DeviceNotConnectedException(device.getId(), device.getConnection().getStatus());
         }
     }
 }
