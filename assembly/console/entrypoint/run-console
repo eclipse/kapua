@@ -31,10 +31,9 @@ if [ -n "$KEYCLOAK_URL" ] && [ -n "$KAPUA_CONSOLE_URL" ]; then
    JAVA_OPTS="$JAVA_OPTS -Dsso.keycloak.realm=${KEYCLOAK_REALM}"
 
    JAVA_OPTS="$JAVA_OPTS -Dconsole.sso.home.uri=${KAPUA_CONSOLE_URL}"
-fi
 
 # Check for generic OpenID Connect provider integration
-if [ -n "${KAPUA_CONSOLE_URL}" ] && [ -n "${OPENID_JWT_ISSUER}" ]; then
+elif [ -n "${KAPUA_CONSOLE_URL}" ] && [ -n "${OPENID_JWT_ISSUER}" ]; then
    echo "Activating OpenID Connect Generic integration..."
   echo "  OpenID Issuer: ${OPENID_JWT_ISSUER}"
   echo "  Console: ${KAPUA_CONSOLE_URL}"
