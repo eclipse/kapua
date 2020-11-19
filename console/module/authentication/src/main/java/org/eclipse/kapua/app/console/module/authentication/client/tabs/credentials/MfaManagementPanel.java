@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.client.tabs.credentials;
 
-import java.util.Date;
 import java.util.List;
 
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
@@ -169,17 +168,7 @@ public class MfaManagementPanel extends ContentPanel {
                                     // TODO Scratch Codes
                                     try {
                                         MfaManagementPanel.this.gwtMfaCredentialOptions = mfaCredentialOptions;
-                                        Date date = new Date();
-
-                                        String sb = "/qrcode/MfaQRCode?" + "username=" +
-                                                username +
-                                                "&accountName=" +
-                                                accountName +
-                                                "&key=" +
-                                                mfaCredentialOptions.getAuthenticationKey() +
-                                                "&timestamp=" +
-                                                date.getTime();
-                                        barcodeImage.setUrl(sb);
+                                        barcodeImage.setUrl("data:image/png;base64," + mfaCredentialOptions.getQRCodeImage());
                                     } catch (Exception e) {
                                         FailureHandler.handle(e);
                                         doUnmask();

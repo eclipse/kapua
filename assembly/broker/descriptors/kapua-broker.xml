@@ -223,6 +223,7 @@
                 <include>org.yaml:snakeyaml</include>
                 <include>javax.cache:cache-api</include>
                 <include>com.warrenstrange:googleauth</include>
+                <include>com.google.zxing:javase</include>
 
                 <include>${pom.groupId}:kapua-account-api</include>
                 <include>${pom.groupId}:kapua-account-internal</include>

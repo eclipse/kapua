@@ -1795,6 +1795,13 @@
                 <version>1.5.0</version>
             </dependency>
 
+            <!-- QR code generation -->
+            <dependency>
+                <groupId>com.google.zxing</groupId>
+                <artifactId>javase</artifactId>
+                <version>3.4.1</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

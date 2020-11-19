@@ -210,12 +210,6 @@
             <artifactId>org.eclipse.scada.utils</artifactId>
         </dependency>
 
-        <!-- QR code generation -->
-        <dependency>
-            <groupId>com.google.zxing</groupId>
-            <artifactId>javase</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>

@@ -108,4 +108,19 @@ public interface MfaOption extends KapuaUpdatableEntity {
      * @param trustExpirationDate the current trust expiration date
      */
     void setTrustExpirationDate(Date trustExpirationDate);
+
+    /**
+     * Gets the Mfa secret key in the form of a base64 QR code image
+     *
+     * @return the QR code image in base64
+     */
+    @XmlElement(name = "qrCodeImage")
+    String getQRCodeImage();
+
+    /**
+     * Sets the Mfa QR code image
+     *
+     * @param qrCodeImage the QR code image in base64
+     */
+    void setQRCodeImage(String qrCodeImage);
 }
