@@ -27,6 +27,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -61,6 +62,8 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
     @Column(name = "trust_expiration_date")
     protected Date trustExpirationDate;
 
+    @Transient
+    private String qrCodeImageBase64;
 
     /**
      * Constructor.
@@ -143,6 +146,16 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
     @Override
     public void setTrustExpirationDate(Date trustExpirationDate) {
         this.trustExpirationDate = trustExpirationDate;
+    }
+
+    @Override
+    public String getQRCodeImage() {
+        return qrCodeImageBase64;
+    }
+
+    @Override
+    public void setQRCodeImage(String qrCodeImage) {
+        this.qrCodeImageBase64 = qrCodeImage;
     }
 
 }

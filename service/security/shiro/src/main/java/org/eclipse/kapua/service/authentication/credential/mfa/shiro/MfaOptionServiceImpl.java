@@ -12,10 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import org.apache.commons.lang.time.DateUtils;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
@@ -26,6 +32,8 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
+import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.credential.mfa.KapuaExistingMfaOptionException;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
@@ -40,9 +48,18 @@ import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManage
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
@@ -53,11 +70,14 @@ import java.util.UUID;
 public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOptionService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MfaOptionServiceImpl.class);
-
     private static final MfaAuthenticatorServiceLocator MFA_AUTH_SERVICE_LOCATOR = MfaAuthenticatorServiceLocator.getInstance();
     private static final MfaAuthenticator MFA_AUTHENTICATOR = MFA_AUTH_SERVICE_LOCATOR.getMfaAuthenticator();
-
+    private static final int QR_CODE_SIZE = 134;  // TODO: make this configurable?
+    private static final String IMAGE_FORMAT = "png";
     private static final int TRUST_KEY_DURATION = 30; // duration of the trust key in days
+    private final KapuaLocator locator = KapuaLocator.getInstance();
+    private final AccountService accountService = locator.getService(AccountService.class);
+    private final UserService userService = locator.getService(UserService.class);
 
     public MfaOptionServiceImpl() {
         super(MfaOptionEntityManagerFactory.getInstance());
@@ -94,10 +114,16 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
             em.beginTransaction();
 
             String fullKey = MFA_AUTHENTICATOR.generateKey();
-            mfaOptionCreator = new MfaOptionCreatorImpl(mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId(),
-                    fullKey);
+            mfaOptionCreator = new MfaOptionCreatorImpl(mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId(), fullKey);
             mfaOption = MfaOptionDAO.create(em, mfaOptionCreator);
             mfaOption = MfaOptionDAO.find(em, mfaOption.getScopeId(), mfaOption.getId());
+
+            // generating base64 QR code image
+            final MfaOptionCreator mfaOptionCreatorCopy = mfaOptionCreator;
+            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(mfaOptionCreatorCopy.getScopeId()));
+            User user = KapuaSecurityUtils.doPrivileged(() -> userService.find(mfaOptionCreatorCopy.getScopeId(), mfaOptionCreatorCopy.getUserId()));
+            mfaOption.setQRCodeImage(generateQRCode(account.getName(), user.getName(), fullKey));
+
             em.commit();
         } catch (Exception pe) {
             em.rollback();
@@ -322,6 +348,57 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
         for (MfaOption c : mfaOptionsToDelete.getItems()) {
             delete(c.getScopeId(), c.getId());
         }
+    }
+
+    /**
+     * Produce a QR code in base64 format for the authenticator app
+     *
+     * @param accountName the account name of the account to which the user belongs
+     * @param username    the username
+     * @param key         the Mfa secret key in plain text
+     * @return the QR code image in base64 format
+     */
+    private String generateQRCode(String accountName, String username, String key) throws IOException, WriterException {
+        // url to qr_barcode encoding
+        StringBuilder sb = new StringBuilder();
+        sb.append("otpauth://totp/")
+                .append(username)
+                .append("@")
+                .append(accountName) // TODO: not sure that we also need the account name
+                .append("?secret=")
+                .append(key);
+
+        BitMatrix bitMatrix = new QRCodeWriter().encode(sb.toString(), BarcodeFormat.QR_CODE, QR_CODE_SIZE, QR_CODE_SIZE);
+        BufferedImage image = buildImage(bitMatrix);
+        return imgToBase64(image);
+    }
+
+    /**
+     * Converts a {@link BufferedImage} to base64 string format
+     *
+     * @param img        the {@link BufferedImage} to convert
+     * @return the base64 string representation of the input image
+     */
+    private static String imgToBase64(BufferedImage img) throws IOException {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(img, IMAGE_FORMAT, outputStream);
+        return Base64.getEncoder().encodeToString(outputStream.toByteArray());
+    }
+
+    /**
+     * Converts a {@link BitMatrix} to a {@link BufferedImage}
+     *
+     * @param bitMatrix the {@link BitMatrix} to be converted into ad image
+     * @return the {@link BufferedImage} obtained from the conversion
+     */
+    private static BufferedImage buildImage(BitMatrix bitMatrix) {
+        BufferedImage qrCodeImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
+        BufferedImage resultImage = new BufferedImage(QR_CODE_SIZE, QR_CODE_SIZE, BufferedImage.TYPE_INT_RGB);
+
+        Graphics g = resultImage.getGraphics();
+        g.drawImage(qrCodeImage, 0, 0, new Color(232, 232, 232, 255), null);
+
+        return resultImage;
     }
 
 }

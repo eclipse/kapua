@@ -61,6 +61,7 @@ public class KapuaGwtAuthenticationModelConverter {
         gwtMfaCredentialOptions.setAuthenticationKey(mfaCredentialOptions.getMfaSecretKey());
         gwtMfaCredentialOptions.setTrustKey(mfaCredentialOptions.getTrustKey());
         gwtMfaCredentialOptions.setTrustExpirationDate(mfaCredentialOptions.getTrustExpirationDate());
+        gwtMfaCredentialOptions.setQRCodeImage(mfaCredentialOptions.getQRCodeImage());
         // TODO Scratch Codes
         return gwtMfaCredentialOptions;
     }
