@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -32,6 +33,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
+import java.util.List;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -63,7 +65,10 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
     protected Date trustExpirationDate;
 
     @Transient
-    private String qrCodeImageBase64;
+    private String qrCodeImage;
+
+    @Transient
+    private List<ScratchCode> scratchCodes;
 
     /**
      * Constructor.
@@ -84,13 +89,13 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
     /**
      * Constructor.
      *
-     * @param scopeId          The scope {@link KapuaId} to set into the {@link MfaOption}.
-     * @param userId           user identifier
-     * @param mfaSecretKey     The secret key to set into the {@link MfaOption}.
+     * @param scopeId      The scope {@link KapuaId} to set into the {@link MfaOption}.
+     * @param userId       user identifier
+     * @param mfaSecretKey The secret key to set into the {@link MfaOption}.
      */
     public MfaOptionImpl(KapuaId scopeId, KapuaId userId, String mfaSecretKey) {
         super(scopeId);
-        this.userId = (KapuaEid) userId;
+        this.userId = KapuaEid.parseKapuaId(userId);
         this.mfaSecretKey = mfaSecretKey;
     }
 
@@ -150,12 +155,22 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
 
     @Override
     public String getQRCodeImage() {
-        return qrCodeImageBase64;
+        return qrCodeImage;
     }
 
     @Override
     public void setQRCodeImage(String qrCodeImage) {
-        this.qrCodeImageBase64 = qrCodeImage;
+        this.qrCodeImage = qrCodeImage;
+    }
+
+    @Override
+    public List<ScratchCode> getScratchCodes() {
+        return scratchCodes;
+    }
+
+    @Override
+    public void setScratchCodes(List<ScratchCode> scratchCodes) {
+        this.scratchCodes = scratchCodes;
     }
 
 }

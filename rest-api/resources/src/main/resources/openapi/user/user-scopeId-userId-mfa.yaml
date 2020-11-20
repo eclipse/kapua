@@ -1,0 +1,87 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - MfaOptions
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/users/{userId}/mfa:
+    get:
+      tags:
+        - User - Mfa
+      summary: Get the MfaOption of this User
+      operationId: mfaOptionGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './user.yaml#/components/parameters/userId'
+      responses:
+        200:
+          description: The details of the desired MfaOption
+          content:
+            application/json:
+              schema:
+                $ref: './user.yaml#/components/schemas/mfaOption'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      tags:
+        - User - Mfa
+      summary: Create a new MfaOption
+      operationId: mfaOptionCreate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './user.yaml#/components/parameters/userId'
+      requestBody:
+        description: An object containing the properties for the new MfaOption to be created
+        content:
+          application/json:
+            schema:
+              $ref: './user.yaml#/components/schemas/mfaOptionCreator'
+        required: true
+      responses:
+        201:
+          description: The MfaOption that has just been created
+          content:
+            application/json:
+              schema:
+                $ref: './user.yaml#/components/schemas/mfaOption'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - User - Mfa
+      summary: Delete a single MfaOption
+      operationId: mfaOptionDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './user.yaml#/components/parameters/userId'
+      responses:
+        204:
+          description: The MfaOption has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

@@ -30,6 +30,7 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
 import org.eclipse.kapua.service.user.User;
 
@@ -135,6 +136,10 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                                     credentialMatch = true;
                                 }
                             }
+                        } else {
+                            // In case both the authenticationCode and the trustKey are null, the MFA login via Rest API must be triggered.
+                            // Since this method only returns true or false, the MFA request via Rest API is handled through exceptions.
+                            throw new MfaRequiredException();
                         }
                     }
                 } else {

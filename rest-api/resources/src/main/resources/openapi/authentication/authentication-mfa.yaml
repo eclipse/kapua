@@ -1,0 +1,66 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Authentication
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /authentication/mfa:
+    post:
+      tags:
+        - Authentication
+      summary: MFA Login - User, Password and authenticationCode/trustKey
+      operationId: authenticationMfaUser
+      parameters:
+        - name: enableTrust
+          in: query
+          description: If true, the machine trust key is enabled for the MfaOption
+          schema:
+            type: boolean
+            default: false
+          required: false
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  allOf:
+                    - $ref: './authentication.yaml#/components/schemas/username'
+                password:
+                  allOf:
+                    - $ref: './authentication.yaml#/components/schemas/password'
+                authenticationCode:
+                  allOf:
+                    - $ref: './authentication.yaml#/components/schemas/authenticationCode'
+                trustKey:
+                  allOf:
+                    - $ref: './authentication.yaml#/components/schemas/trustKey'
+              required:
+                - username
+                - password
+            examples:
+              kapua-sys:
+                description: Default kapua-sys login credentials (with dummy MFA)
+                value:
+                  username: kapua-sys
+                  password: kapua-password
+                  authenticationCode: 123456
+      responses:
+        200:
+          description: The new AccessToken
+          content:
+            application/json:
+              schema:
+                $ref: './authentication.yaml#/components/schemas/accessToken'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+      security: []

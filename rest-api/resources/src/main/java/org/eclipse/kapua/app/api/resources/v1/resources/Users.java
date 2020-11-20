@@ -22,6 +22,9 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -48,6 +51,7 @@ public class Users extends AbstractKapuaResource {
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final UserService userService = locator.getService(UserService.class);
     private final UserFactory userFactory = locator.getFactory(UserFactory.class);
+    private final MfaOptionService mfaOptionService = locator.getService(MfaOptionService.class);
 
     /**
      * Gets the {@link User} list in the scope.
@@ -55,10 +59,9 @@ public class Users extends AbstractKapuaResource {
      * @param scopeId       The {@link ScopeId} in which to search results.
      * @param name          The {@link User} name in which to search results.
      * @param matchTerm     A term to be matched in at least one of the configured fields of this entity
-     * @param askTotalCount    Ask for the total count of the matched entities in the result
+     * @param askTotalCount Ask for the total count of the matched entities in the result
      * @param offset        The result set offset.
      * @param limit         The result set limit.
-     *
      * @return The {@link UserListResult} of all the users associated to the current selected scope.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
@@ -217,6 +220,94 @@ public class Users extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("userId") EntityId userId) throws KapuaException {
         userService.delete(scopeId, userId);
+
+        return returnNoContent();
+    }
+
+    /**
+     * Creates a new {@link MfaOption} for the user specified by the "userId" path parameter.
+     *
+     * @param scopeId The {@link ScopeId} in which to create the {@link MfaOption}
+     * @param userId  The {@link EntityId} of the User to which the {@link MfaOption} belongs
+     * @return The newly created {@link MfaOption} object.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.4.0
+     */
+    @POST
+    @Path("{userId}/mfa")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response createMfa(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("userId") EntityId userId,
+            MfaOptionCreator mfaOptionCreator) throws KapuaException {
+        mfaOptionCreator.setScopeId(scopeId);
+        mfaOptionCreator.setUserId(userId);
+
+        return returnCreated(mfaOptionService.create(mfaOptionCreator));
+    }
+
+    /**
+     * Returns the {@link MfaOption} of the user specified by the "userId" path parameter.
+     *
+     * @param scopeId The {@link ScopeId} of the requested {@link MfaOption}
+     * @param userId  The {@link EntityId} of the User to which the {@link MfaOption} belongs
+     * @return The requested {@link MfaOption} object.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.4.0
+     */
+    @GET
+    @Path("{userId}/mfa")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public MfaOption findMfa(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("userId") EntityId userId) throws KapuaException {
+        MfaOption mfaOption = mfaOptionService.findByUserId(scopeId, userId);
+        if (mfaOption == null) {
+            throw new KapuaEntityNotFoundException(MfaOption.TYPE, "MfaOption");  // TODO: not sure "MfaOption" it's the best value to return here
+        }
+
+        return mfaOption;
+    }
+
+    /**
+     * Deletes the {@link MfaOption} of the user specified by the "userId" path parameter.
+     *
+     * @param scopeId The {@link ScopeId} of the requested {@link MfaOption}
+     * @param userId  The {@link EntityId} of the User to which the {@link MfaOption} belongs
+     * @return HTTP 200 if operation has completed successfully.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.4.0
+     */
+    @DELETE
+    @Path("{userId}/mfa")
+    public Response deleteMfa(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("userId") EntityId userId) throws KapuaException {
+        MfaOption mfaOption = findMfa(scopeId, userId);
+        mfaOptionService.delete(scopeId, mfaOption.getId());
+
+        return returnNoContent();
+    }
+
+    /**
+     * Disable trusted machine for a given {@link MfaOption}.
+     *
+     * @param scopeId The ScopeId of the requested {@link MfaOption}.
+     * @param userId  The {@link EntityId} of the User to which the {@link MfaOption} belongs
+     * @return HTTP 200 if operation has completed successfully.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.4.0
+     */
+    @DELETE
+    @Path("{userId}/mfa/disableTrust")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response disableTrust(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("userId") EntityId userId) throws KapuaException {
+        MfaOption mfaOption = findMfa(scopeId, userId);
+        mfaOptionService.disableTrust(scopeId, mfaOption.getId());
 
         return returnNoContent();
     }

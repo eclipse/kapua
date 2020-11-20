@@ -74,7 +74,6 @@
         <url-pattern>/tag/*</url-pattern>
         <url-pattern>/credential/*</url-pattern>
         <url-pattern>/mfaOptions/*</url-pattern>
-        <url-pattern>/scratchCodes/*</url-pattern>
         <url-pattern>/asset/*</url-pattern>
         <url-pattern>/job/*</url-pattern>
         <url-pattern>/jobStep/*</url-pattern>
@@ -442,15 +441,6 @@
     <servlet-mapping>
         <servlet-name>GwtMfaCredentialOptionsService</servlet-name>
         <url-pattern>/mfaOptions/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <servlet-name>GwtScratchCodeService</servlet-name>
-        <servlet-class>org.eclipse.kapua.app.console.module.authentication.server.GwtScratchCodeServiceImpl</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>GwtScratchCodeService</servlet-name>
-        <url-pattern>/scratchCodes/*</url-pattern>
     </servlet-mapping>
 
     <servlet>

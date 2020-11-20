@@ -43,6 +43,10 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeCreator;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeFactory;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
@@ -79,6 +83,8 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final AccountService accountService = locator.getService(AccountService.class);
     private final UserService userService = locator.getService(UserService.class);
+    private final ScratchCodeService scratchCodeService = locator.getService(ScratchCodeService.class);
+    private final ScratchCodeFactory scratchCodeFactory = locator.getFactory(ScratchCodeFactory.class);
 
     private final KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
     private final int trustKeyDuration = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
@@ -129,6 +135,14 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
             mfaOption.setQRCodeImage(generateQRCode(account.getName(), user.getName(), fullKey));
 
             em.commit();
+
+            // generating scratch codes
+            final ScratchCodeCreator scratchCodeCreator = scratchCodeFactory.newCreator(mfaOptionCreator.getScopeId(), mfaOption.getId(), null);
+            final ScratchCodeListResult scratchCodeListResult = scratchCodeService.createAllScratchCodes(scratchCodeCreator);
+            mfaOption.setScratchCodes(scratchCodeListResult.getItems());
+
+            // Do post persist magic on key value (note that this is the only place in which the key is returned in plain-text)
+            mfaOption.setMfaSecretKey(fullKey);
         } catch (Exception pe) {
             em.rollback();
             throw KapuaExceptionUtils.convertPersistenceException(pe);
@@ -380,7 +394,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
     /**
      * Converts a {@link BufferedImage} to base64 string format
      *
-     * @param img        the {@link BufferedImage} to convert
+     * @param img the {@link BufferedImage} to convert
      * @return the base64 string representation of the input image
      */
     private static String imgToBase64(BufferedImage img) throws IOException {

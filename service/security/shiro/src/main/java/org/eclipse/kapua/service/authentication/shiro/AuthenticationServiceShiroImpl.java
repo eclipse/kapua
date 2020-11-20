@@ -40,6 +40,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -256,9 +257,9 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         // Parse login credentials
         AuthenticationToken shiroAuthenticationToken;
         if (loginCredentials instanceof UsernamePasswordCredentials) {
-            UsernamePasswordCredentials usernamePasswordCredentials = (UsernamePasswordCredentials)loginCredentials;
+            UsernamePasswordCredentials usernamePasswordCredentials = (UsernamePasswordCredentials) loginCredentials;
             shiroAuthenticationToken = new UsernamePasswordCredentialsImpl(usernamePasswordCredentials.getUsername(), usernamePasswordCredentials.getPassword());
-            ((UsernamePasswordCredentials)shiroAuthenticationToken).setAuthenticationCode(usernamePasswordCredentials.getAuthenticationCode());
+            ((UsernamePasswordCredentials) shiroAuthenticationToken).setAuthenticationCode(usernamePasswordCredentials.getAuthenticationCode());
         } else {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
         }
@@ -444,6 +445,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL, se, authenticationToken.getPrincipal());
         } else if (se instanceof DisabledAccountException) {
             kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL, se, authenticationToken.getPrincipal());
+        } else if (se instanceof MfaRequiredException) {
+            kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.REQUIRE_MFA_CREDENTIALS, se, authenticationToken.getPrincipal());
         } else if (se instanceof IncorrectCredentialsException) {
             if (checkIfCredentialHasJustBeenLocked(authenticationToken)) {
                 kae = new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL, se, authenticationToken.getPrincipal());

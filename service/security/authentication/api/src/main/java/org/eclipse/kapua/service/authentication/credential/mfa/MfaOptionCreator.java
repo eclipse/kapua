@@ -28,8 +28,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlRootElement(name = "mfaOptionCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {"userId",
-        "mfaSecretKey"}, factoryClass = MfaOptionXmlRegistry.class, factoryMethod = "newMfaOptionCreator")
+@XmlType(factoryClass = MfaOptionXmlRegistry.class, factoryMethod = "newMfaOptionCreator")
 public interface MfaOptionCreator extends KapuaEntityCreator<MfaOption> {
 
     /**

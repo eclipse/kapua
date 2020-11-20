@@ -63,6 +63,11 @@ public class KapuaExceptionHandler {
                 throw new GwtKapuaException(GwtKapuaErrorCode.INVALID_USERNAME_PASSWORD, t);
             }
 
+            // MFA Case
+            if (cause.equals(KapuaAuthenticationErrorCodes.REQUIRE_MFA_CREDENTIALS.name())) {
+                throw new GwtKapuaException(GwtKapuaErrorCode.REQUIRE_MFA_CODE, t);
+            }
+
             // LOCKED_USER
 
             if (cause.equals(KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL.name())) {
