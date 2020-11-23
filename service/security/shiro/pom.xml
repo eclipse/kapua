@@ -83,5 +83,12 @@
             <groupId>com.warrenstrange</groupId>
             <artifactId>googleauth</artifactId>
         </dependency>
+
+        <!-- QR code generation -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

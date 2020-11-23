@@ -63,4 +63,12 @@ public class GwtMfaCredentialOptions extends GwtUpdatableEntityModel {
         set("authenticationKey", authenticationKey);
     }
 
+    public String getQRCodeImage() {
+        return get("qrCodeImage");
+    }
+
+    public void setQRCodeImage(String qrCodeImage) {
+        set("qrCodeImage", qrCodeImage);
+    }
+
 }
