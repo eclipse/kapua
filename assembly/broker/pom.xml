@@ -412,7 +412,7 @@
         <!-- QR code generation -->
         <dependency>
             <groupId>com.google.zxing</groupId>
-            <artifactId>javase</artifactId>
+            <artifactId>core</artifactId>
         </dependency>
 
     </dependencies>
