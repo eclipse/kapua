@@ -416,7 +416,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
             if (preventChange) {
                 // ... prevent the change!
-                throw KapuaException.internalError(String.format("The configuration \"%s\" cannot be changed from an user of the account", ad.getId()));
+                throw KapuaException.internalError(String.format("The configuration \"%s\" cannot be changed by this user in this account", ad.getId()));
             }
         }
 
