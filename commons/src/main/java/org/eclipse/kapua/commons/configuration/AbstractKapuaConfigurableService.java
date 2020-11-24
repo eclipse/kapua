@@ -15,6 +15,7 @@ package org.eclipse.kapua.commons.configuration;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -201,12 +202,13 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     /**
      * Validates that the configurations is coherent. By default returns true, but an extending {@link org.eclipse.kapua.service.KapuaService}
      * may have its own logic
-     * @param ocd               The {@link KapuaTocd} containing the definition of the service configurations
-     * @param updatedProps      A {@link Map} containing the new values for the service
-     * @param scopeId           The Scope ID of the current configuration
-     * @param parentId          The ID of the Parent Scope
-     * @return                  {@literal true} if the configuration is valid, {@literal false} otherwise
-     * @throws KapuaException   When something goes wrong
+     *
+     * @param ocd          The {@link KapuaTocd} containing the definition of the service configurations
+     * @param updatedProps A {@link Map} containing the new values for the service
+     * @param scopeId      The Scope ID of the current configuration
+     * @param parentId     The ID of the Parent Scope
+     * @return {@literal true} if the configuration is valid, {@literal false} otherwise
+     * @throws KapuaException When something goes wrong
      */
     protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
         return true;
@@ -336,9 +338,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     /**
      * Process metadata to exclude disabled services and properties
      *
-     * @param metadata              A {@link KapuaTmetadata} object
-     * @param excludeDisabled       if {@literal true} exclude disabled properties from the AD object
-     * @return                      The processed {@link KapuaTocd} object
+     * @param metadata        A {@link KapuaTmetadata} object
+     * @param excludeDisabled if {@literal true} exclude disabled properties from the AD object
+     * @return The processed {@link KapuaTocd} object
      */
     private KapuaTocd processMetadata(KapuaTmetadata metadata, KapuaId scopeId, boolean excludeDisabled) {
         if (metadata != null && metadata.getOCD() != null && !metadata.getOCD().isEmpty()) {
@@ -391,18 +393,35 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        UserService userService = locator.getService(UserService.class);
+        KapuaTocd ocd = getConfigMetadata(scopeId, false);
 
+        UserService userService = locator.getService(UserService.class);
         String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
         User rootUser = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(rootUserName));
-        if (!KapuaSecurityUtils.getSession().getUserId().equals(rootUser.getId()) && KapuaSecurityUtils.getSession().getScopeId().equals(scopeId)) {
-            // Prevent someone to change his own configurations, unless it's the root user
-            throw KapuaException.internalError("An user cannot change service settings on his own account");
+
+        Map<String, Object> originalValues = getConfigValues(scopeId);
+
+        for (KapuaTad ad : ocd.getAD()) {
+            boolean allowSelfEdit = Boolean.parseBoolean(ad.getOtherAttributes().getOrDefault(new QName("allowSelfEdit"), "false"));
+
+            boolean preventChange =
+                    // if current user is not root user...
+                    !KapuaSecurityUtils.getSession().getUserId().equals(rootUser.getId()) &&
+                    // current configuration does not allow self edit...
+                    !allowSelfEdit &&
+                    // a configuration for the current logged account is about to be changed...
+                    KapuaSecurityUtils.getSession().getScopeId().equals(scopeId) &&
+                    // and the new value is different from the other one...
+                    !originalValues.get(ad.getId()).equals(values.get(ad.getId()));
+
+            if (preventChange) {
+                // ... prevent the change!
+                throw KapuaException.internalError(String.format("The configuration \"%s\" cannot be changed from an user of the account", ad.getId()));
+            }
         }
 
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
 
-        KapuaTocd ocd = getConfigMetadata(scopeId, false);
         validateConfigurations(ocd, values, scopeId, parentId);
 
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(scopeId);

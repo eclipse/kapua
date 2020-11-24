@@ -576,11 +576,4 @@ public class AccountConfigComponents extends LayoutContainer {
         }
     }
 
-    public void removeApplyAndResetButtons() {
-        if (toolBar != null) {
-            toolBar.remove(apply);
-            toolBar.remove(reset);
-            toolBar.remove(separatorToolItem);
-        }
-    }
 }
