@@ -25,6 +25,7 @@ env:
     - BUILD_OPTS="" 
     - CONFIG_OVERRIDES="-Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost"
     - MAVEN_OPTS="-Xmx4096m"
+    - DOCKER_TAG=${TRAVIS_BUILD_ID}
 
 jobs:
   include:
@@ -32,8 +33,27 @@ jobs:
     script:
     - mvn -v
     - mvn -B ${BUILD_OPTS} -DskipTests clean install
+    - mvn -f assembly/pom.xml -Pdocker
+    - echo ${DOCKER_PASSWORD} | docker login --user ${DOCKER_USERNAME} --password-stdin ${DOCKER_REGISTRY}
+    - docker tag kapua-sql ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-sql:${DOCKER_TAG}
+    - docker tag kapua-events-broker ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-events-broker:${DOCKER_TAG}
+    - docker tag kapua-broker ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-broker:${DOCKER_TAG}
+    - docker tag kapua-console ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-console:${DOCKER_TAG}
+    - docker tag kapua-api ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-api:${DOCKER_TAG}
+    - docker push ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-sql:${DOCKER_TAG}
+    - docker push ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-events-broker:${DOCKER_TAG}
+    - docker push ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-broker:${DOCKER_TAG}
+    - docker push ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-console:${DOCKER_TAG}
+    - docker push ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-api:${DOCKER_TAG}
   - stage: test
     script:
+    - echo ${DOCKER_PASSWORD} | docker login --user ${DOCKER_USERNAME} --password-stdin ${DOCKER_REGISTRY}
+    - docker pull ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-sql:${DOCKER_TAG}
+    - docker pull ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-events-broker:${DOCKER_TAG}
+    - docker pull ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-broker:${DOCKER_TAG}
+    - docker pull ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-console:${DOCKER_TAG}
+    - docker pull ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/kapua-api:${DOCKER_TAG}
+    - docker images
     - ./travis.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.options="--tags @brokerAcl" verify
   - stage: test
     script:
