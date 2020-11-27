@@ -52,7 +52,8 @@ import java.util.regex.Pattern;
 public class DatastoreUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtils.class);
-//    private static final MessageStoreService MESSAGE_STORE_SERVICE = KapuaLocator.getInstance().getService(MessageStoreService.class);
+
+    private enum IndexType { CHANNEL, CLIENT, METRIC }
 
     private DatastoreUtils() {
     }
@@ -89,6 +90,8 @@ public class DatastoreUtils {
     public static final String INDEXING_WINDOW_OPTION_WEEK = "week";
     public static final String INDEXING_WINDOW_OPTION_DAY = "day";
     public static final String INDEXING_WINDOW_OPTION_HOUR = "hour";
+
+    public static final String DATASTORE_DATE_FORMAT = "8" + KapuaDateUtils.ISO_DATE_PATTERN; // example 2017-01-24T11:22:10.999Z
 
     private static final DateTimeFormatter DATA_INDEX_FORMATTER_WEEK = new DateTimeFormatterBuilder()
             .parseDefaulting(WeekFields.ISO.dayOfWeek(), 1)
@@ -136,7 +139,7 @@ public class DatastoreUtils {
 
         // ES 5.2 FIX
         // return Base64.encodeBytes(hashCode);
-        return Base64.getEncoder().encodeToString(hashCode);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(hashCode);
     }
 
     private static String normalizeIndexName(String name) {
@@ -290,6 +293,18 @@ public class DatastoreUtils {
         return sb.toString();
     }
 
+    public static String getChannelIndexName(KapuaId scopeId) {
+        return getRegistryIndexName(scopeId, IndexType.CHANNEL);
+    }
+
+    public static String getClientIndexName(KapuaId scopeId) {
+        return getRegistryIndexName(scopeId, IndexType.CLIENT);
+    }
+
+    public static String getMetricIndexName(KapuaId scopeId) {
+        return getRegistryIndexName(scopeId, IndexType.METRIC);
+    }
+
     /**
      * Get the Kapua index name for the specified base name
      *
@@ -297,7 +312,7 @@ public class DatastoreUtils {
      * @return
      * @since 1.0.0
      */
-    public static String getRegistryIndexName(KapuaId scopeId) {
+    private static String getRegistryIndexName(KapuaId scopeId, IndexType indexType) {
         final StringBuilder sb = new StringBuilder();
         final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {
@@ -305,6 +320,7 @@ public class DatastoreUtils {
         }
         String indexName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
         sb.append(".").append(indexName);
+        sb.append("-").append(indexType.name().toLowerCase());
         return sb.toString();
     }
 
@@ -612,7 +628,7 @@ public class DatastoreUtils {
                     convertedValue = KapuaDateUtils.parseDate((String) value);
                 } catch (ParseException e) {
                     throw new IllegalArgumentException(
-                            String.format("Type [%s] cannot be converted to Date. Allowed format [%s] - Value to convert [%s]!", getValueClass(value), KapuaDateUtils.ISO_DATE_PATTERN,
+                            String.format("Type [%s] cannot be converted to Date. Allowed format [%s] - Value to convert [%s]!", getValueClass(value), DATASTORE_DATE_FORMAT,
                                     value));
                 }
             } else {

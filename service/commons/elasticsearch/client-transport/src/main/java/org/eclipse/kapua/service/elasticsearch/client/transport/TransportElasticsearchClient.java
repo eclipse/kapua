@@ -36,7 +36,6 @@ import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexAction;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
@@ -52,18 +51,19 @@ import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.LoggingDeprecationHandler;
 import org.elasticsearch.common.xcontent.NamedXContentRegistry;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.common.xcontent.XContentParser;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.index.VersionType;
-import org.elasticsearch.index.query.QueryParseContext;
 import org.elasticsearch.indices.InvalidIndexNameException;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -240,7 +240,7 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
         Object queryFetchStyle = getModelConverter().getFetchStyle(query);
         if (searchHits != null) {
             for (SearchHit searchHit : searchHits) {
-                Map<String, Object> object = searchHit.getSource();
+                Map<String, Object> object = searchHit.getSourceAsMap();
                 object.put(ModelContext.TYPE_DESCRIPTOR_KEY, new TypeDescriptor(searchHit.getIndex(), searchHit.getType()));
                 object.put(getModelContext().getIdKeyName(), searchHit.getId());
                 object.put(QueryConverter.QUERY_FETCH_STYLE_KEY, queryFetchStyle);
@@ -326,10 +326,10 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
                 }
 
                 BulkRequest bulkRequest = new BulkRequest();
-                for (SearchHit hit : scrollResponse.getHits().hits()) {
-                    DeleteRequest delete = new DeleteRequest().index(hit.index())
-                            .type(hit.type())
-                            .id(hit.id());
+                for (SearchHit hit : scrollResponse.getHits().getHits()) {
+                    DeleteRequest delete = new DeleteRequest().index(hit.getIndex())
+                            .type(hit.getType())
+                            .id(hit.getId());
                     bulkRequest.add(delete);
                 }
 
@@ -431,10 +431,9 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
             searchSourceBuilder = new SearchSourceBuilder();
             SearchModule searchModule = new SearchModule(Settings.EMPTY, false, Collections.emptyList());
             XContentParser parser = XContentFactory.xContent(XContentType.JSON)
-                    .createParser(new NamedXContentRegistry(searchModule.getNamedXContents()), content);
-            searchSourceBuilder.parseXContent(new QueryParseContext(parser));
+                    .createParser(new NamedXContentRegistry(searchModule.getNamedXContents()), LoggingDeprecationHandler.INSTANCE, content);
+            searchSourceBuilder.parseXContent(parser);
             LOG.debug("Search builder: {}", searchSourceBuilder);
-
             return searchSourceBuilder;
         } catch (Exception e) {
             throw new ClientException(ClientErrorCodes.ACTION_ERROR, e, CLIENT_QUERY_PARSING_ERROR_MSG);
@@ -447,7 +446,7 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
         final DeleteIndexRequest request = DeleteIndexAction.INSTANCE.newRequestBuilder(client).request();
         request.indices(INDEXES_ALL);
         try {
-            DeleteIndexResponse deleteResponse = client.admin().indices().delete(request).actionGet(getQueryTimeout());
+            AcknowledgedResponse deleteResponse = client.admin().indices().delete(request).actionGet(getQueryTimeout());
             if (!deleteResponse.isAcknowledged()) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
             }
@@ -463,7 +462,7 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
             request.indices(index);
             try {
                 LOG.debug("Deleting index {}", index);
-                DeleteIndexResponse deleteResponse = getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
+                AcknowledgedResponse deleteResponse = getClient().admin().indices().delete(request).actionGet(getQueryTimeout());
                 if (!deleteResponse.isAcknowledged()) {
                     throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_CANNOT_DELETE_INDEX_ERROR_MSG);
                 }
@@ -514,4 +513,5 @@ public class TransportElasticsearchClient extends AbstractElasticsearchClient<Cl
     public TimeValue getScrollTimeout() {
         return new TimeValue(MoreObjects.firstNonNull(getClientConfiguration().getRequestConfiguration().getScrollTimeout(), 60000));
     }
+
 }

@@ -198,10 +198,6 @@
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
-            <artifactId>transport-netty3-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>transport-netty4-client</artifactId>
         </dependency>
         <dependency>

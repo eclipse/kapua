@@ -109,7 +109,6 @@ public class IdsPredicateImpl extends StorablePredicateImpl implements IdsPredic
         ArrayNode idsList = newArrayNode(ids);
 
         ObjectNode idsNode = newObjectNode();
-        idsNode.set(PredicateConstants.TYPE_KEY, newTextNode(type));
         idsNode.set(PredicateConstants.VALUES_KEY, idsList);
 
         ObjectNode rootNode = newObjectNode();
