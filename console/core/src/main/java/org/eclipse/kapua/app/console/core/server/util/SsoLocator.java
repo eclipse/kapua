@@ -15,18 +15,18 @@ package org.eclipse.kapua.app.console.core.server.util;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
-import org.eclipse.kapua.sso.SingleSignOnLocator;
+import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
 
 public final class SsoLocator {
 
     private SsoLocator() {
     }
 
-    public static SingleSignOnLocator getLocator(final ServletContext context) {
+    public static OpenIDLocator getLocator(final ServletContext context) {
         return SsoLocatorListener.getLocator(context);
     }
 
-    public static SingleSignOnLocator getLocator(final ServletConfig config) {
+    public static OpenIDLocator getLocator(final ServletConfig config) {
         return SsoLocatorListener.getLocator(config.getServletContext());
     }
 }

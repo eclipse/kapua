@@ -23,7 +23,7 @@ import java.util.Optional;
  *
  * <p>
  * A registration process may be able to create a new user based on the provided
- * SSO authentication context.
+ * OpenID SSO authentication context.
  * </p>
  */
 public interface RegistrationProcessor extends AutoCloseable {

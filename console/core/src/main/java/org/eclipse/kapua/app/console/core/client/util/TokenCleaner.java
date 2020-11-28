@@ -21,14 +21,14 @@ public final class TokenCleaner {
     }
 
     /**
-     * Clear GWT state and remove SSO tokens when set (invalidates URL parameters)
+     * Clear GWT state and remove OpenID tokens when set (invalidates URL parameters)
      */
     public static void cleanToken() {
         final String url = Window.Location.createUrlBuilder()
-                .removeParameter(KapuaCloudConsole.PARAMETER_ACCESS_TOKEN)
-                .removeParameter(KapuaCloudConsole.PARAMETER_ID_TOKEN)
-                .removeParameter(KapuaCloudConsole.PARAMETER_ERROR)
-                .removeParameter(KapuaCloudConsole.PARAMETER_ERROR_DESC)
+                .removeParameter(KapuaCloudConsole.OPENID_ACCESS_TOKEN_PARAM)
+                .removeParameter(KapuaCloudConsole.OPENID_ID_TOKEN_PARAM)
+                .removeParameter(KapuaCloudConsole.OPENID_ERROR_PARAM)
+                .removeParameter(KapuaCloudConsole.OPENID_ERROR_DESC_PARAM)
                 .buildString();
 
         // side note: Window.Location.assign and reload methods force the page to reload

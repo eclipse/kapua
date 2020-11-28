@@ -46,7 +46,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String userId;
     private String userName;
     private String userDisplayName;
-    private String ssoIdToken;
+    private String openIDIdToken;
 
     private String tokenId;
 
@@ -317,12 +317,12 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         return false;
     }
 
-    public String getSsoIdToken() {
-        return ssoIdToken;
+    public String getOpenIDIdToken() {
+        return openIDIdToken;
     }
 
-    public void setSsoIdToken(String ssoIdToken) {
-        this.ssoIdToken = ssoIdToken;
+    public void setOpenIDIdToken(String openIDIdToken) {
+        this.openIDIdToken = openIDIdToken;
     }
 
     public String getTrustKey() {

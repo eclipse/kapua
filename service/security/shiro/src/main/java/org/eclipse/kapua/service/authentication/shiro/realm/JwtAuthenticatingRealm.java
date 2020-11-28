@@ -42,8 +42,8 @@ import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
-import org.eclipse.kapua.sso.JwtProcessor;
-import org.eclipse.kapua.sso.exception.SsoException;
+import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +82,7 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
         try {
             jwtProcessor = JwtProcessors.createDefault();
             setCredentialsMatcher(new JwtCredentialsMatcher(jwtProcessor));
-        } catch (SsoException se) {
+        } catch (OpenIDException se) {
             throw new ShiroException("Error while creating Jwt Processor!", se);
         }
     }

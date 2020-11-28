@@ -13,17 +13,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.utils;
 
-import org.eclipse.kapua.sso.JwtProcessor;
-import org.eclipse.kapua.sso.exception.SsoException;
-import org.eclipse.kapua.sso.provider.ProviderSingleSignOnLocator;
+import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
+import org.eclipse.kapua.plugin.sso.openid.provider.ProviderOpenIDLocator;
 
 public final class JwtProcessors {
 
     private JwtProcessors() {
     }
 
-    public static JwtProcessor createDefault() throws SsoException {
-        ProviderSingleSignOnLocator singleSignOnLocator = new ProviderSingleSignOnLocator();
+    public static JwtProcessor createDefault() throws OpenIDException {
+        ProviderOpenIDLocator singleSignOnLocator = new ProviderOpenIDLocator();
         return singleSignOnLocator.getProcessor();
     }
 }

@@ -301,7 +301,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setSelectedAccountPath(gwtAccount.getParentAccountPath());
 
         // Setting Id token
-        gwtSession.setSsoIdToken(kapuaSession.getOpenIDidToken());
+        gwtSession.setOpenIDIdToken(kapuaSession.getOpenIDidToken());
 
         MfaOption mfaOption = KapuaSecurityUtils.doPrivileged(new Callable<MfaOption>() {
 

@@ -68,7 +68,7 @@ import java.util.Set;
 /**
  * A processor which creates a simple account and user setup
  * <p>
- * This processor creates a new account based on the SSO claim and creates a single
+ * This processor creates a new account based on the OpenID SSO claim and creates a single
  * user for this account.
  * </p>
  * <p>

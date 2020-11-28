@@ -27,7 +27,7 @@ public enum UserType {
     INTERNAL,
 
     /**
-     * External user type (user credentials from SSO)
+     * External user type (user credentials from an external Single Sign-On provider)
      */
     EXTERNAL
 }

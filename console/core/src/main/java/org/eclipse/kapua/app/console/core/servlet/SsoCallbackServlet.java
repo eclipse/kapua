@@ -13,12 +13,12 @@
 package org.eclipse.kapua.app.console.core.servlet;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
+import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
-import org.eclipse.kapua.sso.SingleSignOnLocator;
-import org.eclipse.kapua.sso.exception.SsoAccessTokenException;
-import org.eclipse.kapua.sso.exception.uri.SsoIllegalUriException;
+import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDAccessTokenException;
+import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDIllegalUriException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +38,14 @@ public class SsoCallbackServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(SsoCallbackServlet.class);
 
-    private static final String ACCESS_TOKEN_PARAM = "access_token";
-    private static final String ID_TOKEN_PARAM = "id_token";
-    private static final String ERROR_PARAM = "error";
-    private static final String ERROR_DESCRIPTION_PARAM = "error_description";
+    // OpenID Connect single sign-on parameters
+    private static final String OPENID_ACCESS_TOKEN_PARAM = "access_token";
+    private static final String OPENID_ID_TOKEN_PARAM = "id_token";
+    private static final String OPENID_ERROR_PARAM = "error";
+    private static final String OPENID_ERROR_DESC_PARAM = "error_description";
     private static final String HIDDEN_SECRET = "****";
 
-    private SingleSignOnLocator locator;
+    private OpenIDLocator locator;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -79,27 +80,27 @@ public class SsoCallbackServlet extends HttpServlet {
                 final JsonObject jsonObject = locator.getService().getAccessToken(authCode, redirectUri);
 
                 // Get and clean jwks_uri property
-                final String accessToken = jsonObject.getString(ACCESS_TOKEN_PARAM);
-                final String idToken = jsonObject.getString(ID_TOKEN_PARAM);
-                redirect.addParameter(ACCESS_TOKEN_PARAM, accessToken);
-                redirect.addParameter(ID_TOKEN_PARAM, idToken);
+                final String accessToken = jsonObject.getString(OPENID_ACCESS_TOKEN_PARAM);
+                final String idToken = jsonObject.getString(OPENID_ID_TOKEN_PARAM);
+                redirect.addParameter(OPENID_ACCESS_TOKEN_PARAM, accessToken);
+                redirect.addParameter(OPENID_ID_TOKEN_PARAM, idToken);
                 resp.sendRedirect(redirect.toString());
 
-                httpReqLogger.addParameter(ACCESS_TOKEN_PARAM, HIDDEN_SECRET);
-                httpReqLogger.addParameter(ID_TOKEN_PARAM, HIDDEN_SECRET);
+                httpReqLogger.addParameter(OPENID_ACCESS_TOKEN_PARAM, HIDDEN_SECRET);
+                httpReqLogger.addParameter(OPENID_ID_TOKEN_PARAM, HIDDEN_SECRET);
                 logger.debug("Successfully sent the redirect response to {}", homeUri);
             } else {
 
                 // access_token is null, collect possible error
-                final String error = req.getParameter(ERROR_PARAM);
+                final String error = req.getParameter(OPENID_ERROR_PARAM);
                 if (error != null) {
-                    String errorDescription = req.getParameter(ERROR_DESCRIPTION_PARAM);
-                    redirect.addParameter(ERROR_PARAM, error);
-                    redirect.addParameter(ERROR_DESCRIPTION_PARAM, errorDescription);
+                    String errorDescription = req.getParameter(OPENID_ERROR_DESC_PARAM);
+                    redirect.addParameter(OPENID_ERROR_PARAM, error);
+                    redirect.addParameter(OPENID_ERROR_DESC_PARAM, errorDescription);
                     resp.sendRedirect(redirect.toString());
 
-                    httpReqLogger.addParameter(ERROR_PARAM, error);
-                    httpReqLogger.addParameter(ERROR_DESCRIPTION_PARAM, errorDescription);
+                    httpReqLogger.addParameter(OPENID_ERROR_PARAM, error);
+                    httpReqLogger.addParameter(OPENID_ERROR_DESC_PARAM, errorDescription);
                     logger.warn("Failed to log in: {}, error_description: {}", error, errorDescription);
                 } else {
                     resp.sendError(400);
@@ -107,9 +108,9 @@ public class SsoCallbackServlet extends HttpServlet {
                     logger.error("Invalid HttpServletRequest, both 'access_token' and 'error' parameters are 'null'");
                 }
             }
-        } catch (SsoIllegalUriException siue) {
+        } catch (OpenIDIllegalUriException siue) {
             throw new ServletException("Failed to get Home URI (null or empty): " + siue.getMessage(), siue);
-        } catch (SsoAccessTokenException sate) {
+        } catch (OpenIDAccessTokenException sate) {
             throw new ServletException("Failed to get access token: " + sate.getMessage(), sate);
         } catch (URISyntaxException use) {
             throw new ServletException("Failed to parse redirect URL " + homeUri + " : " + use.getMessage(), use);
