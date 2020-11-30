@@ -204,6 +204,31 @@
                                         </wait>
                                     </run>
                                 </image>
+                                <image>
+                                    <alias>kapua-sso</alias>
+                                    <name>kapua/kapua-sso:1.4.0-SNAPSHOT</name>
+                                    <run>
+                                        <ports>
+                                            <port>9090:9090</port>
+                                        </ports>
+                                        <dependsOn>
+                                            <container>broker</container>
+                                            <container>db</container>
+                                            <container>es</container>
+                                            <container>events-broker</container>
+                                        </dependsOn>
+                                        <links>
+                                            <link>broker:broker</link>
+                                            <link>db:db</link>
+                                            <link>es:es</link>
+                                            <link>events-broker:events-broker</link>
+                                        </links>
+                                        <wait>
+                                            <log>Starting service modules...DONE</log>
+                                            <time>60000</time>
+                                        </wait>
+                                    </run>
+                                </image>
                             </images>
                         </configuration>
 

@@ -32,12 +32,22 @@ import cucumber.api.java.en.Then;
 import cucumber.runtime.java.guice.ScenarioScoped;
 import org.apache.activemq.command.BrokerInfo;
 import org.eclipse.kapua.qa.common.StepData;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.config.Ini;
+import org.apache.shiro.config.IniSecurityManagerFactory;
+import org.apache.shiro.mgt.SecurityManager;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,17 +60,17 @@ public class DockerSteps {
 
     private static final String NETWORK_PREFIX = "kapua-net";
 
+    private static final StepData CONTAINER_MAP = new StepData();
+
     private DockerClient docker;
 
     private NetworkConfig networkConfig;
 
-    private String networkId;
+    private static String networkId;
 
     private boolean debug;
 
     private List<String> envVar;
-
-    private Map<String, String> containerMap;
 
     public Map<String, Integer> portMap;
 
@@ -76,7 +86,6 @@ public class DockerSteps {
     public DockerSteps(StepData stepData) {
 
         this.stepData = stepData;
-        containerMap = new HashMap<>();
     }
 
     @Given("^Enable debug$")
@@ -196,9 +205,26 @@ public class DockerSteps {
 
         docker.startContainer(containerId);
         docker.connectToNetwork(containerId, networkId);
-        containerMap.put("db", containerId);
+        CONTAINER_MAP.put("db", containerId);
         logger.info("DB container started: {}", containerId);
     }
+
+    @And("^Initialize shiro ini file$")
+    public void initShiro() {
+        // initialize shiro context for broker plugin from shiro ini file
+        final URL shiroIniUrl = getClass().getResource("/shiro.ini");
+        Ini shiroIni = new Ini();
+        try (final InputStream input = shiroIniUrl.openStream()) {
+            shiroIni.load(input);
+        } catch (IOException e) {
+            logger.error("Error in plugin installation.", e);
+            throw new SecurityException(e);
+        }
+
+        SecurityManager securityManager = new IniSecurityManagerFactory(shiroIni).getInstance();
+        SecurityUtils.setSecurityManager(securityManager);
+    }
+
 
     @And("^Start ES container with name \"(.*)\"$")
     public void startESContainer(String name) throws DockerException, InterruptedException {
@@ -209,7 +235,7 @@ public class DockerSteps {
 
         docker.startContainer(containerId);
         docker.connectToNetwork(containerId, networkId);
-        containerMap.put("es", containerId);
+        CONTAINER_MAP.put("es", containerId);
         logger.info("ES container started: {}", containerId);
     }
 
@@ -222,7 +248,7 @@ public class DockerSteps {
 
         docker.startContainer(containerId);
         docker.connectToNetwork(containerId, networkId);
-        containerMap.put(name, containerId);
+        CONTAINER_MAP.put(name, containerId);
         logger.info("EventBroker container started: {}", containerId);
     }
 
@@ -240,14 +266,52 @@ public class DockerSteps {
 
         docker.startContainer(containerId);
         docker.connectToNetwork(containerId, networkId);
-        containerMap.put(bcData.getName(), containerId);
+        CONTAINER_MAP.put(bcData.getName(), containerId);
         logger.info("Message Broker {} container started: {}", bcData.getName(), containerId);
+    }
+
+    @And("^I start the build script for sso$")
+    public void executedBuildScript() throws IOException, InterruptedException {
+        ProcessBuilder processBuilder = new ProcessBuilder();
+
+        // Process builder used to run the docker-deploy script. I have used "sso-docker-deploy.sh", because I was unable to
+        // run the process as gbarbon said in the comment of the PR.
+        processBuilder.command("bash", "-c", "sh /Users/leonardo/kapua/deployment/docker/unix/sso/sso-docker-deploy.sh");
+        try {
+            Process process = processBuilder.start();
+            StringBuilder output = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line + "\n");
+                System.out.println(output);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+//    @And("^Start Keycloak container with name \"(.*)\"$")
+    @And("^Start Keycloak container$")
+    public void startKeycloakContainer() throws DockerException, InterruptedException, IOException, URISyntaxException {
+        String name = "keycloak";
+        logger.info("Starting Keycloak container...");
+        ContainerConfig keycloakConfig = getKeycloakContainerConfig();
+        ContainerCreation keycloakContainerCreation = docker.createContainer(keycloakConfig, name);
+        String containerId = keycloakContainerCreation.id();
+
+//        docker.copyToContainer(Paths.get(getClass().getResource("/keycloak").toURI()), "keycloak", "/imports");
+        docker.startContainer(containerId);
+        docker.connectToNetwork(containerId, networkId);
+        CONTAINER_MAP.put(name, containerId);
+        logger.info("Keycloak container started: {}", containerId);
     }
 
     @Then("^Stop container with name \"(.*)\"$")
     public void stopContainer(String name) throws DockerException, InterruptedException {
         logger.info("Stopping container {}...", name);
-        String containerId = containerMap.get(name);
+        String containerId = (String) CONTAINER_MAP.get(name);
         docker.stopContainer(containerId, 3);
         logger.info("Container {} stopped.", name);
     }
@@ -255,7 +319,7 @@ public class DockerSteps {
     @Then("^Remove container with name \"(.*)\"$")
     public void removeContainer(String name) throws DockerException, InterruptedException {
         logger.info("Removing container {}...", name);
-        String containerId = containerMap.get(name);
+        String containerId = (String) CONTAINER_MAP.get(name);
         docker.removeContainer(containerId);
         logger.info("Container {} removed.", name);
     }
@@ -403,6 +467,36 @@ public class DockerSteps {
                 .hostConfig(hostConfig)
                 .exposedPorts(String.valueOf(brokerPort))
                 .image("kapua/kapua-events-broker:1.5.0-SNAPSHOT")
+                .build();
+    }
+
+    /**
+     * Creation of docker container configuration for Keycloak provider.
+     *
+     * @return Container configuration for Keycloak instance.
+     */
+    private ContainerConfig getKeycloakContainerConfig() {
+        final int keycloakPort = 8080;
+        final int hostPort = 9090;
+        final Map<String, List<PortBinding>> portBindings = new HashMap<>();
+        addHostPort("0.0.0.0", portBindings, keycloakPort, hostPort);
+        final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
+        return ContainerConfig.builder()
+                .hostConfig(hostConfig)
+                .exposedPorts(String.valueOf(keycloakPort))
+//                .cmd(
+//                        "/kapua/deployment/commons/sso/keycloak/build.sh"
+//                )
+//                .addVolume("imports")
+//                .env(
+//                        "KEYCLOAK_USER=admin",
+//                        "KEYCLOAK_PASSWORD=admin",
+//                        "KEYCLOAK_IMPORT=/imports/kapua-realm.json"
+//                )
+                .image("keycloak:sso")
+//                .cmd(
+//                        "-b 0.0.0.0 -Dkeycloak.import=/imports/kapua-realm.json"
+//                )
                 .build();
     }
 
