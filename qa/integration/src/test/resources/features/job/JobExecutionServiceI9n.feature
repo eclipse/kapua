@@ -27,10 +27,6 @@ Scenario: Regular job execution creation
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
-    And I configure the job execution service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob"
     And A regular job execution item
     Then No exception was thrown
@@ -40,10 +36,6 @@ Scenario: Update job id of an existing execution item
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    And I configure the job execution service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
@@ -57,10 +49,6 @@ Scenario: Update the end time of an existing execution item
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    And I configure the job execution service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
@@ -78,10 +66,6 @@ Scenario: Delete a job execution item
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
-    And I configure the job execution service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob"
     And A regular job execution item
     Then I delete the last job execution in the database
@@ -92,10 +76,6 @@ Scenario: Delete a job execution item twice
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    And I configure the job execution service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
@@ -113,10 +93,6 @@ Scenario: Create and count several execution items for a job
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
-    And I configure the job execution service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob"
     And A regular job execution item
     And A regular job execution item
@@ -130,10 +106,6 @@ Scenario: Query for executions of a specific job
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    And I configure the job execution service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |

@@ -1355,30 +1355,6 @@ public class JobServiceSteps extends TestBase {
     // * Job Execution Service Test steps                                                 *
     // ************************************************************************************
 
-    @When("^I configure the job execution service$")
-    public void setJobExecutionConfigurationValue(List<CucConfig> cucConfigs) throws Exception {
-
-        Map<String, Object> valueMap = new HashMap<>();
-        KapuaId accId = getCurrentScopeId();
-        KapuaId scopeId = getCurrentParentId();
-
-        for (CucConfig config : cucConfigs) {
-            config.addConfigToMap(valueMap);
-            if (config.getParentId() != null) {
-                scopeId = getKapuaId(config.getParentId());
-            }
-            if (config.getScopeId() != null) {
-                accId = getKapuaId(config.getScopeId());
-            }
-        }
-        try {
-            primeException();
-            jobExecutionService.setConfigValues(accId, scopeId, valueMap);
-        } catch (KapuaException ke) {
-            verifyException(ke);
-        }
-    }
-
     @Given("^A regular job execution item$")
     public void createARegularExecution() throws Exception {
 
