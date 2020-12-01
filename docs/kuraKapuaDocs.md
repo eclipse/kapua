@@ -1,5 +1,5 @@
 # Kura - Kapua connection
-
+commit test
 This is a short introduction into how locally connect Kura and Kapua. Although some of the info bellow can already be found on Kapua github project and Kura guides, this document contains everything needed for the connection. If you have any questions post them on [Eclipse Community Forums](https://www.eclipse.org/forums/index.php/f/340/), [Gitter chat room](https://gitter.im/eclipse/kapua) or join our [mailing list](https://dev.eclipse.org/mailman/listinfo/kapua-dev). In case you find any issues, [report them](https://github.com/eclipse/kapua/issues). Also if you want to contribute, [this is the place to start!](https://github.com/eclipse/kapua).
 
 ## Usefull links
