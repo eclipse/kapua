@@ -32,6 +32,7 @@
         <module>jbatch</module>
 
         <module>extra</module>
+        <module>app</module>
     </modules>
 
 </project>

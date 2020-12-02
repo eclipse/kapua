@@ -23,10 +23,9 @@ services:
       - 5672:5672
   broker:
     image: kapua/kapua-broker:${IMAGE_VERSION}
-    expose:
-      - 1893
     ports:
       - 1883:1883
+      - 1893:1893
       - 8883:8883
       - 61614:61614
     depends_on:
