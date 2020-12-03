@@ -39,6 +39,8 @@ import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.core.CountRequest;
+import org.elasticsearch.client.core.CountResponse;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.elasticsearch.client.indices.GetMappingsRequest;
@@ -64,9 +66,6 @@ public class Migrator {
     private static final int DEFAULT_INDEX_SHARD_NUMBER = 1;
     private static final int DEFAULT_INDEX_REPLICA_NUMBER = 0;
 
-    private static final String CLIENT = "client";
-    private static final String CHANNEL = "channel";
-    private static final String METRIC = "metric";
     private static final String FORMAT = "format";
     private static final String DOC = "_doc";
 
@@ -185,13 +184,20 @@ public class Migrator {
 
         ReindexRequest firstReindexRequest = new ReindexRequest()
                 .setSourceIndices(index)
-                .setSourceDocTypes(mappingMetaData.type())
+                .setSourceDocTypes("message")
                 .setDestIndex(tmpIndex)
-                .setDestDocType(DOC);
+                .setDestDocType(DOC)
+                .setRefresh(true);
 
+        CountRequest countRequest = new CountRequest(index);
+        CountResponse countResponse = client.count(countRequest, RequestOptions.DEFAULT);
+        long originalDocsCount = countResponse.getCount();
+
+        LOGGER.info("Found {} documents on {} before reindexing", originalDocsCount, index);
         LOGGER.debug(REINDEXING, index, tmpIndex);
 
         client.reindex(firstReindexRequest, RequestOptions.DEFAULT);
+        LOGGER.info("Reindex complete: {}", tmpIndex);
 
         DeleteIndexRequest firstDeleteIndexRequest = new DeleteIndexRequest(index);
 
@@ -211,11 +217,17 @@ public class Migrator {
                 .setSourceIndices(tmpIndex)
                 .setSourceDocTypes(DOC)
                 .setDestIndex(index)
-                .setDestDocType(DOC);
+                .setDestDocType(DOC)
+                .setRefresh(true);
 
         LOGGER.debug(REINDEXING, tmpIndex, index);
 
         client.reindex(secondReindexRequest, RequestOptions.DEFAULT);
+        LOGGER.info("Reindex complete: {}", tmpIndex);
+
+        countResponse = client.count(countRequest, RequestOptions.DEFAULT);
+        long newDocsCount = countResponse.getCount();
+        LOGGER.info("Found {} documents on {} after reindexing", newDocsCount, index);
 
         DeleteIndexRequest secondDeleteIndexRequest = new DeleteIndexRequest(tmpIndex);
 
@@ -264,7 +276,8 @@ public class Migrator {
                 .setSourceDocTypes(mappingTypeName)
                 .setScript(new Script(ScriptType.INLINE, "painless", "ctx._id = ctx._id.replace('/', '_').replace('+','-').replace('=', '')", Collections.emptyMap()))
                 .setDestIndex(index + "-" + mappingTypeName)
-                .setDestDocType(DOC);
+                .setDestDocType(DOC)
+                .setRefresh(true);
         client.reindex(request, RequestOptions.DEFAULT);
         LOGGER.debug("Reindex complete for index {}", index);
     }
