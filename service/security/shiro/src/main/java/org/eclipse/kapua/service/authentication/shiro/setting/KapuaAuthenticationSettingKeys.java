@@ -56,7 +56,8 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_MFA_TIME_STEP_SIZE("authentication.mfa.time.step.size"),  // the time step size, in seconds, min > 0
     AUTHENTICATION_MFA_WINDOW_SIZE("authentication.mfa.window.size"),  // number of windows of size timeStepSizeInMillis checked during the validation, min > 0
     AUTHENTICATION_MFA_SCRATCH_CODES_NUMBER("authentication.mfa.scratch.codes.number"),  // number of scratch codes, min is 0 max is 1000
-    AUTHENTICATION_MFA_CODE_DIGITS_NUMBER("authentication.mfa.code.digits.number");  // the number of digits in the generated code, min is 6 max is 8
+    AUTHENTICATION_MFA_CODE_DIGITS_NUMBER("authentication.mfa.code.digits.number"),  // the number of digits in the generated code, min is 6 max is 8
+    AUTHENTICATION_MFA_TRUST_KEY_DURATION("authentication.mfa.trust.key.duration");  // machine trust key duration in days
 
     private String key;
 
@@ -64,6 +65,7 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
         this.key = key;
     }
 
+    @Override
     public String key() {
         return key;
     }
