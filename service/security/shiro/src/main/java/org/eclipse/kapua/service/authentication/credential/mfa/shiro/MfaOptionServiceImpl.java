@@ -46,6 +46,8 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
@@ -74,10 +76,12 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
     private static final MfaAuthenticator MFA_AUTHENTICATOR = MFA_AUTH_SERVICE_LOCATOR.getMfaAuthenticator();
     private static final int QR_CODE_SIZE = 134;  // TODO: make this configurable?
     private static final String IMAGE_FORMAT = "png";
-    private static final int TRUST_KEY_DURATION = 30; // duration of the trust key in days
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final AccountService accountService = locator.getService(AccountService.class);
     private final UserService userService = locator.getService(UserService.class);
+
+    private final KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
+    private final int trustKeyDuration = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
 
     public MfaOptionServiceImpl() {
         super(MfaOptionEntityManagerFactory.getInstance());
@@ -278,7 +282,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
         }
 
         Date expirationDate = new Date(System.currentTimeMillis());
-        expirationDate = DateUtils.addDays(expirationDate, TRUST_KEY_DURATION);
+        expirationDate = DateUtils.addDays(expirationDate, trustKeyDuration);
 
         mfaOption.setTrustKey(trustKey);
         mfaOption.setTrustExpirationDate(expirationDate);

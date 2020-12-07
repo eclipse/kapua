@@ -42,3 +42,4 @@ The following variables control the Multi Factor Authentication feature of the W
 | MFA_WINDOW_SIZE | 3 | Number of windows of size timeStepSizeInMillis checked during the MFA validation (min > 0). |
 | MFA_SCRATCH_CODES_NUMBER | 5 | Number of MFA scratch codes (min is 0 max is 1000). |
 | MFA_CODE_DIGITS_NUMBER | 6 | Number of digits in the generated MFA code (min is 6 max is 8). |
+| MFA_TRUST_KEY_DURATION | 30 | Machine trust key duration (in days). |
