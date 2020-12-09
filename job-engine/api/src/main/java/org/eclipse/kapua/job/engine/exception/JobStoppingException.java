@@ -10,13 +10,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.jbatch.exception;
+package org.eclipse.kapua.job.engine.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
 
-public class JobRunningException extends JobEngineException {
+public class JobStoppingException extends JobEngineException {
 
-    public JobRunningException(KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_RUNNING, scopeId, jobId);
+    public JobStoppingException(Throwable t, KapuaId scopeId, KapuaId jobId) {
+        this(t, scopeId, jobId, null);
+    }
+
+    public JobStoppingException(Throwable t, KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
+        super(KapuaJobEngineErrorCodes.JOB_STOPPING, t, scopeId, jobId, jobExecutionId);
     }
 }

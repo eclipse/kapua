@@ -10,14 +10,18 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.jbatch.exception;
+package org.eclipse.kapua.job.engine.exception;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.id.KapuaId;
 
 /**
  * @since 1.0.0
  */
 public abstract class JobEngineException extends KapuaException {
+
+    private final KapuaId scopeId;
+    private final KapuaId jobId;
 
     private static final String ERROR_MESSAGES_BUNDLE_NAME = "job-engine-service-error-messages";
 
@@ -25,21 +29,23 @@ public abstract class JobEngineException extends KapuaException {
      * @since 1.0.0
      */
     protected JobEngineException(KapuaJobEngineErrorCodes code) {
-        super(code);
+        this(code, null, null, null);
     }
 
     /**
      * @since 1.0.0
      */
-    protected JobEngineException(KapuaJobEngineErrorCodes code, Object... arguments) {
-        super(code, arguments);
+    protected JobEngineException(KapuaJobEngineErrorCodes code, KapuaId scopeId, KapuaId jobId, Object... arguments) {
+        this(code, null, scopeId, jobId, arguments);
     }
 
     /**
      * @since 1.0.0
      */
-    protected JobEngineException(KapuaJobEngineErrorCodes code, Throwable cause, Object... arguments) {
-        super(code, cause, arguments);
+    protected JobEngineException(KapuaJobEngineErrorCodes code, Throwable cause, KapuaId scopeId, KapuaId jobId, Object... arguments) {
+        super(code, cause, scopeId, jobId, arguments);
+        this.scopeId = scopeId;
+        this.jobId = jobId;
     }
 
     /**
@@ -48,5 +54,13 @@ public abstract class JobEngineException extends KapuaException {
     @Override
     protected String getKapuaErrorMessagesBundle() {
         return ERROR_MESSAGES_BUNDLE_NAME;
+    }
+
+    public KapuaId getScopeId() {
+        return scopeId;
+    }
+
+    public KapuaId getJobId() {
+        return jobId;
     }
 }

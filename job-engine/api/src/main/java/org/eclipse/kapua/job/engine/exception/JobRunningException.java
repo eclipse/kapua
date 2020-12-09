@@ -10,13 +10,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.jbatch.exception;
+package org.eclipse.kapua.job.engine.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
 
-public class JobMissingStepException extends JobEngineException {
+public class JobRunningException extends JobEngineException {
 
-    public JobMissingStepException(KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_STEP_MISSING, scopeId, jobId);
+    public JobRunningException(KapuaId scopeId, KapuaId jobId) {
+        super(KapuaJobEngineErrorCodes.JOB_RUNNING, scopeId, jobId);
     }
 }
