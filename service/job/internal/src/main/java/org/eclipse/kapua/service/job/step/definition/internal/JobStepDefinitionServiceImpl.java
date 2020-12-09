@@ -13,7 +13,7 @@ package org.eclipse.kapua.service.job.step.definition.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
@@ -25,9 +25,7 @@ import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 
 import javax.inject.Inject;
@@ -40,10 +38,7 @@ import javax.inject.Inject;
  * @since 1.0
  */
 @KapuaProvider
-public class JobStepDefinitionServiceImpl
-        extends
-        AbstractKapuaConfigurableResourceLimitedService<JobStepDefinition, JobStepDefinitionCreator, JobStepDefinitionService, JobStepDefinitionListResult, JobStepDefinitionQuery, JobStepDefinitionFactory>
-        implements JobStepDefinitionService {
+public class JobStepDefinitionServiceImpl extends AbstractKapuaService implements JobStepDefinitionService {
 
     @Inject
     private AuthorizationService authorizationService;
@@ -51,7 +46,7 @@ public class JobStepDefinitionServiceImpl
     private PermissionFactory permissionFactory;
 
     public JobStepDefinitionServiceImpl() {
-        super(JobStepDefinitionService.class.getName(), JobDomains.JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobStepDefinitionService.class, JobStepDefinitionFactory.class);
+        super(JobEntityManagerFactory.getInstance(), null);
     }
 
     @Override

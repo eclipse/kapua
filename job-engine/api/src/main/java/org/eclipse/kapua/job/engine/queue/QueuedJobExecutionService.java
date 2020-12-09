@@ -15,7 +15,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
  * {@link QueuedJobExecutionService} exposes APIs to manage {@link QueuedJobExecution} objects.<br>
@@ -25,8 +24,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  * @since 1.1.0
  */
 public interface QueuedJobExecutionService extends KapuaEntityService<QueuedJobExecution, QueuedJobExecutionCreator>,
-        KapuaUpdatableEntityService<QueuedJobExecution>,
-        KapuaConfigurableService {
+        KapuaUpdatableEntityService<QueuedJobExecution> {
 
     /**
      * Returns the {@link QueuedJobExecutionListResult} with elements matching the provided query.

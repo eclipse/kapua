@@ -14,9 +14,9 @@ package org.eclipse.kapua.service.device.management.job.internal;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.model.query.predicate.AndPredicateImpl;
 import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -28,7 +28,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationAttributes;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationCreator;
-import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationListResult;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationQuery;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
@@ -45,7 +44,7 @@ import java.util.Map;
  * @since 1.1.0
  */
 @KapuaProvider
-public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<JobDeviceManagementOperation, JobDeviceManagementOperationCreator, JobDeviceManagementOperationService, JobDeviceManagementOperationListResult, JobDeviceManagementOperationQuery, JobDeviceManagementOperationFactory>
+public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaService
         implements JobDeviceManagementOperationService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
@@ -54,7 +53,7 @@ public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaConfig
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     public JobDeviceManagementOperationServiceImpl() {
-        super(JobDeviceManagementOperationService.class.getName(), JobDomains.JOB_DOMAIN, JobDeviceManagementOperationEntityManagerFactory.getInstance(), JobDeviceManagementOperationService.class, JobDeviceManagementOperationFactory.class);
+        super(JobDeviceManagementOperationEntityManagerFactory.getInstance(), null);
     }
 
     @Override

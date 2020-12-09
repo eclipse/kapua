@@ -896,30 +896,6 @@ public class JobServiceSteps extends TestBase {
     // * Job Step Service Test steps                                                      *
     // ************************************************************************************
 
-    @When("^I configure the job step service$")
-    public void setJobStepConfigurationValue(List<CucConfig> cucConfigs) throws Exception {
-
-        Map<String, Object> valueMap = new HashMap<>();
-        KapuaId accId = getCurrentScopeId();
-        KapuaId scopeId = getCurrentParentId();
-
-        for (CucConfig config : cucConfigs) {
-            config.addConfigToMap(valueMap);
-            if (config.getParentId() != null) {
-                scopeId = getKapuaId(config.getParentId());
-            }
-            if (config.getScopeId() != null) {
-                accId = getKapuaId(config.getScopeId());
-            }
-        }
-        try {
-            primeException();
-            jobStepService.setConfigValues(accId, scopeId, valueMap);
-        } catch (KapuaException ke) {
-            verifyException(ke);
-        }
-    }
-
     @Given("^A regular step creator with the name \"(.*)\" and the following properties$")
     public void prepareARegularStepCreatorWithPropertyList(String name, List<CucJobStepProperty> list) {
 
@@ -1102,31 +1078,6 @@ public class JobServiceSteps extends TestBase {
     // ************************************************************************************
     // * Job Target Service Test steps                                                    *
     // ************************************************************************************
-
-    @When("^I configure the job target service$")
-    public void setJobTargetConfigurationValue(List<CucConfig> cucConfigs) throws Exception {
-
-        Map<String, Object> valueMap = new HashMap<>();
-        KapuaId accId = getCurrentScopeId();
-        KapuaId scopeId = getCurrentParentId();
-
-        for (CucConfig config : cucConfigs) {
-            config.addConfigToMap(valueMap);
-            if (config.getParentId() != null) {
-                scopeId = getKapuaId(config.getParentId());
-            }
-            if (config.getScopeId() != null) {
-                accId = getKapuaId(config.getScopeId());
-            }
-        }
-
-        primeException();
-        try {
-            jobTargetService.setConfigValues(accId, scopeId, valueMap);
-        } catch (KapuaException ke) {
-            verifyException(ke);
-        }
-    }
 
     @Given("^A regular job target item$")
     public void createARegularTarget()

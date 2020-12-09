@@ -15,7 +15,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
  * {@link JobTargetService} exposes APIs to manage JobTarget objects.<br>
@@ -25,8 +24,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  * @since 1.0
  */
 public interface JobTargetService extends KapuaEntityService<JobTarget, JobTargetCreator>,
-        KapuaUpdatableEntityService<JobTarget>,
-        KapuaConfigurableService {
+        KapuaUpdatableEntityService<JobTarget> {
 
     /**
      * Returns the {@link JobTargetListResult} with elements matching the provided query.

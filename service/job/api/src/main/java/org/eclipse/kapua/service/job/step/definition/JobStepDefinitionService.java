@@ -15,7 +15,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
  * {@link JobStepDefinitionService} exposes APIs to manage JobStepDefinition objects.<br>
@@ -25,8 +24,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  * @since 1.0
  */
 public interface JobStepDefinitionService extends KapuaEntityService<JobStepDefinition, JobStepDefinitionCreator>,
-        KapuaUpdatableEntityService<JobStepDefinition>,
-        KapuaConfigurableService {
+        KapuaUpdatableEntityService<JobStepDefinition> {
 
     /**
      * Returns the {@link JobStepDefinitionListResult} with elements matching the provided query.

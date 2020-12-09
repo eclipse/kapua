@@ -16,7 +16,7 @@ import org.eclipse.kapua.KapuaEndBeforeStartTimeException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
@@ -32,7 +32,6 @@ import org.eclipse.kapua.service.scheduler.quartz.driver.exception.TriggerNeverF
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
@@ -59,7 +58,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @KapuaProvider
-public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Trigger, TriggerCreator, TriggerService, TriggerListResult, TriggerQuery, TriggerFactory> implements TriggerService {
+public class TriggerServiceImpl extends AbstractKapuaService implements TriggerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TriggerServiceImpl.class);
 
@@ -81,7 +80,7 @@ public class TriggerServiceImpl extends AbstractKapuaConfigurableResourceLimited
      * @since 1.0.0
      */
     public TriggerServiceImpl() {
-        super(TriggerService.class.getName(), SchedulerDomains.SCHEDULER_DOMAIN, SchedulerEntityManagerFactory.getInstance(), TriggerService.class, TriggerFactory.class);
+        super(SchedulerEntityManagerFactory.getInstance(), null);
     }
 
     @Override
