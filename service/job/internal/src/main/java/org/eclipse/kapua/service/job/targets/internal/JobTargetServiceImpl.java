@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.job.targets.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -27,9 +27,7 @@ import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetCreator;
-import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
-import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 
 /**
@@ -38,8 +36,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetService;
  * @since 1.0.0
  */
 @KapuaProvider
-public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<JobTarget, JobTargetCreator, JobTargetService, JobTargetListResult, JobTargetQuery, JobTargetFactory>
-        implements JobTargetService {
+public class JobTargetServiceImpl extends AbstractKapuaService implements JobTargetService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -47,7 +44,7 @@ public class JobTargetServiceImpl extends AbstractKapuaConfigurableResourceLimit
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
     public JobTargetServiceImpl() {
-        super(JobTargetService.class.getName(), JobDomains.JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobTargetService.class, JobTargetFactory.class);
+        super(JobEntityManagerFactory.getInstance(), null);
     }
 
     @Override

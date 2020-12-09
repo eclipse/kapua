@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
-import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
  * {@link TriggerService} exposes APIs to manage Trigger objects.<br>
@@ -26,8 +25,7 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
  * @since 1.0
  */
 public interface TriggerService extends KapuaEntityService<Trigger, TriggerCreator>,
-        KapuaUpdatableEntityService<Trigger>,
-        KapuaConfigurableService {
+        KapuaUpdatableEntityService<Trigger> {
 
     /**
      * Returns the {@link TriggerListResult} with elements matching the provided query.

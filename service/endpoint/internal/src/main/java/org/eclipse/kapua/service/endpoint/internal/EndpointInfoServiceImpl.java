@@ -15,9 +15,9 @@ package org.eclipse.kapua.service.endpoint.internal;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -52,7 +52,7 @@ import java.util.Map;
  */
 @KapuaProvider
 public class EndpointInfoServiceImpl
-        extends AbstractKapuaConfigurableResourceLimitedService<EndpointInfo, EndpointInfoCreator, EndpointInfoService, EndpointInfoListResult, EndpointInfoQuery, EndpointInfoFactory>
+        extends AbstractKapuaService
         implements EndpointInfoService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
@@ -70,7 +70,7 @@ public class EndpointInfoServiceImpl
     private static final String ENDPOINT_INFO_DNS = "endpointInfo.dns";
 
     public EndpointInfoServiceImpl() {
-        super(EndpointInfoService.class.getName(), EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, EndpointEntityManagerFactory.getInstance(), EndpointInfoService.class, EndpointInfoFactory.class);
+        super(EndpointEntityManagerFactory.getInstance(), null);
     }
 
     @Override

@@ -28,10 +28,6 @@ Scenario: Regular target creation
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
-    And I configure the job target service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob"
     And A regular job target item
     Then No exception was thrown
@@ -42,10 +38,6 @@ Scenario: Target with a null scope ID
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    And I configure the job target service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
@@ -62,10 +54,6 @@ Scenario: Delete a job target
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
-    And I configure the job target service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob"
     And A regular job target item
     When I delete the last job target in the database
@@ -77,10 +65,6 @@ Scenario: Delete a job target twice
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    And I configure the job target service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
@@ -99,10 +83,6 @@ Scenario: Create and count multiple job targets
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
-    And I configure the job target service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob"
     And A regular job target item
     And A regular job target item
@@ -116,10 +96,6 @@ Scenario: Query for the targets of a specific job
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    And I configure the job target service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
@@ -150,10 +126,6 @@ Scenario: Update a job target TargetId
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
-    And I configure the job target service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob1"
     And A regular job target item
     When I update the job target target id
@@ -168,10 +140,6 @@ Scenario: Update a job target step index
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
-    And I configure the job target service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob1"
     And A regular job target item
     When I update the job target step number to 3
@@ -182,10 +150,6 @@ Scenario: Update a job target status
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    And I configure the job target service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
