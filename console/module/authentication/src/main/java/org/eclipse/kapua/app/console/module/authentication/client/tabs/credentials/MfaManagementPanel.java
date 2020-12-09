@@ -503,9 +503,8 @@ public class MfaManagementPanel extends ContentPanel {
             enableMfa.setText(MSGS.mfaButtonDisable());
             enabledText.setText(MSGS.mfaEnabled(username));
         } else {
-            // Always enabled for self management (both by being in the standalone dialog or clicking the user in the tab),
-            // otherwise only allow to enable MFA if user has credential:write
-            enableMfa.setEnabled(selfManagement || username.equals(currentSession.getUserName()) || hasCredentialWrite);
+            // Always enabled for self management (both by being in the standalone dialog or clicking the user in the tab)
+            enableMfa.setEnabled(selfManagement || username.equals(currentSession.getUserName()));
             enableMfa.setText(MSGS.mfaButtonEnable());
             enabledText.setText(MSGS.mfaDisabled(username));
         }

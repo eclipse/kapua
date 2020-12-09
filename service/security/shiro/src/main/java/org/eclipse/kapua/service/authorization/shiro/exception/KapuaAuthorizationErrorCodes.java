@@ -33,5 +33,10 @@ public enum KapuaAuthorizationErrorCodes implements KapuaErrorCode {
     /**
      * One or more embedded entities is not found or does not match the scopeId of the root entity
      */
-    ENTITY_SCOPE_MISSMATCH
+    ENTITY_SCOPE_MISSMATCH,
+
+    /**
+     * Subject is doing something on behalf of someone else
+     */
+    SELF_MANAGED_ONLY
 }

@@ -17,6 +17,7 @@ import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalNullArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.MfaRequiredExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.SelfManagedOnlyExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
@@ -267,6 +268,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     ThrowableInfo.class,
                     ExceptionInfo.class,
 
+                    SelfManagedOnlyExceptionInfo.class,
                     SubjectUnauthorizedExceptionInfo.class,
 
                     EntityNotFoundExceptionInfo.class,

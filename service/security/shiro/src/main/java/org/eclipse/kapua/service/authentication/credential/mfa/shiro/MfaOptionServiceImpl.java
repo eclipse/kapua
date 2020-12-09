@@ -22,6 +22,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
@@ -54,6 +55,7 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.shiro.exception.SelfManagedOnlyException;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
@@ -108,6 +110,14 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write,
                 mfaOptionCreator.getScopeId()));
+
+        //
+        // Check that user is only itself
+        KapuaSession session = KapuaSecurityUtils.getSession();
+        KapuaId expectedUser = session.getUserId();
+        if (!expectedUser.equals(mfaOptionCreator.getUserId())) {
+            throw new SelfManagedOnlyException();
+        }
 
         //
         // Check existing MfaOption
