@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.resources.v1.resources.model;
+package org.eclipse.kapua.app.api.core.model;
 
 import java.util.Date;
 

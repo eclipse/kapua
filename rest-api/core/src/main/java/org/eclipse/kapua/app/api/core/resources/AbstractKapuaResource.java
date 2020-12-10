@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.resources.v1.resources;
+package org.eclipse.kapua.app.api.core.resources;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -38,7 +38,7 @@ public abstract class AbstractKapuaResource {
      *             with {@link Status#NOT_FOUND} if the entity is <code>null</code>.
      * @since 1.0.0
      */
-    protected <T> T returnNotNullEntity(T entity) {
+    public <T> T returnNotNullEntity(T entity) {
         if (entity == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
@@ -55,15 +55,15 @@ public abstract class AbstractKapuaResource {
      * @return A build {@link Response#ok()}
      * @since 1.0.0
      */
-    protected Response returnOk() {
+    public Response returnOk() {
         return Response.ok().build();
     }
 
-    protected Response returnNoContent() {
+    public Response returnNoContent() {
         return Response.noContent().build();
     }
 
-    protected Response returnCreated(Object entity) {
+    public Response returnCreated(Object entity) {
         return Response.status(Status.CREATED).entity(entity).build();
     }
 

@@ -19,25 +19,25 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  *
  * @since 1.0
  */
-public class KapuaApiSetting extends AbstractKapuaSetting<KapuaApiSettingKeys> {
+public class KapuaApiCoreSetting extends AbstractKapuaSetting<KapuaApiCoreSettingKeys> {
 
-    private static final String API_SETTING_RESOURCE = "kapua-api-settings.properties";
+    private static final String API_SETTING_RESOURCE = "kapua-api-core-settings.properties";
 
-    private static final KapuaApiSetting INSTANCE = new KapuaApiSetting();
+    private static final KapuaApiCoreSetting INSTANCE = new KapuaApiCoreSetting();
 
     /**
-     * Construct a new api setting reading settings from {@link KapuaApiSetting#API_SETTING_RESOURCE}
+     * Construct a new api setting reading settings from {@link KapuaApiCoreSetting#API_SETTING_RESOURCE}
      */
-    private KapuaApiSetting() {
+    private KapuaApiCoreSetting() {
         super(API_SETTING_RESOURCE);
     }
 
     /**
      * Return the api setting instance (singleton)
      *
-     * @return A singleton instance of {@link KapuaApiSetting}
+     * @return A singleton instance of {@link KapuaApiCoreSetting}
      */
-    public static KapuaApiSetting getInstance() {
+    public static KapuaApiCoreSetting getInstance() {
         return INSTANCE;
     }
 }

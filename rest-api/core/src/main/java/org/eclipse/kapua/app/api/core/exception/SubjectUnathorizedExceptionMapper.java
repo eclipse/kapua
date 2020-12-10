@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.api.core.exception;
 
 import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

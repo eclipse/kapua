@@ -13,10 +13,10 @@
 package org.eclipse.kapua.app.api.resources.v1.resources.marker;
 
 import org.eclipse.kapua.app.api.resources.v1.resources.DataMessages;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonDatastoreMessage;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonKapuaDataMessage;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.JsonGenericRequestMessage;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.JsonGenericResponseMessage;
+import org.eclipse.kapua.app.api.core.model.data.JsonDatastoreMessage;
+import org.eclipse.kapua.app.api.core.model.data.JsonKapuaDataMessage;
+import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericRequestMessage;
+import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericResponseMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.service.datastore.model.DatastoreMessage;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestMessage;

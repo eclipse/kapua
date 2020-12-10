@@ -19,14 +19,13 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  *
  * @since 1.0
  */
-public enum KapuaApiSettingKeys implements SettingKey {
-    API_KEY("api.key"), //
+public enum KapuaApiCoreSettingKeys implements SettingKey {
     API_PATH_PARAM_SCOPEID_WILDCARD("api.path.param.scopeId.wildcard"),
     API_EXCEPTION_STACKTRACE_SHOW("api.exception.stacktrace.show");
 
-    private String key;
+    private final String key;
 
-    private KapuaApiSettingKeys(String key) {
+    private KapuaApiCoreSettingKeys(String key) {
         this.key = key;
     }
 

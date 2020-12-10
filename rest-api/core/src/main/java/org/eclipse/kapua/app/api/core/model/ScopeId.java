@@ -10,11 +10,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.resources.v1.resources.model;
+package org.eclipse.kapua.app.api.core.model;
 
-import org.eclipse.kapua.app.api.core.settings.KapuaApiSetting;
-import org.eclipse.kapua.app.api.core.settings.KapuaApiSettingKeys;
-import org.eclipse.kapua.app.api.resources.v1.resources.exception.SessionNotPopulatedException;
+import org.eclipse.kapua.app.api.core.exception.SessionNotPopulatedException;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -35,7 +35,7 @@ public class ScopeId implements KapuaId {
 
     private static final long serialVersionUID = 6893262093856905182L;
 
-    private static final String SCOPE_ID_WILDCARD = KapuaApiSetting.getInstance().getString(KapuaApiSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
+    private static final String SCOPE_ID_WILDCARD = KapuaApiCoreSetting.getInstance().getString(KapuaApiCoreSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD);
 
     private BigInteger id;
 

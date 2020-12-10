@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.resources.v1.resources.exception;
+package org.eclipse.kapua.app.api.core.exception;
 
 import org.eclipse.kapua.KapuaRuntimeException;
 

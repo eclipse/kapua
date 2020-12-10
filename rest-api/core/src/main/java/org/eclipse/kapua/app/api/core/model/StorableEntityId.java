@@ -10,12 +10,12 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.resources.v1.resources.model;
+package org.eclipse.kapua.app.api.core.model;
+
+import javax.ws.rs.PathParam;
 
 import org.eclipse.kapua.service.storable.model.Storable;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
-
-import javax.ws.rs.PathParam;
 
 /**
  * {@link StorableId} implementation to be used on REST API to parse the {@link PathParam} entityId.

@@ -12,22 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.app.api.core.settings.KapuaApiSetting;
-import org.eclipse.kapua.app.api.core.settings.KapuaApiSettingKeys;
-
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+
+import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 
 @XmlRootElement(name = "throwableInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ThrowableInfo {
 
-    private static final boolean SHOW_STACKTRACE = KapuaApiSetting.getInstance().getBoolean(KapuaApiSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
+    private static final boolean SHOW_STACKTRACE = KapuaApiCoreSetting.getInstance().getBoolean(KapuaApiCoreSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
 
     @XmlElement(name = "httpErrorCode")
     private int httpErrorCode;
