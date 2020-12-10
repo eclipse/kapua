@@ -38,5 +38,10 @@ public enum KapuaAuthorizationErrorCodes implements KapuaErrorCode {
     /**
      * Subject is doing something on behalf of someone else
      */
-    SELF_MANAGED_ONLY
+    SELF_MANAGED_ONLY,
+
+    /**
+     * The operation is only allowed on internal users
+     */
+    INTERNAL_USER_ONLY
 }

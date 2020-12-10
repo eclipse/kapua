@@ -504,7 +504,8 @@ public class MfaManagementPanel extends ContentPanel {
             enabledText.setText(MSGS.mfaEnabled(username));
         } else {
             // Always enabled for self management (both by being in the standalone dialog or clicking the user in the tab)
-            enableMfa.setEnabled(selfManagement || username.equals(currentSession.getUserName()));
+            enableMfa.setEnabled((selfManagement || username.equals(currentSession.getUserName())) &&
+                    (currentSession.getOpenIDIdToken() == null || currentSession.getOpenIDIdToken().isEmpty()));
             enableMfa.setText(MSGS.mfaButtonEnable());
             enabledText.setText(MSGS.mfaDisabled(username));
         }

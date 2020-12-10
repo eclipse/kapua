@@ -55,9 +55,11 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.shiro.exception.InternalUserOnlyException;
 import org.eclipse.kapua.service.authorization.shiro.exception.SelfManagedOnlyException;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,11 +114,19 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
                 mfaOptionCreator.getScopeId()));
 
         //
-        // Check that user is only itself
+        // Check that the operation is carried by the user itself
         KapuaSession session = KapuaSecurityUtils.getSession();
         KapuaId expectedUser = session.getUserId();
         if (!expectedUser.equals(mfaOptionCreator.getUserId())) {
             throw new SelfManagedOnlyException();
+        }
+
+        //
+        // Check that the user is an internal user (external users cannot have the MFA enabled)
+        final MfaOptionCreator finalMfaOptionCreator = mfaOptionCreator;
+        User user = KapuaSecurityUtils.doPrivileged(() -> userService.find(finalMfaOptionCreator.getScopeId(), finalMfaOptionCreator.getUserId()));
+        if (!user.getUserType().equals(UserType.INTERNAL) || user.getExternalId() != null) {
+            throw new InternalUserOnlyException();
         }
 
         //
@@ -139,9 +149,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
             mfaOption = MfaOptionDAO.find(em, mfaOption.getScopeId(), mfaOption.getId());
 
             // generating base64 QR code image
-            final MfaOptionCreator mfaOptionCreatorCopy = mfaOptionCreator;
-            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(mfaOptionCreatorCopy.getScopeId()));
-            User user = KapuaSecurityUtils.doPrivileged(() -> userService.find(mfaOptionCreatorCopy.getScopeId(), mfaOptionCreatorCopy.getUserId()));
+            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(finalMfaOptionCreator.getScopeId()));
             mfaOption.setQRCodeImage(generateQRCode(account.getName(), user.getName(), fullKey));
 
             em.commit();
