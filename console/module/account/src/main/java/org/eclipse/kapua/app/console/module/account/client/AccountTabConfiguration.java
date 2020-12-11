@@ -79,11 +79,6 @@ public class AccountTabConfiguration extends KapuaTabItem<GwtAccount> {
     public void setDescriptionTab(AccountDetailsTabDescription accountDetailsTabDescription) {
         this.accountDetailsTabDescription = accountDetailsTabDescription;
         configComponents.setDescriptionTab(accountDetailsTabDescription);
-
-    }
-
-    public void removeElements(){
-        configComponents.removeApplyAndResetButtons();
     }
 
 }
