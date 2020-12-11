@@ -28,10 +28,6 @@ Scenario: Regular step creation
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
-    And I configure the job step service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob"
     And A regular step definition with the name "TestDefinition" and the following properties
         | name  | type |
@@ -53,10 +49,6 @@ Scenario: Step with a null scope ID
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    And I configure the job step service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
@@ -84,10 +76,6 @@ Scenario: Change an existing step name
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
-    And I configure the job step service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob"
     And A regular step definition with the name "TestDefinition" and the following properties
         | name  | type |
@@ -107,10 +95,6 @@ Scenario: Count steps in the database
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    And I configure the job step service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
@@ -143,10 +127,6 @@ Scenario: Delete an existing step
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |
-    And I configure the job step service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
     Given I create a job with the name "TestJob"
     And A regular step definition with the name "TestDefinition" and the following properties
         | name  | type |
@@ -166,10 +146,6 @@ Scenario: Delete a non-existing step
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    And I configure the job step service
         | type    | name                       | value |
         | boolean | infiniteChildEntities      | true  |
         | integer | maxNumberChildEntities     | 5     |

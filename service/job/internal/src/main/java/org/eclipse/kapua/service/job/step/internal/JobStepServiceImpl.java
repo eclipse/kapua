@@ -16,7 +16,7 @@ import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -32,7 +32,6 @@ import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
-import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepIndex;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
@@ -52,7 +51,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @KapuaProvider
-public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<JobStep, JobStepCreator, JobStepService, JobStepListResult, JobStepQuery, JobStepFactory>
+public class JobStepServiceImpl extends AbstractKapuaService
         implements JobStepService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
@@ -63,7 +62,7 @@ public class JobStepServiceImpl extends AbstractKapuaConfigurableResourceLimited
     private static final JobStepDefinitionService JOB_STEP_DEFINITION_SERVICE = LOCATOR.getService(JobStepDefinitionService.class);
 
     public JobStepServiceImpl() {
-        super(JobStepService.class.getName(), JobDomains.JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobStepService.class, JobStepFactory.class);
+        super(JobEntityManagerFactory.getInstance(), null);
     }
 
     @Override
