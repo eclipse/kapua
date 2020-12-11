@@ -13,19 +13,16 @@
 package org.eclipse.kapua.commons.model.misc;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 
-import java.util.Map;
-
-public class CollisionServiceImpl extends AbstractKapuaConfigurableService implements CollisionEntityService {
+public class CollisionServiceImpl extends AbstractKapuaService implements CollisionEntityService {
 
     public CollisionServiceImpl() {
-        super(CollisionServiceImpl.class.getName(), CollisionEntityDomains.COLLISION_ENTITY_DOMAIN, CollisionEntityManagerFactory.getInstance());
+        super(CollisionEntityManagerFactory.getInstance(), null);
     }
 
     public CollisionEntity insert(String testField) throws KapuaException {
@@ -80,24 +77,6 @@ public class CollisionServiceImpl extends AbstractKapuaConfigurableService imple
     public CollisionEntity findByName(String name) throws KapuaException {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        // TODO Auto-generated method stub
-
     }
 
 }
