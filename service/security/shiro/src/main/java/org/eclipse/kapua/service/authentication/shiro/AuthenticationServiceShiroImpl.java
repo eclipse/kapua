@@ -177,10 +177,11 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             // Enable trust key
             if (enableTrust) {
                 AccessToken finalAccessToken = accessToken;
-                KapuaSecurityUtils.doPrivileged(() -> {
+                String trustKey = KapuaSecurityUtils.doPrivileged(() -> {
                     MfaOption mfaOption = mfaOptionService.findByUserId(finalAccessToken.getScopeId(), finalAccessToken.getUserId());
-                    mfaOptionService.enableTrust(mfaOption);
+                    return mfaOptionService.enableTrust(mfaOption);
                 });
+                accessToken.setTrustKey(trustKey);
             }
 
             // Set some logging

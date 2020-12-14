@@ -53,6 +53,8 @@ import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManage
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
+import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
+import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.shiro.exception.InternalUserOnlyException;
@@ -301,28 +303,28 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
     }
 
     @Override
-    public void enableTrust(MfaOption mfaOption) throws KapuaException {
+    public String enableTrust(MfaOption mfaOption) throws KapuaException {
 
         // Argument Validation (fields validation is performed inside the 'update' method)
         ArgumentValidator.notNull(mfaOption, "mfaOption");
 
-        // If MfaOption has a code set, use that one, otherwise other trusted machines won't be able to login and a new trusted machine will be
-        // requested
-        String trustKey = mfaOption.getTrustKey();
-        if (trustKey == null || trustKey.isEmpty()) {
-            trustKey = generateTrustKey();
-        }
+        // Trust key generation always performed
+        // This allows the use only of a single trusted machine, until a solution with different trust keys is implemented
+        String trustKey = generateTrustKey();
 
         Date expirationDate = new Date(System.currentTimeMillis());
         expirationDate = DateUtils.addDays(expirationDate, trustKeyDuration);
 
-        mfaOption.setTrustKey(trustKey);
+        mfaOption.setTrustKey(cryptTrustKey(trustKey));
         mfaOption.setTrustExpirationDate(expirationDate);
         update(mfaOption);
+
+        // post-persist magic
+        return trustKey;
     }
 
     @Override
-    public void enableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
+    public String enableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
 
         // Argument Validation
         ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
@@ -330,7 +332,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
 
         // extracting the MfaOption
         MfaOption mfaOption = find(scopeId, mfaOptionId);
-        enableTrust(mfaOption);
+        return enableTrust(mfaOption);
     }
 
     @Override
@@ -435,6 +437,17 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
         g.drawImage(qrCodeImage, 0, 0, new Color(232, 232, 232, 255), null);
 
         return resultImage;
+    }
+
+    /**
+     * Encrypts the trust key
+     *
+     * @param plainTrustKey the trust key in plain text
+     * @return the encrypted trust key
+     * @throws KapuaException if the cryptCredential method throws a {@link KapuaException}
+     */
+    private static String cryptTrustKey(String plainTrustKey) throws KapuaException {
+        return AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, plainTrustKey);
     }
 
 }

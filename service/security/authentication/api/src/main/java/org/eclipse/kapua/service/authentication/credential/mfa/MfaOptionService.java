@@ -37,16 +37,18 @@ public interface MfaOptionService extends KapuaEntityService<MfaOption, MfaOptio
      * Enables the trust machine for the given {@link MfaOption}.
      *
      * @param mfaOption the {@link MfaOption}
+     * @return the value of the trust key in plain text
      */
-    void enableTrust(MfaOption mfaOption) throws KapuaException;
+    String enableTrust(MfaOption mfaOption) throws KapuaException;
 
     /**
      * Enables the trust machine for the {@link KapuaId} of the {@link MfaOption}.
      *
      * @param scopeId the scopeId
      * @param mfaOptionId the {@link KapuaId} of the {@link MfaOption}
+     * @return the value of the trust key in plain text
      */
-    void enableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException;
+    String enableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException;
 
     /**
      * Disable the trust machine for the given {@link MfaOption}.
