@@ -29,10 +29,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlRootElement(name = "scratchCode")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "mfaOptionId", //
-        "scratchCode"}, //
-        factoryClass = ScratchCodeXmlRegistry.class, //
+@XmlType(factoryClass = ScratchCodeXmlRegistry.class, //
         factoryMethod = "newScratchCode") //
 public interface ScratchCode extends KapuaUpdatableEntity {
 

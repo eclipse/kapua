@@ -12,14 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.shared.model;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 
-public class GwtMfaCredentialOptions extends GwtUpdatableEntityModel {
+public class GwtMfaCredentialOptions extends GwtUpdatableEntityModel implements Serializable {
 
-    private static final long serialVersionUID = -469650746033310482L;
+    private static final long serialVersionUID = -7186218877584536030L;
 
     @Override
     @SuppressWarnings({ "unchecked" })
@@ -69,6 +71,14 @@ public class GwtMfaCredentialOptions extends GwtUpdatableEntityModel {
 
     public void setQRCodeImage(String qrCodeImage) {
         set("qrCodeImage", qrCodeImage);
+    }
+
+    public List<String> getScratchCodes() {
+        return get("scratchCodes");
+    }
+
+    public void setScratchCodes(List<String> scratchCodes) {
+        set("scratchCodes", scratchCodes);
     }
 
 }

@@ -22,6 +22,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
@@ -43,15 +44,24 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeCreator;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeFactory;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
+import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
+import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.authorization.shiro.exception.InternalUserOnlyException;
+import org.eclipse.kapua.service.authorization.shiro.exception.SelfManagedOnlyException;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.UserType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +89,8 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final AccountService accountService = locator.getService(AccountService.class);
     private final UserService userService = locator.getService(UserService.class);
+    private final ScratchCodeService scratchCodeService = locator.getService(ScratchCodeService.class);
+    private final ScratchCodeFactory scratchCodeFactory = locator.getFactory(ScratchCodeFactory.class);
 
     private final KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
     private final int trustKeyDuration = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
@@ -104,6 +116,22 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
                 mfaOptionCreator.getScopeId()));
 
         //
+        // Check that the operation is carried by the user itself
+        KapuaSession session = KapuaSecurityUtils.getSession();
+        KapuaId expectedUser = session.getUserId();
+        if (!expectedUser.equals(mfaOptionCreator.getUserId())) {
+            throw new SelfManagedOnlyException();
+        }
+
+        //
+        // Check that the user is an internal user (external users cannot have the MFA enabled)
+        final MfaOptionCreator finalMfaOptionCreator = mfaOptionCreator;
+        User user = KapuaSecurityUtils.doPrivileged(() -> userService.find(finalMfaOptionCreator.getScopeId(), finalMfaOptionCreator.getUserId()));
+        if (!user.getUserType().equals(UserType.INTERNAL) || user.getExternalId() != null) {
+            throw new InternalUserOnlyException();
+        }
+
+        //
         // Check existing MfaOption
         MfaOption existingMfaOption = findByUserId(mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId());
         if (existingMfaOption != null) {
@@ -123,12 +151,18 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
             mfaOption = MfaOptionDAO.find(em, mfaOption.getScopeId(), mfaOption.getId());
 
             // generating base64 QR code image
-            final MfaOptionCreator mfaOptionCreatorCopy = mfaOptionCreator;
-            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(mfaOptionCreatorCopy.getScopeId()));
-            User user = KapuaSecurityUtils.doPrivileged(() -> userService.find(mfaOptionCreatorCopy.getScopeId(), mfaOptionCreatorCopy.getUserId()));
+            Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(finalMfaOptionCreator.getScopeId()));
             mfaOption.setQRCodeImage(generateQRCode(account.getName(), user.getName(), fullKey));
 
             em.commit();
+
+            // generating scratch codes
+            final ScratchCodeCreator scratchCodeCreator = scratchCodeFactory.newCreator(mfaOptionCreator.getScopeId(), mfaOption.getId(), null);
+            final ScratchCodeListResult scratchCodeListResult = scratchCodeService.createAllScratchCodes(scratchCodeCreator);
+            mfaOption.setScratchCodes(scratchCodeListResult.getItems());
+
+            // Do post persist magic on key value (note that this is the only place in which the key is returned in plain-text)
+            mfaOption.setMfaSecretKey(fullKey);
         } catch (Exception pe) {
             em.rollback();
             throw KapuaExceptionUtils.convertPersistenceException(pe);
@@ -269,28 +303,28 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
     }
 
     @Override
-    public void enableTrust(MfaOption mfaOption) throws KapuaException {
+    public String enableTrust(MfaOption mfaOption) throws KapuaException {
 
         // Argument Validation (fields validation is performed inside the 'update' method)
         ArgumentValidator.notNull(mfaOption, "mfaOption");
 
-        // If MfaOption has a code set, use that one, otherwise other trusted machines won't be able to login and a new trusted machine will be
-        // requested
-        String trustKey = mfaOption.getTrustKey();
-        if (trustKey == null || trustKey.isEmpty()) {
-            trustKey = generateTrustKey();
-        }
+        // Trust key generation always performed
+        // This allows the use only of a single trusted machine, until a solution with different trust keys is implemented
+        String trustKey = generateTrustKey();
 
         Date expirationDate = new Date(System.currentTimeMillis());
         expirationDate = DateUtils.addDays(expirationDate, trustKeyDuration);
 
-        mfaOption.setTrustKey(trustKey);
+        mfaOption.setTrustKey(cryptTrustKey(trustKey));
         mfaOption.setTrustExpirationDate(expirationDate);
         update(mfaOption);
+
+        // post-persist magic
+        return trustKey;
     }
 
     @Override
-    public void enableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
+    public String enableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
 
         // Argument Validation
         ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
@@ -298,7 +332,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
 
         // extracting the MfaOption
         MfaOption mfaOption = find(scopeId, mfaOptionId);
-        enableTrust(mfaOption);
+        return enableTrust(mfaOption);
     }
 
     @Override
@@ -380,7 +414,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
     /**
      * Converts a {@link BufferedImage} to base64 string format
      *
-     * @param img        the {@link BufferedImage} to convert
+     * @param img the {@link BufferedImage} to convert
      * @return the base64 string representation of the input image
      */
     private static String imgToBase64(BufferedImage img) throws IOException {
@@ -403,6 +437,17 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
         g.drawImage(qrCodeImage, 0, 0, new Color(232, 232, 232, 255), null);
 
         return resultImage;
+    }
+
+    /**
+     * Encrypts the trust key
+     *
+     * @param plainTrustKey the trust key in plain text
+     * @return the encrypted trust key
+     * @throws KapuaException if the cryptCredential method throws a {@link KapuaException}
+     */
+    private static String cryptTrustKey(String plainTrustKey) throws KapuaException {
+        return AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, plainTrustKey);
     }
 
 }

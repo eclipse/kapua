@@ -26,12 +26,9 @@ import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenS
 import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptions;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCredentialOptionsCreator;
-import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtScratchCode;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.permission.CredentialSessionPermission;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsServiceAsync;
-import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtScratchCodeService;
-import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtScratchCodeServiceAsync;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -69,7 +66,6 @@ public class MfaManagementPanel extends ContentPanel {
     private static final ConsoleCredentialMessages MSGS = GWT.create(ConsoleCredentialMessages.class);
     private static final GwtSecurityTokenServiceAsync GWT_XSRF_SERVICE = GWT.create(GwtSecurityTokenService.class);
     private static final GwtMfaCredentialOptionsServiceAsync GWT_MFA_CREDENTIAL_OPTIONS_SERVICE = GWT.create(GwtMfaCredentialOptionsService.class);
-    private static final GwtScratchCodeServiceAsync GWT_SCRATCH_CODES_SERVICE = GWT.create(GwtScratchCodeService.class);
 
     private final GwtSession currentSession;
     private String userId;
@@ -166,7 +162,6 @@ public class MfaManagementPanel extends ContentPanel {
                                 @Override
                                 public void onSuccess(final GwtMfaCredentialOptions mfaCredentialOptions) {
                                     keyEnabled = true;
-                                    // TODO Scratch Codes
                                     try {
                                         MfaManagementPanel.this.gwtMfaCredentialOptions = mfaCredentialOptions;
                                         barcodeImage.setUrl("data:image/png;base64," + mfaCredentialOptions.getQRCodeImage());
@@ -374,14 +369,14 @@ public class MfaManagementPanel extends ContentPanel {
         helpPanel.hide();
     }
 
-    private void printScratchCodes(List<GwtScratchCode> scratchCodes) {
+    private void printScratchCodes(List<String> scratchCodes) {
 
         StringBuilder sb = new StringBuilder();
 
         sb.append("Scratch Codes:<br/><br/>");
 
-        for (GwtScratchCode code : scratchCodes) {
-            sb.append(code.getScratchCode()).append("</br>");
+        for (String code : scratchCodes) {
+            sb.append(code).append("</br>");
         }
 
         scratchCodesArea.setText(sb.toString());
@@ -436,40 +431,14 @@ public class MfaManagementPanel extends ContentPanel {
                 keyEnabled = true;
                 barcodeImage.setVisible(true);
 
-                GWT_XSRF_SERVICE.generateSecurityToken(new AsyncCallback<GwtXSRFToken>() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        FailureHandler.handle(caught);
-                        doUnmask();
-                    }
-
-                    @Override
-                    public void onSuccess(final GwtXSRFToken newXsrfToken) {
-                        GWT_SCRATCH_CODES_SERVICE.createScratchCodes(newXsrfToken, accountId, gwtMfaCredentialOptions.getId(), selfManagement, new AsyncCallback<List<GwtScratchCode>>() {
-
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                FailureHandler.handle(caught);
-                                doUnmask();
-                            }
-
-                            @Override
-                            public void onSuccess(List<GwtScratchCode> result) {
-                                scratchCodesArea.setVisible(true);
-                                printScratchCodes(result);
-                                updateUIComponents(gwtMfaCredentialOptions);
-                                getButtonBar().enable();
-                                doUnmask();
-                            }
-
-                        });
-                    }
-
-                });
+                scratchCodesArea.setVisible(true);
+                printScratchCodes(gwtMfaCredentialOptions.getScratchCodes());
+                updateUIComponents(gwtMfaCredentialOptions);
+                getButtonBar().enable();
+                doUnmask();
             }
-
         });
+
         //
         // Scratch Codes Text Area
         scratchCodesArea = new Text();
@@ -534,9 +503,9 @@ public class MfaManagementPanel extends ContentPanel {
             enableMfa.setText(MSGS.mfaButtonDisable());
             enabledText.setText(MSGS.mfaEnabled(username));
         } else {
-            // Always enabled for self management (both by being in the standalone dialog or clicking the user in the tab),
-            // otherwise only allow to enable MFA if user has credential:write
-            enableMfa.setEnabled(selfManagement || username.equals(currentSession.getUserName()) || hasCredentialWrite);
+            // Always enabled for self management (both by being in the standalone dialog or clicking the user in the tab)
+            enableMfa.setEnabled((selfManagement || username.equals(currentSession.getUserName())) &&
+                    (currentSession.getOpenIDIdToken() == null || currentSession.getOpenIDIdToken().isEmpty()));
             enableMfa.setText(MSGS.mfaButtonEnable());
             enabledText.setText(MSGS.mfaDisabled(username));
         }

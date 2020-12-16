@@ -29,6 +29,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -54,6 +55,30 @@ public class Authentication extends AbstractKapuaResource {
     @Path("user")
     public AccessToken loginUsernamePassword(UsernamePasswordCredentials authenticationCredentials) throws KapuaException {
         return login(authenticationCredentials);
+    }
+
+    /**
+     * Authenticates an user with username, password and mfa authentication code (or trust key, alternatively) and returns
+     * the authentication token to be used in subsequent REST API calls.
+     * It also enable the trusted machine key if the {@code enableTrust} parameter is 'true'.
+     *
+     * @param authenticationCredentials The username, password and code authentication credential of a user.
+     * @param enableTrust If true the machine trust key is enabled.
+     * @return The authentication token.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.4.0
+     */
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    @Path("mfa")
+    public AccessToken loginUsernamePasswordCode(
+            @QueryParam("enableTrust") boolean enableTrust,
+            UsernamePasswordCredentials authenticationCredentials) throws KapuaException {
+        if (authenticationCredentials.getTrustKey() == null && enableTrust) {
+            return login(authenticationCredentials, true);
+        }
+        return login(authenticationCredentials, false);
     }
 
     /**
@@ -140,6 +165,19 @@ public class Authentication extends AbstractKapuaResource {
     }
 
     /**
+     * Authenticates the given {@link LoginCredentials} for the MFA.
+     *
+     * @param loginCredentials The {@link LoginCredentials} to validate.
+     * @param enableTrust      True if the machine must be trusted, false otherwise.
+     * @return The Authentication token
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.4.0
+     */
+    private AccessToken login(LoginCredentials loginCredentials, boolean enableTrust) throws KapuaException {
+        return authenticationService.login(loginCredentials, enableTrust);
+    }
+
+    /**
      * Gets a {@link LoginInfo} object
      *
      * @return A {@link LoginInfo} object containing all the permissions and the {@link AccessToken} for the current session
@@ -147,7 +185,7 @@ public class Authentication extends AbstractKapuaResource {
      */
 
     @GET
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("info")
     public LoginInfo loginInfo() throws KapuaException {
         return authenticationService.getLoginInfo();

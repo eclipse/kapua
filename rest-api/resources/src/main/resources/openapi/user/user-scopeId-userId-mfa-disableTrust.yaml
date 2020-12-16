@@ -1,0 +1,38 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - MfaOptions
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/users/{userId}/mfa/disableTrust:
+    delete:
+      tags:
+        - User - Mfa
+      summary: Disable trusted machine for a MfaOption
+      operationId: mfaOptionDisableTrust
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './user.yaml#/components/parameters/userId'
+      responses:
+        204:
+          description: The trusted machine has been disabled for the User
+          content:
+            application/json:
+              schema:
+                $ref: './user.yaml#/components/schemas/mfaOption'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

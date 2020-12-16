@@ -40,7 +40,8 @@ import java.util.Date;
         "expiresOn", //
         "refreshToken", //
         "refreshExpiresOn", //
-        "invalidatedOn" //
+        "invalidatedOn", //
+        "trustKey" //
 }, //
         factoryClass = AccessTokenXmlRegistry.class, //
         factoryMethod = "newAccessToken")
@@ -162,5 +163,22 @@ public interface AccessToken extends KapuaUpdatableEntity, Serializable {
      * @since 1.0.0
      */
     void setInvalidatedOn(Date invalidatedOn);
+
+    /**
+     * Gets the MFA trust key
+     *
+     * @return the value of the mfa trust key
+     * @since 1.4.0
+     */
+    @XmlElement(name = "trustKey")
+    String getTrustKey();
+
+    /**
+     * Sets the MFA trust key
+     *
+     * @param trustKey the mfa trust key to be set
+     * @since 1.4.0
+     */
+    void setTrustKey(String trustKey);
 
 }

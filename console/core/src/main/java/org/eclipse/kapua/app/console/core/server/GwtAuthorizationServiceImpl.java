@@ -46,7 +46,6 @@ import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
@@ -303,17 +302,10 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         // Setting Id token
         gwtSession.setOpenIDIdToken(kapuaSession.getOpenIDidToken());
 
-        MfaOption mfaOption = KapuaSecurityUtils.doPrivileged(new Callable<MfaOption>() {
-
-            @Override
-            public MfaOption call() throws Exception {
-                return MFA_OPTION_SERVICE.findByUserId(user.getScopeId(), user.getId());
-            }
-
-        });
-
-        if (mfaOption != null) {
-            gwtSession.setTrustKey(mfaOption.getTrustKey());
+        // Setting Mfa trust key
+        String trustKey = kapuaSession.getAccessToken().getTrustKey();
+        if (trustKey != null && !trustKey.isEmpty()) {
+            gwtSession.setTrustKey(kapuaSession.getAccessToken().getTrustKey());
         }
 
         //
