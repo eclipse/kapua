@@ -48,10 +48,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  */
 @KapuaProvider
-public class DeviceConnectionServiceImpl extends
-        //        AbstractKapuaConfigurableResourceLimitedService<DeviceConnection, DeviceConnectionCreator, DeviceConnectionService, DeviceConnectionListResult, DeviceConnectionQuery, DeviceConnectionFactory>
-        AbstractKapuaConfigurableService
-        implements DeviceConnectionService {
+public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableService implements DeviceConnectionService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceConnectionServiceImpl.class);
 
