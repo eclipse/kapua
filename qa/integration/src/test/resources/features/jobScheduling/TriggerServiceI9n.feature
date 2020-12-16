@@ -179,12 +179,12 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     Then A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-01-2020 at 10:10.
-    And The trigger is set to end on 15-12-2020 at 10:10.
+    And The trigger is set to start on 12-01-2030 at 10:10.
+    And The trigger is set to end on 15-12-2030 at 10:10.
     Then I create a new trigger from the existing creator with previously defined date properties
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
-    And The trigger is set to end on 15-12-2020 at 10:10.
+    And The trigger is set to start on 12-12-2030 at 10:10.
+    And The trigger is set to end on 15-12-2030 at 10:10.
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
 
@@ -430,13 +430,13 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     Then A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-01-2020 at 10:10.
-    And The trigger is set to end on 15-12-2020 at 10:10.
+    And The trigger is set to start on 12-01-2030 at 10:10.
+    And The trigger is set to end on 15-12-2030 at 10:10.
     And I set retry interval to 1
     Then I create a new trigger from the existing creator with previously defined date properties
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
-    And The trigger is set to end on 15-12-2020 at 10:10.
+    And The trigger is set to start on 12-12-2030 at 10:10.
+    And The trigger is set to end on 15-12-2030 at 10:10.
     And I set retry interval to 1
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
@@ -652,13 +652,13 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     Then A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-01-2020 at 10:10.
-    And The trigger is set to end on 15-12-2020 at 10:10.
+    And The trigger is set to start on 12-01-2030 at 10:10.
+    And The trigger is set to end on 15-12-2030 at 10:10.
     Then I set cron expression to "0 15 15 * * ?"
     Then I create a new trigger from the existing creator with previously defined date properties
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
-    And The trigger is set to end on 15-12-2020 at 10:10.
+    And The trigger is set to start on 12-12-2030 at 10:10.
+    And The trigger is set to end on 15-12-2030 at 10:10.
     Then I set cron expression to "0 15 15 * * ?"
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
