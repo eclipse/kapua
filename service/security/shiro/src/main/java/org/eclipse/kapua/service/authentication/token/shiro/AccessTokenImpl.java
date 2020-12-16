@@ -29,6 +29,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import java.util.Date;
 
 /**
@@ -68,6 +69,9 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "invalidated_on", nullable = true)
     private Date invalidatedOn;
+
+    @Transient
+    private String trustkey;
 
     /**
      * Constructor.
@@ -194,5 +198,15 @@ public class AccessTokenImpl extends AbstractKapuaUpdatableEntity implements Acc
     @Override
     public void setInvalidatedOn(Date invalidatedOn) {
         this.invalidatedOn = invalidatedOn;
+    }
+
+    @Override
+    public String getTrustKey() {
+        return trustkey;
+    }
+
+    @Override
+    public void setTrustKey(String trustKey) {
+        this.trustkey = trustKey;
     }
 }

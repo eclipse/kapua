@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception;
 
+import org.eclipse.kapua.app.api.core.exception.model.MfaRequiredExceptionInfo;
+import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 
 import javax.ws.rs.core.Response;
@@ -24,6 +26,12 @@ public class KapuaAuthenticationExceptionMapper implements ExceptionMapper<Kapua
 
     @Override
     public Response toResponse(KapuaAuthenticationException exception) {
+        if (exception.getCode().equals(KapuaAuthenticationErrorCodes.REQUIRE_MFA_CREDENTIALS)) {
+            return Response//
+                    .status(Status.FORBIDDEN) //
+                    .entity(new MfaRequiredExceptionInfo(Status.FORBIDDEN, exception)) //
+                    .build();
+        }
         return Response.status(Status.UNAUTHORIZED).build();
     }
 

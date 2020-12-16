@@ -103,6 +103,12 @@ components:
     password:
       type: string
       pattern: '^.*(?=.{12,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!\"\#$%&''()*+,\-./:;<=>?@\[\]\\^_`{|}~]).*$'
+    authenticationCode:
+      type: string
+      pattern: '^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$'
+    trustKey:
+      type: string
+      pattern: '^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$'
     jwt:
       type: string
       pattern: '^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$'

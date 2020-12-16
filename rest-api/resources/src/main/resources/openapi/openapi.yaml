@@ -60,6 +60,8 @@ paths:
     $ref: './authentication/authentication-info.yaml#/paths/~1authentication~1info'
   /authentication/logout:
     $ref: './authentication/authentication-logout.yaml#/paths/~1authentication~1logout'
+  /authentication/mfa:
+    $ref: './authentication/authentication-mfa.yaml#/paths/~1authentication~1mfa'
   ### Access Info ###
   /{scopeId}/accessinfos:
     $ref: './accessInfo/accessInfo-scopeId.yaml#/paths/~1{scopeId}~1accessinfos'
@@ -340,6 +342,10 @@ paths:
     $ref: './user/user-scopeId-_count.yaml#/paths/~1{scopeId}~1users~1_count'
   /{scopeId}/users/_query:
     $ref: './user/user-scopeId-_query.yaml#/paths/~1{scopeId}~1users~1_query'
+  /{scopeId}/users/{userId}/mfa:
+    $ref: './user/user-scopeId-userId-mfa.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa'
+  /{scopeId}/users/{userId}/mfa/disableTrust:
+    $ref: './user/user-scopeId-userId-mfa-disableTrust.yaml#/paths/~1{scopeId}~1users~1{userId}~1mfa~1disableTrust'
 
 components:
   parameters:

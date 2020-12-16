@@ -16,6 +16,9 @@ import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInf
 import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalNullArgumentExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.InternalUserOnlyExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.MfaRequiredExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.SelfManagedOnlyExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
@@ -56,6 +59,16 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.CredentialXmlRegistry;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResult;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionQuery;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionXmlRegistry;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeCreator;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
+import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeXmlRegistry;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.LoginInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -256,11 +269,14 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     ThrowableInfo.class,
                     ExceptionInfo.class,
 
+                    InternalUserOnlyExceptionInfo.class,
+                    SelfManagedOnlyExceptionInfo.class,
                     SubjectUnauthorizedExceptionInfo.class,
 
                     EntityNotFoundExceptionInfo.class,
                     IllegalArgumentExceptionInfo.class,
                     IllegalNullArgumentExceptionInfo.class,
+                    MfaRequiredExceptionInfo.class,
 
                     // Tocds
                     KapuaTocd.class,
@@ -430,6 +446,18 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     CredentialType.class,
                     CredentialQuery.class,
                     CredentialXmlRegistry.class,
+
+                    // Multi Factor Authentication
+                    MfaOption.class,
+                    MfaOptionListResult.class,
+                    MfaOptionCreator.class,
+                    MfaOptionQuery.class,
+                    MfaOptionXmlRegistry.class,
+                    ScratchCode.class,
+                    ScratchCodeListResult.class,
+                    ScratchCodeCreator.class,
+                    ScratchCodeQuery.class,
+                    ScratchCodeXmlRegistry.class,
 
                     // Permission
                     Permission.class,

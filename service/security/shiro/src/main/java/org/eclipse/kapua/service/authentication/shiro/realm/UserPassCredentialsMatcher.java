@@ -30,10 +30,13 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
 import org.eclipse.kapua.service.user.User;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
+
+import java.util.Date;
 
 /**
  * {@link ApiKeyCredentials} credential matcher implementation
@@ -131,10 +134,27 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                         if (tokenTrustKey != null) {
                             // check trust machine authentication on the server side
                             if (mfaOption.getTrustKey() != null) {
-                                if (tokenTrustKey.equals(mfaOption.getTrustKey())) {
+
+                                Date now = new Date(System.currentTimeMillis());
+                                if (mfaOption.getTrustExpirationDate().before(now)) {
+
+                                    // the trust key is expired and must be disabled
+                                    try {
+                                        KapuaSecurityUtils.doPrivileged(() -> MFA_OPTION_SERVICE.disableTrust(mfaOption.getScopeId(), mfaOption.getId()));
+                                    } catch (AuthenticationException ae) {
+                                        throw ae;
+                                    } catch (Exception e) {
+                                        throw new ShiroException("Error while disabling trust!", e);
+                                    }
+
+                                } else if (BCrypt.checkpw(tokenTrustKey, mfaOption.getTrustKey())) {
                                     credentialMatch = true;
                                 }
                             }
+                        } else {
+                            // In case both the authenticationCode and the trustKey are null, the MFA login via Rest API must be triggered.
+                            // Since this method only returns true or false, the MFA request via Rest API is handled through exceptions.
+                            throw new MfaRequiredException();
                         }
                     }
                 } else {

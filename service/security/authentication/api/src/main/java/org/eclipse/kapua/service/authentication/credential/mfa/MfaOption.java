@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
+import java.util.List;
 
 /**
  * {@link MfaOption} definition.<br>
@@ -32,12 +33,7 @@ import java.util.Date;
  */
 @XmlRootElement(name = "mfaOption")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "userId",
-        "mfaSecretKey",
-        "trustKey",
-        "trustExpirationDate"}, //
-        factoryClass = MfaOptionXmlRegistry.class, //
+@XmlType(factoryClass = MfaOptionXmlRegistry.class, //
         factoryMethod = "newMfaOption") //
 public interface MfaOption extends KapuaUpdatableEntity {
 
@@ -124,4 +120,19 @@ public interface MfaOption extends KapuaUpdatableEntity {
      * @param qrCodeImage the QR code image in base64
      */
     void setQRCodeImage(String qrCodeImage);
+
+    /**
+     * Gets the list of {@link ScratchCode} associated to this {@link MfaOption}
+     *
+     * @return the list of {@link ScratchCode}
+     */
+    @XmlElement(name = "scratchCodes")
+    List<ScratchCode> getScratchCodes();
+
+    /**
+     * Sets the list of {@link ScratchCode} associated to this {@link MfaOption}
+     *
+     * @param scratchCodes the list of {@link ScratchCode}
+     */
+    void setScratchCodes(List<ScratchCode> scratchCodes);
 }

@@ -114,5 +114,10 @@ public enum KapuaAuthenticationErrorCodes implements KapuaErrorCode {
     /**
      * The password cannot be changed
      */
-    PASSWORD_CANNOT_BE_CHANGED;
+    PASSWORD_CANNOT_BE_CHANGED,
+
+    /**
+     * Full MFA credentials are required.
+     */
+    REQUIRE_MFA_CREDENTIALS;
 }

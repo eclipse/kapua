@@ -102,6 +102,32 @@ components:
                 phoneNumber: '+1 555 123 4567'
                 status: ENABLED
                 userType: INTERNAL
+    mfaOption:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
+        - description: An object containing all the information for a single MfaOption
+          type: object
+          properties:
+            userId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            mfaSecretKey:
+              type: string
+            trustKey:
+              description: |
+                The key of the trusted machine.
+              type: string
+            trustExpirationDate:
+              description: |
+                The moment when the machine trust will expire.
+              type: string
+              format: 'date-time'
+          example:
+            $ref: '#/components/examples/mfaOption/value'
+    mfaOptionCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntityCreator'
+        - type: object
   examples:
     user:
       value:
@@ -128,3 +154,12 @@ components:
         phoneNumber: '+1 (555) 816 1851'
         userType: INTERNAL
         expirationDate: '2019-31-12T00:00:00.000Z'
+    mfaOption:
+      value:
+        type: mfaOption
+        id: "Tu4UpgmN0A4"
+        scopeId: "AQ"
+        userId: "AQ"
+        mfaSecretKey: "exampleMfaSecretKey"
+        trustKey: "exampleTrustKey"
+        trustExpirationDate: '2020-31-12T00:00:00.000Z'
