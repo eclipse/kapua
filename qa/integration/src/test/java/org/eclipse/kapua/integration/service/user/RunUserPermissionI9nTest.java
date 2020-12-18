@@ -44,5 +44,6 @@ import org.junit.runner.RunWith;
 @CucumberProperty(key = "datastore.elasticsearch.nodes", value = "127.0.0.1:9200")
 @CucumberProperty(key = "org.eclipse.kapua.qa.datastore.extraStartupDelay", value = "5")
 @CucumberProperty(key = "org.eclipse.kapua.qa.broker.extraStartupDelay", value = "5")
+@CucumberProperty(key = "es.set.netty.runtime.available.processors", value = "false")  // see https://github.com/elastic/elasticsearch/issues/25741
 public class RunUserPermissionI9nTest {
 }
