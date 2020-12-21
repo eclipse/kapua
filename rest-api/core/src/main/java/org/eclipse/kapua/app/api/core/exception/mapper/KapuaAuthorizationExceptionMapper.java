@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.core.exception;
+package org.eclipse.kapua.app.api.core.exception.mapper;
 
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
 

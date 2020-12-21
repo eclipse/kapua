@@ -10,29 +10,29 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.core.exception;
+package org.eclipse.kapua.app.api.core.exception.mapper;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
+import org.eclipse.kapua.KapuaIllegalNullArgumentException;
+import org.eclipse.kapua.app.api.core.exception.model.IllegalNullArgumentExceptionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Provider
-public class KapuaEntityNotFoundExceptionMapper implements ExceptionMapper<KapuaEntityNotFoundException> {
+public class KapuaIllegalNullArgumentExceptionMapper implements ExceptionMapper<KapuaIllegalNullArgumentException> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KapuaEntityNotFoundExceptionMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KapuaIllegalNullArgumentExceptionMapper.class);
 
     @Override
-    public Response toResponse(KapuaEntityNotFoundException kapuaException) {
-        LOG.error("Entity not found exception!", kapuaException);
+    public Response toResponse(KapuaIllegalNullArgumentException kapuaException) {
+        LOG.error("Illegal null argument exception!", kapuaException);
         return Response//
-                .status(Status.NOT_FOUND) //
-                .entity(new EntityNotFoundExceptionInfo(Status.NOT_FOUND, kapuaException)) //
+                .status(Status.BAD_REQUEST) //
+                .entity(new IllegalNullArgumentExceptionInfo(Status.BAD_REQUEST, kapuaException)) //
                 .build();
     }
 }

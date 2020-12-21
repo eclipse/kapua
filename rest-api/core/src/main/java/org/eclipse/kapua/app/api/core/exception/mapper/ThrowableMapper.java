@@ -10,11 +10,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.core.exception;
+package org.eclipse.kapua.app.api.core.exception.mapper;
 
-import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
-import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
-
+import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,17 +22,16 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class SubjectUnathorizedExceptionMapper implements ExceptionMapper<SubjectUnauthorizedException> {
+public class ThrowableMapper implements ExceptionMapper<Throwable> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SubjectUnathorizedExceptionMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ThrowableMapper.class);
 
     @Override
-    public Response toResponse(SubjectUnauthorizedException exception) {
-        LOG.error("Subject not authorized!", exception);
-        return Response//
-                .status(Status.FORBIDDEN) //
-                .entity(new SubjectUnauthorizedExceptionInfo(Status.FORBIDDEN, exception)) //
+    public Response toResponse(Throwable throwable) {
+        LOG.error("Severe error!", throwable);
+        return Response //
+                .serverError() //
+                .entity(new ThrowableInfo(Status.INTERNAL_SERVER_ERROR, throwable)) //
                 .build();
     }
-
 }

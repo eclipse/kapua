@@ -10,29 +10,29 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.core.exception;
+package org.eclipse.kapua.app.api.core.exception.mapper;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import org.eclipse.kapua.KapuaIllegalNullArgumentException;
-import org.eclipse.kapua.app.api.core.exception.model.IllegalNullArgumentExceptionInfo;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.app.api.core.exception.model.IllegalArgumentExceptionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Provider
-public class KapuaIllegalNullArgumentExceptionMapper implements ExceptionMapper<KapuaIllegalNullArgumentException> {
+public class KapuaIllegalArgumentExceptionMapper implements ExceptionMapper<KapuaIllegalArgumentException> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(KapuaIllegalNullArgumentExceptionMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KapuaIllegalArgumentExceptionMapper.class);
 
     @Override
-    public Response toResponse(KapuaIllegalNullArgumentException kapuaException) {
-        LOG.error("Illegal null argument exception!", kapuaException);
+    public Response toResponse(KapuaIllegalArgumentException kapuaException) {
+        LOG.error("Illegal argument exception!", kapuaException);
         return Response//
                 .status(Status.BAD_REQUEST) //
-                .entity(new IllegalNullArgumentExceptionInfo(Status.BAD_REQUEST, kapuaException)) //
+                .entity(new IllegalArgumentExceptionInfo(Status.BAD_REQUEST, kapuaException)) //
                 .build();
     }
 }

@@ -44,14 +44,15 @@ public class ThrowableInfo {
 
     public ThrowableInfo(Status httpStatus, Throwable throwable) {
         this.httpErrorCode = httpStatus.getStatusCode();
-        this.message = throwable.getMessage();
-        // Print stack trace
-        if (SHOW_STACKTRACE) {
-            StringWriter stringWriter = new StringWriter();
-            throwable.printStackTrace(new PrintWriter(stringWriter));
-            setStackTrace(stringWriter.toString());
+        if (throwable != null) {
+            this.message = throwable.getMessage();
+            // Print stack trace
+            if (SHOW_STACKTRACE) {
+                StringWriter stringWriter = new StringWriter();
+                throwable.printStackTrace(new PrintWriter(stringWriter));
+                setStackTrace(stringWriter.toString());
+            }
         }
-
     }
 
     public int getHttpErrorCode() {
