@@ -131,9 +131,6 @@
         <api>org.eclipse.kapua.job.engine.JobEngineService</api>
         <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
 
-        <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService</api>
-        <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory</api>
-
         <api>org.eclipse.kapua.transport.TransportClientFactory</api>
 
         <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
@@ -149,7 +146,6 @@
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.transport</package>
-        <package>org.eclipse.kapua.job.engine.jbatch</package>
-        <package>org.eclipse.kapua.job.engine.queue.jbatch</package>
+        <package>org.eclipse.kapua.job.engine.client</package>
     </packages>
 </locator-config>

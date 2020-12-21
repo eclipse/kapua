@@ -16,7 +16,21 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 public class JobMissingTargetException extends JobEngineException {
 
+    private final KapuaId scopeId;
+    private final KapuaId jobId;
+
     public JobMissingTargetException(KapuaId scopeId, KapuaId jobId) {
         super(KapuaJobEngineErrorCodes.JOB_TARGET_MISSING, scopeId, jobId);
+        this.scopeId = scopeId;
+        this.jobId = jobId;
     }
+
+    public KapuaId getScopeId() {
+        return scopeId;
+    }
+
+    public KapuaId getJobId() {
+        return jobId;
+    }
+
 }

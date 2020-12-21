@@ -23,4 +23,13 @@ public class JobResumingException extends JobEngineException {
     public JobResumingException(Throwable t, KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
         super(KapuaJobEngineErrorCodes.JOB_RESUMING, t, scopeId, jobId, jobExecutionId);
     }
+
+    public JobResumingException(KapuaId scopeId, KapuaId jobId) {
+        this(scopeId, jobId, null);
+    }
+
+    public JobResumingException(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
+        super(KapuaJobEngineErrorCodes.JOB_RESUMING, scopeId, jobId, jobExecutionId);
+    }
+
 }

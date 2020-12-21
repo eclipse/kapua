@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,22 +10,19 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.remote;
+package org.eclipse.kapua.job.engine.client;
 
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaProvider;
 
-/**
- * {@link JobEngineFactory} implementation.
- *
- * @since 1.1.0
- */
 @KapuaProvider
-public class JobEngineFactoryRemote implements JobEngineFactory {
+public class JobEngineFactoryClient implements JobEngineFactory {
+
 
     @Override
     public JobStartOptions newJobStartOptions() {
-        return new JobStartOptionsRemote();
+        return new JobStartOptionsClient();
     }
+
 }

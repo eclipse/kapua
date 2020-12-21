@@ -23,4 +23,12 @@ public class JobStoppingException extends JobEngineException {
     public JobStoppingException(Throwable t, KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
         super(KapuaJobEngineErrorCodes.JOB_STOPPING, t, scopeId, jobId, jobExecutionId);
     }
+
+    public JobStoppingException(KapuaId scopeId, KapuaId jobId) {
+        this(scopeId, jobId, null);
+    }
+
+    public JobStoppingException(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
+        super(KapuaJobEngineErrorCodes.JOB_STOPPING, scopeId, jobId, jobExecutionId);
+    }
 }

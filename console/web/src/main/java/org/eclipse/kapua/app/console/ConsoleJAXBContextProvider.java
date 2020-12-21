@@ -12,7 +12,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobExecutionEnqueuedExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
+import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
@@ -20,6 +38,8 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.job.engine.JobEngineXmlRegistry;
+import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
@@ -48,7 +68,12 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
+import org.eclipse.kapua.service.job.JobListResult;
+import org.eclipse.kapua.service.job.JobQuery;
+import org.eclipse.kapua.service.job.JobXmlRegistry;
+
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import javax.xml.bind.JAXBContext;
 
@@ -60,7 +85,28 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
     public JAXBContext getJAXBContext() throws KapuaException {
         try {
             if (context == null) {
+                Map<String, Object> properties = new HashMap<String, Object>(1);
+                properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+
                 context = JAXBContextFactory.createContext(new Class<?>[]{
+                        // REST API exception models
+                        ThrowableInfo.class,
+                        ExceptionInfo.class,
+
+                        // Jobs Exception Info
+                        CleanJobDataExceptionInfo.class,
+                        JobAlreadyRunningExceptionInfo.class,
+                        JobEngineExceptionInfo.class,
+                        JobExecutionEnqueuedExceptionInfo.class,
+                        JobInvalidTargetExceptionInfo.class,
+                        JobMissingStepExceptionInfo.class,
+                        JobMissingTargetExceptionInfo.class,
+                        JobNotRunningExceptionInfo.class,
+                        JobResumingExceptionInfo.class,
+                        JobRunningExceptionInfo.class,
+                        JobStartingExceptionInfo.class,
+                        JobStoppingExceptionInfo.class,
+
                         KuraDeviceComponentConfiguration.class,
                         KuraDeviceConfiguration.class,
                         KuraDeploymentPackage.class,
@@ -101,6 +147,12 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
 
                         // Job
                         JobTargetSublist.class,
+                        JobStartOptions.class,
+                        IsJobRunningResponse.class,
+                        JobListResult.class,
+                        JobQuery.class,
+                        JobXmlRegistry.class,
+                        JobEngineXmlRegistry.class,
 
                         // KapuaEvent
                         ServiceEvent.class,
@@ -109,11 +161,12 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         EventStoreRecordQuery.class,
                         EventStoreXmlRegistry.class,
 
-                }, null);
+                }, properties);
             }
             return context;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 }

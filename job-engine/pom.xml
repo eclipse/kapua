@@ -31,8 +31,8 @@
         <module>api</module>
         <module>jbatch</module>
 
-        <module>extra</module>
         <module>app</module>
+        <module>client</module>
     </modules>
 
 </project>

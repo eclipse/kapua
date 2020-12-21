@@ -41,7 +41,7 @@ public class JobAlreadyRunningException extends JobEngineException {
      * @since 1.0.0
      */
     public JobAlreadyRunningException(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId, Set<KapuaId> jobTargetIdSubset) {
-        super(KapuaJobEngineErrorCodes.JOB_ALREADY_RUNNING, scopeId, jobId, jobExecutionId, jobTargetIdSubset);
+        super(KapuaJobEngineErrorCodes.JOB_ALREADY_RUNNING, scopeId, jobId, jobExecutionId, jobTargetIdSubset.toArray());
 
         this.scopeId = scopeId;
         this.jobId = jobId;

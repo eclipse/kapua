@@ -27,12 +27,27 @@ import org.eclipse.kapua.app.api.core.model.data.JsonDatastoreMessage;
 import org.eclipse.kapua.app.api.core.model.data.JsonMessageQuery;
 import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericRequestMessage;
 import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericResponseMessage;
+import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
 import org.eclipse.kapua.app.api.core.model.message.JsonKapuaPayload;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.job.engine.JobEngineXmlRegistry;
+import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobExecutionEnqueuedExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
@@ -281,6 +296,20 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     IllegalArgumentExceptionInfo.class,
                     IllegalNullArgumentExceptionInfo.class,
                     MfaRequiredExceptionInfo.class,
+
+                    // Jobs Exception Info
+                    CleanJobDataExceptionInfo.class,
+                    JobAlreadyRunningExceptionInfo.class,
+                    JobEngineExceptionInfo.class,
+                    JobExecutionEnqueuedExceptionInfo.class,
+                    JobInvalidTargetExceptionInfo.class,
+                    JobMissingStepExceptionInfo.class,
+                    JobMissingTargetExceptionInfo.class,
+                    JobNotRunningExceptionInfo.class,
+                    JobResumingExceptionInfo.class,
+                    JobRunningExceptionInfo.class,
+                    JobStartingExceptionInfo.class,
+                    JobStoppingExceptionInfo.class,
 
                     // Tocds
                     KapuaTocd.class,
@@ -550,9 +579,12 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     // Jobs
                     Job.class,
+                    JobStartOptions.class,
+                    IsJobRunningResponse.class,
                     JobListResult.class,
                     JobQuery.class,
                     JobXmlRegistry.class,
+                    JobEngineXmlRegistry.class,
 
                     JobStep.class,
                     JobStepListResult.class,
