@@ -98,7 +98,7 @@
         <qpid-jms-client.version>0.40.0</qpid-jms-client.version>
         <qpid-proton.version>0.31.0</qpid-proton.version>
         <qpid-geronimo-jms.version>1.0-alpha-2</qpid-geronimo-jms.version>
-        <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
+        <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
         <jetty.version>9.4.12.v20180830</jetty.version>
 
         <!-- Plugins versions -->
