@@ -38,8 +38,12 @@ public class AccessInfoCache extends EntityCache {
 
     public KapuaEntity getByUserId(KapuaId scopeId, KapuaId userId) {
         if (userId != null) {
-            KapuaId entityId = (KapuaId) accessInfoByUserIdCache.get(userId);
-            return get(scopeId, entityId);
+            try {
+                KapuaId entityId = (KapuaId) accessInfoByUserIdCache.get(userId);
+                return get(scopeId, entityId);
+            } catch (Exception e) {
+                cacheErrorLogger("getByUserId", accessInfoByUserIdCache.getName(), userId, e);
+            }
         }
         return null;
     }
@@ -47,8 +51,20 @@ public class AccessInfoCache extends EntityCache {
     @Override
     public void put(KapuaEntity entity) {
         if (entity != null) {
-            idCache.put(entity.getId(), entity);
-            accessInfoByUserIdCache.put(((AccessInfo) entity).getUserId(), entity.getId());
+            try {
+                idCache.put(entity.getId(), entity);
+            } catch (Exception e) {
+                cacheErrorLogger("put", idCache.getName(), entity.getId(), e);
+                return; // the 'put' on accessInfoByUserIdCache is performed only if the 'put' on idCache was successful (the latter is needed by the former)
+            }
+            try {
+                accessInfoByUserIdCache.put(((AccessInfo) entity).getUserId(), entity.getId());
+            } catch (Exception e) {
+                // if the insertion on accessInfoByUserIdCache is failing, but the one on the idCache was successful, the situation is still ok:
+                // a 'get' from the idCache will work anyway, while a 'get' from the accessInfoByUserIdCache will not work,
+                // forcing again a 'put' in the next operation
+                cacheErrorLogger("put", accessInfoByUserIdCache.getName(), ((AccessInfo) entity).getUserId(), e);
+            }
         }
     }
 
@@ -56,7 +72,11 @@ public class AccessInfoCache extends EntityCache {
     public KapuaEntity remove(KapuaId scopeId, KapuaId kapuaId) {
         KapuaEntity kapuaEntity = super.remove(scopeId, kapuaId);
         if (kapuaEntity != null) {
-            accessInfoByUserIdCache.remove(((AccessInfo) kapuaEntity).getUserId());
+            try {
+                accessInfoByUserIdCache.remove(((AccessInfo) kapuaEntity).getUserId());
+            } catch (Exception e) {
+                cacheErrorLogger("remove", accessInfoByUserIdCache.getName(), ((AccessInfo) kapuaEntity).getUserId(), e);
+            }
         }
         return kapuaEntity;
     }

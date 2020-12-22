@@ -116,8 +116,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
             }
             return DeviceConnectionDAO.update(entityManager, deviceConnection);
         }).onBeforeHandler(() -> {
-            ((DeviceRegistryCache) entityCache).removeByDeviceConnectionId(deviceConnection.getScopeId(),
-                    deviceConnection.getId());
+            ((DeviceRegistryCache) entityCache).removeByDeviceConnectionId(deviceConnection.getScopeId(), deviceConnection.getId());
             return null;
         }));
     }
@@ -216,8 +215,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
                 throw new KapuaEntityNotFoundException(DeviceConnection.TYPE, deviceConnectionId);
             }
             return DeviceConnectionDAO.delete(entityManager, scopeId, deviceConnectionId);
-        }).onAfterHandler((emptyParam) -> ((DeviceRegistryCache) entityCache).removeByDeviceConnectionId(scopeId,
-                deviceConnectionId)));
+        }).onAfterHandler((emptyParam) -> ((DeviceRegistryCache) entityCache).removeByDeviceConnectionId(scopeId, deviceConnectionId)));
     }
 
     @Override
