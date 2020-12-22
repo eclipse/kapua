@@ -90,13 +90,14 @@
         <elasticsearch-client-transport.version>6.8.7</elasticsearch-client-transport.version>
         <elasticsearch-client-rest.version>6.8.7</elasticsearch-client-rest.version>
         <jackson.version>2.10.1</jackson.version> <!-- Elastic Search uses 2.8.6 -->
+        <netty.version>4.1.50.Final</netty.version>
+        <netty3.version>3.10.6.Final</netty3.version>
         <log4j-api.version>2.8.2</log4j-api.version> <!-- same version used by elasticsearch -->
         <log4j-to-slf4j.version>2.8.2</log4j-to-slf4j.version> <!-- same version used by elasticsearch -->
         <log4j2-mock.version>0.0.1</log4j2-mock.version>
         <qpid-jms-client.version>0.40.0</qpid-jms-client.version>
         <qpid-proton.version>0.31.0</qpid-proton.version>
         <qpid-geronimo-jms.version>1.0-alpha-2</qpid-geronimo-jms.version>
-        <netty.version>4.1.50.Final</netty.version>
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
         <jetty.version>9.4.12.v20180830</jetty.version>
 
@@ -1494,6 +1495,14 @@
                 <version>${dropwizard-metrics.version}</version>
             </dependency>
 
+
+            <!-- -->
+            <!-- Netty 3 -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty</artifactId>
+                <version>${netty3.version}</version>
+            </dependency>
             <!-- -->
             <!-- Netty 4 -->
             <!-- Below all Netty4 artifacts are defined to force any of the Netty4 usages at the same version for all components-->
@@ -1574,6 +1583,11 @@
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
+                <artifactId>netty-example</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
                 <artifactId>netty-handler</artifactId>
                 <version>${netty.version}</version>
             </dependency>
@@ -1638,11 +1652,6 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-transport-udt</artifactId>
-                <version>${netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-example</artifactId>
                 <version>${netty.version}</version>
             </dependency>
 
