@@ -34,8 +34,8 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
                -Ddatastore.elasticsearch.provider=\${DATASTORE_CLIENT} \
                -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
-               -Dcertificate.jwt.private.key=file:///var/opt/jetty/key.pk8 \
-               -Dcertificate.jwt.certificate=file:///var/opt/jetty/cert.pem \
+               -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
+               -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
                -Ddatastore.disable=\${KAPUA_DISABLE_DATASTORE:-false}"
 
 USER 0

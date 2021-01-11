@@ -16,11 +16,6 @@
 JETTY_HOME="/opt/jetty"
 JETTY_BASE="/var/opt/jetty"
 
-# Generate X509 certificate and private key
-openssl req -x509 -newkey rsa:4096 -keyout ${JETTY_BASE}/key.pem -out ${JETTY_BASE}/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
-openssl pkcs8 -topk8 -in ${JETTY_BASE}/key.pem -out ${JETTY_BASE}/key.pk8 -nocrypt
-rm ${JETTY_BASE}/key.pem
-
 START_ARGS="$START_ARGS -Djetty.home=${JETTY_HOME}"
 START_ARGS="$START_ARGS -Djetty.base=${JETTY_BASE}"
 

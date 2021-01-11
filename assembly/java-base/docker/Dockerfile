@@ -22,4 +22,10 @@ RUN yum install -y java-1.8.0-openjdk && \
     mkdir -p /opt/jolokia && \
     curl -s @jolokia.agent.url@ -o /opt/jolokia/jolokia-jvm-agent.jar
 
+# Generate X509 certificate and private key
+RUN mkdir -p /etc/opt/kapua && \
+    openssl req -x509 -newkey rsa:4096 -keyout /etc/opt/kapua/key.pem -out /etc/opt/kapua/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX' && \
+    openssl pkcs8 -topk8 -in /etc/opt/kapua/key.pem -out /etc/opt/kapua/key.pk8 -nocrypt && \
+    rm /etc/opt/kapua/key.pem
+
 EXPOSE 8778

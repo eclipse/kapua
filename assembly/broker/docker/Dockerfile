@@ -36,8 +36,8 @@ ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
                    -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
                    -Ddatastore.elasticsearch.provider=\${DATASTORE_CLIENT} \
                    -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
-                   -Dcertificate.jwt.private.key=file:///var/opt/activemq/key.pk8 \
-                   -Dcertificate.jwt.certificate=file:///var/opt/activemq/cert.pem \
+                   -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
+                   -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
                    -Dbroker.ip=broker"
 
 EXPOSE 1883 1893 8883 61614 61615 8161

@@ -14,11 +14,6 @@
 
 ACTIVEMQ_BASE="/var/opt/activemq"
 
-# Generate X509 certificate and private key
-openssl req -x509 -newkey rsa:4096 -keyout ${ACTIVEMQ_BASE}/key.pem -out ${ACTIVEMQ_BASE}/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX'
-openssl pkcs8 -topk8 -in ${ACTIVEMQ_BASE}/key.pem -out ${ACTIVEMQ_BASE}/key.pk8 -nocrypt
-rm ${ACTIVEMQ_BASE}/key.pem
-
 ## Certificate Options
 
 : ${KAPUA_DISABLE_SSL:="true"}
