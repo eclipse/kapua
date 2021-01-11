@@ -59,6 +59,7 @@
         <guava-listenablefuture.version>9999.0-empty-to-avoid-conflict-with-guava</guava-listenablefuture.version>
         <guice.version>4.1.0</guice.version>
         <h2.version>1.4.199</h2.version>
+        <hk2-api.version>2.5.0-b05</hk2-api.version>
         <httpcomponents.version>4.5.13</httpcomponents.version>
         <jackson.version>2.10.1</jackson.version>
         <javassist.version>3.19.0-GA</javassist.version>
@@ -823,11 +824,6 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-job-engine-remote</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-scheduler-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1105,7 +1101,12 @@
                 <version>${project.version}</version>
                 <type>war</type>
             </dependency>
-
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-job-engine-app</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
             <!-- -->
             <!-- External dependencies -->
             <dependency>
@@ -1687,6 +1688,11 @@
                 <version>${javax-servlet-api.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.glassfish.jersey.ext</groupId>
+                <artifactId>jersey-entity-filtering</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-server</artifactId>
                 <version>${jersey.version}</version>
@@ -1697,6 +1703,11 @@
                 <version>${jersey.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.glassfish.jersey.core</groupId>
+                <artifactId>jersey-common</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.glassfish.jersey.containers</groupId>
                 <artifactId>jersey-container-servlet-core</artifactId>
                 <version>${jersey.version}</version>
@@ -1704,6 +1715,26 @@
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-json-jackson</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-api</artifactId>
+                <version>${hk2-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-utils</artifactId>
+                <version>${hk2-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.hk2</groupId>
+                <artifactId>hk2-locator</artifactId>
+                <version>${hk2-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
+                <artifactId>jersey-guava</artifactId>
                 <version>${jersey.version}</version>
             </dependency>
             <!-- Jackson -->

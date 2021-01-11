@@ -177,8 +177,10 @@
                 <include>io.netty:netty-all</include>
                 <include>io.netty:netty</include>
 
+                <include>javax.annotation:javax.annotation-api</include>
                 <include>javax.inject:javax.inject</include>
                 <include>javax.batch:javax.batch-api</include>
+                <include>javax.ws.rs:javax.ws.rs-api</include>
 
                 <include>joda-time:joda-time</include>
 
@@ -213,6 +215,15 @@
                 <include>org.elasticsearch:elasticsearch</include>
                 <include>org.elasticsearch:elasticsearch-x-content</include>
                 <include>org.elasticsearch:securesm</include>
+                <include>org.glassfish:javax.json</include>
+                <include>org.glassfish.hk2:hk2-api</include>
+                <include>org.glassfish.hk2:hk2-locator</include>
+                <include>org.glassfish.hk2:hk2-utils</include>
+                <include>org.glassfish.jersey.bundles.repackaged:jersey-guava</include>
+                <include>org.glassfish.jersey.core:jersey-client</include>
+                <include>org.glassfish.jersey.core:jersey-common</include>
+                <include>org.glassfish.jersey.ext:jersey-entity-filtering</include>
+                <include>org.glassfish.jersey.media:jersey-media-moxy</include>
                 <include>org.hdrhistogram:HdrHistogram</include>
                 <include>org.javassist:javassist</include>
                 <include>org.liquibase:liquibase-core</include>
@@ -261,9 +272,10 @@
                 <include>${pom.groupId}:kapua-job-api</include>
                 <include>${pom.groupId}:kapua-job-internal</include>
                 <include>${pom.groupId}:kapua-job-engine-api</include>
-                <include>${pom.groupId}:kapua-job-engine-remote</include>
+                <include>${pom.groupId}:kapua-job-engine-client</include>
                 <include>${pom.groupId}:kapua-message-api</include>
                 <include>${pom.groupId}:kapua-message-internal</include>
+                <include>${pom.groupId}:kapua-rest-api-core</include>
                 <include>${pom.groupId}:kapua-scheduler-api</include>
                 <include>${pom.groupId}:kapua-scheduler-quartz</include>
                 <include>${pom.groupId}:kapua-security-authentication-api</include>

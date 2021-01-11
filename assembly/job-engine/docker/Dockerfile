@@ -27,8 +27,6 @@ ENV SQL_DB_PORT 3306
 
 ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
 
-ENV JOB_ENGINE_BASE_ADDR http://job-engine:8080/v1
-
 ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
                -Dcommons.db.connection.port=\${SQL_DB_PORT} \
@@ -39,9 +37,7 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
                -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
                -Ddatastore.disable=\${KAPUA_DISABLE_DATASTORE:-false} \
-               -Ddevice.management.response.stacktrace.show=\${DEVICE_MANAGEMENT_RESPONSE_STACKTRACE_SHOW:-false} \
-               -Djavax.xml.bind.context.factory=org.eclipse.persistence.jaxb.JAXBContextFactory \
-               -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR}"
+               -Djavax.xml.bind.context.factory=org.eclipse.persistence.jaxb.JAXBContextFactory"
 
 USER 0
 

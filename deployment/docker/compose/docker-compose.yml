@@ -23,9 +23,10 @@ services:
       - 5672:5672
   broker:
     image: kapua/kapua-broker:${IMAGE_VERSION}
+    expose:
+      - 1893
     ports:
       - 1883:1883
-      - 1893:1893
       - 8883:8883
       - 61614:61614
     depends_on:
@@ -71,6 +72,24 @@ services:
       - broker
       - db
       - es
+      - events-broker
+    environment:
+      - KAPUA_DISABLE_SSL
+      - KAPUA_DISABLE_DATASTORE
+      - KAPUA_CA
+      - KAPUA_CRT
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
+      - LOGBACK_LOG_LEVEL
+  job-engine:
+    image: kapua/kapua-job-engine:${IMAGE_VERSION}
+    expose:
+      - 8080
+    depends_on:
+      - broker
+      - db
       - events-broker
     environment:
       - KAPUA_DISABLE_SSL

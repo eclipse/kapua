@@ -24,6 +24,8 @@ ENV SQL_DB_PORT 3306
 
 ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
 
+ENV JOB_ENGINE_BASE_ADDR http://job-engine:8080/v1
+
 USER 0
 
 RUN useradd -u 1002 -g 0 -d '/var/opt/activemq' -s '/sbin/nologin' activemq && \
@@ -38,7 +40,9 @@ ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
                    -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                    -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
                    -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
-                   -Dbroker.ip=broker"
+                   -Dbroker.ip=broker \
+                   -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR} \
+                   -Djob.engine.client.auth.mode=trusted"
 
 EXPOSE 1883 1893 8883 61614 61615 8161
 
