@@ -35,8 +35,12 @@ public class NamedEntityCache extends EntityCache {
 
     public KapuaEntity get(KapuaId scopeId, String name) {
         if (name != null) {
-            KapuaId entityId = (KapuaId) nameCache.get(name);
-            return get(scopeId, entityId);
+            try {
+                KapuaId entityId = (KapuaId) nameCache.get(name);
+                return get(scopeId, entityId);
+            } catch (Exception e) {
+                cacheErrorLogger("get", nameCache.getName(), name, e);
+            }
         }
         return null;
     }
@@ -44,8 +48,19 @@ public class NamedEntityCache extends EntityCache {
     @Override
     public void put(KapuaEntity entity) {
         if (entity != null) {
-            idCache.put(entity.getId(), entity);
-            nameCache.put(((KapuaNamedEntity) entity).getName(), entity.getId());
+            try {
+                idCache.put(entity.getId(), entity);
+            } catch (Exception e) {
+                cacheErrorLogger("put", idCache.getName(), entity.getId(), e);
+                return; // the 'put' on the nameCache is performed only if the 'put' on idCache has been successful (since the latter is needed by the former)
+            }
+            try {
+                nameCache.put(((KapuaNamedEntity) entity).getName(), entity.getId());
+            } catch (Exception e) {
+                // if the insertion on nameCache is failing, but the one on the idCache was successful, the situation is still ok:
+                // a 'get' from the idCache will work anyway, while a 'get' from the nameCache will not work, forcing again a 'put' in the next operation
+                cacheErrorLogger("put", nameCache.getName(), ((KapuaNamedEntity) entity).getName(), e);
+            }
         }
     }
 
@@ -53,7 +68,11 @@ public class NamedEntityCache extends EntityCache {
     public KapuaEntity remove(KapuaId scopeId, KapuaId kapuaId) {
         KapuaEntity kapuaEntity = super.remove(scopeId, kapuaId);
         if (kapuaEntity != null) {
-            nameCache.remove(((KapuaNamedEntity) kapuaEntity).getName());
+            try {
+                nameCache.remove(((KapuaNamedEntity) kapuaEntity).getName());
+            } catch (Exception e) {
+                cacheErrorLogger("remove", nameCache.getName(), ((KapuaNamedEntity) kapuaEntity).getName(), e);
+            }
         }
         return kapuaEntity;
     }

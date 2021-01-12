@@ -42,16 +42,24 @@ public class DeviceRegistryCache extends EntityCache {
 
     public KapuaEntity getByClientId(KapuaId scopeId, String clientId) {
         if (clientId != null) {
-            KapuaId entityId = (KapuaId) deviceByClientIdCache.get(clientId);
-            return get(scopeId, entityId);
+            try {
+                KapuaId entityId = (KapuaId) deviceByClientIdCache.get(clientId);
+                return get(scopeId, entityId);
+            } catch (Exception e) {
+                cacheErrorLogger("getByClientId", deviceByClientIdCache.getName(), clientId, e);
+            }
         }
         return null;
     }
 
     public KapuaEntity getByDeviceConnectionId(KapuaId scopeId, KapuaId deviceConnectionId) {
         if (deviceConnectionId != null) {
-            KapuaId entityId = (KapuaId) deviceByConnectionIdCache.get(deviceConnectionId);
-            return get(scopeId, entityId);
+            try {
+                KapuaId entityId = (KapuaId) deviceByConnectionIdCache.get(deviceConnectionId);
+                return get(scopeId, entityId);
+            } catch (Exception e) {
+                cacheErrorLogger("getByDeviceConnectionId", deviceByConnectionIdCache.getName(), deviceConnectionId, e);
+            }
         }
         return null;
     }
@@ -59,10 +67,27 @@ public class DeviceRegistryCache extends EntityCache {
     @Override
     public void put(KapuaEntity entity) {
         if (entity != null) {
-            idCache.put(entity.getId(), entity);
-            deviceByClientIdCache.put(((Device) entity).getClientId(), entity.getId());
-            if (((Device) entity).getConnectionId() != null) {
-                deviceByConnectionIdCache.put(((Device) entity).getConnectionId(), entity.getId());
+            try {
+                idCache.put(entity.getId(), entity);
+            } catch (Exception e) {
+                cacheErrorLogger("put", idCache.getName(), entity.getId(), e);
+                return; // the 'put' on the deviceBy caches is performed only if the 'put' on idCache has been successful (the latter is needed by the former)
+            }
+            boolean putOnConnectionCache = false;  // used only for error management
+            try {
+                deviceByClientIdCache.put(((Device) entity).getClientId(), entity.getId());
+                if (((Device) entity).getConnectionId() != null) {
+                    putOnConnectionCache = true;
+                    deviceByConnectionIdCache.put(((Device) entity).getConnectionId(), entity.getId());
+                }
+            } catch (Exception e) {
+                // if the insertion on one of the deviceBy caches is failing, but the one on the idCache was successful, the situation is still ok:
+                // a 'get' from the idCache will work anyway, while a 'get' from the deviceBy cache will not work, forcing again a 'put' in the next operation
+                if (putOnConnectionCache) {
+                    cacheErrorLogger("put", deviceByConnectionIdCache.getName(), ((Device) entity).getConnectionId(), e);
+                } else {
+                    cacheErrorLogger("put", deviceByClientIdCache.getName(), ((Device) entity).getClientId(), e);
+                }
             }
         }
     }
@@ -71,9 +96,19 @@ public class DeviceRegistryCache extends EntityCache {
     public KapuaEntity remove(KapuaId scopeId, KapuaId kapuaId) {
         KapuaEntity kapuaEntity = super.remove(scopeId, kapuaId);
         if (kapuaEntity != null) {
-            deviceByClientIdCache.remove(((Device) kapuaEntity).getClientId());
-            if (((Device) kapuaEntity).getConnectionId() != null) {
-                deviceByConnectionIdCache.remove(((Device) kapuaEntity).getConnectionId());
+            boolean putOnConnectionCache = false;  // used only for error management
+            try {
+                deviceByClientIdCache.remove(((Device) kapuaEntity).getClientId());
+                if (((Device) kapuaEntity).getConnectionId() != null) {
+                    putOnConnectionCache = true;
+                    deviceByConnectionIdCache.remove(((Device) kapuaEntity).getConnectionId());
+                }
+            } catch (Exception e) {
+                if (putOnConnectionCache) {
+                    cacheErrorLogger("remove", deviceByConnectionIdCache.getName(), ((Device) kapuaEntity).getConnectionId(), e);
+                } else {
+                    cacheErrorLogger("remove", deviceByClientIdCache.getName(), ((Device) kapuaEntity).getClientId(), e);
+                }
             }
         }
         return kapuaEntity;

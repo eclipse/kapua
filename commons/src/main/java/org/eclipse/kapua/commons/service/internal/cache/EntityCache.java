@@ -42,6 +42,7 @@ public class EntityCache {
     protected Counter cacheMiss;
     protected Counter cacheHit;
     protected Counter cacheRemoval;
+    protected Counter cacheError;
 
     /**
      * The constructor initializes the {@link #idCache} and the {@link #listsCache}.
@@ -55,12 +56,18 @@ public class EntityCache {
         cacheMiss = MetricServiceFactory.getInstance().getCounter(MODULE, COMPONENT, ENTITY, "miss", COUNT);
         cacheHit = MetricServiceFactory.getInstance().getCounter(MODULE, COMPONENT, ENTITY, "hit", COUNT);
         cacheRemoval = MetricServiceFactory.getInstance().getCounter(MODULE, COMPONENT, ENTITY, "removal", COUNT);
+        cacheError = MetricServiceFactory.getInstance().getCounter(MODULE, COMPONENT, ENTITY, "error", COUNT);
     }
 
     public KapuaEntity get(KapuaId scopeId, KapuaId kapuaId) {
         if (kapuaId != null) {
-            KapuaEntity entity = (KapuaEntity) idCache.get(kapuaId);
-            entity = checkResult(scopeId, entity);
+            KapuaEntity entity = null;
+            try {
+                entity = (KapuaEntity) idCache.get(kapuaId);
+                entity = checkResult(scopeId, entity);
+            } catch (Exception e) {
+                cacheErrorLogger("get", idCache.getName(), kapuaId, e);
+            }
             if (entity == null) {
                 cacheMiss.inc();
             } else {
@@ -72,20 +79,34 @@ public class EntityCache {
     }
 
     public KapuaListResult getList(KapuaId scopeId, Serializable id) {
+        ComposedKey listKey = new ComposedKey(scopeId, id);
         if (id != null) {
-            return checkResult(scopeId, (KapuaListResult) listsCache.get(new ComposedKey(scopeId, id)));
+            try {
+                return checkResult(scopeId, (KapuaListResult) listsCache.get(listKey));
+            } catch (Exception e) {
+                cacheErrorLogger("getList", listsCache.getName(), listKey, e);
+            }
         }
         return null;
     }
 
     public void put(KapuaEntity entity) {
         if (entity != null) {
-            idCache.put(entity.getId(), entity);
+            try {
+                idCache.put(entity.getId(), entity);
+            } catch (Exception e) {
+                cacheErrorLogger("put", idCache.getName(), entity.getId(), e);
+            }
         }
     }
 
     public void putList(KapuaId scopeId, Serializable id, KapuaListResult list) {
-        listsCache.put(new ComposedKey(scopeId, id), list);
+        ComposedKey listKey = new ComposedKey(scopeId, id);
+        try {
+            listsCache.put(listKey, list);
+        } catch (Exception e) {
+            cacheErrorLogger("putList", listsCache.getName(), listKey, e);
+        }
     }
 
     public KapuaEntity remove(KapuaId scopeId, KapuaEntity entity) {
@@ -97,9 +118,13 @@ public class EntityCache {
         if (kapuaId != null) {
             KapuaEntity entity = get(scopeId, kapuaId);
             if (entity != null) {
-                idCache.remove(kapuaId);
-                cacheRemoval.inc();
-                return entity;
+                try {
+                    idCache.remove(kapuaId);
+                    cacheRemoval.inc();
+                    return entity;
+                } catch (Exception e) {
+                    cacheErrorLogger("remove", idCache.getName(), kapuaId, e);
+                }
             }
         }
         return null;
@@ -110,8 +135,13 @@ public class EntityCache {
         if (id != null) {
             KapuaListResult entity = getList(scopeId, id);
             if (entity != null) {
-                listsCache.remove(new ComposedKey(scopeId, id));
-                return entity;
+                ComposedKey listKey = new ComposedKey(scopeId, id);
+                try {
+                    listsCache.remove(listKey);
+                    return entity;
+                } catch (Exception e) {
+                    cacheErrorLogger("removeList", idCache.getName(), listKey, e);
+                }
             }
         }
         return null;
@@ -165,5 +195,19 @@ public class EntityCache {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Handles logging for cache exceptions.
+     *
+     * @param operation the name of the method/operation
+     * @param cacheName the name of the cache in which the operation is performed
+     * @param keyId     the Id of the entry's key in the cache
+     * @param t         the exception
+     */
+    protected void cacheErrorLogger(String operation, String cacheName, Serializable keyId, Throwable t) {
+        cacheError.inc();
+        LOGGER.warn("Cache error while performing {} on {} for key {} : {}", operation, cacheName, keyId, t.getLocalizedMessage());
+        LOGGER.debug("Cache exception", t);
     }
 }
