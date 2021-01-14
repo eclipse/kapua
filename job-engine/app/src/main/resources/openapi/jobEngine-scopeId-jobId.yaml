@@ -1,0 +1,123 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Job Engine
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /start/{scopeId}/{jobId}:
+    post:
+      tags:
+        - Job Engine
+      summary: Start a single Job
+      operationId: jobStart
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './jobEngine.yaml#/components/parameters/jobId'
+      responses:
+        204:
+          description: The Start operation has been received by the Job Engine
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /start-with-options/{scopeId}/{jobId}:
+    post:
+      tags:
+        - Job Engine
+      summary: Start a single Job with additional options
+      operationId: jobStartWithOptions
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './jobEngine.yaml#/components/parameters/jobId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './jobEngine.yaml#/components/schemas/jobStartOptions'
+      responses:
+        204:
+          description: The Start operation has been received by the Job Engine
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /clean-data/{scopeId}/{jobId}:
+    post:
+      tags:
+        - Job Engine
+      summary: Clean a single Job data
+      operationId: jobCleanData
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './jobEngine.yaml#/components/parameters/jobId'
+      responses:
+        204:
+          description: The Data has been cleared
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /stop/{scopeId}/{jobId}:
+    post:
+      tags:
+        - Job Engine
+      summary: Stop a single Job
+      operationId: jobStop
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './jobEngine.yaml#/components/parameters/jobId'
+      responses:
+        204:
+          description: The Stop operation has been received by the Job Engine
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /is-running/{scopeId}/{jobId}:
+    get:
+      tags:
+        - Job Engine
+      summary: Check if a single Job is running
+      operationId: jobIsRunning
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './jobEngine.yaml#/components/parameters/jobId'
+      responses:
+        200:
+          description: An object representing the running status of a Job
+          content:
+            application/json:
+              schema:
+                $ref: './jobEngine.yaml#/components/schemas/isJobRunning'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

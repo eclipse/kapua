@@ -1,0 +1,47 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Job Engine
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    executionId:
+      name: executionId
+      in: path
+      description: The ID of the Job Execution on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    jobStartOptions:
+      type: object
+      properties:
+        targetIdSublist:
+          type: array
+          items:
+            allOf:
+              - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+              - description: The ID of a Job Target
+        resetStepIndex:
+          type: boolean
+        fromStepIndex:
+          type: number
+        enqueue:
+          type: boolean
+    isJobRunning:
+      type: object
+      properties:
+        isRunning:
+          type: boolean
+      example:
+        isRunning: true

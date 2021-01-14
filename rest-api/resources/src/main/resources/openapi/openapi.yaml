@@ -257,6 +257,21 @@ paths:
     $ref: './job/job-scopeId-_count.yaml#/paths/~1{scopeId}~1jobs~1_count'
   /{scopeId}/jobs/_query:
     $ref: './job/job-scopeId-_query.yaml#/paths/~1{scopeId}~1jobs~1_query'
+  ### Job Engine ###
+  /{scopeId}/jobs/{jobId}/_start:
+    $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_start'
+  /{scopeId}/jobs/{jobId}/_startWithOptions:
+    $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_startWithOptions'
+  /{scopeId}/jobs/{jobId}/_cleanData:
+    $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_cleanData'
+  /{scopeId}/jobs/{jobId}/_stop:
+    $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_stop'
+  /{scopeId}/jobs/{jobId}/_isRunning:
+    $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_isRunning'
+  /{scopeId}/jobs/{jobId}/executions/{executionId}/_resume:
+    $ref: './jobEngine/jobEngine-scopeId-jobId-executionId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1executions~1{executionId}~1_resume'
+  /{scopeId}/jobs/{jobId}/executions/{executionId}/_stop:
+    $ref: './jobEngine/jobEngine-scopeId-jobId-executionId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1executions~1{executionId}~1_stop'
   ### Job Execution ###
   /{scopeId}/jobs/{jobId}/executions:
     $ref: './jobExecution/job-scopeId-jobId-executions.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1executions'
