@@ -72,6 +72,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.concurrent.Callable;
 
 public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet implements GwtAuthorizationService {
@@ -118,6 +119,9 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             usernamePasswordCredentials.setAuthenticationCode(gwtLoginCredentials.getAuthenticationCode());
             usernamePasswordCredentials.setTrustKey(gwtLoginCredentials.getTrustKey());
 
+            // Cleanup any previous session
+            cleanupSession();
+
             // Login
             AUTHENTICATION_SERVICE.login(usernamePasswordCredentials, trustReq);
 
@@ -136,12 +140,15 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         try {
             // Check Credentials Values
             ArgumentValidator.notNull(gwtAccessTokenCredentials, "loginCredentials");
-            ArgumentValidator.notNull(gwtAccessTokenCredentials.getAccessToken(), "loginCredentials.accessToken");
+            ArgumentValidator.notEmptyOrNull(gwtAccessTokenCredentials.getAccessToken(), "loginCredentials.accessToken");
             ArgumentValidator.notNull(gwtJwtIdToken, "jwtIdToken");
-            ArgumentValidator.notNull(gwtJwtIdToken.getIdToken(), "jwtIdToken.idToken");
+            ArgumentValidator.notEmptyOrNull(gwtJwtIdToken.getIdToken(), "jwtIdToken.idToken");
 
             // Parse Credentials
             JwtCredentials jwtCredentials = CREDENTIALS_FACTORY.newJwtCredentials(gwtAccessTokenCredentials.getAccessToken(), gwtJwtIdToken.getIdToken());
+
+            // Cleanup any previous session
+            cleanupSession();
 
             // Login and check account auto-creation
             try {
@@ -157,6 +164,26 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
             throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
+    }
+
+    /**
+     * Invalidates the {@link HttpSession} if it is not new.
+     * <p>
+     * This prevents Session Fixation vulnerability.
+     *
+     * @since 1.5.0
+     */
+    private void cleanupSession() {
+        SecurityUtils.getSubject().logout();
+
+        // Invalidate old sessions
+        HttpServletRequest request = getThreadLocalRequest();
+        HttpSession session = request.getSession();
+        if (!session.isNew()) {
+            session.invalidate();
+        }
+
+        request.getSession(true);
     }
 
     private void handleLoginError(JwtCredentials credentials, KapuaAuthenticationException e) throws KapuaException {
@@ -195,8 +222,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
      * Return the currently authenticated user or null if no session has been established.
      */
     @Override
-    public GwtSession getCurrentSession()
-            throws GwtKapuaException {
+    public GwtSession getCurrentSession() throws GwtKapuaException {
+
         GwtSession gwtSession = null;
         try {
             Subject currentUser = SecurityUtils.getSubject();
