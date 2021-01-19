@@ -86,7 +86,7 @@
         <qpid-jms-client.version>0.40.0</qpid-jms-client.version>
         <qpid-proton.version>0.31.0</qpid-proton.version>
         <qpid-geronimo-jms.version>1.0-alpha-2</qpid-geronimo-jms.version>
-        <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
+        <quartz-scheduler.version>2.3.2</quartz-scheduler.version>
         <reflections.version>0.9.10</reflections.version>
         <scada-utils.version>0.4.0</scada-utils.version>
         <shiro.version>1.5.3</shiro.version>
@@ -1372,8 +1372,18 @@
                 <exclusions>
                     <exclusion>
                         <!-- This is not required. We are using EclipseLink connection pooling. -->
-                        <groupId>c3p0</groupId>
+                        <groupId>com.mchange</groupId>
                         <artifactId>c3p0</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <!-- This is not required. We are using EclipseLink connection pooling. -->
+                        <groupId>com.mchange</groupId>
+                        <artifactId>mchange-commons-java</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <!-- This is not required. We are using EclipseLink connection pooling. -->
+                        <groupId>com.zaxxer</groupId>
+                        <artifactId>HikariCP-java7</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
