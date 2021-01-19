@@ -218,11 +218,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>de.dentrassi.elasticsearch</groupId>
-            <artifactId>log4j2-mock</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-qa-markers</artifactId>
             <scope>test</scope>

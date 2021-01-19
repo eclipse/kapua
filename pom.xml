@@ -46,8 +46,11 @@
         <commons-pool.version>2.3</commons-pool.version>
         <compress-lzf.version>1.0.3</compress-lzf.version>
         <cucumber.version>1.2.4</cucumber.version>
-        <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
         <eclipselink.version>2.7.7</eclipselink.version>
+        <elasticsearch.version>6.8.7</elasticsearch.version>
+        <elasticsearch-client-rest.version>6.8.7</elasticsearch-client-rest.version>
+        <elasticsearch-client-transport.version>6.8.7</elasticsearch-client-transport.version>
+        <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
         <findbugs.version>2.0.1</findbugs.version>
         <googleauth.version>1.5.0</googleauth.version>
         <gson.version>2.7</gson.version>
@@ -57,6 +60,7 @@
         <guice.version>4.1.0</guice.version>
         <h2.version>1.4.199</h2.version>
         <httpcomponents.version>4.5.2</httpcomponents.version>
+        <jackson.version>2.10.1</jackson.version>
         <javassist.version>3.19.0-GA</javassist.version>
         <javax-annotation-api.version>1.2</javax-annotation-api.version>
         <javax-batch-api.version>1.0.1</javax-batch-api.version>
@@ -65,40 +69,34 @@
         <javax-json.version>1.0.4</javax-json.version>
         <javax-persistence.version>2.1.1</javax-persistence.version>
         <javax-validation-api.version>1.1.0.Final</javax-validation-api.version>
+        <jetty.version>9.4.12.v20180830</jetty.version>
         <joda.version>2.9.4</joda.version>
         <jolokia-jvm.version>1.3.4</jolokia-jvm.version>
         <jose4j.version>0.7.0</jose4j.version>
         <junit.version>4.12</junit.version>
         <liquibase.version>3.6.3</liquibase.version>
+        <log4j-api.version>2.14.0</log4j-api.version>
+        <log4j2-mock.version>0.0.1</log4j2-mock.version>
+        <logback.version>1.2.3</logback.version>
         <mockito.version>1.10.19</mockito.version>
+        <netty.version>4.1.50.Final</netty.version>
+        <netty3.version>3.10.6.Final</netty3.version>
         <opencsv.version>3.7</opencsv.version>
         <paho.version>1.2.1</paho.version>
         <protobuf.version>3.8.0</protobuf.version>
-        <reflections.version>0.9.10</reflections.version>
-        <scada-utils.version>0.4.0</scada-utils.version>
-        <shiro.version>1.3.2</shiro.version>
-        <slf4j.version>1.7.30</slf4j.version>
-        <spring-security.version>4.1.3.RELEASE</spring-security.version>
-        <swagger-ui.version>3.23.0</swagger-ui.version>
-        <zxing.version>3.4.1</zxing.version>
-
-        <logback.version>1.2.3</logback.version>
-        <snakeyaml.version>1.15</snakeyaml.version>
-        <cucumber.version>1.2.4</cucumber.version>
-        <spotify.version>8.15.1</spotify.version>
-        <elasticsearch.version>6.8.7</elasticsearch.version>
-        <elasticsearch-client-transport.version>6.8.7</elasticsearch-client-transport.version>
-        <elasticsearch-client-rest.version>6.8.7</elasticsearch-client-rest.version>
-        <jackson.version>2.10.1</jackson.version>
-        <netty.version>4.1.50.Final</netty.version>
-        <netty3.version>3.10.6.Final</netty3.version>
-        <log4j-api.version>2.14.0</log4j-api.version>
-        <log4j2-mock.version>0.0.1</log4j2-mock.version>
         <qpid-jms-client.version>0.40.0</qpid-jms-client.version>
         <qpid-proton.version>0.31.0</qpid-proton.version>
         <qpid-geronimo-jms.version>1.0-alpha-2</qpid-geronimo-jms.version>
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
-        <jetty.version>9.4.12.v20180830</jetty.version>
+        <reflections.version>0.9.10</reflections.version>
+        <scada-utils.version>0.4.0</scada-utils.version>
+        <shiro.version>1.3.2</shiro.version>
+        <slf4j.version>1.7.30</slf4j.version>
+        <snakeyaml.version>1.15</snakeyaml.version>
+        <spotify.version>8.15.1</spotify.version>
+        <spring-security.version>4.1.3.RELEASE</spring-security.version>
+        <swagger-ui.version>3.23.0</swagger-ui.version>
+        <zxing.version>3.4.1</zxing.version>
 
         <!-- Plugins versions -->
         <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
@@ -1712,13 +1710,13 @@
                 <artifactId>logback-core</artifactId>
                 <version>${logback.version}</version>
             </dependency>
-
-            <!-- Logging - Bridge implementations -->
             <dependency>
                 <groupId>de.dentrassi.elasticsearch</groupId>
                 <artifactId>log4j2-mock</artifactId>
                 <version>${log4j2-mock.version}</version>
             </dependency>
+
+            <!-- Logging - Bridge implementations -->
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-api</artifactId>

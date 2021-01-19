@@ -57,6 +57,7 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-qa-markers</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
