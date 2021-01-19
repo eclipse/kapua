@@ -47,10 +47,10 @@
         <compress-lzf.version>1.0.3</compress-lzf.version>
         <cucumber.version>1.2.4</cucumber.version>
         <eclipselink.version>2.7.7</eclipselink.version>
+        <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
         <elasticsearch.version>6.8.7</elasticsearch.version>
         <elasticsearch-client-rest.version>6.8.7</elasticsearch-client-rest.version>
         <elasticsearch-client-transport.version>6.8.7</elasticsearch-client-transport.version>
-        <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
         <findbugs.version>2.0.1</findbugs.version>
         <googleauth.version>1.5.0</googleauth.version>
         <gson.version>2.7</gson.version>
@@ -90,7 +90,7 @@
         <quartz-scheduler.version>2.2.3</quartz-scheduler.version>
         <reflections.version>0.9.10</reflections.version>
         <scada-utils.version>0.4.0</scada-utils.version>
-        <shiro.version>1.4.2</shiro.version>
+        <shiro.version>1.5.3</shiro.version>
         <slf4j.version>1.7.30</slf4j.version>
         <snakeyaml.version>1.15</snakeyaml.version>
         <spotify.version>8.15.1</spotify.version>
