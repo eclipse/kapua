@@ -383,11 +383,6 @@
             <artifactId>log4j-to-slf4j</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>de.dentrassi.elasticsearch</groupId>
-            <artifactId>log4j2-mock</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 </project>
