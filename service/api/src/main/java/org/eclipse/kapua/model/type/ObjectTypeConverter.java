@@ -56,29 +56,31 @@ public class ObjectTypeConverter {
     }
 
     public static Class<?> fromString(String value) throws ClassNotFoundException {
-        Class<?> clazz = null;
         if (value != null) {
-            if (TYPE_STRING.equals(value)) {
-                clazz = String.class;
-            } else if (TYPE_INTEGER.equals(value) || TYPE_INT.equals(value)) {
-                clazz = Integer.class;
-            } else if (TYPE_LONG.equals(value)) {
-                clazz = Long.class;
-            } else if (TYPE_FLOAT.equals(value)) {
-                clazz = Float.class;
-            } else if (TYPE_DOUBLE.equals(value)) {
-                clazz = Double.class;
-            } else if (TYPE_BOOLEAN.equals(value)) {
-                clazz = Boolean.class;
-            } else if (TYPE_DATE.equals(value)) {
-                clazz = Date.class;
-            } else if (TYPE_BINARY.equals(value)) {
-                clazz = byte[].class;
-            } else {
-                clazz = Class.forName(value);
+            switch (value) {
+                case TYPE_STRING:
+                    return String.class;
+                case TYPE_INTEGER:
+                case TYPE_INT:
+                    return Integer.class;
+                case TYPE_LONG:
+                    return Long.class;
+                case TYPE_FLOAT:
+                    return Float.class;
+                case TYPE_DOUBLE:
+                    return Double.class;
+                case TYPE_BOOLEAN:
+                    return Boolean.class;
+                case TYPE_DATE:
+                    return Date.class;
+                case TYPE_BINARY:
+                    return byte[].class;
+                default:
+                    return Class.forName(value);
             }
         }
-        return clazz;
+
+        return null;
     }
 
 }

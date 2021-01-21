@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.xml;
 
-import org.eclipse.kapua.model.id.KapuaIdStatic;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,8 +33,8 @@ public class ObjectTypeXmlAdapterTest extends Assert {
 
     @Test
     public void marshalTest() {
-        Class[] classes = {String.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class, Date.class, byte[].class, Byte[].class, KapuaIdStatic.class};
-        String[] expectedString = {"string", "integer", "long", "float", "double", "boolean", "date", "binary", "binary", "org.eclipse.kapua.model.id.KapuaIdStatic"};
+        Class[] classes = {String.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class, Date.class, byte[].class, Byte[].class, KapuaIdImpl.class};
+        String[] expectedString = {"string", "integer", "long", "float", "double", "boolean", "date", "binary", "binary", "org.eclipse.kapua.model.id.KapuaIdImpl"};
 
         for (int i = 0; i < classes.length; i++) {
             assertEquals("Expected and actual values should be the same.", expectedString[i], objectTypeXmlAdapter.marshal(classes[i]));
@@ -48,8 +48,8 @@ public class ObjectTypeXmlAdapterTest extends Assert {
 
     @Test
     public void unmarshalTest() throws ClassNotFoundException {
-        String[] stringValue = {"string", "integer", "long", "float", "double", "boolean", "date", "binary", "org.eclipse.kapua.model.id.KapuaIdStatic"};
-        Class[] expectedClasses = {String.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class, Date.class, byte[].class, KapuaIdStatic.class};
+        String[] stringValue = {"string", "integer", "long", "float", "double", "boolean", "date", "binary", "org.eclipse.kapua.model.id.KapuaIdImpl"};
+        Class[] expectedClasses = {String.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class, Date.class, byte[].class, KapuaIdImpl.class};
 
         for (int i = 0; i < stringValue.length; i++) {
             assertEquals("Expected and actual values should be the same.", expectedClasses[i], objectTypeXmlAdapter.unmarshal(stringValue[i]));

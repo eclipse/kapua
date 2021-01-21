@@ -14,7 +14,7 @@ package org.eclipse.kapua.integration.misc;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
-import org.eclipse.kapua.model.id.KapuaIdStatic;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,7 +33,7 @@ public class KapuaIdAdapterTest extends Assert {
     @Before
     public void initialize() {
         kapuaIdAdapter = new KapuaIdAdapter();
-        kapuaId = new KapuaId[]{new KapuaIdStatic(BigInteger.ZERO), new KapuaIdStatic(BigInteger.ONE), new KapuaIdStatic(BigInteger.TEN), null};
+        kapuaId = new KapuaId[]{new KapuaIdImpl(BigInteger.ZERO), new KapuaIdImpl(BigInteger.ONE), new KapuaIdImpl(BigInteger.TEN), null};
         stringValue = new String[]{"AA", "AQ", "Cg", null};
     }
 

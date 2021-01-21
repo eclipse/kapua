@@ -13,7 +13,7 @@
 package org.eclipse.kapua.broker.core.plugin;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdStatic;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl;
@@ -88,14 +88,14 @@ public class KapuaPrincipalImplTest extends Assert {
 
     @Test
     public void hasCodeNullNameIdTest() {
-        accessToken1.setScopeId(new KapuaIdStatic(BigInteger.TEN));
+        accessToken1.setScopeId(new KapuaIdImpl(BigInteger.TEN));
         KapuaPrincipalImpl kapuaPrincipal = new KapuaPrincipalImpl(accessToken1, null, "clientId", "192.168.1.1");
         assertEquals("Expected and actual values should be the same.", 2232, kapuaPrincipal.hashCode());
     }
 
     @Test
     public void hasCodeTest() {
-        accessToken1.setScopeId(new KapuaIdStatic(BigInteger.TEN));
+        accessToken1.setScopeId(new KapuaIdImpl(BigInteger.TEN));
         KapuaPrincipalImpl kapuaPrincipal = new KapuaPrincipalImpl(accessToken1, "username", "clientId", "192.168.1.1");
         assertEquals("Expected and actual values should be the same.", -265711218, kapuaPrincipal.hashCode());
     }
@@ -135,8 +135,8 @@ public class KapuaPrincipalImplTest extends Assert {
 
     @Test
     public void equalsDifferentAccountIdsTest() {
-        accessToken1.setScopeId(new KapuaIdStatic(BigInteger.ONE));
-        accessToken2.setScopeId(new KapuaIdStatic(BigInteger.TEN));
+        accessToken1.setScopeId(new KapuaIdImpl(BigInteger.ONE));
+        accessToken2.setScopeId(new KapuaIdImpl(BigInteger.TEN));
         KapuaPrincipalImpl kapuaPrincipal1 = new KapuaPrincipalImpl(accessToken1, "username1", "client1", "192.168.1.1");
         KapuaPrincipalImpl kapuaPrincipal2 = new KapuaPrincipalImpl(accessToken2, "username2", "client2", "192.168.1.2");
         assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));
@@ -144,8 +144,8 @@ public class KapuaPrincipalImplTest extends Assert {
 
     @Test
     public void equalsSameAccountIdsTest() {
-        accessToken1.setScopeId(new KapuaIdStatic(BigInteger.ONE));
-        accessToken2.setScopeId(new KapuaIdStatic(BigInteger.ONE));
+        accessToken1.setScopeId(new KapuaIdImpl(BigInteger.ONE));
+        accessToken2.setScopeId(new KapuaIdImpl(BigInteger.ONE));
         KapuaPrincipalImpl kapuaPrincipal1 = new KapuaPrincipalImpl(accessToken1, "username1", "client1", "192.168.1.1");
         KapuaPrincipalImpl kapuaPrincipal2 = new KapuaPrincipalImpl(accessToken2, "username2", "client2", "192.168.1.2");
         assertFalse("False expected.", kapuaPrincipal1.equals(kapuaPrincipal2));

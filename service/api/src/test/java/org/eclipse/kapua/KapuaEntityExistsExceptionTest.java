@@ -13,7 +13,7 @@
 package org.eclipse.kapua;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdStatic;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,7 +31,7 @@ public class KapuaEntityExistsExceptionTest extends Assert {
     @Before
     public void initialize() {
         throwables = new Throwable[]{new Throwable(), null};
-        ids = new KapuaId[]{new KapuaIdStatic(BigInteger.ONE), null};
+        ids = new KapuaId[]{new KapuaIdImpl(BigInteger.ONE), null};
     }
 
     @Test

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.type;
 
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
@@ -37,8 +38,8 @@ public class ObjectValueConverterTest extends Assert {
     public void toStringTest() {
         Byte[] byteArray1 = {-128, -10, 0, 1, 10, 127};
         byte[] byteArray2 = {-128, -10, 0, 1, 10, 127};
-        Object[] objects = {byteArray1, byteArray2, 0, 10, 100000, "String", 'c', -10, -1000000000, -100000000000L, 10L, 10.0f, 10.10d, true, false};
-        String[] expectedString = {"gPYAAQp/", "gPYAAQp/", "0", "10", "100000", "String", "c", "-10", "-1000000000", "-100000000000", "10", "10.0", "10.1", "true", "false"};
+        Object[] objects = {byteArray1, byteArray2, 0, 10, 100000, "String", 'c', -10, -1000000000, -100000000000L, 10L, 10.0f, 10.10d, true, false, KapuaId.ONE, ObjectValieConverterTestEnum.TEST};
+        String[] expectedString = {"gPYAAQp/", "gPYAAQp/", "0", "10", "100000", "String", "c", "-10", "-1000000000", "-100000000000", "10", "10.0", "10.1", "true", "false", "1", "TEST"};
         Object object = new Object();
 
         for (int i = 0; i < objects.length; i++) {
@@ -50,9 +51,9 @@ public class ObjectValueConverterTest extends Assert {
 
     @Test
     public void fromStringTest() {
-        String[] stringValue = {"String", "-2147483648", "11", "-9223372036854775808", "9223372036854775807", "10F", "10.10d", "true", "false", "Object"};
-        Class[] classes = {String.class, Integer.class, Integer.class, Long.class, Long.class, Float.class, Double.class, Boolean.class, Boolean.class, Object.class};
-        Object[] expectedObjects = {"String", -2147483648, 11, -9223372036854775808L, 9223372036854775807L, 10F, 10.1d, true, false, "Object"};
+        String[] stringValue = {"String", "-2147483648", "11", "-9223372036854775808", "9223372036854775807", "10F", "10.10d", "true", "false", "Object", "1", "TEST"};
+        Class[] classes = {String.class, Integer.class, Integer.class, Long.class, Long.class, Float.class, Double.class, Boolean.class, Boolean.class, Object.class, KapuaId.class, ObjectValieConverterTestEnum.class};
+        Object[] expectedObjects = {"String", -2147483648, 11, -9223372036854775808L, 9223372036854775807L, 10F, 10.1d, true, false, "Object", KapuaId.ONE, ObjectValieConverterTestEnum.TEST};
         Class[] byteClasses = {byte[].class, Byte[].class};
 
         for (int i = 0; i < stringValue.length; i++) {

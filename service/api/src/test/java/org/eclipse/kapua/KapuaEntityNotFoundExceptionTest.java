@@ -13,7 +13,7 @@
 package org.eclipse.kapua;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdStatic;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,7 +33,7 @@ public class KapuaEntityNotFoundExceptionTest extends Assert {
     public void initialize() {
         entityType = new String[]{"Entity Type", "1234", "!@#$%^&*(", null};
         entityName = new String[]{"Entity Name", "1234", "!@#$%^&*(", null};
-        entityId = new KapuaIdStatic(BigInteger.ONE);
+        entityId = new KapuaIdImpl(BigInteger.ONE);
     }
 
     @Test

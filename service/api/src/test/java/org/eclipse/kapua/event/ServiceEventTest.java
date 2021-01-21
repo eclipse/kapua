@@ -13,7 +13,7 @@
 package org.eclipse.kapua.event;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdStatic;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
@@ -64,7 +64,7 @@ public class ServiceEventTest extends Assert {
     @Test
     public void setAndGetUserIdTest() {
         ServiceEvent serviceEvent = new ServiceEvent();
-        KapuaId[] userIds = {new KapuaIdStatic(BigInteger.ONE), null};
+        KapuaId[] userIds = {new KapuaIdImpl(BigInteger.ONE), null};
 
         assertNull("Null expected.", serviceEvent.getUserId());
         for (KapuaId userId : userIds) {
@@ -100,7 +100,7 @@ public class ServiceEventTest extends Assert {
     @Test
     public void setAndGetScopeIdTest() {
         ServiceEvent serviceEvent = new ServiceEvent();
-        KapuaId[] scopeIds = {new KapuaIdStatic(BigInteger.ONE), null};
+        KapuaId[] scopeIds = {new KapuaIdImpl(BigInteger.ONE), null};
 
         assertNull("Null expected.", serviceEvent.getScopeId());
         for (KapuaId scopeId : scopeIds) {
@@ -112,7 +112,7 @@ public class ServiceEventTest extends Assert {
     @Test
     public void setAndGetEntityScopeIdTest() {
         ServiceEvent serviceEvent = new ServiceEvent();
-        KapuaId[] entityScopeIds = {new KapuaIdStatic(BigInteger.ONE), null};
+        KapuaId[] entityScopeIds = {new KapuaIdImpl(BigInteger.ONE), null};
 
         assertNull("Null expected.", serviceEvent.getEntityScopeId());
         for (KapuaId entityScopeId : entityScopeIds) {
@@ -124,7 +124,7 @@ public class ServiceEventTest extends Assert {
     @Test
     public void setAndGetEntityIdTest() {
         ServiceEvent serviceEvent = new ServiceEvent();
-        KapuaId[] entityIds = {new KapuaIdStatic(BigInteger.ONE), null};
+        KapuaId[] entityIds = {new KapuaIdImpl(BigInteger.ONE), null};
 
         assertNull("Null expected", serviceEvent.getEntityId());
         for (KapuaId entityId : entityIds) {

@@ -17,7 +17,7 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdStatic;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,7 +58,7 @@ public class EventStoreRecordImplTest extends Assert {
 
     @Test
     public void eventStoreRecordImplTest2() {
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordImpl eventStoreRecordImpl = new EventStoreRecordImpl(scopeId);
@@ -86,7 +86,7 @@ public class EventStoreRecordImplTest extends Assert {
     @Test
     public void setAndGetContextIdTest() throws KapuaException {
         String contextId = "ContextId";
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordImpl eventStoreRecordImpl1 = new EventStoreRecordImpl(scopeId);
@@ -115,7 +115,7 @@ public class EventStoreRecordImplTest extends Assert {
     @Test
     public void setAndGetTimestampTest() throws KapuaException {
         Date timeStamp = new Date();
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordImpl eventStoreRecordImpl1 = new EventStoreRecordImpl(scopeId);
@@ -143,8 +143,8 @@ public class EventStoreRecordImplTest extends Assert {
 
     @Test
     public void setAndGetUserIdTest() throws KapuaException {
-        KapuaId userId = new KapuaIdStatic(BigInteger.ONE);
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId userId = new KapuaIdImpl(BigInteger.ONE);
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordImpl eventStoreRecordImpl1 = new EventStoreRecordImpl(scopeId);
@@ -173,7 +173,7 @@ public class EventStoreRecordImplTest extends Assert {
     @Test
     public void setAndGetServiceTest() throws KapuaException {
         String service = "Service";
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordImpl eventStoreRecordImpl1 = new EventStoreRecordImpl(scopeId);
@@ -202,7 +202,7 @@ public class EventStoreRecordImplTest extends Assert {
     @Test
     public void setAndGetEntityTypeTest() throws KapuaException {
         String entityType = "EntityType";
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordImpl eventStoreRecordImpl1 = new EventStoreRecordImpl(scopeId);
@@ -230,8 +230,8 @@ public class EventStoreRecordImplTest extends Assert {
 
     @Test
     public void setAndGetScopeIdTest() throws KapuaException {
-        KapuaId scopeId1 = new KapuaIdStatic(BigInteger.ONE);
-        KapuaId scopeId2 = new KapuaIdStatic(BigInteger.TEN);
+        KapuaId scopeId1 = new KapuaIdImpl(BigInteger.ONE);
+        KapuaId scopeId2 = new KapuaIdImpl(BigInteger.TEN);
 
         EventStoreRecordImpl eventStoreRecordImpl1 = new EventStoreRecordImpl(scopeId1);
         assertEquals("Expected and actual values should be the same.", scopeId1, eventStoreRecordImpl1.getScopeId());
@@ -257,8 +257,8 @@ public class EventStoreRecordImplTest extends Assert {
 
     @Test
     public void setAndEntityIdTest() throws KapuaException {
-        KapuaId entityId = new KapuaIdStatic(BigInteger.ONE);
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId entityId = new KapuaIdImpl(BigInteger.ONE);
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordImpl eventStoreRecordImpl1 = new EventStoreRecordImpl(scopeId);
@@ -287,7 +287,7 @@ public class EventStoreRecordImplTest extends Assert {
     @Test
     public void setAndGetOperationIdTest() throws KapuaException {
         String operation = "Operation";
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordImpl eventStoreRecordImpl1 = new EventStoreRecordImpl(scopeId);
@@ -316,7 +316,7 @@ public class EventStoreRecordImplTest extends Assert {
     @Test
     public void setAndGetInputsTest() throws KapuaException {
         String inputs = "Inputs";
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordImpl eventStoreRecordImpl1 = new EventStoreRecordImpl(scopeId);
@@ -345,7 +345,7 @@ public class EventStoreRecordImplTest extends Assert {
     @Test
     public void setAndGetOutputsTest() throws KapuaException {
         String outputs = "Outputs";
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordImpl eventStoreRecordImpl1 = new EventStoreRecordImpl(scopeId);
@@ -384,7 +384,7 @@ public class EventStoreRecordImplTest extends Assert {
         eventStoreRecordImpl1.setStatus(null);
         assertNull("Null expected.", eventStoreRecordImpl1.getStatus());
 
-        EventStoreRecordImpl eventStoreRecordImpl2 = new EventStoreRecordImpl(new KapuaIdStatic(BigInteger.ONE));
+        EventStoreRecordImpl eventStoreRecordImpl2 = new EventStoreRecordImpl(new KapuaIdImpl(BigInteger.ONE));
         assertNull("Null expected.", eventStoreRecordImpl2.getStatus());
         eventStoreRecordImpl2.setStatus(ServiceEvent.EventStatus.SENT);
         assertEquals("Expected and actual values should be the same.", ServiceEvent.EventStatus.SENT, eventStoreRecordImpl2.getStatus());
@@ -410,7 +410,7 @@ public class EventStoreRecordImplTest extends Assert {
     @Test
     public void setAndGetNoteTest() throws KapuaException {
         String note = "Note";
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordImpl eventStoreRecordImpl1 = new EventStoreRecordImpl(scopeId);
