@@ -12,22 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiSetting;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiSettingKeys;
 
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.eclipse.kapua.app.api.core.settings.KapuaApiSetting;
-import org.eclipse.kapua.app.api.core.settings.KapuaApiSettingKeys;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 @XmlRootElement(name = "throwableInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ThrowableInfo {
+
+    private static final boolean SHOW_STACKTRACE = KapuaApiSetting.getInstance().getBoolean(KapuaApiSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
 
     @XmlElement(name = "httpErrorCode")
     private int httpErrorCode;
@@ -38,9 +38,6 @@ public class ThrowableInfo {
     @XmlElement(name = "stackTrace")
     private String stackTrace;
 
-    @XmlTransient
-    private final boolean showStacktrace = KapuaApiSetting.getInstance().getBoolean(KapuaApiSettingKeys.API_EXCEPTION_STACKTRACE_SHOW, false);
-
     protected ThrowableInfo() {
         super();
     }
@@ -49,7 +46,7 @@ public class ThrowableInfo {
         this.httpErrorCode = httpStatus.getStatusCode();
         this.message = throwable.getMessage();
         // Print stack trace
-        if (showStacktrace) {
+        if (SHOW_STACKTRACE) {
             StringWriter stringWriter = new StringWriter();
             throwable.printStackTrace(new PrintWriter(stringWriter));
             setStackTrace(stringWriter.toString());

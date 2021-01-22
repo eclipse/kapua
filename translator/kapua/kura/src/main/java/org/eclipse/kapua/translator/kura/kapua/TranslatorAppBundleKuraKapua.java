@@ -77,14 +77,14 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
                 DeviceManagementSetting config = DeviceManagementSetting.getInstance();
                 String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
-                String body = null;
+                String body;
                 try {
                     body = new String(kuraResponsePayload.getBody(), charEncoding);
                 } catch (Exception e) {
-                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) kuraResponsePayload.getBody());
+                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, kuraResponsePayload.getBody());
                 }
 
-                KuraBundles kuraBundles = null;
+                KuraBundles kuraBundles;
                 try {
                     kuraBundles = XmlUtil.unmarshal(body, KuraBundles.class);
                 } catch (Exception e) {

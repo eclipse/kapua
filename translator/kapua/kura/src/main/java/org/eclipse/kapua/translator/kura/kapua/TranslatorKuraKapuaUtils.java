@@ -22,7 +22,10 @@ import org.eclipse.kapua.service.device.call.message.DevicePosition;
 import org.eclipse.kapua.service.device.call.message.app.DeviceAppMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseCode;
+import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
@@ -40,6 +43,7 @@ public final class TranslatorKuraKapuaUtils {
     private static final KapuaMessageFactory KAPUA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaMessageFactory.class);
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
+    private static final boolean SHOW_STACKTRACE = DeviceManagementSetting.getInstance().getBoolean(DeviceManagementSettingKey.SHOW_STACKTRACE, false);
 
     private TranslatorKuraKapuaUtils() {
     }
@@ -91,7 +95,12 @@ public final class TranslatorKuraKapuaUtils {
      */
     public static <P extends KapuaResponsePayload> P buildBaseResponsePayload(KuraResponsePayload kuraResponsePayload, P appResponsePayload) {
         appResponsePayload.setExceptionMessage(kuraResponsePayload.getExceptionMessage());
-        appResponsePayload.setExceptionStack(kuraResponsePayload.getExceptionStack());
+
+        if (SHOW_STACKTRACE) {
+            appResponsePayload.setExceptionStack(kuraResponsePayload.getExceptionStack());
+            kuraResponsePayload.getMetrics().remove(KuraResponseMetrics.EXCEPTION_STACK.getName());
+        }
+
         return appResponsePayload;
     }
 
