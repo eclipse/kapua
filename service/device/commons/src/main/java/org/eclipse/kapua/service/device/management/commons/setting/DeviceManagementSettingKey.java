@@ -33,7 +33,7 @@ public enum DeviceManagementSettingKey implements SettingKey {
      *
      * @since 1.0.0
      */
-    REQUEST_TIMEOUT("request.timeout"),
+    REQUEST_TIMEOUT("device.management.request.timeout"),
 
     /**
      * Request timeout.
