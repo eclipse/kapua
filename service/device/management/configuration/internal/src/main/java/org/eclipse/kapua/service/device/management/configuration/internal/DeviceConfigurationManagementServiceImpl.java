@@ -55,6 +55,8 @@ import java.util.Date;
 @KapuaProvider
 public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceConfigurationManagementService {
 
+    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+
     private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = LOCATOR.getFactory(DeviceConfigurationFactory.class);
 
     private static final String SCOPE_ID = "scopeId";
@@ -104,14 +106,11 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         if (responseMessage.getResponseCode().isAccepted()) {
             ConfigurationResponsePayload responsePayload = responseMessage.getPayload();
 
-            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
             DeviceConfiguration deviceConfiguration = null;
             if (responsePayload.hasBody()) {
                 String body = null;
                 try {
-                    body = new String(responsePayload.getBody(), charEncoding);
+                    body = new String(responsePayload.getBody(), CHAR_ENCODING);
                 } catch (Exception e) {
                     throw new DeviceManagementResponseException(e, responsePayload.getBody());
                 }
@@ -160,12 +159,9 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
             DeviceConfiguration deviceConfiguration = DEVICE_CONFIGURATION_FACTORY.newConfigurationInstance();
             deviceConfiguration.getComponentConfigurations().add(deviceComponentConfiguration);
 
-            DeviceManagementSetting deviceManagementConfig = DeviceManagementSetting.getInstance();
-            String charEncoding = deviceManagementConfig.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
             StringWriter sw = new StringWriter();
             XmlUtil.marshal(deviceConfiguration, sw);
-            byte[] requestBody = sw.toString().getBytes(charEncoding);
+            byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
 
             configurationRequestPayload.setBody(requestBody);
         } catch (Exception e) {
@@ -234,12 +230,9 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         ConfigurationRequestPayload configurationRequestPayload = new ConfigurationRequestPayload();
 
         try {
-            DeviceManagementSetting deviceManagementConfig = DeviceManagementSetting.getInstance();
-            String charEncoding = deviceManagementConfig.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
             StringWriter sw = new StringWriter();
             XmlUtil.marshal(deviceConfiguration, sw);
-            byte[] requestBody = sw.toString().getBytes(charEncoding);
+            byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
 
             configurationRequestPayload.setBody(requestBody);
         } catch (Exception e) {

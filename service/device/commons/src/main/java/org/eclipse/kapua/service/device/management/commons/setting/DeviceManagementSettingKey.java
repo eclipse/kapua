@@ -26,7 +26,7 @@ public enum DeviceManagementSettingKey implements SettingKey {
      *
      * @since 1.0.0
      */
-    CHAR_ENCODING("character.encoding"),
+    CHAR_ENCODING("device.management.character.encoding"),
 
     /**
      * Request timeout.

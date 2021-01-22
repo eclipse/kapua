@@ -46,6 +46,8 @@ import java.util.Date;
 @KapuaProvider
 public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceSnapshotManagementService {
 
+    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+
     @Override
     public DeviceSnapshots get(KapuaId scopeId, KapuaId deviceId, Long timeout)
             throws KapuaException {
@@ -88,17 +90,14 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
         if (responseMessage.getResponseCode().isAccepted()) {
             SnapshotResponsePayload responsePayload = responseMessage.getPayload();
 
-            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-            String body = null;
+            String body;
             try {
-                body = new String(responsePayload.getBody(), charEncoding);
+                body = new String(responsePayload.getBody(), CHAR_ENCODING);
             } catch (Exception e) {
                 throw new DeviceManagementResponseException(e, (Object) responsePayload.getBody());
             }
 
-            DeviceSnapshots deviceSnapshots = null;
+            DeviceSnapshots deviceSnapshots;
             try {
                 deviceSnapshots = XmlUtil.unmarshal(body, DeviceSnapshotsImpl.class);
             } catch (Exception e) {
