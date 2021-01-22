@@ -46,6 +46,8 @@ import java.util.List;
  */
 public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<BundleResponseChannel, BundleResponsePayload, BundleResponseMessage> {
 
+    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     public TranslatorAppBundleKuraKapua() {
@@ -74,12 +76,10 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
             BundleResponsePayload bundleResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new BundleResponsePayload());
 
             if (kuraResponsePayload.hasBody()) {
-                DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-                String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
                 String body;
                 try {
-                    body = new String(kuraResponsePayload.getBody(), charEncoding);
+                    body = new String(kuraResponsePayload.getBody(), CHAR_ENCODING);
                 } catch (Exception e) {
                     throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, kuraResponsePayload.getBody());
                 }
@@ -91,7 +91,7 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
                     throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
                 }
 
-                translate(bundleResponsePayload, charEncoding, kuraBundles);
+                translate(bundleResponsePayload, kuraBundles);
             }
 
             // Return Kapua Payload
@@ -103,7 +103,7 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
         }
     }
 
-    private void translate(BundleResponsePayload bundleResponsePayload, String charEncoding, KuraBundles kuraBundles) throws KapuaException {
+    private void translate(BundleResponsePayload bundleResponsePayload, KuraBundles kuraBundles) throws KapuaException {
         try {
             DeviceBundleFactory deviceBundleFactory = LOCATOR.getFactory(DeviceBundleFactory.class);
 
@@ -121,7 +121,7 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
 
             StringWriter sw = new StringWriter();
             XmlUtil.marshal(deviceBundles, sw);
-            byte[] requestBody = sw.toString().getBytes(charEncoding);
+            byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
 
             bundleResponsePayload.setBody(requestBody);
         } catch (Exception e) {

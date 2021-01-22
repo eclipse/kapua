@@ -44,6 +44,8 @@ import java.util.List;
  */
 public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<SnapshotResponseChannel, SnapshotResponsePayload, SnapshotResponseMessage> {
 
+    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     public TranslatorAppSnapshotKuraKapua() {
@@ -71,14 +73,12 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         try {
             SnapshotResponsePayload snapshotResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new SnapshotResponsePayload());
 
-            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
             KuraSnapshotIds snapshotIdResult = null;
             if (kuraResponsePayload.hasBody()) {
-                String body = null;
+
+                String body;
                 try {
-                    body = new String(kuraResponsePayload.getBody(), charEncoding);
+                    body = new String(kuraResponsePayload.getBody(), CHAR_ENCODING);
                 } catch (Exception e) {
                     throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) snapshotResponsePayload.getBody());
                 }
@@ -90,7 +90,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
                 }
             }
 
-            translateBody(snapshotResponsePayload, charEncoding, snapshotIdResult);
+            translateBody(snapshotResponsePayload, snapshotIdResult);
 
             // Return Kapua Payload
             return snapshotResponsePayload;
@@ -101,7 +101,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         }
     }
 
-    private void translateBody(SnapshotResponsePayload snapshotResponsePayload, String charEncoding, KuraSnapshotIds kuraSnapshotIdResult) throws TranslatorException {
+    private void translateBody(SnapshotResponsePayload snapshotResponsePayload, KuraSnapshotIds kuraSnapshotIdResult) throws TranslatorException {
         try {
             DeviceSnapshotFactory deviceSnapshotFactory = LOCATOR.getFactory(DeviceSnapshotFactory.class);
 
@@ -118,7 +118,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
 
                 StringWriter sw = new StringWriter();
                 XmlUtil.marshal(deviceSnapshots, sw);
-                byte[] requestBody = sw.toString().getBytes(charEncoding);
+                byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
 
                 snapshotResponsePayload.setBody(requestBody);
             }

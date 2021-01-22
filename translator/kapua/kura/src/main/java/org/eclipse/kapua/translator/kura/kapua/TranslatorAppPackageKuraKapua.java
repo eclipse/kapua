@@ -53,6 +53,8 @@ import java.util.Map;
  */
 public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<PackageResponseChannel, PackageResponsePayload, PackageResponseMessage> {
 
+    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     public TranslatorAppPackageKuraKapua() {
@@ -116,22 +118,20 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
 
                 String body;
                 if (kuraResponsePayload.hasBody()) {
-                    DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-                    String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
                     try {
-                        body = new String(kuraResponsePayload.getBody(), charEncoding);
+                        body = new String(kuraResponsePayload.getBody(), CHAR_ENCODING);
                     } catch (Exception e) {
                         throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) kuraResponsePayload.getBody());
                     }
 
-                    KuraDeploymentPackages kuraDeploymentPackages = null;
+                    KuraDeploymentPackages kuraDeploymentPackages;
                     try {
                         kuraDeploymentPackages = XmlUtil.unmarshal(body, KuraDeploymentPackages.class);
                     } catch (Exception e) {
                         throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
                     }
-                    translate(responsePayload, charEncoding, kuraDeploymentPackages);
+                    translate(responsePayload, kuraDeploymentPackages);
                 }
             } else {
                 if (kuraResponsePayload.hasBody()) {
@@ -150,7 +150,7 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
         }
     }
 
-    private void translate(PackageResponsePayload packageResponsePayload, String charEncoding, KuraDeploymentPackages kuraDeploymentPackages) throws KapuaException {
+    private void translate(PackageResponsePayload packageResponsePayload, KuraDeploymentPackages kuraDeploymentPackages) throws KapuaException {
         try {
             DevicePackageFactory devicePackageFactory = LOCATOR.getFactory(DevicePackageFactory.class);
 
@@ -180,7 +180,7 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
 
                 StringWriter sw = new StringWriter();
                 XmlUtil.marshal(deviceDeploymentPackages, sw);
-                byte[] requestBody = sw.toString().getBytes(charEncoding);
+                byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
 
                 packageResponsePayload.setBody(requestBody);
             }
