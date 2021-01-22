@@ -66,18 +66,18 @@ public class TranslatorAppResponseKuraKapua extends AbstractSimpleTranslatorResp
     }
 
     @Override
-    protected GenericResponsePayload translatePayload(KuraResponsePayload kuraPayload) throws InvalidPayloadException {
+    protected GenericResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
         try {
             GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
 
-            GenericResponsePayload genericResponsePayload = genericRequestFactory.newResponsePayload();
-            genericResponsePayload.setBody(kuraPayload.getBody());
-            genericResponsePayload.setMetrics(kuraPayload.getMetrics());
-            genericResponsePayload.setExceptionMessage(kuraPayload.getExceptionMessage());
-            genericResponsePayload.setExceptionStack(kuraPayload.getExceptionStack());
+            GenericResponsePayload genericResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, genericRequestFactory.newResponsePayload());
+
+            genericResponsePayload.setBody(kuraResponsePayload.getBody());
+            genericResponsePayload.setMetrics(kuraResponsePayload.getMetrics());
+
             return genericResponsePayload;
         } catch (Exception e) {
-            throw new InvalidPayloadException(e, kuraPayload);
+            throw new InvalidPayloadException(e, kuraResponsePayload);
         }
     }
 }

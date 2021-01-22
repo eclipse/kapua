@@ -89,6 +89,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
                     throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
                 }
             }
+
             translateBody(snapshotResponsePayload, charEncoding, snapshotIdResult);
 
             // Return Kapua Payload
