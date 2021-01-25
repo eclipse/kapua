@@ -76,20 +76,7 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
             BundleResponsePayload bundleResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new BundleResponsePayload());
 
             if (kuraResponsePayload.hasBody()) {
-
-                String body;
-                try {
-                    body = new String(kuraResponsePayload.getBody(), CHAR_ENCODING);
-                } catch (Exception e) {
-                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, kuraResponsePayload.getBody());
-                }
-
-                KuraBundles kuraBundles;
-                try {
-                    kuraBundles = XmlUtil.unmarshal(body, KuraBundles.class);
-                } catch (Exception e) {
-                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
-                }
+                KuraBundles kuraBundles = TranslatorKuraKapuaUtils.readBodyAs(kuraResponsePayload.getBody(), KuraBundles.class);
 
                 translate(bundleResponsePayload, kuraBundles);
             }

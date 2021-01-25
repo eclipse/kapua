@@ -80,19 +80,7 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
             ConfigurationResponsePayload configurationResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new ConfigurationResponsePayload());
 
             if (kuraResponsePayload.hasBody()) {
-                String body;
-                try {
-                    body = new String(kuraResponsePayload.getBody(), CHAR_ENCODING);
-                } catch (Exception e) {
-                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) configurationResponsePayload.getBody());
-                }
-
-                KuraDeviceConfiguration kuraDeviceConfiguration = null;
-                try {
-                    kuraDeviceConfiguration = XmlUtil.unmarshal(body, KuraDeviceConfiguration.class);
-                } catch (Exception e) {
-                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
-                }
+                KuraDeviceConfiguration kuraDeviceConfiguration = TranslatorKuraKapuaUtils.readBodyAs(kuraResponsePayload.getBody(), KuraDeviceConfiguration.class);
 
                 translateBody(configurationResponsePayload, kuraDeviceConfiguration);
             }
