@@ -116,21 +116,9 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
                     responsePayload.setPackageDownloadOperationStatus(DevicePackageDownloadStatus.NONE);
                 }
 
-                String body;
                 if (kuraResponsePayload.hasBody()) {
+                    KuraDeploymentPackages kuraDeploymentPackages = TranslatorKuraKapuaUtils.readBodyAs(kuraResponsePayload.getBody(), KuraDeploymentPackages.class);
 
-                    try {
-                        body = new String(kuraResponsePayload.getBody(), CHAR_ENCODING);
-                    } catch (Exception e) {
-                        throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) kuraResponsePayload.getBody());
-                    }
-
-                    KuraDeploymentPackages kuraDeploymentPackages;
-                    try {
-                        kuraDeploymentPackages = XmlUtil.unmarshal(body, KuraDeploymentPackages.class);
-                    } catch (Exception e) {
-                        throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
-                    }
                     translate(responsePayload, kuraDeploymentPackages);
                 }
             } else {

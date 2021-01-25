@@ -75,19 +75,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
 
             KuraSnapshotIds snapshotIdResult = null;
             if (kuraResponsePayload.hasBody()) {
-
-                String body;
-                try {
-                    body = new String(kuraResponsePayload.getBody(), CHAR_ENCODING);
-                } catch (Exception e) {
-                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) snapshotResponsePayload.getBody());
-                }
-
-                try {
-                    snapshotIdResult = XmlUtil.unmarshal(body, KuraSnapshotIds.class);
-                } catch (Exception e) {
-                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
-                }
+                snapshotIdResult = TranslatorKuraKapuaUtils.readBodyAs(kuraResponsePayload.getBody(), KuraSnapshotIds.class);
             }
 
             translateBody(snapshotResponsePayload, snapshotIdResult);
