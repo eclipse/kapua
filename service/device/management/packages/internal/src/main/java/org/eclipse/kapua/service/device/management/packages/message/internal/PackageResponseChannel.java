@@ -16,10 +16,19 @@ import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChann
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
 
 /**
- * Package response message channel.
+ * Package {@link KapuaResponseChannel}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class PackageResponseChannel extends KapuaAppChannelImpl implements KapuaResponseChannel {
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
+    public PackageResponseChannel() {
+        setAppName(PackageAppProperties.APP_NAME);
+        setVersion(PackageAppProperties.APP_VERSION);
+    }
 }

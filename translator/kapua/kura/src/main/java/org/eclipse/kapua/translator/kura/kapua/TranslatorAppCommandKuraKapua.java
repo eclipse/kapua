@@ -17,7 +17,6 @@ import org.eclipse.kapua.service.device.call.kura.app.CommandMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
-import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseChannel;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponseMessage;
 import org.eclipse.kapua.service.device.management.command.message.internal.CommandResponsePayload;
@@ -34,7 +33,7 @@ import java.util.Map;
 public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<CommandResponseChannel, CommandResponsePayload, CommandResponseMessage> {
 
     public TranslatorAppCommandKuraKapua() {
-        super(CommandResponseMessage.class);
+        super(CommandResponseMessage.class, CommandResponsePayload.class);
     }
 
     @Override
@@ -42,12 +41,7 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
         try {
             TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, CommandMetrics.APP_ID, CommandMetrics.APP_VERSION);
 
-            CommandResponseChannel kapuaChannel = new CommandResponseChannel();
-            kapuaChannel.setAppName(CommandAppProperties.APP_NAME);
-            kapuaChannel.setVersion(CommandAppProperties.APP_VERSION);
-
-            // Return Kapua Channel
-            return kapuaChannel;
+            return new CommandResponseChannel();
         } catch (Exception e) {
             throw new InvalidChannelException(e, kuraResponseChannel);
         }
@@ -55,9 +49,9 @@ public class TranslatorAppCommandKuraKapua extends AbstractSimpleTranslatorRespo
 
     @Override
     protected CommandResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
-        try {
-            CommandResponsePayload commandResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new CommandResponsePayload());
+        CommandResponsePayload commandResponsePayload = super.translatePayload(kuraResponsePayload);
 
+        try {
             Map<String, Object> metrics = kuraResponsePayload.getMetrics();
             commandResponsePayload.setStderr((String) metrics.get(CommandMetrics.APP_METRIC_STDERR.getName()));
             commandResponsePayload.setStdout((String) metrics.get(CommandMetrics.APP_METRIC_STDOUT.getName()));

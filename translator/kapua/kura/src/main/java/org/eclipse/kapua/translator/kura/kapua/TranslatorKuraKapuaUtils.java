@@ -15,7 +15,6 @@ package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPosition;
@@ -23,12 +22,7 @@ import org.eclipse.kapua.service.device.call.message.DevicePosition;
 import org.eclipse.kapua.service.device.call.message.app.DeviceAppMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseCode;
-import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMetrics;
-import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
-import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
@@ -43,10 +37,7 @@ public final class TranslatorKuraKapuaUtils {
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final KapuaMessageFactory KAPUA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaMessageFactory.class);
 
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
     private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
-
-    private static final boolean SHOW_STACKTRACE = DeviceManagementSetting.getInstance().getBoolean(DeviceManagementSettingKey.SHOW_STACKTRACE, false);
 
     private TranslatorKuraKapuaUtils() {
     }
@@ -86,50 +77,6 @@ public final class TranslatorKuraKapuaUtils {
         if (!appVersion.getName().equals(appIdTokens[1])) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_VERSION, null, appIdTokens[1]);
         }
-    }
-
-    /**
-     * Reads the given {@code byte[]} as the requested {@code returnAs} parameter.
-     *
-     * @param bytesToRead The {@link KapuaResponsePayload#getBody()}
-     * @param returnAs    The {@link Class} to read as.
-     * @param <T>         The type of the retrun.
-     * @return Returns the given {@code byte[]} as the given {@link Class}
-     * @throws TranslatorException If the {@code byte[]} is not uspported or the {@code byte[]} cannot be read as the given {@link Class}
-     * @since 1.5.0
-     */
-    public static <T> T readBodyAs(byte[] bytesToRead, Class<T> returnAs) throws TranslatorException {
-        String body;
-        try {
-            body = new String(bytesToRead, CHAR_ENCODING);
-        } catch (Exception e) {
-            throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) bytesToRead);
-        }
-
-        try {
-            return XmlUtil.unmarshal(body, returnAs);
-        } catch (Exception e) {
-            throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
-        }
-    }
-
-    /**
-     * Builds the {@link KapuaResponsePayload} with commons property in {@link KuraResponsePayload}
-     *
-     * @param kuraResponsePayload The {@link KuraResponsePayload}.
-     * @param appResponsePayload  The application specific {@link KapuaResponsePayload}.
-     * @param <P>                 The application specific {@link KapuaResponsePayload} type.
-     * @return The built base application specific {@link KapuaResponsePayload}}
-     */
-    public static <P extends KapuaResponsePayload> P buildBaseResponsePayload(KuraResponsePayload kuraResponsePayload, P appResponsePayload) {
-        appResponsePayload.setExceptionMessage(kuraResponsePayload.getExceptionMessage());
-
-        if (SHOW_STACKTRACE) {
-            appResponsePayload.setExceptionStack(kuraResponsePayload.getExceptionStack());
-            kuraResponsePayload.getMetrics().remove(KuraResponseMetrics.EXCEPTION_STACK.getName());
-        }
-
-        return appResponsePayload;
     }
 
     /**
