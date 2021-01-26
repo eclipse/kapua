@@ -35,20 +35,20 @@ public class TranslatorAppResponseKuraKapua extends AbstractSimpleTranslatorResp
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     public TranslatorAppResponseKuraKapua() {
-        super(GenericResponseMessage.class);
+        super(GenericResponseMessage.class, GenericResponsePayload.class);
     }
 
     @Override
-    protected GenericResponseChannel translateChannel(KuraResponseChannel kuraChannel) throws InvalidChannelException {
+    protected GenericResponseChannel translateChannel(KuraResponseChannel kuraResponseChannel) throws InvalidChannelException {
         try {
             GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
 
-            if (!getControlMessageClassifier().equals(kuraChannel.getMessageClassification())) {
-                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraChannel.getMessageClassification());
+            if (!getControlMessageClassifier().equals(kuraResponseChannel.getMessageClassification())) {
+                throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_CLASSIFIER, null, kuraResponseChannel.getMessageClassification());
             }
 
             GenericResponseChannel genericResponseChannel = genericRequestFactory.newResponseChannel();
-            String[] appIdTokens = kuraChannel.getAppId().split("-");
+            String[] appIdTokens = kuraResponseChannel.getAppId().split("-");
 
             if (appIdTokens.length < 1) {
                 throw new TranslatorException(TranslatorErrorCodes.INVALID_CHANNEL_APP_NAME, null, (Object) appIdTokens);
@@ -61,17 +61,15 @@ public class TranslatorAppResponseKuraKapua extends AbstractSimpleTranslatorResp
 
             return genericResponseChannel;
         } catch (Exception e) {
-            throw new InvalidChannelException(e, kuraChannel);
+            throw new InvalidChannelException(e, kuraResponseChannel);
         }
     }
 
     @Override
     protected GenericResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
+        GenericResponsePayload genericResponsePayload = super.translatePayload(kuraResponsePayload);
+
         try {
-            GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
-
-            GenericResponsePayload genericResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, genericRequestFactory.newResponsePayload());
-
             genericResponsePayload.setBody(kuraResponsePayload.getBody());
             genericResponsePayload.setMetrics(kuraResponsePayload.getMetrics());
 

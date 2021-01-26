@@ -12,14 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.message.internal;
 
+import org.eclipse.kapua.service.device.management.asset.internal.DeviceAssetAppProperties;
 import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChannelImpl;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
 
 /**
- * Device bundle information response channel.
+ * Asset {@link KapuaResponseChannel}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class AssetResponseChannel extends KapuaAppChannelImpl implements KapuaResponseChannel {
 
+    /**
+     * Constructor
+     *
+     * @since 1.5.0
+     */
+    public AssetResponseChannel() {
+        setAppName(DeviceAssetAppProperties.APP_NAME);
+        setVersion(DeviceAssetAppProperties.APP_VERSION);
+    }
 }

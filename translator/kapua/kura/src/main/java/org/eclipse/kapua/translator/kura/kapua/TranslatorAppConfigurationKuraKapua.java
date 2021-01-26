@@ -31,7 +31,6 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceComponentConfigurationImpl;
-import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationImpl;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponseChannel;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponseMessage;
@@ -55,7 +54,7 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     public TranslatorAppConfigurationKuraKapua() {
-        super(ConfigurationResponseMessage.class);
+        super(ConfigurationResponseMessage.class, ConfigurationResponsePayload.class);
     }
 
     @Override
@@ -63,12 +62,7 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
         try {
             TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, ConfigurationMetrics.APP_ID, ConfigurationMetrics.APP_VERSION);
 
-            ConfigurationResponseChannel configurationResponseChannel = new ConfigurationResponseChannel();
-            configurationResponseChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
-            configurationResponseChannel.setVersion(DeviceConfigurationAppProperties.APP_VERSION);
-
-            // Return Kapua Channel
-            return configurationResponseChannel;
+            return new ConfigurationResponseChannel();
         } catch (Exception e) {
             throw new InvalidChannelException(e, kuraResponseChannel);
         }
@@ -76,11 +70,11 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
 
     @Override
     protected ConfigurationResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
-        try {
-            ConfigurationResponsePayload configurationResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new ConfigurationResponsePayload());
+        ConfigurationResponsePayload configurationResponsePayload = super.translatePayload(kuraResponsePayload);
 
+        try {
             if (kuraResponsePayload.hasBody()) {
-                KuraDeviceConfiguration kuraDeviceConfiguration = TranslatorKuraKapuaUtils.readBodyAs(kuraResponsePayload.getBody(), KuraDeviceConfiguration.class);
+                KuraDeviceConfiguration kuraDeviceConfiguration = readXmlBodyAs(kuraResponsePayload.getBody(), KuraDeviceConfiguration.class);
 
                 translateBody(configurationResponsePayload, kuraDeviceConfiguration);
             }

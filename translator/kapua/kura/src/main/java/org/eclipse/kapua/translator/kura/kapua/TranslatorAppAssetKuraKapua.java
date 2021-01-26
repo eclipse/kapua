@@ -28,7 +28,6 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
-import org.eclipse.kapua.service.device.management.asset.internal.DeviceAssetAppProperties;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseChannel;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseMessage;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponsePayload;
@@ -47,7 +46,7 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     public TranslatorAppAssetKuraKapua() {
-        super(AssetResponseMessage.class);
+        super(AssetResponseMessage.class, AssetResponsePayload.class);
     }
 
     @Override
@@ -55,12 +54,7 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
         try {
             TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, AssetMetrics.APP_ID, AssetMetrics.APP_VERSION);
 
-            AssetResponseChannel assetResponseChannel = new AssetResponseChannel();
-            assetResponseChannel.setAppName(DeviceAssetAppProperties.APP_NAME);
-            assetResponseChannel.setVersion(DeviceAssetAppProperties.APP_VERSION);
-
-            // Return Kapua Channel
-            return assetResponseChannel;
+            return new AssetResponseChannel();
         } catch (Exception e) {
             throw new InvalidChannelException(e, kuraResponseChannel);
         }
@@ -68,11 +62,10 @@ public class TranslatorAppAssetKuraKapua extends AbstractSimpleTranslatorRespons
 
     @Override
     protected AssetResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
+        AssetResponsePayload assetResponsePayload = super.translatePayload(kuraResponsePayload);
+
         try {
             DeviceAssetFactory deviceAssetFactory = LOCATOR.getFactory(DeviceAssetFactory.class);
-
-            AssetResponsePayload assetResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new AssetResponsePayload());
-
             if (kuraResponsePayload.hasBody()) {
 
                 ObjectMapper mapper = new ObjectMapper();

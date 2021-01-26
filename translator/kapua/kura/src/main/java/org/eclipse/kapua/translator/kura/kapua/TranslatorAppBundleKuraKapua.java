@@ -24,7 +24,6 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
-import org.eclipse.kapua.service.device.management.bundle.internal.DeviceBundleAppProperties;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseChannel;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponsePayload;
@@ -51,7 +50,7 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     public TranslatorAppBundleKuraKapua() {
-        super(BundleResponseMessage.class);
+        super(BundleResponseMessage.class, BundleResponsePayload.class);
     }
 
     @Override
@@ -59,12 +58,7 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
         try {
             TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, BundleMetrics.APP_ID, BundleMetrics.APP_VERSION);
 
-            BundleResponseChannel bundleResponseChannel = new BundleResponseChannel();
-            bundleResponseChannel.setAppName(DeviceBundleAppProperties.APP_NAME);
-            bundleResponseChannel.setVersion(DeviceBundleAppProperties.APP_VERSION);
-
-            // Return Kapua Channel
-            return bundleResponseChannel;
+            return new BundleResponseChannel();
         } catch (Exception e) {
             throw new InvalidChannelException(e, kuraResponseChannel);
         }
@@ -72,11 +66,11 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
 
     @Override
     protected BundleResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
-        try {
-            BundleResponsePayload bundleResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new BundleResponsePayload());
+        BundleResponsePayload bundleResponsePayload = super.translatePayload(kuraResponsePayload);
 
+        try {
             if (kuraResponsePayload.hasBody()) {
-                KuraBundles kuraBundles = TranslatorKuraKapuaUtils.readBodyAs(kuraResponsePayload.getBody(), KuraBundles.class);
+                KuraBundles kuraBundles = readXmlBodyAs(kuraResponsePayload.getBody(), KuraBundles.class);
 
                 translate(bundleResponsePayload, kuraBundles);
             }
