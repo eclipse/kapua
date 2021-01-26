@@ -12,24 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.servlet;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.kapua.commons.util.ResourceUtils;
-
+import com.google.common.base.Strings;
 import com.google.common.html.HtmlEscapers;
 import org.apache.commons.io.FileUtils;
+import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.scada.utils.ExceptionHelper;
 import org.eclipse.scada.utils.str.StringReplacer;
 import org.eclipse.scada.utils.str.StringReplacer.ReplaceSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
 
@@ -45,40 +44,21 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
     private static String httpErrorTemplate;
     private static String throwableErrorTemplate;
 
-    private static String getHttpErrorTemplate() throws FileNotFoundException {
-        if (httpErrorTemplate == null) {
-            httpErrorTemplate = getTemplate("org/eclipse/kapua/app/console/core/servlet/http_error_template.html");
-        }
-        return httpErrorTemplate;
-    }
-
-    private static String getThrowableErrorTemplate() throws FileNotFoundException{
-        if (throwableErrorTemplate == null) {
-            throwableErrorTemplate = getTemplate("org/eclipse/kapua/app/console/core/servlet/http_error_template.html");
-        }
-        return throwableErrorTemplate;
-    }
-
-    private static String getTemplate(String s) throws FileNotFoundException{
-        try {
-            return FileUtils.readFileToString(new File(ResourceUtils.getResource(s).getFile()));
-        } catch (IOException ioex) {
-            throw new FileNotFoundException(s);
-        } catch (NullPointerException npex) {
-            throw new FileNotFoundException(s);
-        }
-    }
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        processError(request, response);
+        try {
+            processError(request, response);
+        } catch (Exception e) {
+            logger.warn("{} processing error! Request: {} - Error: {}", KapuaErrorHandlerServlet.class.getSimpleName(), request.getPathInfo(), e.getMessage(), e);
+            response.sendError(500);
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        processError(request, response);
+        doGet(request, response);
     }
 
     private void processError(HttpServletRequest request, HttpServletResponse response)
@@ -103,81 +83,85 @@ public class KapuaErrorHandlerServlet extends KapuaHttpServlet {
 
     private void processHttpError(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        // Getting parameters from the request
-        Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-        String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
-        String errorMessage = (String) request.getAttribute("javax.servlet.error.message");
-
-        // Defaulting them if null
-        if (statusCode == null) {
-            statusCode = 500;
-        }
-        if (requestUri == null) {
-            requestUri = UNKNOWN;
-        }
-        if (errorMessage == null) {
-            errorMessage = "Internal Server Error";
-        }
-
-        final Map<String, Object> data = new HashMap<String, Object>();
-        data.put("statusCode", statusCode);
-        data.put("requestUri", requestUri);
-        data.put("errorMessage", errorMessage);
-
-        try {
-            response.getWriter().write(processTemplate(data, getHttpErrorTemplate()));
-        } catch (FileNotFoundException ex) {
-            logger.error("Error while parsing error template");
-            response.sendError(500);
-        }
-
-        logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}", statusCode, requestUri, errorMessage);
+        processErrorWithTemplate(request, response, getHttpErrorTemplate());
     }
 
     private void processThrowable(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        // Getting parameters from the request
+        processErrorWithTemplate(request, response, getThrowableErrorTemplate());
+    }
+
+    private void processErrorWithTemplate(HttpServletRequest request, HttpServletResponse response, String template) throws IOException {
+
+        // Status Code
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+        if (statusCode == null) {
+            statusCode = 0;
+        }
+
+        // Request URI
         String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
+        if (Strings.isNullOrEmpty(requestUri)) {
+            requestUri = UNKNOWN;
+        }
+
+        // Error Message
         String errorMessage = (String) request.getAttribute("javax.servlet.error.message");
+        if (Strings.isNullOrEmpty(errorMessage)) {
+            errorMessage = UNKNOWN;
+        }
 
-        final Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
-
-        final String exceptionMessage;
+        // Exception Message
+        Throwable throwable = (Throwable) request.getAttribute("javax.servlet.error.exception");
+        String exceptionMessage;
         if (throwable != null) {
             exceptionMessage = ExceptionHelper.getMessage(throwable);
         } else {
             exceptionMessage = UNKNOWN;
         }
 
-        // Defaulting them if null
-        if (statusCode == null) {
-            statusCode = 500;
-        }
-        if (requestUri == null) {
-            requestUri = UNKNOWN;
-        }
-        if (errorMessage == null) {
-            errorMessage = "Internal Server Error";
-        }
-
-        final Map<String, Object> data = new HashMap<String, Object>();
+        // Replace Parameters Map
+        Map<String, Object> data = new HashMap<String, Object>();
         data.put("statusCode", statusCode);
         data.put("requestUri", requestUri);
         data.put("errorMessage", errorMessage);
         data.put("exceptionMessage", exceptionMessage);
 
         try {
-            response.getWriter().write(processTemplate(data, getThrowableErrorTemplate()));
+            response.getWriter().write(processTemplate(data, template));
         } catch (FileNotFoundException ex) {
-            logger.error("Error while parsing error template");
+            logger.error("Error while parsing error template: {}", ex.getMessage(), ex);
             response.sendError(500);
         }
 
-        logger.error("Processed HTTP error! Code: {} - Request: {} - Error: {}", statusCode, requestUri, errorMessage);
+        logger.warn("Processed HTTP error! Request: {} - Code: {} - Error: {}", requestUri, statusCode, errorMessage);
     }
 
-    private static String processTemplate(Map<String, ?> properties, String template) {
+    private static String getHttpErrorTemplate() throws FileNotFoundException {
+        if (httpErrorTemplate == null) {
+            httpErrorTemplate = getTemplate("org/eclipse/kapua/app/console/core/servlet/http_error_template.html");
+        }
+        return httpErrorTemplate;
+    }
+
+    private static String getThrowableErrorTemplate() throws FileNotFoundException {
+        if (throwableErrorTemplate == null) {
+            throwableErrorTemplate = getTemplate("org/eclipse/kapua/app/console/core/servlet/throwable_error_template.html");
+        }
+        return throwableErrorTemplate;
+    }
+
+    private static String getTemplate(String templateName) throws FileNotFoundException {
+        try {
+            return FileUtils.readFileToString(new File(ResourceUtils.getResource(templateName).getFile()));
+        } catch (IOException ioex) {
+            throw new FileNotFoundException(templateName);
+        } catch (NullPointerException npex) {
+            throw new FileNotFoundException(templateName);
+        }
+    }
+
+    private static String processTemplate(Map<String, Object> properties, String template) {
         final ReplaceSource mapSource = StringReplacer.newSource(properties);
         return StringReplacer.replace(template, new ReplaceSource() {
 
