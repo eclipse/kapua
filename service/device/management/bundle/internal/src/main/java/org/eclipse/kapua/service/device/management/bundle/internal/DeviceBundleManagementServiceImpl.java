@@ -50,6 +50,8 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
 
+    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+
     @Override
     public DeviceBundles get(KapuaId scopeId, KapuaId deviceId, Long timeout)
             throws KapuaException {
@@ -92,17 +94,14 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
         if (responseMessage.getResponseCode().isAccepted()) {
             BundleResponsePayload responsePayload = responseMessage.getPayload();
 
-            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
-            String body = null;
+            String body;
             try {
-                body = new String(responsePayload.getBody(), charEncoding);
+                body = new String(responsePayload.getBody(), CHAR_ENCODING);
             } catch (Exception e) {
                 throw new DeviceManagementResponseException(e, responsePayload.getBody());
             }
 
-            DeviceBundles deviceBundleList = null;
+            DeviceBundles deviceBundleList;
             try {
                 deviceBundleList = XmlUtil.unmarshal(body, DeviceBundlesImpl.class);
             } catch (Exception e) {

@@ -35,8 +35,8 @@ import java.io.UnsupportedEncodingException;
 public class AssetResponsePayload extends KapuaResponsePayloadImpl implements KapuaResponsePayload {
 
     private static final DeviceAssetFactory DEVICE_ASSET_FACTORY = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
-    private static final DeviceManagementSetting CONFIG = DeviceManagementSetting.getInstance();
-    private static final String CHAR_ENCODING = CONFIG.getString(DeviceManagementSettingKey.CHAR_ENCODING);
+
+    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     public DeviceAssets getDeviceAssets() throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException, UnsupportedEncodingException {
         DeviceAssets deviceAssets = DEVICE_ASSET_FACTORY.newAssetListResult();

@@ -74,9 +74,11 @@ import java.util.Date;
 @KapuaProvider
 public class DevicePackageManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DevicePackageManagementService {
 
-    private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
+    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     private static final PackageManagementServiceSetting PACKAGE_MANAGEMENT_SERVICE_SETTING = PackageManagementServiceSetting.getInstance();
+
+    private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
 
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
@@ -129,12 +131,10 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
             DevicePackages devicePackages;
             if (responsePayload.hasBody()) {
-                DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-                String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
                 String body;
                 try {
-                    body = new String(responsePayload.getBody(), charEncoding);
+                    body = new String(responsePayload.getBody(), CHAR_ENCODING);
                 } catch (Exception e) {
                     throw new DeviceManagementResponseException(e, responsePayload.getBody());
                 }
@@ -143,8 +143,8 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
                     devicePackages = XmlUtil.unmarshal(body, DevicePackagesImpl.class);
                 } catch (Exception e) {
                     throw new DeviceManagementResponseException(e, body);
-
                 }
+
             } else {
                 devicePackages = new DevicePackagesImpl();
             }
@@ -487,12 +487,9 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         if (responseMessage.getResponseCode().isAccepted()) {
             PackageResponsePayload responsePayload = responseMessage.getPayload();
 
-            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
             String body;
             try {
-                body = new String(responsePayload.getBody(), charEncoding);
+                body = new String(responsePayload.getBody(), CHAR_ENCODING);
             } catch (Exception e) {
                 throw new DeviceManagementResponseException(e, responsePayload.getBody());
 
@@ -503,7 +500,6 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
                 installOperation = XmlUtil.unmarshal(body, DevicePackageInstallOperationImpl.class);
             } catch (Exception e) {
                 throw new DeviceManagementResponseException(e, body);
-
             }
 
             return installOperation;
@@ -639,15 +635,11 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         if (responseMessage.getResponseCode().isAccepted()) {
             PackageResponsePayload responsePayload = responseMessage.getPayload();
 
-            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
             String body;
             try {
-                body = new String(responsePayload.getBody(), charEncoding);
+                body = new String(responsePayload.getBody(), CHAR_ENCODING);
             } catch (Exception e) {
                 throw new DeviceManagementResponseException(e, responsePayload.getBody());
-
             }
 
             DevicePackageUninstallOperation uninstallOperation;
@@ -655,7 +647,6 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
                 uninstallOperation = XmlUtil.unmarshal(body, DevicePackageUninstallOperationImpl.class);
             } catch (Exception e) {
                 throw new DeviceManagementResponseException(e, body);
-
             }
 
             return uninstallOperation;

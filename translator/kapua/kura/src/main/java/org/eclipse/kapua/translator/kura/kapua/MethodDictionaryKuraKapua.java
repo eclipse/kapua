@@ -20,7 +20,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * Dictionary class to define actions translations between {@link org.eclipse.kapua.service.device.call.kura.Kura} domain to Kapua domain.<br>
+ * Dictionary class to define actions translations between {@link org.eclipse.kapua.service.device.call.kura.Kura} domain to Kapua domain.
  *
  * @see KapuaMethod
  * @see KuraMethod
@@ -43,6 +43,11 @@ public class MethodDictionaryKuraKapua {
         DICTIONARY.put(KuraMethod.EXEC, KapuaMethod.EXECUTE);
     }
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     private MethodDictionaryKuraKapua() {
     }
 

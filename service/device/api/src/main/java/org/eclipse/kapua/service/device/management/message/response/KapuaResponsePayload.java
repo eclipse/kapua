@@ -33,9 +33,9 @@ public interface KapuaResponsePayload extends KapuaPayload {
     /**
      * Set the exception message (if present)
      *
-     * @param setExecptionMessage
+     * @param exceptionMessage
      */
-    void setExceptionMessage(String setExecptionMessage);
+    void setExceptionMessage(String exceptionMessage);
 
     /**
      * Get the exception stack trace (if present)

@@ -37,6 +37,7 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Dcertificate.jwt.private.key=file:///var/opt/jetty/key.pk8 \
                -Dcertificate.jwt.certificate=file:///var/opt/jetty/cert.pem \
                -Ddatastore.disable=\${KAPUA_DISABLE_DATASTORE:-false} \
+               -Ddevice.management.response.stacktrace.show=\${DEVICE_MANAGEMENT_RESPONSE_STACKTRACE_SHOW:-false} \
                -Djavax.xml.bind.context.factory=org.eclipse.persistence.jaxb.JAXBContextFactory"
 
 USER 0

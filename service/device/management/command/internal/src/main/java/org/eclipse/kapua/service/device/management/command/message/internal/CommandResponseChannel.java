@@ -12,14 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command.message.internal;
 
+import org.eclipse.kapua.service.device.management.command.internal.CommandAppProperties;
 import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChannelImpl;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
 
 /**
- * Device command response channel.
+ * Command {@link KapuaResponseChannel}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class CommandResponseChannel extends KapuaAppChannelImpl implements KapuaResponseChannel {
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
+    public CommandResponseChannel() {
+        setAppName(CommandAppProperties.APP_NAME);
+        setVersion(CommandAppProperties.APP_VERSION);
+    }
 }

@@ -22,7 +22,6 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
-import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
@@ -44,10 +43,12 @@ import java.util.List;
  */
 public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<SnapshotResponseChannel, SnapshotResponsePayload, SnapshotResponseMessage> {
 
+    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     public TranslatorAppSnapshotKuraKapua() {
-        super(SnapshotResponseMessage.class);
+        super(SnapshotResponseMessage.class, SnapshotResponsePayload.class);
     }
 
     @Override
@@ -55,12 +56,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         try {
             TranslatorKuraKapuaUtils.validateKuraResponseChannel(kuraResponseChannel, SnapshotMetrics.APP_ID, SnapshotMetrics.APP_VERSION);
 
-            SnapshotResponseChannel snapshotResponseChannel = new SnapshotResponseChannel();
-            snapshotResponseChannel.setAppName(DeviceConfigurationAppProperties.APP_NAME);
-            snapshotResponseChannel.setVersion(DeviceConfigurationAppProperties.APP_VERSION);
-
-            // Return Kapua Channel
-            return snapshotResponseChannel;
+            return new SnapshotResponseChannel();
         } catch (Exception e) {
             throw new InvalidChannelException(e, kuraResponseChannel);
         }
@@ -68,28 +64,15 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
 
     @Override
     protected SnapshotResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
+        SnapshotResponsePayload snapshotResponsePayload = super.translatePayload(kuraResponsePayload);
+
         try {
-            SnapshotResponsePayload snapshotResponsePayload = TranslatorKuraKapuaUtils.buildBaseResponsePayload(kuraResponsePayload, new SnapshotResponsePayload());
-
-            DeviceManagementSetting config = DeviceManagementSetting.getInstance();
-            String charEncoding = config.getString(DeviceManagementSettingKey.CHAR_ENCODING);
-
             KuraSnapshotIds snapshotIdResult = null;
             if (kuraResponsePayload.hasBody()) {
-                String body = null;
-                try {
-                    body = new String(kuraResponsePayload.getBody(), charEncoding);
-                } catch (Exception e) {
-                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) snapshotResponsePayload.getBody());
-                }
-
-                try {
-                    snapshotIdResult = XmlUtil.unmarshal(body, KuraSnapshotIds.class);
-                } catch (Exception e) {
-                    throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
-                }
+                snapshotIdResult = readXmlBodyAs(kuraResponsePayload.getBody(), KuraSnapshotIds.class);
             }
-            translateBody(snapshotResponsePayload, charEncoding, snapshotIdResult);
+
+            translateBody(snapshotResponsePayload, snapshotIdResult);
 
             // Return Kapua Payload
             return snapshotResponsePayload;
@@ -100,7 +83,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         }
     }
 
-    private void translateBody(SnapshotResponsePayload snapshotResponsePayload, String charEncoding, KuraSnapshotIds kuraSnapshotIdResult) throws TranslatorException {
+    private void translateBody(SnapshotResponsePayload snapshotResponsePayload, KuraSnapshotIds kuraSnapshotIdResult) throws TranslatorException {
         try {
             DeviceSnapshotFactory deviceSnapshotFactory = LOCATOR.getFactory(DeviceSnapshotFactory.class);
 
@@ -117,7 +100,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
 
                 StringWriter sw = new StringWriter();
                 XmlUtil.marshal(deviceSnapshots, sw);
-                byte[] requestBody = sw.toString().getBytes(charEncoding);
+                byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
 
                 snapshotResponsePayload.setBody(requestBody);
             }

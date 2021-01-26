@@ -13,13 +13,23 @@
 package org.eclipse.kapua.service.device.management.snapshot.message.internal;
 
 import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChannelImpl;
+import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
 
 /**
- * Device snapshot response channel.
+ * Snapshot {@link KapuaResponseChannel}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class SnapshotResponseChannel extends KapuaAppChannelImpl implements KapuaResponseChannel {
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
+    public SnapshotResponseChannel() {
+        setAppName(DeviceConfigurationAppProperties.APP_NAME);
+        setVersion(DeviceConfigurationAppProperties.APP_VERSION);
+    }
 }
