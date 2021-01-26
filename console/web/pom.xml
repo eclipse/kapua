@@ -295,6 +295,24 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>Copy Console Servlet resources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.eclipse.kapua</groupId>
+                                    <artifactId>kapua-console-core</artifactId>
+                                    <includes>**/*_template.html</includes>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${site.basedir}/WEB-INF/classes/</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>Copy jBatch configuration files</id>
                         <phase>prepare-package</phase>
                         <goals>

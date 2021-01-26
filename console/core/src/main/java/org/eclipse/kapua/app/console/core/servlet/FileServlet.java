@@ -130,7 +130,7 @@ public class FileServlet extends KapuaHttpServlet {
             logger.error("Illegal argument exception", kiae);
             resp.sendError(400, kiae.getArgumentName());
         } catch (Exception e) {
-            logger.error("Generic error", e);
+            logger.error("Generic error: {}", e.getMessage(), e);
             resp.sendError(500, e.getMessage());
         }
     }
@@ -226,14 +226,14 @@ public class FileServlet extends KapuaHttpServlet {
             logger.error("Device management exception", edme);
             resp.sendError(404, edme.getMessage());
         } catch (Exception e) {
-            logger.error("Generic error", e);
+            logger.error("Generic error: {}", e.getMessage(), e);
             resp.sendError(500, e.getMessage());
         }
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         String reqPathInfo = request.getPathInfo();
 
         if (reqPathInfo == null) {
