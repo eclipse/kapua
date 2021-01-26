@@ -13,15 +13,17 @@
 package org.eclipse.kapua.app.console.core.servlet;
 
 import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.CharEncoding;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
+import org.eclipse.kapua.app.console.core.shared.model.KapuaFormFields;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.core.shared.model.KapuaFormFields;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandFactory;
@@ -30,9 +32,6 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandManageme
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementException;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.CharEncoding;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,7 +130,7 @@ public class FileServlet extends KapuaHttpServlet {
             logger.error("Illegal argument exception", kiae);
             resp.sendError(400, kiae.getArgumentName());
         } catch (Exception e) {
-            logger.error("Generic error", e);
+            logger.error("Generic error: {}", e.getMessage(), e);
             resp.sendError(500, e.getMessage());
         }
     }
@@ -227,15 +226,20 @@ public class FileServlet extends KapuaHttpServlet {
             logger.error("Device management exception", edme);
             resp.sendError(404, edme.getMessage());
         } catch (Exception e) {
-            logger.error("Generic error", e);
+            logger.error("Generic error: {}", e.getMessage(), e);
             resp.sendError(500, e.getMessage());
         }
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         String reqPathInfo = request.getPathInfo();
+
+        if (reqPathInfo == null) {
+            response.sendError(404);
+            return;
+        }
 
         if (reqPathInfo.startsWith("/icons")) {
             doGetIconResource(request, response);
