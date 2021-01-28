@@ -66,7 +66,7 @@ You can change the version of Kapua by exporting the environment variable `IMAGE
 
 Example:
 ```bash
-export IMAGE_VERSION=1.0.0
+export IMAGE_VERSION=1.4.0
 ``` 
 
 #### Passing additional JAVA_OPTS
@@ -81,13 +81,11 @@ If you want to build containers from the code, you'll need to build the whole Ka
 
 From the project root directory, run:
 ```bash
-mvn clean install -f external/pom.xml
 mvn clean install -Pdocker
 ```
 
 To build also the Admin Web Console container, which is excluded by default, add the `console` profile:
 ```bash
-mvn clean install -f external/pom.xml
 mvn clean install -Pconsole,docker
 ```
 
