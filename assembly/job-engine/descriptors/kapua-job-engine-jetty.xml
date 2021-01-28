@@ -33,7 +33,7 @@
             <useProjectArtifact>false</useProjectArtifact>
 
             <includes>
-                <include>${pom.groupId}:kapua-job-engine-app:war</include>
+                <include>${pom.groupId}:kapua-job-engine-app-web:war</include>
                 <include>${pom.groupId}:kapua-foreignkeys</include>
             </includes>
 

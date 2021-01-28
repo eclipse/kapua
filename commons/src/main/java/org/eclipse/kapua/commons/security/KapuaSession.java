@@ -40,7 +40,7 @@ public class KapuaSession implements Serializable {
         TRUSTED_CLASSES.add("org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext.<init>");
         TRUSTED_CLASSES.add("org.eclipse.kapua.commons.security.KapuaSecurityUtils.doPrivileged");
         TRUSTED_CLASSES.add("org.eclipse.kapua.commons.event.jms.JMSServiceEventBus.setSession");
-        TRUSTED_CLASSES.add("org.eclipse.kapua.job.engine.app.filter.RebuildSessionFilter.onAccessDenied");
+        TRUSTED_CLASSES.add("org.eclipse.kapua.job.engine.app.core.filter.RebuildSessionFilter.onAccessDenied");
     }
 
     /**

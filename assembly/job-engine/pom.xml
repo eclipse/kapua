@@ -40,7 +40,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-engine-app</artifactId>
+            <artifactId>kapua-job-engine-app-web</artifactId>
             <type>war</type>
         </dependency>
         <dependency>
