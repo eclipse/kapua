@@ -32,9 +32,8 @@ This part of the tutorial consists of several pieces. First you need to download
 
 1. Open OS Shell (Terminal) and go to home directory.
 2. Download Kapua project from [Github repository](https://github.com/eclipse/kapua.git) with command `git clone https://github.com/eclipse/kapua.git`
-3. Go to Kapua folder and run command `mvn clean install -f external/pom.xml` which will build some additional resources required by Kapua.
-4. Go to Kapua folder and run command `mvn clean install -DskipTests -Pconsole,docker` which will build the project with the Web Admin console.
-5. After build finishes run Docker deploy script in `deployment/docker`:
+3. Go to Kapua folder and run command `mvn clean install -DskipTests -Pconsole,docker` which will build the project with the Web Admin console.
+4. After build finishes run Docker deploy script in `deployment/docker`:
  
 ```
 ./docker-deploy.sh

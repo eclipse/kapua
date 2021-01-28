@@ -1894,14 +1894,6 @@
             </modules>
         </profile>
 
-        <!-- Profile used to exclude external dependency modules -->
-        <!-- <profile>
-            <id>external</id>
-            <modules>
-                <module>external</module>
-            </modules>
-        </profile> -->
-
         <!-- Profile used only during release process. -->
         <profile>
             <id>release</id>
