@@ -22,7 +22,7 @@ install:
 
 env:
   global:
-    - BUILD_OPTS="" 
+    - BUILD_OPTS=""
     - CONFIG_OVERRIDES="-Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost"
     - MAVEN_OPTS="-Xmx4096m"
 

@@ -10,9 +10,9 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@jobs
-@triggerService
-@integration
+#@jobs
+#@triggerService
+#@integration
 
 Feature: JobEngineService execute job on device connect
 
