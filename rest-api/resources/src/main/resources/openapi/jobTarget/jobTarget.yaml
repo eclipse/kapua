@@ -26,20 +26,32 @@ components:
     jobTarget:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
+        - $ref: '#/components/schemas/jobTargetCreator'
+      example:
+        type: jobTarget
+        id: Y-vYl9TKaf8
+        scopeId: AQ
+        createdOn: '2019-12-06T11:00:02.000Z'
+        createdBy: AQ
+        modifiedOn: '2019-12-06T11:01:00.000Z'
+        modifiedBy: AQ
+        optlock: 2
+        jobId: auSoU2ph1bY
+        jobTargetId: VBk_ZDZSOV0
+        status: PROCESS_OK
+        stepIndex: 0
+    jobTargetCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntityCreator'
         - type: object
+          properties:
+            jobTargetId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the Device to attach the target to
           example:
-            type: jobTarget
-            id: Y-vYl9TKaf8
-            scopeId: AQ
-            createdOn: '2019-12-06T11:00:02.000Z'
-            createdBy: AQ
-            modifiedOn: '2019-12-06T11:01:00.000Z'
-            modifiedBy: AQ
-            optlock: 2
-            jobId: auSoU2ph1bY
-            jobTargetId: VBk_ZDZSOV0
-            status: PROCESS_OK
-            stepIndex: 0
+            type: jobTargetCreator
+            jobTargetId: JMQdKuPgUjE
     jobTargetListResult:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'

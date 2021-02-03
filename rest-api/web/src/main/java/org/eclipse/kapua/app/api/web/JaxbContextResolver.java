@@ -213,6 +213,7 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoXmlRegistry;
 import org.eclipse.kapua.service.endpoint.EndpointUsage;
 import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobXmlRegistry;
@@ -221,14 +222,21 @@ import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionXmlRegistry;
 import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepXmlRegistry;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionXmlRegistry;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.targets.JobTarget;
+import org.eclipse.kapua.service.job.targets.JobTargetCreator;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerXmlRegistry;
@@ -236,6 +244,11 @@ import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTrigger;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerXmlRegistry;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionXmlRegistry;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.SortFieldXmlAdapter;
@@ -581,12 +594,14 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     Job.class,
                     JobStartOptions.class,
                     IsJobRunningResponse.class,
+                    JobCreator.class,
                     JobListResult.class,
                     JobQuery.class,
                     JobXmlRegistry.class,
                     JobEngineXmlRegistry.class,
 
                     JobStep.class,
+                    JobStepCreator.class,
                     JobStepListResult.class,
                     JobStepQuery.class,
                     JobStepXmlRegistry.class,
@@ -598,20 +613,33 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     JobExecutionXmlRegistry.class,
 
                     JobTarget.class,
+                    JobTargetCreator.class,
                     JobTargetListResult.class,
                     JobTargetQuery.class,
                     JobExecutionXmlRegistry.class,
 
                     // Trigger
                     Trigger.class,
+                    TriggerCreator.class,
                     TriggerListResult.class,
                     TriggerQuery.class,
+                    TriggerProperty.class,
                     TriggerXmlRegistry.class,
+
+                    TriggerDefinition.class,
+                    TriggerDefinitionListResult.class,
+                    TriggerDefinitionQuery.class,
+                    TriggerDefinitionXmlRegistry.class,
 
                     FiredTrigger.class,
                     FiredTriggerListResult.class,
                     FiredTriggerQuery.class,
-                    FiredTriggerXmlRegistry.class
+                    FiredTriggerXmlRegistry.class,
+
+                    JobStepDefinition.class,
+                    JobStepDefinitionListResult.class,
+                    JobStepDefinitionQuery.class,
+                    JobStepDefinitionXmlRegistry.class
             }, properties);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -52,6 +52,30 @@ components:
                    </commandInput>
               - name: timeout
                 propertyType: java.lang.Long
+    jobStepCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntityCreator'
+        - type: object
+          properties:
+            stepIndex:
+              type: number
+            jobStepDefinitionId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            jobStepProperties:
+              type: array
+              items:
+                $ref: '../jobStepDefinition/jobStepDefinition.yaml#/components/schemas/jobStepDefinitionProperty'
+      example:
+        type: jobStepCreator
+        name: Step 1
+        description: A step with a description
+        stepIndex: 0
+        jobStepDefinitionId: Aw
+        jobStepProperties:
+          - name: bundleId
+            propertyType: java.lang.String
+            propertyValue: '999'
     jobStepListResult:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'

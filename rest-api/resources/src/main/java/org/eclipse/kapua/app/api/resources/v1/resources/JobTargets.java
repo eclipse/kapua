@@ -13,6 +13,7 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,6 +22,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -40,6 +42,7 @@ import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
+import org.eclipse.kapua.service.job.targets.JobTargetCreator;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
@@ -177,6 +180,50 @@ public class JobTargets extends AbstractKapuaResource {
         jobExecutionQuery.setLimit(limit);
 
         return jobExecutionListResult;
+    }
+
+    /**
+     * Creates a new {@link JobTarget} based on the information provided in {@link JobTargetCreator}
+     * parameter.
+     *
+     * @param scopeId           The {@link ScopeId} in which to create the {@link JobTarget}
+     * @param jobId             The ID of the {@link Job} to attach the {@link JobTarget} to
+     * @param jobTargetCreator  Provides the information for the new {@link JobTarget} to be created.
+     * @return                  The newly created {@link JobTarget} object.
+     * @throws                  KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+
+    @POST
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response create(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("jobId") EntityId jobId,
+            JobTargetCreator jobTargetCreator) throws KapuaException {
+        jobTargetCreator.setScopeId(scopeId);
+        jobTargetCreator.setJobId(jobId);
+        return returnCreated(jobTargetService.create(jobTargetCreator));
+    }
+
+    /**
+     * Deletes the JobTarget specified by the "targetId" path parameter.
+     *
+     * @param scopeId        The ScopeId of the requested {@link JobTarget}.
+     * @param targetId       The id of the JobTarget to be deleted.
+     * @return               HTTP 201 if operation has completed successfully.
+     * @throws               KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+
+    @DELETE
+    @Path("{targetId}")
+    public Response deleteJobTarget(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("targetId") EntityId targetId) throws KapuaException {
+        jobTargetService.delete(scopeId, targetId);
+
+        return returnNoContent();
     }
 
 }

@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,6 +25,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -34,14 +39,17 @@ import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 
 import com.google.common.base.Strings;
 
@@ -105,7 +113,13 @@ public class JobTriggers extends AbstractKapuaResource {
             @PathParam("jobId") EntityId jobId,
             TriggerQuery query) throws KapuaException {
         query.setScopeId(scopeId);
-        query.setPredicate(returnJobIdPredicate(jobId, query));
+        QueryPredicate predicate;
+        if (query.getPredicate() != null) {
+            predicate = query.getPredicate();
+        } else {
+            predicate = returnJobIdPredicate(jobId, query);
+        }
+        query.setPredicate(predicate);
         return triggerService.query(query);
     }
 
@@ -175,6 +189,57 @@ public class JobTriggers extends AbstractKapuaResource {
                 kapuaPropertyValueAttributePredicate,
                 kapuaPropertyTypeAttributePredicate
         );
+    }
+
+    /**
+     * Creates a new {@link Trigger} based on the information provided in {@link TriggerCreator}
+     * parameter.
+     *
+     * @param scopeId           The {@link ScopeId} in which to create the {@link Trigger}
+     * @param triggerCreator    Provides the information for the new {@link Trigger} to be created.
+     * @param jobId             The ID of the {@link Job} to attach the {@link Trigger} to
+     * @return                  The newly created {@link Trigger} object.
+     * @throws                  KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+
+    @POST
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response create(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("jobId") EntityId jobId,
+            TriggerCreator triggerCreator) throws KapuaException {
+        triggerCreator.setScopeId(scopeId);
+        List<TriggerProperty> triggerProperties = triggerCreator.getTriggerProperties();
+        if (triggerProperties == null) {
+            triggerProperties = new ArrayList<>();
+            triggerCreator.setTriggerProperties(triggerProperties);
+        }
+        triggerProperties.removeIf(triggerProperty -> Arrays.stream(new String[]{ "scopeId", "jobId" }).anyMatch(propertyToRemove -> propertyToRemove.equals(triggerProperty.getName())));
+        triggerProperties.add(triggerFactory.newTriggerProperty("scopeId", KapuaId.class.getCanonicalName(), scopeId.toCompactId()));
+        triggerProperties.add(triggerFactory.newTriggerProperty("jobId", KapuaId.class.getCanonicalName(), jobId.toCompactId()));
+        return returnCreated(triggerService.create(triggerCreator));
+    }
+
+    /**
+     * Deletes the Trigger specified by the "triggerId" path parameter.
+     *
+     * @param scopeId        The ScopeId of the requested {@link Trigger}.
+     * @param triggerId      The id of the Trigger to be deleted.
+     * @return               HTTP 201 if operation has completed successfully.
+     * @throws               KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+
+    @DELETE
+    @Path("{triggerId}")
+    public Response deleteTrigger(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("triggerId") EntityId triggerId) throws KapuaException {
+        triggerService.delete(scopeId, triggerId);
+
+        return returnNoContent();
     }
 
 }

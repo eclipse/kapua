@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.scheduler.trigger;
 
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
@@ -42,4 +43,9 @@ public class TriggerXmlRegistry {
     public TriggerQuery newQuery() {
         return TRIGGER_FACTORY.newQuery(null);
     }
+
+    public TriggerProperty newTriggerProperty() {
+        return TRIGGER_FACTORY.newTriggerProperty(null, null, null);
+    }
+
 }

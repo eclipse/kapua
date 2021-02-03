@@ -1,0 +1,38 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Jobs - Trigger Definitions
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/triggerDefinitions/{triggerDefinitionId}:
+    get:
+      tags:
+        - Job - Trigger Definition
+      summary: Get a single Trigger Definition
+      operationId: triggerDefinitionGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './triggerDefinition.yaml#/components/parameters/triggerDefinitionId'
+      responses:
+        200:
+          description: The details of the desired Trigger Definition
+          content:
+            application/json:
+              schema:
+                $ref: './triggerDefinition.yaml#/components/schemas/triggerDefinition'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

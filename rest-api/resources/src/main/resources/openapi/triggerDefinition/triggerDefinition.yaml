@@ -1,0 +1,144 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Trigger Definitions
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    triggerDefinitionId:
+      name: triggerDefinitionId
+      in: path
+      description: The ID of the Trigger Definition on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    triggerDefinitionProperty:
+      type: object
+      properties:
+        name:
+          type: string
+        propertyType:
+          type: string
+        propertyValue:
+          type: string
+      example:
+        name: jobId
+        propertyType: org.eclipse.kapua.model.id.KapuaId
+    triggerDefinition:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntity'
+        - type: object
+          properties:
+            triggerType:
+              type: string
+              enum:
+                - TIMER
+                - EVENT
+            processorName:
+              type: string
+            triggerProperties:
+              type: array
+              items:
+                $ref: '#/components/schemas/triggerDefinitionProperty'
+      example:
+        type: triggerDefinition
+        id: AQ
+        scopeId: AQ
+        createdOn: '2021-01-29T14:45:04.460Z'
+        createdBy: AQ
+        modifiedOn: '2021-01-29T14:45:04.460Z'
+        modifiedBy: AQ
+        optlock: 0
+        name: Cron Job
+        description: Starts the job according to the given CRON expression
+        processorName: org.eclipse.kapua.service.scheduler.trigger.quartz.job.KapuaJobLauncer
+        triggerProperties:
+          - name: cronExpression
+            propertyType: java.lang.String
+          - name: jobId
+            propertyType: org.eclipse.kapua.model.id.KapuaId
+          - name: scopeId
+            propertyType: org.eclipse.kapua.model.id.KapuaId
+        triggerType: TIMER
+    triggerDefinitionListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/triggerDefinition'
+          example:
+            type: triggerDefinitionListResult
+            limitExceeded: false
+            size: 3
+            items:
+              - type: triggerDefinition
+                id: AQ
+                scopeId: AQ
+                createdOn: '2021-01-29T14:45:04.460Z'
+                createdBy: AQ
+                modifiedOn: '2021-01-29T14:45:04.460Z'
+                modifiedBy: AQ
+                optlock: 0
+                name: Cron Job
+                description: Starts the job according to the given CRON expression
+                processorName: org.eclipse.kapua.service.scheduler.trigger.quartz.job.KapuaJobLauncer
+                triggerProperties:
+                  - name: cronExpression
+                    propertyType: java.lang.String
+                  - name: jobId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                  - name: scopeId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                triggerType: TIMER
+              - type: triggerDefinition
+                id: Ag
+                scopeId: AQ
+                createdOn: '2021-01-29T14:45:04.614Z'
+                createdBy: AQ
+                modifiedOn: '2021-01-29T14:45:04.614Z'
+                modifiedBy: AQ
+                optlock: 0
+                name: Interval Job
+                description: Starts the job according to the given interval
+                processorName: org.eclipse.kapua.service.scheduler.trigger.quartz.job.KapuaJobLauncer
+                triggerProperties:
+                  - name: interval
+                    propertyType: java.lang.Integer
+                  - name: jobId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                  - name: scopeId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                triggerType: TIMER
+              - type: triggerDefinition
+                id: Aw
+                scopeId: AQ
+                createdOn: '2021-01-29T14:45:04.781Z'
+                createdBy: AQ
+                modifiedOn: '2021-01-29T14:45:04.781Z'
+                modifiedBy: AQ
+                optlock: 0
+                name: Device Connect
+                description: Starts the job when the device target connects
+                processorName: '???'
+                triggerProperties:
+                  - name: delay
+                    propertyType: java.lang.Integer
+                  - name: jobId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                  - name: scopeId
+                    propertyType: org.eclipse.kapua.model.id.KapuaId
+                triggerType: EVENT

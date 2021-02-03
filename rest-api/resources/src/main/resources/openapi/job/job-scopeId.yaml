@@ -40,3 +40,32 @@ paths:
           $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      tags:
+        - Job
+      summary: Create a new Job
+      operationId: jobCreate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        description: An object containing the properties for the new Job to be created
+        content:
+          application/json:
+            schema:
+              $ref: './job.yaml#/components/schemas/jobCreator'
+        required: true
+      responses:
+        201:
+          description: The Job that has just been created
+          content:
+            application/json:
+              schema:
+                $ref: './job.yaml#/components/schemas/job'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

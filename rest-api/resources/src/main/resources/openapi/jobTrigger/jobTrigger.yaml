@@ -50,6 +50,33 @@ components:
               - name: scopeId
                 propertyType: org.eclipse.kapua.model.id.KapuaId
                 propertyValue: AQ
+    jobTriggerCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntityCreator'
+        - type: object
+          properties:
+            startsOn:
+              type: string
+              format: 'date-time'
+            endsOn:
+              type: string
+              format: 'date-time'
+            triggerDefinitionId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+            triggerProperties:
+              type: array
+              items:
+                $ref: '../triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerDefinitionProperty'
+      example:
+        type: triggerCreator
+        name: A trigger
+        startsOn: '2021-01-31T00:00:00.000Z'
+        triggerDefinitionId: AQ
+        triggerProperties:
+          - name: cronExpression
+            propertyType: java.lang.String
+            propertyValue: '* * * * * ? *'
     jobTriggerListResult:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'

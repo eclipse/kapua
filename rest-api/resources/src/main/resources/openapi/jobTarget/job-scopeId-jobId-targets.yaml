@@ -36,3 +36,52 @@ paths:
           $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
+    post:
+      tags:
+        - Job - Target
+      summary: Create a new Job Target
+      operationId: jobTargetCreate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        description: An object containing the properties for the new Job Target to be created
+        content:
+          application/json:
+            schema:
+              $ref: '../jobTarget/jobTarget.yaml#/components/schemas/jobTargetCreator'
+        required: true
+      responses:
+        201:
+          description: The Job Target that has just been created
+          content:
+            application/json:
+              schema:
+                $ref: '../job/job.yaml#/components/schemas/job'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Job - Target
+      summary: Delete a single Job Target
+      operationId: jobTargetDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../job/job.yaml#/components/parameters/jobId'
+        - $ref: './jobTarget.yaml#/components/parameters/targetId'
+      responses:
+        204:
+          description: The Job Target has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.job.step;
 
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 import javax.xml.bind.annotation.XmlRegistry;
 
@@ -57,4 +58,9 @@ public class JobStepXmlRegistry {
     public JobStepQuery newQuery() {
         return JOB_STEP_FACTORY.newQuery(null);
     }
+
+    public JobStepProperty newJobStepProperty() {
+        return JOB_STEP_FACTORY.newStepProperty(null, null, null);
+    }
+
 }

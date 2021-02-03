@@ -13,14 +13,17 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -33,6 +36,7 @@ import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobQuery;
@@ -144,4 +148,72 @@ public class Jobs extends AbstractKapuaResource {
 
         return job;
     }
+
+    /**
+     * Creates a new {@link Job} based on the information provided in {@link JobCreator}
+     * parameter.
+     *
+     * @param scopeId           The {@link ScopeId} in which to create the {@link Job}
+     * @param jobCreator        Provides the information for the new {@link Job} to be created.
+     * @return                  The newly created {@link Job} object.
+     * @throws                  KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+
+    @POST
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response create(
+            @PathParam("scopeId") ScopeId scopeId,
+            JobCreator jobCreator) throws KapuaException {
+        jobCreator.setScopeId(scopeId);
+
+        return returnCreated(jobService.create(jobCreator));
+    }
+
+    /**
+     * Updates the Job based on the information provided in the Job parameter.
+     *
+     * @param scopeId        The ScopeId of the requested {@link Job}.
+     * @param jobId          The id of the requested {@link Job}
+     * @param job            The modified Job whose attributed need to be updated.
+     * @return               The updated job.
+     * @throws               KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+
+    @PUT
+    @Path("{jobId}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Job update(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("jobId") EntityId jobId,
+            Job job) throws KapuaException {
+        job.setScopeId(scopeId);
+        job.setId(jobId);
+
+        return jobService.update(job);
+    }
+
+    /**
+     * Deletes the Job specified by the "jobId" path parameter.
+     *
+     * @param scopeId        The ScopeId of the requested {@link Job}.
+     * @param jobId          The id of the Job to be deleted.
+     * @return               HTTP 201 if operation has completed successfully.
+     * @throws               KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+
+    @DELETE
+    @Path("{jobId}")
+    public Response deleteJob(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("jobId") EntityId jobId) throws KapuaException {
+        jobService.delete(scopeId, jobId);
+
+        return returnNoContent();
+    }
+
 }

@@ -1,0 +1,148 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Jobs Step Definitions
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: {}
+
+components:
+  parameters:
+    jobStepDefinitionId:
+      name: jobStepDefinitionId
+      in: path
+      description: The ID of the Job Step Definition on which to perform the operation
+      schema:
+        $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    jobStepDefinitionProperty:
+      type: object
+      properties:
+        name:
+          type: string
+        propertyType:
+          type: string
+        propertyValue:
+          type: string
+        exampleValue:
+          type: string
+          readOnly: true
+    jobStepDefinition:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntity'
+        - type: object
+          properties:
+            stepType:
+              type: string
+            processorName:
+              type: string
+            readerName:
+              type: string
+            writerName:
+              type: string
+            stepProperties:
+              type: array
+              items:
+                $ref: '#/components/schemas/jobStepDefinitionProperty'
+      example:
+        type: jobStepDefinition
+        id: AQ
+        createdOn: '2021-01-29T14:46:40.257Z'
+        createdBy: AQ
+        modifiedOn: '2021-01-29T14:46:40.257Z'
+        modifiedBy: AQ
+        optlock: 0
+        name: Asset Write
+        description: Writes to an asset using the Device Asset Management Service
+        processorName: org.eclipse.kapua.service.device.management.asset.job.DeviceAssetWriteTargetProcessor
+        stepProperties:
+          - exampleValue: |-
+              <?xml version="1.0" encoding="UTF-8"?>
+              <deviceAssets>
+                  <deviceAsset>
+                      <name>assetName</name>
+                      <channels>
+                          <channel>
+                              <valueType>binary</valueType>
+                              <value>EGVzdCBzdHJpbmcgdmFsdWU=</value>
+                              <name>binaryTest</name>
+                          </channel>
+                      </channels>
+                  </deviceAsset>
+              </deviceAssets>
+            name: assets
+            propertyType: org.eclipse.kapua.service.device.management.asset.DeviceAssets
+          - name: timeout
+            propertyType: java.lang.Long
+            propertyValue: '30000'
+        stepType: TARGET
+    jobStepDefinitionListResult:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/jobStepDefinition'
+          example:
+            type: jobStepDefinitionListResult
+            limitExceeded: false
+            size: 2
+            items:
+              - type: jobStepDefinition
+                id: AQ
+                createdOn: '2021-01-29T14:46:40.257Z'
+                createdBy: AQ
+                modifiedOn: '2021-01-29T14:46:40.257Z'
+                modifiedBy: AQ
+                optlock: 0
+                name: Asset Write
+                description: Writes to an asset using the Device Asset Management Service
+                processorName: org.eclipse.kapua.service.device.management.asset.job.DeviceAssetWriteTargetProcessor
+                stepProperties:
+                  - exampleValue: |-
+                      <?xml version="1.0" encoding="UTF-8"?>
+                      <deviceAssets>
+                          <deviceAsset>
+                              <name>assetName</name>
+                              <channels>
+                                  <channel>
+                                      <valueType>binary</valueType>
+                                      <value>EGVzdCBzdHJpbmcgdmFsdWU=</value>
+                                      <name>binaryTest</name>
+                                  </channel>
+                              </channels>
+                          </deviceAsset>
+                      </deviceAssets>
+                    name: assets
+                    propertyType: org.eclipse.kapua.service.device.management.asset.DeviceAssets
+                  - name: timeout
+                    propertyType: java.lang.Long
+                    propertyValue: '30000'
+                stepType: TARGET
+              - type: jobStepDefinition
+                id: Ag
+                createdOn: '2021-01-29T14:46:48.061Z'
+                createdBy: AQ
+                modifiedOn: '2021-01-29T14:46:48.061Z'
+                modifiedBy: AQ
+                optlock: 0
+                name: Bundle Start
+                description: Starts a bundle using the Device Bundle Management Service
+                processorName: org.eclipse.kapua.service.device.management.bundle.job.DeviceBundleStartTargetProcessor
+                stepProperties:
+                  - name: bundleId
+                    propertyType: java.lang.String
+                  - name: timeout
+                    propertyType: java.lang.Long
+                    propertyValue: '30000'
+                stepType: TARGET

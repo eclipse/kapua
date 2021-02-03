@@ -303,7 +303,16 @@ paths:
     $ref: './jobTrigger/job-scopeId-jobId-triggers-_count.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1triggers~1_count'
   /{scopeId}/jobs/{jobId}/triggers/_query:
     $ref: './jobTrigger/job-scopeId-jobId-triggers-_query.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1triggers~1_query'
-  ### Job Trigger ###
+  ### Job Trigger Definition ###
+  /{scopeId}/triggerDefinitions:
+    $ref: './triggerDefinition/triggerDefinition-scopeId.yaml#/paths/~1{scopeId}~1triggerDefinitions'
+  /{scopeId}/triggerDefinitions/{triggerDefinitionId}:
+    $ref: './triggerDefinition/triggerDefinition-scopeId-triggerDefinitionId.yaml#/paths/~1{scopeId}~1triggerDefinitions~1{triggerDefinitionId}'
+  /{scopeId}/triggerDefinitions/_query:
+    $ref: './triggerDefinition/triggerDefinition-scopeId-_query.yaml#/paths/~1{scopeId}~1triggerDefinitions~1_query'
+  /{scopeId}/triggerDefinitions/_count:
+    $ref: './triggerDefinition/triggerDefinition-scopeId-_count.yaml#/paths/~1{scopeId}~1triggerDefinitions~1_count'
+  ### Job Trigger Fired ###
   /{scopeId}/jobs/{jobId}/triggers/{triggerId}/fired:
     $ref: './jobTriggerFired/job-scopeId-jobId-triggers-triggerId-fired.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1triggers~1{triggerId}~1fired'
   /{scopeId}/jobs/{jobId}/triggers/{triggerId}/fired/_count:
@@ -319,6 +328,15 @@ paths:
     $ref: './jobStep/job-scopeId-jobId-steps-_count.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1steps~1_count'
   /{scopeId}/jobs/{jobId}/steps/_query:
     $ref: './jobStep/job-scopeId-jobId-steps-_query.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1steps~1_query'
+  ### Job Step Definition ###
+  /{scopeId}/jobStepDefinitions:
+    $ref: './jobStepDefinition/jobStepDefinition-scopeId.yaml#/paths/~1{scopeId}~1jobStepDefinitions'
+  /{scopeId}/jobStepDefinitions/{jobStepDefinitionId}:
+    $ref: './jobStepDefinition/jobStepDefinition-scopeId-jobStepDefinitionId.yaml#/paths/~1{scopeId}~1jobStepDefinitions~1{jobStepDefinitionId}'
+  /{scopeId}/jobStepDefinitions/_query:
+    $ref: './jobStepDefinition/jobStepDefinition-scopeId-_query.yaml#/paths/~1{scopeId}~1jobStepDefinitions~1_query'
+  /{scopeId}/jobStepDefinitions/_count:
+    $ref: './jobStepDefinition/jobStepDefinition-scopeId-_count.yaml#/paths/~1{scopeId}~1jobStepDefinitions~1_count'
   ### Role ###
   /{scopeId}/roles:
     $ref: './role/role-scopeId.yaml#/paths/~1{scopeId}~1roles'

@@ -12,11 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.definition;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+import org.eclipse.kapua.service.scheduler.trigger.TriggerXmlRegistry;
+
 /**
  * {@link TriggerProperty} definition.
  *
  * @since 1.0.0
  */
+@XmlRootElement(name = "triggerProperty")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = TriggerXmlRegistry.class, factoryMethod = "newTriggerProperty")
 public interface TriggerProperty {
 
     /**
