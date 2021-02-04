@@ -35,7 +35,6 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
@@ -243,7 +242,7 @@ public abstract class ActionDialog extends KapuaDialog {
 
     public void setSubmitButtonState() {
         if (submitButton != null) {
-            if (formPanel.isDirty() || dateValueNotNull) {
+            if ((formPanel.isDirty() || dateValueNotNull) && formPanel.isValid(true)) {
                 submitButton.enable();
             } else {
                 submitButton.disable();
