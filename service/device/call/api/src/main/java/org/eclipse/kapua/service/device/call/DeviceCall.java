@@ -105,6 +105,32 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
     RS options(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
+     * Performs a SUBMIT request.
+     * <p>
+     * It does not expect a {@link DeviceResponseMessage}.
+     *
+     * @param requestMessage The {@link DeviceRequestMessage} to send.
+     * @param timeout        The timeout of the request.
+     * @throws DeviceCallTimeoutException if waiting of the response goes on timeout.
+     * @throws DeviceCallSendException    if sending the request produces any error.
+     * @since 1.3.0
+     */
+    RS submit(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+
+    /**
+     * Performs a CANCEL request.
+     * <p>
+     * It does not expect a {@link DeviceResponseMessage}.
+     *
+     * @param requestMessage The {@link DeviceRequestMessage} to send.
+     * @param timeout        The timeout of the request.
+     * @throws DeviceCallTimeoutException if waiting of the response goes on timeout.
+     * @throws DeviceCallSendException    if sending the request produces any error.
+     * @since 1.3.0
+     */
+    RS cancel(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+
+    /**
      * Get the {@link DeviceMessage} type.
      *
      * @return The {@link DeviceMessage} {@code class}

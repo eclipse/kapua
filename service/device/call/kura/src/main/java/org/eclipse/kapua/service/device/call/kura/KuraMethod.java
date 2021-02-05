@@ -59,7 +59,14 @@ public enum KuraMethod implements DeviceMethod {
     /**
      * Submit request.
      *
-     * @since 1.3.0
+     * @since 1.5.0
      */
-    SUBMIT
+    SUBMIT,
+
+    /**
+     * Cancel request.
+     *
+     * @since 1.5.0
+     */
+    CANCEL
 }

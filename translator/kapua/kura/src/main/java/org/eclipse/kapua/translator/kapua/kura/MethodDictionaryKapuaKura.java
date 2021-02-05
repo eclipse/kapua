@@ -49,6 +49,7 @@ public class MethodDictionaryKapuaKura {
         DICTIONARY.put(KapuaMethod.EXECUTE, KuraMethod.EXEC);
         DICTIONARY.put(KapuaMethod.EXEC, KuraMethod.EXEC);
         DICTIONARY.put(KapuaMethod.SUBMIT, KuraMethod.SUBMIT);
+        DICTIONARY.put(KapuaMethod.CANCEL, KuraMethod.CANCEL);
     }
 
     /**

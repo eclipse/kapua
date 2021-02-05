@@ -48,6 +48,7 @@ import java.util.Date;
  * It replaces {@link DeviceCallExecutor} providing:
  * <ul>
  *     <li>Support for {@link KapuaMethod#SUBMIT}</li>
+ *     <li>Support for {@link KapuaMethod#CANCEL}</li>
  *     <li>Sending {@link KapuaRequestMessage} without waiting for {@link KapuaResponseMessage}</li>
  *     <li>Better API layout</li>
  * </ul>
@@ -153,6 +154,9 @@ public class DeviceCallBuilder<C extends KapuaRequestChannel, P extends KapuaReq
                 case SUBMIT:
                     responseMessage = deviceCall.submit(deviceRequestMessage, timeout);
                     break;
+                case CANCEL:
+                    responseMessage = deviceCall.cancel(deviceRequestMessage, timeout);
+                    break;
                 default:
                     throw new DeviceManagementRequestBadMethodException(requestMessage.getChannel().getMethod());
             }
@@ -218,6 +222,9 @@ public class DeviceCallBuilder<C extends KapuaRequestChannel, P extends KapuaReq
                     break;
                 case SUBMIT:
                     deviceCall.submit(deviceRequestMessage, null);
+                    break;
+                case CANCEL:
+                    deviceCall.cancel(deviceRequestMessage, null);
                     break;
                 default:
                     throw new DeviceManagementRequestBadMethodException(requestMessage.getChannel().getMethod());

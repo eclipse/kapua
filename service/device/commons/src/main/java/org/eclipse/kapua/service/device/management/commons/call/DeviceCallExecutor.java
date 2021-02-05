@@ -51,7 +51,7 @@ import java.util.Date;
  * @param <RQ> The {@link KapuaRequestMessage} implementation.
  * @param <RS> The {@link KapuaResponseMessage} implementation.
  * @since 1.0.0
- * @deprecated Since 1.4.0. Please use {@link DeviceCallBuilder} which supports {@link KapuaMethod#SUBMIT} and send request without waiting for a response
+ * @deprecated Since 1.5.0. Please use {@link DeviceCallBuilder} which supports {@link KapuaMethod#SUBMIT}, {@link KapuaMethod#CANCEL} and send request without waiting for a response
  */
 @Deprecated
 public class DeviceCallExecutor<C extends KapuaRequestChannel, P extends KapuaRequestPayload, RQ extends KapuaRequestMessage<C, P>, RS extends KapuaResponseMessage> {

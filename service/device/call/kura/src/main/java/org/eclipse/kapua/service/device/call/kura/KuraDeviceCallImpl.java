@@ -109,6 +109,12 @@ public class KuraDeviceCallImpl implements DeviceCall<KuraRequestMessage, KuraRe
     }
 
     @Override
+    public KuraResponseMessage cancel(KuraRequestMessage requestMessage, @Nullable Long timeout)
+            throws DeviceCallTimeoutException, DeviceCallSendException {
+        return sendInternal(requestMessage, timeout);
+    }
+
+    @Override
     public Class<KuraMessage> getBaseMessageClass() {
         return KuraMessage.class;
     }

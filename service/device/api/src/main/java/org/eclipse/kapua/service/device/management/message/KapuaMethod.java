@@ -101,6 +101,13 @@ public enum KapuaMethod {
     SUBMIT,
 
     /**
+     * Cancel request
+     *
+     * @since 1.5.0
+     */
+    CANCEL,
+
+    /**
      * Options request.
      *
      * @since 1.0.0
