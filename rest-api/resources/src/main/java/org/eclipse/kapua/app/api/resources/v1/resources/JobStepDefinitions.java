@@ -28,6 +28,7 @@ import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.step.JobStep;
@@ -39,6 +40,8 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 
+import com.google.common.base.Strings;
+
 @Path("{scopeId}/jobStepDefinitions")
 public class JobStepDefinitions extends AbstractKapuaResource {
 
@@ -49,9 +52,11 @@ public class JobStepDefinitions extends AbstractKapuaResource {
     /**
      * Gets the {@link JobStep} list for a given {@link Job}.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param offset  The result set offset.
-     * @param limit   The result set limit.
+     * @param scopeId       The {@link ScopeId} in which to search results.
+     * @param sortParam     The name of the parameter that will be used as a sorting key
+     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
+     * @param offset        The result set offset.
+     * @param limit         The result set limit.
      * @return The {@link JobStepListResult} of all the jobs jobSteps associated to the current selected job.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
@@ -60,10 +65,16 @@ public class JobStepDefinitions extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public JobStepDefinitionListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
         JobStepDefinitionQuery query = jobStepDefinitionFactory.newQuery(null);
+
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
+        }
 
         query.setOffset(offset);
         query.setLimit(limit);

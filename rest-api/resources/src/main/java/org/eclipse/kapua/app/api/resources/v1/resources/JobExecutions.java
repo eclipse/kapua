@@ -58,6 +58,7 @@ public class JobExecutions extends AbstractKapuaResource {
      *
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param jobId   The {@link Job} id to filter results
+     * @param askTotalCount Ask for the total count of the matched entities in the result
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link JobExecutionListResult} of all the jobs executions associated to the current selected job.
@@ -69,12 +70,14 @@ public class JobExecutions extends AbstractKapuaResource {
     public JobExecutionListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         JobExecutionQuery query = jobExecutionFactory.newQuery(scopeId);
 
         query.setPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId));
 
+        query.setAskTotalCount(askTotalCount);
         query.setOffset(offset);
         query.setLimit(limit);
 

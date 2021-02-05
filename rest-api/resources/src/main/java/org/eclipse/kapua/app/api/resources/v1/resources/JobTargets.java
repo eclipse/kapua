@@ -33,6 +33,7 @@ import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.execution.JobExecutionAttributes;
@@ -48,6 +49,8 @@ import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 
+import com.google.common.base.Strings;
+
 @Path("{scopeId}/jobs/{jobId}/targets")
 public class JobTargets extends AbstractKapuaResource {
 
@@ -60,10 +63,13 @@ public class JobTargets extends AbstractKapuaResource {
     /**
      * Gets the {@link JobTarget} list for a given {@link Job}.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param jobId   The {@link Job} id to filter results
-     * @param offset  The result set offset.
-     * @param limit   The result set limit.
+     * @param scopeId       The {@link ScopeId} in which to search results.
+     * @param jobId         The {@link Job} id to filter results
+     * @param sortParam     The name of the parameter that will be used as a sorting key
+     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
+     * @param askTotalCount Ask for the total count of the matched entities in the result
+     * @param offset        The result set offset.
+     * @param limit         The result set limit.
      * @return The {@link JobTargetListResult} of all the jobs targets associated to the current selected job.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
@@ -73,12 +79,20 @@ public class JobTargets extends AbstractKapuaResource {
     public JobTargetListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         JobTargetQuery query = jobTargetFactory.newQuery(scopeId);
 
         query.setPredicate(query.attributePredicate(JobTargetAttributes.JOB_ID, jobId));
 
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
+        }
+
+        query.setAskTotalCount(askTotalCount);
         query.setOffset(offset);
         query.setLimit(limit);
 
