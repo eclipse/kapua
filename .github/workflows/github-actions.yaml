@@ -39,7 +39,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -60,7 +60,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -81,7 +81,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -102,7 +102,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -123,7 +123,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -144,7 +144,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -165,7 +165,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -186,7 +186,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -207,7 +207,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -228,7 +228,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -249,7 +249,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -270,7 +270,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -291,7 +291,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -312,7 +312,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -333,7 +333,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -354,7 +354,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -375,7 +375,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
@@ -396,7 +396,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2
+      - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error

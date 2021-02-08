@@ -8,15 +8,15 @@ export OUTPUT=build.txt
 touch $OUTPUT
 
 tail_log() {
-   echo 'The last 1000 lines of build output:'
-   tail -1000 $OUTPUT
+   echo "The last $1 lines of build output:"
+   tail "$1" $OUTPUT
 }
 
 ### Build error handler
 
 on_error() {
   echo ERROR: An error was encountered with the build.
-  tail_log
+  tail_log -5000
   exit 1
 }
 trap 'on_error' ERR
@@ -29,7 +29,7 @@ HEARTBEAT_PROCESS_PID=$!
 ### Run
 
 "$@" >> $OUTPUT 2>&1
-tail_log
+tail_log -1000
 
 ### Cleaning up heartbeat process
 
