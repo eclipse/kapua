@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal.cache;
 
+import com.codahale.metrics.Counter;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
@@ -21,10 +22,9 @@ import org.eclipse.kapua.commons.setting.KapuaSettingException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaFileUtils;
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codahale.metrics.Counter;
 
 import javax.cache.Cache;
 import javax.cache.CacheException;
@@ -90,6 +90,7 @@ public class KapuaCacheManager {
      */
     private static URI getCacheConfig() {
         String configurationFileName = SystemSetting.getInstance().getString(SystemSettingKey.CACHE_CONFIG_URL);
+
         URI uri = null;
         if (configurationFileName != null) {
             try {
@@ -98,13 +99,19 @@ public class KapuaCacheManager {
                 throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format("Unable to load cache config file (%s)", configurationFileName));
             }
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Cache configuration:\n\tCaching provider class name: ").append(CACHING_PROVIDER_CLASS_NAME);
-        stringBuilder.append("\n\tDefault caching provider class name: ").append(DEFAULT_CACHING_PROVIDER_CLASS_NAME);
-        stringBuilder.append("\n\tTTL: ").append(TTL);
-        stringBuilder.append("\n\tExpiry Policy: ").append(EXPIRY_POLICY);
-        stringBuilder.append("\n\tCache config URI: ").append(uri);
-        LOGGER.info("{}", stringBuilder);
+
+        // Print configuration
+        ConfigurationPrinter
+                .create()
+                .withLogger(LOGGER)
+                .withTitle("Cache Configuration")
+                .addParameter("Caching provider class name", CACHING_PROVIDER_CLASS_NAME)
+                .addParameter("Default caching provider class name", DEFAULT_CACHING_PROVIDER_CLASS_NAME)
+                .addParameter("TTL", TTL)
+                .addParameter("Expiry Policy", EXPIRY_POLICY)
+                .addParameter("Config URI", uri)
+                .printLog();
+
         return uri;
     }
 
@@ -151,8 +158,7 @@ public class KapuaCacheManager {
             }
             try {
                 cacheManager = cachingProvider.getCacheManager(CACHE_CONFIG_URI, null);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 //anyway set the "default cache" flag (already done by initDefualtCacheProvider)
                 //second fallback
                 LOGGER.warn("Error while loading the CacheManager... Switching to CachingProvider default ({}). Error: {}", DEFAULT_CACHING_PROVIDER_CLASS_NAME, e.getMessage(), e);
