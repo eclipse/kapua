@@ -12,14 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.router;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement(name = "endPoints")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -31,11 +30,14 @@ public class EndPointContainer {
     private List<EndPoint> endPoints;
 
     public EndPointContainer() {
-        endPoints = new ArrayList<>();
     }
 
     @XmlAnyElement
     public List<EndPoint> getEndPoints() {
+        if (endPoints == null) {
+            endPoints = new ArrayList<>();
+        }
+
         return endPoints;
     }
 
