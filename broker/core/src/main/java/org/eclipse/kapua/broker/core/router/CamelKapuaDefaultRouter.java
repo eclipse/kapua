@@ -37,9 +37,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Default message router
+ * Default {@link CamelKapuaDefaultRouter}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class CamelKapuaDefaultRouter {
 
@@ -49,32 +49,25 @@ public class CamelKapuaDefaultRouter {
 
     public CamelKapuaDefaultRouter() {
         String configurationFileName = BrokerSetting.getInstance().getString(BrokerSettingKey.CAMEL_DEFAULT_ROUTE_CONFIGURATION_FILE_NAME);
-        URL url = null;
+
+        URL url;
         try {
             url = KapuaFileUtils.getAsURL(configurationFileName);
         } catch (KapuaSettingException e) {
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot find configuration file!");
         }
-        LOG.info("Default Camel routing... Loading configuration from file {}", url.getFile());
-        FileReader configurationFileReader = null;
-        try {
-            configurationFileReader = new FileReader(url.getFile());
+
+        LOG.info("Default Camel routing | Loading configuration from file {}...", url.getFile());
+
+        try (FileReader configurationFileReader = new FileReader(url.getFile())) {
             endPointContainer = XmlUtil.unmarshal(configurationFileReader, EndPointContainer.class);
-            LOG.info("Default Camel routing... Loading configuration from file {} Found {} parent endpoints in the route", configurationFileName,
-                    (endPointContainer.getEndPoints() != null ? endPointContainer.getEndPoints().size() : 0));
+            LOG.info("Default Camel routing | Found {} parent endpoints in the route", endPointContainer.getEndPoints().size());
             logLoadedEndPoints(endPointContainer.getEndPoints());
         } catch (XMLStreamException | JAXBException | SAXException | IOException e) {
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot load configuration!");
-        } finally {
-            if (configurationFileReader != null) {
-                try {
-                    configurationFileReader.close();
-                } catch (IOException e) {
-                    LOG.warn("Cannot close configuration file '{}'!", configurationFileName, e);
-                }
-            }
         }
-        LOG.info("Default Camel routing... Loading configuration '{}' from file '{}' DONE", configurationFileName, url.getFile());
+
+        LOG.info("Default Camel routing | Loading configuration from file '{}'... DONE!", url.getFile());
     }
 
     public String defaultRoute(Exchange exchange, Object value, @Header(Exchange.SLIP_ENDPOINT) String previous, @Properties Map<String, Object> properties) {
@@ -82,11 +75,13 @@ public class CamelKapuaDefaultRouter {
                 exchange.getIn().getHeader(MessageConstants.PROPERTY_ORIGINAL_TOPIC, String.class),
                 previous,
                 exchange.getIn().getHeader(CamelConstants.JMS_CORRELATION_ID));
+
         for (EndPoint endPoint : endPointContainer.getEndPoints()) {
             if (endPoint.matches(exchange, value, previous, properties)) {
                 return endPoint.getEndPoint(exchange, value, previous, properties);
             }
         }
+
         return null;
     }
 
