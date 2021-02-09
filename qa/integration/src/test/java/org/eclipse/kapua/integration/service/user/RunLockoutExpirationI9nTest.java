@@ -31,6 +31,5 @@ import org.junit.runner.RunWith;
                  },
         strict = true,
         monochrome = true)
-@CucumberProperty(key="broker.ip", value="192.168.33.10")
 @CucumberProperty(key="kapua.config.url", value="")
 public class RunLockoutExpirationI9nTest {}

@@ -34,6 +34,5 @@ import cucumber.api.CucumberOptions;
                  },
         strict = true,
         monochrome = true )
-@CucumberProperty(key="broker.ip", value="192.168.33.10")
 @CucumberProperty(key="kapua.config.url", value="")
 public class RunDeviceI9nTest {}
