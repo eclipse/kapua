@@ -13,8 +13,8 @@
 package org.eclipse.kapua.app.console.core.servlet;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
+import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDAccessTokenException;
@@ -64,15 +64,17 @@ public class SsoCallbackServlet extends HttpServlet {
                         .withLogger(logger)
                         .withLogLevel(ConfigurationPrinter.LogLevel.DEBUG)
                         .withTitle("SSO Servlet Log")
-                        .addHeader("SSO servlet request:")
-                        .increaseIndentation()
+                        .openSection("SSO servlet request")
                         .addParameter("Request URL", req.getRequestURL())
                         .addParameter("AuthCode", HIDDEN_SECRET)
-                        .decreaseIndentation();
+                        .closeSection();
         try {
             homeUri = SsoHelper.getHomeUri();
-            httpReqLogger.addHeader("SSO servlet response:");
-            httpReqLogger.increaseIndentation().addParameter("Response URI", homeUri);
+
+            httpReqLogger
+                    .openSection("SSO servlet response")
+                    .addParameter("Response URI", homeUri);
+
             final URIBuilder redirect = new URIBuilder(homeUri);
 
             if (authCode != null) {

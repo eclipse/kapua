@@ -124,17 +124,16 @@ public class KapuaLiquibaseClient {
                 .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                 .withTitle("KapuaLiquibaseClient Configuration")
                 .addParameter("Liquibase Version", currentLiquibaseVersionString)
-                .addHeader("DB connection info")
-                .increaseIndentation()
+                .openSection("DB connection info")
                 .addParameter("JDBC URL", jdbcUrl)
                 .addParameter("Username", username)
                 .addParameter("Password", "******")
                 .addParameter("Schema", schema)
-                .decreaseIndentation()
-                .addHeader("Timestamp(3) fix info (eclipse/kapua#2889)")
-                .increaseIndentation()
+                .closeSection()
+                .openSection("Timestamp(3) fix info (eclipse/kapua#2889)")
                 .addParameter("Force timestamp fix", forceTimestampFix)
                 .addParameter("Apply timestamp fix", runTimestampsFix)
+                .closeSection()
                 .printLog();
     }
 
