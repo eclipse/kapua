@@ -40,7 +40,6 @@ import org.junit.runner.RunWith;
 @CucumberProperty(key = "commons.db.connection.host", value = "")
 @CucumberProperty(key = "commons.db.connection.port", value = "")
 @CucumberProperty(key = "commons.eventbus.url", value = "")
-@CucumberProperty(key = "broker.ip", value = "192.168.33.10")
 @CucumberProperty(key = "certificate.jwt.private.key", value = "")
 @CucumberProperty(key = "certificate.jwt.certificate", value = "")
 @CucumberProperty(key = "datastore.elasticsearch.nodes", value = "")
