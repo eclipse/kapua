@@ -243,6 +243,34 @@ public class ConfigurationPrinter {
     }
 
     /**
+     * Shortcut method for:
+     * <pre>
+     *      addHeader(name);
+     *      increaseIndentation();
+     * </pre>
+     *
+     * @param name The name of the {@link ConfigurationHeader}
+     * @return Itself, to chain method invocation.
+     * @since 1.5.0
+     */
+    public ConfigurationPrinter openSection(@NotNull String name) {
+        addHeader(name);
+        increaseIndentation();
+        return this;
+    }
+
+    /**
+     * Same as {@link #decreaseIndentation()} but to be used in combination with {@link #openSection(String)}
+     *
+     * @return Itself, to chain method invocation.
+     * @since 1.5.0
+     */
+    public ConfigurationPrinter closeSection() {
+        decreaseIndentation();
+        return this;
+    }
+
+    /**
      * Increases the indentation of the printed configuration.
      * <p>
      * It prints a {@code \t} for each indentation added.

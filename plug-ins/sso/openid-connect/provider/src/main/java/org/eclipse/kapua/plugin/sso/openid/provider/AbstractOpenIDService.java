@@ -13,6 +13,27 @@
  *******************************************************************************/
 package org.eclipse.kapua.plugin.sso.openid.provider;
 
+import org.apache.http.HttpHeaders;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.message.BasicNameValuePair;
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
+import org.eclipse.kapua.plugin.sso.openid.OpenIDService;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDAccessTokenException;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
+import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDLoginUriException;
+import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDLogoutUriException;
+import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
+import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSettingKeys;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,29 +48,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonValue;
-
-import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
-import org.eclipse.kapua.plugin.sso.openid.OpenIDService;
-import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDAccessTokenException;
-import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
-import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDLoginUriException;
-import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDLogoutUriException;
-import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
-import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSettingKeys;
-
-import org.apache.http.HttpHeaders;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.message.BasicNameValuePair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class represents an abstract OpenID Connect single sign on Service.
@@ -146,7 +144,7 @@ public abstract class AbstractOpenIDService implements OpenIDService {
             uri.addParameter("redirect_uri", redirectUri.toString());
 
             // logging parameters
-            reqLogger.addHeader("Parameters:").increaseIndentation();
+            reqLogger.openSection("Parameters:");
             for (NameValuePair nameValuePair : uri.getQueryParams()) {
                 reqLogger.addParameter(nameValuePair.getName(), nameValuePair.getValue());
             }
@@ -187,7 +185,7 @@ public abstract class AbstractOpenIDService implements OpenIDService {
             }
 
             // logging parameters
-            reqLogger.addHeader("Parameters:").increaseIndentation();
+            reqLogger.openSection("Parameters:");
             for (NameValuePair nameValuePair : uri.getQueryParams()) {
                 String name = nameValuePair.getName();
                 if (name.equals("id_token_hint")) {
@@ -232,7 +230,7 @@ public abstract class AbstractOpenIDService implements OpenIDService {
             urlConnection.setRequestProperty(HttpHeaders.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
             reqLogger.addParameter("HTTP request method", urlConnection.getRequestMethod());
 
-            final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+            final List<NameValuePair> parameters = new ArrayList<>();
             parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
             parameters.add(new BasicNameValuePair("code", authCode));
             parameters.add(new BasicNameValuePair("client_id", getClientId()));
@@ -244,7 +242,7 @@ public abstract class AbstractOpenIDService implements OpenIDService {
 
             parameters.add(new BasicNameValuePair("redirect_uri", redirectUri.toString()));
 
-            reqLogger.addHeader("Parameters:").increaseIndentation();
+            reqLogger.openSection("Parameters:");
             for (NameValuePair nameValuePair : parameters) {
                 String name = nameValuePair.getName();
                 if (name.equals("code") || name.equals("client_secret")) {
@@ -253,7 +251,7 @@ public abstract class AbstractOpenIDService implements OpenIDService {
                     reqLogger.addParameter(name, nameValuePair.getValue());
                 }
             }
-            reqLogger.decreaseIndentation();
+            reqLogger.closeSection();
 
             final UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters);
 
@@ -267,8 +265,8 @@ public abstract class AbstractOpenIDService implements OpenIDService {
             try (InputStream stream = urlConnection.getInputStream(); JsonReader jsonReader = Json.createReader(stream)) {
                 reqLogger.addParameter("Response code", urlConnection.getResponseCode());
                 JsonObject result = jsonReader.readObject();
-                reqLogger.addHeader("Response body:").increaseIndentation();
-                for (Map.Entry<String,JsonValue> entry : result.entrySet()) {
+                reqLogger.openSection("Response body:");
+                for (Map.Entry<String, JsonValue> entry : result.entrySet()) {
                     if (SECRET_TOKENS.contains(entry.getKey())) {
                         reqLogger.addParameter(entry.getKey(), HIDDEN_SECRET);
                     } else {

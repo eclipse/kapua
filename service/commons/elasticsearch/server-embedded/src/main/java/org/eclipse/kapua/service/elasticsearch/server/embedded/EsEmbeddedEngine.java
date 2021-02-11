@@ -87,15 +87,14 @@ public class EsEmbeddedEngine implements Closeable {
                             .withTitle("Elasticsearch Embedded Node Configuration")
                             .addParameter("Cluster name", clusterName)
                             .addParameter("Data Directory", defaultDataDirectory)
-                            .addHeader("Transport Endpoint")
-                            .increaseIndentation()
+                            .openSection("Transport Endpoint")
                             .addParameter("Host", transportTcpHost)
                             .addParameter("Port", transportTcpPort)
-                            .decreaseIndentation()
-                            .addHeader("REST Endpoint")
-                            .increaseIndentation()
+                            .closeSection()
+                            .openSection("REST Endpoint")
                             .addParameter("Host", restTcpHost)
                             .addParameter("Port", restTcpPort)
+                            .closeSection()
                             .printLog();
 
                     // ES 5.3 FIX
