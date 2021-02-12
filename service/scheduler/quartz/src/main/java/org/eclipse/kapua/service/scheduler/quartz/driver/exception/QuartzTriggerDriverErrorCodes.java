@@ -36,6 +36,11 @@ public enum QuartzTriggerDriverErrorCodes implements KapuaErrorCode {
     CANNOT_SCHEDULE_JOB,
 
     /**
+     * @since 1.5.0
+     */
+    CANNOT_UNSCHEDULE_JOB,
+
+    /**
      * @since 1.1.0
      */
     TRIGGER_NEVER_FIRES,

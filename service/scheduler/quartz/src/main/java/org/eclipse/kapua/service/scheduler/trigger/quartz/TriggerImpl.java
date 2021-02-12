@@ -48,11 +48,11 @@ public class TriggerImpl extends AbstractKapuaNamedEntity implements Trigger {
     private static final long serialVersionUID = 3250140890001324842L;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "starts_on", nullable = true, updatable = false)
+    @Column(name = "starts_on", nullable = true, updatable = true)
     private Date startsOn;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "ends_on", nullable = true, updatable = false)
+    @Column(name = "ends_on", nullable = true, updatable = true)
     private Date endsOn;
 
     @Basic
