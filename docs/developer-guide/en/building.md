@@ -65,9 +65,9 @@ To build documentation, run `gitbook build` from either `docs/developer-guide/en
 
 ## Continuous integration
  
-Kapua is running CI builds against two public environments:
+Kapua is running CI builds in the following public environments:
 
-- Travis CI  [![Build](https://api.travis-ci.org/eclipse/kapua.svg)](https://travis-ci.org/eclipse/kapua/) 
+- GitHub Actions  ![GitHub Actions CI](https://github.com/eclipse/kapua/workflows/kapua-continuous-integration/badge.svg?branch=develop) 
 - Eclipse Hudson [![Hudson](https://img.shields.io/jenkins/s/https/hudson.eclipse.org/kapua/job/Develop.svg)](https://hudson.eclipse.org/kapua/)
 
 Please be sure that both environments are "green" (i.e. all tests pass) after you commit any changes into `develop` branch.
