@@ -3,7 +3,8 @@
 # Eclipse Kapua&trade;
 
 ![GitHub Actions CI](https://github.com/eclipse/kapua/workflows/kapua-continuous-integration/badge.svg?branch=develop)
-![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fhudson.eclipse.org%2Fkapua%2Fjob%2Fdevelop&label=Jenkins%20build)
+![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https:%2F%2Fci.eclipse.org%2Fkapua%2Fjob%2Fdevelop-build&label=Jenkins%20Build)
+![Jenkins](https://img.shields.io/jenkins/tests?compact_message&failed_label=%E2%9D%8C&jobUrl=https%3A%2F%2Fci.eclipse.org%2Fkapua%2Fjob%2Fdevelop%2F&label=Jenkins%20CI&passed_label=%E2%9C%85&skipped_label=%E2%9D%95&style=plastic)
 [![Gitter](https://badges.gitter.im/eclipse/kapua.svg)](https://gitter.im/eclipse/kapua?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 ![GitHub issues](https://img.shields.io/github/issues-raw/eclipse/kapua?color=success)
 ![GitHub pull requests](https://img.shields.io/github/issues-pr/eclipse/kapua?color=blue)
