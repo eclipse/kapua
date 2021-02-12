@@ -142,6 +142,15 @@ public interface TriggerCreator extends KapuaNamedEntityCreator<Trigger> {
     List<TriggerProperty> getTriggerProperties();
 
     /**
+     * Gets the {@link TriggerProperty} by the name.
+     *
+     * @param name The {@link TriggerProperty#getName()} to look for.
+     * @return The found {@link TriggerProperty} or {@code null}.
+     * @since 1.5.0
+     */
+    TriggerProperty getTriggerProperty(String name);
+
+    /**
      * Sets the {@link List} of {@link TriggerProperty}es associated with this {@link TriggerCreator}
      *
      * @param triggerProperties The {@link List} of {@link TriggerProperty}es associated with this {@link TriggerCreator}

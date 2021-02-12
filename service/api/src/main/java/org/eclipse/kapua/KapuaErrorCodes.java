@@ -112,28 +112,10 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      */
     MAX_NUMBER_OF_ITEMS_REACHED,
 
-    /**
-     * End before start time error
-     */
-    END_BEFORE_START_TIME_ERROR,
-
-    /**
-     * Same values start and end date and time
-     */
-    SAME_START_AND_DATE,
-
-    /**
-     * retry interval and cron expression both selected
-     */
-    RETRY_AND_CRON_BOTH_SELECTED,
-    DEVICE_NOT_FOUND,
-    SCHEDULE_DUPLICATE_NAME,
     DOWNLOAD_PACKAGE_EXCEPTION,
 
-    /**
-     * trigger will never be fired
-     */
-    TRIGGER_NEVER_FIRE,
+    DEVICE_NOT_FOUND,
+
     ADMIN_ROLE_DELETED_ERROR,
 
     /**
