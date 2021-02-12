@@ -452,20 +452,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>@{argLine} -Xmx1024m</argLine>
-                    <systemPropertyVariables>
-                        <cucumber.options>--tags ~@rest</cucumber.options>
-                        <commons.db.schema>kapuadb</commons.db.schema>
-                        <commons.settings.hotswap>true</commons.settings.hotswap>
-                        <broker.host>localhost</broker.host>
-                        <jetty.war.file>target/war/api.war</jetty.war.file>
-                    </systemPropertyVariables>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <executions>
                     <execution>
