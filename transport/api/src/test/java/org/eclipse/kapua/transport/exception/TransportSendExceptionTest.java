@@ -22,68 +22,81 @@ import org.junit.experimental.categories.Category;
 @Category(JUnitTests.class)
 public class TransportSendExceptionTest extends Assert {
 
-    TransportSendException transportSendException;
     TransportMessage transportMessage;
+    Throwable throwable;
 
     @Before
-    public void start() {
+    public void initialize() {
         transportMessage = new TransportMessage() {
             @Override
             public int hashCode() {
                 return super.hashCode();
             }
         };
-        transportSendException = new TransportSendException(new Throwable(), transportMessage);
+        throwable = new Throwable();
     }
 
     @Test
-    public void firstConstructorTest() {
-        try {
-            TransportSendException exception = new TransportSendException(transportMessage);
-            assertEquals(transportMessage, exception.getRequestMessage());
-        } catch (Exception e) {
-            fail("Exception should not be thrown");
-        }
+    public void transportSendExceptionWithMessageTest() {
+        TransportSendException transportSendException = new TransportSendException(transportMessage);
+        assertEquals("Expected and actual values should be the same.", transportMessage, transportSendException.getRequestMessage());
+        assertEquals("Expected and actual values should be the same.", TransportErrorCodes.SEND_ERROR, transportSendException.getCode());
+        assertEquals("Expected and actual values should be the same.", "An error occurred when sending the message: " + transportMessage, transportSendException.getMessage());
+        assertNull("Null expected.", transportSendException.getCause());
     }
 
     @Test
-    public void firstConstructorNullTest() {
-        try {
-            TransportSendException exception = new TransportSendException(null);
-            assertNull(exception.getRequestMessage());
-        } catch (Exception e) {
-            fail("Exception should not be thrown");
-        }
+    public void transportSendExceptionWithNullMessageTest() {
+        TransportSendException transportSendException = new TransportSendException(null);
+        assertNull("Null expected.", transportSendException.getRequestMessage());
+        assertEquals("Expected and actual values should be the same.", TransportErrorCodes.SEND_ERROR, transportSendException.getCode());
+        assertEquals("Expected and actual values should be the same.", "An error occurred when sending the message: null", transportSendException.getMessage());
+        assertNull("Null expected.", transportSendException.getCause());
     }
 
     @Test
-    public void secondConstructorTest() {
-        try {
-            TransportSendException exception = new TransportSendException(new Throwable(), transportMessage);
-            assertEquals(transportMessage, exception.getRequestMessage());
-        } catch (Exception e) {
-            fail("Exception should not be thrown");
-        }
+    public void transportSendExceptionWithCauseAndMessageTest() {
+        TransportSendException transportSendException = new TransportSendException(throwable, transportMessage);
+        assertEquals("Expected and actual values should be the same.", transportMessage, transportSendException.getRequestMessage());
+        assertEquals("Expected and actual values should be the same.", TransportErrorCodes.SEND_ERROR, transportSendException.getCode());
+        assertEquals("Expected and actual values should be the same.", "An error occurred when sending the message: " + transportMessage, transportSendException.getMessage());
+        assertEquals("Expected and actual values should be the same.", throwable, transportSendException.getCause());
     }
 
     @Test
-    public void secondConstructorNullTest() {
-        try {
-            TransportSendException exception = new TransportSendException(null, null);
-            assertNull(exception.getRequestMessage());
-        } catch (Exception e) {
-            fail("Exception should not be thrown");
-        }
+    public void transportSendExceptionWithCauseAndMessageNullTest() {
+        TransportSendException transportSendException = new TransportSendException(null, null);
+        assertNull("Null expected.", transportSendException.getRequestMessage());
+        assertEquals("Expected and actual values should be the same.", TransportErrorCodes.SEND_ERROR, transportSendException.getCode());
+        assertEquals("Expected and actual values should be the same.", "An error occurred when sending the message: null", transportSendException.getMessage());
+        assertNull("Null expected.", transportSendException.getCause());
     }
 
     @Test
-    public void getRequestMessageTest() {
-        assertEquals(transportMessage, transportSendException.getRequestMessage());
+    public void transportSendExceptionWithNullCauseAndMessageTest() {
+        TransportSendException transportSendException = new TransportSendException(null, transportMessage);
+        assertEquals("Expected and actual values should be the same.", transportMessage, transportSendException.getRequestMessage());
+        assertEquals("Expected and actual values should be the same.", TransportErrorCodes.SEND_ERROR, transportSendException.getCode());
+        assertEquals("Expected and actual values should be the same.", "An error occurred when sending the message: " + transportMessage, transportSendException.getMessage());
+        assertNull("Null expected.", transportSendException.getCause());
     }
 
     @Test
-    public void getRequestMessageNullTest() {
-        TransportSendException exception = new TransportSendException(null, null);
-        assertNull(exception.getRequestMessage());
+    public void transportSendExceptionWithCauseAndNullMessageTest() {
+        TransportSendException transportSendException = new TransportSendException(throwable, null);
+        assertNull("Null expected.", transportSendException.getRequestMessage());
+        assertEquals("Expected and actual values should be the same.", TransportErrorCodes.SEND_ERROR, transportSendException.getCode());
+        assertEquals("Expected and actual values should be the same.", "An error occurred when sending the message: null", transportSendException.getMessage());
+        assertEquals("Expected and actual values should be the same.", throwable, transportSendException.getCause());
+    }
+
+    @Test(expected = TransportSendException.class)
+    public void throwingTransportSendExceptionWithMessageTest() throws TransportSendException {
+        throw new TransportSendException(transportMessage);
+    }
+
+    @Test(expected = TransportSendException.class)
+    public void throwingTransportSendExceptionWithCauseAndMessageTest() throws TransportSendException {
+        throw new TransportSendException(throwable, transportMessage);
     }
 }
