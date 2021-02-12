@@ -76,22 +76,25 @@ public class TransportElasticsearchClientProvider implements ElasticsearchClient
                             .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                             .withTitle("Elasticsearch Transport Provider Configuration")
                             .addParameter("Module Name", getClientConfiguration().getModuleName())
-                            .addParameter("Cluster Name", getClientConfiguration().getClusterName())
-                            .addHeader("Nodes")
-                            .increaseIndentation();
+                            .addParameter("Cluster Name", getClientConfiguration().getClusterName());
 
-            int nodesIndex = 1;
-            for (ElasticsearchNode node : getClientConfiguration().getNodes()) {
-                configurationPrinter
-                        .addHeader("# " + nodesIndex++)
-                        .increaseIndentation()
-                        .addParameter("Host", node.getAddress())
-                        .addParameter("Port", node.getPort())
-                        .decreaseIndentation();
+            try {
+                configurationPrinter.openSection("Nodes");
+
+                int nodesIndex = 1;
+                for (ElasticsearchNode node : getClientConfiguration().getNodes()) {
+                    configurationPrinter
+                            .openSection("# " + nodesIndex++)
+                            .addParameter("Host", node.getAddress())
+                            .addParameter("Port", node.getPort())
+                            .closeSection();
+                }
+            } finally {
+                configurationPrinter.closeSection();
             }
+
             // Other configurations
             configurationPrinter
-                    .decreaseIndentation()
                     .addParameter("Model Context", modelContext)
                     .addParameter("Model Converter", modelConverter)
                     .printLog();
