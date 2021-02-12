@@ -2,15 +2,19 @@
 
 # Eclipse Kapua&trade;
 
-![Travis (.org)](https://img.shields.io/travis/eclipse/kapua?label=Travis%20build)
-![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fhudson.eclipse.org%2Fkapua%2Fjob%2Fdevelop&label=Jenkins%20build)
-[![Gitter](https://badges.gitter.im/eclipse/kapua.svg)](https://gitter.im/eclipse/kapua?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-![GitHub issues](https://img.shields.io/github/issues-raw/eclipse/kapua?color=success)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/eclipse/kapua?color=blue)
-![GitHub](https://img.shields.io/github/license/eclipse/kapua?color=yellow)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/eclipse/kapua)
-![GitHub contributors](https://img.shields.io/github/contributors/eclipse/kapua)
-![GitHub forks](https://img.shields.io/github/forks/eclipse/kapua?style=social)
+![GitHub Release](https://img.shields.io/github/v/release/eclipse/kapua?label=Release)
+![GitHub](https://img.shields.io/github/license/eclipse/kapua?label=License)
+
+![GitHub Issues](https://img.shields.io/github/issues-raw/eclipse/kapua?label=Open%20Issues)
+![GitHub Pull Requests](https://img.shields.io/github/issues-pr/eclipse/kapua?label=Pull%20Requests&color=blue)
+![GitHub Contributors](https://img.shields.io/github/contributors/eclipse/kapua?label=Contributors)
+![GitHub Forks](https://img.shields.io/github/forks/eclipse/kapua?label=Forks)
+
+![Gitter](https://img.shields.io/gitter/room/eclipse/kapua?label=Chat&logo=gitter)
+
+![GitHub Actions CI](https://img.shields.io/github/workflow/status/eclipse/kapua/kapua-continuous-integration?label=GitHub%20Actions%20CI&logo=github%20actions) <br/>
+![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https:%2F%2Fci.eclipse.org%2Fkapua%2Fjob%2Fdevelop-build&label=Jenkins%20Build&logo=jenkins) <br/>
+![Jenkins](https://img.shields.io/jenkins/tests?compact_message&failed_label=%E2%9D%8C&jobUrl=https%3A%2F%2Fci.eclipse.org%2Fkapua%2Fjob%2Fdevelop%2F&label=Jenkins%20CI&passed_label=%E2%9C%85&skipped_label=%E2%9D%95&logo=jenkins) <br/>
 
 [Eclipse Kapua&trade;](http://eclipse.org/kapua) is a modular platform providing the services required to manage IoT gateways and smart edge devices. Kapua provides a core integration framework and an initial set of core IoT services including a device registry, device management services, messaging services, data management, and application enablement.
 

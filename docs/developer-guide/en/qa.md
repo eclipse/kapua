@@ -3,9 +3,8 @@
 This chapter describes a quality assurance process of Kapua. Before you commit changes to the `develop` branch, be sure that you have followed those steps:
 
 1. Run `mvn clean install -DskipTests -Pconsole,docker` and then `mvn clean install` command to see if all the tests pass correctly
-2. Push changes to you remote repository and wait for the Travis to complete successfully (there should be no test failures, CI environments should always be green):
-	- Travis CI  [![Build](https://api.travis-ci.org/eclipse/kapua.svg)](https://travis-ci.org/eclipse/kapua/) 
-	- Jenkins CI [![Jenkins](https://img.shields.io/jenkins/build/https/ci.eclipse.org/kapua/job/Develop.svg)](https://ci.eclipse.org/kapua/)
+2. Push changes to you remote repository and wait for the CI to complete successfully (there should be no test failures, CI environments should always be green):
+	- GitHub Actions CI  ![GitHub CI](https://img.shields.io/github/workflow/status/eclipse/kapua/kapua-continuous-integration?label=GitHub%20Action%20CI&logo=GitHub)
 
 ## Cucumber Specifics In Kapua project
 

@@ -21,7 +21,7 @@ on_error() {
 }
 trap 'on_error' ERR
 
-### Build heartbeat process (Travis kills processes with no output)
+### Build heartbeat process
 
 bash -c "while true; do echo Building Kapua...; sleep 30; done" &
 HEARTBEAT_PROCESS_PID=$!
