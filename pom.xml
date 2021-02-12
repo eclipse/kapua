@@ -455,7 +455,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <!-- Travis has an overall 3GB limit -->
                     <argLine>@{argLine} -Xmx1024m</argLine>
                     <systemPropertyVariables>
                         <cucumber.options>--tags ~@rest</cucumber.options>

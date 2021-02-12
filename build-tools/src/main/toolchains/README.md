@@ -19,7 +19,3 @@ Or (when using `dnf` instead of `yum`):
     dnf install java-1.6.0-openjdk-devel java-1.7.0-openjdk-devel java-1.8.0-openjdk-devel
 
 Either copy or sym-link this file to `~/.m2/toolchains.xml` to activate it.
-
-## `travis-ci.xml`
-
-This file is for the [Travis CI](https://travis-ci.org/) environment.
