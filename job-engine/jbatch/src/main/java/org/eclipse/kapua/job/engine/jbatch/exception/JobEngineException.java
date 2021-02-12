@@ -14,18 +14,39 @@ package org.eclipse.kapua.job.engine.jbatch.exception;
 
 import org.eclipse.kapua.KapuaException;
 
+/**
+ * @since 1.0.0
+ */
 public abstract class JobEngineException extends KapuaException {
 
+    private static final String ERROR_MESSAGES_BUNDLE_NAME = "job-engine-service-error-messages";
+
+    /**
+     * @since 1.0.0
+     */
     protected JobEngineException(KapuaJobEngineErrorCodes code) {
         super(code);
     }
 
+    /**
+     * @since 1.0.0
+     */
     protected JobEngineException(KapuaJobEngineErrorCodes code, Object... arguments) {
         super(code, arguments);
     }
 
+    /**
+     * @since 1.0.0
+     */
     protected JobEngineException(KapuaJobEngineErrorCodes code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);
     }
 
+    /**
+     * @since 1.5.0
+     */
+    @Override
+    protected String getKapuaErrorMessagesBundle() {
+        return ERROR_MESSAGES_BUNDLE_NAME;
+    }
 }

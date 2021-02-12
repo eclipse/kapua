@@ -19,7 +19,7 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  */
 public class JobEngineSetting extends AbstractKapuaSetting<JobEngineSettingKeys> {
 
-    private static final String JOB_ENGINE_SETTING_RESOURCE = "kapua-job-engine-setting.properties";
+    private static final String JOB_ENGINE_SETTING_RESOURCE = "job-engine-setting.properties";
 
     private static final JobEngineSetting INSTANCE = new JobEngineSetting();
 
