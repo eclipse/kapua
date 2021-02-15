@@ -83,12 +83,14 @@ public class KapuaJobLauncher implements Job {
                         jobEngineService.startJob(scopeId, jobId, jobStartOptions);
                     }
 
+                    createSuccessfulFiredTrigger(scopeId, triggerId, context.getFireTime());
                 } catch (Exception startException) {
+                    // This exception is only tracked in the FiredTrigger.message and logged for debug purposes but is not
+                    // re-thrown since Exceptions are expected when invoking JobEngineService.start(...)
+                    // i.e.: JobTargets/JobStep not defined.
                     createdUnsuccessfulFiredTrigger(scopeId, triggerId, context.getFireTime(), startException);
-                    throw startException;
+                    LOG.error("Failed process Job Start. scopeId: {} - jobId: {} - triggerId {}", scopeId, jobId, triggerId, startException);
                 }
-
-                createSuccessfulFiredTrigger(scopeId, triggerId, context.getFireTime());
             });
         } catch (Exception exception) {
             throw new JobExecutionException("Cannot start job!", exception);
