@@ -64,10 +64,10 @@ public class GwtJobStepDefinitionServiceImpl extends KapuaRemoteServiceServlet i
                 gwtJobStepDefinitionList.add(gwtJobStepDefinition);
             }
 
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            return new BaseListLoadResult<GwtJobStepDefinition>(gwtJobStepDefinitionList);
+        } catch (Exception e) {
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
         }
-        return new BaseListLoadResult<GwtJobStepDefinition>(gwtJobStepDefinitionList);
     }
 
     @Override
@@ -82,11 +82,10 @@ public class GwtJobStepDefinitionServiceImpl extends KapuaRemoteServiceServlet i
 
                 setEnumOnJobStepProperty(gwtJobStepDefinition.getStepProperties());
             }
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            return gwtJobStepDefinition;
+        } catch (Exception e) {
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
         }
-
-        return gwtJobStepDefinition;
     }
 
     @Override
