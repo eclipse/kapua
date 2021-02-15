@@ -15,6 +15,16 @@ package org.eclipse.kapua.service.authentication.shiro;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
+
+/**
+ * {@link JwtCredentials} implementation.
+ * <p>
+ * This implements also {@link AuthenticationToken} to allow usage in Shiro.
+ *
+ * @since 1.0.0
+ */
 public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
 
     private static final long serialVersionUID = -5920944517814926028L;
@@ -22,9 +32,27 @@ public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
     private String jwt;
     private String idToken;
 
+    /**
+     * Constructor.
+     *
+     * @param jwt     The credential JWT.
+     * @param idToken The credential token.
+     * @since 1.4.0
+     */
     public JwtCredentialsImpl(String jwt, String idToken) {
         setJwt(jwt);
         setIdToken(idToken);
+    }
+
+    /**
+     * Clone constructor.
+     *
+     * @param jwtCredentials The {@link JwtCredentials} to clone
+     * @since 1.5.0
+     */
+    public JwtCredentialsImpl(@NotNull JwtCredentials jwtCredentials) {
+        setJwt(jwtCredentials.getJwt());
+        setIdToken(jwtCredentials.getIdToken());
     }
 
     @Override
@@ -55,5 +83,20 @@ public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
     @Override
     public Object getCredentials() {
         return getJwt();
+    }
+
+    /**
+     * Parses a {@link JwtCredentials} into a {@link JwtCredentialsImpl}.
+     *
+     * @param jwtCredentials The {@link JwtCredentials} to parse.
+     * @return A instance of {@link JwtCredentialsImpl}.
+     * @since 1.5.0
+     */
+    public static JwtCredentialsImpl parse(@Nullable JwtCredentials jwtCredentials) {
+        return jwtCredentials != null ?
+                (jwtCredentials instanceof JwtCredentialsImpl ?
+                        (JwtCredentialsImpl) jwtCredentials :
+                        new JwtCredentialsImpl(jwtCredentials))
+                : null;
     }
 }

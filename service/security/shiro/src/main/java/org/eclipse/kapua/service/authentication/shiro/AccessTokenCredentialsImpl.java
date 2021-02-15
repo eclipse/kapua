@@ -14,13 +14,16 @@ package org.eclipse.kapua.service.authentication.shiro;
 
 import org.apache.shiro.authc.AuthenticationToken;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
-import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
+
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 
 /**
- * Access token {@link AuthenticationCredentials} implementation.
+ * {@link AccessTokenCredentials} implementation.
+ * <p>
+ * This implements also {@link AuthenticationToken} to allow usage in Shiro.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class AccessTokenCredentialsImpl implements AccessTokenCredentials, AuthenticationToken {
 
@@ -28,24 +31,32 @@ public class AccessTokenCredentialsImpl implements AccessTokenCredentials, Authe
 
     private String tokenId;
 
-    private AccessTokenCredentialsImpl() {
-        super();
+    /**
+     * Constructor.
+     *
+     * @param tokenId The credential TokenId
+     * @since 1.0.0
+     */
+    public AccessTokenCredentialsImpl(@NotNull String tokenId) {
+        setTokenId(tokenId);
     }
 
     /**
-     * Constructor
+     * Clone constructor.
      *
-     * @param tokenId
+     * @param accessTokenCredentials The {@link AccessTokenCredentials} to clone.
+     * @since 1.5.0
      */
-    public AccessTokenCredentialsImpl(String tokenId) {
-        this();
-        this.tokenId = tokenId;
+    public AccessTokenCredentialsImpl(@NotNull AccessTokenCredentials accessTokenCredentials) {
+        setTokenId(accessTokenCredentials.getTokenId());
     }
 
+    @Override
     public String getTokenId() {
         return tokenId;
     }
 
+    @Override
     public void setTokenId(String tokenId) {
         this.tokenId = tokenId;
     }
@@ -59,4 +70,20 @@ public class AccessTokenCredentialsImpl implements AccessTokenCredentials, Authe
     public Object getCredentials() {
         return getTokenId();
     }
+
+    /**
+     * Parses a {@link AccessTokenCredentials} into a {@link AccessTokenCredentialsImpl}.
+     *
+     * @param accessTokenCredentials The {@link AccessTokenCredentials} to parse.
+     * @return A instance of {@link AccessTokenCredentialsImpl}.
+     * @since 1.5.0
+     */
+    public static AccessTokenCredentialsImpl parse(@Nullable AccessTokenCredentials accessTokenCredentials) {
+        return accessTokenCredentials != null ?
+                (accessTokenCredentials instanceof AccessTokenCredentialsImpl ?
+                        (AccessTokenCredentialsImpl) accessTokenCredentials :
+                        new AccessTokenCredentialsImpl(accessTokenCredentials))
+                : null;
+    }
 }
+
