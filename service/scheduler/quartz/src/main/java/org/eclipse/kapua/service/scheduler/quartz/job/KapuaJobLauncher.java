@@ -54,6 +54,10 @@ public class KapuaJobLauncher implements Job {
     private JobStartOptions jobStartOptions;
 
     /**
+     * Constructor.
+     * <p>
+     * Required by {@link Job}
+     *
      * @since 1.0.0
      */
     public KapuaJobLauncher() {
@@ -61,27 +65,34 @@ public class KapuaJobLauncher implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        String triggerIdString = context.getTrigger().getKey().getName();
-        KapuaId triggerId = kapuaIdFactory.newKapuaId(triggerIdString);
         try {
-            org.eclipse.kapua.service.job.Job job = KapuaSecurityUtils.doPrivileged(() -> jobService.find(getScopeId(), getJobId()));
+            String triggerIdString = context.getTrigger().getKey().getName();
+            KapuaId triggerId = kapuaIdFactory.newKapuaId(triggerIdString);
 
-            if (job == null) {
-                throw new KapuaEntityNotFoundException(org.eclipse.kapua.service.job.Job.class.getName(), jobId);
-            }
+            KapuaSecurityUtils.doPrivileged(() -> {
+                try {
+                    org.eclipse.kapua.service.job.Job job = jobService.find(getScopeId(), getJobId());
 
-            if (jobStartOptions == null) {
-                KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(scopeId, jobId));
-            } else {
-                KapuaSecurityUtils.doPrivileged(() -> jobEngineService.startJob(scopeId, jobId, jobStartOptions));
-            }
+                    if (job == null) {
+                        throw new KapuaEntityNotFoundException(org.eclipse.kapua.service.job.Job.class.getName(), jobId);
+                    }
 
-        } catch (Exception e) {
-            createdUnsuccessfulFiredTrigger(scopeId, triggerId, context.getFireTime(), e.getMessage());
-            throw new JobExecutionException("Cannot start job!", e);
+                    if (jobStartOptions == null) {
+                        jobEngineService.startJob(scopeId, jobId);
+                    } else {
+                        jobEngineService.startJob(scopeId, jobId, jobStartOptions);
+                    }
+
+                } catch (Exception startException) {
+                    createdUnsuccessfulFiredTrigger(scopeId, triggerId, context.getFireTime(), startException);
+                    throw startException;
+                }
+
+                createSuccessfulFiredTrigger(scopeId, triggerId, context.getFireTime());
+            });
+        } catch (Exception exception) {
+            throw new JobExecutionException("Cannot start job!", exception);
         }
-
-        createSuccessfulFiredTrigger(scopeId, triggerId, context.getFireTime());
     }
 
     /**
@@ -136,24 +147,24 @@ public class KapuaJobLauncher implements Job {
     /**
      * @since 1.5.0
      */
-    public void createdUnsuccessfulFiredTrigger(KapuaId scopeId, KapuaId triggerId, Date fireTime, String errorMessage) {
-        createFiredTrigger(scopeId, triggerId, fireTime, FiredTriggerStatus.FAILED, errorMessage);
+    public void createdUnsuccessfulFiredTrigger(KapuaId scopeId, KapuaId triggerId, Date fireTime, Exception exception) {
+        createFiredTrigger(scopeId, triggerId, fireTime, FiredTriggerStatus.FAILED, exception);
     }
 
     /**
      * @since 1.5.0
      */
-    public void createFiredTrigger(KapuaId scopeId, KapuaId triggerId, Date fireTime, FiredTriggerStatus status, String errorMessage) {
+    public void createFiredTrigger(KapuaId scopeId, KapuaId triggerId, Date fireTime, FiredTriggerStatus status, Exception exception) {
         try {
             FiredTriggerCreator firedTriggerCreator = firedTriggerFactory.newCreator(scopeId);
             firedTriggerCreator.setTriggerId(triggerId);
             firedTriggerCreator.setFiredOn(fireTime);
             firedTriggerCreator.setStatus(status);
-            firedTriggerCreator.setMessage(errorMessage);
+            firedTriggerCreator.setMessage(exception != null ? exception.getMessage() : null);
 
             firedTriggerService.create(firedTriggerCreator);
         } catch (Exception e) {
-            LOG.error("Failed create {} FiredTrigger for Trigger: {}", status, triggerId);
+            LOG.error("Failed create {} FiredTrigger for Trigger: {}", status, triggerId, e);
         }
     }
 }
