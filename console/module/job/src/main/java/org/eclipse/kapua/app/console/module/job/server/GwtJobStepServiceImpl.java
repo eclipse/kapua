@@ -75,11 +75,10 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
                 gwtJobStepList.add(gwtJobStep);
             }
 
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            return new BasePagingLoadResult<GwtJobStep>(gwtJobStepList, loadConfig.getOffset(), totalLength);
+        } catch (Exception e) {
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
         }
-
-        return new BasePagingLoadResult<GwtJobStep>(gwtJobStepList, loadConfig.getOffset(), totalLength);
     }
 
     @Override
@@ -115,13 +114,13 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(jobStep);
 
             setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-        }
 
-        //
-        // Return result
-        return gwtJobStep;
+            //
+            // Return result
+            return gwtJobStep;
+        } catch (Exception e) {
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
+        }
     }
 
     @Override
@@ -133,8 +132,8 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
         try {
             JOB_STEP_SERVICE.delete(scopeId, jobTargetId);
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+        } catch (Exception e) {
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
         }
     }
 
@@ -153,8 +152,8 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
                 setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
             }
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+        } catch (Exception e) {
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
         }
 
         return gwtJobStep;
@@ -193,10 +192,11 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
 
                 setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
             }
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+
+            return gwtJobStepUpdated;
+        } catch (Exception e) {
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
         }
-        return gwtJobStepUpdated;
     }
 
     /**
