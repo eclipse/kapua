@@ -13,14 +13,17 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import org.apache.shiro.authc.AuthenticationToken;
-import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 
+import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
+
 /**
- * Username and password {@link AuthenticationCredentials} implementation.
+ * {@link UsernamePasswordCredentials} implementation.
+ * <p>
+ * This implements also {@link AuthenticationToken} to allow usage in Shiro.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredentials, AuthenticationToken {
 
@@ -32,13 +35,29 @@ public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredenti
     private String trustKey;
 
     /**
-     * Constructor
-     *  @param username
-     * @param password
+     * Constructor.
+     *
+     * @param username The credential username.
+     * @param password The credential password.
+     * @since 1.0.0
      */
-    public UsernamePasswordCredentialsImpl(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public UsernamePasswordCredentialsImpl(@NotNull String username, @NotNull String password) {
+        setUsername(username);
+        setPassword(password);
+    }
+
+
+    /**
+     * Clone constructor.
+     *
+     * @param usernamePasswordCredentials The {@link UsernamePasswordCredentials} to clone.
+     * @since 1.5.0
+     */
+    public UsernamePasswordCredentialsImpl(@NotNull UsernamePasswordCredentials usernamePasswordCredentials) {
+        setUsername(usernamePasswordCredentials.getUsername());
+        setPassword(usernamePasswordCredentials.getPassword());
+        setAuthenticationCode(usernamePasswordCredentials.getAuthenticationCode());
+        setTrustKey(usernamePasswordCredentials.getTrustKey());
     }
 
     @Override
@@ -89,5 +108,20 @@ public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredenti
     @Override
     public void setTrustKey(String trustKey) {
         this.trustKey = trustKey;
+    }
+
+    /**
+     * Parses a {@link UsernamePasswordCredentials} into a {@link UsernamePasswordCredentialsImpl}.
+     *
+     * @param usernamePasswordCredentials The {@link UsernamePasswordCredentials} to parse.
+     * @return A instance of {@link UsernamePasswordCredentialsImpl}.
+     * @since 1.5.0
+     */
+    public static UsernamePasswordCredentialsImpl parse(@Nullable UsernamePasswordCredentials usernamePasswordCredentials) {
+        return usernamePasswordCredentials != null ?
+                (usernamePasswordCredentials instanceof UsernamePasswordCredentialsImpl ?
+                        (UsernamePasswordCredentialsImpl) usernamePasswordCredentials :
+                        new UsernamePasswordCredentialsImpl(usernamePasswordCredentials))
+                : null;
     }
 }

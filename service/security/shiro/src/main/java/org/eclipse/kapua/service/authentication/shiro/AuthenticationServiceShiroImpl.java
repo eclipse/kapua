@@ -12,11 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import java.util.Date;
-import java.util.UUID;
-
 import com.google.common.base.Strings;
-
+import com.google.common.collect.Sets;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.ShiroException;
+import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.ExpiredCredentialsException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.session.mgt.SimpleSession;
+import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
@@ -29,7 +37,10 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
+import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
+import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.SessionCredentials;
@@ -77,19 +88,6 @@ import org.eclipse.kapua.service.certificate.CertificateStatus;
 import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
-
-import com.google.common.collect.Sets;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.ShiroException;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.DisabledAccountException;
-import org.apache.shiro.authc.ExpiredCredentialsException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.session.mgt.SimpleSession;
-import org.apache.shiro.subject.Subject;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -98,6 +96,9 @@ import org.jose4j.lang.JoseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Authentication service implementation.
@@ -131,27 +132,44 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     @Override
     public AccessToken login(LoginCredentials loginCredentials, boolean enableTrust) throws KapuaException {
+        //
+        // Check LoginCredentials
+        if (loginCredentials == null) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
+        }
 
+        // Check subject
         checkCurrentSubjectNotAuthenticated();
 
         //
         // Parse login credentials
         AuthenticationToken shiroAuthenticationToken;
         String openIDidToken = null;
-        if (loginCredentials instanceof UsernamePasswordCredentialsImpl) {
-            UsernamePasswordCredentialsImpl usernamePasswordCredentials = (UsernamePasswordCredentialsImpl) loginCredentials;
+        if (loginCredentials instanceof UsernamePasswordCredentials) {
+            UsernamePasswordCredentialsImpl usernamePasswordCredentials = UsernamePasswordCredentialsImpl.parse((UsernamePasswordCredentials) loginCredentials);
 
-            shiroAuthenticationToken = new UsernamePasswordCredentialsImpl(usernamePasswordCredentials.getUsername(), usernamePasswordCredentials.getPassword());
-            ((UsernamePasswordCredentials) shiroAuthenticationToken).setAuthenticationCode(usernamePasswordCredentials.getAuthenticationCode());
-            ((UsernamePasswordCredentials) shiroAuthenticationToken).setTrustKey(usernamePasswordCredentials.getTrustKey());
-        } else if (loginCredentials instanceof ApiKeyCredentialsImpl) {
-            shiroAuthenticationToken = new ApiKeyCredentialsImpl(((ApiKeyCredentialsImpl) loginCredentials).getApiKey());
-        } else if (loginCredentials instanceof JwtCredentialsImpl) {
-            openIDidToken = ((JwtCredentialsImpl) loginCredentials).getIdToken();
-            if (Strings.isNullOrEmpty(openIDidToken)) {
+            if (Strings.isNullOrEmpty(usernamePasswordCredentials.getUsername()) ||
+                    Strings.isNullOrEmpty(usernamePasswordCredentials.getPassword())) {
                 throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
             }
-            shiroAuthenticationToken = new JwtCredentialsImpl(((JwtCredentialsImpl) loginCredentials).getJwt(), openIDidToken);
+
+            shiroAuthenticationToken = usernamePasswordCredentials;
+        } else if (loginCredentials instanceof ApiKeyCredentials) {
+            ApiKeyCredentialsImpl apiKeyCredentials = ApiKeyCredentialsImpl.parse((ApiKeyCredentials) loginCredentials);
+
+            if (Strings.isNullOrEmpty(apiKeyCredentials.getApiKey())) {
+                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
+            }
+
+            shiroAuthenticationToken = apiKeyCredentials;
+        } else if (loginCredentials instanceof JwtCredentials) {
+            JwtCredentialsImpl jwtCredentials = JwtCredentialsImpl.parse((JwtCredentials) loginCredentials);
+
+            if (Strings.isNullOrEmpty(jwtCredentials.getIdToken())) {
+                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
+            }
+
+            shiroAuthenticationToken = jwtCredentials;
         } else {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
         }
@@ -197,13 +215,26 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     @Override
     public void authenticate(SessionCredentials sessionCredentials) throws KapuaException {
+        //
+        // Check LoginCredentials
+        if (sessionCredentials == null) {
+            throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_SESSION_CREDENTIALS);
+        }
+
+        // Check subject
         checkCurrentSubjectNotAuthenticated();
 
         //
         // Parse login credentials
         AuthenticationToken shiroAuthenticationToken;
-        if (sessionCredentials instanceof AccessTokenCredentialsImpl) {
-            shiroAuthenticationToken = new AccessTokenCredentialsImpl(((AccessTokenCredentialsImpl) sessionCredentials).getTokenId());
+        if (sessionCredentials instanceof AccessTokenCredentials) {
+            AccessTokenCredentialsImpl accessTokenCredentials = AccessTokenCredentialsImpl.parse((AccessTokenCredentials) sessionCredentials);
+
+            if (Strings.isNullOrEmpty(accessTokenCredentials.getTokenId())) {
+                throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_SESSION_CREDENTIALS);
+            }
+
+            shiroAuthenticationToken = accessTokenCredentials;
         } else {
             throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED);
         }

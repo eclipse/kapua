@@ -17,19 +17,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
-
 @Category(JUnitTests.class)
 public class AccessTokenCredentialsImplTest extends Assert {
-
-    @Test
-    public void accessTokenCredentialsImplWithoutParametersTest() throws Exception {
-        Constructor<AccessTokenCredentialsImpl> accessTokenCredentialsImpl = AccessTokenCredentialsImpl.class.getDeclaredConstructor();
-        accessTokenCredentialsImpl.setAccessible(true);
-        accessTokenCredentialsImpl.newInstance();
-        assertTrue("True expected.", Modifier.isPrivate(accessTokenCredentialsImpl.getModifiers()));
-    }
 
     @Test
     public void accessTokenCredentialsImplTokenIdParameterTest() {
