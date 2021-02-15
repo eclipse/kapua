@@ -217,6 +217,10 @@ import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerXmlRegistry;
+import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTrigger;
+import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerListResult;
+import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerQuery;
+import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerXmlRegistry;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.SortFieldXmlAdapter;
@@ -566,10 +570,16 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     JobTargetQuery.class,
                     JobExecutionXmlRegistry.class,
 
+                    // Trigger
                     Trigger.class,
                     TriggerListResult.class,
                     TriggerQuery.class,
-                    TriggerXmlRegistry.class
+                    TriggerXmlRegistry.class,
+
+                    FiredTrigger.class,
+                    FiredTriggerListResult.class,
+                    FiredTriggerQuery.class,
+                    FiredTriggerXmlRegistry.class
             }, properties);
         } catch (Exception e) {
             throw new RuntimeException(e);

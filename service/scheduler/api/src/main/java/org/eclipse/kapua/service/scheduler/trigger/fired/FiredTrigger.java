@@ -14,11 +14,14 @@ package org.eclipse.kapua.service.scheduler.trigger.fired;
 
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 
 /**
@@ -38,18 +41,23 @@ public interface FiredTrigger extends KapuaEntity {
         return TYPE;
     }
 
+    @XmlElement(name = "triggerId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     KapuaId getTriggerId();
 
     void setTriggerId(KapuaId triggerId);
 
+    @XmlElement(name = "firedOn")
     Date getFiredOn();
 
     void setFiredOn(Date firedOn);
 
+    @XmlElement(name = "status")
     FiredTriggerStatus getStatus();
 
     void setStatus(FiredTriggerStatus status);
 
+    @XmlElement(name = "message")
     String getMessage();
 
     void setMessage(String message);

@@ -288,6 +288,13 @@ paths:
     $ref: './jobTrigger/job-scopeId-jobId-triggers-_count.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1triggers~1_count'
   /{scopeId}/jobs/{jobId}/triggers/_query:
     $ref: './jobTrigger/job-scopeId-jobId-triggers-_query.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1triggers~1_query'
+  ### Job Trigger ###
+  /{scopeId}/jobs/{jobId}/triggers/{triggerId}/fired:
+    $ref: './jobTriggerFired/job-scopeId-jobId-triggers-triggerId-fired.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1triggers~1{triggerId}~1fired'
+  /{scopeId}/jobs/{jobId}/triggers/{triggerId}/fired/_count:
+    $ref: './jobTriggerFired/job-scopeId-jobId-triggers-triggerId-fired-_count.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1triggers~1{triggerId}~1fired~1_count'
+  /{scopeId}/jobs/{jobId}/triggers/{triggerId}/fired/_query:
+    $ref: './jobTriggerFired/job-scopeId-jobId-triggers-triggerId-fired-_query.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1triggers~1{triggerId}~1fired~1_query'
   ### Job Step ###
   /{scopeId}/jobs/{jobId}/steps:
     $ref: './jobStep/job-scopeId-jobId-steps.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1steps'
@@ -614,7 +621,7 @@ components:
       bearerFormat: JWT
 
 security:
-  - kapuaToken: []
+  - kapuaToken: [ ]
 
 x-explorer-enabled: false
 x-samples-languages:
