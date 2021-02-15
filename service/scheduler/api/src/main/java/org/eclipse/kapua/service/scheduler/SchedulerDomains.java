@@ -12,9 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler;
 
+/**
+ * Available {@link org.eclipse.kapua.model.domain.Domain}s in `kapua-scheduler-api` module.
+ *
+ * @since 1.0.0
+ */
 public class SchedulerDomains {
 
-    private SchedulerDomains() { }
-
     public static final SchedulerDomain SCHEDULER_DOMAIN = new SchedulerDomain();
+
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    private SchedulerDomains() {
+    }
 }

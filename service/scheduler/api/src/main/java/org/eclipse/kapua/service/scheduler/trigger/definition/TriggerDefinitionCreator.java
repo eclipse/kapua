@@ -21,13 +21,13 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
- * {@link TriggerDefinitionCreator} {@link org.eclipse.kapua.model.KapuaEntityCreator} definition
+ * {@link TriggerDefinition} {@link org.eclipse.kapua.model.KapuaEntityCreator} definition.
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "triggerDefinitionCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = TriggerDefinitionXmlRegistry.class, factoryMethod = "newTriggerDefinitionCreator")
+@XmlType(factoryClass = TriggerDefinitionXmlRegistry.class, factoryMethod = "newCreator")
 public interface TriggerDefinitionCreator extends KapuaNamedEntityCreator<TriggerDefinition> {
 
     /**

@@ -51,7 +51,7 @@ public class JobTriggersFired extends AbstractKapuaResource {
      * Gets the {@link Trigger} list for a given {@link Job}.
      *
      * @param scopeId       The {@link ScopeId} in which to search results.
-     * @param jobId         The {@link Job} id to filter results
+     * @param jobId         The {@link Job} id to filter results.
      * @param offset        The result set offset.
      * @param limit         The result set limit.
      * @param askTotalCount Whether or not to fetch the total count of elements.

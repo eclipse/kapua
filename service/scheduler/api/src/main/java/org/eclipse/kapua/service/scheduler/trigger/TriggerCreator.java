@@ -24,13 +24,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * {@link TriggerCreator} {@link org.eclipse.kapua.model.KapuaEntityCreator} definition.
+ * {@link Trigger} {@link KapuaNamedEntityCreator} definition.
  *
+ * @see org.eclipse.kapua.model.KapuaNamedEntityCreator
  * @since 1.0.0
  */
 @XmlRootElement(name = "triggerCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = TriggerXmlRegistry.class, factoryMethod = "newTriggerCreator")
+@XmlType(factoryClass = TriggerXmlRegistry.class, factoryMethod = "newCreator")
 public interface TriggerCreator extends KapuaNamedEntityCreator<Trigger> {
 
     /**

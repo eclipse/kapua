@@ -21,6 +21,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * The {@link ConnectionProvider} for Quartz.
+ * <p>
+ * This bridges the {@link ConnectionProvider} over our {@link JdbcConnectionUrlResolvers}.
+ *
+ * @since 1.0.0
+ */
 public class KapuaQuartzConnectionProvider implements ConnectionProvider {
 
     private static final String JDBC_CONNECTION_URL = JdbcConnectionUrlResolvers.resolveJdbcUrl();

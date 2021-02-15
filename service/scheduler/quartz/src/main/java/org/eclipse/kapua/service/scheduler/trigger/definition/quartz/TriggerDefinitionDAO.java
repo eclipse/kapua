@@ -36,9 +36,10 @@ public class TriggerDefinitionDAO {
     /**
      * Creates and return new TriggerDefinition
      *
-     * @param em
-     * @param triggerDefinitionCreator
-     * @return
+     * @param em                       The {@link EntityManager} that owns the transaction.
+     * @param triggerDefinitionCreator The {@link TriggerDefinitionCreator} to persist.
+     * @return The newly created {@link TriggerDefinition}
+     * @since 1.1.0
      */
     public static TriggerDefinition create(EntityManager em, TriggerDefinitionCreator triggerDefinitionCreator) {
 
@@ -54,10 +55,11 @@ public class TriggerDefinitionDAO {
     /**
      * Updates the provided triggerDefinition
      *
-     * @param em
-     * @param triggerDefinition
-     * @return
-     * @throws KapuaException
+     * @param em                The {@link EntityManager} that owns the transaction.
+     * @param triggerDefinition The {@link TriggerDefinition} to update.
+     * @return The updated {@link TriggerDefinition}.
+     * @throws KapuaException if error occurs while updating
+     * @since 1.1.0
      */
     public static TriggerDefinition update(EntityManager em, TriggerDefinition triggerDefinition) throws KapuaException {
         //
@@ -69,6 +71,11 @@ public class TriggerDefinitionDAO {
 
     /**
      * Finds the triggerDefinition by triggerDefinition identifier
+     *
+     * @param em                  The {@link EntityManager} that owns the transaction.
+     * @param triggerDefinitionId The {@link TriggerDefinition#getId()}
+     * @return The found {@link TriggerDefinition} or {@code null}
+     * @since 1.1.0
      */
     public static TriggerDefinition find(EntityManager em, KapuaId triggerDefinitionId) {
         return ServiceDAO.find(em, TriggerDefinitionImpl.class, null, triggerDefinitionId);
@@ -76,11 +83,23 @@ public class TriggerDefinitionDAO {
 
     /**
      * Finds the triggerDefinition by triggerDefinition identifier
+     *
+     * @param em                  The {@link EntityManager} that owns the transaction.
+     * @param triggerDefinitionId The {@link TriggerDefinition#getScopeId()}
+     * @param triggerDefinitionId The {@link TriggerDefinition#getId()}
+     * @return The found {@link TriggerDefinition} or {@code null}
+     * @since 1.1.0
      */
     public static TriggerDefinition find(EntityManager em, KapuaId scopeId, KapuaId triggerDefinitionId) {
         return ServiceDAO.find(em, TriggerDefinitionImpl.class, scopeId, triggerDefinitionId);
     }
 
+    /**
+     * @param em   The {@link EntityManager} that owns the transaction.
+     * @param name The {@link TriggerDefinition#getName()}
+     * @return The found {@link TriggerDefinition} or {@code null}
+     * @since 1.1.0
+     */
     public static TriggerDefinition findByName(EntityManager em, String name) {
         return ServiceDAO.findByField(em, TriggerDefinitionImpl.class, KapuaNamedEntityAttributes.NAME, name);
     }
@@ -88,10 +107,11 @@ public class TriggerDefinitionDAO {
     /**
      * Returns the triggerDefinition list matching the provided query
      *
-     * @param em
-     * @param triggerDefinitionQuery
-     * @return
-     * @throws KapuaException
+     * @param em                     The {@link EntityManager} that owns the transaction.
+     * @param triggerDefinitionQuery The {@link org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery} to perform
+     * @return The {@link TriggerDefinitionListResult} that matches the given {@link org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery}
+     * @throws KapuaException if any error occurs while querying.
+     * @since 1.1.0
      */
     public static TriggerDefinitionListResult query(EntityManager em, KapuaQuery triggerDefinitionQuery)
             throws KapuaException {
@@ -101,10 +121,11 @@ public class TriggerDefinitionDAO {
     /**
      * Returns the triggerDefinition count matching the provided query
      *
-     * @param em
-     * @param triggerDefinitionQuery
-     * @return
-     * @throws KapuaException
+     * @param em                     The {@link EntityManager} that owns the transaction.
+     * @param triggerDefinitionQuery The {@link org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery} to perform
+     * @return The {@link TriggerDefinitionListResult} that matches the given {@link org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery}
+     * @throws KapuaException if any error occurs while counting.
+     * @since 1.1.0
      */
     public static long count(EntityManager em, KapuaQuery triggerDefinitionQuery)
             throws KapuaException {
@@ -114,11 +135,12 @@ public class TriggerDefinitionDAO {
     /**
      * Deletes the triggerDefinition by triggerDefinition identifier
      *
-     * @param em
-     * @param scopeId
-     * @param triggerDefinitionId
-     * @return deleted entity
+     * @param em                  The {@link EntityManager} that owns the transaction.
+     * @param scopeId             The {@link TriggerDefinition#getScopeId()}.
+     * @param triggerDefinitionId The {@link TriggerDefinition#getId()}.
+     * @return The deleted {@link TriggerDefinition}.
      * @throws KapuaEntityNotFoundException If the {@link TriggerDefinition} is not found
+     * @since 1.1.0
      */
     public static TriggerDefinition delete(EntityManager em, KapuaId scopeId, KapuaId triggerDefinitionId) throws KapuaEntityNotFoundException {
         return ServiceDAO.delete(em, TriggerDefinitionImpl.class, scopeId, triggerDefinitionId);

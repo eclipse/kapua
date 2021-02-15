@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 /**
  * {@link Trigger} xml factory class
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRegistry
 public class TriggerXmlRegistry {
@@ -27,30 +27,15 @@ public class TriggerXmlRegistry {
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final TriggerFactory TRIGGER_FACTORY = LOCATOR.getFactory(TriggerFactory.class);
 
-    /**
-     * Creates a new schedule instance
-     *
-     * @return
-     */
-    public Trigger newTrigger() {
+    public Trigger newEntity() {
         return TRIGGER_FACTORY.newEntity(null);
     }
 
-    /**
-     * Creates a new schedule creator instance
-     *
-     * @return
-     */
-    public TriggerCreator newTriggerCreator() {
+    public TriggerCreator newCreator() {
         return TRIGGER_FACTORY.newCreator(null);
     }
 
-    /**
-     * Creates a new schedule list result instance
-     *
-     * @return
-     */
-    public TriggerListResult newTriggerListResult() {
+    public TriggerListResult newListResult() {
         return TRIGGER_FACTORY.newListResult();
     }
 

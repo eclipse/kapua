@@ -33,8 +33,7 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionS
 import javax.inject.Inject;
 
 /**
- * {@link TriggerDefinitionService} exposes APIs to manage {@link TriggerDefinition} objects.<br>
- * It includes APIs to create, update, find, list and delete {@link TriggerDefinition}s.<br>
+ * {@link TriggerDefinitionService} implementation.
  *
  * @since 1.1.0
  */

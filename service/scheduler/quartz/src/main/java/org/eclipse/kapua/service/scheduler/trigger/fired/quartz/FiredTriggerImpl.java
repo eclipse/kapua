@@ -56,7 +56,7 @@ public class FiredTriggerImpl extends AbstractKapuaEntity implements FiredTrigge
     private FiredTriggerStatus status;
 
     @Basic
-    @Column(name = "message", nullable = false, updatable = false)
+    @Column(name = "message", nullable = true, updatable = false)
     private String message;
 
     /**

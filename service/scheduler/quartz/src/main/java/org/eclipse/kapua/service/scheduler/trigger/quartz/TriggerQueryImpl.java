@@ -25,6 +25,8 @@ public class TriggerQueryImpl extends AbstractKapuaQuery implements TriggerQuery
 
     /**
      * Constructor.
+     *
+     * @since 1.0.0
      */
     private TriggerQueryImpl() {
         super();
@@ -33,7 +35,8 @@ public class TriggerQueryImpl extends AbstractKapuaQuery implements TriggerQuery
     /**
      * Constructor
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}.
+     * @since 1.0.0
      */
     public TriggerQueryImpl(KapuaId scopeId) {
         this();

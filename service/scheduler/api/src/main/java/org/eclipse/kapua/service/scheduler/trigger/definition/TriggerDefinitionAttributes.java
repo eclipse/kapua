@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.scheduler.trigger.definition;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
 /**
- * {@link TriggerDefinitionAttributes} attributes.
+ * {@link TriggerDefinitionAttributes} {@link org.eclipse.kapua.model.KapuaEntityAttributes}.
  *
  * @see org.eclipse.kapua.model.KapuaEntityAttributes
  * @since 1.1.0
