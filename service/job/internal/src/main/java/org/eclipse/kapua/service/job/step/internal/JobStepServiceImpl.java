@@ -28,6 +28,11 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
+import org.eclipse.kapua.service.job.exception.CannotModifyJobStepsException;
+import org.eclipse.kapua.service.job.execution.JobExecutionAttributes;
+import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
+import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
+import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepAttributes;
@@ -59,7 +64,11 @@ public class JobStepServiceImpl extends AbstractKapuaService
     private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
     private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
 
+    private static final JobExecutionService JOB_EXECUTION_SERVICE = LOCATOR.getService(JobExecutionService.class);
+    private static final JobExecutionFactory JOB_EXECUTION_FACTORY = LOCATOR.getFactory(JobExecutionFactory.class);
+
     private static final JobStepDefinitionService JOB_STEP_DEFINITION_SERVICE = LOCATOR.getService(JobStepDefinitionService.class);
+
 
     public JobStepServiceImpl() {
         super(JobEntityManagerFactory.getInstance(), null);
@@ -108,6 +117,15 @@ public class JobStepServiceImpl extends AbstractKapuaService
 
         if (count(query) > 0) {
             throw new KapuaDuplicateNameException(jobStepCreator.getName());
+        }
+
+        //
+        // Check Job Executions
+        JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(jobStepCreator.getScopeId());
+        jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStepCreator.getJobId());
+
+        if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
+            throw new CannotModifyJobStepsException(jobStepCreator.getJobId());
         }
 
         //
@@ -193,6 +211,16 @@ public class JobStepServiceImpl extends AbstractKapuaService
             throw new KapuaDuplicateNameException(jobStep.getName());
         }
 
+        //
+        // Check Job Executions
+        JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(jobStep.getScopeId());
+        jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStep.getJobId());
+
+        if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
+            throw new CannotModifyJobStepsException(jobStep.getJobId());
+        }
+
+        // Do Update
         return entityManagerSession.doTransactedAction(em -> JobStepDAO.update(em, jobStep));
     }
 
@@ -255,8 +283,18 @@ public class JobStepServiceImpl extends AbstractKapuaService
 
         //
         // Check existence
-        if (find(scopeId, jobStepId) == null) {
+        JobStep jobStep = find(scopeId, jobStepId);
+        if (jobStep == null) {
             throw new KapuaEntityNotFoundException(JobStep.TYPE, jobStepId);
+        }
+
+        //
+        // Check Job Executions
+        JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(scopeId);
+        jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStep.getJobId());
+
+        if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
+            throw new CannotModifyJobStepsException(jobStep.getJobId());
         }
 
         //
