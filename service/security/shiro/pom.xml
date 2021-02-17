@@ -90,5 +90,18 @@
             <artifactId>javase</artifactId>
         </dependency>
 
+        <!-- -->
+        <!-- Test Dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-qa-markers</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 </project>
