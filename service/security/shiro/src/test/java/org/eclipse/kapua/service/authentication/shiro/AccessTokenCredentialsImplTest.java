@@ -22,59 +22,58 @@ import org.junit.experimental.categories.Category;
 public class AccessTokenCredentialsImplTest extends Assert {
 
     @Test(expected = NullPointerException.class)
-    public void accessTokenCredentialImplCloneConstructorNull() {
+    public void accessTokenCredentialsImplCloneConstructorNullTest() {
         new AccessTokenCredentialsImpl((AccessTokenCredentials) null);
     }
 
     @Test
-    public void accessTokenCredentialImplCloneConstructorImpl() {
+    public void accessTokenCredentialsImplCloneConstructorImplTest() {
         AccessTokenCredentialsImpl first = new AccessTokenCredentialsImpl("anAccessToken");
 
         AccessTokenCredentialsImpl second = new AccessTokenCredentialsImpl(first);
 
         assertNotEquals("AccessTokenCredentialImpl", first, second);
-        assertEquals("AccessTokenCredential.tokenIn", first.getTokenId(), second.getTokenId());
+        assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
     }
 
     @Test
-    public void accessTokenCredentialImplParseImpl() {
+    public void accessTokenCredentialsImplCloneConstructorAnotherTest() {
+        AccessTokenCredentials first = new AccessTokenCredentialAnother("anAccessToken");
+
+        AccessTokenCredentialsImpl second = new AccessTokenCredentialsImpl(first);
+
+        assertNotEquals("AccessTokenCredentialImpl", first, second);
+        assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
+    }
+
+    @Test
+    public void accessTokenCredentialsImplParseNullTest() {
         AccessTokenCredentialsImpl first = null;
 
         AccessTokenCredentialsImpl second = AccessTokenCredentialsImpl.parse(null);
 
+        assertNull("Parsed AccessTokenCredentialsImpl", second);
         assertEquals("AccessTokenCredentialImpl", first, second);
     }
 
     @Test
-    public void accessTokenCredentialImplParseNull() {
+    public void accessTokenCredentialsImplParseImplTest() {
         AccessTokenCredentialsImpl first = new AccessTokenCredentialsImpl("anAccessToken");
 
         AccessTokenCredentialsImpl second = AccessTokenCredentialsImpl.parse(first);
 
         assertEquals("AccessTokenCredentialImpl", first, second);
-        assertEquals("AccessTokenCredential.tokenIn", first.getTokenId(), second.getTokenId());
+        assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
     }
 
     @Test
-    public void accessTokenCredentialImplParseAnother() {
-        AccessTokenCredentials first = new AccessTokenCredentials() {
-            private String tokenId = "anAccessToken";
-
-            @Override
-            public String getTokenId() {
-                return tokenId;
-            }
-
-            @Override
-            public void setTokenId(String tokenId) {
-                this.tokenId = tokenId;
-            }
-        };
+    public void accessTokenCredentialsImplParseAnotherTest() {
+        AccessTokenCredentials first = new AccessTokenCredentialAnother("anAccessToken");
 
         AccessTokenCredentialsImpl second = AccessTokenCredentialsImpl.parse(first);
 
         assertNotEquals("AccessTokenCredentialImpl", first, second);
-        assertEquals("AccessTokenCredential.tokenIn", first.getTokenId(), second.getTokenId());
+        assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
     }
 
 
@@ -101,5 +100,23 @@ public class AccessTokenCredentialsImplTest extends Assert {
             assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenCredentialsImpl.getPrincipal());
             assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenCredentialsImpl.getCredentials());
         }
+    }
+}
+
+class AccessTokenCredentialAnother implements AccessTokenCredentials {
+    private String tokenId;
+
+    public AccessTokenCredentialAnother(String tokenId) {
+        this.tokenId = tokenId;
+    }
+
+    @Override
+    public String getTokenId() {
+        return tokenId;
+    }
+
+    @Override
+    public void setTokenId(String tokenId) {
+        this.tokenId = tokenId;
     }
 }
