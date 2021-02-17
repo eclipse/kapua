@@ -80,26 +80,26 @@ public class KapuaIllegalArgumentExceptionTest extends Assert {
             for (String value : argumentValue) {
                 String[] message = {
                         "The entity of type " + name + " with id/name " + value + " was not found.",
-                        "Error: " + name + "," + value,
+                        "Error: " + name + ", " + value,
                         "An entity with the same name " + name + " already exists.",
                         "An entity with the same external Id " + name + " already exists.",
-                        "Error: " + name + "," + value,
+                        "Error: " + name + ", " + value,
                         "The current subject is not authorized for " + name + ".",
                         "An illegal value was provided for the argument " + name + ": " + value + ".",
                         "An illegal null value was provided for the argument " + name + ".",
                         "The application is in a illegal state: " + name + ".",
                         "The entity is out of state as it has been modified or deleted by another transaction.",
                         "No authenticated Subject found in context.",
-                        "Error: " + name + "," + value,
+                        "Error: " + name + ", " + value,
                         "An internal error occurred: " + name + ".",
-                        "Error: " + name + "," + value,
+                        "Error: " + name + ", " + value,
                         "Maximum number of items has been exceeded,",
                         "User does not have permission to perform this action. Missing permission: " + name + ". Please perform a new login to refresh users permissions.",
                         "An entity with the same name " + name,
                         "An entity with the same external id " + name + " already exists in another account.",
                         "Bundle could not be started. Please check the device log for errors.",
                         "Bundle could not be stopped. Please check the device log for errors.",
-                        "Error: " + name + "," + value,
+                        "Error: " + name + ", " + value,
                         "Max number of " + name + " reached. Please increase the number or set InfiniteChild" + name + " parameter to True.",
                         "The selected devices were not found. Please refresh device list.",
                         "Error: Another resource is currently downloading. Please wait a few moments so package finishes downloading and then try again.",
@@ -110,11 +110,11 @@ public class KapuaIllegalArgumentExceptionTest extends Assert {
 
                 for (int i = 0; i < kapuaErrorCodes.length; i++) {
                     KapuaIllegalArgumentException kapuaIllegalArgumentException = new KapuaIllegalArgumentException(kapuaErrorCodes[i], name, value);
-                    assertEquals("Expected and actual values should be the same.", kapuaErrorCodes[i], kapuaIllegalArgumentException.getCode());
-                    assertEquals("Expected and actual values should be the same.", name, kapuaIllegalArgumentException.getArgumentName());
-                    assertEquals("Expected and actual values should be the same.", value, kapuaIllegalArgumentException.getArgumentValue());
-                    assertEquals("Expected and actual values should be the same.", message[i], kapuaIllegalArgumentException.getMessage());
-                    assertNull("Null expected.", kapuaIllegalArgumentException.getCause());
+                    assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], kapuaErrorCodes[i], kapuaIllegalArgumentException.getCode());
+                    assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], name, kapuaIllegalArgumentException.getArgumentName());
+                    assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], value, kapuaIllegalArgumentException.getArgumentValue());
+                    assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], message[i], kapuaIllegalArgumentException.getMessage());
+                    assertNull("Null expected for KapuaErrorCode: " + kapuaErrorCodes[i], kapuaIllegalArgumentException.getCause());
                 }
             }
         }

@@ -32,18 +32,18 @@ import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.cucumber.CucTriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -220,7 +220,7 @@ public class JobScheduleServiceSteps extends TestBase {
         triggerCreator.setTriggerDefinitionId(currentTriggerDefId);
 
         List<TriggerProperty> tmpPropList = new ArrayList<>();
-        for(CucTriggerProperty prop : list) {
+        for (CucTriggerProperty prop : list) {
             tmpPropList.add(triggerFactory.newTriggerProperty(prop.getName(), prop.getType(), prop.getValue()));
         }
         triggerCreator.setTriggerProperties(tmpPropList);
@@ -324,17 +324,6 @@ public class JobScheduleServiceSteps extends TestBase {
         }
     }
 
-    @And("^The trigger is set to end tomorrow at (.*).")
-    public void setTomorrowAsTriggerEndDate(String startTimeStr) throws Exception {
-        try {
-            primeException();
-            Date endDate = setTomorrowAsDateValue(startTimeStr);
-            stepData.put(TRIGGER_END_DATE, endDate);
-        } catch (Exception ex) {
-            verifyException(ex);
-        }
-    }
-
     @And("^The trigger is set to end on (.*) at (.*).")
     public void setTriggerEndDate(String endDateStr, String endTimeStr) throws Exception {
         try {
@@ -346,39 +335,78 @@ public class JobScheduleServiceSteps extends TestBase {
         }
     }
 
-    private Date setDateAndTimeValue(String dateStr, String timeStr) throws ParseException {
-        Date date = new SimpleDateFormat("dd-MM-yyyy").parse(dateStr);
-        String [] timeComponents = timeStr.split(":");
-        int hour = Integer.parseInt(timeComponents[0]);
-        int minutes = Integer.parseInt(timeComponents[1]);
-        date.setHours(hour);
-        date.setMinutes(minutes);
-        return date;
+    @And("^The trigger is set to end in (.*) seconds.")
+    public void setWithinSecondsAsTriggerEndDate(String secondsString) throws Exception {
+        try {
+            primeException();
+            int seconds = Integer.parseInt(secondsString);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.SECOND, seconds);
+            Date endDate = calendar.getTime();
+            stepData.put(TRIGGER_END_DATE, endDate);
+        } catch (Exception ex) {
+            verifyException(ex);
+        }
     }
 
-    private Date setTomorrowAsDateValue(String timeStr) {
-        Date date = new Date();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DATE, 1);
-        date = calendar.getTime();
+    @And("^The trigger is set to end tomorrow at (.*).")
+    public void setTomorrowAsTriggerEndDate(String startTimeStr) throws Exception {
+        try {
+            primeException();
+            Date endDate = setTomorrowAsDateValue(startTimeStr);
+            stepData.put(TRIGGER_END_DATE, endDate);
+        } catch (Exception ex) {
+            verifyException(ex);
+        }
+    }
 
-        String [] timeComponents = timeStr.split(":");
+    private Date setDateAndTimeValue(String dateStr, String timeStr) throws ParseException {
+        String[] dateComponents = dateStr.split("-");
+        int day = Integer.parseInt(dateComponents[0]);
+        int month = Integer.parseInt(dateComponents[1]);
+        int year = Integer.parseInt(dateComponents[2]);
+
+        String[] timeComponents = timeStr.split(":");
         int hour = Integer.parseInt(timeComponents[0]);
         int minutes = Integer.parseInt(timeComponents[1]);
-        date.setHours(hour);
-        date.setMinutes(minutes);
-        return date;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.MONTH, month - 1);
+        calendar.set(Calendar.YEAR, year);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minutes);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 
     private Date setTodayAsDateValue(String timeString) {
-        Date date = new Date();
-        String [] timeComponents = timeString.split(":");
+        String[] timeComponents = timeString.split(":");
         int hour = Integer.parseInt(timeComponents[0]);
         int minutes = Integer.parseInt(timeComponents[1]);
-        date.setHours(hour);
-        date.setMinutes(minutes);
-        return date;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minutes);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
+    }
+
+    private Date setTomorrowAsDateValue(String timeStr) {
+        String[] timeComponents = timeStr.split(":");
+        int hour = Integer.parseInt(timeComponents[0]);
+        int minutes = Integer.parseInt(timeComponents[1]);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE, 1);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minutes);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 
     @And("^I set retry interval to (\\d+)$")
@@ -411,7 +439,7 @@ public class JobScheduleServiceSteps extends TestBase {
         primeException();
         try {
             triggerService.delete(trigger.getScopeId(), trigger.getId());
-        } catch (KapuaException ex){
+        } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
@@ -424,7 +452,7 @@ public class JobScheduleServiceSteps extends TestBase {
             stepData.remove(TRIGGER);
             Trigger trigger = triggerService.find(getCurrentScopeId(), currentTriggerID);
             stepData.put(TRIGGER, trigger);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
@@ -435,7 +463,7 @@ public class JobScheduleServiceSteps extends TestBase {
         primeException();
         try {
             triggerService.delete(trigger.getScopeId(), trigger.getId());
-        } catch (KapuaException ex){
+        } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
@@ -457,12 +485,12 @@ public class JobScheduleServiceSteps extends TestBase {
 
     @And("^There is no trigger with the name \"([^\"]*)\" in the database$")
     public void thereIsNoTriggerWithTheNameInTheDatabase(String triggerName) throws Throwable {
-            assertNull(stepData.get(TRIGGER));
-        }
+        assertNull(stepData.get(TRIGGER));
+    }
 
     @And("^I try to edit trigger definition to \"([^\"]*)\"$")
     public void iTryToEditSchedulerPropertyTo(String trigerDefinition) throws Exception {
-    Trigger trigger = (Trigger) stepData.get(TRIGGER);
+        Trigger trigger = (Trigger) stepData.get(TRIGGER);
 
         primeException();
 
@@ -480,7 +508,7 @@ public class JobScheduleServiceSteps extends TestBase {
     }
 
     @And("^I try to edit start date to (.*) at (.*)$")
-    public void iTryToEditStartDateTo(String startDate, String startTime) throws Exception{
+    public void iTryToEditStartDateTo(String startDate, String startTime) throws Exception {
 
         Trigger trigger = (Trigger) stepData.get(TRIGGER);
         Date newTriggerStartOnDate = setDateAndTimeValue(startDate, startTime);
@@ -495,7 +523,7 @@ public class JobScheduleServiceSteps extends TestBase {
     }
 
     @And("^I try to edit end date to (.*) at (.*)$")
-    public void iTryToEditEndDateTo(String endDate, String endTime) throws Exception{
+    public void iTryToEditEndDateTo(String endDate, String endTime) throws Exception {
 
         Trigger trigger = (Trigger) stepData.get(TRIGGER);
         Date newTriggerEndsOnDate = setDateAndTimeValue(endDate, endTime);

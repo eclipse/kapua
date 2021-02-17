@@ -108,7 +108,8 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         for (TriggerProperty jsp : triggerCreator.getTriggerProperties()) {
             for (TriggerProperty jsdp : triggerDefinition.getTriggerProperties()) {
                 if (jsp.getName().equals(jsdp.getName())) {
-                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "triggerCreator.triggerProperties{}." + jsp.getName());
+                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "triggerCreator.triggerProperties{}." + jsp.getName() + ".propertyType");
+                    ArgumentValidator.notNull(jsp.getPropertyValue(), "triggerCreator.triggerProperties{}." + jsp.getName() + ".propertyValue");
                     break;
                 }
             }
@@ -124,11 +125,11 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         }
 
         if (triggerCreator.getEndsOn() != null) {
-            Date startTime = new Date(triggerCreator.getStartsOn().getTime());
-            Date endTime = new Date(triggerCreator.getEndsOn().getTime());
+            Date startTime = triggerCreator.getStartsOn();
+            Date endTime = triggerCreator.getEndsOn();
 
             if (endTime.before(new Date()) ||
-                    startTime.getTime() == (endTime.getTime()) ||
+                    startTime.getTime() == endTime.getTime() ||
                     startTime.after(endTime)) {
                 throw new TriggerInvalidDatesException(startTime, endTime, new Date());
             }
@@ -200,7 +201,8 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         for (TriggerProperty jsp : trigger.getTriggerProperties()) {
             for (TriggerProperty jsdp : triggerDefinition.getTriggerProperties()) {
                 if (jsp.getName().equals(jsdp.getName())) {
-                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "triggerCreator.triggerProperties[]." + jsp.getName());
+                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "trigger.triggerProperties[]." + jsp.getName());
+                    ArgumentValidator.notNull(jsp.getPropertyType(), "trigger.triggerProperties{}." + jsp.getName());
                     break;
                 }
             }
