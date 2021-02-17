@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,6 +34,82 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
         trustKeys = new String[]{null, "", "!!trust key-1", "#1(TRUST KEY.,/trust key)9--99", "!$$ 1-2 KEY//", "trust 99key(....)<00>"};
         authenticationCodes = new String[]{null, "", "  authentication@#$%Code=t110.,<> code", "(!!)432j&^authenti)(&%cation-Code$#3t", "##<>/.CODE    ", "__J!#W(-8T    ", "authenticatioN&* 99code0t  ", "jwt987)_=;'''     .", "jwt CODE-123"};
         usernamePasswordCredentialsImpl = new UsernamePasswordCredentialsImpl("username", "password");
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void usernamePasswordCredentialsImplCloneConstructorNullTest() {
+        new UsernamePasswordCredentialsImpl(null);
+    }
+
+    @Test
+    public void usernamePasswordCredentialsImplCloneConstructorImplTest() {
+        UsernamePasswordCredentialsImpl first = new UsernamePasswordCredentialsImpl("aUsername", "aPassword");
+        first.setTrustKey("aTrustKey");
+        first.setAuthenticationCode("aAuthCode");
+
+        UsernamePasswordCredentialsImpl second = new UsernamePasswordCredentialsImpl(first);
+
+        assertNotEquals("UsernamePasswordCredentialImpl", first, second);
+        assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
+        assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
+        assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
+        assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
+
+    }
+
+    @Test
+    public void usernamePasswordCredentialsImplCloneConstructorAnotherTest() {
+        UsernamePasswordCredentials first = new UsernamePasswordCredentialsAnother("aUsername", "aPassword");
+        first.setTrustKey("aTrustKey");
+        first.setAuthenticationCode("aAuthCode");
+
+        UsernamePasswordCredentialsImpl second = new UsernamePasswordCredentialsImpl(first);
+
+        assertNotEquals("UsernamePasswordCredentialImpl", first, second);
+        assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
+        assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
+        assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
+        assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
+    }
+
+    @Test
+    public void usernamePasswordCredentialsImplParseNullTest() {
+        UsernamePasswordCredentialsImpl first = null;
+
+        UsernamePasswordCredentialsImpl second = UsernamePasswordCredentialsImpl.parse(null);
+
+        assertNull("Parsed UsernamePasswordCredentialsImpl", second);
+        assertEquals("UsernamePasswordCredentialImpl", first, second);
+    }
+
+    @Test
+    public void usernamePasswordCredentialsImplParseImplTest() {
+        UsernamePasswordCredentialsImpl first = new UsernamePasswordCredentialsImpl("aUsername", "aPassword");
+        first.setTrustKey("aTrustKey");
+        first.setAuthenticationCode("aAuthCode");
+
+        UsernamePasswordCredentialsImpl second = UsernamePasswordCredentialsImpl.parse(first);
+
+        assertEquals("UsernamePasswordCredentialImpl", first, second);
+        assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
+        assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
+        assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
+        assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
+    }
+
+    @Test
+    public void usernamePasswordCredentiaslImplParseAnotherTest() {
+        UsernamePasswordCredentials first = new UsernamePasswordCredentialsAnother("aUsername", "aPassword");
+        first.setTrustKey("aTrustKey");
+        first.setAuthenticationCode("aAuthCode");
+
+        UsernamePasswordCredentialsImpl second = UsernamePasswordCredentialsImpl.parse(first);
+
+        assertNotEquals("UsernamePasswordCredentialImpl", first, second);
+        assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
+        assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
+        assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
+        assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
     }
 
     @Test
@@ -82,5 +159,58 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
             usernamePasswordCredentialsImpl.setTrustKey(trustKey);
             assertEquals("Expected and actual values should be the same.", trustKey, usernamePasswordCredentialsImpl.getTrustKey());
         }
+    }
+}
+
+class UsernamePasswordCredentialsAnother implements UsernamePasswordCredentials {
+
+    private String username;
+    private String password;
+    private String trustKey;
+    private String authenticationCode;
+
+    public UsernamePasswordCredentialsAnother(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String getTrustKey() {
+        return trustKey;
+    }
+
+    @Override
+    public void setTrustKey(String trustKey) {
+        this.trustKey = trustKey;
+    }
+
+    @Override
+    public String getAuthenticationCode() {
+        return authenticationCode;
+    }
+
+    @Override
+    public void setAuthenticationCode(String authenticationCode) {
+        this.authenticationCode = authenticationCode;
     }
 }

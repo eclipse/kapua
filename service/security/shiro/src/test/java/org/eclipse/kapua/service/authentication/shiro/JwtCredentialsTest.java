@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,66 @@ public class JwtCredentialsTest extends Assert {
         newJwts = new String[]{null, "", "new_Jwt1122#$%", "   JWT)(..,,new", "NEW_jwt ./??)_)*", "<> 1111      ", "jwttt&^$$##Z||'", "%%%KEY NEW-JWT11"};
         newIdsToken = new String[]{null, "", "NEW tokenID0000@!!,,,#", "!@#00tokenID new.", " new id TOK --EN-44<>", "pA_ss0###woE**9()", "    tokenID new tokenID  12344*&^%"};
     }
+
+    @Test(expected = NullPointerException.class)
+    public void jwtCredentialsImplCloneConstructorNullTest() {
+        new JwtCredentialsImpl(null);
+    }
+
+    @Test
+    public void jwtCredentialsImplCloneConstructorImplTest() {
+        JwtCredentialsImpl first = new JwtCredentialsImpl("aJwt", "anIdToken");
+
+        JwtCredentialsImpl second = new JwtCredentialsImpl(first);
+
+        assertNotEquals("JwtCredentialImpl", first, second);
+        assertEquals("JwtCredential.jwt", first.getJwt(), second.getJwt());
+        assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
+    }
+
+    @Test
+    public void jwtCredentialsImplCloneConstructorAnotherTest() {
+        JwtCredentials first = new JwtCredentialsAnother("aJwt", "anIdToken");
+
+        JwtCredentialsImpl second = new JwtCredentialsImpl(first);
+
+        assertNotEquals("JwtCredentialImpl", first, second);
+        assertEquals("JwtCredential.jwt", first.getJwt(), second.getJwt());
+        assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
+    }
+
+    @Test
+    public void jwtCredentialsImplParseNullTest() {
+        JwtCredentialsImpl first = null;
+
+        JwtCredentialsImpl second = JwtCredentialsImpl.parse(null);
+
+        assertNull("Parsed JwtCredentialsImpl", second);
+        assertEquals("JwtCredentialImpl", first, second);
+    }
+
+    @Test
+    public void jwtCredentialsImplParseImplTest() {
+        JwtCredentialsImpl first = new JwtCredentialsImpl("aJwt", "anIdToken");
+
+        JwtCredentialsImpl second = JwtCredentialsImpl.parse(first);
+
+        assertEquals("JwtCredentialImpl", first, second);
+        assertEquals("JwtCredential.jwt", first.getJwt(), second.getJwt());
+        assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
+    }
+
+    @Test
+    public void jwtCredentialsImplParseAnotherTest() {
+        JwtCredentials first = new JwtCredentialsAnother("aJwt", "anIdToken");
+
+        JwtCredentialsImpl second = JwtCredentialsImpl.parse(first);
+
+        assertNotEquals("JwtCredentialImpl", first, second);
+        assertEquals("JwtCredential.jwt", first.getJwt(), second.getJwt());
+        assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
+    }
+
 
     @Test
     public void jwtCredentialsImplTest() {
@@ -62,5 +123,35 @@ public class JwtCredentialsTest extends Assert {
             jwtCredentialsImpl.setIdToken(newIdToken);
             assertEquals("Expected and actual values should be the same.", newIdToken, jwtCredentialsImpl.getIdToken());
         }
+    }
+}
+
+class JwtCredentialsAnother implements JwtCredentials {
+    private String jwt;
+    private String idToken;
+
+    public JwtCredentialsAnother(String jwt, String idToken) {
+        this.jwt = jwt;
+        this.idToken = idToken;
+    }
+
+    @Override
+    public String getJwt() {
+        return jwt;
+    }
+
+    @Override
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
+    }
+
+    @Override
+    public String getIdToken() {
+        return idToken;
+    }
+
+    @Override
+    public void setIdToken(String idToken) {
+        this.idToken = idToken;
     }
 }
