@@ -13,12 +13,70 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
 public class AccessTokenCredentialsImplTest extends Assert {
+
+    @Test(expected = NullPointerException.class)
+    public void accessTokenCredentialImplCloneConstructorNull() {
+        new AccessTokenCredentialsImpl((AccessTokenCredentials) null);
+    }
+
+    @Test
+    public void accessTokenCredentialImplCloneConstructorImpl() {
+        AccessTokenCredentialsImpl first = new AccessTokenCredentialsImpl("anAccessToken");
+
+        AccessTokenCredentialsImpl second = new AccessTokenCredentialsImpl(first);
+
+        assertNotEquals("AccessTokenCredentialImpl", first, second);
+        assertEquals("AccessTokenCredential.tokenIn", first.getTokenId(), second.getTokenId());
+    }
+
+    @Test
+    public void accessTokenCredentialImplParseImpl() {
+        AccessTokenCredentialsImpl first = null;
+
+        AccessTokenCredentialsImpl second = AccessTokenCredentialsImpl.parse(null);
+
+        assertEquals("AccessTokenCredentialImpl", first, second);
+    }
+
+    @Test
+    public void accessTokenCredentialImplParseNull() {
+        AccessTokenCredentialsImpl first = new AccessTokenCredentialsImpl("anAccessToken");
+
+        AccessTokenCredentialsImpl second = AccessTokenCredentialsImpl.parse(first);
+
+        assertEquals("AccessTokenCredentialImpl", first, second);
+        assertEquals("AccessTokenCredential.tokenIn", first.getTokenId(), second.getTokenId());
+    }
+
+    @Test
+    public void accessTokenCredentialImplParseAnother() {
+        AccessTokenCredentials first = new AccessTokenCredentials() {
+            private String tokenId = "anAccessToken";
+
+            @Override
+            public String getTokenId() {
+                return tokenId;
+            }
+
+            @Override
+            public void setTokenId(String tokenId) {
+                this.tokenId = tokenId;
+            }
+        };
+
+        AccessTokenCredentialsImpl second = AccessTokenCredentialsImpl.parse(first);
+
+        assertNotEquals("AccessTokenCredentialImpl", first, second);
+        assertEquals("AccessTokenCredential.tokenIn", first.getTokenId(), second.getTokenId());
+    }
+
 
     @Test
     public void accessTokenCredentialsImplTokenIdParameterTest() {
