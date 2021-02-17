@@ -39,6 +39,9 @@ public class SsoCallbackServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(SsoCallbackServlet.class);
 
     // OpenID Connect single sign-on parameters
+    private static final String OPENID_CODE_PARAM = "code";
+    private static final String OPENID_STATE_PARAM = "state";
+    private static final String OPENID_SESSION_STATE_PARAM = "session_state";
     private static final String OPENID_ACCESS_TOKEN_PARAM = "access_token";
     private static final String OPENID_ID_TOKEN_PARAM = "id_token";
     private static final String OPENID_ERROR_PARAM = "error";
@@ -55,7 +58,7 @@ public class SsoCallbackServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        final String authCode = req.getParameter("code");
+        final String authCode = req.getParameter(OPENID_CODE_PARAM);
 
         String homeUri = "";
         ConfigurationPrinter httpReqLogger =
@@ -66,7 +69,9 @@ public class SsoCallbackServlet extends HttpServlet {
                         .withTitle("SSO Servlet Log")
                         .openSection("SSO servlet request")
                         .addParameter("Request URL", req.getRequestURL())
-                        .addParameter("AuthCode", HIDDEN_SECRET)
+                        .addParameter(OPENID_CODE_PARAM, HIDDEN_SECRET)
+                        .addParameter(OPENID_STATE_PARAM, req.getParameter(OPENID_STATE_PARAM))
+                        .addParameter(OPENID_SESSION_STATE_PARAM, req.getParameter(OPENID_SESSION_STATE_PARAM))
                         .closeSection();
         try {
             homeUri = SsoHelper.getHomeUri();
