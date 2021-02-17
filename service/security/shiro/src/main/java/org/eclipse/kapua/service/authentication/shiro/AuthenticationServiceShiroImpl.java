@@ -164,8 +164,9 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             shiroAuthenticationToken = apiKeyCredentials;
         } else if (loginCredentials instanceof JwtCredentials) {
             JwtCredentialsImpl jwtCredentials = JwtCredentialsImpl.parse((JwtCredentials) loginCredentials);
+            openIDidToken = jwtCredentials.getIdToken();
 
-            if (Strings.isNullOrEmpty(jwtCredentials.getIdToken())) {
+            if (Strings.isNullOrEmpty(openIDidToken)) {
                 throw new KapuaAuthenticationException(KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS);
             }
 
