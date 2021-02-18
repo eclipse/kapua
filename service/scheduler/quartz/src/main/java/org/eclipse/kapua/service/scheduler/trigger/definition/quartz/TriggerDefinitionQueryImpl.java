@@ -27,6 +27,7 @@ public class TriggerDefinitionQueryImpl extends AbstractKapuaQuery implements Tr
      * Constructor
      *
      * @param scopeId The scope {@link KapuaId} of the {@link TriggerDefinitionQuery}
+     * @since 1.1.0
      */
     public TriggerDefinitionQueryImpl(KapuaId scopeId) {
         super(scopeId);

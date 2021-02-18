@@ -427,8 +427,8 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
                 if (!isPermissionErrorMessage(cause)) {
                     if (cause instanceof GwtKapuaException) {
                         GwtKapuaException gwtCause = (GwtKapuaException) cause;
-                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.SCHEDULE_DUPLICATE_NAME)) {
-                            triggerName.markInvalid(gwtCause.getMessage());
+                        if (gwtCause.getCode().equals(GwtKapuaErrorCode.DUPLICATE_NAME)) {
+                            triggerName.markInvalid("Another Job Trigger has the same name.");
                         } else if (gwtCause.getCode().equals(GwtKapuaErrorCode.RETRY_AND_CRON_BOTH_SELECTED)) {
                             cronExpression.markInvalid(gwtCause.getMessage());
                             retryInterval.markInvalid(gwtCause.getMessage());
@@ -441,6 +441,7 @@ public class JobScheduleAddDialog extends EntityAddEditDialog {
                             startsOn.markInvalid(gwtCause.getMessage());
                             startsOnTime.markInvalid(gwtCause.getMessage());
                             cronExpression.markInvalid(gwtCause.getMessage());
+                            retryInterval.markInvalid(gwtCause.getMessage());
                         }
                     }
                     FailureHandler.handleFormException(formPanel, cause);

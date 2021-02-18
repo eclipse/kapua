@@ -21,13 +21,13 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
- * {@link TriggerDefinition} definition.
+ * {@link TriggerDefinition} {@link KapuaNamedEntity} definition.
  *
  * @since 1.1.0
  */
 @XmlRootElement(name = "triggerDefinition")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = TriggerDefinitionXmlRegistry.class, factoryMethod = "newTriggerDefinition")
+@XmlType(factoryClass = TriggerDefinitionXmlRegistry.class, factoryMethod = "newEntity")
 public interface TriggerDefinition extends KapuaNamedEntity {
 
     String TYPE = "triggerDefinition";
@@ -76,6 +76,15 @@ public interface TriggerDefinition extends KapuaNamedEntity {
      * @since 1.1.0
      */
     List<TriggerProperty> getTriggerProperties();
+
+    /**
+     * Gets the {@link TriggerProperty} by the name.
+     *
+     * @param name The {@link TriggerProperty#getName()} to look for.
+     * @return The found {@link TriggerProperty} or {@code null}.
+     * @since 1.5.0
+     */
+    TriggerProperty getTriggerProperty(String name);
 
     /**
      * Sets the {@link TriggerProperty}s.

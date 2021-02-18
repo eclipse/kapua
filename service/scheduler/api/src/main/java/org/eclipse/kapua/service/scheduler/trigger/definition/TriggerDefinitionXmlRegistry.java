@@ -27,11 +27,11 @@ public class TriggerDefinitionXmlRegistry {
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final TriggerDefinitionFactory TRIGGER_DEFINITION_FACTORY = LOCATOR.getFactory(TriggerDefinitionFactory.class);
 
-    public TriggerDefinition newTriggerDefinition() {
+    public TriggerDefinition newEntity() {
         return TRIGGER_DEFINITION_FACTORY.newEntity(null);
     }
 
-    public TriggerDefinitionCreator newTriggerDefinitionCreator() {
+    public TriggerDefinitionCreator newCreator() {
         return TRIGGER_DEFINITION_FACTORY.newCreator(null);
     }
 

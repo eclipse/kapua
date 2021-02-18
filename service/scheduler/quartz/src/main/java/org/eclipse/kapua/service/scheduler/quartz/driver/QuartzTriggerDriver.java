@@ -21,6 +21,7 @@ import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.scheduler.quartz.driver.exception.CannotAddQuartzJobException;
 import org.eclipse.kapua.service.scheduler.quartz.driver.exception.CannotScheduleJobException;
+import org.eclipse.kapua.service.scheduler.quartz.driver.exception.CannotUnscheduleJobException;
 import org.eclipse.kapua.service.scheduler.quartz.driver.exception.QuartzTriggerDriverException;
 import org.eclipse.kapua.service.scheduler.quartz.driver.exception.SchedulerNotAvailableException;
 import org.eclipse.kapua.service.scheduler.quartz.driver.exception.TriggerNeverFiresException;
@@ -133,6 +134,16 @@ public class QuartzTriggerDriver {
                         .withMisfireHandlingInstructionFireAndProceed() // This option force a misfired trigger to be always fired
                         .inTimeZone(TimeZone.getTimeZone("UTC"))
         );
+    }
+
+    public static void deleteTrigger(@NotNull Trigger trigger) throws CannotUnscheduleJobException {
+        TriggerKey triggerKey = TriggerKey.triggerKey(trigger.getId().toCompactId(), trigger.getScopeId().toCompactId());
+
+        try {
+            getScheduler().unscheduleJob(triggerKey);
+        } catch (SchedulerException | SchedulerNotAvailableException se) {
+            throw new CannotUnscheduleJobException(se, triggerKey);
+        }
     }
 
     //

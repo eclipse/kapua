@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Entity manager factory for the scheduler module.
+ * `kapua-scheduler-internal` {@link EntityManagerFactory}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class SchedulerEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
@@ -34,6 +34,8 @@ public class SchedulerEntityManagerFactory extends AbstractEntityManagerFactory 
 
     /**
      * Constructs a new entity manager factory and configure it to use the scheduler persistence unit.
+     *
+     * @since 1.0.0
      */
     private SchedulerEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
@@ -42,9 +44,10 @@ public class SchedulerEntityManagerFactory extends AbstractEntityManagerFactory 
     }
 
     /**
-     * Return the {@link EntityManager} singleton instance
+     * Gets the {@link EntityManager} singleton instance
      *
-     * @return
+     * @return The {@link EntityManager} singleton instance
+     * @since 1.0.0
      */
     public static SchedulerEntityManagerFactory getInstance() {
         return instance;

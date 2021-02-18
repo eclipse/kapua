@@ -18,11 +18,11 @@ import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 
 /**
- * {@link TriggerService} exposes APIs to manage Trigger objects.<br>
- * It includes APIs to create, update, find, list and delete Triggers.<br>
- * Instances of the TriggerService can be acquired through the ServiceLocator object.
+ * {@link Trigger} {@link KapuaEntityService} definition.
  *
- * @since 1.0
+ * @see KapuaEntityService
+ * @see KapuaUpdatableEntityService
+ * @since 1.0.0
  */
 public interface TriggerService extends KapuaEntityService<Trigger, TriggerCreator>,
         KapuaUpdatableEntityService<Trigger> {

@@ -1,0 +1,39 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Jobs - Trigger Fired
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/jobs/{jobId}/triggers/{triggerId}/fired/_query:
+    post:
+      tags:
+        - Job - Trigger Fired
+      summary: Query the Jobs Trigger Fired
+      operationId: jobTriggerFiredQuery
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../job/job.yaml#/components/parameters/jobId'
+        - $ref: './jobTriggerFired.yaml#/components/parameters/triggerId'
+      requestBody:
+        $ref: '../openapi.yaml#/components/requestBodies/kapuaQuery'
+      responses:
+        200:
+          description: The list of the Job Trigger Fired available in the Scope
+          content:
+            application/json:
+              schema:
+                $ref: './jobTriggerFired.yaml#/components/schemas/firedTriggerListResult'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

@@ -57,7 +57,7 @@ public class TriggerDefinitionImpl extends AbstractKapuaNamedEntity implements T
     /**
      * Constructor.
      *
-     * @since 1.0.0
+     * @since 1.1.0
      */
     public TriggerDefinitionImpl() {
     }
@@ -66,7 +66,7 @@ public class TriggerDefinitionImpl extends AbstractKapuaNamedEntity implements T
      * Constructor.
      *
      * @param scopeId The scope {@link KapuaId} to set into the {@link TriggerDefinition}
-     * @since 1.0.0
+     * @since 1.1.0
      */
     public TriggerDefinitionImpl(KapuaId scopeId) {
         super(scopeId);
@@ -114,6 +114,11 @@ public class TriggerDefinitionImpl extends AbstractKapuaNamedEntity implements T
         }
 
         return Lists.newArrayList(triggerProperties);
+    }
+
+    @Override
+    public TriggerProperty getTriggerProperty(String name) {
+        return getTriggerProperties().stream().filter(tp -> tp.getName().equals(name)).findAny().orElse(null);
     }
 
     @Override

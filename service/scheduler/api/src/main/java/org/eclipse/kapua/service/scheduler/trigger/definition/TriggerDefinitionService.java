@@ -19,15 +19,14 @@ import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 
 /**
- * {@link TriggerDefinitionService} exposes APIs to manage {@link TriggerDefinition} objects.
- * <p>
- * It includes APIs to create, update, find, list and delete {@link TriggerDefinition}s.
+ * {@link TriggerDefinition} {@link KapuaEntityService} definition.
  *
+ * @see org.eclipse.kapua.service.KapuaEntityService
+ * @see org.eclipse.kapua.service.KapuaUpdatableEntityService
  * @since 1.1.0
  */
 public interface TriggerDefinitionService extends KapuaEntityService<TriggerDefinition, TriggerDefinitionCreator>,
         KapuaUpdatableEntityService<TriggerDefinition> {
-
 
     /**
      * Finds the {@link TriggerDefinition} by its {@link TriggerDefinition#getId()}

@@ -21,6 +21,7 @@
 
         <class>org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerImpl</class>
         <class>org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefinitionImpl</class>
+        <class>org.eclipse.kapua.service.scheduler.trigger.fired.quartz.FiredTriggerImpl</class>
         <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
 
         <!-- Base classes and External classes -->

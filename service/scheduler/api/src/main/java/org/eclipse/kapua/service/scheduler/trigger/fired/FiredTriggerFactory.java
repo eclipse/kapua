@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,17 +10,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua;
+package org.eclipse.kapua.service.scheduler.trigger.fired;
 
+import org.eclipse.kapua.model.KapuaEntityFactory;
 
-public class KapuaEndBeforeStartTimeException extends KapuaException{
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-
-    public KapuaEndBeforeStartTimeException() {
-        super(KapuaErrorCodes.END_BEFORE_START_TIME_ERROR);
-    }
+/**
+ * {@link FiredTrigger} {@link KapuaEntityFactory} definition.
+ *
+ * @see KapuaEntityFactory
+ * @since 1.5.0
+ */
+public interface FiredTriggerFactory extends KapuaEntityFactory<FiredTrigger, FiredTriggerCreator, FiredTriggerQuery, FiredTriggerListResult> {
 }

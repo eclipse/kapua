@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/changelog-scheduler-1.5.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="changelog-fired-trigger_1.5.0_createTable" author="eurotech">
+        <createTable tableName="schdl_trigger_fired">
+            <column name="scope_id" type="bigint(21) unsigned"/>
+            <column name="id" type="bigint(21) unsigned" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="created_on" type="timestamp(3)" defaultValueComputed="${now}"/>
+            <column name="created_by" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="trigger_id" type="bigint(21) unsigned">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fired_on" type="timestamp(3)" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="varchar(1024)"/>
+        </createTable>
+
+        <sql dbms="h2">ALTER TABLE schdl_trigger_fired ADD CHECK scope_id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE schdl_trigger_fired ADD CHECK id >= 0;</sql>
+        <sql dbms="h2">ALTER TABLE schdl_trigger_fired ADD CHECK created_by >= 0;</sql>
+
+        <createIndex tableName="schdl_trigger_fired" indexName="idx_schdl_trigger_fired_scopeId_triggerId_firedOn">
+            <column name="scope_id"/>
+            <column name="trigger_id"/>
+            <column name="fired_on"/>
+        </createIndex>
+
+        <addForeignKeyConstraint
+                baseTableName="schdl_trigger_fired"
+                baseColumnNames="trigger_id"
+                constraintName="fk-schdl_trigger_fired-triggerId"
+                referencedTableName="schdl_trigger"
+                referencedColumnNames="id"/>
+
+        <rollback>
+            <dropIndex tableName="schdl_trigger_fired" indexName="idx_schdl_trigger_fired_scopeId_triggerId_firedOn"/>
+            <dropForeignKeyConstraint baseTableName="schdl_trigger_fired" constraintName="fk-schdl_trigger_fired-triggerId"/>
+            <dropTable tableName="schdl_trigger_fired"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

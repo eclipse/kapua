@@ -26,13 +26,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * {@link Trigger} {@link org.eclipse.kapua.model.KapuaEntity} definition.
+ * {@link Trigger} {@link KapuaNamedEntity} definition.
  *
+ * @see org.eclipse.kapua.model.KapuaNamedEntity
  * @since 1.0.0
  */
 @XmlRootElement(name = "schedule")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = TriggerXmlRegistry.class, factoryMethod = "newTrigger")
+@XmlType(factoryClass = TriggerXmlRegistry.class, factoryMethod = "newEntity")
 public interface Trigger extends KapuaNamedEntity {
 
     String TYPE = "trigger";
@@ -150,6 +151,15 @@ public interface Trigger extends KapuaNamedEntity {
      * @since 1.0.0
      */
     List<TriggerProperty> getTriggerProperties();
+
+    /**
+     * Gets the {@link TriggerProperty} by the name.
+     *
+     * @param name The {@link TriggerProperty#getName()} to look for.
+     * @return The found {@link TriggerProperty} or {@code null}.
+     * @since 1.5.0
+     */
+    TriggerProperty getTriggerProperty(String name);
 
     /**
      * Sets the {@link List} of {@link TriggerProperty}es associated with this {@link Trigger}

@@ -38,24 +38,10 @@ public class KapuaDuplicateNameExceptionTest extends Assert {
         }
     }
 
-    @Test
-    public void kapuaDuplicateNameExceptionNoParametersTest() {
-        KapuaDuplicateNameException kapuaDuplicateNameException = new KapuaDuplicateNameException();
-
-        assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.SCHEDULE_DUPLICATE_NAME, kapuaDuplicateNameException.getCode());
-        assertNull("Null expected", kapuaDuplicateNameException.getCause());
-        assertEquals("Expected and actual values should be the same.", "An entity with the same value for field already exists here or in another job.", kapuaDuplicateNameException.getMessage());
-    }
-
     @Test(expected = KapuaDuplicateNameException.class)
     public void throwingExceptionWithParameterTest() throws KapuaDuplicateNameException {
         for (String duplicatedName : duplicatedNames) {
             throw new KapuaDuplicateNameException(duplicatedName);
         }
-    }
-
-    @Test(expected = KapuaDuplicateNameException.class)
-    public void throwingExceptionWithoutParameterTest() throws KapuaDuplicateNameException {
-        throw new KapuaDuplicateNameException();
     }
 }

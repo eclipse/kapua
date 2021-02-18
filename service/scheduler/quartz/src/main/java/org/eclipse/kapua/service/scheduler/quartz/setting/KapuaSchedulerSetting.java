@@ -17,14 +17,12 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 /**
  * Class that offers access to scheduler settings
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class KapuaSchedulerSetting extends AbstractKapuaSetting<KapuaSchedulerSettingKeys> {
 
     /**
      * Resource file from which source properties.
-     *
      */
     private static final String SCHEDULER_CONFIG_RESOURCE = "kapua-scheduler-setting.properties";
 
@@ -32,7 +30,6 @@ public class KapuaSchedulerSetting extends AbstractKapuaSetting<KapuaSchedulerSe
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link KapuaSchedulerSettingKeys#SCHEDULER_KEY} value.
-     *
      */
     private KapuaSchedulerSetting() {
         super(SCHEDULER_CONFIG_RESOURCE);

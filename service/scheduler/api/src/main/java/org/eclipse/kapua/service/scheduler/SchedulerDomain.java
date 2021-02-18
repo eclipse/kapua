@@ -22,15 +22,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * {@link TriggerService} domain.<br>
- * Used to describe the {@link TriggerService} {@link Domain} in the {@link TriggerService}.
+ * {@link TriggerService} {@link Domain}.
  *
+ * @see org.eclipse.kapua.model.domain.Domain
  * @since 1.0.0
  */
 public class SchedulerDomain extends AbstractDomain {
 
-    private String name = "scheduler";
-    private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write, Actions.execute));
+    private final String name = "scheduler";
+    private final Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write, Actions.execute));
 
     @Override
     public String getName() {

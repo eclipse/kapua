@@ -148,9 +148,13 @@ public class KapuaExceptionHandler {
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR)) {
             logger.error("internal service error", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.END_BEFORE_START_TIME_ERROR.name())) {
-            logger.error("End before start time error");
-            return new GwtKapuaException(GwtKapuaErrorCode.END_BEFORE_START_TIME_ERROR, throwable, throwable.getLocalizedMessage());
+        } else if (throwable instanceof KapuaException &&
+                (
+                        ((KapuaException) throwable).getCode().name().equals("TRIGGER_INVALID_DATES") ||
+                                ((KapuaException) throwable).getCode().name().equals("TRIGGER_INVALID_SCHEDULE")
+                )
+        ) {
+            return new GwtKapuaException(GwtKapuaErrorCode.TRIGGER_NEVER_FIRE, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             logger.warn("Child accounts limitation error", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.PARENT_LIMIT_EXCEEDED_IN_CONFIG, throwable, throwable.getLocalizedMessage());
@@ -169,9 +173,6 @@ public class KapuaExceptionHandler {
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.DUPLICATE_NAME.name())) {
             logger.warn("Entity already exist with the same name", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_NAME, throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.SCHEDULE_DUPLICATE_NAME.name())) {
-            logger.warn("Entity already exist with the same name", throwable);
-            return new GwtKapuaException(GwtKapuaErrorCode.SCHEDULE_DUPLICATE_NAME, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.DUPLICATE_EXTERNAL_ID.name())) {
             logger.warn("Entity already exist with the same externalId", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_EXTERNAL_ID, throwable, throwable.getLocalizedMessage());
@@ -218,12 +219,6 @@ public class KapuaExceptionHandler {
             return new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, throwable, ((KapuaMaxNumberOfItemsReachedException) throwable).getArgValue());
         } else if (throwable instanceof DeviceManagementException) {
             return new GwtKapuaException(GwtKapuaErrorCode.valueOf(((DeviceManagementException) throwable).getCode().name()), throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode() == (KapuaErrorCodes.SAME_START_AND_DATE)) {
-            return new GwtKapuaException(GwtKapuaErrorCode.SAME_START_AND_DATE, throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode() == (KapuaErrorCodes.RETRY_AND_CRON_BOTH_SELECTED)) {
-            return new GwtKapuaException(GwtKapuaErrorCode.RETRY_AND_CRON_BOTH_SELECTED, throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode() == (KapuaErrorCodes.TRIGGER_NEVER_FIRE)) {
-            return new GwtKapuaException(GwtKapuaErrorCode.TRIGGER_NEVER_FIRE, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED.name())) {
             return new GwtKapuaException(GwtKapuaErrorCode.PERMISSION_DELETE_NOT_ALLOWED, throwable, throwable.getLocalizedMessage());
         } else {

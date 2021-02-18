@@ -145,7 +145,7 @@ public class TestBase extends Assert {
     public void verifyException(Exception ex)
             throws Exception {
 
-        boolean exceptionExpected = stepData.contains("ExceptionExpected") ? (boolean) stepData.get("ExceptionExpected") : false;
+        boolean exceptionExpected = stepData.contains("ExceptionExpected") && (boolean) stepData.get("ExceptionExpected");
         String exceptionName = stepData.contains("ExceptionName") ? ((String) stepData.get("ExceptionName")).trim() : "";
         String exceptionMessage = stepData.contains("ExceptionMessage") ? ((String) stepData.get("ExceptionMessage")).trim() : "";
 

@@ -13,9 +13,7 @@
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
 import org.eclipse.kapua.KapuaDuplicateNameException;
-import org.eclipse.kapua.KapuaEndBeforeStartTimeException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -23,10 +21,12 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.SchedulerDomains;
+import org.eclipse.kapua.service.scheduler.exception.TriggerInvalidDatesException;
+import org.eclipse.kapua.service.scheduler.exception.TriggerInvalidSchedulingException;
 import org.eclipse.kapua.service.scheduler.quartz.SchedulerEntityManagerFactory;
 import org.eclipse.kapua.service.scheduler.quartz.driver.QuartzTriggerDriver;
 import org.eclipse.kapua.service.scheduler.quartz.driver.exception.TriggerNeverFiresException;
@@ -40,17 +40,12 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SchedulerFactory;
-import org.quartz.TriggerKey;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -75,6 +70,7 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
     private static TriggerDefinition intervalJobTriggerDefinition;
     private static TriggerDefinition cronJobTriggerDefinition;
+
     /**
      * Constructor.
      *
@@ -112,7 +108,8 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         for (TriggerProperty jsp : triggerCreator.getTriggerProperties()) {
             for (TriggerProperty jsdp : triggerDefinition.getTriggerProperties()) {
                 if (jsp.getName().equals(jsdp.getName())) {
-                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "triggerCreator.triggerProperties{}." + jsp.getName());
+                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "triggerCreator.triggerProperties{}." + jsp.getName() + ".propertyType");
+                    ArgumentValidator.notNull(jsp.getPropertyValue(), "triggerCreator.triggerProperties{}." + jsp.getName() + ".propertyValue");
                     break;
                 }
             }
@@ -124,18 +121,17 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         query.setPredicate(query.attributePredicate(TriggerAttributes.NAME, triggerCreator.getName()));
 
         if (count(query) > 0) {
-            throw new KapuaDuplicateNameException();
-        }
-
-        if (triggerCreator.getStartsOn().equals(triggerCreator.getEndsOn()) && triggerCreator.getStartsOn().getTime() == (triggerCreator.getEndsOn().getTime())) {
-            throw new KapuaException(KapuaErrorCodes.SAME_START_AND_DATE);
+            throw new KapuaDuplicateNameException(triggerCreator.getName());
         }
 
         if (triggerCreator.getEndsOn() != null) {
-            Date startTime = new Date(triggerCreator.getStartsOn().getTime());
-            Date endTime = new Date(triggerCreator.getEndsOn().getTime());
-            if (startTime.after(endTime)) {
-                throw new KapuaEndBeforeStartTimeException();
+            Date startTime = triggerCreator.getStartsOn();
+            Date endTime = triggerCreator.getEndsOn();
+
+            if (endTime.before(new Date()) ||
+                    startTime.getTime() == endTime.getTime() ||
+                    startTime.after(endTime)) {
+                throw new TriggerInvalidDatesException(startTime, endTime, new Date());
             }
         }
 
@@ -152,11 +148,26 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
                 } else if (getCronJobTriggerDefinition().getId().equals(triggerCreator.getTriggerDefinitionId())) {
                     QuartzTriggerDriver.createCronJobTrigger(trigger);
                 }
+                //else {
+                // Is a DeviceConnect trigger
+                //}
 
                 return trigger;
             });
         } catch (TriggerNeverFiresException tnfe) {
-            throw new KapuaException(KapuaErrorCodes.TRIGGER_NEVER_FIRE, tnfe);
+            TriggerProperty schedulingTriggerProperty = null;
+            if (getIntervalJobTriggerDefinition().getId().equals(triggerCreator.getTriggerDefinitionId())) {
+                schedulingTriggerProperty = triggerCreator.getTriggerProperty("interval");
+            } else if (getCronJobTriggerDefinition().getId().equals(triggerCreator.getTriggerDefinitionId())) {
+                schedulingTriggerProperty = triggerCreator.getTriggerProperty("cronExpression");
+            }
+
+            throw new TriggerInvalidSchedulingException(
+                    tnfe,
+                    triggerCreator.getStartsOn(),
+                    triggerCreator.getEndsOn(),
+                    triggerCreator.getTriggerDefinitionId(),
+                    schedulingTriggerProperty != null ? schedulingTriggerProperty.getPropertyValue() : null);
         }
     }
 
@@ -181,12 +192,29 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         adaptTrigger(trigger);
 
         //
+        // Check trigger definition
+        TriggerDefinition triggerDefinition = triggerDefinitionService.find(trigger.getTriggerDefinitionId());
+        if (triggerDefinition == null) {
+            throw new KapuaEntityNotFoundException(TriggerDefinition.TYPE, trigger.getTriggerDefinitionId());
+        }
+
+        for (TriggerProperty jsp : trigger.getTriggerProperties()) {
+            for (TriggerProperty jsdp : triggerDefinition.getTriggerProperties()) {
+                if (jsp.getName().equals(jsdp.getName())) {
+                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "trigger.triggerProperties[]." + jsp.getName());
+                    ArgumentValidator.notNull(jsp.getPropertyType(), "trigger.triggerProperties{}." + jsp.getName());
+                    break;
+                }
+            }
+        }
+
+        //
         // Check duplicate name
         TriggerQuery query = new TriggerQueryImpl(trigger.getScopeId());
         query.setPredicate(
                 query.andPredicate(
                         query.attributePredicate(TriggerAttributes.NAME, trigger.getName()),
-                        query.attributePredicate(TriggerAttributes.ENTITY_ID, trigger.getId(), Operator.NOT_EQUAL)
+                        query.attributePredicate(TriggerAttributes.ENTITY_ID, trigger.getId(), AttributePredicate.Operator.NOT_EQUAL)
                 )
         );
 
@@ -194,9 +222,53 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
             throw new KapuaDuplicateNameException(trigger.getName());
         }
 
+        if (trigger.getEndsOn() != null) {
+            Date startTime = new Date(trigger.getStartsOn().getTime());
+            Date endTime = new Date(trigger.getEndsOn().getTime());
+
+            if (endTime.before(new Date()) ||
+                    startTime.getTime() == (endTime.getTime()) ||
+                    startTime.after(endTime)) {
+                throw new TriggerInvalidDatesException(startTime, endTime, new Date());
+            }
+        }
+
         //
         // Do update
-        return entityManagerSession.doTransactedAction(em -> TriggerDAO.update(em, trigger));
+        try {
+            return entityManagerSession.doTransactedAction(em -> {
+                Trigger updatedTrigger = TriggerDAO.update(em, trigger);
+
+                // Quartz Job definition and creation
+                if (getIntervalJobTriggerDefinition().getId().equals(updatedTrigger.getTriggerDefinitionId())) {
+                    QuartzTriggerDriver.deleteTrigger(updatedTrigger);
+                    QuartzTriggerDriver.createIntervalJobTrigger(trigger);
+                } else if (getCronJobTriggerDefinition().getId().equals(updatedTrigger.getTriggerDefinitionId())) {
+                    QuartzTriggerDriver.deleteTrigger(updatedTrigger);
+                    QuartzTriggerDriver.createCronJobTrigger(trigger);
+                }
+                //else {
+                // Is a DeviceConnect trigger
+                //}
+
+                return updatedTrigger;
+            });
+        } catch (TriggerNeverFiresException tnfe) {
+            TriggerProperty schedulingTriggerProperty = null;
+            if (getIntervalJobTriggerDefinition().getId().equals(trigger.getTriggerDefinitionId())) {
+                schedulingTriggerProperty = trigger.getTriggerProperty("interval");
+            } else if (getCronJobTriggerDefinition().getId().equals(trigger.getTriggerDefinitionId())) {
+                schedulingTriggerProperty = trigger.getTriggerProperty("cronExpression");
+            }
+
+            throw new TriggerInvalidSchedulingException(
+                    tnfe,
+                    trigger.getStartsOn(),
+                    trigger.getEndsOn(),
+                    trigger.getTriggerDefinitionId(),
+                    schedulingTriggerProperty != null ? schedulingTriggerProperty.getPropertyValue() : null
+            );
+        }
     }
 
     @Override
@@ -221,17 +293,8 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         entityManagerSession.doTransactedAction(em -> {
             Trigger trigger = TriggerDAO.delete(em, scopeId, triggerId);
 
-            try {
-                SchedulerFactory sf = new StdSchedulerFactory();
-                Scheduler scheduler = sf.getScheduler();
+            QuartzTriggerDriver.deleteTrigger(trigger);
 
-                TriggerKey triggerKey = TriggerKey.triggerKey(triggerId.toCompactId(), scopeId.toCompactId());
-
-                scheduler.unscheduleJob(triggerKey);
-
-            } catch (SchedulerException se) {
-                throw new RuntimeException(se);
-            }
             return trigger;
         });
     }
@@ -293,6 +356,14 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
     //
     // Private methods
     //
+
+    /**
+     * Gets the {@link TriggerDefinition} named 'Interval Job'
+     *
+     * @return he {@link TriggerDefinition} named 'Interval Job'
+     * @throws KapuaException In case is not found.
+     * @since 1.1.0
+     */
     private TriggerDefinition getIntervalJobTriggerDefinition() throws KapuaException {
         if (intervalJobTriggerDefinition == null) {
             intervalJobTriggerDefinition = getTriggerDefinition("Interval Job");
@@ -301,15 +372,29 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         return intervalJobTriggerDefinition;
     }
 
+    /**
+     * Gets the {@link TriggerDefinition} named 'Cron Job'
+     *
+     * @return he {@link TriggerDefinition} named 'Cron Job'
+     * @throws KapuaException In case is not found.
+     * @since 1.1.0
+     */
     private TriggerDefinition getCronJobTriggerDefinition() throws KapuaException {
         if (cronJobTriggerDefinition == null) {
             cronJobTriggerDefinition = getTriggerDefinition("Cron Job");
-
         }
 
         return cronJobTriggerDefinition;
     }
 
+    /**
+     * Gets the {@link TriggerDefinition} by the given name.
+     *
+     * @param triggerDefinitionName The {@link TriggerDefinition#getName()} to look for.
+     * @return The {@link TriggerDefinition} by the given name.
+     * @throws KapuaException In case nothing is found.
+     * @since 1.1.0
+     */
     private synchronized TriggerDefinition getTriggerDefinition(String triggerDefinitionName) throws KapuaException {
         TriggerDefinition triggerDefinition = triggerDefinitionService.findByName(triggerDefinitionName);
 
@@ -320,6 +405,14 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         return triggerDefinition;
     }
 
+    /**
+     * Adapts {@link TriggerCreator#getRetryInterval()} and {@link TriggerCreator#getCronScheduling()}  to the new model
+     * which make use of {@link TriggerDefinition}s
+     *
+     * @param triggerCreator The {@link TriggerCreator} to adapt.
+     * @throws KapuaException In case that {@link TriggerDefinition} is not found.
+     * @since 1.1.0
+     */
     private void adaptTriggerCreator(TriggerCreator triggerCreator) throws KapuaException {
         if (triggerCreator.getRetryInterval() != null) {
             triggerCreator.setTriggerDefinitionId(getIntervalJobTriggerDefinition().getId());
@@ -330,6 +423,14 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         }
     }
 
+    /**
+     * Adapts {@link Trigger#getRetryInterval()} and {@link Trigger#getCronScheduling()} to the new model
+     * which make use of {@link TriggerDefinition}s
+     *
+     * @param trigger The {@link Trigger} to adapt.
+     * @throws KapuaException In case that {@link TriggerDefinition} is not found.
+     * @since 1.1.0
+     */
     private void adaptTrigger(Trigger trigger) throws KapuaException {
         boolean converted = false;
         if (trigger.getRetryInterval() != null) {

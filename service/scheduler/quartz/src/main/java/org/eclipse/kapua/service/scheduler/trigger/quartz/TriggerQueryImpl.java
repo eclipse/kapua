@@ -17,14 +17,16 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 
 /**
- * User roles factory service implementation.
+ * {@link TriggerQuery} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class TriggerQueryImpl extends AbstractKapuaQuery implements TriggerQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     private TriggerQueryImpl() {
         super();
@@ -33,7 +35,8 @@ public class TriggerQueryImpl extends AbstractKapuaQuery implements TriggerQuery
     /**
      * Constructor
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}.
+     * @since 1.0.0
      */
     public TriggerQueryImpl(KapuaId scopeId) {
         this();

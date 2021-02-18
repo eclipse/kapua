@@ -41,6 +41,7 @@ public class TriggerNeverFiresException extends QuartzTriggerDriverException {
      * Gets the {@link Trigger} that'll never fire.
      *
      * @return The {@link Trigger} that'll never fire.
+     * @since 1.1.0
      */
     public Trigger getTrigger() {
         return trigger;

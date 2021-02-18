@@ -21,13 +21,13 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
- * {@link TriggerDefinitionCreator} {@link org.eclipse.kapua.model.KapuaEntityCreator} definition
+ * {@link TriggerDefinition} {@link org.eclipse.kapua.model.KapuaEntityCreator} definition.
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "triggerDefinitionCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = TriggerDefinitionXmlRegistry.class, factoryMethod = "newTriggerDefinitionCreator")
+@XmlType(factoryClass = TriggerDefinitionXmlRegistry.class, factoryMethod = "newCreator")
 public interface TriggerDefinitionCreator extends KapuaNamedEntityCreator<TriggerDefinition> {
 
     /**
@@ -69,6 +69,15 @@ public interface TriggerDefinitionCreator extends KapuaNamedEntityCreator<Trigge
      * @since 1.1.0
      */
     List<TriggerProperty> getTriggerProperties();
+
+    /**
+     * Gets the {@link TriggerProperty} by the name.
+     *
+     * @param name The {@link TriggerProperty#getName()} to look for.
+     * @return The found {@link TriggerProperty} or {@code null}.
+     * @since 1.5.0
+     */
+    TriggerProperty getTriggerProperty(String name);
 
     /**
      * Sets the {@link TriggerProperty}s.

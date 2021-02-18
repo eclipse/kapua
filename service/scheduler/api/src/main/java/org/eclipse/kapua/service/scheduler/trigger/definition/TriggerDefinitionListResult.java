@@ -20,8 +20,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link TriggerDefinitionListResult} definition.
+ * {@link TriggerDefinition} {@link KapuaListResult} definition.
  *
+ * @see KapuaListResult
  * @since 1.1.0
  */
 @XmlRootElement(name = "triggerDefinitionListResult")

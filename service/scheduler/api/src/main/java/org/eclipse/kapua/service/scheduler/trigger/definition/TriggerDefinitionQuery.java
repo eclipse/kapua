@@ -20,8 +20,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link TriggerDefinitionQuery} definition.
+ * {@link TriggerDefinition} {@link KapuaQuery} definition.
  *
+ * @see org.eclipse.kapua.model.query.KapuaQuery
  * @since 1.1.0
  */
 @XmlRootElement(name = "query")

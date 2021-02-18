@@ -16,7 +16,6 @@ package org.eclipse.kapua;
  * KapuaDuplicateNameException is thrown when an operation cannot be completed because an unique name constraint has been violated.
  *
  * @since 1.0
- *
  */
 public class KapuaDuplicateNameException extends KapuaException {
 
@@ -29,9 +28,5 @@ public class KapuaDuplicateNameException extends KapuaException {
      */
     public KapuaDuplicateNameException(String duplicatedName) {
         super(KapuaErrorCodes.DUPLICATE_NAME, duplicatedName);
-    }
-
-    public KapuaDuplicateNameException() {
-        super(KapuaErrorCodes.SCHEDULE_DUPLICATE_NAME);
     }
 }

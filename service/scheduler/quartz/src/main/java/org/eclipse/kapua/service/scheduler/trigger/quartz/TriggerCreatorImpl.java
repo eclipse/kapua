@@ -109,6 +109,11 @@ public class TriggerCreatorImpl extends AbstractKapuaNamedEntityCreator<Trigger>
     }
 
     @Override
+    public TriggerProperty getTriggerProperty(String name) {
+        return getTriggerProperties().stream().filter(tp -> tp.getName().equals(name)).findAny().orElse(null);
+    }
+
+    @Override
     public void setTriggerProperties(List<TriggerProperty> triggerProperties) {
         this.triggerProperties = triggerProperties;
     }
