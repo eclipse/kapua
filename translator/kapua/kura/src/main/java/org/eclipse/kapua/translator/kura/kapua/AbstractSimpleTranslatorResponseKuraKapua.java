@@ -13,6 +13,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -32,6 +35,9 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
+import javax.validation.constraints.NotNull;
+import java.io.UnsupportedEncodingException;
+
 /**
  * {@link org.eclipse.kapua.translator.Translator} {@code abstract} implementation for {@link KuraResponseMessage} to {@link KapuaResponseMessage}
  *
@@ -42,6 +48,10 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
 
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
     private static final boolean SHOW_STACKTRACE = DeviceManagementSetting.getInstance().getBoolean(DeviceManagementSettingKey.SHOW_STACKTRACE, false);
+
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -111,23 +121,39 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
      *
      * @param bytesToRead The {@link KapuaResponsePayload#getBody()}
      * @param returnAs    The {@link Class} to read as.
-     * @param <T>         The type of the retrun.
+     * @param <T>         The type of the return.
      * @return Returns the given {@code byte[]} as the given {@link Class}
-     * @throws TranslatorException If the {@code byte[]} is not uspported or the {@code byte[]} cannot be read as the given {@link Class}
+     * @throws TranslatorException If the {@code byte[]} is not unsupported or the {@code byte[]} cannot be read as the given {@link Class}
      * @since 1.5.0
      */
-    protected <T> T readXmlBodyAs(byte[] bytesToRead, Class<T> returnAs) throws TranslatorException {
-        String body;
+    protected <T> T readXmlBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws TranslatorException {
+        String bodyString;
         try {
-            body = new String(bytesToRead, CHAR_ENCODING);
+            bodyString = new String(bytesToRead, CHAR_ENCODING);
         } catch (Exception e) {
             throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) bytesToRead);
         }
 
         try {
-            return XmlUtil.unmarshal(body, returnAs);
+            return XmlUtil.unmarshal(bodyString, returnAs);
         } catch (Exception e) {
-            throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, body);
+            throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, bodyString);
         }
+    }
+
+    /**
+     * Reads the given {@code byte[]} as the requested {@code returnAs} parameter.
+     *
+     * @param bytesToRead The {@link KapuaResponsePayload#getBody()}
+     * @param returnAs    The {@link Class} to read as.
+     * @param <T>         The type of the return.
+     * @return Returns the given {@code byte[]} as the given {@link Class}
+     * @throws UnsupportedEncodingException If the {@code byte[]} is not encoded to the configured value.
+     * @throws JsonProcessingException      If the {@link String} is not formatted correctly.
+     * @since 1.5.0
+     */
+    protected <T> T readJsonBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws UnsupportedEncodingException, JsonProcessingException {
+        String bodyString = new String(bytesToRead, CHAR_ENCODING);
+        return JSON_MAPPER.readValue(bodyString, returnAs);
     }
 }
