@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.KapuaException;
@@ -30,10 +29,11 @@ import org.eclipse.kapua.service.device.management.message.response.KapuaRespons
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
+import org.eclipse.kapua.translator.exception.InvalidBodyContentException;
+import org.eclipse.kapua.translator.exception.InvalidBodyEncodingException;
+import org.eclipse.kapua.translator.exception.InvalidBodyException;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 
 import javax.validation.constraints.NotNull;
 import java.io.UnsupportedEncodingException;
@@ -50,8 +50,9 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
     private static final boolean SHOW_STACKTRACE = DeviceManagementSetting.getInstance().getBoolean(DeviceManagementSettingKey.SHOW_STACKTRACE, false);
 
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -118,26 +119,24 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
 
     /**
      * Reads the given {@code byte[]} as the requested {@code returnAs} parameter.
+     * <p>
+     * The encoding is fetched from {@link DeviceManagementSettingKey#CHAR_ENCODING}.
      *
      * @param bytesToRead The {@link KapuaResponsePayload#getBody()}
      * @param returnAs    The {@link Class} to read as.
      * @param <T>         The type of the return.
      * @return Returns the given {@code byte[]} as the given {@link Class}
-     * @throws TranslatorException If the {@code byte[]} is not unsupported or the {@code byte[]} cannot be read as the given {@link Class}
+     * @throws InvalidBodyEncodingException See {@link #readBodyAsString(byte[], String)}
+     * @throws InvalidBodyContentException  If the given {@code byte[]} is not representing the given {@code returnAs} parameter or is not correctly formatted.
      * @since 1.5.0
      */
-    protected <T> T readXmlBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws TranslatorException {
-        String bodyString;
-        try {
-            bodyString = new String(bytesToRead, CHAR_ENCODING);
-        } catch (Exception e) {
-            throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, (Object) bytesToRead);
-        }
+    protected <T> T readXmlBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws InvalidBodyException {
+        String bodyString = readBodyAsString(bytesToRead, CHAR_ENCODING);
 
         try {
             return XmlUtil.unmarshal(bodyString, returnAs);
         } catch (Exception e) {
-            throw new TranslatorException(TranslatorErrorCodes.INVALID_PAYLOAD, e, bodyString);
+            throw new InvalidBodyContentException(e, returnAs, bytesToRead);
         }
     }
 
@@ -148,12 +147,46 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
      * @param returnAs    The {@link Class} to read as.
      * @param <T>         The type of the return.
      * @return Returns the given {@code byte[]} as the given {@link Class}
-     * @throws UnsupportedEncodingException If the {@code byte[]} is not encoded to the configured value.
-     * @throws JsonProcessingException      If the {@link String} is not formatted correctly.
+     * @throws InvalidBodyEncodingException See {@link #readBodyAsString(byte[], String)}
+     * @throws InvalidBodyContentException  If the given {@code byte[]} is not representing the given {@code returnAs} parameter or is not correctly formatted.
      * @since 1.5.0
      */
-    protected <T> T readJsonBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws UnsupportedEncodingException, JsonProcessingException {
-        String bodyString = new String(bytesToRead, CHAR_ENCODING);
-        return JSON_MAPPER.readValue(bodyString, returnAs);
+    protected <T> T readJsonBodyAs(@NotNull byte[] bytesToRead, @NotNull Class<T> returnAs) throws InvalidBodyException {
+        String bodyString = readBodyAsString(bytesToRead, CHAR_ENCODING);
+
+        try {
+            return JSON_MAPPER.readValue(bodyString, returnAs);
+        } catch (Exception e) {
+            throw new InvalidBodyContentException(e, returnAs, bytesToRead);
+        }
+    }
+
+    /**
+     * Reads the given {@code byte[]} with the given encoding into a {@link String}.
+     *
+     * @param body     The {@code byte[]} to read.
+     * @param encoding The target encoding
+     * @return The {@link String} representing the {@code byte[]}.
+     * @throws InvalidBodyEncodingException if the given {@code byte[]} cannot be read using the given encoding.
+     * @see String#String(byte[], String)
+     */
+    protected String readBodyAsString(@NotNull byte[] body, @NotNull String encoding) throws InvalidBodyEncodingException {
+        try {
+            return new String(body, encoding);
+        } catch (UnsupportedEncodingException e) {
+            throw new InvalidBodyEncodingException(e, encoding, body);
+        }
+    }
+
+    /**
+     * Returns the {@link ObjectMapper} instance.
+     * <p>
+     * This can be also used to change the {@link ObjectMapper}'s configuration.
+     *
+     * @return The {@link ObjectMapper} instance.
+     * @since 1.5.0
+     */
+    protected ObjectMapper getJsonMapper() {
+        return JSON_MAPPER;
     }
 }
