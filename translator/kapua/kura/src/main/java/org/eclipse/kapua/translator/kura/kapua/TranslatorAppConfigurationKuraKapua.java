@@ -37,8 +37,6 @@ import org.eclipse.kapua.service.device.management.configuration.message.interna
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponsePayload;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 
 import java.io.StringWriter;
 import java.util.HashMap;
@@ -89,33 +87,29 @@ public class TranslatorAppConfigurationKuraKapua extends AbstractSimpleTranslato
     }
 
     private void translateBody(ConfigurationResponsePayload configurationResponsePayload, KuraDeviceConfiguration kuraDeviceConfiguration)
-            throws TranslatorException {
-        try {
-            DeviceConfigurationImpl deviceConfiguration = new DeviceConfigurationImpl();
-            for (KuraDeviceComponentConfiguration kuraDeviceCompConf : kuraDeviceConfiguration.getConfigurations()) {
+            throws Exception {
+        DeviceConfigurationImpl deviceConfiguration = new DeviceConfigurationImpl();
+        for (KuraDeviceComponentConfiguration kuraDeviceCompConf : kuraDeviceConfiguration.getConfigurations()) {
 
-                String componentId = kuraDeviceCompConf.getComponentId();
-                DeviceComponentConfigurationImpl deviceComponentConfiguration = new DeviceComponentConfigurationImpl(componentId);
-                deviceComponentConfiguration.setProperties(translate(kuraDeviceCompConf.getProperties()));
+            String componentId = kuraDeviceCompConf.getComponentId();
+            DeviceComponentConfigurationImpl deviceComponentConfiguration = new DeviceComponentConfigurationImpl(componentId);
+            deviceComponentConfiguration.setProperties(translate(kuraDeviceCompConf.getProperties()));
 
-                // Translate also definitions when they are available
-                if (kuraDeviceCompConf.getDefinition() != null) {
-                    deviceComponentConfiguration.setDefinition(translate(kuraDeviceCompConf.getDefinition()));
-                }
-
-                // Add to kapua configuration
-                deviceConfiguration.getComponentConfigurations().add(deviceComponentConfiguration);
+            // Translate also definitions when they are available
+            if (kuraDeviceCompConf.getDefinition() != null) {
+                deviceComponentConfiguration.setDefinition(translate(kuraDeviceCompConf.getDefinition()));
             }
 
-            StringWriter sw = new StringWriter();
-
-            XmlUtil.marshal(deviceConfiguration, sw);
-            byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
-
-            configurationResponsePayload.setBody(requestBody);
-        } catch (Exception e) {
-            throw new TranslatorException(TranslatorErrorCodes.INVALID_BODY, e, kuraDeviceConfiguration);
+            // Add to kapua configuration
+            deviceConfiguration.getComponentConfigurations().add(deviceComponentConfiguration);
         }
+
+        StringWriter sw = new StringWriter();
+
+        XmlUtil.marshal(deviceConfiguration, sw);
+        byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
+
+        configurationResponsePayload.setBody(requestBody);
     }
 
     private KapuaTocd translate(KapuaTocd kuraDefinition) {

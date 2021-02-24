@@ -30,8 +30,6 @@ import org.eclipse.kapua.service.device.management.snapshot.message.internal.Sna
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponsePayload;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 
 import java.io.StringWriter;
 import java.util.List;
@@ -83,29 +81,26 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         }
     }
 
-    private void translateBody(SnapshotResponsePayload snapshotResponsePayload, KuraSnapshotIds kuraSnapshotIdResult) throws TranslatorException {
-        try {
-            DeviceSnapshotFactory deviceSnapshotFactory = LOCATOR.getFactory(DeviceSnapshotFactory.class);
+    private void translateBody(SnapshotResponsePayload snapshotResponsePayload, KuraSnapshotIds kuraSnapshotIdResult) throws Exception {
+        DeviceSnapshotFactory deviceSnapshotFactory = LOCATOR.getFactory(DeviceSnapshotFactory.class);
 
-            if (kuraSnapshotIdResult != null) {
-                DeviceSnapshots deviceSnapshots = deviceSnapshotFactory.newDeviceSnapshots();
+        if (kuraSnapshotIdResult != null) {
+            DeviceSnapshots deviceSnapshots = deviceSnapshotFactory.newDeviceSnapshots();
 
-                List<Long> snapshotIds = kuraSnapshotIdResult.getSnapshotIds();
-                for (Long snapshotId : snapshotIds) {
-                    DeviceSnapshot snapshot = deviceSnapshotFactory.newDeviceSnapshot();
-                    snapshot.setId(Long.toString(snapshotId));
-                    snapshot.setTimestamp(snapshotId);
-                    deviceSnapshots.getSnapshots().add(snapshot);
-                }
-
-                StringWriter sw = new StringWriter();
-                XmlUtil.marshal(deviceSnapshots, sw);
-                byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
-
-                snapshotResponsePayload.setBody(requestBody);
+            List<Long> snapshotIds = kuraSnapshotIdResult.getSnapshotIds();
+            for (Long snapshotId : snapshotIds) {
+                DeviceSnapshot snapshot = deviceSnapshotFactory.newDeviceSnapshot();
+                snapshot.setId(Long.toString(snapshotId));
+                snapshot.setTimestamp(snapshotId);
+                deviceSnapshots.getSnapshots().add(snapshot);
             }
-        } catch (Exception e) {
-            throw new TranslatorException(TranslatorErrorCodes.INVALID_BODY, e, kuraSnapshotIdResult); // null for now
+
+            StringWriter sw = new StringWriter();
+            XmlUtil.marshal(deviceSnapshots, sw);
+            byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
+
+            snapshotResponsePayload.setBody(requestBody);
         }
+
     }
 }

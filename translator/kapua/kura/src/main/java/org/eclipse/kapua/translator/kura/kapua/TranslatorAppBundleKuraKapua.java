@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.app.BundleMetrics;
@@ -31,8 +30,6 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -84,29 +81,25 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
         }
     }
 
-    private void translate(BundleResponsePayload bundleResponsePayload, KuraBundles kuraBundles) throws KapuaException {
-        try {
-            DeviceBundleFactory deviceBundleFactory = LOCATOR.getFactory(DeviceBundleFactory.class);
+    private void translate(BundleResponsePayload bundleResponsePayload, KuraBundles kuraBundles) throws Exception {
+        DeviceBundleFactory deviceBundleFactory = LOCATOR.getFactory(DeviceBundleFactory.class);
 
-            DeviceBundles deviceBundles = deviceBundleFactory.newBundleListResult();
-            List<DeviceBundle> deviceBundlesList = deviceBundles.getBundles();
+        DeviceBundles deviceBundles = deviceBundleFactory.newBundleListResult();
+        List<DeviceBundle> deviceBundlesList = deviceBundles.getBundles();
 
-            Arrays.stream(kuraBundles.getBundles()).forEach(kuraBundle -> {
-                DeviceBundle deviceBundle = deviceBundleFactory.newDeviceBundle();
-                deviceBundle.setId(kuraBundle.getId());
-                deviceBundle.setName(kuraBundle.getName());
-                deviceBundle.setVersion(kuraBundle.getVersion());
-                deviceBundle.setState(kuraBundle.getState());
-                deviceBundlesList.add(deviceBundle);
-            });
+        Arrays.stream(kuraBundles.getBundles()).forEach(kuraBundle -> {
+            DeviceBundle deviceBundle = deviceBundleFactory.newDeviceBundle();
+            deviceBundle.setId(kuraBundle.getId());
+            deviceBundle.setName(kuraBundle.getName());
+            deviceBundle.setVersion(kuraBundle.getVersion());
+            deviceBundle.setState(kuraBundle.getState());
+            deviceBundlesList.add(deviceBundle);
+        });
 
-            StringWriter sw = new StringWriter();
-            XmlUtil.marshal(deviceBundles, sw);
-            byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
+        StringWriter sw = new StringWriter();
+        XmlUtil.marshal(deviceBundles, sw);
+        byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
 
-            bundleResponsePayload.setBody(requestBody);
-        } catch (Exception e) {
-            throw new TranslatorException(TranslatorErrorCodes.INVALID_BODY, e, kuraBundles);
-        }
+        bundleResponsePayload.setBody(requestBody);
     }
 }
