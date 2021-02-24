@@ -13,16 +13,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Device configuration entity implementation.
+ * {@link DeviceConfiguration} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class DeviceConfigurationImpl implements DeviceConfiguration {
 
@@ -30,12 +30,20 @@ public class DeviceConfigurationImpl implements DeviceConfiguration {
 
     private List<DeviceComponentConfiguration> configurations;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public DeviceConfigurationImpl() {
-        configurations = new ArrayList<>();
     }
 
     @Override
     public List<DeviceComponentConfiguration> getComponentConfigurations() {
+        if (configurations == null) {
+            configurations = new ArrayList<>();
+        }
+
         return configurations;
     }
 

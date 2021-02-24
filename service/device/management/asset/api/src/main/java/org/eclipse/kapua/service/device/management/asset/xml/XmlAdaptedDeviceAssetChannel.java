@@ -12,21 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.xml;
 
-import java.util.Date;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.model.xml.XmlAdaptedNameTypeValueObject;
+import org.eclipse.kapua.model.xml.XmlAdaptedTypeValueObject;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.model.xml.XmlAdaptedNameTypeValueObject;
-import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
-import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
+import java.util.Date;
 
 /**
- * XML friendly {@link DeviceAssetChannel}.
+ * {@link DeviceAssetChannel} {@link XmlAdaptedTypeValueObject} implementation.
  *
  * @since 1.0.0
  */

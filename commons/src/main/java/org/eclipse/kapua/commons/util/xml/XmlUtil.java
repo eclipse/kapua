@@ -40,6 +40,8 @@ import javax.xml.namespace.QName;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.sax.SAXSource;
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -65,53 +67,68 @@ public class XmlUtil {
     }
 
     /**
-     * Marshal the object to a String
+     * Marshal the object to an XML String.
      *
-     * @param object
-     * @return
-     * @throws JAXBException
+     * @param object The {@link Object} to marshal.
+     * @return The Json {@link String} representation of the object.
+     * @throws JAXBException See {@link Marshaller#marshal(Object, Writer)}.
+     * @throws IOException   See {@link Closeable#close()}
+     * @since 1.0.0
      */
     public static String marshal(Object object)
-            throws JAXBException {
-        StringWriter sw = new StringWriter();
-        marshal(object, sw);
-        return sw.toString();
-    }
-
-    public static String marshalJson(Object object)
-            throws JAXBException {
-        StringWriter sw = new StringWriter();
-        marshalJson(object, sw);
-        return sw.toString();
+            throws JAXBException, IOException {
+        try (StringWriter sw = new StringWriter()) {
+            marshal(object, sw);
+            return sw.toString();
+        }
     }
 
     /**
-     * Marshal the object to a writer
+     * Marshal the object to an JSON String.
      *
-     * @param object
-     * @param w
-     * @throws JAXBException
+     * @param object The {@link Object} to marshal.
+     * @return The Json {@link String} representation of the object.
+     * @throws JAXBException See {@link Marshaller#marshal(Object, Writer)}.
+     * @throws IOException   See {@link Closeable#close()}
+     * @since 1.0.0
      */
-    public static void marshal(Object object, Writer w)
+    public static String marshalJson(Object object)
+            throws JAXBException, IOException {
+        try (StringWriter sw = new StringWriter()) {
+            marshalJson(object, sw);
+            return sw.toString();
+        }
+    }
+
+    /**
+     * Marshals the given {@link Object} into the given {@link Writer} as XML representation.
+     *
+     * @param object The {@link Object} to marshall.
+     * @param writer The {@link Writer} to use.
+     * @throws JAXBException See {@link Marshaller#marshal(Object, Writer)}
+     * @since 1.0.0
+     */
+    public static void marshal(Object object, Writer writer)
             throws JAXBException {
         JAXBContext context = get();
 
-        ValidationEventCollector valEventHndlr = new ValidationEventCollector();
+        ValidationEventCollector eventCollector = new ValidationEventCollector();
+
         Marshaller marshaller = context.createMarshaller();
         marshaller.setSchema(null);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        marshaller.setEventHandler(valEventHndlr);
+        marshaller.setEventHandler(eventCollector);
 
         try {
-            marshaller.marshal(object, w);
+            marshaller.marshal(object, writer);
         } catch (JAXBException je) {
             throw je;
         } catch (Exception e) {
             throw new MarshalException(e.getMessage(), e);
         }
 
-        if (valEventHndlr.hasEvents()) {
-            for (ValidationEvent valEvent : valEventHndlr.getEvents()) {
+        if (eventCollector.hasEvents()) {
+            for (ValidationEvent valEvent : eventCollector.getEvents()) {
                 if (valEvent.getSeverity() != ValidationEvent.WARNING) {
                     // throw a new Marshall Exception if there is a parsing error
                     throw new MarshalException(valEvent.getMessage(), valEvent.getLinkedException());
@@ -121,34 +138,36 @@ public class XmlUtil {
     }
 
     /**
-     * Marshal the object to a writer in json format
+     * Marshals the given {@link Object} into the given {@link Writer} as JSON representation.
      *
-     * @param object
-     * @param w
-     * @throws JAXBException
+     * @param object The {@link Object} to marshall.
+     * @param writer The {@link Writer} to use.
+     * @throws JAXBException See {@link Marshaller#marshal(Object, Writer)}
+     * @since 1.0.0
      */
-    public static void marshalJson(Object object, Writer w)
+    public static void marshalJson(Object object, Writer writer)
             throws JAXBException {
         JAXBContext context = get();
 
-        ValidationEventCollector valEventHndlr = new ValidationEventCollector();
+        ValidationEventCollector eventCollector = new ValidationEventCollector();
+
         Marshaller marshaller = context.createMarshaller();
         marshaller.setSchema(null);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setProperty(MarshallerProperties.MEDIA_TYPE, "application/json");
         marshaller.setProperty(MarshallerProperties.JSON_INCLUDE_ROOT, false);
-        marshaller.setEventHandler(valEventHndlr);
+        marshaller.setEventHandler(eventCollector);
 
         try {
-            marshaller.marshal(object, w);
+            marshaller.marshal(object, writer);
         } catch (JAXBException je) {
             throw je;
         } catch (Exception e) {
             throw new MarshalException(e.getMessage(), e);
         }
 
-        if (valEventHndlr.hasEvents()) {
-            for (ValidationEvent valEvent : valEventHndlr.getEvents()) {
+        if (eventCollector.hasEvents()) {
+            for (ValidationEvent valEvent : eventCollector.getEvents()) {
                 if (valEvent.getSeverity() != ValidationEvent.WARNING) {
                     // throw a new Marshall Exception if there is a parsing error
                     throw new MarshalException(valEvent.getMessage(), valEvent.getLinkedException());
@@ -368,11 +387,11 @@ public class XmlUtil {
             context = jaxbContextProvider.getJAXBContext();
             if (context == null) {
                 logger.warn("No JAXBContext found! Creating one using JAXBContextFactory.createContext(...).");
-                context = JAXBContextFactory.createContext(new Class[] {}, null);
+                context = JAXBContextFactory.createContext(new Class[]{}, null);
             }
         } catch (KapuaException | NullPointerException ex) {
             logger.warn("No JAXBContextProvider provided or error while getting one! Creating one using JAXBContextFactory.createContext(...).", ex);
-            context = JAXBContextFactory.createContext(new Class[] {}, null);
+            context = JAXBContextFactory.createContext(new Class[]{}, null);
         }
         return context;
     }

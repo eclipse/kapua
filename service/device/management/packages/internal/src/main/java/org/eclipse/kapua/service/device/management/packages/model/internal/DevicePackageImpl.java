@@ -12,26 +12,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model.internal;
 
-import java.util.Date;
-
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfos;
 
+import java.util.Date;
+
 /**
- * Device package.
+ * {@link DevicePackage} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class DevicePackageImpl implements DevicePackage {
 
     private String name;
-
     private String version;
-
-    private DevicePackageBundleInfosImpl bundleInfos;
-
+    private DevicePackageBundleInfos bundleInfos;
     private Date installDate;
+
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    public DevicePackageImpl() {
+    }
 
     @Override
     public String getName() {
@@ -54,12 +58,17 @@ public class DevicePackageImpl implements DevicePackage {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public DevicePackageBundleInfosImpl getBundleInfos() {
+    public DevicePackageBundleInfos getBundleInfos() {
         if (bundleInfos == null) {
             bundleInfos = new DevicePackageBundleInfosImpl();
         }
+
         return bundleInfos;
+    }
+
+    @Override
+    public void setBundleInfos(DevicePackageBundleInfos bundleInfos) {
+        this.bundleInfos = bundleInfos;
     }
 
     @Override
@@ -70,10 +79,5 @@ public class DevicePackageImpl implements DevicePackage {
     @Override
     public void setInstallDate(Date installDate) {
         this.installDate = installDate;
-    }
-
-    @Override
-    public void setBundleInfos(DevicePackageBundleInfos bundleInfos) {
-        this.bundleInfos = (DevicePackageBundleInfosImpl) bundleInfos;
     }
 }

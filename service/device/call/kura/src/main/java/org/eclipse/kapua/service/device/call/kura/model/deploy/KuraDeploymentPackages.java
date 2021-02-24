@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Kura deployment packages.
  *
  * @since 1.0
- *
  */
 @XmlRootElement(name = "packages")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -36,6 +35,10 @@ public class KuraDeploymentPackages {
      * @return
      */
     public KuraDeploymentPackage[] getDeploymentPackages() {
+        if (deploymentPackages == null) {
+            deploymentPackages = new KuraDeploymentPackage[0];
+        }
+
         return deploymentPackages;
     }
 

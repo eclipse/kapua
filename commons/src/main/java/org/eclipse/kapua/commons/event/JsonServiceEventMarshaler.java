@@ -21,6 +21,7 @@ import org.xml.sax.SAXException;
 import javax.xml.bind.JAXBException;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
+import java.io.IOException;
 
 /**
  * Xml event bus marshaller implementation
@@ -49,7 +50,7 @@ public class JsonServiceEventMarshaler implements ServiceEventMarshaler {
     public String marshal(ServiceEvent kapuaEvent) throws ServiceEventBusException {
         try {
             return XmlUtil.marshalJson(kapuaEvent);
-        } catch (JAXBException e) {
+        } catch (JAXBException | IOException e) {
             throw new ServiceEventBusException(e);
         }
     }

@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.app.BundleMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
@@ -26,12 +25,9 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseChannel;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponsePayload;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
-import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,8 +37,6 @@ import java.util.List;
  * @since 1.0.0
  */
 public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<BundleResponseChannel, BundleResponsePayload, BundleResponseMessage> {
-
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -69,19 +63,23 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
             if (kuraResponsePayload.hasBody()) {
                 KuraBundles kuraBundles = readXmlBodyAs(kuraResponsePayload.getBody(), KuraBundles.class);
 
-                translate(bundleResponsePayload, kuraBundles);
+                bundleResponsePayload.setDeviceBundles(translate(kuraBundles));
             }
 
-            // Return Kapua Payload
             return bundleResponsePayload;
-        } catch (InvalidPayloadException ipe) {
-            throw ipe;
         } catch (Exception e) {
             throw new InvalidPayloadException(e, kuraResponsePayload);
         }
     }
 
-    private void translate(BundleResponsePayload bundleResponsePayload, KuraBundles kuraBundles) throws Exception {
+    /**
+     * Translates {@link KuraBundles} to {@link DeviceBundles}
+     *
+     * @param kuraBundles The {@link KuraBundles} to translate.
+     * @return The translated {@link DeviceBundles}.
+     * @since 1.0.0
+     */
+    private DeviceBundles translate(KuraBundles kuraBundles) {
         DeviceBundleFactory deviceBundleFactory = LOCATOR.getFactory(DeviceBundleFactory.class);
 
         DeviceBundles deviceBundles = deviceBundleFactory.newBundleListResult();
@@ -93,13 +91,10 @@ public class TranslatorAppBundleKuraKapua extends AbstractSimpleTranslatorRespon
             deviceBundle.setName(kuraBundle.getName());
             deviceBundle.setVersion(kuraBundle.getVersion());
             deviceBundle.setState(kuraBundle.getState());
+
             deviceBundlesList.add(deviceBundle);
         });
 
-        StringWriter sw = new StringWriter();
-        XmlUtil.marshal(deviceBundles, sw);
-        byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
-
-        bundleResponsePayload.setBody(requestBody);
+        return deviceBundles;
     }
 }

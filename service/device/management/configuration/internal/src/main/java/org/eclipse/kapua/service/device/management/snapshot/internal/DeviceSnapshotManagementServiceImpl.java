@@ -14,15 +14,12 @@ package org.eclipse.kapua.service.device.management.snapshot.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
@@ -39,14 +36,12 @@ import org.eclipse.kapua.service.device.management.snapshot.message.internal.Sna
 import java.util.Date;
 
 /**
- * Device snapshot service implementation.
+ * {@link DeviceSnapshotManagementService} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceSnapshotManagementService {
-
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     @Override
     public DeviceSnapshots get(KapuaId scopeId, KapuaId deviceId, Long timeout)
@@ -90,21 +85,11 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
         if (responseMessage.getResponseCode().isAccepted()) {
             SnapshotResponsePayload responsePayload = responseMessage.getPayload();
 
-            String body;
             try {
-                body = new String(responsePayload.getBody(), CHAR_ENCODING);
+                return responsePayload.getDeviceSnapshots();
             } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, (Object) responsePayload.getBody());
+                throw new DeviceManagementResponseException(e, responsePayload);
             }
-
-            DeviceSnapshots deviceSnapshots;
-            try {
-                deviceSnapshots = XmlUtil.unmarshal(body, DeviceSnapshotsImpl.class);
-            } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, body);
-            }
-
-            return deviceSnapshots;
         } else {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
@@ -151,6 +136,8 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
         // Create event
         createDeviceEvent(scopeId, deviceId, snapshotRequestMessage, responseMessage);
 
+        //
+        // Check response
         if (!responseMessage.getResponseCode().isAccepted()) {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 

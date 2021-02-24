@@ -34,18 +34,13 @@ import org.eclipse.kapua.service.device.management.exception.DeviceManagementReq
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
-import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 /**
  * {@link DeviceAssetManagementService} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceAssetManagementService {
@@ -77,7 +72,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         AssetRequestPayload assetRequestPayload = new AssetRequestPayload();
         try {
             assetRequestPayload.setDeviceAssets(deviceAssets);
-        } catch (JAXBException | UnsupportedEncodingException e) {
+        } catch (Exception e) {
             throw new DeviceManagementRequestException(e, deviceAssets);
         }
 
@@ -100,15 +95,13 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         //
         // Check response
         if (responseMessage.getResponseCode().isAccepted()) {
-            DeviceAssets deviceAssetsResponse;
             AssetResponsePayload responsePayload = responseMessage.getPayload();
+
             try {
-                deviceAssetsResponse = responsePayload.getDeviceAssets();
-            } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException | UnsupportedEncodingException e) {
+                return responsePayload.getDeviceAssets();
+            } catch (Exception e) {
                 throw new DeviceManagementResponseException(e, responsePayload);
             }
-
-            return deviceAssetsResponse;
         } else {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
@@ -139,7 +132,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         AssetRequestPayload assetRequestPayload = new AssetRequestPayload();
         try {
             assetRequestPayload.setDeviceAssets(deviceAssets);
-        } catch (JAXBException | UnsupportedEncodingException e) {
+        } catch (Exception e) {
             throw new DeviceManagementRequestException(e, deviceAssets);
         }
 
@@ -162,15 +155,13 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         //
         // Check response
         if (responseMessage.getResponseCode().isAccepted()) {
-            DeviceAssets deviceAssetsResponse;
             AssetResponsePayload responsePayload = responseMessage.getPayload();
+
             try {
-                deviceAssetsResponse = responsePayload.getDeviceAssets();
-            } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException | UnsupportedEncodingException e) {
+                return responsePayload.getDeviceAssets();
+            } catch (Exception e) {
                 throw new DeviceManagementResponseException(e, responsePayload);
             }
-
-            return deviceAssetsResponse;
         } else {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
@@ -201,7 +192,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         AssetRequestPayload assetRequestPayload = new AssetRequestPayload();
         try {
             assetRequestPayload.setDeviceAssets(deviceAssets);
-        } catch (JAXBException | UnsupportedEncodingException e) {
+        } catch (Exception e) {
             throw new DeviceManagementRequestException(e, deviceAssets);
         }
 
@@ -224,15 +215,13 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         //
         // Check response
         if (responseMessage.getResponseCode().isAccepted()) {
-            DeviceAssets deviceAssetsResponse;
             AssetResponsePayload responsePayload = responseMessage.getPayload();
+
             try {
-                deviceAssetsResponse = responsePayload.getDeviceAssets();
-            } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException | UnsupportedEncodingException e) {
+                return responsePayload.getDeviceAssets();
+            } catch (Exception e) {
                 throw new DeviceManagementResponseException(e, responsePayload);
             }
-
-            return deviceAssetsResponse;
         } else {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 

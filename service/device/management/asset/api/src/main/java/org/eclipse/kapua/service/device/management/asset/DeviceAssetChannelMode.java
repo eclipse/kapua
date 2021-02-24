@@ -12,8 +12,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset;
 
+/**
+ * {@link DeviceAssetChannel} modes definition.
+ *
+ * @since 1.0.0
+ */
 public enum DeviceAssetChannelMode {
+
+    /**
+     * Write only.
+     *
+     * @since 1.0.0
+     */
     WRITE,
+
+    /**
+     * Read only.
+     *
+     * @since 1.0.0
+     */
     READ,
+
+    /**
+     * Read and write.
+     *
+     * @since 1.0.0
+     */
     READ_WRITE
 }

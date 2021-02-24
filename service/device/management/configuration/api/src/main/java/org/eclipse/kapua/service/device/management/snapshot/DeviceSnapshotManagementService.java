@@ -15,33 +15,35 @@ package org.eclipse.kapua.service.device.management.snapshot;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
+import org.eclipse.kapua.service.device.registry.Device;
 
 /**
- * Device snapshot service definition.
+ * {@link DeviceSnapshot} {@link KapuaService} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DeviceSnapshotManagementService extends KapuaService {
 
     /**
-     * Get the device snapshots list for the the provided device identifier
+     * Gets the {@link DeviceSnapshots} for the given {@link Device}
      *
-     * @param scopeId
-     * @param deviceid
-     * @param timeout  timeout waiting for the device response
-     * @return
-     * @throws KapuaException
+     * @param scopeId  The scope {@link KapuaId}
+     * @param deviceid The {@link Device#getId()}
+     * @param timeout  The timeout waiting for the {@link Device} response
+     * @return The {@link DeviceSnapshots} retrieved
+     * @throws KapuaException if something goes wrong
      */
     DeviceSnapshots get(KapuaId scopeId, KapuaId deviceid, Long timeout) throws KapuaException;
 
     /**
-     * Rollback the device configuration to the device snapshot identified by the provided snapshot identifier
+     * Rollbacks the {@link DeviceConfiguration} to the {@link DeviceSnapshot#getId()}
      *
-     * @param scopeId
-     * @param deviceid
-     * @param snapshotId
-     * @param timeout    timeout waiting for the device response
-     * @throws KapuaException
+     * @param scopeId    The scope {@link KapuaId}
+     * @param deviceid   The {@link Device#getId()}
+     * @param snapshotId The {@link DeviceSnapshot#getId()}
+     * @param timeout    The timeout waiting for the {@link Device} response
+     * @throws KapuaException if something goes wrong
      */
     void rollback(KapuaId scopeId, KapuaId deviceid, String snapshotId, Long timeout) throws KapuaException;
 }

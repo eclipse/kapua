@@ -20,73 +20,80 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.Date;
 
 /**
- * Device package definition.
+ * {@link DevicePackage} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "devicePackage")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "name",
-        "version",
-        "bundleInfos",
-        "installDate" }, factoryClass = DevicePackageXmlRegistry.class, factoryMethod = "newDevicePackage")
+@XmlType(factoryClass = DevicePackageXmlRegistry.class, factoryMethod = "newDevicePackage")
 public interface DevicePackage {
 
     /**
-     * Get the package name
+     * Gets the name.
      *
-     * @return
+     * @return The name.
+     * @since 1.0.0
      */
     @XmlElement(name = "name")
     String getName();
 
     /**
-     * Set the package name
+     * Sets the name.
      *
-     * @param dpName
+     * @param name The name.
+     * @since 1.0.0
      */
-    void setName(String dpName);
+    void setName(String name);
 
     /**
-     * Get the package version
+     * Gets the version.
      *
-     * @return
+     * @return The version.
+     * @since 1.0.0
      */
     @XmlElement(name = "version")
     String getVersion();
 
     /**
-     * Set the package version
+     * Sets the version.
      *
-     * @param dpVersion
+     * @param version The version.
+     * @since 1.0.0
      */
-    void setVersion(String dpVersion);
+    void setVersion(String version);
 
     /**
-     * Get device package bundle informations
+     * Gets the {@link DevicePackageBundleInfos}.
      *
-     * @return
+     * @return The {@link DevicePackageBundleInfos}.
+     * @since 1.0.0
      */
     @XmlElement(name = "bundleInfos")
-    <B extends DevicePackageBundleInfos> B getBundleInfos();
+    DevicePackageBundleInfos getBundleInfos();
 
     /**
-     * Set device package bundle informations
-     */
-    <B extends DevicePackageBundleInfos> void setBundleInfos(B bundleInfos);
-
-    /**
-     * Get the installation date
+     * Sets the {@link DevicePackageBundleInfos}.
      *
-     * @return
+     * @param bundleInfos The {@link DevicePackageBundleInfos}.
+     * @since 1.0.0
+     */
+    void setBundleInfos(DevicePackageBundleInfos bundleInfos);
+
+    /**
+     * Gets the installation date.
+     *
+     * @return The installation date.
+     * @since 1.0.0
      */
     @XmlElement(name = "installDate")
     Date getInstallDate();
 
     /**
-     * Set the installation date
+     * Sets the installation date.
      *
-     * @param installDate
+     * @param installDate The installation date.
+     * @since 1.0.0
      */
     void setInstallDate(Date installDate);
 }

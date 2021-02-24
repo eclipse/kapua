@@ -19,42 +19,46 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Device package bundle information definition.
+ * {@link DevicePackageBundleInfo} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
-@XmlRootElement(name = "devicePackageBundleInfo")
+@XmlRootElement(name = "bundleInfo")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DevicePackageXmlRegistry.class, factoryMethod = "newDevicePackageBundleInfo")
 public interface DevicePackageBundleInfo {
 
     /**
-     * Get the package bundle name
+     * Gets the name.
      *
-     * @return
+     * @return The name.
+     * @since 1.0.0
      */
     @XmlElement(name = "name")
     String getName();
 
     /**
-     * Set the package bundle name
+     * Sets the name.
      *
-     * @param name
+     * @param name The name.
+     * @since 1.0.0
      */
     void setName(String name);
 
     /**
-     * Get the package bundle version
+     * Gets the version.
      *
-     * @return
+     * @return The version.
+     * @since 1.0.0
      */
     @XmlElement(name = "version")
     String getVersion();
 
     /**
-     * Set the package bundle version
+     * Sets the version.
      *
-     * @param version
+     * @param version The version.
+     * @since 1.0.0
      */
     void setVersion(String version);
 }

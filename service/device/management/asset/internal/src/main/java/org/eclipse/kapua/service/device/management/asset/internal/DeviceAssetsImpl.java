@@ -12,21 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Device assets list entity implementation.
+ * {@link DeviceAssets} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class DeviceAssetsImpl implements DeviceAssets {
 
     private static final long serialVersionUID = -6657213220333406876L;
+
     private List<DeviceAsset> assets;
 
     @Override

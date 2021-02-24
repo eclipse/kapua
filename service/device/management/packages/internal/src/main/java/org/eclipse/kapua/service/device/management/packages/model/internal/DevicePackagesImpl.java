@@ -13,17 +13,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Device packages list container.
+ * {@link DevicePackages} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class DevicePackagesImpl implements DevicePackages {
 

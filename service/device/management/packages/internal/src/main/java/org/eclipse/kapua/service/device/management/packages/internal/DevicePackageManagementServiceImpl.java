@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -57,12 +56,9 @@ import org.eclipse.kapua.service.device.management.packages.model.download.inter
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
-import org.eclipse.kapua.service.device.management.packages.model.install.internal.DevicePackageInstallOperationImpl;
-import org.eclipse.kapua.service.device.management.packages.model.internal.DevicePackagesImpl;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
-import org.eclipse.kapua.service.device.management.packages.model.uninstall.internal.DevicePackageUninstallOperationImpl;
 
 import java.util.Date;
 
@@ -129,27 +125,11 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         if (responseMessage.getResponseCode().isAccepted()) {
             PackageResponsePayload responsePayload = responseMessage.getPayload();
 
-            DevicePackages devicePackages;
-            if (responsePayload.hasBody()) {
-
-                String body;
-                try {
-                    body = new String(responsePayload.getBody(), CHAR_ENCODING);
-                } catch (Exception e) {
-                    throw new DeviceManagementResponseException(e, responsePayload.getBody());
-                }
-
-                try {
-                    devicePackages = XmlUtil.unmarshal(body, DevicePackagesImpl.class);
-                } catch (Exception e) {
-                    throw new DeviceManagementResponseException(e, body);
-                }
-
-            } else {
-                devicePackages = new DevicePackagesImpl();
+            try {
+                return responsePayload.getDevicePackages();
+            } catch (Exception e) {
+                throw new DeviceManagementResponseException(e, responsePayload);
             }
-
-            return devicePackages;
         } else {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
@@ -163,7 +143,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
     @Override
     public KapuaId downloadExec(KapuaId scopeId, KapuaId deviceId, DevicePackageDownloadRequest packageDownloadRequest, Long timeout) throws KapuaException {
-        DevicePackageDownloadOptions packageDownloadOptions = DEVICE_PACKAGE_FACTORY.newDevicePackageDownloadOptions();
+        DevicePackageDownloadOptions packageDownloadOptions = DEVICE_PACKAGE_FACTORY.newPackageDownloadOptions();
         packageDownloadOptions.setTimeout(timeout);
 
         return downloadExec(scopeId, deviceId, packageDownloadRequest, packageDownloadOptions);
@@ -368,7 +348,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
     @Override
     public KapuaId installExec(KapuaId scopeId, KapuaId deviceId, DevicePackageInstallRequest packageInstallRequest, Long timeout) throws KapuaException {
-        DevicePackageInstallOptions packageInstallOptions = DEVICE_PACKAGE_FACTORY.newDevicePackageInstallOptions();
+        DevicePackageInstallOptions packageInstallOptions = DEVICE_PACKAGE_FACTORY.newPackageInstallOptions();
         packageInstallOptions.setTimeout(timeout);
 
         return installExec(scopeId, deviceId, packageInstallRequest, packageInstallOptions);
@@ -485,24 +465,13 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         //
         // Check response
         if (responseMessage.getResponseCode().isAccepted()) {
-            PackageResponsePayload responsePayload = responseMessage.getPayload();
+            PackageResponsePayload packageResponsePayload = responseMessage.getPayload();
 
-            String body;
             try {
-                body = new String(responsePayload.getBody(), CHAR_ENCODING);
+                return packageResponsePayload.getDevicePackageInstallOperation();
             } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload.getBody());
-
+                throw new DeviceManagementResponseException(e, packageResponsePayload);
             }
-
-            DevicePackageInstallOperation installOperation;
-            try {
-                installOperation = XmlUtil.unmarshal(body, DevicePackageInstallOperationImpl.class);
-            } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, body);
-            }
-
-            return installOperation;
         } else {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
@@ -516,7 +485,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
     @Override
     public KapuaId uninstallExec(KapuaId scopeId, KapuaId deviceId, DevicePackageUninstallRequest packageUninstallRequest, Long timeout) throws KapuaException {
-        DevicePackageUninstallOptions packageUninstallOptions = DEVICE_PACKAGE_FACTORY.newDevicePackageUninstallOptions();
+        DevicePackageUninstallOptions packageUninstallOptions = DEVICE_PACKAGE_FACTORY.newPackageUninstallOptions();
         packageUninstallOptions.setTimeout(timeout);
 
         return uninstallExec(scopeId, deviceId, packageUninstallRequest, packageUninstallOptions);
@@ -633,23 +602,13 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
         //
         // Check response
         if (responseMessage.getResponseCode().isAccepted()) {
-            PackageResponsePayload responsePayload = responseMessage.getPayload();
+            PackageResponsePayload packageResponsePayload = responseMessage.getPayload();
 
-            String body;
             try {
-                body = new String(responsePayload.getBody(), CHAR_ENCODING);
+                return packageResponsePayload.getDevicePackageUninstallOperation();
             } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload.getBody());
+                throw new DeviceManagementResponseException(e, packageResponsePayload);
             }
-
-            DevicePackageUninstallOperation uninstallOperation;
-            try {
-                uninstallOperation = XmlUtil.unmarshal(body, DevicePackageUninstallOperationImpl.class);
-            } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, body);
-            }
-
-            return uninstallOperation;
         } else {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 

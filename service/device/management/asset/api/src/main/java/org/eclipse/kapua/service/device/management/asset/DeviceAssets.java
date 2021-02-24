@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
- * {@link DeviceAsset}s list entity definition.
+ * {@link DeviceAssets} definition.
  *
  * @since 1.0.0
  */

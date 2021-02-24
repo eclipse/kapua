@@ -14,7 +14,6 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.app.PackageMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
@@ -24,8 +23,6 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseCode;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageResponseChannel;
 import org.eclipse.kapua.service.device.management.packages.message.internal.PackageResponseMessage;
@@ -40,7 +37,6 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
 
-import java.io.StringWriter;
 import java.math.BigInteger;
 import java.util.Map;
 
@@ -50,8 +46,6 @@ import java.util.Map;
  * @since 1.0.0
  */
 public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<PackageResponseChannel, PackageResponsePayload, PackageResponseMessage> {
-
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -112,7 +106,7 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
                 if (kuraResponsePayload.hasBody()) {
                     KuraDeploymentPackages kuraDeploymentPackages = readXmlBodyAs(kuraResponsePayload.getBody(), KuraDeploymentPackages.class);
 
-                    translate(responsePayload, kuraDeploymentPackages);
+                    responsePayload.setDeploymentPackages(translate(kuraDeploymentPackages));
                 }
             } else {
                 if (kuraResponsePayload.hasBody()) {
@@ -131,39 +125,31 @@ public class TranslatorAppPackageKuraKapua extends AbstractSimpleTranslatorRespo
         }
     }
 
-    private void translate(PackageResponsePayload packageResponsePayload, KuraDeploymentPackages kuraDeploymentPackages) throws Exception {
+    private DevicePackages translate(KuraDeploymentPackages kuraDeploymentPackages) {
         DevicePackageFactory devicePackageFactory = LOCATOR.getFactory(DevicePackageFactory.class);
+        DevicePackages deviceDeploymentPackages = devicePackageFactory.newDeviceDeploymentPackages();
 
         KuraDeploymentPackage[] deploymentPackageArray = kuraDeploymentPackages.getDeploymentPackages();
-        if (deploymentPackageArray != null) {
-            DevicePackages deviceDeploymentPackages = devicePackageFactory.newDeviceDeploymentPackages();
+        for (KuraDeploymentPackage deploymentPackage : deploymentPackageArray) {
+            DevicePackage deviceDeploymentPackage = devicePackageFactory.newDeviceDeploymentPackage();
+            deviceDeploymentPackage.setName(deploymentPackage.getName());
+            deviceDeploymentPackage.setVersion(deploymentPackage.getVersion());
 
-            for (KuraDeploymentPackage deploymentPackage : deploymentPackageArray) {
-                DevicePackage deviceDeploymentPackage = devicePackageFactory.newDeviceDeploymentPackage();
-                deviceDeploymentPackage.setName(deploymentPackage.getName());
-                deviceDeploymentPackage.setVersion(deploymentPackage.getVersion());
+            DevicePackageBundleInfos devicePackageBundleInfos = deviceDeploymentPackage.getBundleInfos();
+            KuraBundleInfo[] bundleInfoArray = deploymentPackage.getBundleInfos();
+            for (KuraBundleInfo bundleInfo : bundleInfoArray) {
+                DevicePackageBundleInfo devicePackageBundleInfo = devicePackageFactory.newDevicePackageBundleInfo();
+                devicePackageBundleInfo.setName(bundleInfo.getName());
+                devicePackageBundleInfo.setVersion(bundleInfo.getVersion());
 
-                DevicePackageBundleInfos devicePackageBundleInfos = deviceDeploymentPackage.getBundleInfos();
-                KuraBundleInfo[] bundleInfoArray = deploymentPackage.getBundleInfos();
-                for (KuraBundleInfo bundleInfo : bundleInfoArray) {
-                    DevicePackageBundleInfo devicePackageBundleInfo = devicePackageFactory.newDevicePackageBundleInfo();
-                    devicePackageBundleInfo.setName(bundleInfo.getName());
-                    devicePackageBundleInfo.setVersion(bundleInfo.getVersion());
-
-                    // Add the new DevicePackageBundleInfo object to the corresponding list
-                    devicePackageBundleInfos.getBundlesInfos().add(devicePackageBundleInfo);
-                }
-
-                // Add the new DeviceDeploymentPackage object to the corresponding list
-                deviceDeploymentPackages.getPackages().add(deviceDeploymentPackage);
+                // Add the new DevicePackageBundleInfo object to the corresponding list
+                devicePackageBundleInfos.getBundlesInfos().add(devicePackageBundleInfo);
             }
 
-            StringWriter sw = new StringWriter();
-            XmlUtil.marshal(deviceDeploymentPackages, sw);
-            byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
-
-            packageResponsePayload.setBody(requestBody);
+            // Add the new DeviceDeploymentPackage object to the corresponding list
+            deviceDeploymentPackages.getPackages().add(deviceDeploymentPackage);
         }
 
+        return deviceDeploymentPackages;
     }
 }

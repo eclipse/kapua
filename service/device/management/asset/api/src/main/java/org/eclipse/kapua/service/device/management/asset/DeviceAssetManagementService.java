@@ -17,19 +17,20 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 
 /**
- * Device asset service definition.
+ * {@link DeviceAsset} {@link KapuaService} definition.
  *
- * @since 1.0
+ * @see org.eclipse.kapua.service.KapuaService
+ * @since 1.0.0
  */
 public interface DeviceAssetManagementService extends KapuaService {
 
     /**
-     * Get the device assets list for the given device.
+     * Gets the {@link DeviceAssets} for the given Device.
      *
      * @param scopeId      The target scope id
-     * @param deviceId     The target device id
+     * @param deviceId     The target {@link org.eclipse.kapua.service.device.registry.Device} id
      * @param deviceAssets The {@link DeviceAssets} to filter read channel meta-meta
-     * @param timeout      timeout waiting for the device response
+     * @param timeout      The timeout waiting for the Device response
      * @return The {@link DeviceAssets} meta-data read
      * @throws KapuaException
      * @since 1.0.0
@@ -42,7 +43,7 @@ public interface DeviceAssetManagementService extends KapuaService {
      * @param scopeId      The target scope id
      * @param deviceId     The target device id
      * @param deviceAssets The {@link DeviceAssets} to filter read channel values
-     * @param timeout      timeout waiting for the device response
+     * @param timeout      The timeout waiting for the Device response.
      * @return The {@link DeviceAssets} read from the device.
      * @throws KapuaException
      * @since 1.0.0
@@ -55,7 +56,7 @@ public interface DeviceAssetManagementService extends KapuaService {
      * @param scopeId      The target scope id
      * @param deviceId     The target device id
      * @param deviceAssets The {@link DeviceAssets} to write
-     * @param timeout      timeout waiting for the device response
+     * @param timeout      The timeout waiting for the Device response.
      * @return The {@link DeviceAssets} read after the write.
      * @throws KapuaException
      * @since 1.0.0

@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link DeviceAsset} implementation.
@@ -26,7 +26,6 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 public class DeviceAssetImpl implements DeviceAsset {
 
     private String name;
-
     private List<DeviceAssetChannel> channels;
 
     /**

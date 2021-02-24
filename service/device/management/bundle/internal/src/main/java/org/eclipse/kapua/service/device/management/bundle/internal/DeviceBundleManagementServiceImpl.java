@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.device.management.bundle.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -31,8 +30,6 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Bundl
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
@@ -49,8 +46,6 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
 
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
-
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     @Override
     public DeviceBundles get(KapuaId scopeId, KapuaId deviceId, Long timeout)
@@ -94,21 +89,11 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
         if (responseMessage.getResponseCode().isAccepted()) {
             BundleResponsePayload responsePayload = responseMessage.getPayload();
 
-            String body;
             try {
-                body = new String(responsePayload.getBody(), CHAR_ENCODING);
+                return responsePayload.getDeviceBundles();
             } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload.getBody());
+                throw new DeviceManagementResponseException(e, responsePayload);
             }
-
-            DeviceBundles deviceBundleList;
-            try {
-                deviceBundleList = XmlUtil.unmarshal(body, DeviceBundlesImpl.class);
-            } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, body);
-            }
-
-            return deviceBundleList;
         } else {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 

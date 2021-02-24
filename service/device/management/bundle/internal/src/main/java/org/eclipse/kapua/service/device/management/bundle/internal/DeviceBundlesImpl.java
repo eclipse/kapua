@@ -13,17 +13,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Device bundles list entity implementation.
+ * {@link DeviceBundles} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class DeviceBundlesImpl implements DeviceBundles {
 
