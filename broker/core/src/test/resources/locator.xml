@@ -91,6 +91,7 @@
 
         <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
 
+        <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
         <provide>
             <interceptor>annotation</interceptor>
             <with>Impl</with>
@@ -102,5 +103,6 @@
         <package>org.eclipse.kapua.transport</package>
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.model.config</package>
+        <package>org.eclipse.kapua.job.engine</package>
     </packages>
 </locator-config>

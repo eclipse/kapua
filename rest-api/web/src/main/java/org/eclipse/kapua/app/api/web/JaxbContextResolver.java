@@ -21,18 +21,33 @@ import org.eclipse.kapua.app.api.core.exception.model.MfaRequiredExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.SelfManagedOnlyExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.StorableEntityId;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonDatastoreMessage;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.data.JsonMessageQuery;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.JsonGenericRequestMessage;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.JsonGenericResponseMessage;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.message.JsonKapuaPayload;
+import org.eclipse.kapua.app.api.core.model.CountResult;
+import org.eclipse.kapua.app.api.core.model.StorableEntityId;
+import org.eclipse.kapua.app.api.core.model.data.JsonDatastoreMessage;
+import org.eclipse.kapua.app.api.core.model.data.JsonMessageQuery;
+import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericRequestMessage;
+import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericResponseMessage;
+import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
+import org.eclipse.kapua.app.api.core.model.message.JsonKapuaPayload;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.job.engine.JobEngineXmlRegistry;
+import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobExecutionEnqueuedExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
@@ -198,6 +213,7 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoXmlRegistry;
 import org.eclipse.kapua.service.endpoint.EndpointUsage;
 import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.JobCreator;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobXmlRegistry;
@@ -206,14 +222,21 @@ import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 import org.eclipse.kapua.service.job.execution.JobExecutionXmlRegistry;
 import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepXmlRegistry;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionXmlRegistry;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.targets.JobTarget;
+import org.eclipse.kapua.service.job.targets.JobTargetCreator;
 import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerXmlRegistry;
@@ -221,6 +244,11 @@ import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTrigger;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerXmlRegistry;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionXmlRegistry;
+import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.SortFieldXmlAdapter;
@@ -281,6 +309,20 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     IllegalArgumentExceptionInfo.class,
                     IllegalNullArgumentExceptionInfo.class,
                     MfaRequiredExceptionInfo.class,
+
+                    // Jobs Exception Info
+                    CleanJobDataExceptionInfo.class,
+                    JobAlreadyRunningExceptionInfo.class,
+                    JobEngineExceptionInfo.class,
+                    JobExecutionEnqueuedExceptionInfo.class,
+                    JobInvalidTargetExceptionInfo.class,
+                    JobMissingStepExceptionInfo.class,
+                    JobMissingTargetExceptionInfo.class,
+                    JobNotRunningExceptionInfo.class,
+                    JobResumingExceptionInfo.class,
+                    JobRunningExceptionInfo.class,
+                    JobStartingExceptionInfo.class,
+                    JobStoppingExceptionInfo.class,
 
                     // Tocds
                     KapuaTocd.class,
@@ -550,11 +592,16 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     // Jobs
                     Job.class,
+                    JobStartOptions.class,
+                    IsJobRunningResponse.class,
+                    JobCreator.class,
                     JobListResult.class,
                     JobQuery.class,
                     JobXmlRegistry.class,
+                    JobEngineXmlRegistry.class,
 
                     JobStep.class,
+                    JobStepCreator.class,
                     JobStepListResult.class,
                     JobStepQuery.class,
                     JobStepXmlRegistry.class,
@@ -566,20 +613,33 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     JobExecutionXmlRegistry.class,
 
                     JobTarget.class,
+                    JobTargetCreator.class,
                     JobTargetListResult.class,
                     JobTargetQuery.class,
                     JobExecutionXmlRegistry.class,
 
                     // Trigger
                     Trigger.class,
+                    TriggerCreator.class,
                     TriggerListResult.class,
                     TriggerQuery.class,
+                    TriggerProperty.class,
                     TriggerXmlRegistry.class,
+
+                    TriggerDefinition.class,
+                    TriggerDefinitionListResult.class,
+                    TriggerDefinitionQuery.class,
+                    TriggerDefinitionXmlRegistry.class,
 
                     FiredTrigger.class,
                     FiredTriggerListResult.class,
                     FiredTriggerQuery.class,
-                    FiredTriggerXmlRegistry.class
+                    FiredTriggerXmlRegistry.class,
+
+                    JobStepDefinition.class,
+                    JobStepDefinitionListResult.class,
+                    JobStepDefinitionQuery.class,
+                    JobStepDefinitionXmlRegistry.class
             }, properties);
         } catch (Exception e) {
             throw new RuntimeException(e);

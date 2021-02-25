@@ -16,7 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
+
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -57,7 +59,13 @@ public class ExceptionMessageUtils {
             StringJoiner joiner = new StringJoiner(", ");
             if (args != null && args.length > 0) {
                 for (Object arg : args) {
-                    joiner.add(String.valueOf(arg));
+                    if (arg instanceof Iterable) {
+                        joiner.add(arg.toString());
+                    } else if (arg != null && arg.getClass().isArray()) {
+                        joiner.add(Arrays.toString((Object[]) arg));
+                    } else {
+                        joiner.add(String.valueOf(arg));
+                    }
                 }
             }
 
@@ -92,4 +100,5 @@ public class ExceptionMessageUtils {
 
         return messagePattern;
     }
+
 }

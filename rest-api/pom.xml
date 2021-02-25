@@ -23,32 +23,6 @@
     <artifactId>kapua-rest-api</artifactId>
     <packaging>pom</packaging>
 
-    <properties>
-        <jersey.version>2.23.2</jersey.version>
-        <javax-servlet-api.version>3.1.0</javax-servlet-api.version>
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- Moxy for object marshalling unmarshalling -->
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-moxy</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>${javax-servlet-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-server</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <modules>
         <module>web</module>
         <module>core</module>

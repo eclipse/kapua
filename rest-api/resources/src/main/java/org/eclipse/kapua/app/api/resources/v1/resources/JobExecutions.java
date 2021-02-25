@@ -24,9 +24,10 @@ import javax.ws.rs.core.MediaType;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
+import org.eclipse.kapua.app.api.core.model.CountResult;
+import org.eclipse.kapua.app.api.core.model.EntityId;
+import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -57,6 +58,7 @@ public class JobExecutions extends AbstractKapuaResource {
      *
      * @param scopeId The {@link ScopeId} in which to search results.
      * @param jobId   The {@link Job} id to filter results
+     * @param askTotalCount Ask for the total count of the matched entities in the result
      * @param offset  The result set offset.
      * @param limit   The result set limit.
      * @return The {@link JobExecutionListResult} of all the jobs executions associated to the current selected job.
@@ -68,12 +70,14 @@ public class JobExecutions extends AbstractKapuaResource {
     public JobExecutionListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         JobExecutionQuery query = jobExecutionFactory.newQuery(scopeId);
 
         query.setPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, jobId));
 
+        query.setAskTotalCount(askTotalCount);
         query.setOffset(offset);
         query.setLimit(limit);
 

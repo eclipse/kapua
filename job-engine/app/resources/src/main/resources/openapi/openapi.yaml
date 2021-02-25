@@ -1,0 +1,166 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua Job Engine REST API
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+  description: |
+    # Introduction
+    Eclipse Kapua exposes a comprehensive set of Web Service APIs for application integration purposes. The Eclipse Kapua REST API allows you to build applications that use Representational State Transfer HTTP calls to retrieve, modify, or publish platform data. For example through the APIs, you are able to access all the functionality of the Console or to control a device from your application built on top of Eclipse Kapua.
+
+    The Eclipse Kapua platform conforms to standard REpresentational State Transfer (REST) protocol to expose its Application Programming Interfaces (API). REST has emerged over the past few years as a predominant Web service design model. REST-style architectures consist of clients and servers. Clients initiate requests to servers, while servers process requests and return appropriate responses. Requests and responses are built around the transfer of representations of resources. A resource can be essentially any coherent and meaningful concept that may be addressed. A representation of a resource is typically a document that captures the current or intended state of a resource.
+
+    Eclipse Kapua RESTful APIs expose the standard action types (create, read, update, delete) over the platform objects. They are capable of retrieving a resource representation in XML or JSON format. You can use the REST HTTP Accept Header to specify the representation requested using the "application/xml" and "application/json" Media Types. As an alternative to the Accept header, you can specify the requested data representation by appending an ".xml" or ".json" suffix to the path part of your request URLs.
+
+    For more details on the Eclipse Kapua REST APIs, please refer to:
+    - [The Eclipse Kapua Documentation](https://www.eclipse.org/kapua/documentation.php)
+    - [The Eclipse Kapua Code on github](https://github.com/eclipse/kapua)
+
+    # Authentication
+    All Eclipse Kapua REST API, except the Authentication endpoints that performs an Authentication, need an Authentication Token to be executed. You will retrieve such token as a response of one of the Authentication calls, in the form of a [JWT](https://jwt.io) as the value of the property `tokenId`. For every subsequent call, you need to pass such token in the `Authorization` HTTP Header, with the `Bearer` type.
+
+servers:
+  - description: Kapua REST API Endpoint
+    url: "{scheme}://{host}:{port}/{basePath}"
+    variables:
+      scheme:
+        default: https
+        enum:
+          - http
+          - https
+      host:
+        description: Host name of the Kapua REST API Endpoint
+        default: api.your-kapua-instance.com
+      port:
+        description: Port number of the Kapua REST API Endpoint
+        default: '8080'
+      basePath:
+        description: The Base path of the Kapua REST API Endpoint
+        default: v1
+  - description: Localhost Docker Compose
+    url: http://localhost:8082/v1
+
+paths:
+  /clean-data/{scopeId}/{jobId}:
+    $ref: './jobEngine-scopeId-jobId.yaml#/paths/~1clean-data~1{scopeId}~1{jobId}'
+  /is-running/{scopeId}/{jobId}:
+    $ref: './jobEngine-scopeId-jobId.yaml#/paths/~1is-running~1{scopeId}~1{jobId}'
+  /start/{scopeId}/{jobId}:
+    $ref: './jobEngine-scopeId-jobId.yaml#/paths/~1start~1{scopeId}~1{jobId}'
+  /start-with-options/{scopeId}/{jobId}:
+    $ref: './jobEngine-scopeId-jobId.yaml#/paths/~1start-with-options~1{scopeId}~1{jobId}'
+  /stop/{scopeId}/{jobId}:
+    $ref: './jobEngine-scopeId-jobId.yaml#/paths/~1stop~1{scopeId}~1{jobId}'
+  /resume-execution/{scopeId}/{jobId}/{executionId}:
+    $ref: './jobEngine-scopeId-jobId-executionId.yaml#/paths/~1resume-execution~1{scopeId}~1{jobId}~1{executionId}'
+  /stop-execution/{scopeId}/{jobId}/{executionId}:
+    $ref: './jobEngine-scopeId-jobId-executionId.yaml#/paths/~1stop-execution~1{scopeId}~1{jobId}~1{executionId}'
+
+components:
+  parameters:
+    scopeId:
+      name: scopeId
+      in: path
+      description: |
+        The ID of the Scope where to perform the operation.
+      schema:
+          $ref: '#/components/schemas/kapuaId'
+      required: true
+  schemas:
+    kapuaId:
+      type: string
+      pattern: '[A-Za-z0-9-_=]+'
+      description: The standard format for any ID in Kapua. It's encoded as a [base64url URL- and filename-safe (RFC 4648 §5)](https://tools.ietf.org/html/rfc4648#section-5)
+    kapuaError:
+      description: The base object to represent an Error
+      properties:
+        message:
+          type: string
+          description: An extended description of the error that occurred when performing the operation
+        kapuaErrorCode:
+          type: string
+          description: An human readable error code that can be used to
+  responses:
+    ### Errors ###
+    kapuaError:
+      description: An error occurred while performing the request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/kapuaError'
+    entityNotFound:
+      description: The desired entity could not be found
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/responses/kapuaError/content/application~1json/schema'
+              - properties:
+                  entityType:
+                    description: The type of the entity that could not be found
+                    type: string
+                  entityId:
+                    description: The ID of the entity that could not be found
+                    type: string
+    illegalArgument:
+      description: An illegal value has been passes to the operation
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/kapuaError'
+              - properties:
+                  argumentName:
+                    description: The name of the argument who holds an illegal value
+                    type: string
+                  argumentValue:
+                    description: The illegal value passed to the operation
+                    type: string
+    illegalNullArgument:
+      description: An illegal null argument has been passed to the operation
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/kapuaError'
+              - properties:
+                  argumentName:
+                    type: string
+                    description: The name of the argument who holds an illegal null value
+    subjectUnauthorized:
+      description: The user performing the operation does not have the required permissions
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/kapuaError'
+              - properties:
+                  permission:
+                    description: The permission that is required to perform the operation, and that the current user is missing
+                    type: string
+    unauthenticated:
+      description: The provided AccessToken could not be found, or no AccessToken has been provided
+  securitySchemes:
+    kapuaToken:
+      description: The default AccessToken Security Scheme. A [JWT](https://jwt.io) is used to represent the claims of a user
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - kapuaToken: []
+
+x-explorer-enabled: false
+x-samples-languages:
+  - java
+  - python
+  - node
+  - javascript
+  - ruby
+  - curl

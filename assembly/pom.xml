@@ -38,6 +38,7 @@
 
         <module>broker</module>
         <module>api</module>
+        <module>job-engine</module>
     </modules>
 
     <dependencyManagement>

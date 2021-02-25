@@ -29,7 +29,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-rest-api-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-endpoint-api</artifactId>
@@ -83,6 +82,10 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-engine-api</artifactId>
         </dependency>
     </dependencies>
 </project>

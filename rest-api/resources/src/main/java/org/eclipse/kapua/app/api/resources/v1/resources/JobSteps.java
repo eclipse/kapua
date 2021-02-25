@@ -13,6 +13,7 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,18 +22,23 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.CountResult;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.EntityId;
-import org.eclipse.kapua.app.api.resources.v1.resources.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
+import org.eclipse.kapua.app.api.core.model.CountResult;
+import org.eclipse.kapua.app.api.core.model.EntityId;
+import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepAttributes;
+import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
@@ -50,10 +56,14 @@ public class JobSteps extends AbstractKapuaResource {
     /**
      * Gets the {@link JobStep} list for a given {@link Job}.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param jobId   The {@link Job} id to filter results
-     * @param offset  The result set offset.
-     * @param limit   The result set limit.
+     * @param scopeId       The {@link ScopeId} in which to search results.
+     * @param jobId         The {@link Job} id to filter results
+     * @param name          The name of the {@link JobStep} to filter result
+     * @param sortParam     The name of the parameter that will be used as a sorting key
+     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
+     * @param askTotalCount Ask for the total count of the matched entities in the result
+     * @param offset        The result set offset.
+     * @param limit         The result set limit.
      * @return The {@link JobStepListResult} of all the jobs jobSteps associated to the current selected job.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
@@ -64,6 +74,9 @@ public class JobSteps extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
             @QueryParam("name") String name,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
@@ -76,6 +89,12 @@ public class JobSteps extends AbstractKapuaResource {
         }
 
         query.setPredicate(andPredicate);
+
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
+        }
+
+        query.setAskTotalCount(askTotalCount);
         query.setOffset(offset);
         query.setLimit(limit);
 
@@ -100,7 +119,13 @@ public class JobSteps extends AbstractKapuaResource {
             @PathParam("jobId") EntityId jobId,
             JobStepQuery query) throws KapuaException {
         query.setScopeId(scopeId);
-        query.setPredicate(query.attributePredicate(JobStepAttributes.JOB_ID, jobId));
+        QueryPredicate predicate;
+        if (query.getPredicate() != null) {
+            predicate = query.getPredicate();
+        } else {
+            predicate = query.attributePredicate(JobStepAttributes.JOB_ID, jobId);
+        }
+        query.setPredicate(predicate);
         return jobStepService.query(query);
     }
 
@@ -145,6 +170,50 @@ public class JobSteps extends AbstractKapuaResource {
             @PathParam("jobId") EntityId jobId,
             @PathParam("stepId") EntityId stepId) throws KapuaException {
         return jobStepService.find(scopeId, stepId);
+    }
+
+    /**
+     * Creates a new {@link JobStep} based on the information provided in {@link JobStepCreator}
+     * parameter.
+     *
+     * @param scopeId           The {@link ScopeId} in which to create the {@link JobStep}
+     * @param jobId             The ID of the {@link Job} to attach the {@link JobStep} to
+     * @param jobStepCreator    Provides the information for the new {@link JobStep} to be created.
+     * @return                  The newly created {@link JobStep} object.
+     * @throws                  KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+
+    @POST
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response create(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("jobId") EntityId jobId,
+            JobStepCreator jobStepCreator) throws KapuaException {
+        jobStepCreator.setScopeId(scopeId);
+        jobStepCreator.setJobId(jobId);
+        return returnCreated(jobStepService.create(jobStepCreator));
+    }
+
+    /**
+     * Deletes the JobStep specified by the "stepId" path parameter.
+     *
+     * @param scopeId        The ScopeId of the requested {@link JobStep}.
+     * @param stepId         The id of the JobStep to be deleted.
+     * @return               HTTP 201 if operation has completed successfully.
+     * @throws               KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+
+    @DELETE
+    @Path("{stepId}")
+    public Response deleteJobStep(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("stepId") EntityId stepId) throws KapuaException {
+        jobStepService.delete(scopeId, stepId);
+
+        return returnNoContent();
     }
 
 }

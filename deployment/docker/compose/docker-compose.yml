@@ -83,3 +83,21 @@ services:
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
       - LOGBACK_LOG_LEVEL
+  job-engine:
+    image: kapua/kapua-job-engine:${IMAGE_VERSION}
+    expose:
+      - 8080
+    depends_on:
+      - broker
+      - db
+      - events-broker
+    environment:
+      - KAPUA_DISABLE_SSL
+      - KAPUA_DISABLE_DATASTORE
+      - KAPUA_CA
+      - KAPUA_CRT
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
+      - LOGBACK_LOG_LEVEL

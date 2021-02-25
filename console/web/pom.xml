@@ -114,11 +114,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-engine-jbatch</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-engine-remote</artifactId>
+            <artifactId>kapua-job-engine-client</artifactId>
         </dependency>
 
         <dependency>
@@ -238,6 +234,10 @@
             <groupId>com.allen-sauer.gwt.log</groupId>
             <artifactId>gwt-log</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-rest-api-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -306,24 +306,6 @@
                                     <groupId>org.eclipse.kapua</groupId>
                                     <artifactId>kapua-console-core</artifactId>
                                     <includes>**/*_template.html</includes>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${site.basedir}/WEB-INF/classes/</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>Copy jBatch configuration files</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.eclipse.kapua</groupId>
-                                    <artifactId>kapua-job-engine-jbatch</artifactId>
-                                    <includes>**/batch-services.properties</includes>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${site.basedir}/WEB-INF/classes/</outputDirectory>
                                 </artifactItem>
