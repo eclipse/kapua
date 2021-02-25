@@ -63,6 +63,17 @@ services:
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
       - LOGBACK_LOG_LEVEL
+      - KAPUA_CONSOLE_URL
+      - OPENID_JWT_ISSUER
+      - OPENID_CLIENT_ID
+      - CLIENT_SECRET
+      - JWT_AUDIENCE
+      - OPENID_AUTH_ENDPOINT
+      - OPENID_TOKEN_ENDPOINT
+      - OPENID_LOGOUT_ENDPOINT
+      - KEYCLOAK_URL
+      - KEYCLOAK_CLIENT_ID
+      - KEYCLOAK_REALM
   kapua-api:
     image: kapua/kapua-api:${IMAGE_VERSION}
     ports:
