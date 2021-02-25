@@ -36,28 +36,12 @@ public class JobEngine extends AbstractKapuaResource {
 
     @POST
     @Path("{jobId}/_start")
-    public void startJob(
-            @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("jobId") EntityId jobId) throws KapuaException {
-        jobEngineService.startJob(scopeId, jobId);
-    }
-
-    @POST
-    @Path("{jobId}/_startWithOptions")
     @Consumes(MediaType.APPLICATION_JSON)
     public void startJob(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId,
             JobStartOptions jobStartOptions) throws KapuaException {
         jobEngineService.startJob(scopeId, jobId, jobStartOptions);
-    }
-
-    @POST
-    @Path("{jobId}/_cleanData")
-    public void cleanJobData(
-            @PathParam("scopeId") ScopeId scopeId,
-            @PathParam("jobId") EntityId jobId) throws KapuaException {
-        jobEngineService.cleanJobData(scopeId, jobId);
     }
 
     @POST

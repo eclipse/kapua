@@ -260,10 +260,6 @@ paths:
   ### Job Engine ###
   /{scopeId}/jobs/{jobId}/_start:
     $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_start'
-  /{scopeId}/jobs/{jobId}/_startWithOptions:
-    $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_startWithOptions'
-  /{scopeId}/jobs/{jobId}/_cleanData:
-    $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_cleanData'
   /{scopeId}/jobs/{jobId}/_stop:
     $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_stop'
   /{scopeId}/jobs/{jobId}/_isRunning:
