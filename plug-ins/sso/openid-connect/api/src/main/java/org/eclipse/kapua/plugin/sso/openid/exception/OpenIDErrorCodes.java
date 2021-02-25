@@ -32,11 +32,11 @@ public enum OpenIDErrorCodes implements KapuaErrorCode {
     LOGOUT_URI_ERROR,
 
     /**
-     * An error occurred while getting the access token.
+     * An error occurred while getting the tokens.
      *
      * @since 1.2.0
      */
-    ACCESS_TOKEN_ERROR,
+    TOKEN_ERROR,
 
     /**
      * An error occurred while extracting the Jwt.

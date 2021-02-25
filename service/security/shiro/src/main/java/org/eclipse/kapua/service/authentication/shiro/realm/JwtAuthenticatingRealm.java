@@ -100,7 +100,7 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
         //
         // Extract credentials
         JwtCredentialsImpl token = (JwtCredentialsImpl) authenticationToken;
-        String jwt = token.getJwt();
+        String idToken = token.getIdToken();
 
         //
         // Get Services
@@ -115,7 +115,7 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
             throw new ShiroException("Error while getting services!", kre);
         }
 
-        final String id = extractExternalId(jwt);
+        final String id = extractExternalId(idToken);
         logger.debug("JWT contains external id: {}", id);
 
         // Get the associated user by external id
@@ -170,7 +170,7 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
 
         // Create credential
 
-        final Credential credential = new CredentialImpl(user.getScopeId(), user.getId(), CredentialType.JWT, jwt, CredentialStatus.ENABLED, null);
+        final Credential credential = new CredentialImpl(user.getScopeId(), user.getId(), CredentialType.JWT, idToken, CredentialStatus.ENABLED, null);
 
         // Build AuthenticationInfo
 

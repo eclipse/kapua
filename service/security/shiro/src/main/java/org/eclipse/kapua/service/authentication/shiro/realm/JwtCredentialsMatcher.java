@@ -42,8 +42,8 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
     @Override
     public boolean doCredentialsMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
 
-        final String jwt = ((JwtCredentialsImpl) authenticationToken).getJwt();
-        if (jwt == null) {
+        final String idToken = ((JwtCredentialsImpl) authenticationToken).getIdToken();
+        if (idToken == null) {
             // we don't have a JWT
             return false;
         }
@@ -61,13 +61,13 @@ public class JwtCredentialsMatcher implements CredentialsMatcher {
 
         // Match token with info
 
-        if (!jwt.equals(credentials.getCredentialKey())) {
+        if (!idToken.equals(credentials.getCredentialKey())) {
             return false;
         }
 
         try {
             // validate the JWT
-            return this.jwtProcessor.validate(jwt);
+            return this.jwtProcessor.validate(idToken);
         } catch (Exception e) {
             logger.error("Error while validating JWT credentials", e);
         }

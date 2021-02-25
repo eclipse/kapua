@@ -23,14 +23,14 @@ import org.junit.experimental.categories.Category;
 public class JwtCredentialsTest extends Assert {
 
     JwtCredentialsImpl jwtCredentialsImpl;
-    String[] jwts, idsToken, newJwts, newIdsToken;
+    String[] accessTokens, idsToken, newAccessTokens, newIdsToken;
 
     @Before
     public void initialize() {
-        jwtCredentialsImpl = new JwtCredentialsImpl("jwt", "idToken");
+        jwtCredentialsImpl = new JwtCredentialsImpl("accessToken", "idToken");
         idsToken = new String[]{null, "", "   ID tokenID 747.,.,,,82(*&%<> ", "   token((11@-", "id)__.,TOKen65", "TOKENid543$#%&t   oken", "to-ken_id++=,", "id,,,,id3$^&"};
-        jwts = new String[]{null, "", "  j_w=t110.,<> jwt", "(!!)432j&^w$#3t", "##<>/.JWT    ", "__J!#W(-8T    ", "jw&* 990t  ", "jwt987)_=;'''     .", "jwt JWT-123"};
-        newJwts = new String[]{null, "", "new_Jwt1122#$%", "   JWT)(..,,new", "NEW_jwt ./??)_)*", "<> 1111      ", "jwttt&^$$##Z||'", "%%%KEY NEW-JWT11"};
+        accessTokens = new String[]{null, "", "  j_w=t110.,<> jwt", "(!!)432j&^w$#3t", "##<>/.JWT    ", "__J!#W(-8T    ", "jw&* 990t  ", "jwt987)_=;'''     .", "jwt JWT-123"};
+        newAccessTokens = new String[]{null, "", "new_Jwt1122#$%", "   JWT)(..,,new", "NEW_jwt ./??)_)*", "<> 1111      ", "jwttt&^$$##Z||'", "%%%KEY NEW-JWT11"};
         newIdsToken = new String[]{null, "", "NEW tokenID0000@!!,,,#", "!@#00tokenID new.", " new id TOK --EN-44<>", "pA_ss0###woE**9()", "    tokenID new tokenID  12344*&^%"};
     }
 
@@ -46,7 +46,7 @@ public class JwtCredentialsTest extends Assert {
         JwtCredentialsImpl second = new JwtCredentialsImpl(first);
 
         assertNotEquals("JwtCredentialImpl", first, second);
-        assertEquals("JwtCredential.jwt", first.getJwt(), second.getJwt());
+        assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
         assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
     }
 
@@ -57,7 +57,7 @@ public class JwtCredentialsTest extends Assert {
         JwtCredentialsImpl second = new JwtCredentialsImpl(first);
 
         assertNotEquals("JwtCredentialImpl", first, second);
-        assertEquals("JwtCredential.jwt", first.getJwt(), second.getJwt());
+        assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
         assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
     }
 
@@ -78,7 +78,7 @@ public class JwtCredentialsTest extends Assert {
         JwtCredentialsImpl second = JwtCredentialsImpl.parse(first);
 
         assertEquals("JwtCredentialImpl", first, second);
-        assertEquals("JwtCredential.jwt", first.getJwt(), second.getJwt());
+        assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
         assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
     }
 
@@ -89,31 +89,31 @@ public class JwtCredentialsTest extends Assert {
         JwtCredentialsImpl second = JwtCredentialsImpl.parse(first);
 
         assertNotEquals("JwtCredentialImpl", first, second);
-        assertEquals("JwtCredential.jwt", first.getJwt(), second.getJwt());
+        assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
         assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
     }
 
 
     @Test
     public void jwtCredentialsImplTest() {
-        for (String jwt : jwts) {
+        for (String accessToken : accessTokens) {
             for (String idToken : idsToken) {
-                JwtCredentialsImpl jwtCredentialsImpl = new JwtCredentialsImpl(jwt, idToken);
-                assertEquals("Expected and actual values should be the same.", jwt, jwtCredentialsImpl.getJwt());
+                JwtCredentialsImpl jwtCredentialsImpl = new JwtCredentialsImpl(accessToken, idToken);
+                assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentialsImpl.getAccessToken());
                 assertEquals("Expected and actual values should be the same.", idToken, jwtCredentialsImpl.getIdToken());
-                assertEquals("Expected and actual values should be the same.", jwt, jwtCredentialsImpl.getPrincipal());
-                assertEquals("Expected and actual values should be the same.", jwt, jwtCredentialsImpl.getCredentials());
+                assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentialsImpl.getPrincipal());
+                assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentialsImpl.getCredentials());
             }
         }
     }
 
     @Test
     public void setAndGetJwtPrincipalAndCredentialTest() {
-        for (String newJwt : newJwts) {
-            jwtCredentialsImpl.setJwt(newJwt);
-            assertEquals("Expected and actual values should be the same.", newJwt, jwtCredentialsImpl.getJwt());
-            assertEquals("Expected and actual values should be the same.", newJwt, jwtCredentialsImpl.getPrincipal());
-            assertEquals("Expected and actual values should be the same.", newJwt, jwtCredentialsImpl.getCredentials());
+        for (String newAccessToken : newAccessTokens) {
+            jwtCredentialsImpl.setAccessToken(newAccessToken);
+            assertEquals("Expected and actual values should be the same.", newAccessToken, jwtCredentialsImpl.getAccessToken());
+            assertEquals("Expected and actual values should be the same.", newAccessToken, jwtCredentialsImpl.getPrincipal());
+            assertEquals("Expected and actual values should be the same.", newAccessToken, jwtCredentialsImpl.getCredentials());
         }
     }
 
@@ -127,22 +127,22 @@ public class JwtCredentialsTest extends Assert {
 }
 
 class JwtCredentialsAnother implements JwtCredentials {
-    private String jwt;
+    private String accessToken;
     private String idToken;
 
-    public JwtCredentialsAnother(String jwt, String idToken) {
-        this.jwt = jwt;
+    public JwtCredentialsAnother(String accessToken, String idToken) {
+        this.accessToken = accessToken;
         this.idToken = idToken;
     }
 
     @Override
-    public String getJwt() {
-        return jwt;
+    public String getAccessToken() {
+        return accessToken;
     }
 
     @Override
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     @Override
