@@ -48,10 +48,13 @@ For further information take a look at the `sso.md` manual located in the `docs/
 It is also possible to use a generic OpenID Connect provider, by providing to the console the following environment 
 variables:
 
-- `OPENID_JWT_ISSUER` : the base URL to the OpenID server provider.
-- `OPENID_AUTH_ENDPOINT` :  the endpoint URL to the authentication API.
-- `OPENID_TOKEN_ENDPOINT` : the endpoint URL to the token API.
-- `OPENID_LOGOUT_ENDPOINT` : the URL to the logout endpoint.
+- `OPENID_JWT_ISSUER` : the base URL to the OpenID Connect server provider.
+- `OPENID_CLIENT_ID` : the client id (the default value is `console`).
+- `CLIENT_SECRET` : the client secret (optional).
+- `JWT_AUDIENCE` : the JWT audience (the default value is `console`).
+- `OPENID_AUTH_ENDPOINT` : the endpoint URL to the authentication API (optional, already retrieved via well-known document).
+- `OPENID_TOKEN_ENDPOINT` : the endpoint URL to the token API (optional, already retrieved via well-known document).
+- `OPENID_LOGOUT_ENDPOINT` : the URL to the logout endpoint (optional, already retrieved via well-known document).
 - `KAPUA_CONSOLE_URL` : the `kapua-console` URL.
 
 ### Tomcat images
