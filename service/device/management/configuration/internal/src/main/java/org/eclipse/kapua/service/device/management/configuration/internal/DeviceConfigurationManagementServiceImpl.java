@@ -42,8 +42,6 @@ import org.eclipse.kapua.service.device.management.message.response.KapuaRespons
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
 import java.util.Date;
 
 /**
@@ -184,7 +182,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
                     deviceId,
                     XmlUtil.unmarshal(xmlDeviceConfig, DeviceConfigurationImpl.class),
                     timeout);
-        } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException e) {
+        } catch (JAXBException | SAXException e) {
             throw new KapuaIllegalArgumentException("xmlDeviceConfig", xmlDeviceConfig);
         }
     }

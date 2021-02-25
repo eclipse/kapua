@@ -25,8 +25,6 @@ import javax.batch.runtime.Metric;
 import javax.batch.runtime.context.StepContext;
 import javax.xml.bind.DatatypeConverter;
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
 import java.io.Serializable;
 import java.util.Properties;
 
@@ -93,7 +91,7 @@ public class StepContextWrapper {
             } else {
                 try {
                     stepProperty = XmlUtil.unmarshal(stepPropertyString, type);
-                } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException e) {
+                } catch (JAXBException | SAXException e) {
                     throw new KapuaIllegalArgumentException(stepPropertyName, stepPropertyString);
                 }
             }

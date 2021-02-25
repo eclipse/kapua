@@ -19,14 +19,11 @@ import org.eclipse.kapua.event.ServiceEventBusException;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
 
 /**
- * Xml event bus marshaller implementation
+ * Json {@link ServiceEventMarshaler} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class JsonServiceEventMarshaler implements ServiceEventMarshaler {
 
@@ -41,7 +38,7 @@ public class JsonServiceEventMarshaler implements ServiceEventMarshaler {
     public ServiceEvent unmarshal(String message) throws KapuaException {
         try {
             return XmlUtil.unmarshalJson(message, ServiceEvent.class, null);
-        } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException e) {
+        } catch (JAXBException | SAXException e) {
             throw new ServiceEventBusException(e);
         }
     }
@@ -50,9 +47,8 @@ public class JsonServiceEventMarshaler implements ServiceEventMarshaler {
     public String marshal(ServiceEvent kapuaEvent) throws ServiceEventBusException {
         try {
             return XmlUtil.marshalJson(kapuaEvent);
-        } catch (JAXBException | IOException e) {
+        } catch (JAXBException e) {
             throw new ServiceEventBusException(e);
         }
     }
-
 }

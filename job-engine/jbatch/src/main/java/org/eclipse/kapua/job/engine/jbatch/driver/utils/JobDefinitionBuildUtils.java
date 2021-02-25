@@ -36,7 +36,6 @@ import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.JAXBException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -65,7 +64,7 @@ public class JobDefinitionBuildUtils {
         return listeners;
     }
 
-    public static JSLProperties buildJobProperties(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull JobStartOptions jobStartOptions) throws JAXBException, IOException {
+    public static JSLProperties buildJobProperties(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull JobStartOptions jobStartOptions) throws JAXBException {
 
         List<Property> jslPropertyList = new ArrayList<>();
 

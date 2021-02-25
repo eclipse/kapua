@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
@@ -63,7 +62,7 @@ public class CamelKapuaDefaultRouter {
             endPointContainer = XmlUtil.unmarshal(configurationFileReader, EndPointContainer.class);
             LOG.info("Default Camel routing | Found {} parent endpoints in the route", endPointContainer.getEndPoints().size());
             logLoadedEndPoints(endPointContainer.getEndPoints());
-        } catch (XMLStreamException | JAXBException | SAXException | IOException e) {
+        } catch (JAXBException | SAXException | IOException e) {
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, "Cannot load configuration!");
         }
 

@@ -28,7 +28,6 @@ import org.xml.sax.SAXException;
 import javax.batch.runtime.BatchStatus;
 import javax.batch.runtime.context.JobContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
 import java.util.Properties;
 
 /**
@@ -87,7 +86,7 @@ public class JobContextWrapper {
 
         try {
             return XmlUtil.unmarshal(jobTargetSublistString, JobTargetSublist.class);
-        } catch (JAXBException | XMLStreamException | SAXException e) {
+        } catch (JAXBException | SAXException e) {
             throw new ReadJobPropertyException(e, JobContextPropertyNames.JOB_TARGET_SUBLIST, jobTargetSublistString);
         }
     }
