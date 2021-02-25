@@ -25,23 +25,23 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "jwtCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "jwt", "idToken" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newJwtCredentials")
+@XmlType(propOrder = { "accessToken", "idToken" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newJwtCredentials")
 public interface JwtCredentials extends LoginCredentials {
 
     /**
-     * Gets the Json Web Token
+     * Gets the OpenID Connect accessToken
      *
      * @return
      */
-    @XmlElement(name = "jwt")
-    String getJwt();
+    @XmlElement(name = "accessToken")
+    String getAccessToken();
 
     /**
-     * Set the Json Web Token
+     * Set the OpenID Connect accessToken
      *
-     * @param jwt
+     * @param accessToken
      */
-    void setJwt(String jwt);
+    void setAccessToken(String accessToken);
 
     /**
      * Gets the OpenID Connect idToken

@@ -40,8 +40,8 @@ public class CredentialsFactoryImpl implements CredentialsFactory {
     }
 
     @Override
-    public JwtCredentials newJwtCredentials(String jwt, String idToken) {
-        return new JwtCredentialsImpl(jwt, idToken);
+    public JwtCredentials newJwtCredentials(String accessToken, String idToken) {
+        return new JwtCredentialsImpl(accessToken, idToken);
     }
 
     @Override
