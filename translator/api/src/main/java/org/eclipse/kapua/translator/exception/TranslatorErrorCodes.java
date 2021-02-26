@@ -20,21 +20,37 @@ import org.eclipse.kapua.KapuaErrorCode;
  * @since 1.0.0
  */
 public enum TranslatorErrorCodes implements KapuaErrorCode {
+
     /**
      * @see InvalidMessageException
      * @since 1.0.0
      */
     INVALID_MESSAGE,
+
     /**
      * @see InvalidChannelException
      * @since 1.0.0
      */
     INVALID_CHANNEL,
+
     /**
      * @see InvalidPayloadException
      * @since 1.0.0
      */
     INVALID_PAYLOAD,
+
+    /**
+     * @see InvalidBodyEncodingException
+     * @since 1.5.0
+     */
+    INVALID_BODY_ENCODING,
+
+    /**
+     * @see InvalidBodyContentException
+     * @since 1.5.0
+     */
+    INVALID_BODY_CONTENT,
+
     /**
      * @see TranslatorNotFoundException
      * @since 1.2.0
@@ -72,6 +88,4 @@ public enum TranslatorErrorCodes implements KapuaErrorCode {
      */
     @Deprecated
     INVALID_BODY
-
-
 }

@@ -19,10 +19,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Device bundle entity definition.<br>
+ * {@link DeviceBundle} definition.
+ * <p>
  * This entity is used to get information about bundles installed in the device.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "bundle")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -30,62 +31,70 @@ import javax.xml.bind.annotation.XmlType;
 public interface DeviceBundle {
 
     /**
-     * Get the bundle identifier
+     * Gets the bundle identifier.
      *
-     * @return
+     * @return The bundle identifier.
+     * @since 1.0.0
      */
     @XmlElement(name = "id")
     long getId();
 
     /**
-     * Set the bundle identifier
+     * Sets the bundle identifier.
      *
-     * @param id
+     * @param id The bundle identifier.
+     * @since 1.0.0
      */
     void setId(long id);
 
     /**
-     * Get the bundle name
+     * Gets the name.
      *
-     * @return
+     * @return The name.
+     * @since 1.0.0
      */
     @XmlElement(name = "name")
     String getName();
 
     /**
-     * Set the bundle name
+     * Sets the name.
      *
-     * @param name
+     * @param name The name.
+     * @since 1.0.0
      */
     void setName(String name);
 
     /**
-     * Get the bundle state
+     * Gets the state.
      *
-     * @return
+     * @return The state.
+     * @since 1.0.0
      */
     @XmlElement(name = "state")
     String getState();
 
     /**
-     * Set the bundle state
+     * Sets the state.
      *
-     * @param state
+     * @param state The state.
+     * @since 1.0.0
      */
     void setState(String state);
 
     /**
-     * Get the bundle version
+     * Gets the bundle version.
      *
-     * @return
+     * @return The version.
+     * @since 1.0.0
      */
     @XmlElement(name = "version")
     String getVersion();
 
     /**
-     * Set the bundle version
+     * Sets the version.
      *
-     * @param version
+     * @param version The version.
+     * @since 1.0.0
      */
     void setVersion(String version);
 

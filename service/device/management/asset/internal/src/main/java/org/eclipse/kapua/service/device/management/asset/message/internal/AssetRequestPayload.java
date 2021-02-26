@@ -20,38 +20,48 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
-import org.xml.sax.SAXException;
 
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-import java.io.UnsupportedEncodingException;
+import javax.validation.constraints.NotNull;
 
 /**
- * Device bundle information request payload.
+ * {@link DeviceAssets} {@link KapuaRequestPayload} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class AssetRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload {
+
+    private static final long serialVersionUID = -4372614820336612199L;
 
     private static final DeviceAssetFactory DEVICE_ASSET_FACTORY = KapuaLocator.getInstance().getFactory(DeviceAssetFactory.class);
 
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
-    public DeviceAssets getDeviceAssets() throws JAXBException, XMLStreamException, FactoryConfigurationError, SAXException, UnsupportedEncodingException {
-        DeviceAssets deviceAssets = DEVICE_ASSET_FACTORY.newAssetListResult();
-
-        if (hasBody()) {
-            deviceAssets = XmlUtil.unmarshal(new String(getBody(), CHAR_ENCODING), DeviceAssets.class);
+    /**
+     * Gets the {@link DeviceAssets} from the {@link #getBody()}.
+     *
+     * @return The {@link DeviceAssets} from the {@link #getBody()}.
+     * @throws Exception if reading {@link #getBody()} errors.
+     * @since 1.0.0
+     */
+    public DeviceAssets getDeviceAssets() throws Exception {
+        if (!hasBody()) {
+            return DEVICE_ASSET_FACTORY.newAssetListResult();
         }
 
-        return deviceAssets;
+        String bodyString = new String(getBody(), CHAR_ENCODING);
+        return XmlUtil.unmarshal(bodyString, DeviceAssets.class);
     }
 
-    public void setDeviceAssets(DeviceAssets deviceAssets) throws JAXBException, UnsupportedEncodingException {
-        if (deviceAssets != null) {
-            setBody(XmlUtil.marshal(deviceAssets).getBytes(CHAR_ENCODING));
-        }
+    /**
+     * Sets the {@link DeviceAssets} in the {@link #getBody()}.
+     *
+     * @param deviceAssets The {@link DeviceAssets} in the {@link #getBody()}.
+     * @throws Exception if writing errors.
+     * @since 1.0.0
+     */
+    public void setDeviceAssets(@NotNull DeviceAssets deviceAssets) throws Exception {
+        String bodyString = XmlUtil.marshal(deviceAssets);
+        setBody(bodyString.getBytes(CHAR_ENCODING));
     }
 
 }

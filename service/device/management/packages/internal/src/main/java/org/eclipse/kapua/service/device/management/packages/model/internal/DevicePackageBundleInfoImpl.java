@@ -12,43 +12,42 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model.internal;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfo;
 
 /**
- * Device package bundle information.
+ * {@link DevicePackageBundleInfo} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
-@XmlRootElement(name = "bundleInfo")
-@XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "version" })
 public class DevicePackageBundleInfoImpl implements DevicePackageBundleInfo {
 
-    @XmlElement(name = "name")
     public String name;
-
-    @XmlElement(name = "version")
     public String version;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    public DevicePackageBundleInfoImpl() {
+    }
+
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
 
+    @Override
     public String getVersion() {
         return version;
     }
 
+    @Override
     public void setVersion(String version) {
         this.version = version;
     }

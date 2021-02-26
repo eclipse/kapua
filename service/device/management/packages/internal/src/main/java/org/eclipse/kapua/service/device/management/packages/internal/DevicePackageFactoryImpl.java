@@ -26,16 +26,20 @@ import org.eclipse.kapua.service.device.management.packages.model.download.inter
 import org.eclipse.kapua.service.device.management.packages.model.download.internal.DevicePackageDownloadOperationImpl;
 import org.eclipse.kapua.service.device.management.packages.model.download.internal.DevicePackageDownloadOptionsImpl;
 import org.eclipse.kapua.service.device.management.packages.model.download.internal.DevicePackageDownloadRequestImpl;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
+import org.eclipse.kapua.service.device.management.packages.model.install.internal.DevicePackageInstallOperationImpl;
 import org.eclipse.kapua.service.device.management.packages.model.install.internal.DevicePackageInstallOptionsImpl;
 import org.eclipse.kapua.service.device.management.packages.model.install.internal.DevicePackageInstallRequestImpl;
 import org.eclipse.kapua.service.device.management.packages.model.internal.DevicePackageBundleInfoImpl;
 import org.eclipse.kapua.service.device.management.packages.model.internal.DevicePackageBundleInfosImpl;
 import org.eclipse.kapua.service.device.management.packages.model.internal.DevicePackageImpl;
 import org.eclipse.kapua.service.device.management.packages.model.internal.DevicePackagesImpl;
+import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
+import org.eclipse.kapua.service.device.management.packages.model.uninstall.internal.DevicePackageUninstallOperationImpl;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.internal.DevicePackageUninstallOptionsImpl;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.internal.DevicePackageUninstallRequestImpl;
 
@@ -81,7 +85,7 @@ public class DevicePackageFactoryImpl implements DevicePackageFactory {
     }
 
     @Override
-    public DevicePackageDownloadOptions newDevicePackageDownloadOptions() {
+    public DevicePackageDownloadOptions newPackageDownloadOptions() {
         return new DevicePackageDownloadOptionsImpl();
     }
 
@@ -99,8 +103,13 @@ public class DevicePackageFactoryImpl implements DevicePackageFactory {
     }
 
     @Override
-    public DevicePackageInstallOptions newDevicePackageInstallOptions() {
+    public DevicePackageInstallOptions newPackageInstallOptions() {
         return new DevicePackageInstallOptionsImpl();
+    }
+
+    @Override
+    public DevicePackageInstallOperation newPackageInstallOperation() {
+        return new DevicePackageInstallOperationImpl();
     }
 
     //
@@ -112,7 +121,12 @@ public class DevicePackageFactoryImpl implements DevicePackageFactory {
     }
 
     @Override
-    public DevicePackageUninstallOptions newDevicePackageUninstallOptions() {
+    public DevicePackageUninstallOptions newPackageUninstallOptions() {
         return new DevicePackageUninstallOptionsImpl();
+    }
+
+    @Override
+    public DevicePackageUninstallOperation newPackageUninstallOperation() {
+        return new DevicePackageUninstallOperationImpl();
     }
 }

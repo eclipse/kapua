@@ -24,42 +24,38 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.List;
 
 /**
- * {@link DeviceAsset} entity definition.<br>
+ * {@link DeviceAsset} definition.
+ * <p>
  * This entity is used to get information about assets installed in the device.
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "deviceAsset")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {//
-        "name", //
-        "channels" //
-}, //
-        factoryClass = DeviceAssetXmlRegistry.class, //
-        factoryMethod = "newDeviceAsset")
+@XmlType(factoryClass = DeviceAssetXmlRegistry.class, factoryMethod = "newDeviceAsset")
 public interface DeviceAsset {
 
     /**
-     * Get the asset name
+     * Gets the name.
      *
-     * @return The asset name
+     * @return The name.
      * @since 1.0.0
      */
     @XmlElement(name = "name")
     String getName();
 
     /**
-     * Set the asset name
+     * Sets the name.
      *
-     * @param name The name to set
+     * @param name The name.
      * @since 1.0.0
      */
     void setName(String name);
 
     /**
-     * Gets the channels available for this {@link DeviceAsset}
+     * Gets the {@link DeviceAssetChannel} available.
      *
-     * @return The channels available for this {@link DeviceAsset}
+     * @return The {@link DeviceAssetChannel} available.
      * @since 1.0.0
      */
     @XmlElementWrapper(name = "channels")
@@ -68,9 +64,9 @@ public interface DeviceAsset {
     List<DeviceAssetChannel> getChannels();
 
     /**
-     * Sets the channels for this {@link DeviceAsset}.
+     * Sets the {@link DeviceAssetChannel} available.
      *
-     * @param channels The channels to set for this {@link DeviceAsset}.
+     * @param channels The {@link DeviceAssetChannel} available.
      * @since 1.0.0
      */
     void setChannels(List<DeviceAssetChannel> channels);

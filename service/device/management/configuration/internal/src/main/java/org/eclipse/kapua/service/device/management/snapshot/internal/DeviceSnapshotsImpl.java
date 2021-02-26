@@ -12,27 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.snapshot.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Device snapshots entity implementation.
+ * {@link DeviceSnapshots} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
-@XmlRootElement(name = "snapshotIds")
 public class DeviceSnapshotsImpl implements DeviceSnapshots {
 
     private static final long serialVersionUID = -7831418953347834946L;
 
-    @XmlElement(name = "snapshotId")
     private List<DeviceSnapshot> snapshotIds;
 
     @Override

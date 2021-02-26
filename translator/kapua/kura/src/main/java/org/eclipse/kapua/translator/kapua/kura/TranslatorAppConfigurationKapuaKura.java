@@ -30,7 +30,6 @@ import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraReques
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
-import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationImpl;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestChannel;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestMessage;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestPayload;
@@ -85,15 +84,9 @@ public class TranslatorAppConfigurationKapuaKura extends AbstractTranslatorKapua
             KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
             if (kapuaPayload.hasBody()) {
-                DeviceConfiguration kapuaDeviceConfiguration;
-                try {
-                    kapuaDeviceConfiguration = XmlUtil.unmarshal(new String(kapuaPayload.getBody()), DeviceConfigurationImpl.class);
-                } catch (Exception e) {
-                    throw new InvalidPayloadException(e, kapuaPayload);
-                }
+                DeviceConfiguration kapuaDeviceConfiguration = kapuaPayload.getDeviceConfigurations();
 
                 KuraDeviceConfiguration kuraDeviceConfiguration = translate(kapuaDeviceConfiguration);
-
                 byte[] body;
                 try {
                     body = XmlUtil.marshal(kuraDeviceConfiguration).getBytes();

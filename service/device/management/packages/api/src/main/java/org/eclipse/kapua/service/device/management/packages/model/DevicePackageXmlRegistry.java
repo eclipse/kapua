@@ -15,7 +15,10 @@ package org.eclipse.kapua.service.device.management.packages.model;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.model.download.AdvancedPackageDownloadOptions;
+import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOperation;
+import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 
 import javax.xml.bind.annotation.XmlRegistry;
@@ -80,7 +83,6 @@ public class DevicePackageXmlRegistry {
         return DEVICE_PACKAGE_FACTORY.newPackageDownloadRequest();
     }
 
-
     /**
      * Creates a new device package download request instance
      *
@@ -91,6 +93,25 @@ public class DevicePackageXmlRegistry {
         return DEVICE_PACKAGE_FACTORY.newAdvancedPackageDownloadOptions();
     }
 
+    /**
+     * Instantiates a new {@link DevicePackageDownloadOperation}.
+     *
+     * @return The newly instantiated {@link DevicePackageDownloadOperation}.
+     * @since 1.5.0
+     */
+    public DevicePackageDownloadOperation newDevicePackageDownloadOperation() {
+        return DEVICE_PACKAGE_FACTORY.newPackageDownloadOperation();
+    }
+
+    /**
+     * Instantiates a new {@link DevicePackageInstallOperation}.
+     *
+     * @return The newly instantiated {@link DevicePackageInstallOperation}.
+     * @since 1.5.0
+     */
+    public DevicePackageInstallOperation newDevicePackageInstallOperation() {
+        return DEVICE_PACKAGE_FACTORY.newPackageInstallOperation();
+    }
 
     /**
      * Creates a new device package uninstall request instance
@@ -100,5 +121,15 @@ public class DevicePackageXmlRegistry {
      */
     public DevicePackageUninstallRequest newDevicePackageUninstallRequest() {
         return DEVICE_PACKAGE_FACTORY.newPackageUninstallRequest();
+    }
+
+    /**
+     * Instantiates a new {@link DevicePackageUninstallOperation}.
+     *
+     * @return The newly instantiated {@link DevicePackageUninstallOperation}.
+     * @since 1.5.0
+     */
+    public DevicePackageUninstallOperation newDevicePackageUninstallOperation() {
+        return DEVICE_PACKAGE_FACTORY.newPackageUninstallOperation();
     }
 }

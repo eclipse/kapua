@@ -20,8 +20,9 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
- * XML adapter for {@link DeviceAssetChannel}.
+ * {@link DeviceAssetChannel} {@link XmlAdapter} implementation.
  *
+ * @see javax.xml.bind.annotation.adapters.XmlAdapter
  * @since 1.0.0
  */
 public class DeviceAssetChannelXmlAdapter extends XmlAdapter<XmlAdaptedDeviceAssetChannel, DeviceAssetChannel> {

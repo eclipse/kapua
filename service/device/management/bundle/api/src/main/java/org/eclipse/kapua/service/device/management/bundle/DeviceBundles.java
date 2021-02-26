@@ -21,18 +21,19 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
- * Device bundles list entity definition.
+ * {@link DeviceBundles} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
-@XmlType(propOrder = { "bundles" }, factoryClass = DeviceBundleXmlRegistry.class, factoryMethod = "newBundleListResult")
+@XmlType(factoryClass = DeviceBundleXmlRegistry.class, factoryMethod = "newBundleListResult")
 @XmlRootElement(name = "bundles")
 public interface DeviceBundles extends KapuaSerializable {
 
     /**
-     * Get the device bundles list
+     * Gets the {@link List} of {@link DeviceBundle}
      *
-     * @return
+     * @return The {@link List} of {@link DeviceBundle}
+     * @since 1.0.0
      */
     @XmlElement(name = "bundle")
     List<DeviceBundle> getBundles();

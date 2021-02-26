@@ -13,12 +13,22 @@
 package org.eclipse.kapua.service.device.management.packages.model.uninstall;
 
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.management.packages.model.DevicePackageXmlRegistry;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
- * Device package uninstall operation entity definition.
+ * {@link DevicePackageUninstallOperation} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
+@XmlRootElement(name = "devicePackageUninstallOperation")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = DevicePackageXmlRegistry.class, factoryMethod = "newDevicePackageUninstallOperation")
 public interface DevicePackageUninstallOperation {
 
     /**
@@ -26,6 +36,7 @@ public interface DevicePackageUninstallOperation {
      *
      * @return
      */
+    @XmlElement(name = "id")
     KapuaId getId();
 
     /**
@@ -40,6 +51,7 @@ public interface DevicePackageUninstallOperation {
      *
      * @return
      */
+    @XmlElement(name = "name")
     String getName();
 
     /**
@@ -54,6 +66,7 @@ public interface DevicePackageUninstallOperation {
      *
      * @return
      */
+    @XmlElement(name = "version")
     String getVersion();
 
     /**
@@ -68,6 +81,7 @@ public interface DevicePackageUninstallOperation {
      *
      * @return
      */
+    @XmlElement(name = "status")
     DevicePackageUninstallStatus getStatus();
 
     /**

@@ -23,11 +23,10 @@ import javax.xml.bind.annotation.XmlType;
  * Kura deployment package.
  *
  * @since 1.0
- *
  */
 @XmlRootElement(name = "package")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "version", "bundleInfos" })
+@XmlType(propOrder = {"name", "version", "bundleInfos"})
 public class KuraDeploymentPackage {
 
     @XmlElement(name = "name")
@@ -82,6 +81,10 @@ public class KuraDeploymentPackage {
      * @return
      */
     public KuraBundleInfo[] getBundleInfos() {
+        if (bundleInfos == null) {
+            bundleInfos = new KuraBundleInfo[0];
+        }
+
         return bundleInfos;
     }
 

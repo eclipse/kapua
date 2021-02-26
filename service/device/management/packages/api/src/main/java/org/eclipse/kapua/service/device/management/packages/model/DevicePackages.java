@@ -23,9 +23,9 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
- * Device packages list container definition.
+ * {@link DevicePackages} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "devicePackages")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -33,9 +33,10 @@ import java.util.List;
 public interface DevicePackages extends KapuaSerializable {
 
     /**
-     * Get the device package list
+     * Gets the {@link DevicePackage} {@link List}
      *
-     * @return
+     * @return The {@link DevicePackage} {@link List}
+     * @since 1.0.0
      */
     @XmlElement(name = "devicePackage")
     List<DevicePackage> getPackages();

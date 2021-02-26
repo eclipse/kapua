@@ -30,8 +30,6 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -73,7 +71,7 @@ public class TranslatorAppAssetKapuaKura extends AbstractTranslatorKapuaKura<Ass
             DeviceAssets deviceAssets;
             try {
                 deviceAssets = kapuaPayload.getDeviceAssets();
-            } catch (UnsupportedEncodingException | JAXBException | XMLStreamException | FactoryConfigurationError | SAXException e) {
+            } catch (UnsupportedEncodingException | JAXBException | SAXException e) {
                 throw new InvalidPayloadException(e, kapuaPayload);
             }
 

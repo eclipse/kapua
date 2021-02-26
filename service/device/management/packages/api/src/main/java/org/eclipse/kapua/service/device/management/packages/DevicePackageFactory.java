@@ -21,8 +21,10 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Advan
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
+import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 
@@ -83,7 +85,7 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
      * @return the newly created {@link DevicePackageDownloadOptions}
      * @since 1.1.0
      */
-    DevicePackageDownloadOptions newDevicePackageDownloadOptions();
+    DevicePackageDownloadOptions newPackageDownloadOptions();
 
     /**
      * Creates a new {@link AdvancedPackageDownloadOptions}
@@ -119,7 +121,15 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
      * @return the newly created {@link DevicePackageInstallOptions}
      * @since 1.1.0
      */
-    DevicePackageInstallOptions newDevicePackageInstallOptions();
+    DevicePackageInstallOptions newPackageInstallOptions();
+
+    /**
+     * Instantiates a new {@link DevicePackageInstallOperation}.
+     *
+     * @return The newly instantiated {@link DevicePackageInstallOperation}.
+     * @since 1.5.0
+     */
+    DevicePackageInstallOperation newPackageInstallOperation();
 
     //
     // Uninstall operation
@@ -139,5 +149,13 @@ public interface DevicePackageFactory extends KapuaObjectFactory {
      * @return the newly created {@link DevicePackageUninstallOptions}
      * @since 1.1.0
      */
-    DevicePackageUninstallOptions newDevicePackageUninstallOptions();
+    DevicePackageUninstallOptions newPackageUninstallOptions();
+
+    /**
+     * Instantiates a new {@link DevicePackageUninstallOperation}.
+     *
+     * @return The newly instantiated {@link DevicePackageUninstallOperation}.
+     * @since 1.5.0
+     */
+    DevicePackageUninstallOperation newPackageUninstallOperation();
 }

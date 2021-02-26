@@ -19,10 +19,9 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 
 /**
- * Device asset entity service factory implementation.
+ * {@link DeviceAssetFactory} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DeviceAssetFactoryImpl implements DeviceAssetFactory {

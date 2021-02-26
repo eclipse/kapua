@@ -168,8 +168,11 @@ import org.eclipse.kapua.service.device.management.packages.model.DevicePackageB
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfos;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageXmlRegistry;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
+import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
+import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOperation;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
@@ -436,8 +439,11 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DevicePackageBundleInfo.class,
                     DevicePackageBundleInfos.class,
                     DevicePackageDownloadRequest.class,
+                    DevicePackageDownloadOperation.class,
                     DevicePackageInstallRequest.class,
+                    DevicePackageInstallOperation.class,
                     DevicePackageUninstallRequest.class,
+                    DevicePackageUninstallOperation.class,
                     DevicePackageXmlRegistry.class,
 
                     // Device Management Requests

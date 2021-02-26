@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kura.kapua;
 
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.app.SnapshotMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
@@ -30,10 +29,7 @@ import org.eclipse.kapua.service.device.management.snapshot.message.internal.Sna
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponsePayload;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
-import org.eclipse.kapua.translator.exception.TranslatorException;
 
-import java.io.StringWriter;
 import java.util.List;
 
 /**
@@ -67,14 +63,9 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         SnapshotResponsePayload snapshotResponsePayload = super.translatePayload(kuraResponsePayload);
 
         try {
-            KuraSnapshotIds snapshotIdResult = null;
-            if (kuraResponsePayload.hasBody()) {
-                snapshotIdResult = readXmlBodyAs(kuraResponsePayload.getBody(), KuraSnapshotIds.class);
-            }
+            KuraSnapshotIds kuraSnapshotIds = readXmlBodyAs(kuraResponsePayload.getBody(), KuraSnapshotIds.class);
+            snapshotResponsePayload.setDeviceSnapshots(translate(kuraSnapshotIds));
 
-            translateBody(snapshotResponsePayload, snapshotIdResult);
-
-            // Return Kapua Payload
             return snapshotResponsePayload;
         } catch (InvalidPayloadException ipe) {
             throw ipe;
@@ -83,29 +74,26 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         }
     }
 
-    private void translateBody(SnapshotResponsePayload snapshotResponsePayload, KuraSnapshotIds kuraSnapshotIdResult) throws TranslatorException {
-        try {
-            DeviceSnapshotFactory deviceSnapshotFactory = LOCATOR.getFactory(DeviceSnapshotFactory.class);
+    /**
+     * Translates {@link KuraSnapshotIds} in {@link DeviceSnapshots}
+     *
+     * @param kuraSnapshotIdResult The {@link KuraSnapshotIds} to translate.
+     * @return The translated {@link DeviceSnapshots}
+     * @since 1.0.
+     */
+    private DeviceSnapshots translate(KuraSnapshotIds kuraSnapshotIdResult) {
+        DeviceSnapshotFactory deviceSnapshotFactory = LOCATOR.getFactory(DeviceSnapshotFactory.class);
+        DeviceSnapshots deviceSnapshots = deviceSnapshotFactory.newDeviceSnapshots();
 
-            if (kuraSnapshotIdResult != null) {
-                DeviceSnapshots deviceSnapshots = deviceSnapshotFactory.newDeviceSnapshots();
+        List<Long> snapshotIds = kuraSnapshotIdResult.getSnapshotIds();
+        for (Long snapshotId : snapshotIds) {
+            DeviceSnapshot snapshot = deviceSnapshotFactory.newDeviceSnapshot();
+            snapshot.setId(Long.toString(snapshotId));
+            snapshot.setTimestamp(snapshotId);
 
-                List<Long> snapshotIds = kuraSnapshotIdResult.getSnapshotIds();
-                for (Long snapshotId : snapshotIds) {
-                    DeviceSnapshot snapshot = deviceSnapshotFactory.newDeviceSnapshot();
-                    snapshot.setId(Long.toString(snapshotId));
-                    snapshot.setTimestamp(snapshotId);
-                    deviceSnapshots.getSnapshots().add(snapshot);
-                }
-
-                StringWriter sw = new StringWriter();
-                XmlUtil.marshal(deviceSnapshots, sw);
-                byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
-
-                snapshotResponsePayload.setBody(requestBody);
-            }
-        } catch (Exception e) {
-            throw new TranslatorException(TranslatorErrorCodes.INVALID_BODY, e, kuraSnapshotIdResult); // null for now
+            deviceSnapshots.getSnapshots().add(snapshot);
         }
+
+        return deviceSnapshots;
     }
 }

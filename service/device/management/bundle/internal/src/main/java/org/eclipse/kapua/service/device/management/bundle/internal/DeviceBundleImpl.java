@@ -15,10 +15,9 @@ package org.eclipse.kapua.service.device.management.bundle.internal;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 
 /**
- * Device bundle entity implementation.
+ * {@link DeviceBundle} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class DeviceBundleImpl implements DeviceBundle {
 
@@ -28,7 +27,9 @@ public class DeviceBundleImpl implements DeviceBundle {
     public String state;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public DeviceBundleImpl() {
     }

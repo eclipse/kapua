@@ -15,23 +15,26 @@ package org.eclipse.kapua.service.device.management.snapshot;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
 /**
- * Device snapshot entity service factory definition.
+ * {@link DeviceSnapshot} {@link KapuaObjectFactory} definition.
  *
- * @since 1.0
+ * @see KapuaObjectFactory
+ * @since 1.0.0
  */
 public interface DeviceSnapshotFactory extends KapuaObjectFactory {
 
     /**
-     * Creates a new {@link DeviceSnapshot}
+     * Instantiates a new {@link DeviceSnapshot}
      *
-     * @return
+     * @return The newly instantiated {@link DeviceSnapshot}.
+     * @since 1.0.0
      */
     DeviceSnapshot newDeviceSnapshot();
 
     /**
-     * Creates a new {@link DeviceSnapshots}
+     * Instantiates a new {@link DeviceSnapshots}
      *
-     * @return
+     * @return The newly instantiated {@link DeviceSnapshots}
+     * @since 1.0.0
      */
     DeviceSnapshots newDeviceSnapshots();
 }

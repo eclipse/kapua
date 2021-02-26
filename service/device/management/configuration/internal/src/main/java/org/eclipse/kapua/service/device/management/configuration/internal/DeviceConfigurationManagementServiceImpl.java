@@ -42,9 +42,6 @@ import org.eclipse.kapua.service.device.management.message.response.KapuaRespons
 import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
-import javax.xml.stream.FactoryConfigurationError;
-import javax.xml.stream.XMLStreamException;
-import java.io.StringWriter;
 import java.util.Date;
 
 /**
@@ -106,24 +103,11 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         if (responseMessage.getResponseCode().isAccepted()) {
             ConfigurationResponsePayload responsePayload = responseMessage.getPayload();
 
-            DeviceConfiguration deviceConfiguration = null;
-            if (responsePayload.hasBody()) {
-                String body = null;
-                try {
-                    body = new String(responsePayload.getBody(), CHAR_ENCODING);
-                } catch (Exception e) {
-                    throw new DeviceManagementResponseException(e, responsePayload.getBody());
-                }
-
-                try {
-                    deviceConfiguration = XmlUtil.unmarshal(body, DeviceConfigurationImpl.class);
-                } catch (Exception e) {
-                    throw new DeviceManagementResponseException(e, body);
-
-                }
+            try {
+                return responsePayload.getDeviceConfigurations();
+            } catch (Exception e) {
+                throw new DeviceManagementResponseException(e, responsePayload);
             }
-
-            return deviceConfiguration;
         } else {
             KapuaResponsePayload responsePayload = responseMessage.getPayload();
 
@@ -159,11 +143,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
             DeviceConfiguration deviceConfiguration = DEVICE_CONFIGURATION_FACTORY.newConfigurationInstance();
             deviceConfiguration.getComponentConfigurations().add(deviceComponentConfiguration);
 
-            StringWriter sw = new StringWriter();
-            XmlUtil.marshal(deviceConfiguration, sw);
-            byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
-
-            configurationRequestPayload.setBody(requestBody);
+            configurationRequestPayload.setDeviceConfigurations(deviceConfiguration);
         } catch (Exception e) {
             throw new DeviceManagementRequestException(e, deviceComponentConfiguration);
         }
@@ -202,7 +182,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
                     deviceId,
                     XmlUtil.unmarshal(xmlDeviceConfig, DeviceConfigurationImpl.class),
                     timeout);
-        } catch (JAXBException | XMLStreamException | FactoryConfigurationError | SAXException e) {
+        } catch (JAXBException | SAXException e) {
             throw new KapuaIllegalArgumentException("xmlDeviceConfig", xmlDeviceConfig);
         }
     }
@@ -230,11 +210,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
         ConfigurationRequestPayload configurationRequestPayload = new ConfigurationRequestPayload();
 
         try {
-            StringWriter sw = new StringWriter();
-            XmlUtil.marshal(deviceConfiguration, sw);
-            byte[] requestBody = sw.toString().getBytes(CHAR_ENCODING);
-
-            configurationRequestPayload.setBody(requestBody);
+            configurationRequestPayload.setDeviceConfigurations(deviceConfiguration);
         } catch (Exception e) {
             throw new DeviceManagementRequestException(e, deviceConfiguration);
         }

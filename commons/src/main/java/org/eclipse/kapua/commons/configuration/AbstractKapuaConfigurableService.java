@@ -13,11 +13,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.JAXBException;
-import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-
+import org.apache.commons.lang3.tuple.Triple;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.cache.LocalCache;
@@ -27,8 +23,8 @@ import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
-import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ResourceUtils;
@@ -50,7 +46,11 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+import org.xml.sax.SAXException;
 
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -61,10 +61,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.tuple.Triple;
-
-import org.xml.sax.SAXException;
 
 /**
  * Configurable service definition abstract reference implementation.
@@ -114,7 +110,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @return the metadata
      * @throws Exception In case of an error
      */
-    private static KapuaTmetadata readMetadata(String pid) throws JAXBException, SAXException, XMLStreamException, IOException {
+    private static KapuaTmetadata readMetadata(String pid) throws JAXBException, SAXException, IOException {
         URL url = ResourceUtils.getResource(String.format("META-INF/metatypes/%s.xml", pid));
 
         if (url == null) {
@@ -407,12 +403,12 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             boolean preventChange =
                     // if current user is not root user...
                     !KapuaSecurityUtils.getSession().getUserId().equals(rootUser.getId()) &&
-                    // current configuration does not allow self edit...
-                    !allowSelfEdit &&
-                    // a configuration for the current logged account is about to be changed...
-                    KapuaSecurityUtils.getSession().getScopeId().equals(scopeId) &&
-                    // and the new value is different from the other one...
-                    !originalValues.get(ad.getId()).equals(values.get(ad.getId()));
+                            // current configuration does not allow self edit...
+                            !allowSelfEdit &&
+                            // a configuration for the current logged account is about to be changed...
+                            KapuaSecurityUtils.getSession().getScopeId().equals(scopeId) &&
+                            // and the new value is different from the other one...
+                            !originalValues.get(ad.getId()).equals(values.get(ad.getId()));
 
             if (preventChange) {
                 // ... prevent the change!

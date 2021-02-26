@@ -12,29 +12,28 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model.internal;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfo;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Package bundle informations list container.
+ * {@link DevicePackageBundleInfos} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
-@XmlRootElement(name = "bundleInfos")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class DevicePackageBundleInfosImpl implements DevicePackageBundleInfos {
 
-    @XmlElement(name = "bundleInfo")
     List<DevicePackageBundleInfo> bundleInfos;
+
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    public DevicePackageBundleInfosImpl() {
+    }
 
     @Override
     public List<DevicePackageBundleInfo> getBundlesInfos() {
@@ -43,5 +42,4 @@ public class DevicePackageBundleInfosImpl implements DevicePackageBundleInfos {
         }
         return bundleInfos;
     }
-
 }

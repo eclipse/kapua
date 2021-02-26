@@ -204,7 +204,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             advancedOptions.setNotifyBlockSize(gwtPackageInstallRequest.getNotifyBlockSize());
             advancedOptions.setInstallVerifierURI(gwtPackageInstallRequest.getInstallVerifierURI());
 
-            PACKAGE_MANAGEMENT_SERVICE.downloadExec(scopeId, deviceId, packageDownloadRequest, DEVICE_PACKAGE_FACTORY.newDevicePackageDownloadOptions());
+            PACKAGE_MANAGEMENT_SERVICE.downloadExec(scopeId, deviceId, packageDownloadRequest, DEVICE_PACKAGE_FACTORY.newPackageDownloadOptions());
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -255,7 +255,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             packageUninstallRequest.setReboot(gwtPackageUninstallRequest.isReboot());
             packageUninstallRequest.setRebootDelay(gwtPackageUninstallRequest.getRebootDelay());
 
-            PACKAGE_MANAGEMENT_SERVICE.uninstallExec(scopeId, deviceId, packageUninstallRequest, DEVICE_PACKAGE_FACTORY.newDevicePackageUninstallOptions());
+            PACKAGE_MANAGEMENT_SERVICE.uninstallExec(scopeId, deviceId, packageUninstallRequest, DEVICE_PACKAGE_FACTORY.newPackageUninstallOptions());
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }

@@ -12,21 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.client;
 
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status.Family;
-import javax.xml.bind.JAXBException;
-import javax.xml.stream.XMLStreamException;
-
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobExecutionEnqueuedExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobEngineService;
@@ -44,28 +47,22 @@ import org.eclipse.kapua.job.engine.exception.JobResumingException;
 import org.eclipse.kapua.job.engine.exception.JobRunningException;
 import org.eclipse.kapua.job.engine.exception.JobStartingException;
 import org.eclipse.kapua.job.engine.exception.JobStoppingException;
-import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobExecutionEnqueuedExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-
-import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
-
-import org.apache.commons.lang3.StringUtils;
 import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status.Family;
+import javax.xml.bind.JAXBException;
 
 @KapuaProvider
 public class JobEngineServiceClient implements JobEngineService {
@@ -84,9 +81,9 @@ public class JobEngineServiceClient implements JobEngineService {
             String path = String.format("start/%s/%s", scopeId.toCompactId(), jobId.toCompactId());
             log.debug("JobEngine POST Call to {}", path);
             Response response = jobEngineTarget.path(String.format("start/%s/%s", scopeId.toCompactId(), jobId.toCompactId()))
-                                               .request(MediaType.APPLICATION_JSON_TYPE)
-                                               .accept(MediaType.APPLICATION_JSON_TYPE)
-                                               .post(null);
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.APPLICATION_JSON_TYPE)
+                    .post(null);
             String responseText = response.readEntity(String.class);
             log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
             Family family = response.getStatusInfo().getFamily();
@@ -105,9 +102,9 @@ public class JobEngineServiceClient implements JobEngineService {
             String jobStartOptionsJson = XmlUtil.marshalJson(jobStartOptions);
             log.debug("JobEngine POST Call to {}, body {}", path, jobStartOptionsJson);
             Response response = jobEngineTarget.path(path)
-                                               .request(MediaType.APPLICATION_JSON_TYPE)
-                                               .accept(MediaType.APPLICATION_JSON_TYPE)
-                                               .post(Entity.json(jobStartOptionsJson));
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.json(jobStartOptionsJson));
             String responseText = response.readEntity(String.class);
             log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
             Family family = response.getStatusInfo().getFamily();
@@ -125,9 +122,9 @@ public class JobEngineServiceClient implements JobEngineService {
             String path = String.format("is-running/%s/%s", scopeId.toCompactId(), jobId.toCompactId());
             log.debug("JobEngine GET Call to {}", path);
             Response response = jobEngineTarget.path(path)
-                                               .request(MediaType.APPLICATION_JSON_TYPE)
-                                               .accept(MediaType.APPLICATION_JSON_TYPE)
-                                               .get();
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.APPLICATION_JSON_TYPE)
+                    .get();
             String responseText = response.readEntity(String.class);
             log.debug("JobEngine GET Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
             Family family = response.getStatusInfo().getFamily();
@@ -136,7 +133,7 @@ public class JobEngineServiceClient implements JobEngineService {
             }
             IsJobRunningResponse isRunningJobResponse = XmlUtil.unmarshalJson(responseText, IsJobRunningResponse.class, null);
             return isRunningJobResponse.isRunning();
-        } catch (ClientErrorException | JAXBException | SAXException | XMLStreamException e) {
+        } catch (ClientErrorException | JAXBException | SAXException e) {
             throw KapuaException.internalError(e);
         }
     }
@@ -147,9 +144,9 @@ public class JobEngineServiceClient implements JobEngineService {
             String path = String.format("stop/%s/%s", scopeId.toCompactId(), jobId.toCompactId());
             log.debug("JobEngine POST Call to {}", path);
             Response response = jobEngineTarget.path(path)
-                                               .request(MediaType.APPLICATION_JSON_TYPE)
-                                               .accept(MediaType.APPLICATION_JSON_TYPE)
-                                               .post(null);
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.APPLICATION_JSON_TYPE)
+                    .post(null);
             String responseText = response.readEntity(String.class);
             log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
             Family family = response.getStatusInfo().getFamily();
@@ -167,9 +164,9 @@ public class JobEngineServiceClient implements JobEngineService {
             String path = String.format("stop-execution/%s/%s/%s", scopeId.toCompactId(), jobId.toCompactId(), jobExecutionId.toCompactId());
             log.debug("JobEngine POST Call to {}", path);
             Response response = jobEngineTarget.path(path)
-                                               .request(MediaType.APPLICATION_JSON_TYPE)
-                                               .accept(MediaType.APPLICATION_JSON_TYPE)
-                                               .post(null);
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.APPLICATION_JSON_TYPE)
+                    .post(null);
             String responseText = response.readEntity(String.class);
             log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
             Family family = response.getStatusInfo().getFamily();
@@ -187,9 +184,9 @@ public class JobEngineServiceClient implements JobEngineService {
             String path = String.format("resume-execution/%s/%s/%s", scopeId.toCompactId(), jobId.toCompactId(), jobExecutionId.toCompactId());
             log.debug("JobEngine POST Call to {}", path);
             Response response = jobEngineTarget.path(path)
-                                               .request(MediaType.APPLICATION_JSON_TYPE)
-                                               .accept(MediaType.APPLICATION_JSON_TYPE)
-                                               .post(null);
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.APPLICATION_JSON_TYPE)
+                    .post(null);
             String responseText = response.readEntity(String.class);
             log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
             Family family = response.getStatusInfo().getFamily();
@@ -207,9 +204,9 @@ public class JobEngineServiceClient implements JobEngineService {
             String path = String.format("clean-data/%s/%s", scopeId.toCompactId(), jobId.toCompactId());
             log.debug("JobEngine POST Call to {}", path);
             Response response = jobEngineTarget.path(path)
-                                               .request(MediaType.APPLICATION_JSON_TYPE)
-                                               .accept(MediaType.APPLICATION_JSON_TYPE)
-                                               .post(null);
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.APPLICATION_JSON_TYPE)
+                    .post(null);
             String responseText = response.readEntity(String.class);
             log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
             Family family = response.getStatusInfo().getFamily();
@@ -238,15 +235,15 @@ public class JobEngineServiceClient implements JobEngineService {
                 case "JOB_ALREADY_RUNNING":
                     JobAlreadyRunningExceptionInfo jobAlreadyRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobAlreadyRunningExceptionInfo.class, null);
                     throw new JobAlreadyRunningException(jobAlreadyRunningExceptionInfo.getScopeId(),
-                                                         jobAlreadyRunningExceptionInfo.getJobId(),
-                                                         jobAlreadyRunningExceptionInfo.getExecutionId(),
-                                                         jobAlreadyRunningExceptionInfo.getJobTargetIdSubset());
+                            jobAlreadyRunningExceptionInfo.getJobId(),
+                            jobAlreadyRunningExceptionInfo.getExecutionId(),
+                            jobAlreadyRunningExceptionInfo.getJobTargetIdSubset());
                 case "JOB_EXECUTION_ENQUEUED":
                     JobExecutionEnqueuedExceptionInfo jobExecutionEnqueuedExceptionInfo = XmlUtil.unmarshalJson(responseText, JobExecutionEnqueuedExceptionInfo.class, null);
                     throw new JobExecutionEnqueuedException(jobExecutionEnqueuedExceptionInfo.getScopeId(),
-                                                            jobExecutionEnqueuedExceptionInfo.getJobId(),
-                                                            jobExecutionEnqueuedExceptionInfo.getExecutionId(),
-                                                            jobExecutionEnqueuedExceptionInfo.getEnqueuedJobExecutionId());
+                            jobExecutionEnqueuedExceptionInfo.getJobId(),
+                            jobExecutionEnqueuedExceptionInfo.getExecutionId(),
+                            jobExecutionEnqueuedExceptionInfo.getEnqueuedJobExecutionId());
                 case "JOB_TARGET_INVALID":
                     JobInvalidTargetExceptionInfo jobInvalidTargetExceptionInfo = XmlUtil.unmarshalJson(responseText, JobInvalidTargetExceptionInfo.class, null);
                     throw new JobInvalidTargetException(jobInvalidTargetExceptionInfo.getScopeId(), jobInvalidTargetExceptionInfo.getJobId(), jobInvalidTargetExceptionInfo.getJobTargetIdSubset());
@@ -270,11 +267,11 @@ public class JobEngineServiceClient implements JobEngineService {
                     throw new JobStartingException(jobStartingExceptionInfo.getScopeId(), jobStartingExceptionInfo.getJobId());
                 case "JOB_STOPPING":
                     JobStoppingExceptionInfo jobStoppingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobStoppingExceptionInfo.class, null);
-                    throw new JobStoppingException(jobStoppingExceptionInfo.getScopeId(), jobStoppingExceptionInfo.getJobId(),jobStoppingExceptionInfo.getExecutionId());
+                    throw new JobStoppingException(jobStoppingExceptionInfo.getScopeId(), jobStoppingExceptionInfo.getJobId(), jobStoppingExceptionInfo.getExecutionId());
                 default:
                     throw KapuaException.internalError(exceptionInfo.getMessage());
             }
-        } catch (JAXBException | SAXException | XMLStreamException e) {
+        } catch (JAXBException | SAXException e) {
             throw KapuaException.internalError(e);
         }
     }

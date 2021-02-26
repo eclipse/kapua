@@ -15,14 +15,15 @@ package org.eclipse.kapua.service.device.management.asset;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 
 /**
- * {@link DeviceAsset} entity factory definition.
+ * {@link DeviceAsset} {@link KapuaObjectFactory} definition.
  *
+ * @see org.eclipse.kapua.model.KapuaObjectFactory
  * @since 1.0.0
  */
 public interface DeviceAssetFactory extends KapuaObjectFactory {
 
     /**
-     * Instantiate a new {@link DeviceAssets} instance.
+     * Instantiates a new {@link DeviceAssets} instance.
      *
      * @return The newly instantiated {@link DeviceAssets}.
      * @since 1.0.0
@@ -30,7 +31,7 @@ public interface DeviceAssetFactory extends KapuaObjectFactory {
     DeviceAssets newAssetListResult();
 
     /**
-     * Instantiate a new {@link DeviceAsset} instance.
+     * Instantiates a new {@link DeviceAsset} instance.
      *
      * @return The newly instantiated {@link DeviceAsset}.
      * @since 1.0.0
@@ -38,7 +39,7 @@ public interface DeviceAssetFactory extends KapuaObjectFactory {
     DeviceAsset newDeviceAsset();
 
     /**
-     * Instantiate a new {@link DeviceAssetChannel} instance.
+     * Instantiates a new {@link DeviceAssetChannel} instance.
      *
      * @return The newly instantiated {@link DeviceAssetChannel}
      * @since 1.0.0

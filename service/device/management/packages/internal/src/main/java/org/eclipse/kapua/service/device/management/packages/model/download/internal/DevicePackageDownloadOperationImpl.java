@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.model.download.internal;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadStatus;
@@ -24,39 +20,31 @@ import org.eclipse.kapua.service.device.management.packages.model.download.Devic
  * Device download package operation entity.
  *
  * @since 1.0
- *
  */
-@XmlRootElement(name = "packageDownloadOperation")
 public class DevicePackageDownloadOperationImpl implements DevicePackageDownloadOperation {
 
-    @XmlElement(name = "id")
-    private KapuaEid id;
 
-    @XmlElement(name = "size")
+    private KapuaId id;
     private Integer size;
-
-    @XmlElement(name = "progress")
     private Integer progress;
-
-    @XmlElement(name = "status")
     private DevicePackageDownloadStatus status;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public DevicePackageDownloadOperationImpl() {
     }
 
     @Override
-    public KapuaEid getId() {
+    public KapuaId getId() {
         return id;
     }
 
     @Override
     public void setId(KapuaId id) {
-        if (id != null) {
-            this.id = new KapuaEid(id.getId());
-        }
+        this.id = id;
     }
 
     @Override
