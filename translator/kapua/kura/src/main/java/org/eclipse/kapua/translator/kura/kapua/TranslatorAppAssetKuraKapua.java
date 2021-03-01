@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.device.call.kura.app.AssetMetrics;
+import org.eclipse.kapua.service.device.call.kura.model.asset.AssetMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssetChannelMode;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssets;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;

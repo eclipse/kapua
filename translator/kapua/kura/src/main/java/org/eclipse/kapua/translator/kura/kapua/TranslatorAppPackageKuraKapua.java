@@ -15,10 +15,10 @@ package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.device.call.kura.app.PackageMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
+import org.eclipse.kapua.service.device.call.kura.model.deploy.PackageMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseCode;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;

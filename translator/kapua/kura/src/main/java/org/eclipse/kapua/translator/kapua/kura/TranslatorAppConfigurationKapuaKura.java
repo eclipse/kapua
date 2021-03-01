@@ -21,7 +21,7 @@ import org.eclipse.kapua.commons.configuration.metatype.ToptionImpl;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
-import org.eclipse.kapua.service.device.call.kura.app.ConfigurationMetrics;
+import org.eclipse.kapua.service.device.call.kura.model.configuration.ConfigurationMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraPassword;

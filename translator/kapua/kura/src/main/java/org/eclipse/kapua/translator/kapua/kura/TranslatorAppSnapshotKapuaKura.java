@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
-import org.eclipse.kapua.service.device.call.kura.app.SnapshotMetrics;
+import org.eclipse.kapua.service.device.call.kura.model.snapshot.SnapshotMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;

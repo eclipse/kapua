@@ -10,7 +10,7 @@
  * Contributors:
  *      Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.kura.app;
+package org.eclipse.kapua.service.device.call.kura.model.snapshot;
 
 import org.eclipse.kapua.service.device.call.message.app.DeviceAppMetrics;
 

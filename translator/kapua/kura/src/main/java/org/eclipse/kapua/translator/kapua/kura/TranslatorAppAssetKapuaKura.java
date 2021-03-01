@@ -14,7 +14,7 @@ package org.eclipse.kapua.translator.kapua.kura;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.eclipse.kapua.service.device.call.kura.app.AssetMetrics;
+import org.eclipse.kapua.service.device.call.kura.model.asset.AssetMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAsset;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssetChannel;
 import org.eclipse.kapua.service.device.call.kura.model.asset.KuraAssets;
