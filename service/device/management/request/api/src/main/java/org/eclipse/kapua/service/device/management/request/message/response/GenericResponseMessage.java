@@ -18,6 +18,11 @@ import org.eclipse.kapua.service.device.management.request.GenericRequestXmlRegi
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * Generic {@link KapuaResponseMessage} definition.
+ *
+ * @since 1.0.0
+ */
 @XmlRootElement(name = "genericResponseMessage")
 @XmlType(factoryClass = GenericRequestXmlRegistry.class, factoryMethod = "newResponseMessage")
 public interface GenericResponseMessage extends KapuaResponseMessage<GenericResponseChannel, GenericResponsePayload> {

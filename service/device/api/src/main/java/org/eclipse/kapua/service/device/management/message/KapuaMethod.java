@@ -13,72 +13,84 @@
 package org.eclipse.kapua.service.device.management.message;
 
 /**
- * Kapua request/reply method definition.<br>
+ * Request method definition.
+ * <p>
  * This object defines the request types that can be sent to a Device.
  *
  * @since 1.0.0
  */
 public enum KapuaMethod {
+
     /**
      * Read request.
      *
      * @since 1.0.0
      */
     READ,
+
     /**
      * Same as {@link #READ} but with a name that matches Kura naming.
      *
      * @since 1.2.0
      */
     GET,
+
     /**
      * Create request.
      *
      * @since 1.0.0
      */
     CREATE,
+
     /**
      * Same as {@link #CREATE} but with a name that matches Kura naming.
      *
      * @since 1.2.0
      */
     POST,
+
     /**
      * Write request.
      *
      * @since 1.0.0
      */
     WRITE,
+
     /**
      * Same as {@link #WRITE} but with a name that matches Kura naming.
      *
      * @since 1.2.0
      */
     PUT,
+
     /**
      * Delete request.
      *
      * @since 1.0.0
      */
     DELETE,
+
     /**
      * Same as {@link #DELETE} but with a name that matches Kura naming.
      *
      * @since 1.2.0
      */
     DEL,
+
     /**
      * Execute request.
      *
      * @since 1.0.0
      */
     EXECUTE,
+
     /**
      * Same as {@link #EXECUTE} but with a name that matches Kura naming.
      *
      * @since 1.2.0
      */
     EXEC,
+
     /**
      * Options request.
      *
@@ -87,9 +99,10 @@ public enum KapuaMethod {
     OPTIONS;
 
     /**
-     * Converts the value
+     * Normalizes the {@link KapuaMethod} value to match sibling {@link KapuaMethod}s
      *
-     * @return
+     * @return The normalized {@link KapuaMethod} form {@code this} {@link KapuaMethod}
+     * @since 1.2.0
      */
     public KapuaMethod normalizeAction() {
 

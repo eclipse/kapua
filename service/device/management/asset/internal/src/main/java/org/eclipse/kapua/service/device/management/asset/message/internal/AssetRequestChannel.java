@@ -12,15 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.message.internal;
 
+import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 
 /**
- * Device asset information request channel.
+ * {@link DeviceAsset} {@link KapuaRequestChannel} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class AssetRequestChannel extends KapuaRequestChannelImpl {
+public class AssetRequestChannel extends KapuaRequestChannelImpl implements KapuaRequestChannel {
+
+    private static final long serialVersionUID = -5494940887992355430L;
 
     private boolean read;
     private boolean write;

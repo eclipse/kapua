@@ -12,50 +12,57 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.message.internal;
 
+import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 
 /**
- * Device bundle information request channel.
+ * {@link DeviceBundle} {@link KapuaRequestChannel} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class BundleRequestChannel extends KapuaRequestChannelImpl {
+public class BundleRequestChannel extends KapuaRequestChannelImpl implements KapuaRequestChannel {
+
+    private static final long serialVersionUID = -1300715857785309970L;
 
     private String bundleId;
     private boolean start;
 
     /**
-     * Get the bundle identifier
+     * Gets the {@link DeviceBundle} identifier.
      *
-     * @return
+     * @return The {@link DeviceBundle} identifier.
+     * @since 1.0.0
      */
     public String getBundleId() {
         return bundleId;
     }
 
     /**
-     * Set the bundle identifier
+     * Sets the {@link DeviceBundle} identifier.
      *
-     * @param bundleId
+     * @param bundleId The {@link DeviceBundle} identifier.
+     * @since 1.0.0
      */
     public void setBundleId(String bundleId) {
         this.bundleId = bundleId;
     }
 
     /**
-     * Check if the bundle is started
+     * Checks if the {@link DeviceBundle} is started.
      *
-     * @return
+     * @return {@code true} if the {@link DeviceBundle} is started, {@code false} otherwise.
+     * @since 1.0.0
      */
     public boolean isStart() {
         return start;
     }
 
     /**
-     * Set the bundle start flag
+     * Sets whether or not the {@link DeviceBundle} has started.
      *
-     * @param start
+     * @param start {@code true} if the {@link DeviceBundle} has started, {@code false} otherwise.
+     * @since 1.0.0
      */
     public void setStart(boolean start) {
         this.start = start;

@@ -13,49 +13,57 @@
 package org.eclipse.kapua.service.device.management.configuration.message.internal;
 
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
+import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
+import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 
 /**
- * Device configuration request channel.
+ * {@link DeviceConfiguration} {@link KapuaRequestChannel} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class ConfigurationRequestChannel extends KapuaRequestChannelImpl {
+public class ConfigurationRequestChannel extends KapuaRequestChannelImpl implements KapuaRequestChannel {
+
+    private static final long serialVersionUID = 4679870909531884966L;
 
     private String configurationId;
     private String componentId;
 
     /**
-     * Get the device configuration identifier
+     * Gets the {@link DeviceConfiguration} identifier.
      *
-     * @return
+     * @return The {@link DeviceConfiguration} identifier.
+     * @since 1.0.0
      */
     public String getConfigurationId() {
         return configurationId;
     }
 
     /**
-     * Set the device configuration identifier
+     * Sets the {@link DeviceConfiguration} identifier.
      *
-     * @param configurationId
+     * @param configurationId The {@link DeviceConfiguration} identifier.
+     * @since 1.0.0
      */
     public void setConfigurationId(String configurationId) {
         this.configurationId = configurationId;
     }
 
     /**
-     * Get the device configuration component identifier
+     * Gets the {@link DeviceComponentConfiguration#getId()}.
      *
-     * @return
+     * @return The {@link DeviceComponentConfiguration#getId()}.
+     * @since 1.0.0
      */
     public String getComponentId() {
         return componentId;
     }
 
     /**
-     * Set the device configuration component identifier
+     * Sets the {@link DeviceComponentConfiguration#getId()}.
      *
-     * @param componentId
+     * @param componentId The {@link DeviceComponentConfiguration#getId()}.
+     * @since 1.0.0
      */
     public void setComponentId(String componentId) {
         this.componentId = componentId;

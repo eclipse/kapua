@@ -19,11 +19,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Kapua request message payload definition.<br>
- * This object defines the payload for a Kapua request message.<br>
+ * {@link KapuaRequestMessage} {@link KapuaPayload} definition.
+ * <p>
+ * This object defines the payload for a Kapua request message.
  * The request message is used to perform interactive operations with the device (e.g. to send command to the device, to ask configurations...)
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "payload")
 @XmlType(factoryClass = RequestMessageXmlRegistry.class, factoryMethod = "newRequestPayload")

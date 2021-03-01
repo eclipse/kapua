@@ -24,7 +24,7 @@ import org.eclipse.kapua.service.device.management.message.response.KapuaRespons
 import javax.validation.constraints.NotNull;
 
 /**
- * {@link DeviceAssets} information {@link KapuaResponsePayload}.
+ * {@link DeviceAssets} {@link KapuaResponsePayload} implementation.
  *
  * @since 1.0.0
  */

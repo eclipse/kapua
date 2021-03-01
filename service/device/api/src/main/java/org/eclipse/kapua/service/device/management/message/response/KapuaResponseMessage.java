@@ -15,25 +15,28 @@ package org.eclipse.kapua.service.device.management.message.response;
 import org.eclipse.kapua.message.KapuaMessage;
 
 /**
- * Kapua response message definition.<br>
- * This object defines the for a Kapua response message.<br>
+ * Response {@link KapuaMessage} definition.
+ * <p>
  * The response message is used to perform interactive operations with the device (e.g. to send command to the device, to ask configurations...)
  *
- * @since 1.0
+ * @since 1.0.0
  */
-public interface KapuaResponseMessage<C extends KapuaResponseChannel, P extends KapuaResponsePayload> extends KapuaMessage<C, P> {
+public interface KapuaResponseMessage<C extends KapuaResponseChannel, P extends KapuaResponsePayload>
+        extends KapuaMessage<C, P> {
 
     /**
-     * Get the response code
+     * Gets the {@link KapuaResponseCode}.
      *
-     * @return
+     * @return The {@link KapuaResponseCode}.
+     * @since 1.0.0
      */
     KapuaResponseCode getResponseCode();
 
     /**
-     * Set the response code
+     * Sets the {@link KapuaResponseCode}.
      *
-     * @param responseCode
+     * @param responseCode The {@link KapuaResponseCode}.
+     * @since 1.0.0
      */
     void setResponseCode(KapuaResponseCode responseCode);
 }

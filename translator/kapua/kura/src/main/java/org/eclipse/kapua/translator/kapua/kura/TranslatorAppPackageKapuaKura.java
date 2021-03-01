@@ -81,10 +81,10 @@ public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<P
 
             // Build resources
             List<String> resources = new ArrayList<>();
-            if (kapuaChannel.getResource() == null) {
+            if (kapuaChannel.getPackageResource() == null) {
                 resources.add("packages");
             } else {
-                switch (kapuaChannel.getResource()) {
+                switch (kapuaChannel.getPackageResource()) {
                     case DOWNLOAD:
                         resources.add("download");
                         break;

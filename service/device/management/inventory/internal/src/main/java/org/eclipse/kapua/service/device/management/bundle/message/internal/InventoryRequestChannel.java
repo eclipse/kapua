@@ -24,5 +24,4 @@ import org.eclipse.kapua.service.device.management.message.request.KapuaRequestC
 public class InventoryRequestChannel extends KapuaRequestChannelImpl implements KapuaRequestChannel {
 
     private static final long serialVersionUID = 9127157971609776985L;
-
 }

@@ -15,39 +15,44 @@ package org.eclipse.kapua.service.device.management.message.response;
 import org.eclipse.kapua.message.KapuaPayload;
 
 /**
- * Kapua response message payload definition.<br>
- * This object defines the payload for a Kapua response message.<br>
+ * Response {@link KapuaPayload} definition.
+ * <p>
+ * This object defines the {@link KapuaPayload} for a {@link KapuaResponseMessage}.<br>
  * The response message is used to perform interactive operations with the device (e.g. to send command to the device, to ask configurations...)
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface KapuaResponsePayload extends KapuaPayload {
 
     /**
-     * Get the exception message (if present)
+     * Gets the exception message (if present).
      *
-     * @return
+     * @return The exception message.
+     * @since 1.0.0
      */
     String getExceptionMessage();
 
     /**
-     * Set the exception message (if present)
+     * Sets the exception message.
      *
-     * @param exceptionMessage
+     * @param exceptionMessage The exception message.
+     * @since 1.0.0
      */
     void setExceptionMessage(String exceptionMessage);
 
     /**
-     * Get the exception stack trace (if present)
+     * Gets the exception stack trace (if present).
      *
-     * @return
+     * @return The exception stack trace (if present).
+     * @since 1.0.0
      */
     String getExceptionStack();
 
     /**
-     * Set the exception stack trace (if present)
+     * Sets the exception stack trace.
      *
-     * @param setExecptionStack
+     * @param setExecptionStack The exception stack trace.
+     * @since 1.0.0
      */
     void setExceptionStack(String setExecptionStack);
 }

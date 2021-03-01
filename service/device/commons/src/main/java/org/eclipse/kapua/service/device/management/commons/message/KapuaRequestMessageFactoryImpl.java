@@ -24,6 +24,11 @@ import org.eclipse.kapua.service.device.management.message.request.KapuaRequestM
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessageFactory;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
 
+/**
+ * {@link KapuaRequestMessageFactory} implementation.
+ *
+ * @since 1.0.0
+ */
 @KapuaProvider
 public class KapuaRequestMessageFactoryImpl implements KapuaRequestMessageFactory {
 

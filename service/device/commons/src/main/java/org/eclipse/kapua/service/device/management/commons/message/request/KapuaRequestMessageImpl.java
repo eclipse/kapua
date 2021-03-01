@@ -19,17 +19,22 @@ import org.eclipse.kapua.service.device.management.message.request.KapuaRequestM
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 
+/**
+ * {@link KapuaRequestMessage} implementation.
+ *
+ * @param <C> The {@link KapuaRequestChannel} type.
+ * @param <P> The {@link KapuaRequestPayload} type.
+ * @since 1.0.0
+ */
 public class KapuaRequestMessageImpl<C extends KapuaRequestChannel, P extends KapuaRequestPayload> extends KapuaMessageImpl<C, P> implements KapuaRequestMessage<C, P> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2127359876688789508L;
 
-    @SuppressWarnings("rawtypes")
     @Override
     public Class<KapuaRequestMessage> getRequestClass() {
         return KapuaRequestMessage.class;
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public Class<KapuaResponseMessage> getResponseClass() {
         return KapuaResponseMessage.class;

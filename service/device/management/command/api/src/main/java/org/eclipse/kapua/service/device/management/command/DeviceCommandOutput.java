@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command;
 
-import org.eclipse.kapua.KapuaSerializable;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -35,7 +33,7 @@ import javax.xml.bind.annotation.XmlType;
         "exitCode",
         "hasTimedout"
 }, factoryClass = DeviceCommandXmlRegistry.class, factoryMethod = "newCommandOutput")
-public interface DeviceCommandOutput extends KapuaSerializable {
+public interface DeviceCommandOutput extends DeviceCommand {
 
     /**
      * Get the standard error

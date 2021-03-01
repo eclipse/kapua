@@ -13,13 +13,15 @@
 package org.eclipse.kapua.service.device.management.bundle.message.internal;
 
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
+import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
 
 /**
- * Device bundle information request payload.
+ * {@link DeviceBundle} {@link KapuaRequestPayload} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class BundleRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload {
 
+    private static final long serialVersionUID = 1584326482827311346L;
 }

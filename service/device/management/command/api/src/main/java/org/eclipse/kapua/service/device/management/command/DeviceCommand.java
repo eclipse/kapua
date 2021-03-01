@@ -10,20 +10,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.bundle.internal.exception;
+package org.eclipse.kapua.service.device.management.command;
 
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementErrorCodes;
+import org.eclipse.kapua.KapuaSerializable;
 
 /**
- * {@link DeviceManagementErrorCodes} for {@link InventoryManagementResponseException}.
+ * Base for {@link DeviceCommandInput} and {@link DeviceCommandOutput}
  *
  * @since 1.5.0
  */
-public enum InventoryManagementResponseErrorCodes implements DeviceManagementErrorCodes {
-
-    /**
-     * @see DeviceInventoryGetManagementException
-     * @since 1.5.0
-     */
-    BUNDLE_GET_ERROR,
+public interface DeviceCommand extends KapuaSerializable {
 }

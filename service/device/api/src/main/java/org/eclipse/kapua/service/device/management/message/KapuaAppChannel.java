@@ -13,39 +13,44 @@
 package org.eclipse.kapua.service.device.management.message;
 
 /**
- * Kapua application message channel definition.<br>
+ * Device Application {@link KapuaControlChannel} definition.
+ * <p>
  * This object defines the common channel behavior for a Kapua request or response message.<br>
  * The request message is used to perform interactive operations with the device (e.g. to send command to the device, to ask configurations...)
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface KapuaAppChannel extends KapuaControlChannel {
 
     /**
-     * Get the application name
+     * Gets the device application name.
      *
-     * @return
+     * @return The device application name.
+     * @since 1.0.0
      */
     KapuaAppProperties getAppName();
 
     /**
-     * Set the application name
+     * Sets the device application name.
      *
-     * @param app
+     * @param appName The device application name.
+     * @since 1.0.0
      */
-    void setAppName(KapuaAppProperties app);
+    void setAppName(KapuaAppProperties appName);
 
     /**
-     * Get the application version
+     * Gets the device application version.
      *
-     * @return
+     * @return The device application version.
+     * @since 1.0.0
      */
     KapuaAppProperties getVersion();
 
     /**
-     * Set the application version
+     * Sets the device application version.
      *
-     * @param version
+     * @param appVersion The device application version.
+     * @since 1.0.0
      */
-    void setVersion(KapuaAppProperties version);
+    void setVersion(KapuaAppProperties appVersion);
 }

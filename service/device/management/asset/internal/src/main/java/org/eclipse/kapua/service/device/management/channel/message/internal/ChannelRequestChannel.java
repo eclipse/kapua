@@ -12,31 +12,37 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.channel.message.internal;
 
+import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestChannel;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 
 /**
- * Device asset information request channel.
+ * {@link DeviceAssetChannel} {@link KapuaRequestChannel} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ChannelRequestChannel extends AssetRequestChannel implements KapuaRequestChannel {
+
+    private static final long serialVersionUID = -1578380839404848475L;
 
     private String assetName;
 
     /**
-     * Get the asset identifier
+     * Gets the {@link DeviceAsset} name.
      *
-     * @return
+     * @return The {@link DeviceAsset} name.
+     * @since 1.0.0
      */
     public String getAssetName() {
         return assetName;
     }
 
     /**
-     * Set the asset identifier
+     * Sets the {@link DeviceAsset} name.
      *
-     * @param assetName
+     * @param assetName The {@link DeviceAsset} name.
+     * @since 1.0.0
      */
     public void setAssetName(String assetName) {
         this.assetName = assetName;

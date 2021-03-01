@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.device.management.bundle.message.internal;
 
 import org.eclipse.kapua.service.device.management.bundle.internal.DeviceInventoryAppProperties;
-import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChannelImpl;
+import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponseChannelImpl;
 import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventory;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
 
@@ -22,7 +22,7 @@ import org.eclipse.kapua.service.device.management.message.response.KapuaRespons
  *
  * @since 1.5.0
  */
-public class InventoryResponseChannel extends KapuaAppChannelImpl implements KapuaResponseChannel {
+public class InventoryResponseChannel extends KapuaResponseChannelImpl implements KapuaResponseChannel {
 
     private static final long serialVersionUID = 6073193292259010928L;
 

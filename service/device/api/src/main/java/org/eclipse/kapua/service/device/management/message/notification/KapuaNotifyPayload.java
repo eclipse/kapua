@@ -16,25 +16,32 @@ import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * {@link KapuaNotifyMessage} {@link KapuaPayload} definition.
+ * Notify {@link KapuaPayload} definition.
  *
  * @since 1.0.0
  */
 public interface KapuaNotifyPayload extends KapuaPayload {
 
     /**
-     * @return
+     * Gets the operation {@link KapuaId}.
+     *
+     * @return The operation {@link KapuaId}.
      * @since 1.0.0
      */
     KapuaId getOperationId();
 
     /**
+     * Sets the operation {@link KapuaId}.
+     *
+     * @param operationId The operation {@link KapuaId}.
      * @since 1.0.0
      */
     void setOperationId(KapuaId operationId);
 
     /**
-     * @return
+     * Gets the resource.
+     *
+     * @return The resource.
      * @since 1.0.0
      * @deprecated Since 1.2.0. Please make use of {@link KapuaNotifyChannel#getResources()}
      */
@@ -42,6 +49,9 @@ public interface KapuaNotifyPayload extends KapuaPayload {
     String getResource();
 
     /**
+     * Sets the resource.
+     *
+     * @param resource The resource.
      * @since 1.0.0
      * @deprecated Since 1.2.0. Please make use of {@link KapuaNotifyChannel#setResources(String[])}
      */
@@ -49,31 +59,49 @@ public interface KapuaNotifyPayload extends KapuaPayload {
     void setResource(String resource);
 
     /**
+     * Gets the {@link OperationStatus}.
+     *
+     * @return The {@link OperationStatus}.
      * @since 1.0.0
      */
     OperationStatus getStatus();
 
     /**
+     * Sets the {@link OperationStatus}.
+     *
+     * @param status The {@link OperationStatus}.
      * @since 1.0.0
      */
     void setStatus(OperationStatus status);
 
     /**
+     * Gets the operation progress.
+     *
+     * @return The operation progress.
      * @since 1.0.0
      */
     Integer getProgress();
 
     /**
+     * Sets the operation progress.
+     *
+     * @param progress The operation progress.
      * @since 1.0.0
      */
     void setProgress(Integer progress);
 
     /**
+     * Gets the message.
+     *
+     * @return The message.
      * @since 1.2.0
      */
     String getMessage();
 
     /**
+     * Gets the message.
+     *
+     * @param message The message.
      * @since 1.2.0
      */
     void setMessage(String message);

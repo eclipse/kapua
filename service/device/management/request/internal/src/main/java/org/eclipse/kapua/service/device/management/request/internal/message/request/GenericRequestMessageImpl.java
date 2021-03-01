@@ -19,17 +19,20 @@ import org.eclipse.kapua.service.device.management.request.message.request.Gener
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
 
+/**
+ * {@link GenericRequestMessage} implementation.
+ *
+ * @since 1.0.0
+ */
 public class GenericRequestMessageImpl extends KapuaMessageImpl<GenericRequestChannel, GenericRequestPayload> implements GenericRequestMessage {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -8491427803023664571L;
 
-    @SuppressWarnings("unchecked")
     @Override
     public Class<GenericRequestMessage> getRequestClass() {
         return GenericRequestMessage.class;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Class<GenericResponseMessage> getResponseClass() {
         return GenericResponseMessage.class;

@@ -14,25 +14,24 @@
 package org.eclipse.kapua.service.device.management.channel.message.internal;
 
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 
 /**
- * Device bundle information request message.
+ * {@link DeviceAssetChannel} {@link KapuaRequestMessage} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ChannelRequestMessage extends KapuaMessageImpl<ChannelRequestChannel, ChannelRequestPayload>
         implements KapuaRequestMessage<ChannelRequestChannel, ChannelRequestPayload> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 5108417578217263516L;
 
-    @SuppressWarnings("unchecked")
     @Override
     public Class<ChannelRequestMessage> getRequestClass() {
         return ChannelRequestMessage.class;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Class<ChannelResponseMessage> getResponseClass() {
         return ChannelResponseMessage.class;

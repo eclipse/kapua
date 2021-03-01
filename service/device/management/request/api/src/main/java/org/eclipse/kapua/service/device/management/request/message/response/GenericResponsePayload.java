@@ -17,6 +17,11 @@ import org.eclipse.kapua.service.device.management.request.GenericRequestXmlRegi
 
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * Generic {@link KapuaResponsePayload} definition.
+ *
+ * @since 1.0.0
+ */
 @XmlType(factoryClass = GenericRequestXmlRegistry.class, factoryMethod = "newResponsePayload")
 public interface GenericResponsePayload extends KapuaResponsePayload {
 

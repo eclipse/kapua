@@ -14,12 +14,14 @@ package org.eclipse.kapua.service.device.management.snapshot.message.internal;
 
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
+import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 
 /**
- * Device snapshot request payload.
+ * {@link DeviceSnapshot} {@link KapuaRequestPayload} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class SnapshotRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload {
 
+    private static final long serialVersionUID = -6740145236437137586L;
 }

@@ -18,6 +18,8 @@ import org.eclipse.kapua.service.device.management.message.request.KapuaRequestM
 
 /**
  * {@link DeviceInventory} {@link KapuaRequestMessage} implementation.
+ *
+ * @since 1.5.0
  */
 public class InventoryRequestMessage extends KapuaMessageImpl<InventoryRequestChannel, InventoryRequestPayload>
         implements KapuaRequestMessage<InventoryRequestChannel, InventoryRequestPayload> {

@@ -17,17 +17,18 @@ import org.eclipse.kapua.service.device.management.message.xml.KapuaAppPropertie
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * Kapua application property definition.
+ * Device Application property definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlJavaTypeAdapter(KapuaAppPropertiesXmlAdapter.class)
 public interface KapuaAppProperties {
 
     /**
-     * Get the property value
+     * Gets the property value.
      *
-     * @return
+     * @return The property value.
+     * @since 1.0.0
      */
     String getValue();
 }
