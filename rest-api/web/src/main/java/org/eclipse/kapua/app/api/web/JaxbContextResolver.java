@@ -12,11 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.web;
 
+import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalNullArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.InternalUserOnlyExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobExecutionEnqueuedExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.MfaRequiredExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.SelfManagedOnlyExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
@@ -36,18 +48,6 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.job.engine.JobEngineXmlRegistry;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobExecutionEnqueuedExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
@@ -144,6 +144,8 @@ import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.InventorySystemPackage;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.InventorySystemPackages;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -156,6 +158,9 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandXmlRegis
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationXmlRegistry;
+import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventory;
+import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.xml.DeviceInventoryXmlRegistry;
 import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
@@ -243,15 +248,15 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerXmlRegistry;
-import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTrigger;
-import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerListResult;
-import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerQuery;
-import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerXmlRegistry;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionXmlRegistry;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
+import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTrigger;
+import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerListResult;
+import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerQuery;
+import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerXmlRegistry;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.SortField;
 import org.eclipse.kapua.service.storable.model.query.SortFieldXmlAdapter;
@@ -424,6 +429,13 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceConfiguration.class,
                     DeviceComponentConfiguration.class,
                     DeviceConfigurationXmlRegistry.class,
+
+                    // Device Management Inventory
+                    DeviceInventory.class,
+                    DeviceInventoryPackage.class,
+                    InventorySystemPackages.class,
+                    InventorySystemPackage.class,
+                    DeviceInventoryXmlRegistry.class,
 
                     // Device Management Snapshots
                     KuraSnapshotIds.class,
