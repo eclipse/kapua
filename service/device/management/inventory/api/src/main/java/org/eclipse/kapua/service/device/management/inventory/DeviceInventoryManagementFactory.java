@@ -13,8 +13,10 @@
 package org.eclipse.kapua.service.device.management.inventory;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
-import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryPackage;
 
 /**
  * {@link DeviceInventoryPackage} {@link KapuaObjectFactory} definition.
@@ -39,4 +41,21 @@ public interface DeviceInventoryManagementFactory extends KapuaObjectFactory {
      * @since 1.5.0
      */
     DeviceInventoryPackage newDeviceInventoryPackage();
+
+    /**
+     * Instantiates a new {@link DeviceInventoryBundles}.
+     *
+     * @return The newly instantiated {@link DeviceInventoryBundles}
+     * @since 1.5.0
+     */
+    DeviceInventoryBundles newDeviceInventoryBundles();
+
+    /**
+     * Instantiates a new {@link DeviceInventoryBundle}.
+     *
+     * @return The newly instantiated {@link DeviceInventoryBundle}
+     * @since 1.5.0
+     */
+    DeviceInventoryBundle newDeviceInventoryBundle();
+
 }

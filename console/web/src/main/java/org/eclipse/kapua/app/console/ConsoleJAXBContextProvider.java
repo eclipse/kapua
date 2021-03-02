@@ -51,8 +51,8 @@ import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDevice
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
-import org.eclipse.kapua.service.device.call.kura.model.inventory.InventorySystemPackage;
-import org.eclipse.kapua.service.device.call.kura.model.inventory.InventorySystemPackages;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryPackage;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryPackages;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -62,9 +62,9 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
-import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventoryPackage;
-import org.eclipse.kapua.service.device.management.inventory.model.xml.DeviceInventoryXmlRegistry;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryXmlRegistry;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
@@ -132,8 +132,8 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         // Device Management Inventory
                         DeviceInventory.class,
                         DeviceInventoryPackage.class,
-                        InventorySystemPackages.class,
-                        InventorySystemPackage.class,
+                        KuraInventoryPackages.class,
+                        KuraInventoryPackage.class,
                         DeviceInventoryXmlRegistry.class,
 
                         DevicePackageDownloadRequest.class,

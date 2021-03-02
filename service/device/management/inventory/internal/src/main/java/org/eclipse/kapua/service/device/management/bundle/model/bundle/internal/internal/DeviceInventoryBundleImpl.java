@@ -10,27 +10,38 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.bundle.model.internal;
+package org.eclipse.kapua.service.device.management.bundle.model.bundle.internal.internal;
 
-import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
 
 /**
- * {@link DeviceInventoryPackage} implementation.
+ * {@link DeviceInventoryBundle} implementation.
  *
  * @since 1.5.0
  */
-public class DeviceInventoryPackageImpl implements DeviceInventoryPackage {
+public class DeviceInventoryBundleImpl implements DeviceInventoryBundle {
 
+    public String id;
     public String name;
     public String version;
-    public String packageType;
+    public String status;
 
     /**
      * Constructor.
      *
      * @since 1.5.0
      */
-    public DeviceInventoryPackageImpl() {
+    public DeviceInventoryBundleImpl() {
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
@@ -54,12 +65,12 @@ public class DeviceInventoryPackageImpl implements DeviceInventoryPackage {
     }
 
     @Override
-    public String getPackageType() {
-        return packageType;
+    public String getStatus() {
+        return status;
     }
 
     @Override
-    public void setPackageType(String packageType) {
-        this.packageType = packageType;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

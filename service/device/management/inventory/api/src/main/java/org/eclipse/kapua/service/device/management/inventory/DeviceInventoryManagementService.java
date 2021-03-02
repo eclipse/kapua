@@ -15,8 +15,9 @@ package org.eclipse.kapua.service.device.management.inventory;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryPackage;
 import org.eclipse.kapua.service.device.registry.Device;
 
 /**
@@ -37,5 +38,17 @@ public interface DeviceInventoryManagementService extends KapuaService {
      * @throws KapuaException
      * @since 1.5.0
      */
-    DeviceInventory get(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
+    DeviceInventory getInventory(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
+
+    /**
+     * Gets the {@link DeviceInventoryBundles}
+     *
+     * @param scopeId  The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId The {@link Device#getId()}
+     * @param timeout  The timeout waiting for the device response
+     * @return The {@link DeviceInventoryBundles} retrieved from the {@link Device}
+     * @throws KapuaException
+     * @since 1.5.0
+     */
+    DeviceInventoryBundles getBundles(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
 }

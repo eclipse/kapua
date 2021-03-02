@@ -34,13 +34,13 @@ public final class TranslatorKapuaKuraUtils {
     }
 
     /**
-     * Builds the {@link KuraRequestChannel} with common infos for a device applications.
+     * Builds the {@link KuraRequestChannel} with common info for a device applications.
      * <p>
      * It populates:
      * <ul>
      *     <li>{@link KuraRequestChannel#getMessageClassification()}</li>
-     *     <li>{@link KuraRequestChannel#getAppId()} ()}</li>
-     *     <li>{@link KuraRequestChannel#getMethod()} ()}</li>
+     *     <li>{@link KuraRequestChannel#getAppId()}</li>
+     *     <li>{@link KuraRequestChannel#getMethod()}</li>
      * </ul>
      *
      * @param appName    The application name.

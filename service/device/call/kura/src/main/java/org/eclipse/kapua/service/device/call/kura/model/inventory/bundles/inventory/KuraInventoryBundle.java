@@ -10,18 +10,21 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.kura.model.inventory;
+package org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.inventory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
 /**
- * {@link InventorySystemPackage} definition.
+ * {@link KuraInventoryBundle} definition.
  *
  * @since 1.5.0
  */
 @JsonRootName("systemPackage")
-public class InventorySystemPackage {
+public class KuraInventoryBundle {
+
+    @JsonProperty("id")
+    public String id;
 
     @JsonProperty("name")
     public String name;
@@ -29,8 +32,28 @@ public class InventorySystemPackage {
     @JsonProperty("version")
     public String version;
 
-    @JsonProperty("type")
-    public String type;
+    @JsonProperty("state")
+    public String state;
+
+    /**
+     * Gets the identifier.
+     *
+     * @return The identifier.
+     * @since 1.5.0
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Sets the identifier.
+     *
+     * @param id The identifier.
+     * @since 1.5.0
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 
     /**
      * Gets the name.
@@ -73,22 +96,22 @@ public class InventorySystemPackage {
     }
 
     /**
-     * Gets the type.
+     * Gets the state.
      *
-     * @return The type.
+     * @return The state.
      * @since 1.5.0
      */
-    public String getType() {
-        return type;
+    public String getState() {
+        return state;
     }
 
     /**
-     * Sets the type.
+     * Sets the state.
      *
-     * @param type The type.
+     * @param state The state.
      * @since 1.5.0
      */
-    public void setType(String type) {
-        this.type = type;
+    public void setState(String state) {
+        this.state = state;
     }
 }

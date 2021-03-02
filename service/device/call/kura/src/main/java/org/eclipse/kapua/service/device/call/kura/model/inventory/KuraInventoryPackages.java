@@ -21,48 +21,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * {@link InventorySystemPackages} definition.
+ * {@link KuraInventoryPackages} definition.
  *
  * @since 1.5.0
  */
-@JsonRootName("inventorySystemPackages")
-public class InventorySystemPackages {
+@JsonRootName("inventoryPackages")
+public class KuraInventoryPackages {
 
     @JsonProperty("inventory")
-    public List<InventorySystemPackage> systemPackages;
+    public List<KuraInventoryPackage> inventoryPackages;
 
     /**
-     * Gets the {@link InventorySystemPackage}s {@link List}.
+     * Gets the {@link KuraInventoryPackage}s {@link List}.
      *
-     * @return The {@link InventorySystemPackage}s {@link List}.
+     * @return The {@link KuraInventoryPackage}s {@link List}.
      * @since 1.5.0
      */
-    public List<InventorySystemPackage> getSystemPackages() {
-        if (systemPackages == null) {
-            systemPackages = new ArrayList<>();
+    public List<KuraInventoryPackage> getInventoryPackages() {
+        if (inventoryPackages == null) {
+            inventoryPackages = new ArrayList<>();
         }
 
-        return systemPackages;
+        return inventoryPackages;
     }
 
     /**
-     * Adds a {@link InventorySystemPackage} to the {@link List}
+     * Adds a {@link KuraInventoryPackage} to the {@link List}
      *
-     * @param kuraBundle The {@link InventorySystemPackage} to add.
+     * @param inventoryPackage The {@link KuraInventoryPackage} to add.
      * @since 1.5.0
      */
-    public void addSystemPackage(@NotNull InventorySystemPackage kuraBundle) {
-        getSystemPackages().add(kuraBundle);
+    public void addInventoryPackage(@NotNull KuraInventoryPackage inventoryPackage) {
+        getInventoryPackages().add(inventoryPackage);
     }
 
     /**
-     * Sets the {@link InventorySystemPackage}s {@link List}.
+     * Sets the {@link KuraInventoryPackage}s {@link List}.
      *
-     * @param systemPackages The {@link InventorySystemPackage}s {@link List}.
+     * @param inventoryPackages The {@link KuraInventoryPackage}s {@link List}.
      * @since 1.5.0
      */
-    public void setSystemPackages(@Nullable List<InventorySystemPackage> systemPackages) {
-        this.systemPackages = systemPackages;
+    public void setInventoryPackages(@Nullable List<KuraInventoryPackage> inventoryPackages) {
+        this.inventoryPackages = inventoryPackages;
     }
 
 }

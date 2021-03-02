@@ -10,10 +10,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.model;
+package org.eclipse.kapua.service.device.management.inventory.model.inventory;
 
 import org.eclipse.kapua.KapuaSerializable;
-import org.eclipse.kapua.service.device.management.inventory.model.xml.DeviceInventoryXmlRegistry;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

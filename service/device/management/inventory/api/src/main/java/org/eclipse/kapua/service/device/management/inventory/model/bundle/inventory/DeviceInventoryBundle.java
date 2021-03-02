@@ -10,9 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.model;
-
-import org.eclipse.kapua.service.device.management.inventory.model.xml.DeviceInventoryXmlRegistry;
+package org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -21,22 +19,39 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link DeviceInventoryPackage} definition.
+ * {@link DeviceInventoryBundle} definition.
  * <p>
- * It represents a package present on a device.
+ * It represents a bundle present on a device.
  *
- * @since 1.0.0
+ * @since 1.5.0
  */
-@XmlRootElement(name = "deviceInventoryPackage")
+@XmlRootElement(name = "deviceInventoryBundles")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = DeviceInventoryXmlRegistry.class, factoryMethod = "newDeviceInventoryPackage")
-public interface DeviceInventoryPackage {
+@XmlType(factoryClass = DeviceInventoryBundlesXmlRegistry.class, factoryMethod = "newDeviceInventoryBundle")
+public interface DeviceInventoryBundle {
+
+    /**
+     * Gets the identifier.
+     *
+     * @return The identifier.
+     * @since 1.5.0
+     */
+    @XmlElement(name = "name")
+    String getId();
+
+    /**
+     * Sets the identifier.
+     *
+     * @param id The identifier.
+     * @since 1.5.0
+     */
+    void setId(String id);
 
     /**
      * Gets the name.
      *
      * @return The name.
-     * @since 1.0.0
+     * @since 1.5.0
      */
     @XmlElement(name = "name")
     String getName();
@@ -45,7 +60,7 @@ public interface DeviceInventoryPackage {
      * Sets the name.
      *
      * @param name The name.
-     * @since 1.0.0
+     * @since 1.5.0
      */
     void setName(String name);
 
@@ -53,7 +68,7 @@ public interface DeviceInventoryPackage {
      * Gets the bundle version.
      *
      * @return The version.
-     * @since 1.0.0
+     * @since 1.5.0
      */
     @XmlElement(name = "version")
     String getVersion();
@@ -62,24 +77,24 @@ public interface DeviceInventoryPackage {
      * Sets the version.
      *
      * @param version The version.
-     * @since 1.0.0
+     * @since 1.5.0
      */
     void setVersion(String version);
 
     /**
-     * Gets the type.
+     * Gets the status.
      *
-     * @return The type.
-     * @since 1.0.0
+     * @return The status.
+     * @since 1.5.0
      */
-    @XmlElement(name = "packageType")
-    String getPackageType();
+    @XmlElement(name = "status")
+    String getStatus();
 
     /**
-     * Sets the type.
+     * Sets the status.
      *
-     * @param packageType The type.
-     * @since 1.0.0
+     * @param status The status.
+     * @since 1.5.0
      */
-    void setPackageType(String packageType);
+    void setStatus(String status);
 }

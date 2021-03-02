@@ -36,7 +36,7 @@ public class TranslatorAppInventoryKapuaKura extends AbstractTranslatorKapuaKura
         try {
             KuraRequestChannel kuraRequestChannel = TranslatorKapuaKuraUtils.buildBaseRequestChannel(InventoryMetrics.APP_ID, InventoryMetrics.APP_VERSION, kapuaChannel.getMethod());
 
-            kuraRequestChannel.setResources(new String[]{"inventory"});
+            kuraRequestChannel.setResources(new String[]{kapuaChannel.getResource()});
 
             // Return Kura Channel
             return kuraRequestChannel;

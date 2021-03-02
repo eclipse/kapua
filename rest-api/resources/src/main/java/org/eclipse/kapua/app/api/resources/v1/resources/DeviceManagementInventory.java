@@ -19,7 +19,8 @@ import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
-import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventory;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.registry.Device;
 
 import javax.ws.rs.GET;
@@ -36,21 +37,41 @@ public class DeviceManagementInventory extends AbstractKapuaResource {
     private static final DeviceInventoryManagementService DEVICE_INVENTORY_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceInventoryManagementService.class);
 
     /**
-     * Returns the list of all the Bundles installed on the device.
+     * Gets the {@link DeviceInventory} present on the {@link Device}.
      *
-     * @param scopeId  The {@link ScopeId} of the {@link Device}.
-     * @param deviceId The id of the device
+     * @param scopeId  The {@link Device#getScopeId()}.
+     * @param deviceId The {@link Device#getId()}.
      * @param timeout  The timeout of the operation in milliseconds
-     * @return The list of Bundles
+     * @return The {@link DeviceInventory}.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since 1.0.0
+     * @since 1.5.0
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public DeviceInventory get(
+    public DeviceInventory getInventory(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout) throws KapuaException {
-        return DEVICE_INVENTORY_MANAGEMENT_SERVICE.get(scopeId, deviceId, timeout);
+        return DEVICE_INVENTORY_MANAGEMENT_SERVICE.getInventory(scopeId, deviceId, timeout);
+    }
+
+    /**
+     * Gets the {@link DeviceInventoryBundles} present on the {@link Device}.
+     *
+     * @param scopeId  The {@link Device#getScopeId()}.
+     * @param deviceId The {@link Device#getId()}.
+     * @param timeout  The timeout of the operation in milliseconds
+     * @return The {@link DeviceInventory}.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+    @GET
+    @Path("bundles")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public DeviceInventoryBundles getInventoryBundles(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @QueryParam("timeout") Long timeout) throws KapuaException {
+        return DEVICE_INVENTORY_MANAGEMENT_SERVICE.getBundles(scopeId, deviceId, timeout);
     }
 }

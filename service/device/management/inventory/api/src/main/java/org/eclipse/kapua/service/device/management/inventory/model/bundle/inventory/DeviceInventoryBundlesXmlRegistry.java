@@ -10,40 +10,38 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.model.xml;
+package org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
-import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventoryPackage;
 
 /**
- * {@link DeviceInventory} XmlFactory definition.
+ * {@link DeviceInventoryBundles} XmlFactory definition.
  *
  * @since 1.5.0
  */
-public class DeviceInventoryXmlRegistry {
+public class DeviceInventoryBundlesXmlRegistry {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DeviceInventoryManagementFactory factory = locator.getFactory(DeviceInventoryManagementFactory.class);
 
     /**
-     * Instantiates a new {@link DeviceInventory}.
+     * Instantiates a new {@link DeviceInventoryBundles}.
      *
-     * @return The newly instantiated {@link DeviceInventory}
+     * @return The newly instantiated {@link DeviceInventoryBundles}
      * @since 1.5.0
      */
-    public DeviceInventory newDeviceInventory() {
-        return factory.newDeviceInventory();
+    public DeviceInventoryBundles newDeviceInventoryBundles() {
+        return factory.newDeviceInventoryBundles();
     }
 
     /**
-     * Instantiates a new {@link DeviceInventoryPackage}.
+     * Instantiates a new {@link DeviceInventoryBundle}.
      *
-     * @return The newly instantiated {@link DeviceInventoryPackage}
+     * @return The newly instantiated {@link DeviceInventoryBundle}
      * @since 1.5.0
      */
-    public DeviceInventoryPackage newDeviceInventoryPackage() {
-        return factory.newDeviceInventoryPackage();
+    public DeviceInventoryBundle newDeviceInventoryBundle() {
+        return factory.newDeviceInventoryBundle();
     }
 }

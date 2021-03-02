@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.internal;
 
-import org.eclipse.kapua.service.device.management.inventory.model.DeviceInventory;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 
 /**
