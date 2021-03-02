@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "90847948-be9c-41c5-b13c-0564b836422e",
+		"_postman_id": "5e850d44-90f9-4658-aa08-9968f08bab58",
 		"name": "kapua-api-tests",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -14,7 +14,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "16102ddb-cc37-4410-978e-ad5da17accf1",
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
@@ -81,35 +80,32 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "2c6db04b-146e-4e21-86a6-52c6460c56c3",
 								"exec": [
-									"pm.test(\"Status code is 500\", function () {\r",
-									"    pm.response.to.have.status(500);\r",
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
 									"});\r",
 									"pm.test(\"Body matches string\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"type\");\r",
-									"    pm.expect(pm.response.text()).to.include(\"httpErrorCode\");\r",
-									"    pm.expect(pm.response.text()).to.include(\"message\");\r",
-									"    pm.expect(pm.response.text()).to.include(\"kapuaErrorCode\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"HTTP ERROR 401\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"Unauthorized\");\r",
 									"});\r",
 									"\r",
-									"var jsonData = pm.response.json(); \r",
+									"// var jsonData = pm.response.json(); \r",
 									"\r",
-									"    pm.test(\"Verify type\", function () { \r",
-									"        pm.expect(jsonData.type).is.to.equal(\"exceptionInfo\"); \r",
-									"    });\r",
+									"//     pm.test(\"Verify type\", function () { \r",
+									"//         pm.expect(jsonData.type).is.to.equal(\"exceptionInfo\"); \r",
+									"//     });\r",
 									"\r",
-									"    pm.test(\"Verify httpErrorCode\", function () { \r",
-									"        pm.expect(jsonData.httpErrorCode).is.to.equal(500); \r",
-									"    });\r",
+									"//     pm.test(\"Verify httpErrorCode\", function () { \r",
+									"//         pm.expect(jsonData.httpErrorCode).is.to.equal(401); \r",
+									"//     });\r",
 									"\r",
-									"    pm.test(\"Verify message\", function () { \r",
-									"        pm.expect(jsonData.message).is.to.equal(\"An internal error occurred: org.apache.shiro.ShiroException: Error while find user!.\"); \r",
-									"    });\r",
+									"//     pm.test(\"Verify message\", function () { \r",
+									"//         pm.expect(jsonData.message).is.to.equal(\"An internal error occurred: org.apache.shiro.ShiroException: Error while find user!.\"); \r",
+									"//     });\r",
 									"\r",
-									"    pm.test(\"Verify kapuaErrorCode\", function () { \r",
-									"        pm.expect(jsonData.kapuaErrorCode).is.to.equal(\"INTERNAL_ERROR\"); \r",
-									"    });"
+									"//     pm.test(\"Verify kapuaErrorCode\", function () { \r",
+									"//         pm.expect(jsonData.kapuaErrorCode).is.to.equal(\"INTERNAL_ERROR\"); \r",
+									"//     });"
 								],
 								"type": "text/javascript"
 							}
@@ -123,7 +119,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"message\": \"string\",\r\n  \"kapuaErrorCode\": \"string\"\r\n}",
+							"raw": "{\r\n  \"username\": \"string\",\r\n  \"password\": \"string\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -152,7 +148,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "e3f06466-34ab-421f-a0ed-66b1b7ac1c92",
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {\r",
 									"    pm.response.to.have.status(401);\r",
@@ -196,7 +191,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "b89edcba-14b3-4bb1-93b9-045ec4ac8921",
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {\r",
 									"    pm.response.to.have.status(401);\r",
@@ -240,35 +234,32 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "80d32002-659c-4144-ac6d-914631acd9b7",
 								"exec": [
-									"pm.test(\"Status code is 500\", function () {\r",
-									"    pm.response.to.have.status(500);\r",
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
 									"});\r",
 									"pm.test(\"Body matches string\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"type\");\r",
-									"    pm.expect(pm.response.text()).to.include(\"httpErrorCode\");\r",
-									"    pm.expect(pm.response.text()).to.include(\"message\");\r",
-									"    pm.expect(pm.response.text()).to.include(\"kapuaErrorCode\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"HTTP ERROR 401\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"Unauthorized\");\r",
 									"});\r",
 									"\r",
-									"var jsonData = pm.response.json(); \r",
+									"// var jsonData = pm.response.json(); \r",
 									"\r",
-									"    pm.test(\"Verify type\", function () { \r",
-									"        pm.expect(jsonData.type).is.to.equal(\"exceptionInfo\"); \r",
-									"    });\r",
+									"//     pm.test(\"Verify type\", function () { \r",
+									"//         pm.expect(jsonData.type).is.to.equal(\"exceptionInfo\"); \r",
+									"//     });\r",
 									"\r",
-									"    pm.test(\"Verify httpErrorCode\", function () { \r",
-									"        pm.expect(jsonData.httpErrorCode).is.to.equal(500); \r",
-									"    });\r",
+									"//     pm.test(\"Verify httpErrorCode\", function () { \r",
+									"//         pm.expect(jsonData.httpErrorCode).is.to.equal(500); \r",
+									"//     });\r",
 									"\r",
-									"    pm.test(\"Verify message\", function () { \r",
-									"        pm.expect(jsonData.message).is.to.equal(\"An internal error occurred: org.apache.shiro.ShiroException: Error while find user!.\"); \r",
-									"    });\r",
+									"//     pm.test(\"Verify message\", function () { \r",
+									"//         pm.expect(jsonData.message).is.to.equal(\"An internal error occurred: org.apache.shiro.ShiroException: Error while find user!.\"); \r",
+									"//     });\r",
 									"\r",
-									"    pm.test(\"Verify kapuaErrorCode\", function () { \r",
-									"        pm.expect(jsonData.kapuaErrorCode).is.to.equal(\"INTERNAL_ERROR\"); \r",
-									"    });"
+									"//     pm.test(\"Verify kapuaErrorCode\", function () { \r",
+									"//         pm.expect(jsonData.kapuaErrorCode).is.to.equal(\"INTERNAL_ERROR\"); \r",
+									"//     });"
 								],
 								"type": "text/javascript"
 							}
@@ -308,7 +299,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f6f16bc6-eab4-45f3-a6e9-f2e5cc33dd90",
 								"exec": [
 									"pm.test(\"Status code is 401\", function () {\r",
 									"    pm.response.to.have.status(401);\r",
@@ -352,35 +342,14 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "4efd4479-6b9a-4e0e-a531-959bb59d78d6",
 								"exec": [
-									"pm.test(\"Status code is 500\", function () {\r",
-									"    pm.response.to.have.status(500);\r",
+									"pm.test(\"Status code is 401\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
 									"});\r",
 									"pm.test(\"Body matches string\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"type\");\r",
-									"    pm.expect(pm.response.text()).to.include(\"httpErrorCode\");\r",
-									"    pm.expect(pm.response.text()).to.include(\"message\");\r",
-									"    pm.expect(pm.response.text()).to.include(\"kapuaErrorCode\");\r",
-									"});\r",
-									"\r",
-									"var jsonData = pm.response.json(); \r",
-									"\r",
-									"    pm.test(\"Verify type\", function () { \r",
-									"        pm.expect(jsonData.type).is.to.equal(\"exceptionInfo\"); \r",
-									"    });\r",
-									"\r",
-									"    pm.test(\"Verify httpErrorCode\", function () { \r",
-									"        pm.expect(jsonData.httpErrorCode).is.to.equal(500); \r",
-									"    });\r",
-									"\r",
-									"    pm.test(\"Verify message\", function () { \r",
-									"        pm.expect(jsonData.message).is.to.equal(\"An internal error occurred: org.apache.shiro.ShiroException: Error while find user!.\"); \r",
-									"    });\r",
-									"\r",
-									"    pm.test(\"Verify kapuaErrorCode\", function () { \r",
-									"        pm.expect(jsonData.kapuaErrorCode).is.to.equal(\"INTERNAL_ERROR\"); \r",
-									"    });"
+									"    pm.expect(pm.response.text()).to.include(\"HTTP ERROR 401\");\r",
+									"    pm.expect(pm.response.text()).to.include(\"Unauthorized\");\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -446,6 +415,7 @@
 					"response": []
 				}
 			],
+
 			"auth": {
 				"type": "noauth"
 			},
