@@ -39,8 +39,8 @@ public class DeviceInventoryImpl implements DeviceInventory {
     }
 
     @Override
-    public void addInventoryPackage(DeviceInventoryPackage deviceInventoryPackage) {
-        getInventoryPackages().add(deviceInventoryPackage);
+    public void addInventoryPackage(DeviceInventoryPackage inventoryPackage) {
+        getInventoryPackages().add(inventoryPackage);
     }
 
     @Override

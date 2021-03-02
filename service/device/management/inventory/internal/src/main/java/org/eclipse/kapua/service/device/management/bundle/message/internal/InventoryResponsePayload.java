@@ -20,6 +20,7 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 import javax.validation.constraints.NotNull;
@@ -84,12 +85,40 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
     /**
      * Sets the {@link DeviceInventoryBundles} in the {@link #getBody()}.
      *
-     * @param deviceInventoryBundles The {@link DeviceInventoryBundles} in the {@link #getBody()}.
+     * @param inventoryBundles The {@link DeviceInventoryBundles} in the {@link #getBody()}.
      * @throws Exception if writing errors.
      * @since 1.5.0
      */
-    public void setDeviceInventoryBundles(@NotNull DeviceInventoryBundles deviceInventoryBundles) throws Exception {
-        String bodyString = XmlUtil.marshal(deviceInventoryBundles);
+    public void setDeviceInventoryBundles(@NotNull DeviceInventoryBundles inventoryBundles) throws Exception {
+        String bodyString = XmlUtil.marshal(inventoryBundles);
+        setBody(bodyString.getBytes(CHAR_ENCODING));
+    }
+
+    /**
+     * Gets the {@link DeviceInventorySystemPackages} from the {@link #getBody()}.
+     *
+     * @return The {@link DeviceInventorySystemPackages} from the {@link #getBody()}.
+     * @throws Exception if reading {@link #getBody()} errors.
+     * @since 1.5.0
+     */
+    public DeviceInventorySystemPackages getDeviceInventorySystemPackages() throws Exception {
+        if (!hasBody()) {
+            return DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventorySystemPackages();
+        }
+
+        String bodyString = new String(getBody(), CHAR_ENCODING);
+        return XmlUtil.unmarshal(bodyString, DeviceInventorySystemPackages.class);
+    }
+
+    /**
+     * Sets the {@link DeviceInventorySystemPackages} in the {@link #getBody()}.
+     *
+     * @param systemPackages The {@link DeviceInventorySystemPackages} in the {@link #getBody()}.
+     * @throws Exception if writing errors.
+     * @since 1.5.0
+     */
+    public void setDeviceInventorySystemPackages(@NotNull DeviceInventorySystemPackages systemPackages) throws Exception {
+        String bodyString = XmlUtil.marshal(systemPackages);
         setBody(bodyString.getBytes(CHAR_ENCODING));
     }
 }

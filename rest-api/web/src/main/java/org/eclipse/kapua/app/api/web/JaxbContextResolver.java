@@ -146,8 +146,10 @@ import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPac
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryPackage;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryPackages;
-import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.inventory.KuraInventoryBundle;
-import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.inventory.KuraInventoryBundles;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundle;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundles;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInventorySystemPackage;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInventorySystemPackages;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -165,6 +167,8 @@ import org.eclipse.kapua.service.device.management.inventory.model.bundle.invent
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryPackage;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryXmlRegistry;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
@@ -443,6 +447,10 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceInventoryBundle.class,
                     KuraInventoryBundles.class,
                     KuraInventoryBundle.class,
+                    DeviceInventorySystemPackages.class,
+                    DeviceInventorySystemPackage.class,
+                    KuraInventorySystemPackages.class,
+                    KuraInventorySystemPackage.class,
                     DeviceInventoryXmlRegistry.class,
 
                     // Device Management Snapshots

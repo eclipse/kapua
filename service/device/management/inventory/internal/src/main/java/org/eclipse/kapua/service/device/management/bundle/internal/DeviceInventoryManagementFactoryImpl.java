@@ -17,11 +17,15 @@ import org.eclipse.kapua.service.device.management.bundle.model.bundle.internal.
 import org.eclipse.kapua.service.device.management.bundle.model.bundle.internal.internal.DeviceInventoryBundlesImpl;
 import org.eclipse.kapua.service.device.management.bundle.model.inventory.internal.DeviceInventoryImpl;
 import org.eclipse.kapua.service.device.management.bundle.model.inventory.internal.DeviceInventoryPackageImpl;
+import org.eclipse.kapua.service.device.management.bundle.model.inventory.system.internal.DeviceInventorySystemPackageImpl;
+import org.eclipse.kapua.service.device.management.bundle.model.inventory.system.internal.DeviceInventorySystemPackagesImpl;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
 
 /**
  * {@link DeviceInventoryManagementFactory} implementation.
@@ -49,5 +53,15 @@ public class DeviceInventoryManagementFactoryImpl implements DeviceInventoryMana
     @Override
     public DeviceInventoryBundle newDeviceInventoryBundle() {
         return new DeviceInventoryBundleImpl();
+    }
+
+    @Override
+    public DeviceInventorySystemPackages newDeviceInventorySystemPackages() {
+        return new DeviceInventorySystemPackagesImpl();
+    }
+
+    @Override
+    public DeviceInventorySystemPackage newDeviceInventorySystemPackage() {
+        return new DeviceInventorySystemPackageImpl();
     }
 }

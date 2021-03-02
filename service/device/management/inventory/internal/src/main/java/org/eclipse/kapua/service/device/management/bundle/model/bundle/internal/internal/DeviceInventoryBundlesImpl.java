@@ -39,8 +39,8 @@ public class DeviceInventoryBundlesImpl implements DeviceInventoryBundles {
     }
 
     @Override
-    public void addInventoryBundle(DeviceInventoryBundle deviceInventoryPackage) {
-        getInventoryBundles().add(deviceInventoryPackage);
+    public void addInventoryBundle(DeviceInventoryBundle inventoryBundle) {
+        getInventoryBundles().add(inventoryBundle);
     }
 
     @Override

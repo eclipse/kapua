@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.device.management.inventory.model.inventory;
 
 import org.eclipse.kapua.KapuaSerializable;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -24,8 +26,9 @@ import java.util.List;
  *
  * @since 1.5.0
  */
-@XmlType(factoryClass = DeviceInventoryXmlRegistry.class, factoryMethod = "newDeviceInventory")
 @XmlRootElement(name = "deviceInventory")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = DeviceInventoryXmlRegistry.class, factoryMethod = "newDeviceInventory")
 public interface DeviceInventory extends KapuaSerializable {
 
     /**
@@ -40,16 +43,16 @@ public interface DeviceInventory extends KapuaSerializable {
     /**
      * Adds a {@link DeviceInventoryPackage} to the {@link List}
      *
-     * @param deviceInventoryPackage The {@link DeviceInventoryPackage} to add.
+     * @param inventoryPackage The {@link DeviceInventoryPackage} to add.
      * @since 1.5.0
      */
-    void addInventoryPackage(DeviceInventoryPackage deviceInventoryPackage);
+    void addInventoryPackage(DeviceInventoryPackage inventoryPackage);
 
     /**
      * Sets the {@link List} of {@link DeviceInventoryPackage}s
      *
-     * @param deviceInventoryPackages The {@link List} of {@link DeviceInventoryPackage}s
+     * @param inventoryPackages The {@link List} of {@link DeviceInventoryPackage}s
      * @since 1.5.0
      */
-    void setInventoryPackages(List<DeviceInventoryPackage> deviceInventoryPackages);
+    void setInventoryPackages(List<DeviceInventoryPackage> inventoryPackages);
 }
