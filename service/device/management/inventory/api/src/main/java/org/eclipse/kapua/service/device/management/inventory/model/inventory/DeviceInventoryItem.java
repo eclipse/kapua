@@ -12,47 +12,72 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.inventory.model.inventory;
 
-import org.eclipse.kapua.KapuaSerializable;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.List;
 
 /**
- * {@link DeviceInventory} definition.
+ * {@link DeviceInventoryItem} definition.
+ * <p>
+ * It represents an item present on a device.
  *
  * @since 1.5.0
  */
-@XmlRootElement(name = "deviceInventory")
+@XmlRootElement(name = "deviceInventoryItem")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = DeviceInventoryXmlRegistry.class, factoryMethod = "newDeviceInventory")
-public interface DeviceInventory extends KapuaSerializable {
+@XmlType(factoryClass = DeviceInventoryXmlRegistry.class, factoryMethod = "newDeviceInventoryItem")
+public interface DeviceInventoryItem {
 
     /**
-     * Gets the {@link List} of {@link DeviceInventoryItem}s
+     * Gets the name.
      *
-     * @return The {@link List} of {@link DeviceInventoryItem}s
+     * @return The name.
      * @since 1.5.0
      */
-    @XmlElement(name = "inventoryItems")
-    List<DeviceInventoryItem> getInventoryItems();
+    @XmlElement(name = "name")
+    String getName();
 
     /**
-     * Adds a {@link DeviceInventoryItem} to the {@link List}
+     * Sets the name.
      *
-     * @param inventoryItem The {@link DeviceInventoryItem} to add.
+     * @param name The name.
      * @since 1.5.0
      */
-    void addInventoryItem(DeviceInventoryItem inventoryItem);
+    void setName(String name);
 
     /**
-     * Sets the {@link List} of {@link DeviceInventoryItem}s
+     * Gets the bundle version.
      *
-     * @param inventoryItems The {@link List} of {@link DeviceInventoryItem}s
+     * @return The version.
      * @since 1.5.0
      */
-    void setInventoryItems(List<DeviceInventoryItem> inventoryItems);
+    @XmlElement(name = "version")
+    String getVersion();
+
+    /**
+     * Sets the version.
+     *
+     * @param version The version.
+     * @since 1.5.0
+     */
+    void setVersion(String version);
+
+    /**
+     * Gets the type.
+     *
+     * @return The type.
+     * @since 1.5.0
+     */
+    @XmlElement(name = "itemType")
+    String getItemType();
+
+    /**
+     * Sets the type.
+     *
+     * @param itemType The type.
+     * @since 1.5.0
+     */
+    void setItemType(String itemType);
 }

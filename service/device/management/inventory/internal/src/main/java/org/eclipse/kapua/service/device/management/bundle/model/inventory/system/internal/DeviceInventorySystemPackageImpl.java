@@ -12,11 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.model.inventory.system.internal;
 
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryPackage;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackage;
 
 /**
- * {@link DeviceInventoryPackage} implementation.
+ * {@link DeviceInventorySystemPackage} implementation.
  *
  * @since 1.5.0
  */

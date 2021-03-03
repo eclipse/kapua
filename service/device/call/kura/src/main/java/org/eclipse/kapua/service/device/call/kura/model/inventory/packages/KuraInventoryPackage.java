@@ -10,10 +10,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.kura.model.inventory;
+package org.eclipse.kapua.service.device.call.kura.model.inventory.packages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link KuraInventoryPackage} definition.
@@ -29,8 +33,8 @@ public class KuraInventoryPackage {
     @JsonProperty("version")
     public String version;
 
-    @JsonProperty("type")
-    public String type;
+    @JsonProperty("bundles")
+    List<KuraInventoryBundle> packageBundles;
 
     /**
      * Gets the name.
@@ -73,22 +77,36 @@ public class KuraInventoryPackage {
     }
 
     /**
-     * Gets the type.
+     * Gets the {@link List} of {@link KuraInventoryBundle}s
      *
-     * @return The type.
+     * @return The {@link List} of {@link KuraInventoryBundle}s
      * @since 1.5.0
      */
-    public String getType() {
-        return type;
+    public List<KuraInventoryBundle> getPackageBundles() {
+        if (packageBundles == null) {
+            packageBundles = new ArrayList<>();
+        }
+
+        return packageBundles;
     }
 
     /**
-     * Sets the type.
+     * Adds a {@link KuraInventoryBundle} to the {@link List}.
      *
-     * @param type The type.
+     * @param packageBundle The {@link KuraInventoryBundle} to add.
      * @since 1.5.0
      */
-    public void setType(String type) {
-        this.type = type;
+    public void addPackageBundle(KuraInventoryBundle packageBundle) {
+        getPackageBundles().add(packageBundle);
+    }
+
+    /**
+     * Sets the {@link List} of {@link KuraInventoryBundle}s
+     *
+     * @param packageBundles The {@link List} of {@link KuraInventoryBundle}s
+     * @since 1.5.0
+     */
+    public void setPackageBundles(List<KuraInventoryBundle> packageBundles) {
+        this.packageBundles = packageBundles;
     }
 }

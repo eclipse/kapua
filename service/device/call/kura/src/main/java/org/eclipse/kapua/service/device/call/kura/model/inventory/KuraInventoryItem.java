@@ -10,25 +10,27 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.model.inventory;
+package org.eclipse.kapua.service.device.call.kura.model.inventory;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
 /**
- * {@link DeviceInventoryPackage} definition.
- * <p>
- * It represents a package present on a device.
+ * {@link KuraInventoryItem} definition.
  *
  * @since 1.5.0
  */
-@XmlRootElement(name = "deviceInventoryPackage")
-@XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = DeviceInventoryXmlRegistry.class, factoryMethod = "newDeviceInventoryPackage")
-public interface DeviceInventoryPackage {
+@JsonRootName("inventoryPackage")
+public class KuraInventoryItem {
+
+    @JsonProperty("name")
+    public String name;
+
+    @JsonProperty("version")
+    public String version;
+
+    @JsonProperty("type")
+    public String type;
 
     /**
      * Gets the name.
@@ -36,8 +38,9 @@ public interface DeviceInventoryPackage {
      * @return The name.
      * @since 1.5.0
      */
-    @XmlElement(name = "name")
-    String getName();
+    public String getName() {
+        return name;
+    }
 
     /**
      * Sets the name.
@@ -45,24 +48,29 @@ public interface DeviceInventoryPackage {
      * @param name The name.
      * @since 1.5.0
      */
-    void setName(String name);
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
-     * Gets the bundle version.
+     * Gets the version.
      *
      * @return The version.
      * @since 1.5.0
      */
-    @XmlElement(name = "version")
-    String getVersion();
+    public String getVersion() {
+        return version;
+    }
 
     /**
-     * Sets the version.
+     * Gets the version.
      *
      * @param version The version.
      * @since 1.5.0
      */
-    void setVersion(String version);
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     /**
      * Gets the type.
@@ -70,14 +78,17 @@ public interface DeviceInventoryPackage {
      * @return The type.
      * @since 1.5.0
      */
-    @XmlElement(name = "packageType")
-    String getPackageType();
+    public String getType() {
+        return type;
+    }
 
     /**
      * Sets the type.
      *
-     * @param packageType The type.
+     * @param type The type.
      * @since 1.5.0
      */
-    void setPackageType(String packageType);
+    public void setType(String type) {
+        this.type = type;
+    }
 }

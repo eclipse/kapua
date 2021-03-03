@@ -51,8 +51,8 @@ import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDevice
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
-import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryPackage;
-import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryPackages;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryItem;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryItems;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -63,7 +63,7 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryXmlRegistry;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
@@ -131,9 +131,9 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
 
                         // Device Management Inventory
                         DeviceInventory.class,
-                        DeviceInventoryPackage.class,
-                        KuraInventoryPackages.class,
-                        KuraInventoryPackage.class,
+                        DeviceInventoryItem.class,
+                        KuraInventoryItems.class,
+                        KuraInventoryItem.class,
                         DeviceInventoryXmlRegistry.class,
 
                         DevicePackageDownloadRequest.class,

@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call.kura.model.inventory;
+package org.eclipse.kapua.service.device.call.kura.model.inventory.packages;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
@@ -28,8 +28,8 @@ import java.util.List;
 @JsonRootName("inventoryPackages")
 public class KuraInventoryPackages {
 
-    @JsonProperty("inventory")
-    public List<KuraInventoryPackage> inventoryPackages;
+    @JsonProperty("packages")
+    public List<KuraInventoryPackage> packages;
 
     /**
      * Gets the {@link KuraInventoryPackage}s {@link List}.
@@ -37,32 +37,32 @@ public class KuraInventoryPackages {
      * @return The {@link KuraInventoryPackage}s {@link List}.
      * @since 1.5.0
      */
-    public List<KuraInventoryPackage> getInventoryPackages() {
-        if (inventoryPackages == null) {
-            inventoryPackages = new ArrayList<>();
+    public List<KuraInventoryPackage> getPackages() {
+        if (packages == null) {
+            packages = new ArrayList<>();
         }
 
-        return inventoryPackages;
+        return packages;
     }
 
     /**
      * Adds a {@link KuraInventoryPackage} to the {@link List}
      *
-     * @param inventoryPackage The {@link KuraInventoryPackage} to add.
+     * @param aPackage The {@link KuraInventoryPackage} to add.
      * @since 1.5.0
      */
-    public void addInventoryPackage(@NotNull KuraInventoryPackage inventoryPackage) {
-        getInventoryPackages().add(inventoryPackage);
+    public void addPackage(@NotNull KuraInventoryPackage aPackage) {
+        getPackages().add(aPackage);
     }
 
     /**
      * Sets the {@link KuraInventoryPackage}s {@link List}.
      *
-     * @param inventoryPackages The {@link KuraInventoryPackage}s {@link List}.
+     * @param packages The {@link KuraInventoryPackage}s {@link List}.
      * @since 1.5.0
      */
-    public void setInventoryPackages(@Nullable List<KuraInventoryPackage> inventoryPackages) {
-        this.inventoryPackages = inventoryPackages;
+    public void setPackages(@Nullable List<KuraInventoryPackage> packages) {
+        this.packages = packages;
     }
 
 }

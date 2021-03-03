@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.model.inventory;
+package org.eclipse.kapua.service.device.management.inventory.model.inventory.packages;
 
 import org.eclipse.kapua.KapuaSerializable;
 
@@ -22,37 +22,37 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
- * {@link DeviceInventory} definition.
+ * {@link DeviceInventoryPackages} definition.
  *
  * @since 1.5.0
  */
-@XmlRootElement(name = "deviceInventory")
+@XmlRootElement(name = "deviceInventoryPackages")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = DeviceInventoryXmlRegistry.class, factoryMethod = "newDeviceInventory")
-public interface DeviceInventory extends KapuaSerializable {
+@XmlType(factoryClass = DeviceInventoryPackagesXmlRegistry.class, factoryMethod = "newDeviceInventoryPackages")
+public interface DeviceInventoryPackages extends KapuaSerializable {
 
     /**
-     * Gets the {@link List} of {@link DeviceInventoryItem}s
+     * Gets the {@link List} of {@link DeviceInventoryPackage}s.
      *
-     * @return The {@link List} of {@link DeviceInventoryItem}s
+     * @return The {@link List} of {@link DeviceInventoryPackage}s.
      * @since 1.5.0
      */
-    @XmlElement(name = "inventoryItems")
-    List<DeviceInventoryItem> getInventoryItems();
+    @XmlElement(name = "systemPackages")
+    List<DeviceInventoryPackage> getPackages();
 
     /**
-     * Adds a {@link DeviceInventoryItem} to the {@link List}
+     * Adds a {@link DeviceInventoryPackage} to the {@link List}.
      *
-     * @param inventoryItem The {@link DeviceInventoryItem} to add.
+     * @param aPackage The {@link DeviceInventoryPackage} to add.
      * @since 1.5.0
      */
-    void addInventoryItem(DeviceInventoryItem inventoryItem);
+    void addPackage(DeviceInventoryPackage aPackage);
 
     /**
-     * Sets the {@link List} of {@link DeviceInventoryItem}s
+     * Sets the {@link List} of {@link DeviceInventoryPackage}s.
      *
-     * @param inventoryItems The {@link List} of {@link DeviceInventoryItem}s
+     * @param inventoryPackages The {@link List} of {@link DeviceInventoryPackage}s.
      * @since 1.5.0
      */
-    void setInventoryItems(List<DeviceInventoryItem> inventoryItems);
+    void setPackages(List<DeviceInventoryPackage> inventoryPackages);
 }

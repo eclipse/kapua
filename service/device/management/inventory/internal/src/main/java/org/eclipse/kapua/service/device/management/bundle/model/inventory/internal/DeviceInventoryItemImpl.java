@@ -12,25 +12,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.model.inventory.internal;
 
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
 
 /**
- * {@link DeviceInventoryPackage} implementation.
+ * {@link DeviceInventoryItem} implementation.
  *
  * @since 1.5.0
  */
-public class DeviceInventoryPackageImpl implements DeviceInventoryPackage {
+public class DeviceInventoryItemImpl implements DeviceInventoryItem {
 
     public String name;
     public String version;
-    public String packageType;
+    public String itemType;
 
     /**
      * Constructor.
      *
      * @since 1.5.0
      */
-    public DeviceInventoryPackageImpl() {
+    public DeviceInventoryItemImpl() {
     }
 
     @Override
@@ -54,12 +54,12 @@ public class DeviceInventoryPackageImpl implements DeviceInventoryPackage {
     }
 
     @Override
-    public String getPackageType() {
-        return packageType;
+    public String getItemType() {
+        return itemType;
     }
 
     @Override
-    public void setPackageType(String packageType) {
-        this.packageType = packageType;
+    public void setItemType(String itemType) {
+        this.itemType = itemType;
     }
 }

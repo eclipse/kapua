@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.device.management.bundle.model.inventory.internal;
 
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,24 +27,24 @@ public class DeviceInventoryImpl implements DeviceInventory {
 
     private static final long serialVersionUID = 734716753080998855L;
 
-    private List<DeviceInventoryPackage> inventoryPackages;
+    private List<DeviceInventoryItem> inventoryItems;
 
     @Override
-    public List<DeviceInventoryPackage> getInventoryPackages() {
-        if (inventoryPackages == null) {
-            inventoryPackages = new ArrayList<>();
+    public List<DeviceInventoryItem> getInventoryItems() {
+        if (inventoryItems == null) {
+            inventoryItems = new ArrayList<>();
         }
 
-        return inventoryPackages;
+        return inventoryItems;
     }
 
     @Override
-    public void addInventoryPackage(DeviceInventoryPackage inventoryPackage) {
-        getInventoryPackages().add(inventoryPackage);
+    public void addInventoryItem(DeviceInventoryItem inventoryItem) {
+        getInventoryItems().add(inventoryItem);
     }
 
     @Override
-    public void setInventoryPackages(List<DeviceInventoryPackage> inventoryPackages) {
-        this.inventoryPackages = inventoryPackages;
+    public void setInventoryItems(List<DeviceInventoryItem> inventoryItems) {
+        this.inventoryItems = inventoryItems;
     }
 }

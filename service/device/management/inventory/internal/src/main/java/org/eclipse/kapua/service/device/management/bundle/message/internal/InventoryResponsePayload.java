@@ -20,6 +20,7 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
@@ -119,6 +120,34 @@ public class InventoryResponsePayload extends KapuaResponsePayloadImpl implement
      */
     public void setDeviceInventorySystemPackages(@NotNull DeviceInventorySystemPackages systemPackages) throws Exception {
         String bodyString = XmlUtil.marshal(systemPackages);
+        setBody(bodyString.getBytes(CHAR_ENCODING));
+    }
+
+    /**
+     * Gets the {@link DeviceInventoryPackages} from the {@link #getBody()}.
+     *
+     * @return The {@link DeviceInventoryPackages} from the {@link #getBody()}.
+     * @throws Exception if reading {@link #getBody()} errors.
+     * @since 1.5.0
+     */
+    public DeviceInventoryPackages getDeviceInventoryPackages() throws Exception {
+        if (!hasBody()) {
+            return DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventoryPackages();
+        }
+
+        String bodyString = new String(getBody(), CHAR_ENCODING);
+        return XmlUtil.unmarshal(bodyString, DeviceInventoryPackages.class);
+    }
+
+    /**
+     * Sets the {@link DeviceInventoryPackages} in the {@link #getBody()}.
+     *
+     * @param packages The {@link DeviceInventoryPackages} in the {@link #getBody()}.
+     * @throws Exception if writing errors.
+     * @since 1.5.0
+     */
+    public void setDeviceInventoryPackages(@NotNull DeviceInventoryPackages packages) throws Exception {
+        String bodyString = XmlUtil.marshal(packages);
         setBody(bodyString.getBytes(CHAR_ENCODING));
     }
 }

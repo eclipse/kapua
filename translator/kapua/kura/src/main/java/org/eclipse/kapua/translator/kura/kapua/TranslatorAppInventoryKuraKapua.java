@@ -15,8 +15,9 @@ package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.InventoryMetrics;
-import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryPackages;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryItems;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundles;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.packages.KuraInventoryPackages;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInventorySystemPackages;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
@@ -28,11 +29,14 @@ import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryMana
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackage;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.slf4j.LoggerFactory;
 
 /**
  * {@link org.eclipse.kapua.translator.Translator} implementation from {@link KuraResponseMessage} to {@link InventoryResponseMessage}
@@ -64,10 +68,10 @@ public class TranslatorAppInventoryKuraKapua extends AbstractSimpleTranslatorRes
             InventoryResponsePayload inventoryResponsePayload = super.translatePayload(kuraResponsePayload);
 
             if (kuraResponsePayload.hasBody()) {
-                KuraInventoryPackages inventoryPackages = readJsonBodyAs(kuraResponsePayload.getBody(), KuraInventoryPackages.class);
+                KuraInventoryItems inventoryItems = readJsonBodyAs(kuraResponsePayload.getBody(), KuraInventoryItems.class);
 
-                if (!inventoryPackages.getInventoryPackages().isEmpty()) {
-                    inventoryResponsePayload.setDeviceInventory(translate(inventoryPackages));
+                if (!inventoryItems.getInventoryItems().isEmpty()) {
+                    inventoryResponsePayload.setDeviceInventory(translate(inventoryItems));
 
                     return inventoryResponsePayload;
                 }
@@ -85,6 +89,16 @@ public class TranslatorAppInventoryKuraKapua extends AbstractSimpleTranslatorRes
 
                     return inventoryResponsePayload;
                 }
+
+                LoggerFactory.getLogger(TranslatorAppInventoryKuraKapua.class).info("Json: {}", new String(kuraResponsePayload.getBody()));
+                LoggerFactory.getLogger(TranslatorAppInventoryKuraKapua.class).info("Json Parsed: {}", getJsonMapper().readTree(new String(kuraResponsePayload.getBody())).toPrettyString());
+
+                KuraInventoryPackages inventoryPackages = readJsonBodyAs(kuraResponsePayload.getBody(), KuraInventoryPackages.class);
+                if (!inventoryPackages.getPackages().isEmpty()) {
+                    inventoryResponsePayload.setDeviceInventoryPackages(translate(inventoryPackages));
+
+                    return inventoryResponsePayload;
+                }
             }
 
             return inventoryResponsePayload;
@@ -94,23 +108,23 @@ public class TranslatorAppInventoryKuraKapua extends AbstractSimpleTranslatorRes
     }
 
     /**
-     * Translates {@link KuraInventoryPackages} to {@link DeviceInventory}
+     * Translates {@link KuraInventoryItems} to {@link DeviceInventory}
      *
-     * @param inventoryPackages The {@link KuraInventoryPackages} to translate.
+     * @param kuraInventoryItems The {@link KuraInventoryItems} to translate.
      * @return The translated {@link DeviceInventory}.
      * @since 1.5.0
      */
-    private DeviceInventory translate(KuraInventoryPackages inventoryPackages) {
+    private DeviceInventory translate(KuraInventoryItems kuraInventoryItems) {
         DeviceInventoryManagementFactory deviceInventoryFactory = LOCATOR.getFactory(DeviceInventoryManagementFactory.class);
         DeviceInventory deviceInventory = deviceInventoryFactory.newDeviceInventory();
 
-        inventoryPackages.getInventoryPackages().forEach(systemPackage -> {
-            DeviceInventoryPackage inventoryPackage = deviceInventoryFactory.newDeviceInventoryPackage();
-            inventoryPackage.setName(systemPackage.getName());
-            inventoryPackage.setVersion(systemPackage.getVersion());
-            inventoryPackage.setPackageType(systemPackage.getType());
+        kuraInventoryItems.getInventoryItems().forEach(kuraInventoryItem -> {
+            DeviceInventoryItem deviceInventoryItem = deviceInventoryFactory.newDeviceInventoryItem();
+            deviceInventoryItem.setName(kuraInventoryItem.getName());
+            deviceInventoryItem.setVersion(kuraInventoryItem.getVersion());
+            deviceInventoryItem.setItemType(kuraInventoryItem.getType());
 
-            deviceInventory.addInventoryPackage(inventoryPackage);
+            deviceInventory.addInventoryItem(deviceInventoryItem);
         });
 
         return deviceInventory;
@@ -119,22 +133,22 @@ public class TranslatorAppInventoryKuraKapua extends AbstractSimpleTranslatorRes
     /**
      * Translates {@link KuraInventoryBundles} to {@link DeviceInventoryBundles}
      *
-     * @param inventoryBundles The {@link KuraInventoryBundles} to translate.
+     * @param kuraInventoryBundles The {@link KuraInventoryBundles} to translate.
      * @return The translated {@link DeviceInventoryBundles}.
      * @since 1.5.0
      */
-    private DeviceInventoryBundles translate(KuraInventoryBundles inventoryBundles) {
+    private DeviceInventoryBundles translate(KuraInventoryBundles kuraInventoryBundles) {
         DeviceInventoryManagementFactory deviceInventoryFactory = LOCATOR.getFactory(DeviceInventoryManagementFactory.class);
         DeviceInventoryBundles deviceInventoryBundles = deviceInventoryFactory.newDeviceInventoryBundles();
 
-        inventoryBundles.getInventoryBundles().forEach(systemPackage -> {
-            DeviceInventoryBundle inventoryBundle = deviceInventoryFactory.newDeviceInventoryBundle();
-            inventoryBundle.setId(systemPackage.getId());
-            inventoryBundle.setName(systemPackage.getName());
-            inventoryBundle.setVersion(systemPackage.getVersion());
-            inventoryBundle.setStatus(systemPackage.getState());
+        kuraInventoryBundles.getInventoryBundles().forEach(kuraInventoryBundle -> {
+            DeviceInventoryBundle deviceInventoryBundle = deviceInventoryFactory.newDeviceInventoryBundle();
+            deviceInventoryBundle.setId(kuraInventoryBundle.getId());
+            deviceInventoryBundle.setName(kuraInventoryBundle.getName());
+            deviceInventoryBundle.setVersion(kuraInventoryBundle.getVersion());
+            deviceInventoryBundle.setStatus(kuraInventoryBundle.getState());
 
-            deviceInventoryBundles.addInventoryBundle(inventoryBundle);
+            deviceInventoryBundles.addInventoryBundle(deviceInventoryBundle);
         });
 
         return deviceInventoryBundles;
@@ -143,23 +157,53 @@ public class TranslatorAppInventoryKuraKapua extends AbstractSimpleTranslatorRes
     /**
      * Translates {@link KuraInventorySystemPackages} to {@link DeviceInventorySystemPackages}
      *
-     * @param inventorySystemPackages The {@link KuraInventorySystemPackages} to translate.
+     * @param kuraInventorySystemPackages The {@link KuraInventorySystemPackages} to translate.
      * @return The translated {@link DeviceInventorySystemPackages}.
      * @since 1.5.0
      */
-    private DeviceInventorySystemPackages translate(KuraInventorySystemPackages inventorySystemPackages) {
+    private DeviceInventorySystemPackages translate(KuraInventorySystemPackages kuraInventorySystemPackages) {
         DeviceInventoryManagementFactory deviceInventoryFactory = LOCATOR.getFactory(DeviceInventoryManagementFactory.class);
-        DeviceInventorySystemPackages deviceInventory = deviceInventoryFactory.newDeviceInventorySystemPackages();
+        DeviceInventorySystemPackages deviceInventorySystemPackages = deviceInventoryFactory.newDeviceInventorySystemPackages();
 
-        inventorySystemPackages.getSystemPackages().forEach(systemPackage -> {
-            DeviceInventorySystemPackage inventorySystemPackage = deviceInventoryFactory.newDeviceInventorySystemPackage();
-            inventorySystemPackage.setName(systemPackage.getName());
-            inventorySystemPackage.setVersion(systemPackage.getVersion());
-            inventorySystemPackage.setPackageType(systemPackage.getType());
+        kuraInventorySystemPackages.getSystemPackages().forEach(kuraInventorySystemPackage -> {
+            DeviceInventorySystemPackage deviceInventorySystemPackage = deviceInventoryFactory.newDeviceInventorySystemPackage();
+            deviceInventorySystemPackage.setName(kuraInventorySystemPackage.getName());
+            deviceInventorySystemPackage.setVersion(kuraInventorySystemPackage.getVersion());
+            deviceInventorySystemPackage.setPackageType(kuraInventorySystemPackage.getType());
 
-            deviceInventory.addSystemPackage(inventorySystemPackage);
+            deviceInventorySystemPackages.addSystemPackage(deviceInventorySystemPackage);
         });
 
-        return deviceInventory;
+        return deviceInventorySystemPackages;
+    }
+
+    /**
+     * Translates {@link KuraInventoryPackages} to {@link DeviceInventoryPackages}
+     *
+     * @param kuraInventoryPackages The {@link KuraInventorySystemPackages} to translate.
+     * @return The translated {@link DeviceInventorySystemPackages}.
+     * @since 1.5.0
+     */
+    private DeviceInventoryPackages translate(KuraInventoryPackages kuraInventoryPackages) {
+        DeviceInventoryManagementFactory deviceInventoryFactory = LOCATOR.getFactory(DeviceInventoryManagementFactory.class);
+        DeviceInventoryPackages deviceInventoryPackages = deviceInventoryFactory.newDeviceInventoryPackages();
+
+        kuraInventoryPackages.getPackages().forEach(kuraInventoryPackage -> {
+            DeviceInventoryPackage deviceInventoryPackage = deviceInventoryFactory.newDeviceInventoryPackage();
+            deviceInventoryPackage.setName(kuraInventoryPackage.getName());
+            deviceInventoryPackage.setVersion(kuraInventoryPackage.getVersion());
+
+            kuraInventoryPackage.getPackageBundles().forEach(kuraInventoryBundle -> {
+                DeviceInventoryBundle deviceInventoryBundle = deviceInventoryFactory.newDeviceInventoryBundle();
+                deviceInventoryBundle.setName(kuraInventoryBundle.getName());
+                deviceInventoryBundle.setVersion(kuraInventoryBundle.getVersion());
+
+                deviceInventoryPackage.addPackageBundle(deviceInventoryBundle);
+            });
+
+            deviceInventoryPackages.addPackage(deviceInventoryPackage);
+        });
+
+        return deviceInventoryPackages;
     }
 }

@@ -16,14 +16,18 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.bundle.model.bundle.internal.internal.DeviceInventoryBundleImpl;
 import org.eclipse.kapua.service.device.management.bundle.model.bundle.internal.internal.DeviceInventoryBundlesImpl;
 import org.eclipse.kapua.service.device.management.bundle.model.inventory.internal.DeviceInventoryImpl;
-import org.eclipse.kapua.service.device.management.bundle.model.inventory.internal.DeviceInventoryPackageImpl;
+import org.eclipse.kapua.service.device.management.bundle.model.inventory.internal.DeviceInventoryItemImpl;
+import org.eclipse.kapua.service.device.management.bundle.model.inventory.packages.internal.DeviceInventoryPackageImpl;
+import org.eclipse.kapua.service.device.management.bundle.model.inventory.packages.internal.DeviceInventoryPackagesImpl;
 import org.eclipse.kapua.service.device.management.bundle.model.inventory.system.internal.DeviceInventorySystemPackageImpl;
 import org.eclipse.kapua.service.device.management.bundle.model.inventory.system.internal.DeviceInventorySystemPackagesImpl;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackage;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
 
@@ -41,13 +45,8 @@ public class DeviceInventoryManagementFactoryImpl implements DeviceInventoryMana
     }
 
     @Override
-    public DeviceInventoryPackage newDeviceInventoryPackage() {
-        return new DeviceInventoryPackageImpl();
-    }
-
-    @Override
-    public DeviceInventoryBundles newDeviceInventoryBundles() {
-        return new DeviceInventoryBundlesImpl();
+    public DeviceInventoryItem newDeviceInventoryItem() {
+        return new DeviceInventoryItemImpl();
     }
 
     @Override
@@ -56,12 +55,27 @@ public class DeviceInventoryManagementFactoryImpl implements DeviceInventoryMana
     }
 
     @Override
-    public DeviceInventorySystemPackages newDeviceInventorySystemPackages() {
-        return new DeviceInventorySystemPackagesImpl();
+    public DeviceInventoryBundles newDeviceInventoryBundles() {
+        return new DeviceInventoryBundlesImpl();
     }
 
     @Override
     public DeviceInventorySystemPackage newDeviceInventorySystemPackage() {
         return new DeviceInventorySystemPackageImpl();
+    }
+
+    @Override
+    public DeviceInventorySystemPackages newDeviceInventorySystemPackages() {
+        return new DeviceInventorySystemPackagesImpl();
+    }
+
+    @Override
+    public DeviceInventoryPackage newDeviceInventoryPackage() {
+        return new DeviceInventoryPackageImpl();
+    }
+
+    @Override
+    public DeviceInventoryPackages newDeviceInventoryPackages() {
+        return new DeviceInventoryPackagesImpl();
     }
 }
