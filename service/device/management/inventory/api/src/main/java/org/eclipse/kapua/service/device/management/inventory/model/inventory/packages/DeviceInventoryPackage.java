@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @since 1.5.0
  */
-@XmlRootElement(name = "deviceInventoryPackage")
+@XmlRootElement(name = "deviceInventoryDeploymentPackage")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DeviceInventoryPackagesXmlRegistry.class, factoryMethod = "newDeviceInventoryPackage")
 public interface DeviceInventoryPackage {

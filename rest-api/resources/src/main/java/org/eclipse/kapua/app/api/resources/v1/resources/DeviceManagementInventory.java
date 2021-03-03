@@ -94,7 +94,7 @@ public class DeviceManagementInventory extends AbstractKapuaResource {
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout) throws KapuaException {
-        return DEVICE_INVENTORY_MANAGEMENT_SERVICE.getPackages(scopeId, deviceId, timeout);
+        return DEVICE_INVENTORY_MANAGEMENT_SERVICE.getDeploymentPackages(scopeId, deviceId, timeout);
     }
 
     /**

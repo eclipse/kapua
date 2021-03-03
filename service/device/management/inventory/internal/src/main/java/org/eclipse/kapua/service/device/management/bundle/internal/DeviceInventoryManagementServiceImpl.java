@@ -176,7 +176,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestChannel.setAppName(DeviceInventoryAppProperties.APP_NAME);
         inventoryRequestChannel.setVersion(DeviceInventoryAppProperties.APP_VERSION);
         inventoryRequestChannel.setMethod(KapuaMethod.READ);
-        inventoryRequestChannel.setResource("system.packages");
+        inventoryRequestChannel.setResource("systemPackages");
 
         InventoryRequestPayload inventoryRequestPayload = new InventoryRequestPayload();
 
@@ -214,7 +214,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
     }
 
     @Override
-    public DeviceInventoryPackages getPackages(KapuaId scopeId, KapuaId deviceId, Long timeout)
+    public DeviceInventoryPackages getDeploymentPackages(KapuaId scopeId, KapuaId deviceId, Long timeout)
             throws KapuaException {
         //
         // Argument Validation
@@ -231,7 +231,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         inventoryRequestChannel.setAppName(DeviceInventoryAppProperties.APP_NAME);
         inventoryRequestChannel.setVersion(DeviceInventoryAppProperties.APP_VERSION);
         inventoryRequestChannel.setMethod(KapuaMethod.READ);
-        inventoryRequestChannel.setResource("packages");
+        inventoryRequestChannel.setResource("deploymentPackages");
 
         InventoryRequestPayload inventoryRequestPayload = new InventoryRequestPayload();
 

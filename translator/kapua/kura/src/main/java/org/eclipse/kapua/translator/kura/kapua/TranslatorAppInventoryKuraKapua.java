@@ -195,8 +195,10 @@ public class TranslatorAppInventoryKuraKapua extends AbstractSimpleTranslatorRes
 
             kuraInventoryPackage.getPackageBundles().forEach(kuraInventoryBundle -> {
                 DeviceInventoryBundle deviceInventoryBundle = deviceInventoryFactory.newDeviceInventoryBundle();
+                deviceInventoryBundle.setId(kuraInventoryBundle.getId());
                 deviceInventoryBundle.setName(kuraInventoryBundle.getName());
                 deviceInventoryBundle.setVersion(kuraInventoryBundle.getVersion());
+                deviceInventoryBundle.setStatus(kuraInventoryBundle.getState());
 
                 deviceInventoryPackage.addPackageBundle(deviceInventoryBundle);
             });

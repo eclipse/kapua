@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @since 1.5.0
  */
-@XmlRootElement(name = "deviceInventoryPackages")
+@XmlRootElement(name = "deviceInventoryDeploymentPackages")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DeviceInventoryPackagesXmlRegistry.class, factoryMethod = "newDeviceInventoryPackages")
 public interface DeviceInventoryPackages extends KapuaSerializable {
@@ -37,7 +37,7 @@ public interface DeviceInventoryPackages extends KapuaSerializable {
      * @return The {@link List} of {@link DeviceInventoryPackage}s.
      * @since 1.5.0
      */
-    @XmlElement(name = "systemPackages")
+    @XmlElement(name = "deploymentPackages")
     List<DeviceInventoryPackage> getPackages();
 
     /**

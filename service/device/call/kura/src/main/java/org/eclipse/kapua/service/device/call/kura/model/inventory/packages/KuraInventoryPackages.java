@@ -28,7 +28,7 @@ import java.util.List;
 @JsonRootName("inventoryPackages")
 public class KuraInventoryPackages {
 
-    @JsonProperty("packages")
+    @JsonProperty("deploymentPackages")
     public List<KuraInventoryPackage> packages;
 
     /**

@@ -76,5 +76,5 @@ public interface DeviceInventoryManagementService extends KapuaService {
      * @throws KapuaException
      * @since 1.5.0
      */
-    DeviceInventoryPackages getPackages(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
+    DeviceInventoryPackages getDeploymentPackages(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
 }
