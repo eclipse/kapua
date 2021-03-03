@@ -12,25 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.packages;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
-import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
-import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtBundleInfo;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
-import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
-
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
@@ -43,6 +24,24 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
+import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.bundles.GwtBundleInfo;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.packages.GwtDeploymentPackage;
+import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class DeviceTabPackagesInstalled extends TabItem {
 
@@ -86,6 +85,7 @@ public class DeviceTabPackagesInstalled extends TabItem {
         dirty = isDirty;
     }
 
+    @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
 
@@ -117,7 +117,7 @@ public class DeviceTabPackagesInstalled extends TabItem {
                 // Check if it's a package or a bundle
                 if (selectedItem instanceof GwtDeploymentPackage) {
                     rootTabPanel.getUninstallButton().setEnabled(
-                        currentSession.hasPermission(DeviceManagementSessionPermission.write()));
+                            currentSession.hasPermission(DeviceManagementSessionPermission.write()));
                 } else {
                     rootTabPanel.getUninstallButton().disable();
                 }
@@ -171,7 +171,7 @@ public class DeviceTabPackagesInstalled extends TabItem {
                         treeGrid.unmask();
                         rootTabPanel.getRefreshButton().enable();
                         rootTabPanel.getInstallButton().setEnabled(
-                            currentSession.hasPermission(DeviceManagementSessionPermission.write()));
+                                currentSession.hasPermission(DeviceManagementSessionPermission.write()));
                         refreshing = false;
                     }
 

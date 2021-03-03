@@ -16,7 +16,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionOption;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnectionOption;
 
 /**
  * The client side stub for the RPC service.

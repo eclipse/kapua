@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.shared.model;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
+import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates.GwtGroupDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnectionStatus;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
 
@@ -32,6 +32,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     private static final String CUSTOM_ATTRIBUTE_3 = "customAttribute3";
     private static final String CUSTOM_ATTRIBUTE_4 = "customAttribute4";
     private static final String CUSTOM_ATTRIBUTE_5 = "customAttribute5";
+    private static final long serialVersionUID = -7294466782978445365L;
 
     public enum GwtDeviceApplication implements IsSerializable {
 
@@ -58,7 +59,6 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("lastEventOnFormatted".equals(property)) {
             Date lastEventOn = getLastEventOn();
@@ -549,7 +549,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof GwtDevice) {
-            return ((GwtDevice)obj).getId().equals(getId());
+            return ((GwtDevice) obj).getId().equals(getId());
         }
         return false;
     }

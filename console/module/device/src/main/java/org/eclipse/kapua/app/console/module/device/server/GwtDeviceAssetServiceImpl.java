@@ -12,20 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.server;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAsset;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssetChannel;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssets;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceAssetService;
 import org.eclipse.kapua.app.console.module.device.shared.util.GwtKapuaDeviceModelConverter;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
 import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
-import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
@@ -34,7 +32,8 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet implements GwtDeviceAssetService {
 

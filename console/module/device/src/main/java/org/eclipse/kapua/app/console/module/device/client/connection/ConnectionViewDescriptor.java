@@ -16,7 +16,7 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnection;
 import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceConnectionSessionPermission;
 
 public class ConnectionViewDescriptor extends AbstractEntityViewDescriptor<GwtDeviceConnection> {

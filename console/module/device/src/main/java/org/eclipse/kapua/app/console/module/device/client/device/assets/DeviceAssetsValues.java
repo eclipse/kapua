@@ -63,8 +63,8 @@ import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenS
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAsset;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssets;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceAssetService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceAssetServiceAsync;
 

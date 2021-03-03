@@ -17,8 +17,8 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperation;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperationQuery;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.registry.GwtDeviceManagementOperation;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.registry.GwtDeviceManagementOperationQuery;
 
 /**
  * The client side stub for the RPC service.

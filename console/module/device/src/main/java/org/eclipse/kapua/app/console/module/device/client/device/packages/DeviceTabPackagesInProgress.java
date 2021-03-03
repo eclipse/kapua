@@ -36,8 +36,8 @@ import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageDownloadOperation;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageOperation;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.packages.GwtPackageDownloadOperation;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.packages.GwtPackageOperation;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 

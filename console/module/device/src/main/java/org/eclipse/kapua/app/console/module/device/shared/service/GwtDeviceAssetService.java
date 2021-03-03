@@ -12,17 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.shared.service;
 
-import java.util.List;
-
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
-
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAsset;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssetChannel;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssets;
+
+import java.util.List;
 
 @RemoteServiceRelativePath("asset")
 public interface GwtDeviceAssetService extends RemoteService {

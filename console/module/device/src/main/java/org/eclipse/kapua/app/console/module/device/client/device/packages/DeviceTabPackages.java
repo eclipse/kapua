@@ -48,8 +48,8 @@ import org.eclipse.kapua.app.console.module.device.client.device.packages.button
 import org.eclipse.kapua.app.console.module.device.client.device.packages.dialog.PackageInstallDialog;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.dialog.PackageUninstallDialog;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.packages.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementRegistrySessionPermission;
 import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 

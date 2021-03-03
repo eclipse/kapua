@@ -47,8 +47,8 @@ import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.device.packages.dialog.DeviceManagementOperationLog;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperation;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperationQuery;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.registry.GwtDeviceManagementOperation;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.registry.GwtDeviceManagementOperationQuery;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementOperationService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementOperationServiceAsync;
 
