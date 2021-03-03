@@ -70,6 +70,11 @@ public class DisabledLocator implements ProviderLocator {
         public JwtContext process(String jwt) {
             return null;
         }
+
+        @Override
+        public String getExternalIdClaimName() {
+            return null;
+        }
     };
 
     private DisabledLocator() {

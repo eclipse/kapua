@@ -192,7 +192,7 @@ public class JwtAuthenticatingRealm extends AuthenticatingRealm implements Destr
         final String id;
         try {
             final JwtContext ctx = jwtProcessor.process(jwt);
-            id = ctx.getJwtClaims().getSubject();
+            id = ctx.getJwtClaims().getClaimValueAsString(jwtProcessor.getExternalIdClaimName());
         } catch (final Exception e) {
             throw new ShiroException("Failed to parse JWT", e);
         }
