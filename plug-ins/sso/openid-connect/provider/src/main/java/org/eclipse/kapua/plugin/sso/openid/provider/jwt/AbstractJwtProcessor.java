@@ -23,6 +23,7 @@ import org.eclipse.kapua.plugin.sso.openid.exception.jwt.OpenIDJwtExtractionExce
 import org.eclipse.kapua.plugin.sso.openid.exception.jwt.OpenIDJwtProcessException;
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.jwt.MalformedClaimException;
+import org.jose4j.jwt.ReservedClaimNames;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
@@ -114,6 +115,14 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
         return lookupProcessor(issuer)
                 .orElseThrow(() -> new IllegalStateException("Unable to auto-discover JWT endpoint"))
                 .process(jwt);
+    }
+
+    /**
+     * @return 'sub' (according to the official OpenID Connect 1.0 specification)
+     */
+    @Override
+    public String getExternalIdClaimName() {
+        return ReservedClaimNames.SUBJECT;
     }
 
     @Override

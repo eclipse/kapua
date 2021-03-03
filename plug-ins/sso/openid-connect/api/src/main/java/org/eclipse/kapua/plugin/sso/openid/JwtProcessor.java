@@ -35,4 +35,11 @@ public interface JwtProcessor extends AutoCloseable {
      * @throws OpenIDJwtException if JWT processing fails.
      */
     JwtContext process(final String jwt) throws OpenIDException;
+
+    /**
+     * Return the claim to be extracted form the JWT as user identifier.
+     *
+     * @return the claim in the form of a String
+     */
+    String getExternalIdClaimName();
 }
