@@ -34,7 +34,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
@@ -252,17 +251,6 @@ public class DeviceTabEvents extends KapuaTabItem<GwtDevice> {
         column = new ColumnConfig("actionType", DEVICES_MSGS.deviceEventActionType(), 50);
         column.setSortable(false);
         column.setAlignment(HorizontalAlignment.CENTER);
-        columns.add(column);
-
-        column = new ColumnConfig("resource", "Resource", 50);
-        column.setSortable(false);
-        column.setAlignment(HorizontalAlignment.CENTER);
-        column.setRenderer(new GridCellRenderer<GwtDeviceEvent>() {
-            @Override
-            public Object render(GwtDeviceEvent gwtDeviceEvent, String s, ColumnData columnData, int i, int i1, ListStore<GwtDeviceEvent> listStore, Grid<GwtDeviceEvent> grid) {
-                return gwtDeviceEvent.getResource() != null ? gwtDeviceEvent.getResource() : new Text("<span style='font-style:italic'>None</span>");
-            }
-        });
         columns.add(column);
 
         column = new ColumnConfig("responseCode", DEVICES_MSGS.deviceEventResponseCode(), 50);

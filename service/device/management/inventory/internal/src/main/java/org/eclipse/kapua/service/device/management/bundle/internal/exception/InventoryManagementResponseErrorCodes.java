@@ -25,5 +25,5 @@ public enum InventoryManagementResponseErrorCodes implements DeviceManagementErr
      * @see DeviceInventoryGetManagementException
      * @since 1.5.0
      */
-    BUNDLE_GET_ERROR,
+    INVENTORY_GET_ERROR,
 }

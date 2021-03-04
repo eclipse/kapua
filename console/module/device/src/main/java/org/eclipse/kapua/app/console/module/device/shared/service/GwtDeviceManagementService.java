@@ -49,7 +49,7 @@ public interface GwtDeviceManagementService extends RemoteService {
      * @throws GwtKapuaException
      * @since 1.0.0
      */
-    public List<GwtDeploymentPackage> findDevicePackages(String scopeShortId, String deviceShortId)
+    List<GwtDeploymentPackage> findDevicePackages(String scopeShortId, String deviceShortId)
             throws GwtKapuaException;
 
     /**
@@ -60,7 +60,7 @@ public interface GwtDeviceManagementService extends RemoteService {
      * @throws GwtKapuaException
      * @since 1.0.0
      */
-    public void installPackage(GwtXSRFToken xsrfToken, GwtPackageInstallRequest gwtPackageInstallRequest)
+    void installPackage(GwtXSRFToken xsrfToken, GwtPackageInstallRequest gwtPackageInstallRequest)
             throws GwtKapuaException;
 
     /**
@@ -72,7 +72,7 @@ public interface GwtDeviceManagementService extends RemoteService {
      * @throws GwtKapuaException
      * @since 1.0.0
      */
-    public ListLoadResult<GwtPackageOperation> getDownloadOperations(String scopeShortId, String deviceShortId)
+    ListLoadResult<GwtPackageOperation> getDownloadOperations(String scopeShortId, String deviceShortId)
             throws GwtKapuaException;
 
     /**
@@ -83,7 +83,7 @@ public interface GwtDeviceManagementService extends RemoteService {
      * @throws GwtKapuaException
      * @since 1.0.0
      */
-    public void uninstallPackage(GwtXSRFToken xsrfToken, GwtPackageUninstallRequest gwtPackageUninstallRequest)
+    void uninstallPackage(GwtXSRFToken xsrfToken, GwtPackageUninstallRequest gwtPackageUninstallRequest)
             throws GwtKapuaException;
 
     //
@@ -96,7 +96,7 @@ public interface GwtDeviceManagementService extends RemoteService {
      * @param device
      * @return
      */
-    public List<GwtConfigComponent> findDeviceConfigurations(GwtDevice device)
+    List<GwtConfigComponent> findDeviceConfigurations(GwtDevice device)
             throws GwtKapuaException;
 
     /**
@@ -105,7 +105,7 @@ public interface GwtDeviceManagementService extends RemoteService {
      * @param device
      * @param configComponent
      */
-    public void updateComponentConfiguration(GwtXSRFToken xsrfToken, GwtDevice device, GwtConfigComponent configComponent)
+    void updateComponentConfiguration(GwtXSRFToken xsrfToken, GwtDevice device, GwtConfigComponent configComponent)
             throws GwtKapuaException;
 
     //
@@ -117,7 +117,7 @@ public interface GwtDeviceManagementService extends RemoteService {
      * @return
      * @throws GwtKapuaException
      */
-    public ListLoadResult<GwtSnapshot> findDeviceSnapshots(GwtDevice device)
+    ListLoadResult<GwtSnapshot> findDeviceSnapshots(GwtDevice device)
             throws GwtKapuaException;
 
     /**
@@ -125,19 +125,19 @@ public interface GwtDeviceManagementService extends RemoteService {
      * @param snapshot
      * @throws GwtKapuaException
      */
-    public void rollbackDeviceSnapshot(GwtXSRFToken xsfrToken, GwtDevice device, GwtSnapshot snapshot)
+    void rollbackDeviceSnapshot(GwtXSRFToken xsfrToken, GwtDevice device, GwtSnapshot snapshot)
             throws GwtKapuaException;
 
     //
     // Bundles
     //
-    public ListLoadResult<GwtBundle> findBundles(GwtDevice device)
+    ListLoadResult<GwtBundle> findBundles(GwtDevice device)
             throws GwtKapuaException;
 
-    public void startBundle(GwtXSRFToken xsfrToken, GwtDevice device, GwtBundle pair)
+    void startBundle(GwtXSRFToken xsfrToken, GwtDevice device, GwtBundle pair)
             throws GwtKapuaException;
 
-    public void stopBundle(GwtXSRFToken xsfrToken, GwtDevice device, GwtBundle pair)
+    void stopBundle(GwtXSRFToken xsfrToken, GwtDevice device, GwtBundle pair)
             throws GwtKapuaException;
 
     //
@@ -152,7 +152,7 @@ public interface GwtDeviceManagementService extends RemoteService {
      * @param commandInput
      * @return
      */
-    public GwtDeviceCommandOutput executeCommand(GwtXSRFToken xsfrToken, GwtDevice device, GwtDeviceCommandInput commandInput)
+    GwtDeviceCommandOutput executeCommand(GwtXSRFToken xsfrToken, GwtDevice device, GwtDeviceCommandInput commandInput)
             throws GwtKapuaException;
 
 }

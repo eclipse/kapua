@@ -40,6 +40,7 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         APP_COMMAND("CMD-V1"), //
         APP_DEPLOY_V1("DEPLOY-V1"), //
         APP_DEPLOY_V2("DEPLOY-V2"), //
+        APP_INVENTORY_V1("INVENTORY-V1"), //
         APP_PROV_V1("PROV-V1"), //
         APP_PROV_V2("PROV-V2"), //
         APP_PROV_V3("PROV-V3"), //

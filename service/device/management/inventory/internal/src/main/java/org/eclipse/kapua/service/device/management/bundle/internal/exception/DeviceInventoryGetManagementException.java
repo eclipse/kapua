@@ -34,6 +34,6 @@ public class DeviceInventoryGetManagementException extends InventoryManagementRe
      * @since 1.5.0
      */
     public DeviceInventoryGetManagementException(KapuaResponseCode responseCode, String exceptionMessage, String exceptionStack) {
-        super(InventoryManagementResponseErrorCodes.BUNDLE_GET_ERROR, responseCode, exceptionMessage, exceptionStack);
+        super(InventoryManagementResponseErrorCodes.INVENTORY_GET_ERROR, responseCode, exceptionMessage, exceptionStack);
     }
 }

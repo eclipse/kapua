@@ -128,14 +128,6 @@ public class GwtDeviceEvent extends KapuaBaseModel implements Serializable {
         set("actionType", actionType);
     }
 
-    public String getResource() {
-        return get("resource");
-    }
-
-    public void setResource(String resource) {
-        set("resource", resource);
-    }
-
     public String getGwtResponseCode() {
         return get("responseCode");
     }
