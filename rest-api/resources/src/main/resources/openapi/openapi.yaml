@@ -166,6 +166,15 @@ paths:
     $ref: './deviceConfiguration/deviceConfiguration-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1configurations'
   /{scopeId}/devices/{deviceId}/configurations/{componentId}:
     $ref: './deviceConfiguration/deviceConfiguration-scopeId-deviceId-componentId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1configurations~1{componentId}'
+  ### Device Bundle ###
+  /{scopeId}/devices/{deviceId}/inventory:
+    $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory'
+  /{scopeId}/devices/{deviceId}/inventory/bundles:
+    $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1bundles'
+  /{scopeId}/devices/{deviceId}/inventory/system:
+    $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1system'
+  /{scopeId}/devices/{deviceId}/inventory/packages:
+    $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1packages'
   ### Device Notification ###
   /{scopeId}/devices/{deviceId}/operations/{operationId}/notifications:
     $ref: './deviceNotification/deviceNotification-scopeId-deviceId-operationId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1operations~1{operationId}~1notifications'
