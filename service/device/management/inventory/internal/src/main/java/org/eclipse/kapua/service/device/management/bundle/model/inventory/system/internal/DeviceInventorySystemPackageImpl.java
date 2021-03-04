@@ -21,9 +21,9 @@ import org.eclipse.kapua.service.device.management.inventory.model.inventory.sys
  */
 public class DeviceInventorySystemPackageImpl implements DeviceInventorySystemPackage {
 
-    public String name;
-    public String version;
-    public String packageType;
+    private String name;
+    private String version;
+    private String packageType;
 
     /**
      * Constructor.

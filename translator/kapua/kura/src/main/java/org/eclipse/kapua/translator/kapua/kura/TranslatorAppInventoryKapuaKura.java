@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -9,7 +9,6 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
- *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
@@ -27,7 +26,7 @@ import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 /**
  * {@link org.eclipse.kapua.translator.Translator} implementation from {@link BundleRequestMessage} to {@link KuraRequestMessage}
  *
- * @since 1.0.0
+ * @since 1.5.0
  */
 public class TranslatorAppInventoryKapuaKura extends AbstractTranslatorKapuaKura<InventoryRequestChannel, InventoryRequestPayload, InventoryRequestMessage> {
 

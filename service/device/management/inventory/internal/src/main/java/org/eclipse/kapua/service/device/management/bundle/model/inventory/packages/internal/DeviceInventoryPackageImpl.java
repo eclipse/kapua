@@ -26,9 +26,9 @@ import java.util.List;
  */
 public class DeviceInventoryPackageImpl implements DeviceInventoryPackage {
 
-    public String name;
-    public String version;
-    public List<DeviceInventoryBundle> packageBundles;
+    private String name;
+    private String version;
+    private List<DeviceInventoryBundle> packageBundles;
 
     /**
      * Constructor.

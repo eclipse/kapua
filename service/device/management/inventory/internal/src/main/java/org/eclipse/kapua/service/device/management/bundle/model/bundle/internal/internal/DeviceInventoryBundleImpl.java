@@ -21,10 +21,10 @@ import org.eclipse.kapua.service.device.management.inventory.model.bundle.invent
  */
 public class DeviceInventoryBundleImpl implements DeviceInventoryBundle {
 
-    public String id;
-    public String name;
-    public String version;
-    public String status;
+    private String id;
+    private String name;
+    private String version;
+    private String status;
 
     /**
      * Constructor.

@@ -21,9 +21,9 @@ import org.eclipse.kapua.service.device.management.inventory.model.inventory.Dev
  */
 public class DeviceInventoryItemImpl implements DeviceInventoryItem {
 
-    public String name;
-    public String version;
-    public String itemType;
+    private String name;
+    private String version;
+    private String itemType;
 
     /**
      * Constructor.
