@@ -36,7 +36,6 @@ import org.eclipse.kapua.service.device.management.inventory.model.inventory.sys
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.slf4j.LoggerFactory;
 
 /**
  * {@link org.eclipse.kapua.translator.Translator} implementation from {@link KuraResponseMessage} to {@link InventoryResponseMessage}
@@ -90,9 +89,6 @@ public class TranslatorAppInventoryKuraKapua extends AbstractSimpleTranslatorRes
                     return inventoryResponsePayload;
                 }
 
-                LoggerFactory.getLogger(TranslatorAppInventoryKuraKapua.class).info("Json: {}", new String(kuraResponsePayload.getBody()));
-                LoggerFactory.getLogger(TranslatorAppInventoryKuraKapua.class).info("Json Parsed: {}", getJsonMapper().readTree(new String(kuraResponsePayload.getBody())).toPrettyString());
-
                 KuraInventoryPackages inventoryPackages = readJsonBodyAs(kuraResponsePayload.getBody(), KuraInventoryPackages.class);
                 if (!inventoryPackages.getPackages().isEmpty()) {
                     inventoryResponsePayload.setDeviceInventoryPackages(translate(inventoryPackages));
@@ -143,7 +139,7 @@ public class TranslatorAppInventoryKuraKapua extends AbstractSimpleTranslatorRes
 
         kuraInventoryBundles.getInventoryBundles().forEach(kuraInventoryBundle -> {
             DeviceInventoryBundle deviceInventoryBundle = deviceInventoryFactory.newDeviceInventoryBundle();
-            deviceInventoryBundle.setId(kuraInventoryBundle.getId());
+            deviceInventoryBundle.setId(String.valueOf(kuraInventoryBundle.getId()));
             deviceInventoryBundle.setName(kuraInventoryBundle.getName());
             deviceInventoryBundle.setVersion(kuraInventoryBundle.getVersion());
             deviceInventoryBundle.setStatus(kuraInventoryBundle.getState());
@@ -195,7 +191,7 @@ public class TranslatorAppInventoryKuraKapua extends AbstractSimpleTranslatorRes
 
             kuraInventoryPackage.getPackageBundles().forEach(kuraInventoryBundle -> {
                 DeviceInventoryBundle deviceInventoryBundle = deviceInventoryFactory.newDeviceInventoryBundle();
-                deviceInventoryBundle.setId(kuraInventoryBundle.getId());
+                deviceInventoryBundle.setId(String.valueOf(kuraInventoryBundle.getId()));
                 deviceInventoryBundle.setName(kuraInventoryBundle.getName());
                 deviceInventoryBundle.setVersion(kuraInventoryBundle.getVersion());
                 deviceInventoryBundle.setStatus(kuraInventoryBundle.getState());

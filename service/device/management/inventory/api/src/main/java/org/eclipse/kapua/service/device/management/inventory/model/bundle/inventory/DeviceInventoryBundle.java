@@ -36,7 +36,7 @@ public interface DeviceInventoryBundle {
      * @return The identifier.
      * @since 1.5.0
      */
-    @XmlElement(name = "name")
+    @XmlElement(name = "id")
     String getId();
 
     /**

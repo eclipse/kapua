@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonRootName;
 public class KuraInventoryBundle {
 
     @JsonProperty("id")
-    public String id;
+    public Integer id;
 
     @JsonProperty("name")
     public String name;
@@ -41,7 +41,7 @@ public class KuraInventoryBundle {
      * @return The identifier.
      * @since 1.5.0
      */
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -51,7 +51,7 @@ public class KuraInventoryBundle {
      * @param id The identifier.
      * @since 1.5.0
      */
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
