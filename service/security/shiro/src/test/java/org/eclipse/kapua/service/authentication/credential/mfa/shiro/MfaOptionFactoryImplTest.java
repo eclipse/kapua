@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResult;
@@ -28,7 +28,7 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class MfaOptionFactoryImplTest extends Assert {
 
     MfaOptionFactoryImpl mfaOptionFactoryImpl;

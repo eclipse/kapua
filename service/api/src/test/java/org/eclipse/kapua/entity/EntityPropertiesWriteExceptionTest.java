@@ -13,14 +13,14 @@
 package org.eclipse.kapua.entity;
 
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.util.Properties;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class EntityPropertiesWriteExceptionTest extends Assert {
 
     @Test

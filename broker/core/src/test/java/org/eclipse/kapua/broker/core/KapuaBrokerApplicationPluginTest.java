@@ -13,14 +13,14 @@
 package org.eclipse.kapua.broker.core;
 
 import org.apache.activemq.broker.Broker;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class KapuaBrokerApplicationPluginTest extends Assert {
 
     KapuaBrokerApplicationPlugin kapuaBrokerApplicationPlugin;

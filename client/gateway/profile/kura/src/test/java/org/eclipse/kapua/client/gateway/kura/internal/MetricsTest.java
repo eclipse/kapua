@@ -14,7 +14,7 @@ package org.eclipse.kapua.client.gateway.kura.internal;
 
 import com.google.protobuf.ByteString;
 import org.eclipse.kapua.gateway.client.kura.payload.KuraPayloadProto;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class MetricsTest extends Assert {
 
     KuraPayloadProto.KuraPayload.Builder builder;

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.web;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import org.mockito.Mockito;
 
 import javax.servlet.ServletContextEvent;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class RestApiListenerTest extends Assert {
 
     RestApiListener restApiListener;

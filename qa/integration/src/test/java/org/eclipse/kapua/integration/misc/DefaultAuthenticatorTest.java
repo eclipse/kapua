@@ -20,18 +20,17 @@ import org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry;
 import org.eclipse.kapua.broker.core.plugin.authentication.DefaultAuthenticator;
 import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class DefaultAuthenticatorTest extends Assert {
 
     KapuaSecurityContext kapuaSecurityContext;

@@ -16,7 +16,7 @@ import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.apache.camel.impl.DefaultMessage;
 import org.eclipse.kapua.broker.core.listener.CamelConstants;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -28,7 +28,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class CamelUtilTest extends Assert {
 
     @Test

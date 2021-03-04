@@ -13,15 +13,14 @@
 package org.eclipse.kapua.broker.core.pool;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import javax.jms.JMSException;
 import javax.jms.MessageListener;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class JmsConsumerWrapperTest {
 
     @Test(expected = KapuaException.class)

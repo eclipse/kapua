@@ -16,7 +16,7 @@ import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.security.AuthorizationMap;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +26,7 @@ import org.mockito.Mockito;
 import java.util.HashSet;
 import java.util.Set;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class DefaultAuthorizerTest extends Assert {
 
     DefaultAuthorizer defaultAuthorizer;

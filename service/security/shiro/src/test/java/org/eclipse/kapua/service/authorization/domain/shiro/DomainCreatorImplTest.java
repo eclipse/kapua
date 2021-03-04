@@ -13,15 +13,14 @@
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 import java.util.HashSet;
 import java.util.Set;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class DomainCreatorImplTest extends Assert {
 
     @Test

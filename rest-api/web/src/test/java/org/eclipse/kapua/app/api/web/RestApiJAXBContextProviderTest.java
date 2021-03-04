@@ -13,7 +13,7 @@
 package org.eclipse.kapua.app.api.web;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Providers;
 import javax.xml.bind.JAXBContext;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class RestApiJAXBContextProviderTest extends Assert {
 
     RestApiJAXBContextProvider restApiJAXBContextProvider;

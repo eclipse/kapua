@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.authorization.domain.shiro;
 import org.apache.commons.lang.NotImplementedException;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
@@ -25,12 +25,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class DomainFactoryImplTest extends Assert {
 
     DomainFactoryImpl domainFactoryImpl;

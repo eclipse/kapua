@@ -13,17 +13,16 @@
 package org.eclipse.kapua.broker.core.router;
 
 import org.apache.camel.Exchange;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import java.util.HashMap;
 import java.util.Map;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class EndChainEndPointTest extends Assert {
 
     EndChainEndPoint endChainEndPoint;

@@ -11,6 +11,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @unit
+@Category(Categories.cucumberUnitTests.class)
 @account
 Feature: User Account Service
     The User Account Service is responsible for CRUD operations for user accounts in the Kapua

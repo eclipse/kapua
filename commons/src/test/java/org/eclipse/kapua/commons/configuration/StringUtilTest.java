@@ -15,11 +15,11 @@ package org.eclipse.kapua.commons.configuration;
 import org.assertj.core.api.Assertions;
 import org.eclipse.kapua.commons.configuration.metatype.Password;
 import org.eclipse.kapua.commons.util.StringUtil;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class StringUtilTest {
 
     @Test

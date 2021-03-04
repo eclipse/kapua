@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.api.web;
 
 import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -35,7 +35,7 @@ import org.junit.experimental.categories.Category;
 
 import javax.xml.bind.JAXBContext;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class JaxbContextResolverTest extends Assert {
 
     JaxbContextResolver jaxbContextResolver;

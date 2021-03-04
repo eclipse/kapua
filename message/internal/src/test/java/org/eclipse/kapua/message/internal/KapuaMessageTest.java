@@ -19,7 +19,7 @@ import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -33,7 +33,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class KapuaMessageTest extends Assert {
 
     private static final String KAPUA_MESSAGE_XML_STR = "missing";

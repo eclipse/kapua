@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.message.notification;
 
+import org.eclipse.kapua.qa.markers.Categories;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,5 +21,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
         KapuaNotifyMessageTest.class,
 })
+@Category(Categories.junitTests.class)
 public class NotifyTestSuite {
 }

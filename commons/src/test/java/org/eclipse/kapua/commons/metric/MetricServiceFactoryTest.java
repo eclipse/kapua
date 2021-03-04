@@ -14,15 +14,12 @@ package org.eclipse.kapua.commons.metric;
 
 import java.lang.reflect.Constructor;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-/**
- * {@link MetricsService} factory.
- */
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class MetricServiceFactoryTest extends Assert {
 
     public static MetricsService instance2;

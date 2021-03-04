@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -24,6 +24,6 @@ import org.junit.runners.Suite;
         KapuaDisconnectMessageTest.class,
         KapuaMissingMessageTest.class,
 })
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class LifecycleTestSuite {
 }

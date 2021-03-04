@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.mqtt.test.message.mqtt;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +22,7 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class MqttPayloadTest extends Assert {
 
     MqttPayload mqttPayload;

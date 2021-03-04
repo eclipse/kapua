@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.elasticsearch.client.transport;
 
 import org.assertj.core.api.Assertions;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientProviderInitException;
 import org.eclipse.kapua.service.elasticsearch.client.transport.model.NoOpModelContext;
 import org.eclipse.kapua.service.elasticsearch.client.transport.model.NoOpQueryConverter;
@@ -23,7 +23,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class TransportElasticseatchClientTest {
 
     @Test

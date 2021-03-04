@@ -13,7 +13,7 @@
 package org.eclipse.kapua.integration.misc;
 
 import org.apache.shiro.authc.AuthenticationToken;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.authentication.shiro.realm.AccessTokenCredentialsMatcher;
 import org.eclipse.kapua.service.authentication.shiro.realm.SessionAuthenticationInfo;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class AccessTokenCredentialsMatcherTest extends Assert {
 
     AuthenticationToken authenticationToken;

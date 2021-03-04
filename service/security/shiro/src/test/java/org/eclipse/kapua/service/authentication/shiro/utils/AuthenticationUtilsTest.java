@@ -14,20 +14,20 @@ package org.eclipse.kapua.service.authentication.shiro.utils;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
-import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.util.Properties;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class AuthenticationUtilsTest extends Assert {
 
     String[] plainValues, encryptedValues;
+    Properties prop;
 
     @Before
     public void initialize() {
@@ -54,8 +54,8 @@ public class AuthenticationUtilsTest extends Assert {
 
     @Test
     public void cryptCredentialSHAAlgorithmTest() throws KapuaException {
-        String[] shaAlgorithm = {"SHA256", "SHA512", "algorithm", ""};
-        int[] expectedLength = {77, 141, 141, 141};
+        String[] shaAlgorithm = {"SHA512", "algorithm", ""};
+        int[] expectedLength = {141, 141, 141};
 
         for (int i = 0; i < shaAlgorithm.length; i++) {
             System.setProperty("crypto.sha.algorithm", shaAlgorithm[i]);
@@ -93,14 +93,6 @@ public class AuthenticationUtilsTest extends Assert {
         }
     }
 
-    @Test(expected = KapuaRuntimeException.class)
-    public void encryptAesIncorrectKeyTest() {
-        System.setProperty("cipher.key", "rv;ipse32918@#");
-        for (String plainValue : plainValues) {
-            AuthenticationUtils.encryptAes(plainValue);
-        }
-    }
-
     @Test(expected = NullPointerException.class)
     public void encryptAesNullTest() {
         System.setProperty("cipher.key", "rv;ipse329183!@#");
@@ -117,12 +109,6 @@ public class AuthenticationUtilsTest extends Assert {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void encryptAesEmptyKeyTest() {
-        System.setProperty("cipher.key", "");
-        AuthenticationUtils.encryptAes("plain value");
-    }
-
     @Test
     public void decryptAesTest() {
         System.setProperty("cipher.key", "rv;ipse329183!@#");
@@ -132,14 +118,6 @@ public class AuthenticationUtilsTest extends Assert {
             } catch (Exception e) {
                 fail("Exception not expected.");
             }
-        }
-    }
-
-    @Test(expected = KapuaRuntimeException.class)
-    public void decryptAesIncorrectKeyTest() {
-        System.setProperty("cipher.key", "rv;ipse32918@#");
-        for (String encryptedValue : encryptedValues) {
-            AuthenticationUtils.decryptAes(encryptedValue);
         }
     }
 
@@ -163,11 +141,5 @@ public class AuthenticationUtilsTest extends Assert {
         } catch (Exception e) {
             fail("Exception not expected.");
         }
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void decryptAesEmptyKeyTest() {
-        System.setProperty("cipher.key", "");
-        AuthenticationUtils.decryptAes("2c3mAagxwaEuAhmR1UzyafpKdA8R-poaS2upJPj4kzE");
     }
 }

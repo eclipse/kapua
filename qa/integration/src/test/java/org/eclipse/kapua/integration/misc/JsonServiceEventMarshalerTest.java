@@ -18,15 +18,14 @@ import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 import java.io.StringWriter;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class JsonServiceEventMarshalerTest extends Assert {
 
     ServiceEvent serviceEvent;

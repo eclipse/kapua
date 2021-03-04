@@ -15,7 +15,7 @@ package org.eclipse.kapua.commons.model.query;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.RandomUtils;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -27,8 +27,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class KapuaListResultImplTest extends Assert {
 
     private final static Random RANDOM = RandomUtils.getInstance();

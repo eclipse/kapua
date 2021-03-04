@@ -19,7 +19,7 @@ import org.eclipse.kapua.client.gateway.MessageHandler;
 import org.eclipse.kapua.client.gateway.Payload;
 import org.eclipse.kapua.client.gateway.Topic;
 import org.eclipse.kapua.client.gateway.spi.Channel;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
 import org.junit.Before;
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class AbstractMqttChannelTest extends Assert {
 
     private BinaryPayloadCodec codec;

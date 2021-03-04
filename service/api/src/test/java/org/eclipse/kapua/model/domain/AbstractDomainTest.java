@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.domain;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 import java.util.HashSet;
 import java.util.Set;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class AbstractDomainTest extends Assert {
 
     private class AbstractDomainImpl extends AbstractDomain {

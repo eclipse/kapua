@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class ApiKeyCredentialsMatcherTest extends Assert {
 
     ApiKeyCredentialsMatcher apiKeyCredentialsMatcher;

@@ -22,11 +22,14 @@ import org.eclipse.kapua.commons.jpa.SimpleSqlScriptExecutor;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Category(Categories.junitTests.class)
 public abstract class AbstractCommonServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractCommonServiceTest.class);

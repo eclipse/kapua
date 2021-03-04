@@ -14,7 +14,7 @@ package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import org.junit.experimental.categories.Category;
 
 import java.util.Properties;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class ServiceConfigImplTest extends Assert {
     ServiceConfigImpl serviceConfigImpl;
 

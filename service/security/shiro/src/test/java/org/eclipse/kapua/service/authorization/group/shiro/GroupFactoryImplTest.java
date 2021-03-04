@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 
 import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
@@ -24,10 +24,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import java.util.Date;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class GroupFactoryImplTest extends Assert {
 
     GroupFactoryImpl groupFactoryImpl;

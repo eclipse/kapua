@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class KapuaDatabaseCheckUpdateTest extends Assert {
 
     @Test
@@ -40,12 +40,5 @@ public class KapuaDatabaseCheckUpdateTest extends Assert {
         } catch (Exception e) {
             fail("Exception not expected.");
         }
-    }
-
-    @Test(expected = SecurityException.class)
-    public void kapuaDatabaseCheckUpdateExceptionTest() {
-        System.setProperty("commons.db.schema.update", "true");
-        System.setProperty("LIQUIBASE_ENABLED","true");
-            new KapuaDatabaseCheckUpdate();
     }
 }

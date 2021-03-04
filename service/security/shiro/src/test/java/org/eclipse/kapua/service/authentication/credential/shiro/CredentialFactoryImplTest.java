@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.authentication.credential.shiro;
 import org.eclipse.kapua.KapuaEntityCloneException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.Credential;
@@ -27,10 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import java.util.Date;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class CredentialFactoryImplTest extends Assert {
 
     CredentialFactoryImpl credentialFactoryImpl;

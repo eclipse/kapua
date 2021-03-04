@@ -18,7 +18,7 @@ import org.eclipse.kapua.client.gateway.MessageHandler;
 import org.eclipse.kapua.client.gateway.Payload;
 import org.eclipse.kapua.client.gateway.Topic;
 import org.eclipse.kapua.client.gateway.spi.util.TransportAsync;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
 import org.junit.Before;
@@ -39,7 +39,7 @@ import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ScheduledExecutorService;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 @RunWith(value = Parameterized.class)
 public class AbstractClientTest extends Assert {
 

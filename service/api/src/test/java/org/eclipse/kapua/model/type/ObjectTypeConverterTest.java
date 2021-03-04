@@ -13,17 +13,16 @@
 package org.eclipse.kapua.model.type;
 
 import org.eclipse.kapua.model.id.KapuaIdStatic;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class ObjectTypeConverterTest extends Assert {
 
     @Test

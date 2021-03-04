@@ -12,8 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal.cache.dummy;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -26,7 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class CacheTest extends Assert {
 
     @Test

@@ -27,7 +27,7 @@ import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProviders;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.cache.TranslatorCache;
 import org.eclipse.kapua.translator.exception.TranslateException;
@@ -39,11 +39,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import java.util.Base64;
 import java.util.Date;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class DeviceManagementNotificationConverterTest extends Assert {
 
     DeviceManagementNotificationConverter deviceManagementNotificationConverter;

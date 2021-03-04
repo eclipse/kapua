@@ -15,7 +15,7 @@ package org.eclipse.kapua.broker.core.pool;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,7 @@ import javax.jms.MessageProducer;
 import javax.jms.TextMessage;
 import javax.jms.JMSException;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class JmsAssistantProducerWrapperTest extends Assert {
 
     Session session;

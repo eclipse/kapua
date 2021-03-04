@@ -25,22 +25,21 @@ import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+//import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.experimental.categories.Category;
+//import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Random;
 
-@Category(JUnitTests.class)
+//@Category(Categories.junitTests.class)
 public abstract class AbstractMessageStoreServiceTest extends Assert {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageStoreServiceTest.class);

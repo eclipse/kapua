@@ -233,7 +233,7 @@
                             <argLine>@{argLine} -Xmx1024m</argLine>
                             <systemPropertyVariables>
                                 <cucumber.options>--tags @integration</cucumber.options>
-                                <groups>'!org.eclipse.kapua.test.junit.JUnitTests'</groups>
+                                <groups>'!org.eclipse.kapua.qa.markers.Categories$junitTests'</groups>
                                 <commons.settings.hotswap>true</commons.settings.hotswap>
                                 <org.eclipse.kapua.qa.noEmbeddedServers>true</org.eclipse.kapua.qa.noEmbeddedServers>
                                 <commons.db.jdbcConnectionUrlResolver>DEFAULT</commons.db.jdbcConnectionUrlResolver>
@@ -244,6 +244,30 @@
                                 <commons.db.connection.scheme>jdbc:h2:tcp</commons.db.connection.scheme>
                                 <broker.host>localhost</broker.host>
                             </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>junitTests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${surefire.version}</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>org.apache.maven.surefire</groupId>
+                                <artifactId>surefire-junit47</artifactId>
+                                <version>${surefire.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/Run*.java</exclude>
+                            </excludes>
                         </configuration>
                     </plugin>
                 </plugins>

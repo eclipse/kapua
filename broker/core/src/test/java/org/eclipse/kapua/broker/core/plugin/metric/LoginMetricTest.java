@@ -14,7 +14,7 @@ package org.eclipse.kapua.broker.core.plugin.metric;
 
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class LoginMetricTest extends Assert {
 
     LoginMetric loginMetric;

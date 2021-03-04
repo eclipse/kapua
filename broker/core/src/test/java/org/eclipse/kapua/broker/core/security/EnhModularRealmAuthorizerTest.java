@@ -18,7 +18,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class EnhModularRealmAuthorizerTest extends Assert {
 
     EnhModularRealmAuthorizer enhModularRealmAuthorizer1, enhModularRealmAuthorizer2;

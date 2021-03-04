@@ -31,7 +31,7 @@ import org.junit.Test;
  * This files are than used for mocked Kura device responses in integration tests.
  * <p>
  * FIXME Make it friendlier for usage. Suggestions please!
- * FIXME Describe process of recording kapua - kura communication and how to use recrded files.
+ * FIXME Describe process of recording kapua - kura communication and how to use recorded files.
  */
 public class MqttClientTest extends Assert {
 

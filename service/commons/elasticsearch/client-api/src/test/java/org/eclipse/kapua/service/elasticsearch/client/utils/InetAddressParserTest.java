@@ -14,17 +14,16 @@ package org.eclipse.kapua.service.elasticsearch.client.utils;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.elasticsearch.client.configuration.ElasticsearchNode;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class InetAddressParserTest {
 
     /**

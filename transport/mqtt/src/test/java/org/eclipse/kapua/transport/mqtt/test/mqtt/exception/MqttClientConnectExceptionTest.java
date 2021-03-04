@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.mqtt.test.mqtt.exception;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.transport.mqtt.exception.MqttClientConnectException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -22,7 +22,7 @@ import org.junit.experimental.categories.Category;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class MqttClientConnectExceptionTest extends Assert {
 
     MqttClientConnectException exception1, exception2;

@@ -15,7 +15,7 @@ package org.eclipse.kapua.integration.misc;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImpl;
 import org.eclipse.kapua.service.authorization.permission.Permission;
@@ -25,12 +25,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class AccessPermissionImplTest extends Assert {
 
     AccessPermissionImpl accessPermissionImpl1, accessPermissionImpl2, accessPermissionImpl;

@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.about;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class AboutEntryTest extends Assert {
 
     private String[] names;

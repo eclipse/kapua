@@ -14,7 +14,7 @@
 package org.eclipse.kapua.commons.liquibase;
 
 import org.assertj.core.api.Assertions;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class KapuaLiquibaseClientTest {
 
     private static final String JDBC_URL = "jdbc:h2:mem:kapua;MODE=MySQL;";

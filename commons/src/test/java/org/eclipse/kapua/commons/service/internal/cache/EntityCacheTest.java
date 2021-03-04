@@ -19,7 +19,7 @@ import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdStatic;
 import org.eclipse.kapua.model.query.KapuaListResult;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -28,7 +28,7 @@ import javax.cache.Cache;
 import java.io.Serializable;
 import java.math.BigInteger;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class EntityCacheTest extends Assert {
 
     @Test

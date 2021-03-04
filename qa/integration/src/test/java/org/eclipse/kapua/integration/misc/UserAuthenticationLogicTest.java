@@ -14,15 +14,14 @@ package org.eclipse.kapua.integration.misc;
 
 import org.eclipse.kapua.broker.core.plugin.authentication.UserAuthenticationLogic;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 import java.util.HashMap;
 import java.util.Map;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class UserAuthenticationLogicTest extends Assert {
 
     @Test

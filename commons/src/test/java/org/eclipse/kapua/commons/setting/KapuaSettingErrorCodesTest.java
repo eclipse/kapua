@@ -12,9 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(Categories.junitTests.class)
 public class KapuaSettingErrorCodesTest extends Assert {
 
     @Test

@@ -13,12 +13,12 @@
 package org.eclipse.kapua.service.authorization.role.shiro;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class RolePermissionQueryImplTest extends Assert {
 
     @Test

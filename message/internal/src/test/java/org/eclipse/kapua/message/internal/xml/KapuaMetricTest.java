@@ -17,13 +17,13 @@ import java.math.BigDecimal;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.message.internal.MessageJAXBContextProvider;
 import org.eclipse.kapua.message.xml.XmlAdaptedMetric;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class KapuaMetricTest extends Assert {
 
     private static final String NEWLINE = System.lineSeparator();

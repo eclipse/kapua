@@ -18,8 +18,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
@@ -45,7 +44,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class GroupDAOTest extends Assert {
 
     EntityManager entityManager;

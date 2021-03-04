@@ -17,21 +17,19 @@ import org.apache.camel.Message;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.broker.core.KapuaBrokerJAXBContextLoader;
-
 import org.eclipse.kapua.broker.core.listener.CamelConstants;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import java.util.HashMap;
 import java.util.Map;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class CamelKapuaDefaultRouterTest extends Assert {
 
     CamelKapuaDefaultRouter defaultRouter;
@@ -75,18 +73,6 @@ public class CamelKapuaDefaultRouterTest extends Assert {
         } catch (Exception e) {
             fail("Exception not expected.");
         }
-    }
-
-    @Test(expected = KapuaRuntimeException.class)
-    public void camelKapuaDefaultRouterIncorrectConfigurationFileTest() {
-        System.setProperty("camel.default_route.configuration_file_name", "file.xml");
-        new CamelKapuaDefaultRouter();
-    }
-
-    @Test(expected = KapuaRuntimeException.class)
-    public void camelKapuaDefaultRouterIncorrectConfigurationTest() {
-        System.setProperty("camel.default_route.configuration_file_name", "locator.xml");
-        new CamelKapuaDefaultRouter();
     }
 
     @Test

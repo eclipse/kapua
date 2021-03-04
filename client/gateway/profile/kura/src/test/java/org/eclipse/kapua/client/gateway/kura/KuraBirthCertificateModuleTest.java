@@ -14,7 +14,7 @@ package org.eclipse.kapua.client.gateway.kura;
 
 import org.eclipse.kapua.client.gateway.mqtt.MqttModuleContext;
 import org.eclipse.kapua.client.gateway.spi.ModuleContext;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,7 +29,7 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Optional;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class KuraBirthCertificateModuleTest extends Assert {
 
     Map<String, String> values;

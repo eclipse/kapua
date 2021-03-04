@@ -17,12 +17,12 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsPayload;
 import org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleMessageFactory;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class KapuaAppsMessageTest extends Assert {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();

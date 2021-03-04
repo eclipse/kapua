@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service.stream;
 
 import org.eclipse.kapua.model.domain.Actions;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class StreamDomainTest extends Assert {
 
     StreamDomain streamDomain;

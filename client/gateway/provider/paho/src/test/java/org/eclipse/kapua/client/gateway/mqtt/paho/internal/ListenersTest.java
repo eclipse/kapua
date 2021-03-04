@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.mqtt.paho.internal;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.hamcrest.core.IsInstanceOf;
@@ -21,14 +21,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class ListenersTest extends Assert {
 
     private Runnable success;

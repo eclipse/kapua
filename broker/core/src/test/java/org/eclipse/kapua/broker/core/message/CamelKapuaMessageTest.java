@@ -15,14 +15,14 @@ package org.eclipse.kapua.broker.core.message;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class CamelKapuaMessageTest extends Assert {
 
     CamelKapuaMessage camelKapuaMessage;

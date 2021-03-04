@@ -10,8 +10,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.qa.markers.junit;
+package org.eclipse.kapua.qa.markers;
 
-public interface JUnitTests {
+public interface Categories {
 
+    interface junitTests {}
 }

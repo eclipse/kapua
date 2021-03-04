@@ -25,14 +25,14 @@ import org.eclipse.kapua.locator.internal.guice.FactoryB;
 import org.eclipse.kapua.locator.internal.guice.ServiceA;
 import org.eclipse.kapua.locator.internal.guice.ServiceB;
 import org.eclipse.kapua.locator.internal.guice.ServiceC;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class GuiceLocatorImplTest {
 
     private KapuaLocator locator = GuiceLocatorImpl.getInstance();

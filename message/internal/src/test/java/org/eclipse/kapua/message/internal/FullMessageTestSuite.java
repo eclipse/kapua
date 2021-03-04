@@ -15,7 +15,7 @@ package org.eclipse.kapua.message.internal;
 import org.eclipse.kapua.message.internal.device.data.KapuaDeviceDataTest;
 import org.eclipse.kapua.message.internal.device.lifecycle.LifecycleTestSuite;
 import org.eclipse.kapua.message.internal.xml.MetricTestSuite;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -28,6 +28,6 @@ import org.junit.runners.Suite;
         LifecycleTestSuite.class
 
 })
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class FullMessageTestSuite {
 }

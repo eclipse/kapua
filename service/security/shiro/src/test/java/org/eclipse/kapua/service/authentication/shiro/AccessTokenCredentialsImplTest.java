@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.eclipse.kapua.qa.markers.Categories;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class AccessTokenCredentialsImplTest extends Assert {
 
     @Test(expected = NullPointerException.class)

@@ -13,14 +13,14 @@
 package org.eclipse.kapua.commons.model.query.predicate;
 
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class OrPredicateImplTest extends Assert {
 
     @Test

@@ -15,14 +15,13 @@ package org.eclipse.kapua.integration.misc;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
 import org.eclipse.kapua.broker.core.plugin.authentication.AuthenticationLogic;
 import org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 import java.util.List;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class AuthenticationLogicTest extends Assert {
 
     private class AuthenticationLogicImpl extends AuthenticationLogic {

@@ -17,7 +17,7 @@ import org.apache.activemq.ActiveMQSession;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.PooledObjectState;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +29,7 @@ import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class JmsAssistantProducerWrapperFactoryTest extends Assert {
 
     String[] destinations;

@@ -26,7 +26,7 @@ import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProvider;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProviders;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.cache.TranslatorCache;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
@@ -42,7 +42,7 @@ import javax.jms.Message;
 import java.util.Base64;
 import java.util.Date;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class AbstractKapuaConverterTest extends Assert {
 
     private class AbstractKapuaConverterImpl extends AbstractKapuaConverter {

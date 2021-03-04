@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.message.notification;
 
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyPayload;
 import org.junit.Assert;
 import org.junit.Test;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.experimental.categories.Category;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class KapuaNotifyMessageTest extends Assert {
 
     private static final String NOTIFY_MSG_STR = "Client id 'clientId-1' - semantic topic 'part1/part2/part3'";

@@ -13,7 +13,7 @@
 package org.eclipse.kapua.app.api.core.model.data;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import org.eclipse.kapua.service.storable.model.query.XmlAdaptedSortField;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
@@ -26,7 +26,7 @@ import org.mockito.Mockito;
 import java.util.LinkedList;
 import java.util.List;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class JsonMessageQueryTest extends Assert {
 
     KapuaId kapuaId;

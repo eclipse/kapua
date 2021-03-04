@@ -19,7 +19,7 @@ import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,7 +30,7 @@ import org.mockito.Mockito;
 import java.util.Date;
 import java.util.UUID;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class JsonKapuaDataMessageTest extends Assert {
 
     KapuaDataMessage kapuaDataMessage;

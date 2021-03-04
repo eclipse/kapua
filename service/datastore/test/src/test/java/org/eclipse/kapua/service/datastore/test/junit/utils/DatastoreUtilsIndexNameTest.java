@@ -16,7 +16,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.eclipse.kapua.service.datastore.test.junit.DatastoreJAXBContextProvider;
 import org.junit.Assert;
@@ -29,7 +29,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class DatastoreUtilsIndexNameTest extends Assert {
 
     private static final KapuaId ONE = new KapuaEid(BigInteger.ONE);

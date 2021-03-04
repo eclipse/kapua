@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.router;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.persistence.jaxb.JAXBMarshaller;
 import org.eclipse.persistence.jaxb.JAXBUnmarshaller;
 import org.hamcrest.core.IsInstanceOf;
@@ -34,7 +34,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.List;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class EndPointAdapterTest extends Assert {
 
     EndPointAdapter endPointAdapter;

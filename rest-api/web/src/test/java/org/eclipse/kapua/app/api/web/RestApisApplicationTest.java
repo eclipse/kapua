@@ -15,16 +15,15 @@ package org.eclipse.kapua.app.api.web;
 import org.eclipse.kapua.app.api.core.KapuaSerializableBodyWriter;
 import org.eclipse.kapua.app.api.core.ListBodyWriter;
 import org.eclipse.kapua.app.api.core.MoxyJsonConfigContextResolver;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.glassfish.jersey.server.filter.UriConnegFilter;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-
 import javax.xml.bind.JAXBException;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class RestApisApplicationTest extends Assert {
 
     @Test

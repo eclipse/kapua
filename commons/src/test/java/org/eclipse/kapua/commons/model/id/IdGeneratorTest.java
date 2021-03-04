@@ -25,7 +25,7 @@ import org.eclipse.kapua.commons.model.misc.CollisionServiceImpl;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @since 1.0
  *
  */
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class IdGeneratorTest extends AbstractCommonServiceTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IdGeneratorTest.class);

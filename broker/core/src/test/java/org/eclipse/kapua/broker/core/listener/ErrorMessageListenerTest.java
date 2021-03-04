@@ -17,7 +17,7 @@ import org.apache.camel.Message;
 import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.message.MessageConstants;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ import com.codahale.metrics.Counter;
 
 import java.util.Base64;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class ErrorMessageListenerTest extends Assert {
 
     ErrorMessageListener errorMessageListener;

@@ -20,16 +20,15 @@ import org.eclipse.kapua.broker.core.listener.DataStoreMetrics;
 import org.eclipse.kapua.broker.core.message.CamelKapuaMessage;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.message.KapuaMessage;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import java.util.UUID;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class DataStorageMessageProcessorTest extends Assert {
 
     DataStorageMessageProcessor dataStorageMessageProcessor;

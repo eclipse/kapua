@@ -20,7 +20,7 @@ import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProvider;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProviders;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.cache.TranslatorCache;
@@ -32,7 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
 import javax.jms.Topic;
@@ -40,7 +39,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class JmsUtilTest extends Assert {
 
     ActiveMQMessage activeMQMessage;

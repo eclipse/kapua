@@ -17,13 +17,12 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class PayloadTest extends Assert {
 
     Object[] objectValues = new Object[]{1, 2147483647, -2147483648, true, false, 3.4028235E38, 1.4E-45, 1.7976931348623157E308, 4.9E-324, 9223372036854775807L, -9223372036854775808L, "String", 'S'};

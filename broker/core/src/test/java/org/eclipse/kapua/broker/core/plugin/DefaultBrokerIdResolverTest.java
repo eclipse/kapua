@@ -14,14 +14,14 @@ package org.eclipse.kapua.broker.core.plugin;
 
 import org.apache.activemq.broker.BrokerFilter;
 import org.apache.activemq.command.BrokerId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class DefaultBrokerIdResolverTest extends Assert {
 
     DefaultBrokerIdResolver defaultBrokerIdResolver;

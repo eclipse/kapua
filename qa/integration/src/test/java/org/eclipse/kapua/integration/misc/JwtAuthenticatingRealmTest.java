@@ -14,7 +14,7 @@ package org.eclipse.kapua.integration.misc;
 
 import org.apache.shiro.authc.AuthenticationToken;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.service.authentication.shiro.JwtCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.realm.JwtAuthenticatingRealm;
 import org.junit.Assert;
@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class JwtAuthenticatingRealmTest extends Assert {
 
     JwtAuthenticatingRealm jwtAuthenticatingRealm;

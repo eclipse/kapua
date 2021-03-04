@@ -19,7 +19,7 @@ import org.eclipse.kapua.broker.core.KapuaBrokerJAXBContextLoader;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor.MessageType;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,7 +29,7 @@ import org.junit.experimental.categories.Category;
 import java.util.HashMap;
 import java.util.Map;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class ConnectorDescriptorTest extends Assert {
 
     private static final String BROKER_IP_RESOLVER_CLASS_NAME;
@@ -179,6 +179,7 @@ public class ConnectorDescriptorTest extends Assert {
         BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
         String ipOrHostName = brokerIpResolver.getBrokerIpOrHostName();
         assertEquals("Expected and actual values should be the same.", "192.168.33.10", ipOrHostName);
+        System.clearProperty("broker.ip");
     }
 
     @Test

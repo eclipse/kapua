@@ -18,7 +18,7 @@ import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class AbstractKapuaUpdatableEntityTest extends Assert {
 
     private final static Random RANDOM = RandomUtils.getInstance();

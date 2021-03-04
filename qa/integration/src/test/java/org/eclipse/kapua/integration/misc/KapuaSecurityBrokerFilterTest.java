@@ -24,14 +24,14 @@ import org.apache.activemq.broker.Connection;
 import org.apache.activemq.command.ConsumerInfo;
 import org.apache.activemq.security.SecurityContext;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class KapuaSecurityBrokerFilterTest extends Assert {
 
     Broker broker;
@@ -41,8 +41,7 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
     Connection connection;
     TransportConnector connector;
     ConsumerInfo consumerInfo;
-    KapuaSecurityBrokerFilter kapuaSecurityBrokerFilter;
-    KapuaSecurityBrokerFilter nullKapuaSecurityBrokerFilter;
+    KapuaSecurityBrokerFilter kapuaSecurityBrokerFilter, nullKapuaSecurityBrokerFilter;
 
     @Before
     public void initialize() {
@@ -87,27 +86,6 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
     }
 
     @Test
-    public void addConnectionWithoutConnectorTest() {
-        connectionInfo.setUserName("kapua-sys");
-        connectionInfo.setPassword("kapua-password");
-        System.setProperty("broker.connector.internal.username", "kapua-sys");
-        System.setProperty("broker.connector.internal.password", "kapua-password");
-
-        try {
-            kapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
-        } catch (Exception e) {
-            fail("Exception not expected.");
-        }
-        try {
-            nullKapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
-            fail("Exception expected.");
-        } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
-        }
-    }
-
-
-    @Test
     public void addConnectionWithConnectorAndTrueConnectionTest() {
         connectionContext.setConnector(connector);
         connectionContext.setConnection(connection);
@@ -135,29 +113,6 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         Mockito.when((connector).getName()).thenReturn("vm://message-broker");
         Mockito.when(connectionContext.getSecurityContext()).thenReturn(Mockito.mock(SecurityContext.class));
 
-        try {
-            kapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
-        } catch (Exception e) {
-            fail("Exception not expected.");
-        }
-        try {
-            nullKapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
-            fail("Exception expected.");
-        } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
-        }
-    }
-
-    @Test
-    public void addConnectionWithConnectorNameInternalTest() {
-        ConnectionContext connectionContext = Mockito.mock(ConnectionContext.class);
-        connectionInfo.setUserName("kapua-sys");
-        connectionInfo.setPassword("kapua-password");
-        System.setProperty("broker.connector.internal.username", "kapua-sys");
-        System.setProperty("broker.connector.internal.password", "kapua-password");
-
-        Mockito.when(connectionContext.getConnector()).thenReturn(connector);
-        Mockito.when((connector).getName()).thenReturn("internalMqtt");
         try {
             kapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
         } catch (Exception e) {

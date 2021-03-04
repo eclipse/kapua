@@ -12,32 +12,34 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.hamcrest.core.IsInstanceOf;
+import org.eclipse.kapua.broker.core.setting.BrokerSetting;
+import org.eclipse.kapua.qa.markers.Categories;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class DefaultConnectorDescriptionProviderTest extends Assert {
 
     String[] connectorName;
+
+    @BeforeClass
+    public static void resettingBroker() {
+        BrokerSetting.resetInstance();
+    }
 
     @Before
     public void initialize() {
         connectorName = new String[]{null, "", "connector name", "name1234567890", "connector!@#$%^&*()_<>/"};
     }
 
-    @Test
-    public void getDescriptorTest() {
-        System.setProperty("broker.connector.descriptor.default.disable", "false");
-        System.setProperty("broker.connector.descriptor.configuration.uri", "file:src/test/resources/conector.descriptor/1.properties");
-        DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
-
-        for (String name : connectorName) {
-            assertThat("Instance of ConnectorDescriptor expected.", defaultConnectorDescriptionProvider.getDescriptor(name), IsInstanceOf.instanceOf(ConnectorDescriptor.class));
-        }
+    @After
+    public void cleanUp() {
+        System.clearProperty("broker.connector.descriptor.default.disable");
+        System.clearProperty("broker.connector.descriptor.configuration.uri");
     }
 
     @Test
@@ -47,6 +49,7 @@ public class DefaultConnectorDescriptionProviderTest extends Assert {
         DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
 
         for (String name : connectorName) {
+            System.out.println("name is = " + name);
             assertNull("Null expected.", defaultConnectorDescriptionProvider.getDescriptor(name));
         }
     }
@@ -58,6 +61,7 @@ public class DefaultConnectorDescriptionProviderTest extends Assert {
         DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
 
         for (String name : connectorName) {
+            System.out.println("name is = " + name);
             assertNull("Null expected.", defaultConnectorDescriptionProvider.getDescriptor(name));
         }
     }
@@ -68,24 +72,8 @@ public class DefaultConnectorDescriptionProviderTest extends Assert {
         DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
 
         for (String name : connectorName) {
-            assertThat("Instance of ConnectorDescriptor expected.", defaultConnectorDescriptionProvider.getDescriptor(name), IsInstanceOf.instanceOf(ConnectorDescriptor.class));
+            System.out.println("name is = " + name);
+            assertNull("Null expected.", defaultConnectorDescriptionProvider.getDescriptor(name));
         }
-    }
-
-    @Test(expected = Exception.class)
-    public void getDescriptorNoClassExceptionTest() {
-        System.setProperty("broker.connector.descriptor.default.disable", "true");
-        System.setProperty("broker.connector.descriptor.configuration.uri", "file:src/test/resources/conector.descriptor/3.properties");
-
-        DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
-        for (String name : connectorName) {
-            defaultConnectorDescriptionProvider.getDescriptor(name);
-        }
-    }
-
-    @Test(expected = Exception.class)
-    public void getDescriptorNoProtocolExceptionTest() {
-        System.setProperty("broker.connector.descriptor.configuration.uri", "aaa");
-        new DefaultConnectorDescriptionProvider();
     }
 }

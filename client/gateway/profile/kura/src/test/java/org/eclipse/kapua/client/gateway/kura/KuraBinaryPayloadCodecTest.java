@@ -14,9 +14,8 @@ package org.eclipse.kapua.client.gateway.kura;
 
 import java.nio.ByteBuffer;
 import java.time.Instant;
-
 import org.eclipse.kapua.client.gateway.Payload;
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,7 +23,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class KuraBinaryPayloadCodecTest extends Assert {
 
     KuraBinaryPayloadCodec.Builder builder;

@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.transport.mqtt.test.mqtt.exception;
 
-import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.qa.markers.Categories;
 import org.eclipse.kapua.transport.mqtt.exception.MqttClientErrorCodes;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-@Category(JUnitTests.class)
+@Category(Categories.junitTests.class)
 public class MqttClientErrorCodesTest extends Assert {
 
     @Test
