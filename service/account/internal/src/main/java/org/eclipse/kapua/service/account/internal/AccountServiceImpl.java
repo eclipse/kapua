@@ -340,7 +340,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        checkAccountPermission(account.getScopeId(), account.getId(), AccountDomains.ACCOUNT_DOMAIN, Actions.read);
+        checkAccountPermission(account.getScopeId(), account.getId(), AccountDomains.ACCOUNT_DOMAIN, Actions.read, true);
         return entityManagerSession.doAction(EntityManagerContainer.<AccountListResult>create().onResultHandler(em -> {
             AccountListResult result = null;
             TypedQuery<Account> q;
@@ -429,19 +429,23 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         return super.getConfigValues(entity.getId());
     }
 
+    private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Domain domain, Actions action) throws KapuaException {
+        checkAccountPermission(scopeId, accountId, domain, action, false);
+    }
+
     /**
      * Checks if the current session can retrieve the {@link Account}, by both having an explicit permission or because
      * it's looking for its own {@link Account}
      *
      * @param accountId The {@link KapuaId} of the {@link Account} to look for
      */
-    private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Domain domain, Actions action) throws KapuaException {
+    private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Domain domain, Actions action, boolean forwardable) throws KapuaException {
         if (KapuaSecurityUtils.getSession().getScopeId().equals(accountId)) {
             // I'm looking for myself, so let's check if I have the correct permission
-            authorizationService.checkPermission(permissionFactory.newPermission(domain, action, accountId));
+            authorizationService.checkPermission(permissionFactory.newPermission(domain, action, accountId, null, forwardable));
         } else {
             // I'm looking for another account, so I need to check the permission on the account scope
-            authorizationService.checkPermission(permissionFactory.newPermission(domain, action, scopeId));
+            authorizationService.checkPermission(permissionFactory.newPermission(domain, action, scopeId, null, forwardable));
         }
     }
 }

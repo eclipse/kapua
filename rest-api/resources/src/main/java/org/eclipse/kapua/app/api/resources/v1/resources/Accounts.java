@@ -53,20 +53,26 @@ public class Accounts extends AbstractKapuaResource {
     /**
      * Gets the {@link Account} list in the scope.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param name    The {@link Account} name in which to search results.
-     * @param offset  The result set offset.
-     * @param limit   The result set limit.
-     * @return The {@link AccountListResult} of all the accounts associated to the current selected scope.
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @param scopeId       The {@link ScopeId} in which to search results.
+     * @param name          The {@link Account} name in which to search results.
+     * @param recursive     The {@link Account} name in which to search results.
+     * @param offset        The result set offset.
+     * @param limit         The result set limit.
+     * @return              The {@link AccountListResult} of all the accounts associated to the current selected scope.
+     * @throws              KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public AccountListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId, //
                                          @QueryParam("name") String name, //
+                                         @QueryParam("recursive") boolean recursive, //
                                          @QueryParam("offset") @DefaultValue("0") int offset, //
                                          @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
+
+        if (recursive) {
+            return accountService.findChildrenRecursively(scopeId);
+        }
 
         AccountQuery query = accountFactory.newQuery(scopeId);
 
