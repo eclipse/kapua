@@ -39,7 +39,7 @@ import java.util.Map;
 
 public class KapuaExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(KapuaExceptionHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KapuaExceptionHandler.class);
 
     private KapuaExceptionHandler() {
     }
@@ -95,8 +95,9 @@ public class KapuaExceptionHandler {
      * @since 1.5.0
      */
     public static GwtKapuaException buildExceptionFromError(Throwable throwable) {
-        if (throwable instanceof KapuaUnauthenticatedException) {
+        LOG.error("Server side error!", throwable);
 
+        if (throwable instanceof KapuaUnauthenticatedException) {
             // sessions has expired
             return new GwtKapuaException(GwtKapuaErrorCode.UNAUTHENTICATED, throwable);
         } else if (throwable instanceof KapuaAuthenticationException) {
@@ -136,17 +137,15 @@ public class KapuaExceptionHandler {
             return new GwtKapuaException(GwtKapuaErrorCode.UNAUTHENTICATED, throwable);
         } else if (throwable instanceof KapuaRuntimeException && ((KapuaRuntimeException) throwable).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS) ||
                 throwable.getCause() instanceof KapuaRuntimeException && ((KapuaRuntimeException) throwable.getCause()).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS)) {
-            logger.error("entity already exists", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR) && throwable.getCause() instanceof ClientException) {
-            logger.error("internal service error", throwable);
             if (throwable.getCause().getCause() != null) {
                 return new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, throwable, throwable.getCause().getCause().getLocalizedMessage());
             } else {
                 return new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, throwable, throwable.getCause().getLocalizedMessage());
             }
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR)) {
-            logger.error("internal service error", throwable);
+            LOG.error("internal service error", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException &&
                 (
@@ -156,38 +155,27 @@ public class KapuaExceptionHandler {
         ) {
             return new GwtKapuaException(GwtKapuaErrorCode.TRIGGER_NEVER_FIRE, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG.name())) {
-            logger.warn("Child accounts limitation error", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.PARENT_LIMIT_EXCEEDED_IN_CONFIG, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.ADMIN_ROLE_DELETED_ERROR.name())) {
-            logger.warn("Admin role delete error.", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.ADMIN_ROLE_DELETED_ERROR, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.SUBJECT_UNAUTHORIZED.name())) {
-            logger.warn("User unauthorize", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED, throwable, ((SubjectUnauthorizedException) throwable).getPermission().toString());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT.name())) {
-            logger.warn("Entity already exist in another account", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT.name())) {
-            logger.warn("External Id already exist in another account", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.DUPLICATE_NAME.name())) {
-            logger.warn("Entity already exist with the same name", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_NAME, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.DUPLICATE_EXTERNAL_ID.name())) {
-            logger.warn("Entity already exist with the same externalId", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_EXTERNAL_ID, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaConfigurationException && ((KapuaConfigurationException) throwable).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
-            logger.warn("Parent account limitation error", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.DOWNLOAD_PACKAGE_EXCEPTION.name())) {
-            logger.warn("Another resource is currently downloading", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.DOWNLOAD_PACKAGE_EXCEPTION, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaEntityNotFoundException) {
-            logger.warn("Entity not found", throwable);
             KapuaEntityNotFoundException kapuaEntityNotFoundException = (KapuaEntityNotFoundException) throwable;
             return new GwtKapuaException(GwtKapuaErrorCode.ENTITY_NOT_FOUND, throwable, kapuaEntityNotFoundException.getEntityType(), kapuaEntityNotFoundException.getEntityName());
         } else if (throwable instanceof KapuaEntityUniquenessException) {
-            logger.warn("Entity uniqueness error", throwable);
             KapuaEntityUniquenessException kapuaEntityUniquenessException = (KapuaEntityUniquenessException) throwable;
             StringBuilder errorFieldsSb = new StringBuilder("(");
             for (Map.Entry<String, Object> entry : kapuaEntityUniquenessException.getUniquesFieldValues()) {
@@ -208,10 +196,8 @@ public class KapuaExceptionHandler {
                 return new GwtKapuaException(GwtKapuaErrorCode.ILLEGAL_ARGUMENT, throwable, ((KapuaIllegalArgumentException) throwable).getArgumentName(), ((KapuaIllegalArgumentException) throwable).getArgumentValue());
             }
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR.name())) {
-            logger.warn("Bundle could not be started", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_START_ERROR, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.BUNDLE_STOP_ERROR.name())) {
-            logger.warn("Bundle could not be stoped", throwable);
             return new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_STOP_ERROR, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(KapuaErrorCodes.PACKAGE_URI_SYNTAX_ERROR)) {
             return new GwtKapuaException(GwtKapuaErrorCode.PACKAGE_URI_SYNTAX_ERROR, throwable, throwable.getLocalizedMessage());
@@ -223,7 +209,6 @@ public class KapuaExceptionHandler {
             return new GwtKapuaException(GwtKapuaErrorCode.PERMISSION_DELETE_NOT_ALLOWED, throwable, throwable.getLocalizedMessage());
         } else {
             // all others => log and return internal error code
-            logger.warn("RPC service non-application error", throwable);
             return GwtKapuaException.internalError(throwable, throwable.getLocalizedMessage());
         }
     }
