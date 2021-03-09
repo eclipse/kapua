@@ -12,13 +12,13 @@
         Eurotech - initial API and implementation
  -->
 <databaseChangeLog
-  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
-  logicalFilePath="KapuaDB/changelog-account-0.2.0.xml">
+        logicalFilePath="KapuaDB/changelog-account-0.2.0.xml">
 
-    <include relativeToChangelogFile="true" file="../common-properties.xml" />
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
     <changeSet id="changelog-account-configuration-0.2.0_seed" author="eurotech">
         <insert tableName="sys_configuration">
