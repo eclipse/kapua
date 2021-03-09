@@ -19,5 +19,7 @@
 
     <property name="now" value="sysdate" dbms="oracle"/>
     <property name="now" value="now()" dbms="postgresql"/>
-    <property name="now" value="current_timestamp(3)" dbms="mysql,mariadb,h2"/>
+    <property name="now" value="now(3)" dbms="mysql"/>
+    <property name="now" value="current_timestamp(3)" dbms="mariadb,h2"/>
+
 </databaseChangeLog>
