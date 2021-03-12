@@ -18,27 +18,38 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Category(JUnitTests.class)
 public class DefaultBrokerIpResolverTest extends Assert {
 
+    private static final String BROKER_IP_PROP_KEY = "broker.ip";
+
     @Test
     public void defaultBrokerIpResolverTest() throws KapuaException {
-        System.setProperty("broker.ip", "192.168.33.10");
-        DefaultBrokerIpResolver defaultBrokerIpResolver = new DefaultBrokerIpResolver();
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(BROKER_IP_PROP_KEY, "192.168.33.10");
 
-        assertEquals("Expected and actual values should be the same", "192.168.33.10", defaultBrokerIpResolver.getBrokerIpOrHostName());
+        Tests.runWithProperties(properties, () -> {
+            DefaultBrokerIpResolver defaultBrokerIpResolver = new DefaultBrokerIpResolver();
+            assertEquals("Expected and actual values should be the same", "192.168.33.10", defaultBrokerIpResolver.getBrokerIpOrHostName());
+        });
     }
 
     @Test(expected = KapuaException.class)
     public void defaultBrokerIpResolverExceptionTest() throws KapuaException {
-        System.setProperty("broker.ip", "");
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(BROKER_IP_PROP_KEY, "");
 
-        new DefaultBrokerIpResolver();
+        Tests.runWithProperties(properties, DefaultBrokerIpResolver::new);
     }
 
     @Test(expected = NullPointerException.class)
     public void defaultBrokerIpResolverNullTest() throws KapuaException {
-        System.setProperty("broker.ip", null);
-        new DefaultBrokerIpResolver();
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(BROKER_IP_PROP_KEY, null);
+
+        Tests.runWithProperties(properties, DefaultBrokerIpResolver::new);
     }
 }

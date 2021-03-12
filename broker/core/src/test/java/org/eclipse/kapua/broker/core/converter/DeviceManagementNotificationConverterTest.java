@@ -24,6 +24,7 @@ import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProvider;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProviders;
+import org.eclipse.kapua.broker.core.utils.Utils;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -34,6 +35,7 @@ import org.eclipse.kapua.translator.exception.TranslateException;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
 import org.hamcrest.core.IsInstanceOf;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -68,6 +70,7 @@ public class DeviceManagementNotificationConverterTest extends Assert {
         exchange = Mockito.mock(Exchange.class);
         camelKapuaMessage = Mockito.mock(CamelKapuaMessage.class);
         converterDeviceManagementNotificationMessage = MetricServiceFactory.getInstance().getCounter(ConverterMetrics.METRIC_MODULE_NAME, ConverterMetrics.METRIC_COMPONENT_NAME, ConverterMetrics.METRIC_KAPUA_MESSAGE, ConverterMetrics.METRIC_MESSAGES, ConverterMetrics.METRIC_NOTIFY, ConverterMetrics.METRIC_COUNT);
+        Utils.initCounter(converterDeviceManagementNotificationMessage);
         provider = ConnectorDescriptorProviders.getInstance();
         connectorDescriptor = provider.getDescriptor("foo");
         connectorDescriptorBytes = SerializationUtils.serialize(connectorDescriptor);
@@ -87,6 +90,11 @@ public class DeviceManagementNotificationConverterTest extends Assert {
         messageKapua = translator2.translate(jmsMessage);
     }
 
+    @After
+    public void tearDown() {
+        Utils.initCounter(converterDeviceManagementNotificationMessage);
+    }
+
     @Test
     public void convertToManagementNotificationNullTest() {
         assertEquals("Expected and actual values should be the same.", 0L, converterDeviceManagementNotificationMessage.getCount());
@@ -98,7 +106,6 @@ public class DeviceManagementNotificationConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDeviceManagementNotificationMessage.getCount());
 
-        converterDeviceManagementNotificationMessage.dec();
     }
 
     @Test
@@ -112,7 +119,6 @@ public class DeviceManagementNotificationConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDeviceManagementNotificationMessage.getCount());
 
-        converterDeviceManagementNotificationMessage.dec();
     }
 
     @Test
@@ -128,7 +134,6 @@ public class DeviceManagementNotificationConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDeviceManagementNotificationMessage.getCount());
 
-        converterDeviceManagementNotificationMessage.dec();
     }
 
     @Test
@@ -164,7 +169,6 @@ public class DeviceManagementNotificationConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDeviceManagementNotificationMessage.getCount());
 
-        converterDeviceManagementNotificationMessage.dec();
     }
 
     @Test
@@ -177,7 +181,6 @@ public class DeviceManagementNotificationConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDeviceManagementNotificationMessage.getCount());
 
-        converterDeviceManagementNotificationMessage.dec();
     }
 
     @Test
@@ -193,7 +196,6 @@ public class DeviceManagementNotificationConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDeviceManagementNotificationMessage.getCount());
 
-        converterDeviceManagementNotificationMessage.dec();
     }
 
     @Test
@@ -206,7 +208,6 @@ public class DeviceManagementNotificationConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDeviceManagementNotificationMessage.getCount());
 
-        converterDeviceManagementNotificationMessage.dec();
     }
 
     @Test
@@ -230,6 +231,5 @@ public class DeviceManagementNotificationConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDeviceManagementNotificationMessage.getCount());
 
-        converterDeviceManagementNotificationMessage.dec();
     }
 }

@@ -33,6 +33,8 @@ import java.util.Map;
 public class ConnectorDescriptorTest extends Assert {
 
     private static final String BROKER_IP_RESOLVER_CLASS_NAME;
+    private static final String BROKER_IP_PROP_KEY = "broker.ip";
+    private static final String KAPUA_CONFIG_URL_PROP_KEY = "kapua.config.url";
 
     private KapuaBrokerJAXBContextLoader kapuaBrokerJAXBContextLoader;
 
@@ -163,41 +165,49 @@ public class ConnectorDescriptorTest extends Assert {
 
     @Test
     public void testBrokerIpOrHostNameConfigFile() throws Exception {
-        System.clearProperty("broker.ip");
-        System.setProperty("kapua.config.url", "broker.setting/kapua-broker-setting-1.properties");
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(KAPUA_CONFIG_URL_PROP_KEY, "broker.setting/kapua-broker-setting-1.properties");
 
-        BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
-        String ipOrHostName = brokerIpResolver.getBrokerIpOrHostName();
-        assertEquals("Expected and actual values should be the same.", "192.168.33.10", ipOrHostName);
+        Tests.runWithProperties(properties, () -> {
+            BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
+            String ipOrHostName = brokerIpResolver.getBrokerIpOrHostName();
+            assertEquals("Expected and actual values should be the same.", "192.168.33.10", ipOrHostName);
+        });
     }
 
     @Test
     public void testBrokerIpOrHostNameEnvProperty() throws Exception {
-        System.clearProperty("kapua.config.url");
-        System.setProperty("broker.ip", "192.168.33.10");
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(BROKER_IP_PROP_KEY, "192.168.33.10");
 
-        BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
-        String ipOrHostName = brokerIpResolver.getBrokerIpOrHostName();
-        assertEquals("Expected and actual values should be the same.", "192.168.33.10", ipOrHostName);
+        Tests.runWithProperties(properties, () -> {
+            BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
+            String ipOrHostName = brokerIpResolver.getBrokerIpOrHostName();
+            assertEquals("Expected and actual values should be the same.", "192.168.33.10", ipOrHostName);
+        });
     }
 
     @Test
     public void testBrokerIpOrHostNameEmptyConfigFile() throws Exception {
-        System.clearProperty("broker.ip");
-        System.setProperty("kapua.config.url", "broker.setting/kapua-broker-setting-2.properties");
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(KAPUA_CONFIG_URL_PROP_KEY, "broker.setting/kapua-broker-setting-2.properties");
 
-        BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
-        String ipOrHostName = brokerIpResolver.getBrokerIpOrHostName();
-        assertEquals("Expected and actual values should be the same.", "192.168.33.10", ipOrHostName);
+        Tests.runWithProperties(properties, () -> {
+            BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
+            String ipOrHostName = brokerIpResolver.getBrokerIpOrHostName();
+            assertEquals("Expected and actual values should be the same.", "192.168.33.10", ipOrHostName);
+        });
     }
 
     @Test(expected = Exception.class)
     public void testBrokerIpOrHostNameNoEnvProperty() throws Exception {
-        System.clearProperty("broker.ip");
-        System.setProperty("kapua.config.url", "broker.setting/kapua-broker-setting-3.properties");
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(KAPUA_CONFIG_URL_PROP_KEY, "broker.setting/kapua-broker-setting-3.properties");
 
-        BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
-        brokerIpResolver.getBrokerIpOrHostName();
+        Tests.runWithProperties(properties, () -> {
+            BrokerIpResolver brokerIpResolver = newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
+            brokerIpResolver.getBrokerIpOrHostName();
+        });
     }
 
     /**

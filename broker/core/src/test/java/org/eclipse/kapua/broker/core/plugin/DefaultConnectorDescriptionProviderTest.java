@@ -19,10 +19,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Category(JUnitTests.class)
 public class DefaultConnectorDescriptionProviderTest extends Assert {
 
     String[] connectorName;
+    private static final String BROKER_CONN_DESC_DEFAULT_DISABLE_PROP_KEY = "broker.connector.descriptor.default.disable";
+    private static final String BROKER_CONN_DESC_CONF_URI_PROP_KEY = "broker.connector.descriptor.configuration.uri";
 
     @Before
     public void initialize() {
@@ -31,61 +36,81 @@ public class DefaultConnectorDescriptionProviderTest extends Assert {
 
     @Test
     public void getDescriptorTest() {
-        System.setProperty("broker.connector.descriptor.default.disable", "false");
-        System.setProperty("broker.connector.descriptor.configuration.uri", "file:src/test/resources/conector.descriptor/1.properties");
-        DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(BROKER_CONN_DESC_DEFAULT_DISABLE_PROP_KEY, "false");
+        properties.put(BROKER_CONN_DESC_CONF_URI_PROP_KEY, "file:src/test/resources/conector.descriptor/1.properties");
 
-        for (String name : connectorName) {
-            assertThat("Instance of ConnectorDescriptor expected.", defaultConnectorDescriptionProvider.getDescriptor(name), IsInstanceOf.instanceOf(ConnectorDescriptor.class));
-        }
+        Tests.runWithProperties(properties, () -> {
+            DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
+
+            for (String name : connectorName) {
+                assertThat("Instance of ConnectorDescriptor expected.", defaultConnectorDescriptionProvider.getDescriptor(name), IsInstanceOf.instanceOf(ConnectorDescriptor.class));
+            }
+        });
     }
 
     @Test
     public void getDescriptorDisabledDefaultConnectorDescriptorTest() {
-        System.setProperty("broker.connector.descriptor.default.disable", "true");
-        System.setProperty("broker.connector.descriptor.configuration.uri", "");
-        DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(BROKER_CONN_DESC_DEFAULT_DISABLE_PROP_KEY, "true");
+        properties.put(BROKER_CONN_DESC_CONF_URI_PROP_KEY, "");
 
-        for (String name : connectorName) {
-            assertNull("Null expected.", defaultConnectorDescriptionProvider.getDescriptor(name));
-        }
+        Tests.runWithProperties(properties, () -> {
+            DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
+
+            for (String name : connectorName) {
+                assertNull("Null expected.", defaultConnectorDescriptionProvider.getDescriptor(name));
+            }
+        });
     }
 
     @Test
     public void getDescriptorConfigurationFirstPropertiesTest() {
-        System.setProperty("broker.connector.descriptor.default.disable", "true");
-        System.setProperty("broker.connector.descriptor.configuration.uri", "file:src/test/resources/conector.descriptor/1.properties");
-        DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(BROKER_CONN_DESC_DEFAULT_DISABLE_PROP_KEY, "true");
+        properties.put(BROKER_CONN_DESC_CONF_URI_PROP_KEY, "file:src/test/resources/conector.descriptor/1.properties");
 
-        for (String name : connectorName) {
-            assertNull("Null expected.", defaultConnectorDescriptionProvider.getDescriptor(name));
-        }
+        Tests.runWithProperties(properties, () -> {
+            DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
+
+            for (String name : connectorName) {
+                assertNull("Null expected.", defaultConnectorDescriptionProvider.getDescriptor(name));
+            }
+        });
     }
 
     @Test
     public void getDescriptorConfigurationSecondPropertiesTest() {
-        System.setProperty("broker.connector.descriptor.configuration.uri", "file:src/test/resources/conector.descriptor/2.properties");
-        DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(BROKER_CONN_DESC_CONF_URI_PROP_KEY, "file:src/test/resources/conector.descriptor/2.properties");
 
-        for (String name : connectorName) {
-            assertThat("Instance of ConnectorDescriptor expected.", defaultConnectorDescriptionProvider.getDescriptor(name), IsInstanceOf.instanceOf(ConnectorDescriptor.class));
-        }
+        Tests.runWithProperties(properties, () -> {
+            DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
+
+            for (String name : connectorName) {
+                assertThat("Instance of ConnectorDescriptor expected.", defaultConnectorDescriptionProvider.getDescriptor(name), IsInstanceOf.instanceOf(ConnectorDescriptor.class));
+            }
+        });
     }
 
     @Test(expected = Exception.class)
     public void getDescriptorNoClassExceptionTest() {
-        System.setProperty("broker.connector.descriptor.default.disable", "true");
-        System.setProperty("broker.connector.descriptor.configuration.uri", "file:src/test/resources/conector.descriptor/3.properties");
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(BROKER_CONN_DESC_DEFAULT_DISABLE_PROP_KEY, "true");
+        properties.put(BROKER_CONN_DESC_CONF_URI_PROP_KEY, "file:src/test/resources/conector.descriptor/3.properties");
 
-        DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
-        for (String name : connectorName) {
-            defaultConnectorDescriptionProvider.getDescriptor(name);
-        }
+        Tests.runWithProperties(properties, () -> {
+            DefaultConnectorDescriptionProvider defaultConnectorDescriptionProvider = new DefaultConnectorDescriptionProvider();
+            for (String name : connectorName) {
+                defaultConnectorDescriptionProvider.getDescriptor(name);
+            }
+        });
     }
 
     @Test(expected = Exception.class)
     public void getDescriptorNoProtocolExceptionTest() {
-        System.setProperty("broker.connector.descriptor.configuration.uri", "aaa");
-        new DefaultConnectorDescriptionProvider();
+        final Map<String, String> properties = new HashMap<>();
+        properties.put(BROKER_CONN_DESC_CONF_URI_PROP_KEY, "aaa");
+        Tests.runWithProperties(properties, DefaultConnectorDescriptionProvider::new);
     }
 }

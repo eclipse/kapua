@@ -25,6 +25,7 @@ import org.eclipse.kapua.broker.core.message.MessageConstants;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProvider;
 import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptorProviders;
+import org.eclipse.kapua.broker.core.utils.Utils;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -35,6 +36,7 @@ import org.eclipse.kapua.translator.exception.TranslateException;
 import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
 import org.hamcrest.core.IsInstanceOf;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -73,6 +75,7 @@ public class KapuaDataConverterTest extends Assert {
         kapuaDataConverter = new KapuaDataConverter();
         message = Mockito.mock(Message.class);
         converterDataMessage = MetricServiceFactory.getInstance().getCounter(ConverterMetrics.METRIC_MODULE_NAME, ConverterMetrics.METRIC_COMPONENT_NAME, ConverterMetrics.METRIC_KAPUA_MESSAGE, ConverterMetrics.METRIC_MESSAGES, ConverterMetrics.METRIC_DATA, ConverterMetrics.METRIC_COUNT);
+        Utils.initCounter(converterDataMessage);
         provider = ConnectorDescriptorProviders.getInstance();
         connectorDescriptor = provider.getDescriptor("foo");
         connectorDescriptorBytes = SerializationUtils.serialize(connectorDescriptor);
@@ -92,6 +95,11 @@ public class KapuaDataConverterTest extends Assert {
         translator2.translate(jmsMessage);
     }
 
+    @After
+    public void tearDown() {
+        Utils.initCounter(converterDataMessage);
+    }
+
     @Test
     public void convertToDataNullTest() {
         assertEquals("Expected and actual values should be the same.", 0L, converterDataMessage.getCount());
@@ -102,7 +110,6 @@ public class KapuaDataConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 
     @Test
@@ -115,7 +122,6 @@ public class KapuaDataConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 
     @Test
@@ -130,7 +136,6 @@ public class KapuaDataConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 
     @Test
@@ -154,7 +159,6 @@ public class KapuaDataConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 
     @Test
@@ -169,7 +173,6 @@ public class KapuaDataConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 
     @Test
@@ -182,7 +185,6 @@ public class KapuaDataConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 
     @Test
@@ -195,7 +197,6 @@ public class KapuaDataConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 
     @Test
@@ -210,7 +211,6 @@ public class KapuaDataConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 
     @Test
@@ -220,7 +220,6 @@ public class KapuaDataConverterTest extends Assert {
         assertNull("Null expected.", kapuaDataConverter.convertToDataOnException(exchange, camelKapuaMessage).getDatastoreId());
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 
     @Test
@@ -231,7 +230,6 @@ public class KapuaDataConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", "message", kapuaDataConverter.convertToDataOnException(exchange, camelKapuaMessage).getDatastoreId());
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 
     @Test
@@ -246,7 +244,6 @@ public class KapuaDataConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 
     @Test
@@ -270,6 +267,5 @@ public class KapuaDataConverterTest extends Assert {
         }
         assertEquals("Expected and actual values should be the same.", 1L, converterDataMessage.getCount());
 
-        converterDataMessage.dec();
     }
 }
