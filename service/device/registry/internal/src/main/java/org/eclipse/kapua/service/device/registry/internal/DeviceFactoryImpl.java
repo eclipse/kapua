@@ -17,6 +17,7 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceExtendedProperty;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
@@ -63,5 +64,10 @@ public class DeviceFactoryImpl implements DeviceFactory {
         } catch (Exception e) {
             throw new KapuaEntityCloneException(e, Device.TYPE, device);
         }
+    }
+
+    @Override
+    public DeviceExtendedProperty newExtendedProperty(String groupName, String name, String value) {
+        return new DeviceExtendedPropertyImpl(groupName, name, value);
     }
 }

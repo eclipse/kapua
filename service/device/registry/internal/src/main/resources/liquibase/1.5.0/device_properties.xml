@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2021 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+        logicalFilePath="KapuaDB/changelog-job-1.5.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="changelog-device_properties-1.5.0_createTable" author="eurotech">
+        <createTable tableName="dvc_device_extended_properties">
+            <column name="device_id" type="bigint(21) unsigned">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+
+            <column name="groupName" type="varchar(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="text"/>
+        </createTable>
+
+        <sql dbms="h2">ALTER TABLE dvc_device_extended_properties ADD CHECK device_id >= 0;</sql>
+
+        <addForeignKeyConstraint constraintName="fk_dvc_device_extended_property_device_id"
+                                 baseTableName="dvc_device_extended_properties"
+                                 baseColumnNames="device_id"
+                                 referencedTableName="dvc_device"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+
+        <rollback>
+            <dropTable tableName="dvc_device_extended_properties"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

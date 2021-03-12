@@ -16,7 +16,12 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceExtendedProperty;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
+
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * {@link DeviceCreator} implementation.
@@ -25,8 +30,7 @@ import org.eclipse.kapua.service.device.registry.DeviceStatus;
  */
 public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Device> implements DeviceCreator {
 
-    private static final long serialVersionUID = 8628137091890107296L;
-
+    private static final long serialVersionUID = 8497299443773395462L;
     private KapuaId groupId;
     private String clientId;
     private DeviceStatus status = DeviceStatus.ENABLED;
@@ -49,18 +53,17 @@ public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Devic
     private String connectionIp;
     private String applicationIdentifiers;
     private String acceptEncoding;
-    private Double gpsLongitude;
-    private Double gpsLatitude;
     private String customAttribute1;
     private String customAttribute2;
     private String customAttribute3;
     private String customAttribute4;
     private String customAttribute5;
+    private List<DeviceExtendedProperty> extendedProperties;
 
     /**
      * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The scope {@link KapuaId}.
      * @since 1.0.0
      */
     protected DeviceCreatorImpl(KapuaId scopeId) {
@@ -87,10 +90,12 @@ public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Devic
         this.clientId = clientId;
     }
 
+    @Override
     public DeviceStatus getStatus() {
         return status;
     }
 
+    @Override
     public void setStatus(DeviceStatus status) {
         this.status = status;
     }
@@ -285,42 +290,6 @@ public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Devic
         this.acceptEncoding = acceptEncoding;
     }
 
-    /**
-     * Get the gps longitude
-     *
-     * @return
-     */
-    public Double getGpsLongitude() {
-        return gpsLongitude;
-    }
-
-    /**
-     * Set the gps longitude
-     *
-     * @param gpsLongitude
-     */
-    public void setGpsLongitude(Double gpsLongitude) {
-        this.gpsLongitude = gpsLongitude;
-    }
-
-    /**
-     * Get the gps latitude
-     *
-     * @return
-     */
-    public Double getGpsLatitude() {
-        return gpsLatitude;
-    }
-
-    /**
-     * Set the gps latitude
-     *
-     * @param gpsLatitude
-     */
-    public void setGpsLatitude(Double gpsLatitude) {
-        this.gpsLatitude = gpsLatitude;
-    }
-
     @Override
     public String getCustomAttribute1() {
         return customAttribute1;
@@ -369,5 +338,24 @@ public class DeviceCreatorImpl extends AbstractKapuaUpdatableEntityCreator<Devic
     @Override
     public void setCustomAttribute5(String customAttribute5) {
         this.customAttribute5 = customAttribute5;
+    }
+
+    @Override
+    public List<DeviceExtendedProperty> getExtendedProperties() {
+        if (extendedProperties == null) {
+            extendedProperties = new ArrayList<>();
+        }
+
+        return extendedProperties;
+    }
+
+    @Override
+    public void addExtendedProperty(@NotNull DeviceExtendedProperty extendedProperty) {
+        getExtendedProperties().add(extendedProperty);
+    }
+
+    @Override
+    public void setExtendedProperties(List<DeviceExtendedProperty> extendedProperties) {
+        this.extendedProperties = extendedProperties;
     }
 }
