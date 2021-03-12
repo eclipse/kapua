@@ -30,7 +30,7 @@ public class DeviceExtendedPropertyImpl implements DeviceExtendedProperty {
     private static final long serialVersionUID = -2417811252908076430L;
 
     @Basic
-    @Column(name = "groupName", nullable = true, updatable = false)
+    @Column(name = "group_name", nullable = true, updatable = false)
     private String groupName;
 
     @Basic
@@ -40,6 +40,10 @@ public class DeviceExtendedPropertyImpl implements DeviceExtendedProperty {
     @Basic
     @Column(name = "value", nullable = true, updatable = false)
     private String value;
+
+    @Basic
+    @Column(name = "value_clob", nullable = true, updatable = false)
+    private String valueClob;
 
     /**
      * Constructor.
@@ -91,12 +95,41 @@ public class DeviceExtendedPropertyImpl implements DeviceExtendedProperty {
 
     @Override
     public String getValue() {
-        return value;
+        return getValueClob() == null ? value : getValueClob();
     }
 
     @Override
     public void setValue(String value) {
-        this.value = value;
+        if (value != null && value.length() > 255) {
+            setValueClob(value);
+            this.value = value.substring(0, 255);
+        } else {
+            this.value = value;
+        }
+    }
+
+    /**
+     * Gets the value for big values.
+     * <p>
+     * When setting a value which is longer than 255 chars,
+     * the value is store in {@link #valueClob} while in {@link #value}
+     * is trimmed at 255 chars for indexing performances.
+     *
+     * @return The full value if greather than 255, or {@code null}
+     * @since 1.5.0
+     */
+    private String getValueClob() {
+        return valueClob;
+    }
+
+    /**
+     * Sets the value for big values.
+     *
+     * @param valueClob The value if greater than 255 chars.
+     * @since 1.5.0
+     */
+    private void setValueClob(String valueClob) {
+        this.valueClob = valueClob;
     }
 
     public static DeviceExtendedPropertyImpl parse(DeviceExtendedProperty deviceExtendedProperty) {

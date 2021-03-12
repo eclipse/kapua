@@ -278,7 +278,7 @@ public class DeviceAttributes extends KapuaUpdatableEntityAttributes {
     public static final String EXTENDED_PROPERTIES = "extendedProperties";
 
     /**
-     * {@link DeviceExtendedProperty}es group
+     * {@link DeviceExtendedProperty}es group name
      *
      * @since 1.5.0
      */

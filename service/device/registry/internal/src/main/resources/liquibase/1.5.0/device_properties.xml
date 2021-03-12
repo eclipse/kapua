@@ -26,16 +26,24 @@
                 <constraints nullable="false" primaryKey="true"/>
             </column>
 
-            <column name="groupName" type="varchar(255)">
+            <column name="group_name" type="varchar(64)">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="false"/>
+            <column name="name" type="varchar(64)">
+                <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="value" type="text"/>
+            <column name="value" type="varchar(255)"/>
+            <column name="value_clob" type="text"/>
         </createTable>
 
         <sql dbms="h2">ALTER TABLE dvc_device_extended_properties ADD CHECK device_id >= 0;</sql>
+
+        <createIndex tableName="dvc_device_extended_properties" indexName="idx_device_properties_group_name_value_deviceId">
+            <column name="group_name"/>
+            <column name="name"/>
+            <column name="value"/>
+            <column name="device_id"/>
+        </createIndex>
 
         <addForeignKeyConstraint constraintName="fk_dvc_device_extended_property_device_id"
                                  baseTableName="dvc_device_extended_properties"

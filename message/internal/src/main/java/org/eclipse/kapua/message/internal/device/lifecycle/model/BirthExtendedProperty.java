@@ -12,22 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.lifecycle.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 
+import java.util.HashMap;
+
 /**
- * Birth extended property definition.
+ * {@link BirthExtendedProperty} definition.
  *
  * @since 1.5.0
  */
 @JsonRootName("deviceExtendedProperty")
-public class BirthExtendedProperty {
+public class BirthExtendedProperty extends HashMap<String, String> {
 
-    @JsonProperty("name")
-    private String name;
-
-    @JsonProperty("value")
-    private String value;
+    private static final long serialVersionUID = 650296704022076045L;
 
     /**
      * Constructor.
@@ -35,21 +32,5 @@ public class BirthExtendedProperty {
      * @since 1.5.0
      */
     public BirthExtendedProperty() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 }

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.lifecycle.internal;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -27,6 +29,8 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaBirthPayload;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
+import org.eclipse.kapua.message.internal.device.lifecycle.model.BirthExtendedProperties;
+import org.eclipse.kapua.message.internal.device.lifecycle.model.BirthExtendedProperty;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
@@ -40,12 +44,15 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.service.device.registry.internal.DeviceExtendedPropertyImpl;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * {@link DeviceLifeCycleService} implementation.
@@ -81,10 +88,9 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
         // Device update
         Device device;
         if (deviceId == null) {
-            String clientId = birthChannel.getClientId();
+            DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(scopeId);
 
-            DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(scopeId, clientId);
-
+            deviceCreator.setClientId(birthChannel.getClientId());
             deviceCreator.setDisplayName(birthPayload.getDisplayName());
             deviceCreator.setSerialNumber(birthPayload.getSerialNumber());
             deviceCreator.setModelId(birthPayload.getModelId());
@@ -103,7 +109,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
             deviceCreator.setApplicationIdentifiers(birthPayload.getApplicationIdentifiers());
             deviceCreator.setAcceptEncoding(birthPayload.getAcceptEncoding());
 
-            deviceCreator.setExtendedProperties(buildDeviceExtendedPropertyFromBitrh(birthPayload.getExtendedProperties()));
+            deviceCreator.setExtendedProperties(buildDeviceExtendedPropertyFromBirth(birthPayload.getExtendedProperties()));
 
             // issue #57
             deviceCreator.setConnectionId(connectionId);
@@ -198,7 +204,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
                 device.setApplicationIdentifiers(birthPayload.getApplicationIdentifiers());
                 device.setAcceptEncoding(birthPayload.getAcceptEncoding());
 
-                device.setExtendedProperties(buildDeviceExtendedPropertyFromBitrh(birthPayload.getExtendedProperties()));
+                device.setExtendedProperties(buildDeviceExtendedPropertyFromBirth(birthPayload.getExtendedProperties()));
 
                 // issue #57
                 device.setConnectionId(connectionId);
@@ -219,7 +225,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
                 }
             }
         }
-        while (retry < MAX_RETRY);
+        while (true);
 
         return device;
     }
@@ -272,7 +278,26 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
         return KapuaSecurityUtils.doPrivileged(() -> DEVICE_EVENT_SERVICE.create(deviceEventCreator));
     }
 
-    private List<DeviceExtendedProperty> buildDeviceExtendedPropertyFromBitrh(String extendedPropertiesString) {
+    private List<DeviceExtendedProperty> buildDeviceExtendedPropertyFromBirth(String extendedPropertiesString) throws KapuaException {
+        try {
+            BirthExtendedProperties birthExtendedProperties = JSON_MAPPER.readValue(extendedPropertiesString, BirthExtendedProperties.class);
 
+            List<DeviceExtendedProperty> deviceExtendedProperties = new ArrayList<>();
+            for (Map.Entry<String, BirthExtendedProperty> eps : birthExtendedProperties.getExtendedProperties().entrySet()) {
+                for (Map.Entry<String, String> ep : eps.getValue().entrySet()) {
+                    deviceExtendedProperties.add(new DeviceExtendedPropertyImpl(eps.getKey(), ep.getKey(), ep.getValue()));
+                }
+            }
+
+            return deviceExtendedProperties;
+        } catch (Exception e) {
+            throw KapuaException.internalError(e, "Error while parsing Device's extended properties");
+        }
     }
+
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+
 }
