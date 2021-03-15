@@ -75,30 +75,38 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
         RpcProxy<ListLoadResult<GwtGroupedNVPair>> proxy = getDataProxy();
         descriptionValuesLoader = new BaseListLoader<ListLoadResult<GwtGroupedNVPair>>(proxy);
         descriptionValuesLoader.addLoadListener(new DescriptionLoadListener());
+
         descriptionValuesStore = new GroupingStore<GwtGroupedNVPair>(descriptionValuesLoader);
         descriptionValuesStore.groupBy("groupLoc");
 
         //
         // Columns
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        ColumnConfig name = new ColumnConfig("nameLoc", MSGS.entityTabDescriptionName(), 50);
-        ColumnConfig value = new ColumnConfig("value", MSGS.devicePropValue(), 50);
-        // Name column
-        GridCellRenderer<GwtGroupedNVPair> renderer = new GridCellRenderer<GwtGroupedNVPair>() {
+
+        // Name
+        ColumnConfig nameColumn = new ColumnConfig();
+        nameColumn.setId("nameLoc");
+        nameColumn.setHeader(MSGS.entityTabDescriptionName());
+        nameColumn.setWidth(50);
+        columns.add(nameColumn);
+
+        // Value
+        GridCellRenderer<GwtGroupedNVPair> valueColumnRenderer = new GridCellRenderer<GwtGroupedNVPair>() {
 
             @Override
             public Object render(GwtGroupedNVPair model, String property, ColumnData config,
-                    int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store,
-                    Grid<GwtGroupedNVPair> grid) {
-               return renderValueCell(model, property, config, rowIndex, colIndex, store, grid);
+                                 int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store,
+                                 Grid<GwtGroupedNVPair> grid) {
+                return renderValueCell(model, property, config, rowIndex, colIndex, store, grid);
             }
         };
 
-        value.setRenderer(renderer);
-        columns.add(name);
-        columns.add(value);
-
-        ColumnModel cm = new ColumnModel(columns);
+        ColumnConfig valueColumn = new ColumnConfig();
+        valueColumn.setId("value");
+        valueColumn.setHeader(MSGS.devicePropValue());
+        valueColumn.setWidth(50);
+        valueColumn.setRenderer(valueColumnRenderer);
+        columns.add(valueColumn);
 
         //
         // Grid
@@ -109,6 +117,8 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
         groupingView.setShowGroupedColumn(false);
         groupingView.setEnableNoGroups(false);
         groupingView.setEnableGroupingMenu(false);
+
+        ColumnModel cm = new ColumnModel(columns);
         descriptionGrid = new KapuaGrid<GwtGroupedNVPair>(descriptionValuesStore, cm);
         descriptionGrid.setView(groupingView);
         descriptionGrid.setBorders(false);
@@ -147,9 +157,14 @@ public abstract class EntityDescriptionTabItem<M extends GwtEntityModel> extends
 
     protected Object renderValueCell(GwtGroupedNVPair model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GwtGroupedNVPair> store, Grid<GwtGroupedNVPair> grid) {
         Object value = model.getValue();
-        if (value != null && value instanceof Date) {
+
+        if (value instanceof Date) {
             Date dateValue = (Date) value;
             return DateUtils.formatDateTime(dateValue);
+        } else if (value instanceof String) {
+            return ((String) value)
+                    .replace("\n", "<br>")
+                    .replace(" ", "&nbsp;");
         }
         return value;
     }

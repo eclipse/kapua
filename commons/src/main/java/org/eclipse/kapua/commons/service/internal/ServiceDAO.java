@@ -275,10 +275,10 @@ public class ServiceDAO {
     /**
      * Find by fields {@link KapuaEntity} utility method
      *
-     * @param em      The {@link EntityManager} that holds the transaction.
-     * @param clazz   The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param name    The {@link KapuaEntity} name of the field from which to search.
-     * @param value   The value of the field from which to search.
+     * @param em    The {@link EntityManager} that holds the transaction.
+     * @param clazz The {@link KapuaEntity} class. This must be the implementing {@code class}.
+     * @param name  The {@link KapuaEntity} name of the field from which to search.
+     * @param value The value of the field from which to search.
      * @return The {@link KapuaEntity} found, or {@code null} if not found.
      * @throws NonUniqueResultException When more than one result is returned
      * @since 1.0.0
@@ -392,9 +392,11 @@ public class ServiceDAO {
         criteriaSelectQuery.select(entityRoot).distinct(true);
 
         // Fetch LAZY attributes if necessary
-        if (kapuaQuery.getFetchAttributes() != null) {
-            for (String fetchAttribute : kapuaQuery.getFetchAttributes()) {
+        for (String fetchAttribute : kapuaQuery.getFetchAttributes()) {
+            if (entityType.getAttribute(fetchAttribute).isAssociation()) {
                 entityRoot.fetch(entityType.getSingularAttribute(fetchAttribute), JoinType.LEFT);
+            } else {
+                entityRoot.fetch(fetchAttribute);
             }
         }
 
@@ -809,8 +811,7 @@ public class ServiceDAO {
             if (kapuaSession != null && !kapuaSession.isTrustedMode()) {
                 handleKapuaQueryGroupPredicate(kapuaSession, query, domain, groupPredicateName);
             }
-        }
-        else {
+        } else {
             LOG.warn("'Access Group Permission' feature is disabled");
         }
     }
@@ -822,9 +823,9 @@ public class ServiceDAO {
             AccessInfo accessInfo = KapuaSecurityUtils.doPrivileged(() -> ACCESS_INFO_SERVICE.findByUserId(kapuaSession.getScopeId(), userId));
 
             List<Permission> groupPermissions = new ArrayList<>();
-            if (accessInfo!=null) {
+            if (accessInfo != null) {
 
-                        AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPrivileged(() -> ACCESS_PERMISSION_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
+                AccessPermissionListResult accessPermissions = KapuaSecurityUtils.doPrivileged(() -> ACCESS_PERMISSION_SERVICE.findByAccessInfoId(accessInfo.getScopeId(), accessInfo.getId()));
 
                 for (AccessPermission ap : accessPermissions.getItems()) {
                     if (checkGroupPermission(domain, groupPermissions, ap.getPermission())) {

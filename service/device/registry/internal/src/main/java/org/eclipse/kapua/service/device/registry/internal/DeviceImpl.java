@@ -185,7 +185,7 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     @Column(name = "custom_attribute_5")
     private String customAttribute5;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "dvc_device_extended_properties", joinColumns = @JoinColumn(name = "device_id", referencedColumnName = "id"))
     private List<DeviceExtendedPropertyImpl> extendedProperties;
 
@@ -583,7 +583,9 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     public void setExtendedProperties(List<DeviceExtendedProperty> extendedProperties) {
         this.extendedProperties = new ArrayList<>();
 
-        extendedProperties.forEach(dep -> this.extendedProperties.add(DeviceExtendedPropertyImpl.parse(dep)));
+        if (extendedProperties != null) {
+            extendedProperties.forEach(dep -> this.extendedProperties.add(DeviceExtendedPropertyImpl.parse(dep)));
+        }
     }
 
     @Override

@@ -120,13 +120,13 @@ public class DeviceDAO extends ServiceDAO {
         List<String> fetchAttributes = query.getFetchAttributes();
 
         boolean deviceConnectionFetchAdded = false;
-        if (fetchAttributes == null || !fetchAttributes.contains(DeviceAttributes.CONNECTION)) {
+        if (!fetchAttributes.contains(DeviceAttributes.CONNECTION)) {
             deviceConnectionFetchAdded = true;
             query.addFetchAttributes(DeviceAttributes.CONNECTION);
         }
 
         boolean deviceLastEventFetchAdded = false;
-        if (fetchAttributes == null || !fetchAttributes.contains(DeviceAttributes.LAST_EVENT)) {
+        if (!fetchAttributes.contains(DeviceAttributes.LAST_EVENT)) {
             deviceLastEventFetchAdded = true;
             query.addFetchAttributes(DeviceAttributes.LAST_EVENT);
         }
