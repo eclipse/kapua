@@ -59,7 +59,7 @@
         <guice.version>4.1.0</guice.version>
         <h2.version>1.4.199</h2.version>
         <httpcomponents.version>4.5.13</httpcomponents.version>
-        <jackson.version>2.10.1</jackson.version>
+        <jackson.version>2.12.2</jackson.version>
         <javassist.version>3.19.0-GA</javassist.version>
         <javax-annotation-api.version>1.2</javax-annotation-api.version>
         <javax-batch-api.version>1.0.1</javax-batch-api.version>
