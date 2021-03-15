@@ -17,7 +17,7 @@ import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
 import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
-import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDAccessTokenException;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDTokenException;
 import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDIllegalUriException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +84,7 @@ public class SsoCallbackServlet extends HttpServlet {
 
             if (authCode != null) {
                 final URI redirectUri = SsoHelper.getRedirectUri();
-                final JsonObject jsonObject = locator.getService().getAccessToken(authCode, redirectUri);
+                final JsonObject jsonObject = locator.getService().getTokens(authCode, redirectUri);
 
                 // Get and clean jwks_uri property
                 final String accessToken = jsonObject.getString(OPENID_ACCESS_TOKEN_PARAM);
@@ -98,7 +98,7 @@ public class SsoCallbackServlet extends HttpServlet {
                 logger.debug("Successfully sent the redirect response to {}", homeUri);
             } else {
 
-                // access_token is null, collect possible error
+                // 'code' parameter is null, collect possible error
                 final String error = req.getParameter(OPENID_ERROR_PARAM);
                 if (error != null) {
                     String errorDescription = req.getParameter(OPENID_ERROR_DESC_PARAM);
@@ -112,13 +112,13 @@ public class SsoCallbackServlet extends HttpServlet {
                 } else {
                     resp.sendError(400);
                     httpReqLogger.addParameter("Error", "400 Bad Request");
-                    logger.error("Invalid HttpServletRequest, both 'access_token' and 'error' parameters are 'null'");
+                    logger.error("Invalid HttpServletRequest, both 'code' and 'error' parameters are 'null'");
                 }
             }
         } catch (OpenIDIllegalUriException siue) {
             throw new ServletException("Failed to get Home URI (null or empty): " + siue.getMessage(), siue);
-        } catch (OpenIDAccessTokenException sate) {
-            throw new ServletException("Failed to get access token: " + sate.getMessage(), sate);
+        } catch (OpenIDTokenException sate) {
+            throw new ServletException("Failed to get tokens: " + sate.getMessage(), sate);
         } catch (URISyntaxException use) {
             throw new ServletException("Failed to parse redirect URL " + homeUri + " : " + use.getMessage(), use);
         } finally {

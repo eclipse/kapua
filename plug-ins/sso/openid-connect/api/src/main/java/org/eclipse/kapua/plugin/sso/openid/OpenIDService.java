@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.plugin.sso.openid;
 
-import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDAccessTokenException;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDTokenException;
 import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDUriException;
 
 import javax.json.JsonObject;
@@ -45,10 +45,10 @@ public interface OpenIDService {
      *
      * @param authCode the authorization code from the HttpServletRequest.
      * @param redirectUri a URI object representing the redirect URI.
-     * @return the access token in the form of a {@link JsonObject}.
-     * @throws OpenIDAccessTokenException if it fails to retrieve the access token.
+     * @return the OpenID Connect tokens in the form of a {@link JsonObject}.
+     * @throws OpenIDTokenException if it fails to retrieve the tokens.
      */
-    JsonObject getAccessToken(String authCode, URI redirectUri) throws OpenIDAccessTokenException;
+    JsonObject getTokens(String authCode, URI redirectUri) throws OpenIDTokenException;
 
     /**
      * Get the Relying-Party-Initiated logout.

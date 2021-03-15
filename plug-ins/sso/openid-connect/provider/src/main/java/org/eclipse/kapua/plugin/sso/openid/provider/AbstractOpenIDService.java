@@ -21,7 +21,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.plugin.sso.openid.OpenIDService;
-import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDAccessTokenException;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDTokenException;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDLoginUriException;
 import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDLogoutUriException;
@@ -208,10 +208,10 @@ public abstract class AbstractOpenIDService implements OpenIDService {
     }
 
     /**
-     * @throws OpenIDAccessTokenException if an {@link IOException} is caught or the {@link #getTokenUri} method fails.
+     * @throws OpenIDTokenException if an {@link IOException} is caught or the {@link #getTokenUri} method fails.
      */
     @Override
-    public JsonObject getAccessToken(final String authCode, final URI redirectUri) throws OpenIDAccessTokenException {
+    public JsonObject getTokens(final String authCode, final URI redirectUri) throws OpenIDTokenException {
         // FIXME: switch to HttpClient implementation: better performance and connection caching
 
         ConfigurationPrinter reqLogger =
@@ -219,7 +219,7 @@ public abstract class AbstractOpenIDService implements OpenIDService {
                         .create()
                         .withLogger(logger)
                         .withLogLevel(ConfigurationPrinter.LogLevel.DEBUG)
-                        .withTitle("OpenID access token HTTP request");
+                        .withTitle("OpenID tokens HTTP request");
         try {
             URL url = new URL(getTokenUri());
             reqLogger.addParameter("URL", url);
@@ -273,24 +273,24 @@ public abstract class AbstractOpenIDService implements OpenIDService {
                         reqLogger.addParameter(entry.getKey(), entry.getValue());
                     }
                 }
-                logger.debug("Successfully obtained access token.");
+                logger.debug("Successfully obtained tokens.");
                 return result;
             }
         } catch (OpenIDException se) {
             logger.error("Error while retrieving the String of the token API endpoint {}", se.getLocalizedMessage(), se);
-            throw new OpenIDAccessTokenException(se);
+            throw new OpenIDTokenException(se);
         } catch (MalformedURLException mue) {
             logger.error("Malformed token API endpoint URL {}", mue.getLocalizedMessage(), mue);
-            throw new OpenIDAccessTokenException(mue);
+            throw new OpenIDTokenException(mue);
         } catch (ProtocolException pe) {
             logger.error("Wrong HTTP request method {}", pe.getLocalizedMessage(), pe);
-            throw new OpenIDAccessTokenException(pe);
+            throw new OpenIDTokenException(pe);
         } catch (UnsupportedEncodingException uee) {
             logger.error("Unsupported HTTP request default encoding {}", uee.getLocalizedMessage(), uee);
-            throw new OpenIDAccessTokenException(uee);
+            throw new OpenIDTokenException(uee);
         } catch (IOException ioe) {
-            logger.error("Error while getting the access token {}", ioe.getLocalizedMessage(), ioe);
-            throw new OpenIDAccessTokenException(ioe);
+            logger.error("Error while getting the tokens {}", ioe.getLocalizedMessage(), ioe);
+            throw new OpenIDTokenException(ioe);
         } finally {
             reqLogger.printLog();
         }

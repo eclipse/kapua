@@ -81,7 +81,7 @@ public class RegistrationServiceImpl implements RegistrationService, AutoCloseab
         }
 
         try {
-            final JwtContext context = jwtProcessor.process(credentials.getJwt());
+            final JwtContext context = jwtProcessor.process(credentials.getIdToken());
 
             for (final RegistrationProcessor processor : processors) {
                 final Optional<User> result = processor.createUser(context);

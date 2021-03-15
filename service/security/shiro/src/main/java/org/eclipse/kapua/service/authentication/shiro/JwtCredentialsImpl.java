@@ -29,18 +29,18 @@ public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
 
     private static final long serialVersionUID = -5920944517814926028L;
 
-    private String jwt;
+    private String accessToken;
     private String idToken;
 
     /**
      * Constructor.
      *
-     * @param jwt     The credential JWT.
-     * @param idToken The credential token.
+     * @param accessToken The credential access token
+     * @param idToken     The credential id token.
      * @since 1.4.0
      */
-    public JwtCredentialsImpl(String jwt, String idToken) {
-        setJwt(jwt);
+    public JwtCredentialsImpl(String accessToken, String idToken) {
+        setAccessToken(accessToken);
         setIdToken(idToken);
     }
 
@@ -51,18 +51,18 @@ public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
      * @since 1.5.0
      */
     public JwtCredentialsImpl(@NotNull JwtCredentials jwtCredentials) {
-        setJwt(jwtCredentials.getJwt());
+        setAccessToken(jwtCredentials.getAccessToken());
         setIdToken(jwtCredentials.getIdToken());
     }
 
     @Override
-    public String getJwt() {
-        return jwt;
+    public String getAccessToken() {
+        return accessToken;
     }
 
     @Override
-    public void setJwt(String jwt) {
-        this.jwt = jwt;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     @Override
@@ -77,12 +77,12 @@ public class JwtCredentialsImpl implements JwtCredentials, AuthenticationToken {
 
     @Override
     public Object getPrincipal() {
-        return getJwt();
+        return getAccessToken();
     }
 
     @Override
     public Object getCredentials() {
-        return getJwt();
+        return getAccessToken();
     }
 
     /**

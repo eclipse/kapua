@@ -28,7 +28,7 @@ import org.junit.experimental.categories.Category;
 public class CredentialsFactoryImplTest extends Assert {
 
     CredentialsFactoryImpl credentialsFactoryImpl;
-    String[] usernames, passwords, apiKeys, idsToken, jwts, refreshTokens;
+    String[] usernames, passwords, apiKeys, idTokens, accessTokens, refreshTokens;
 
     @Before
     public void initialize() {
@@ -36,8 +36,8 @@ public class CredentialsFactoryImplTest extends Assert {
         usernames = new String[]{null, "", "user_name123!!", "user#999username", "USERNAME_9", "user,,,,name", "... us_er%%67na*(me"};
         passwords = new String[]{null, "", "pass-word0000@!!,,,#", "!@#00PaSSwOrD.", " password ---44<>", "pA_ss0###woE**9()", "    pass0wo-rd  12344*&^%"};
         apiKeys = new String[]{null, "", "api_key1122#$%", "   aPi)(..,,KEY", "apiKEYYY ./??)_)*", "<> 1111      ", "keyyy&^$$##Z||'", "%%%KEY api-key11"};
-        idsToken = new String[]{null, "", "   ID tokenID 747.,.,,,82(*&%<> ", "   token((11@-", "id)__.,TOKen65", "TOKENid543$#%&t   oken", "to-ken_id++=,", "id,,,,id3$^&"};
-        jwts = new String[]{null, "", "  j_w=t110.,<> jwt", "(!!)432j&^w$#3t", "##<>/.JWT    ", "__J!#W(-8T    ", "jw&* 990t  ", "jwt987)_=;'''     .", "jwt JWT-123"};
+        idTokens = new String[]{null, "", "   ID tokenID 747.,.,,,82(*&%<> ", "   token((11@-", "id)__.,TOKen65", "TOKENid543$#%&t   oken", "to-ken_id++=,", "id,,,,id3$^&"};
+        accessTokens = new String[]{null, "", "  j_w=t110.,<> jwt", "(!!)432j&^w$#3t", "##<>/.JWT    ", "__J!#W(-8T    ", "jw&* 990t  ", "jwt987)_=;'''     .", "jwt JWT-123"};
         refreshTokens = new String[]{null, "", "   refresh tokenREFRESH 747.,.,,,82(*&%<> ", "   token((11@-", "REFresh)__.,TOKen65", "TOKENrefresh543$#%&t   oken", "to-ken_++rE=fresh,", "refresh,,,,id3$^&"};
     }
 
@@ -62,10 +62,10 @@ public class CredentialsFactoryImplTest extends Assert {
 
     @Test
     public void newJwtCredentialsTest() {
-        for (String jwt : jwts) {
-            for (String idToken : idsToken) {
-                JwtCredentials jwtCredentials = credentialsFactoryImpl.newJwtCredentials(jwt, idToken);
-                assertEquals("Expected and actual values should be the same.", jwt, jwtCredentials.getJwt());
+        for (String accessToken : accessTokens) {
+            for (String idToken : idTokens) {
+                JwtCredentials jwtCredentials = credentialsFactoryImpl.newJwtCredentials(accessToken, idToken);
+                assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentials.getAccessToken());
                 assertEquals("Expected and actual values should be the same.", idToken, jwtCredentials.getIdToken());
             }
         }
@@ -73,7 +73,7 @@ public class CredentialsFactoryImplTest extends Assert {
 
     @Test
     public void newAccessTokenCredentialsTest() {
-        for (String idToken : idsToken) {
+        for (String idToken : idTokens) {
             AccessTokenCredentials accessTokenCredentials = credentialsFactoryImpl.newAccessTokenCredentials(idToken);
             assertEquals("Expected and actual values should be the same.", idToken, accessTokenCredentials.getTokenId());
         }
@@ -81,7 +81,7 @@ public class CredentialsFactoryImplTest extends Assert {
 
     @Test
     public void newRefreshTokenCredentialsTest() {
-        for (String idToken : idsToken) {
+        for (String idToken : idTokens) {
             for (String refreshToken : refreshTokens) {
                 RefreshTokenCredentials refreshTokenCredentials = credentialsFactoryImpl.newRefreshTokenCredentials(idToken, refreshToken);
                 assertEquals("Expected and actual values should be the same.", idToken, refreshTokenCredentials.getTokenId());

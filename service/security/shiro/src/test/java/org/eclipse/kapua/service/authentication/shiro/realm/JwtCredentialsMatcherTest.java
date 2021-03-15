@@ -58,26 +58,26 @@ public class JwtCredentialsMatcherTest extends Assert {
 
     @Test
     public void doCredentialsMatchNullAuthenticationInfoNullJwtTest() {
-        Mockito.when(authenticationToken.getJwt()).thenReturn(null);
+        Mockito.when(authenticationToken.getIdToken()).thenReturn(null);
         assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, null));
     }
 
     @Test(expected = NullPointerException.class)
     public void doCredentialsMatchNullAuthenticationInfoTest() {
-        Mockito.when(authenticationToken.getJwt()).thenReturn("jwt");
+        Mockito.when(authenticationToken.getIdToken()).thenReturn("idToken");
         jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, null);
     }
 
     @Test
     public void doCredentialsMatchNullJwtTest() {
-        Mockito.when(authenticationToken.getJwt()).thenReturn(null);
+        Mockito.when(authenticationToken.getIdToken()).thenReturn(null);
 
         assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 
     @Test
     public void doCredentialsMatchStringCredentialTest() {
-        Mockito.when(authenticationToken.getJwt()).thenReturn("jwt");
+        Mockito.when(authenticationToken.getIdToken()).thenReturn("idToken");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn("credential");
 
         assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
@@ -85,7 +85,7 @@ public class JwtCredentialsMatcherTest extends Assert {
 
     @Test
     public void doCredentialsMatchDifferentKeysTest() {
-        Mockito.when(authenticationToken.getJwt()).thenReturn("jwt");
+        Mockito.when(authenticationToken.getIdToken()).thenReturn("idToken");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
         Mockito.when(credential.getCredentialKey()).thenReturn("credential key");
 
@@ -94,20 +94,20 @@ public class JwtCredentialsMatcherTest extends Assert {
 
     @Test
     public void doCredentialsMatchEqualKeysFalseTest() throws OpenIDException {
-        Mockito.when(authenticationToken.getJwt()).thenReturn("jwt");
+        Mockito.when(authenticationToken.getIdToken()).thenReturn("idToken");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
-        Mockito.when(credential.getCredentialKey()).thenReturn("jwt");
-        Mockito.when(jwtProcessor.validate("jwt")).thenReturn(false);
+        Mockito.when(credential.getCredentialKey()).thenReturn("idToken");
+        Mockito.when(jwtProcessor.validate("idToken")).thenReturn(false);
 
         assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 
     @Test
     public void doCredentialsMatchEqualKeysTrueTest() throws OpenIDException {
-        Mockito.when(authenticationToken.getJwt()).thenReturn("jwt");
+        Mockito.when(authenticationToken.getIdToken()).thenReturn("idToken");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
-        Mockito.when(credential.getCredentialKey()).thenReturn("jwt");
-        Mockito.when(jwtProcessor.validate("jwt")).thenReturn(true);
+        Mockito.when(credential.getCredentialKey()).thenReturn("idToken");
+        Mockito.when(jwtProcessor.validate("idToken")).thenReturn(true);
 
         assertTrue("True expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
@@ -115,10 +115,10 @@ public class JwtCredentialsMatcherTest extends Assert {
     @Test
     public void doCredentialsMatchEqualKeysOpenIDExceptionTest() throws OpenIDException {
         JwtCredentialsMatcher jwtCredentialsMatcher = new JwtCredentialsMatcher(jwtProcessor);
-        Mockito.when(authenticationToken.getJwt()).thenReturn("jwt");
+        Mockito.when(authenticationToken.getIdToken()).thenReturn("idToken");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
-        Mockito.when(credential.getCredentialKey()).thenReturn("jwt");
-        Mockito.when(jwtProcessor.validate("jwt")).thenThrow(Mockito.mock(OpenIDException.class));
+        Mockito.when(credential.getCredentialKey()).thenReturn("idToken");
+        Mockito.when(jwtProcessor.validate("idToken")).thenThrow(Mockito.mock(OpenIDException.class));
 
         assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }

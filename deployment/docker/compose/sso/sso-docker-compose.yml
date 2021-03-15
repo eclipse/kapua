@@ -54,8 +54,6 @@ services:
       - es
       - events-broker
     environment:
-      - KEYCLOAK_URL
-      - KAPUA_CONSOLE_URL
       - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
       - KAPUA_CA
@@ -65,6 +63,17 @@ services:
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
       - LOGBACK_LOG_LEVEL
+      - KAPUA_CONSOLE_URL
+      - OPENID_JWT_ISSUER
+      - OPENID_CLIENT_ID
+      - CLIENT_SECRET
+      - JWT_AUDIENCE
+      - OPENID_AUTH_ENDPOINT
+      - OPENID_TOKEN_ENDPOINT
+      - OPENID_LOGOUT_ENDPOINT
+      - KEYCLOAK_URL
+      - KEYCLOAK_CLIENT_ID
+      - KEYCLOAK_REALM
   kapua-api:
     image: kapua/kapua-api:${IMAGE_VERSION}
     ports:
@@ -74,6 +83,24 @@ services:
       - broker
       - db
       - es
+      - events-broker
+    environment:
+      - KAPUA_DISABLE_SSL
+      - KAPUA_DISABLE_DATASTORE
+      - KAPUA_CA
+      - KAPUA_CRT
+      - KAPUA_KEY
+      - KAPUA_KEY_PASSWORD
+      - KAPUA_KEYSTORE
+      - KAPUA_KEYSTORE_PASSWORD
+      - LOGBACK_LOG_LEVEL
+  job-engine:
+    image: kapua/kapua-job-engine:${IMAGE_VERSION}
+    expose:
+      - 8080
+    depends_on:
+      - broker
+      - db
       - events-broker
     environment:
       - KAPUA_DISABLE_SSL
