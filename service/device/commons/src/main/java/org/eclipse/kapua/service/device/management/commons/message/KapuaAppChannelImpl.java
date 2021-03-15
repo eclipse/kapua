@@ -18,11 +18,13 @@ import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 import java.util.List;
 
 /**
- * Kapua application message channel implementation.<br>
+ * {@link KapuaAppChannel} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public abstract class KapuaAppChannelImpl implements KapuaAppChannel {
+
+    private static final long serialVersionUID = 3755325191379812125L;
 
     private List<String> semanticParts;
     private KapuaAppProperties appName;

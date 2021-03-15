@@ -13,37 +13,44 @@
 package org.eclipse.kapua.service.device.management.message.response;
 
 /**
- * Kapua response message properties.
+ * {@link KapuaResponseMessage} properties.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public enum ResponseProperties {
 
     /**
      * Exception message (if present)
+     *
+     * @since 1.0.0
      */
     RESP_PROPERTY_EXCEPTION_MESSAGE("kapua.response.exception.message"),
+
     /**
      * Exception stack (if present)
+     *
+     * @since 1.0.0
      */
     RESP_PROPERTY_EXCEPTION_STACK("kapua.response.exception.stack"),
     ;
 
-    private String value;
+    private final String value;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param value
+     * @param value The property value.
+     * @since 1.0.0
      */
     ResponseProperties(String value) {
         this.value = value;
     }
 
     /**
-     * Get the property value
+     * Gets the property value.
      *
-     * @return
+     * @return The property value.
+     * @since 1.0.0
      */
     public String getValue() {
         return value;

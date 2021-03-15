@@ -27,8 +27,8 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaNumberField;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeploymentPackage;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.packages.GwtPackageUninstallRequest;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.packages.GwtDeploymentPackage;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.packages.GwtPackageUninstallRequest;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 

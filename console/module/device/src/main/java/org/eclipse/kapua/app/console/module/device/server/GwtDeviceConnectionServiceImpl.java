@@ -22,9 +22,9 @@ import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnectionQuery;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionService;
 import org.eclipse.kapua.app.console.module.device.shared.util.GwtKapuaDeviceModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;

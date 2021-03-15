@@ -3,6 +3,7 @@ org.eclipse.kapua.translator.kapua.kura.TranslatorAppAssetKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppBundleKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppCommandKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppConfigurationKapuaKura
+org.eclipse.kapua.translator.kapua.kura.TranslatorAppInventoryKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppPackageKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppRequestKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppSnapshotKapuaKura
@@ -13,6 +14,7 @@ org.eclipse.kapua.translator.kura.kapua.TranslatorAppAssetKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppBundleKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppCommandKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppConfigurationKuraKapua
+org.eclipse.kapua.translator.kura.kapua.TranslatorAppInventoryKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppPackageKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppResponseKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppSnapshotKuraKapua

@@ -12,17 +12,38 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.message.notification;
 
+/**
+ * {@link KapuaNotifyMessage} operation status.
+ *
+ * @since 1.1.0
+ */
 public enum OperationStatus {
 
-    //
+    /**
+     * The operation is running.
+     *
+     * @since 1.1.0
+     */
     RUNNING,
 
-    //
+    /**
+     * The operation has completed successfully.
+     *
+     * @since 1.1.0
+     */
     COMPLETED,
 
-    //
+    /**
+     * The operation has failed.
+     *
+     * @since 1.1.0
+     */
     FAILED,
 
-    //
+    /**
+     * The operation has unknown status.
+     *
+     * @since 1.1.0
+     */
     STALE
 }

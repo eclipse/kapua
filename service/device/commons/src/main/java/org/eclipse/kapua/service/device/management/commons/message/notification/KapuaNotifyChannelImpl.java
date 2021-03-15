@@ -16,11 +16,13 @@ import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChann
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyChannel;
 
 /**
- * Kapua notify message channel object reference implementation.
+ * {@link KapuaNotifyChannel} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class KapuaNotifyChannelImpl extends KapuaAppChannelImpl implements KapuaNotifyChannel {
+
+    private static final long serialVersionUID = 8630706854304183497L;
 
     private String[] resources;
 

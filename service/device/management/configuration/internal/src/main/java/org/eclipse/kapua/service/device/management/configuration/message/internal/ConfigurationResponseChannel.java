@@ -12,16 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.message.internal;
 
-import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChannelImpl;
+import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponseChannelImpl;
+import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseChannel;
 
 /**
- * Configuration {@link KapuaResponseChannel}.
+ * {@link DeviceConfiguration} {@link KapuaResponseChannel} implementation.
  *
  * @since 1.0.0
  */
-public class ConfigurationResponseChannel extends KapuaAppChannelImpl implements KapuaResponseChannel {
+public class ConfigurationResponseChannel extends KapuaResponseChannelImpl implements KapuaResponseChannel {
+
+    private static final long serialVersionUID = 2881485478711936989L;
 
     /**
      * Constructor.

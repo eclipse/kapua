@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command;
 
-import org.eclipse.kapua.model.KapuaEntity;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -39,7 +37,7 @@ import javax.xml.bind.annotation.XmlType;
         "runAsynch",
         "stdin"
 }, factoryClass = DeviceCommandXmlRegistry.class, factoryMethod = "newCommandInput")
-public interface DeviceCommandInput extends KapuaEntity {
+public interface DeviceCommandInput extends DeviceCommand {
 
     /**
      * Get the device command

@@ -13,17 +13,20 @@
 package org.eclipse.kapua.service.device.management.channel.message.internal;
 
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
+import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Device bundle information request payload.
+ * {@link DeviceAssetChannel} {@link KapuaRequestPayload} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ChannelRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload {
+
+    private static final long serialVersionUID = -6972788162637042265L;
 
     private static final String CHANNEL_NAME_PREFIX = "names";
     private static final String CHANNEL_NAME_PREFIX_DOT = CHANNEL_NAME_PREFIX + ".";

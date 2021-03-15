@@ -47,7 +47,7 @@ public class TranslatorAppRequestKapuaKura extends AbstractTranslatorKapuaKura<G
 
             kuraRequestChannel.setAppId(appIdSb.toString());
             kuraRequestChannel.setMethod(MethodDictionaryKapuaKura.translate(kapuaChannel.getMethod()));
-            kuraRequestChannel.setResources(kapuaChannel.getResources());
+            kuraRequestChannel.setResources(kapuaChannel.getResources().toArray(new String[0]));
 
             return kuraRequestChannel;
         } catch (Exception e) {

@@ -1,0 +1,160 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Device Management - Inventory
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths: { }
+
+components:
+  schemas:
+    inventoryItem:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        itemType:
+          type: string
+      example:
+        name: adduser
+        version: 3.118
+        type: DEB
+    deviceInventory:
+      type: object
+      properties:
+        inventoryItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/inventoryItem'
+      example:
+        type: deviceInventory
+        inventoryItems:
+          - name: adduser
+            version: 3.118
+            type: DEB
+          - name: alsa-utils
+            version: 1.1.8-2
+            type: DEB
+    deviceInventoryBundle:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        version:
+          type: string
+        status:
+          type: string
+      example:
+        id: 0
+        name: org.eclipse.osgi
+        version: 3.16.0.v20200828-0759
+        status: ACTIVE
+    deviceInventoryBundles:
+      type: object
+      properties:
+        inventoryBundles:
+          type: array
+          items:
+            $ref: '#/components/schemas/deviceInventoryBundle'
+      example:
+        type: deviceInventoryBundles
+        inventoryBundles:
+          - id: 0
+            name: org.eclipse.osgi
+            version: 3.16.0.v20200828-0759
+            status: ACTIVE
+          - id: 1
+            name: org.eclipse.equinox.cm
+            version: 1.4.400.v20200422-1833
+            status: RESOLVED
+    deviceInventorySystemPackage:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        packageType:
+          type: string
+      example:
+        name: adduser
+        packageType: DEB
+        version: 3.118
+    deviceInventorySystemPackages:
+      type: object
+      properties:
+        systemPackages:
+          type: array
+          items:
+            $ref: '#/components/schemas/deviceInventorySystemPackage'
+      example:
+        type: deviceInventorySystemPackages
+        systemPackages:
+          - name: adduser
+            version: 3.118
+            type: DEB
+          - name: alsa-utils
+            version: 1.1.8-2
+            type: DEB
+    deviceInventoryDeploymentPackage:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        packageBundles:
+          type: array
+          items:
+            $ref: '#/components/schemas/deviceInventoryBundle'
+      example:
+        name: org.eclipse.kura.example.beacon
+        version: 1.0.500
+        packageBundles:
+          - id: 0
+            name: org.eclipse.kura.example.beacon
+            version: 1.0.500
+            status: ACTIVE
+          - id: 1
+            name: org.eclipse.kura.example.package
+            version: 1.5.400
+            status: RESOLVED
+    deviceInventoryDeploymentPackages:
+      type: object
+      properties:
+        systemPackages:
+          type: array
+          items:
+            $ref: '#/components/schemas/deviceInventoryDeploymentPackage'
+      example:
+        type: deviceInventoryDeploymentPackages
+        deploymentPackages:
+          - name: org.eclipse.kura.example.beacon
+            version: 1.0.500
+            packageBundles:
+              - id: 0
+                name: org.eclipse.kura.example.beacon
+                version: 1.0.500
+                status: ACTIVE
+              - id: 1
+                name: org.eclipse.kura.example.package
+                version: 1.5.400
+                status: RESOLVED
+          - name: org.eclipse.kura.example.heater
+            version: 1.0.500
+            packageBundles:
+              - id: 0
+                name: org.eclipse.kura.example.heater
+                version: 1.0.500
+                status: ACTIVE

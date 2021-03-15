@@ -12,14 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command.message.internal;
 
+import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
+import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 
 /**
- * Device command request channel.
+ * {@link DeviceCommandInput} {@link KapuaRequestChannel} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
-public class CommandRequestChannel extends KapuaRequestChannelImpl {
+public class CommandRequestChannel extends KapuaRequestChannelImpl implements KapuaRequestChannel {
 
+    private static final long serialVersionUID = 2526647955273510036L;
 }

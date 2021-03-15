@@ -155,7 +155,7 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
         String bodyString = readBodyAsString(bytesToRead, CHAR_ENCODING);
 
         try {
-            return JSON_MAPPER.readValue(bodyString, returnAs);
+            return getJsonMapper().readValue(bodyString, returnAs);
         } catch (Exception e) {
             throw new InvalidBodyContentException(e, returnAs, bytesToRead);
         }

@@ -36,7 +36,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.button.ExportButton;
 import org.eclipse.kapua.app.console.module.api.client.util.SwappableListStore;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtChannel;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtChannel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +84,7 @@ public class AssetDetailsTable extends LayoutContainer {
 
             @Override
             protected void load(Object loadConfig,
-                    AsyncCallback<PagingLoadResult<GwtChannel>> callback) {
+                                AsyncCallback<PagingLoadResult<GwtChannel>> callback) {
             }
         };
         ListLoader<ListLoadResult<GwtChannel>> loader = new BaseListLoader<ListLoadResult<GwtChannel>>(proxy);

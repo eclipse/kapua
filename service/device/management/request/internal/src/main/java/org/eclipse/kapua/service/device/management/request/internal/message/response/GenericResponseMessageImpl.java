@@ -13,27 +13,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.request.internal.message.response;
 
-import org.eclipse.kapua.message.internal.KapuaMessageImpl;
-import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
-import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponseMessageImpl;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseChannel;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponsePayload;
 
-public class GenericResponseMessageImpl extends KapuaMessageImpl<GenericResponseChannel, GenericResponsePayload>
-        implements KapuaResponseMessage<GenericResponseChannel, GenericResponsePayload>, GenericResponseMessage {
+/**
+ * {@link GenericResponseMessage} implementation.
+ *
+ * @since 1.0.0
+ */
+public class GenericResponseMessageImpl extends KapuaResponseMessageImpl<GenericResponseChannel, GenericResponsePayload>
+        implements GenericResponseMessage {
 
-    private static final long serialVersionUID = 1L;
-
-    private KapuaResponseCode responseCode;
-
-    @Override
-    public KapuaResponseCode getResponseCode() {
-        return responseCode;
-    }
-
-    @Override
-    public void setResponseCode(KapuaResponseCode responseCode) {
-        this.responseCode = responseCode;
-    }
+    private static final long serialVersionUID = 4792106537414206216L;
 }

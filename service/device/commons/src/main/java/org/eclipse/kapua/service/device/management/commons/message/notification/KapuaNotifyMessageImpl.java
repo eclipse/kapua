@@ -18,7 +18,11 @@ import org.eclipse.kapua.service.device.management.message.notification.KapuaNot
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyPayload;
 
 /**
- * Kapua notify message object reference implementation.
+ * {@link KapuaNotifyMessage} implementation.
+ *
+ * @since 1.0.0
  */
 public class KapuaNotifyMessageImpl extends KapuaMessageImpl<KapuaNotifyChannel, KapuaNotifyPayload> implements KapuaNotifyMessage {
+
+    private static final long serialVersionUID = 4475824062529778773L;
 }

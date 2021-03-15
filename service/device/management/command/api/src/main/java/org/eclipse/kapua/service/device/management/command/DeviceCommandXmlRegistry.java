@@ -12,15 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
 
+import javax.xml.bind.annotation.XmlRegistry;
+
 /**
- * Device bundle xml factory class
+ * {@link DeviceCommand} XmlFactory implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @XmlRegistry
 public class DeviceCommandXmlRegistry {
@@ -29,18 +28,20 @@ public class DeviceCommandXmlRegistry {
     private final DeviceCommandFactory factory = locator.getFactory(DeviceCommandFactory.class);
 
     /**
-     * Creates a new device command input
+     * Instantiates a new {@link DeviceCommandInput}.
      *
-     * @return
+     * @return The newly instantiated {@link DeviceCommandInput}.
+     * @since 1.0.0
      */
     public DeviceCommandInput newCommandInput() {
         return factory.newCommandInput();
     }
 
     /**
-     * Creates a new device command output
+     * Instantiates a new {@link DeviceCommandOutput}.
      *
-     * @return
+     * @return The newly instantiated {@link DeviceCommandOutput}.
+     * @since 1.0.0
      */
     public DeviceCommandOutput newCommandOutput() {
         return factory.newCommandOutput();

@@ -13,28 +13,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.message.internal;
 
-import org.eclipse.kapua.message.internal.KapuaMessageImpl;
-import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
+import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
+import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponseMessageImpl;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 
 /**
- * Device bundle information response message.
+ * {@link DeviceAsset} {@link KapuaResponseMessage} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
-public class AssetResponseMessage extends KapuaMessageImpl<AssetResponseChannel, AssetResponsePayload>
+public class AssetResponseMessage extends KapuaResponseMessageImpl<AssetResponseChannel, AssetResponsePayload>
         implements KapuaResponseMessage<AssetResponseChannel, AssetResponsePayload> {
 
-    private static final long serialVersionUID = 1L;
-    private KapuaResponseCode responseCode;
-
-    @Override
-    public KapuaResponseCode getResponseCode() {
-        return responseCode;
-    }
-
-    @Override
-    public void setResponseCode(KapuaResponseCode responseCode) {
-        this.responseCode = responseCode;
-    }
+    private static final long serialVersionUID = -2842458086421864159L;
 }

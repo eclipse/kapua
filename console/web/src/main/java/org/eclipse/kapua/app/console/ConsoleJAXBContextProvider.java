@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
@@ -54,6 +51,14 @@ import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDevice
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
 import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryItem;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryItems;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundle;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundles;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.packages.KuraInventoryPackage;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.packages.KuraInventoryPackages;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInventorySystemPackage;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInventorySystemPackages;
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -63,6 +68,15 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryXmlRegistry;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
@@ -71,11 +85,12 @@ import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobXmlRegistry;
-
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import javax.xml.bind.JAXBContext;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ConsoleJAXBContextProvider implements JAXBContextProvider {
 
@@ -126,6 +141,26 @@ public class ConsoleJAXBContextProvider implements JAXBContextProvider {
                         DeviceConfiguration.class,
                         DeviceComponentConfiguration.class,
 
+                        // Device Management Inventory
+                        DeviceInventory.class,
+                        DeviceInventoryItem.class,
+                        KuraInventoryItems.class,
+                        KuraInventoryItem.class,
+                        DeviceInventoryBundles.class,
+                        DeviceInventoryBundle.class,
+                        KuraInventoryBundles.class,
+                        KuraInventoryBundle.class,
+                        DeviceInventoryPackages.class,
+                        DeviceInventoryPackage.class,
+                        KuraInventoryPackages.class,
+                        KuraInventoryPackage.class,
+                        DeviceInventorySystemPackages.class,
+                        DeviceInventorySystemPackage.class,
+                        KuraInventorySystemPackages.class,
+                        KuraInventorySystemPackage.class,
+                        DeviceInventoryXmlRegistry.class,
+
+                        // Device Management Packages
                         DevicePackageDownloadRequest.class,
                         DevicePackageInstallRequest.class,
                         DevicePackageUninstallRequest.class,

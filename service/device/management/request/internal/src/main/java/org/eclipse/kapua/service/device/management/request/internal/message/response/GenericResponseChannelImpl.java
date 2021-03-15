@@ -12,9 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.request.internal.message.response;
 
-import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChannelImpl;
+import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponseChannelImpl;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseChannel;
 
-public class GenericResponseChannelImpl extends KapuaAppChannelImpl implements GenericResponseChannel {
+/**
+ * {@link GenericResponseChannel} implementation.
+ *
+ * @since 1.0.0
+ */
+public class GenericResponseChannelImpl extends KapuaResponseChannelImpl implements GenericResponseChannel {
 
+    private static final long serialVersionUID = 5618310103495637564L;
 }

@@ -12,24 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.connection;
 
-import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
-import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQueryPredicates.GwtDeviceConnectionReservedUser;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQueryPredicates.GwtDeviceConnectionUser;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
-import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
-import org.eclipse.kapua.app.console.module.user.shared.model.permission.UserSessionPermission;
-import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
-import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
-
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Label;
@@ -39,6 +21,23 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
+import org.eclipse.kapua.app.console.module.api.client.ui.panel.EntityFilterPanel;
+import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
+import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.CssLiterals;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleConnectionMessages;
+import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnectionQuery;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnectionQueryPredicates.GwtDeviceConnectionReservedUser;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnectionQueryPredicates.GwtDeviceConnectionUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
+import org.eclipse.kapua.app.console.module.user.shared.model.permission.UserSessionPermission;
+import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
+import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 
 public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection> {
 
@@ -175,7 +174,7 @@ public class ConnectionFilterPanel extends EntityFilterPanel<GwtDeviceConnection
                 }
             });
             fieldsPanel.add(userCombo);
-}
+        }
 
         Label protocolLabel = new Label(MSGS.connectionFilterProtocolLabel());
         protocolLabel.setWidth(WIDTH);

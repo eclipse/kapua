@@ -61,7 +61,7 @@ import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenS
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtSnapshot;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.configurations.GwtSnapshot;
 import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
@@ -108,7 +108,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
     protected boolean rollbackProcess;
 
     public DeviceConfigSnapshots(GwtSession currentSession,
-            DeviceTabConfiguration tabConfig) {
+                                 DeviceTabConfiguration tabConfig) {
         this.currentSession = currentSession;
         this.tabConfig = tabConfig;
         dirty = false;
@@ -130,16 +130,16 @@ public class DeviceConfigSnapshots extends LayoutContainer {
         initToolBar();
         initGrid();
 
-        ContentPanel devicesHistoryPanel = new ContentPanel();
-        devicesHistoryPanel.setBorders(false);
-        devicesHistoryPanel.setBodyBorder(false);
-        devicesHistoryPanel.setHeaderVisible(false);
-        devicesHistoryPanel.setLayout(new FitLayout());
-        devicesHistoryPanel.setScrollMode(Scroll.AUTO);
-        devicesHistoryPanel.setTopComponent(toolBar);
-        devicesHistoryPanel.add(grid);
+        ContentPanel devicesSnapshotPanel = new ContentPanel();
+        devicesSnapshotPanel.setBorders(false);
+        devicesSnapshotPanel.setBodyBorder(false);
+        devicesSnapshotPanel.setHeaderVisible(false);
+        devicesSnapshotPanel.setLayout(new FitLayout());
+        devicesSnapshotPanel.setScrollMode(Scroll.AUTO);
+        devicesSnapshotPanel.setTopComponent(toolBar);
+        devicesSnapshotPanel.add(grid);
 
-        add(devicesHistoryPanel);
+        add(devicesSnapshotPanel);
         layout(true);
         toolBar.setStyleAttribute("border-left", CssLiterals.BORDER_0PX_NONE);
         toolBar.setStyleAttribute("border-right", CssLiterals.BORDER_0PX_NONE);

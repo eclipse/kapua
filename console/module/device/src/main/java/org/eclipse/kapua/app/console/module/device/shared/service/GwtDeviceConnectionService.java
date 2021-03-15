@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.shared.service;
 
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionQuery;
-
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnectionQuery;
 
 /**
  * The client side stub for the RPC service.
@@ -36,7 +35,7 @@ public interface GwtDeviceConnectionService extends RemoteService {
      * @return
      */
     public GwtDeviceConnection find(String scopeId, String connectionId)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Get connection info ad name values pairs
@@ -46,7 +45,7 @@ public interface GwtDeviceConnectionService extends RemoteService {
      * @throws GwtKapuaException
      */
     public ListLoadResult<GwtGroupedNVPair> getConnectionInfo(String scopeIdString, String gwtDeviceConnectionId)
-        throws GwtKapuaException;
+            throws GwtKapuaException;
 
     /**
      * Returns the list of all DeviceConnection matching the query.
@@ -54,7 +53,6 @@ public interface GwtDeviceConnectionService extends RemoteService {
      * @param gwtDeviceConnectionQuery
      * @return
      * @throws GwtKapuaException
-     *
      */
     PagingLoadResult<GwtDeviceConnection> query(PagingLoadConfig loadConfig, GwtDeviceConnectionQuery gwtDeviceConnectionQuery)
             throws GwtKapuaException;

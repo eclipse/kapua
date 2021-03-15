@@ -22,28 +22,30 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Kapua request message definition.<br>
- * This object defines the for a Kapua request message.<br>
+ * Request {@link KapuaMessage} definition.
+ * <p>
+ * This object defines the for a Kapua request message.
  * The request message is used to perform interactive operations with the device (e.g. to send command to the device, to ask configurations...)
  *
- * @since 1.0
+ * @since 1.0.0
  */
-
 @XmlType(factoryClass = RequestMessageXmlRegistry.class, factoryMethod = "newRequestMessage")
 public interface KapuaRequestMessage<C extends KapuaRequestChannel, P extends KapuaRequestPayload> extends KapuaMessage<C, P> {
 
     /**
-     * Get the request message class type
+     * Gets the {@link KapuaRequestMessage} {@link Class} type.
      *
-     * @return
+     * @return The {@link KapuaRequestMessage} {@link Class} type.
+     * @since 1.0.0
      */
     @XmlTransient
     <M extends KapuaRequestMessage<C, P>> Class<M> getRequestClass();
 
     /**
-     * Get the response message class type
+     * Gets the {@link KapuaResponseMessage} {@link Class} type.
      *
-     * @return
+     * @return The {@link KapuaResponseMessage} {@link Class} type.
+     * @since 1.0.0
      */
     @XmlTransient
     <RSC extends KapuaResponseChannel, RSP extends KapuaResponsePayload, M extends KapuaResponseMessage<RSC, RSP>> Class<M> getResponseClass();

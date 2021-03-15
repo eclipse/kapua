@@ -16,31 +16,70 @@ import org.eclipse.kapua.service.device.management.message.KapuaAppChannel;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.request.xml.RequestMessageXmlRegistry;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Kapua request message channel definition.<br>
- * This object defines the channel for a Kapua request message.<br>
+ * {@link KapuaRequestMessage} {@link KapuaAppChannel} definition.
+ * <p>
+ * This object defines the channel for a Kapua request message.
  * The request message is used to perform interactive operations with the device (e.g. to send command to the device, to ask configurations...)
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "channel")
-@XmlType(propOrder = {"method"}, factoryClass = RequestMessageXmlRegistry.class, factoryMethod = "newRequestChannel")
+@XmlType(factoryClass = RequestMessageXmlRegistry.class, factoryMethod = "newRequestChannel")
 public interface KapuaRequestChannel extends KapuaAppChannel {
 
     /**
-     * Get the request method
+     * Gets the {@link KapuaMethod}
      *
-     * @return
+     * @return The {@link KapuaMethod}
+     * @since 1.0.0
      */
+    @XmlElement(name = "method")
     KapuaMethod getMethod();
 
     /**
-     * Set the request method
+     * Sets the {@link KapuaMethod}
      *
-     * @param method
+     * @param method The {@link KapuaMethod}
+     * @since 1.0.0
      */
     void setMethod(KapuaMethod method);
+//
+//    /**
+//     * Gets the resource {@link List}.
+//     *
+//     * @return The resource {@link List}.
+//     * @since 1.5.0
+//     */
+//    @XmlElement(name = "resources")
+//    List<String> getResources();
+//
+//    /**
+//     * Sets the resource {@link List}.
+//     *
+//     * @param resources The resource {@link List}.
+//     * @since 1.5.0
+//     */
+//    void setResources(List<String> resources);
+
+    /**
+     * Gets the requested resource.
+     *
+     * @return The requested resource.
+     * @since 1.5.0
+     */
+    @XmlElement(name = "resource")
+    String getResource();
+
+    /**
+     * Sets the requested resource.
+     *
+     * @param resource The requested resource.
+     * @since 1.5.0
+     */
+    void setResource(String resource);
 }

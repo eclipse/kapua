@@ -1,0 +1,100 @@
+/*******************************************************************************
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+/**
+ * {@link DeviceInventoryBundle} definition.
+ * <p>
+ * It represents a bundle present on a device.
+ *
+ * @since 1.5.0
+ */
+@XmlRootElement(name = "deviceInventoryBundle")
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = DeviceInventoryBundlesXmlRegistry.class, factoryMethod = "newDeviceInventoryBundle")
+public interface DeviceInventoryBundle {
+
+    /**
+     * Gets the identifier.
+     *
+     * @return The identifier.
+     * @since 1.5.0
+     */
+    @XmlElement(name = "id")
+    String getId();
+
+    /**
+     * Sets the identifier.
+     *
+     * @param id The identifier.
+     * @since 1.5.0
+     */
+    void setId(String id);
+
+    /**
+     * Gets the name.
+     *
+     * @return The name.
+     * @since 1.5.0
+     */
+    @XmlElement(name = "name")
+    String getName();
+
+    /**
+     * Sets the name.
+     *
+     * @param name The name.
+     * @since 1.5.0
+     */
+    void setName(String name);
+
+    /**
+     * Gets the bundle version.
+     *
+     * @return The version.
+     * @since 1.5.0
+     */
+    @XmlElement(name = "version")
+    String getVersion();
+
+    /**
+     * Sets the version.
+     *
+     * @param version The version.
+     * @since 1.5.0
+     */
+    void setVersion(String version);
+
+    /**
+     * Gets the status.
+     *
+     * @return The status.
+     * @since 1.5.0
+     */
+    @XmlElement(name = "status")
+    String getStatus();
+
+    /**
+     * Sets the status.
+     *
+     * @param status The status.
+     * @since 1.5.0
+     */
+    void setStatus(String status);
+}

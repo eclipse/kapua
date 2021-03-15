@@ -15,6 +15,12 @@ package org.eclipse.kapua.service.device.management.request.internal.message.req
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestPayloadImpl;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
 
+/**
+ * {@link GenericRequestPayload} implementation.
+ *
+ * @since 1.0.0
+ */
 public class GenericRequestPayloadImpl extends KapuaRequestPayloadImpl implements GenericRequestPayload {
 
+    private static final long serialVersionUID = 7701114223442467835L;
 }

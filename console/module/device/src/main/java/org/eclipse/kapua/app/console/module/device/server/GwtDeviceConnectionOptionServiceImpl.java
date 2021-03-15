@@ -17,7 +17,7 @@ import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionOption;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnectionOption;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceConnectionOptionService;
 import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;

@@ -15,26 +15,34 @@ package org.eclipse.kapua.service.device.management.request.message.request;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 import org.eclipse.kapua.service.device.management.request.GenericRequestXmlRegistry;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
+import java.util.List;
 
+/**
+ * Generic {@link KapuaRequestChannel} definition.
+ *
+ * @since 1.0.0
+ */
 @XmlType(factoryClass = GenericRequestXmlRegistry.class, factoryMethod = "newRequestChannel")
 public interface GenericRequestChannel extends KapuaRequestChannel {
 
     /**
-     * Get the resources
+     * Gets the resources.
+     * <p>
+     * To be used if {@link #getResource()} is not enough.
      *
-     * @return resources
+     * @return The resources.
+     * @since 1.0.0
      */
-    @XmlElementWrapper(name = "resources")
-    @XmlElement(name = "resource")
-    String[] getResources();
+    List<String> getResources();
 
     /**
-     * Set the resources
+     * Sets the resources.
+     * <p>
+     * To be used if {@link #setResource(String)} is not enough.
      *
-     * @param resources
+     * @param resources The resources.
+     * @since 1.0.0
      */
-    void setResources(String[] resources);
+    void setResources(List<String> resources);
 }

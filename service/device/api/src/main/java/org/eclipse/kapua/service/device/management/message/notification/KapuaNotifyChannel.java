@@ -15,9 +15,9 @@ package org.eclipse.kapua.service.device.management.message.notification;
 import org.eclipse.kapua.service.device.management.message.KapuaAppChannel;
 
 /**
- * Kapua notify message channel object definition.
+ * Notify {@link KapuaAppChannel} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface KapuaNotifyChannel extends KapuaAppChannel {
 

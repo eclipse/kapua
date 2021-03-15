@@ -16,6 +16,7 @@ import com.google.common.base.Strings;
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
+import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
 import org.eclipse.kapua.service.device.management.packages.model.FileType;
 import org.eclipse.kapua.service.device.management.packages.model.download.AdvancedPackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
@@ -24,13 +25,15 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import java.net.URI;
 
 /**
- * Package {@link KapuaRequestPayload}.
+ * {@link DevicePackage} {@link KapuaRequestPayload} implementation.
  * <p>
- * This maps the properties for See {@link DevicePackageDownloadRequest} into a {@link KapuaRequestPayload}
+ * This maps the properties for {@link DevicePackageDownloadRequest} into a {@link KapuaRequestPayload}
  *
  * @since 1.0.0
  */
 public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequestPayload {
+
+    private static final long serialVersionUID = 3079489211962272959L;
 
     /**
      * Gets the {@link DeviceManagementOperation#getOperationId()}.

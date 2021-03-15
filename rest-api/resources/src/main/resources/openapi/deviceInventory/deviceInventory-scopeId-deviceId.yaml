@@ -1,0 +1,114 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Inventory
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /{scopeId}/devices/{deviceId}/inventory:
+    get:
+      tags:
+        - Device Management - Inventory
+      summary: Get the inventory from a single Device
+      operationId: deviceInventoryGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      responses:
+        200:
+          description: The inventory from the Device
+          content:
+            application/json:
+              schema:
+                $ref: './deviceInventory.yaml#/components/schemas/deviceInventory'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /{scopeId}/devices/{deviceId}/inventory/bundles:
+    get:
+      tags:
+        - Device Management - Inventory
+      summary: Get the bundle inventory from a single Device
+      operationId: deviceInventoryBundleGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      responses:
+        200:
+          description: The bundle inventory from the Device
+          content:
+            application/json:
+              schema:
+                $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryBundles'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /{scopeId}/devices/{deviceId}/inventory/system:
+    get:
+      tags:
+        - Device Management - Inventory
+      summary: Get the system packages inventory from a single Device
+      operationId: deviceInventorySystemGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      responses:
+        200:
+          description: The system packages inventory from the Device
+          content:
+            application/json:
+              schema:
+                $ref: './deviceInventory.yaml#/components/schemas/deviceInventorySystemPackages'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /{scopeId}/devices/{deviceId}/inventory/packages:
+    get:
+      tags:
+        - Device Management - Inventory
+      summary: Get the deployment packages inventory from a single Device
+      operationId: deviceInventoryPackagesGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      responses:
+        200:
+          description: The deployment packages inventory from the Device
+          content:
+            application/json:
+              schema:
+                $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryDeploymentPackages'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

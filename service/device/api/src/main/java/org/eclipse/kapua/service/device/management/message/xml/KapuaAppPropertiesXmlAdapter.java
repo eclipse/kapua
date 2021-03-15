@@ -18,18 +18,23 @@ import org.eclipse.kapua.service.device.management.message.request.KapuaRequestM
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+/**
+ * {@link KapuaAppProperties} {@link XmlAdapter}.
+ *
+ * @since 1.0.0
+ */
 public class KapuaAppPropertiesXmlAdapter extends XmlAdapter<String, KapuaAppProperties> {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final KapuaRequestMessageFactory REQUEST_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaRequestMessageFactory.class);
 
     @Override
-    public String marshal(KapuaAppProperties v) throws Exception {
-        return v.getValue();
+    public String marshal(KapuaAppProperties kapuaAppProperties) throws Exception {
+        return kapuaAppProperties.getValue();
     }
 
     @Override
-    public KapuaAppProperties unmarshal(String v) throws Exception {
-        return REQUEST_MESSAGE_FACTORY.newAppProperties(v);
+    public KapuaAppProperties unmarshal(String string) throws Exception {
+        return REQUEST_MESSAGE_FACTORY.newAppProperties(string);
     }
 }

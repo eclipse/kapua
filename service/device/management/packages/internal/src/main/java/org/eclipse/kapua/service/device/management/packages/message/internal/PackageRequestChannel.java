@@ -24,6 +24,7 @@ import java.util.List;
  */
 public class PackageRequestChannel extends KapuaRequestChannelImpl {
 
+    private static final long serialVersionUID = -2326105340676100128L;
     private PackageResource packageResource;
 
     /**
@@ -31,7 +32,7 @@ public class PackageRequestChannel extends KapuaRequestChannelImpl {
      *
      * @return
      */
-    public PackageResource getResource() {
+    public PackageResource getPackageResource() {
         return packageResource;
     }
 

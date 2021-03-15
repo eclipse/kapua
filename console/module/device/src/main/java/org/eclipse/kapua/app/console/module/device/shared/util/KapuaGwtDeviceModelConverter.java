@@ -16,16 +16,16 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.shared.util.KapuaGwtCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnection.GwtConnectionUserCouplingMode;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionOption;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceConnectionStatus;
-import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceEvent;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDeviceQueryPredicates.GwtGroupDevice;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAsset;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssetChannel;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.assets.GwtDeviceAssets;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperation;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnection;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnection.GwtConnectionUserCouplingMode;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnectionOption;
+import org.eclipse.kapua.app.console.module.device.shared.model.connection.GwtDeviceConnectionStatus;
+import org.eclipse.kapua.app.console.module.device.shared.model.event.GwtDeviceEvent;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAsset;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssetChannel;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssets;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.registry.GwtDeviceManagementOperation;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.type.ObjectTypeConverter;
 import org.eclipse.kapua.model.type.ObjectValueConverter;
@@ -144,6 +144,7 @@ public class KapuaGwtDeviceModelConverter {
         gwtDeviceEvent.setEventType(deviceEvent.getResource());
         gwtDeviceEvent.setGwtActionType(deviceEvent.getAction().toString());
         gwtDeviceEvent.setGwtResponseCode(deviceEvent.getResponseCode().toString());
+
         String escapedMessage = KapuaSafeHtmlUtils.htmlEscape(deviceEvent.getEventMessage());
         gwtDeviceEvent.setEventMessage(escapedMessage);
 

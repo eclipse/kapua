@@ -14,7 +14,7 @@
 package org.eclipse.kapua.translator.kapua.kura;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.call.kura.app.PackageMetrics;
+import org.eclipse.kapua.service.device.call.kura.model.deploy.PackageMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
@@ -81,10 +81,10 @@ public class TranslatorAppPackageKapuaKura extends AbstractTranslatorKapuaKura<P
 
             // Build resources
             List<String> resources = new ArrayList<>();
-            if (kapuaChannel.getResource() == null) {
+            if (kapuaChannel.getPackageResource() == null) {
                 resources.add("packages");
             } else {
-                switch (kapuaChannel.getResource()) {
+                switch (kapuaChannel.getPackageResource()) {
                     case DOWNLOAD:
                         resources.add("download");
                         break;

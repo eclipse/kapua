@@ -18,10 +18,9 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
 
 /**
- * Device command entity service factory implementation.
+ * {@link DeviceCommandFactory} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class DeviceCommandFactoryImpl implements DeviceCommandFactory {

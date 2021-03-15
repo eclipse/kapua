@@ -16,9 +16,17 @@ import org.eclipse.kapua.service.device.management.commons.message.KapuaAppChann
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 
+/**
+ * {@link KapuaRequestChannel} implementation.
+ *
+ * @since 1.0.0
+ */
 public class KapuaRequestChannelImpl extends KapuaAppChannelImpl implements KapuaRequestChannel {
 
+    private static final long serialVersionUID = -7140990471048488667L;
+
     protected KapuaMethod method;
+    protected String resource;
 
     @Override
     public KapuaMethod getMethod() {
@@ -28,5 +36,15 @@ public class KapuaRequestChannelImpl extends KapuaAppChannelImpl implements Kapu
     @Override
     public void setMethod(KapuaMethod method) {
         this.method = method;
+    }
+
+    @Override
+    public String getResource() {
+        return resource;
+    }
+
+    @Override
+    public void setResource(String resource) {
+        this.resource = resource;
     }
 }

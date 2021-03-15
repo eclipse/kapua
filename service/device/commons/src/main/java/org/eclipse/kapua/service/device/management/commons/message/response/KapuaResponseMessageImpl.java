@@ -19,9 +19,17 @@ import org.eclipse.kapua.service.device.management.message.response.KapuaRespons
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
-public class KapuaResponseMessageImpl extends KapuaMessageImpl<KapuaResponseChannel, KapuaResponsePayload> implements KapuaResponseMessage<KapuaResponseChannel, KapuaResponsePayload> {
+/**
+ * {@link KapuaResponseMessage} implementation.
+ *
+ * @param <C> The {@link KapuaResponseChannel} type.
+ * @param <P> The {@link KapuaResponsePayload} type.
+ * @since 1.0.0
+ */
+public class KapuaResponseMessageImpl<C extends KapuaResponseChannel, P extends KapuaResponsePayload> extends KapuaMessageImpl<C, P>
+        implements KapuaResponseMessage<C, P> {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 8647251974722103216L;
 
     private KapuaResponseCode responseCode;
 

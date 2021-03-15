@@ -15,7 +15,7 @@ package org.eclipse.kapua.app.console.module.device.client.device.packages.dialo
 import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityLogDialog;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperation;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.registry.GwtDeviceManagementOperation;
 
 public class DeviceManagementOperationLog extends EntityLogDialog {
 

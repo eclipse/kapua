@@ -14,7 +14,7 @@
 package org.eclipse.kapua.translator.kura.kapua;
 
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.service.device.call.kura.app.BundleMetrics;
+import org.eclipse.kapua.service.device.call.kura.model.bundle.BundleMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;

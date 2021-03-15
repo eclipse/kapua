@@ -19,8 +19,8 @@ import com.google.common.base.Strings;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperation;
-import org.eclipse.kapua.app.console.module.device.shared.model.device.management.registry.GwtDeviceManagementOperationQuery;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.registry.GwtDeviceManagementOperation;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.registry.GwtDeviceManagementOperationQuery;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementOperationService;
 import org.eclipse.kapua.app.console.module.device.shared.util.GwtKapuaDeviceModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
@@ -51,6 +51,7 @@ public class GwtDeviceManagementOperationServiceImpl extends KapuaRemoteServiceS
 
     private static final ManagementOperationNotificationService MANAGEMENT_OPERATION_NOTIFICATION_SERVICE = LOCATOR.getService(ManagementOperationNotificationService.class);
     private static final ManagementOperationNotificationFactory MANAGEMENT_OPERATION_NOTIFICATION_FACTORY = LOCATOR.getFactory(ManagementOperationNotificationFactory.class);
+    private static final long serialVersionUID = 958857278895524016L;
 
     @Override
     public PagingLoadResult<GwtDeviceManagementOperation> query(PagingLoadConfig loadConfig, GwtDeviceManagementOperationQuery gwtQuery) throws GwtKapuaException {

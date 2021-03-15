@@ -83,6 +83,8 @@
         <api>org.eclipse.kapua.service.device.management.command.DeviceCommandFactory</api>
         <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService</api>
         <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory</api>
+        <api>org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory</api>
         <api>org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService</api>
         <api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
         <api>org.eclipse.kapua.service.device.management.request.GenericRequestFactory</api>
