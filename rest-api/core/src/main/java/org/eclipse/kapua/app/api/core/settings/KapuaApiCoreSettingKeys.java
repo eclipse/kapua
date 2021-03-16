@@ -21,7 +21,9 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  */
 public enum KapuaApiCoreSettingKeys implements SettingKey {
     API_PATH_PARAM_SCOPEID_WILDCARD("api.path.param.scopeId.wildcard"),
-    API_EXCEPTION_STACKTRACE_SHOW("api.exception.stacktrace.show");
+    API_EXCEPTION_STACKTRACE_SHOW("api.exception.stacktrace.show"),
+    API_CORS_REFRESH_INTERVAL("api.cors.refresh.interval"),
+    API_CORS_ORIGINS_ALLOWED("api.cors.origins.allowed");
 
     private final String key;
 
