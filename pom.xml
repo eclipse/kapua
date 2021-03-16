@@ -53,7 +53,7 @@
         <findbugs.version>2.0.1</findbugs.version>
         <googleauth.version>1.5.0</googleauth.version>
         <gson.version>2.7</gson.version>
-        <guava.version>27.1-jre</guava.version>
+        <guava.version>30.1-jre</guava.version>
         <guava-failureaccess.version>1.0.1</guava-failureaccess.version>
         <guava-listenablefuture.version>9999.0-empty-to-avoid-conflict-with-guava</guava-listenablefuture.version>
         <guice.version>4.1.0</guice.version>
@@ -1185,10 +1185,6 @@
                     <exclusion>
                         <groupId>org.checkerframework</groupId>
                         <artifactId>checker-qual</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>animal-sniffer-annotations</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
