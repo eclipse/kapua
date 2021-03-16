@@ -41,6 +41,7 @@ public class KapuaAppsMessageTest extends Assert {
             "~~containerFramework=containerFramework" +
             "~~containerFrameworkVersion=containerFrameworkV-1" +
             "~~displayName=Display Name" +
+            "~~extendedProperties=" + "{\n  \"version\": \"1.0\",\n  \"properties\": {\n    \"GroupName\": {\n      \"propertyName\": \"propertyValue\"\n    }\n  }\n}" +
             "~~firmware=firmware-1" +
             "~~firmwareVersion=firmwareV-1" +
             "~~jvm=Oracle HotSpot" +
@@ -91,6 +92,7 @@ public class KapuaAppsMessageTest extends Assert {
         assertEquals("49-015420-323751", kapuaAppsPayload.getModemImei());
         assertEquals("359881234567890", kapuaAppsPayload.getModemImsi());
         assertEquals("8991101200003204510", kapuaAppsPayload.getModemIccid());
+        assertEquals("{\n  \"version\": \"1.0\",\n  \"properties\": {\n    \"GroupName\": {\n      \"propertyName\": \"propertyValue\"\n    }\n  }\n}", kapuaAppsPayload.getExtendedProperties());
     }
 
     @Test
@@ -155,8 +157,8 @@ public class KapuaAppsMessageTest extends Assert {
                 "{\n" +
                         "  \"version\": \"1.0\",\n" +
                         "  \"properties\": {\n" +
-                        "    \"Os Info\": {\n" +
-                        "      \"eurotech_versions\": \"eth_name_bsp .......... Reliagate 10-11\\neth_vers_bsp .......... 20.2.0\\neth_date_bsp .......... 201905081137\\neth_serial_number ..... R116J1C0077\\neth_model ............. reliagate-10-11-33\\neth_release ........... STDXX_20190508_1\\neth_vers_cpu .......... ARMv7 Processor rev 2 (v7l)\\neth_arch_bsp .......... armv7l\\neth_installer ......... 20.2.0_1\\neth_vers_esf .......... ESF_7.0.0-SNAPSHOT\\neth_vers_java ......... OpenJDK Runtime Environment (Zulu8.36.0.152-SA-linux_aarch32hf) (build 1.8.0_202-b152)\\neth_vers_uboot ........ U-Boot 2014.07 (May 07 2019 - 18:22:39)\"\n" +
+                        "    \"GroupName\": {\n" +
+                        "      \"propertyName\": \"propertyValue\"\n" +
                         "    }\n" +
                         "  }\n" +
                         "}"

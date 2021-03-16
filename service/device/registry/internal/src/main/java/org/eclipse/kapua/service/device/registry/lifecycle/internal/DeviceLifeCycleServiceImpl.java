@@ -49,8 +49,10 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleServic
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +68,11 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
 
     private static final int MAX_RETRY = 3;
     private static final double MAX_WAIT = 500d;
+
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -278,7 +285,19 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
         return KapuaSecurityUtils.doPrivileged(() -> DEVICE_EVENT_SERVICE.create(deviceEventCreator));
     }
 
-    private List<DeviceExtendedProperty> buildDeviceExtendedPropertyFromBirth(String extendedPropertiesString) throws KapuaException {
+    /**
+     * Builds the {@link List} of {@link DeviceExtendedProperty}es from the {@link KapuaBirthPayload#getExtendedProperties()} property.
+     *
+     * @param extendedPropertiesString The {@link KapuaBirthPayload#getExtendedProperties()} to parse.
+     * @return The {@link List} of {@link DeviceExtendedProperty}es parsed.
+     * @throws KapuaException If there are exception while parsing the JSON-formatted metric.
+     * @since 1.5.0
+     */
+    private List<DeviceExtendedProperty> buildDeviceExtendedPropertyFromBirth(@Nullable String extendedPropertiesString) throws KapuaException {
+        if (Strings.isNullOrEmpty(extendedPropertiesString)) {
+            return Collections.emptyList();
+        }
+
         try {
             BirthExtendedProperties birthExtendedProperties = JSON_MAPPER.readValue(extendedPropertiesString, BirthExtendedProperties.class);
 
@@ -291,13 +310,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
 
             return deviceExtendedProperties;
         } catch (Exception e) {
-            throw KapuaException.internalError(e, "Error while parsing Device's extended properties");
+            throw KapuaException.internalError(e, "Error while parsing Device's extended properties!");
         }
     }
-
-    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
-
 }
