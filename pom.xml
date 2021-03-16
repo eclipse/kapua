@@ -18,8 +18,8 @@
     <groupId>org.eclipse.kapua</groupId>
     <artifactId>kapua</artifactId>
     <version>1.5.0-SNAPSHOT</version>
-    <name>kapua</name>
 
+    <name>kapua</name>
     <packaging>pom</packaging>
 
     <properties>
@@ -1753,6 +1753,8 @@
                 <artifactId>jersey-guava</artifactId>
                 <version>${jersey.version}</version>
             </dependency>
+
+            <!-- -->
             <!-- Jackson -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -1767,6 +1769,21 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-dataformat-cbor</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-dataformat-smile</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
