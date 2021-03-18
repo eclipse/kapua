@@ -48,7 +48,7 @@
         <cucumber.version>1.2.4</cucumber.version>
         <eclipselink.version>2.7.7</eclipselink.version>
         <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
-        <elasticsearch.version>6.8.7</elasticsearch.version>
+        <elasticsearch.version>7.11.2</elasticsearch.version>
         <elasticsearch-client-rest.version>6.8.7</elasticsearch-client-rest.version>
         <elasticsearch-client-transport.version>6.8.7</elasticsearch-client-transport.version>
         <findbugs.version>2.0.1</findbugs.version>
