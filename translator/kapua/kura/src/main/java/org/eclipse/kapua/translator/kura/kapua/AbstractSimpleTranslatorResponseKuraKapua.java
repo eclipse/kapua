@@ -29,6 +29,7 @@ import org.eclipse.kapua.service.device.management.message.response.KapuaRespons
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
+import org.eclipse.kapua.service.device.management.request.message.response.GenericResponsePayload;
 import org.eclipse.kapua.translator.exception.InvalidBodyContentException;
 import org.eclipse.kapua.translator.exception.InvalidBodyEncodingException;
 import org.eclipse.kapua.translator.exception.InvalidBodyException;
@@ -102,7 +103,14 @@ public abstract class AbstractSimpleTranslatorResponseKuraKapua<TO_C extends Kap
     @Override
     protected TO_P translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
         try {
-            TO_P appResponsePayload = payloadClazz.newInstance();
+            GenericRequestFactory genericRequestFactory = LOCATOR.getFactory(GenericRequestFactory.class);
+
+            TO_P appResponsePayload;
+            if (payloadClazz.equals(GenericResponsePayload.class)) {
+                appResponsePayload = this.payloadClazz.cast(genericRequestFactory.newResponsePayload());
+            } else {
+                appResponsePayload = payloadClazz.newInstance();
+            }
 
             appResponsePayload.setExceptionMessage(kuraResponsePayload.getExceptionMessage());
 
