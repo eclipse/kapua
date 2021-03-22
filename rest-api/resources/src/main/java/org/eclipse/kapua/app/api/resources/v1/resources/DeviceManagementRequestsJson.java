@@ -59,8 +59,8 @@ public class DeviceManagementRequestsJson extends AbstractKapuaResource implemen
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      */
     @POST
-    @Consumes({ MediaType.APPLICATION_JSON })
-    @Produces({ MediaType.APPLICATION_JSON })
+    @Consumes({MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_JSON})
     public JsonGenericResponseMessage sendRequest(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,

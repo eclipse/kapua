@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.message;
 
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * Kapua application message channel definition.<br>
  * This object defines the common channel behavior for a Kapua request or response message.<br>
@@ -26,6 +28,7 @@ public interface KapuaAppChannel extends KapuaControlChannel {
      *
      * @return
      */
+    @XmlElement(name = "appName")
     KapuaAppProperties getAppName();
 
     /**
@@ -40,6 +43,7 @@ public interface KapuaAppChannel extends KapuaControlChannel {
      *
      * @return
      */
+    @XmlElement(name = "version")
     KapuaAppProperties getVersion();
 
     /**
