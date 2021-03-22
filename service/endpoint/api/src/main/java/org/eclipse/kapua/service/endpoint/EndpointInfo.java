@@ -36,6 +36,9 @@ public interface EndpointInfo extends KapuaUpdatableEntity {
 
     String TYPE = "endpointInfo";
 
+    String ENDPOINT_TYPE_RESOURCE = "resource";
+    String ENDPOINT_TYPE_CORS = "cors";
+
     @Override
     default String getType() {
         return TYPE;
@@ -81,4 +84,8 @@ public interface EndpointInfo extends KapuaUpdatableEntity {
             throw KapuaRuntimeException.internalError(e, "Unable to build URI for EndpointInfo: " + getId().toCompactId());
         }
     }
+
+    String getEndpointType();
+
+    void setEndpointType(String endpointType);
 }

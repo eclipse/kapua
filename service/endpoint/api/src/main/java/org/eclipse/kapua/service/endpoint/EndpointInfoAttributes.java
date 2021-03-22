@@ -21,5 +21,6 @@ public class EndpointInfoAttributes extends KapuaUpdatableEntityAttributes {
     public static final String PORT = "port";
     public static final String SECURE = "secure";
     public static final String USAGES = "usages";
+    public static final String ENDPOINT_TYPE = "endpointType";
 
 }

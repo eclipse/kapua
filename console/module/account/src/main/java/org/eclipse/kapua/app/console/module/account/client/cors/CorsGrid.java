@@ -10,19 +10,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.console.module.endpoint.client;
+package org.eclipse.kapua.app.console.module.account.client.cors;
 
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.CreatedByNameCellRenderer;
 import org.eclipse.kapua.app.console.module.api.client.ui.grid.EntityGrid;
-import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractEntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaPagingToolbarMessages;
 import org.eclipse.kapua.app.console.module.api.shared.model.query.GwtQuery;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
@@ -33,10 +28,14 @@ import org.eclipse.kapua.app.console.module.endpoint.shared.service.GwtEndpointS
 import org.eclipse.kapua.app.console.module.endpoint.shared.service.GwtEndpointServiceAsync;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class EndpointGrid extends EntityGrid<GwtEndpoint> {
+public class CorsGrid extends EntityGrid<GwtEndpoint> {
 
     private static final ConsoleEndpointMessages MSGS = GWT.create(ConsoleEndpointMessages.class);
     private static final ConsoleMessages C_MSGS = GWT.create(ConsoleMessages.class);
@@ -44,9 +43,12 @@ public class EndpointGrid extends EntityGrid<GwtEndpoint> {
 
     protected static final GwtEndpointServiceAsync GWT_ENDPOINT_SERVICE = GWT.create(GwtEndpointService.class);
     protected GwtEndpointQuery query;
+    private CorsToolbarGrid toolbar;
 
-    protected EndpointGrid(AbstractEntityView<GwtEndpoint> entityView, GwtSession currentSession) {
-        super(entityView, currentSession);
+    protected CorsGrid(GwtSession currentSession, CorsView corsView) {
+        super(corsView, currentSession);
+        java.util.logging.Logger logger = java.util.logging.Logger.getLogger("CorsGrid");
+        logger.log(java.util.logging.Level.INFO, corsView.getClass().getName());
         query = new GwtEndpointQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
     }
@@ -79,7 +81,7 @@ public class EndpointGrid extends EntityGrid<GwtEndpoint> {
             @Override
             protected void load(Object loadConfig,
                     AsyncCallback<PagingLoadResult<GwtEndpoint>> callback) {
-                GWT_ENDPOINT_SERVICE.query((PagingLoadConfig) loadConfig, query, EndpointInfo.ENDPOINT_TYPE_RESOURCE, callback);
+                GWT_ENDPOINT_SERVICE.query((PagingLoadConfig) loadConfig, query, EndpointInfo.ENDPOINT_TYPE_CORS, callback);
 
             }
         };
@@ -128,8 +130,11 @@ public class EndpointGrid extends EntityGrid<GwtEndpoint> {
     }
 
     @Override
-    protected EndpointToolbarGrid getToolbar() {
-        return new EndpointToolbarGrid(currentSession);
+    protected CorsToolbarGrid getToolbar() {
+        if (toolbar == null) {
+            toolbar = new CorsToolbarGrid(currentSession);
+        }
+        return toolbar;
     }
 
 }

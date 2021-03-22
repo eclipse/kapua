@@ -16,6 +16,12 @@
     "view": "org.eclipse.kapua.app.console.module.account.client.AccountDetailsView"
   },
   {
+    "view": "org.eclipse.kapua.app.console.module.account.client.cors.CorsView",
+    "tabs": [
+      "org.eclipse.kapua.app.console.module.account.client.cors.CorsTabDescriptionDescriptor"
+    ]
+  },
+  {
     "descriptor": "org.eclipse.kapua.app.console.module.account.client.AccountViewDescriptor",
     "view": "org.eclipse.kapua.app.console.module.account.client.AccountView",
     "tabs": [

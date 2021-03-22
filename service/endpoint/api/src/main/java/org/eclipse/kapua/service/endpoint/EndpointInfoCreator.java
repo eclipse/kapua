@@ -50,4 +50,9 @@ public interface EndpointInfoCreator extends KapuaEntityCreator<EndpointInfo> {
     Set<EndpointUsage> getUsages();
 
     void setUsages(Set<EndpointUsage> usages);
+
+    String getEndpointType();
+
+    void setEndpointType(String endpointType);
+
 }

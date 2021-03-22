@@ -18,5 +18,6 @@
 
     <include relativeToChangelogFile="true" file="./1.0.0/changelog-endpoint-1.0.0.xml"/>
     <include relativeToChangelogFile="true" file="./1.2.0/changelog-endpoint-1.2.0.xml"/>
+    <include relativeToChangelogFile="true" file="./1.5.0/changelog-endpoint-1.5.0.xml"/>
 
 </databaseChangeLog>

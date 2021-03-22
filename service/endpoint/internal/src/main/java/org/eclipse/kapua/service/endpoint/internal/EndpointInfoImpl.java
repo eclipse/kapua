@@ -57,6 +57,9 @@ public class EndpointInfoImpl extends AbstractKapuaUpdatableEntity implements En
     @CollectionTable(name = "endp_endpoint_info_usage", joinColumns = @JoinColumn(name = "endpoint_info_id", referencedColumnName = "id"))
     private Set<EndpointUsageImpl> usages;
 
+    @Column(name = "endpoint_type", updatable = false, nullable = false)
+    private String endpointType;
+
     /**
      * Constructor.
      *
@@ -148,4 +151,13 @@ public class EndpointInfoImpl extends AbstractKapuaUpdatableEntity implements En
 
         usages.forEach(u -> this.usages.add(EndpointUsageImpl.parse(u)));
     }
+
+    public String getEndpointType() {
+        return endpointType;
+    }
+
+    public void setEndpointType(String endpointType) {
+        this.endpointType = endpointType;
+    }
+
 }
