@@ -10,15 +10,15 @@ setup and not on a full blown production setup.
 
 ## Docker containers
 
-Before running Kapua on Docker, you need to 
+Before running Kapua on Docker, you need to
 
 1. Install `docker` and `docker-compose`
 1. Run `mvn -f assembly -Pdocker` once to build containers. Run `mvn -f assembly -Pconsole,docker` if you also need to build the Web Console image.
 
 Now, you can start Kapua by using Docker Compose. To do so, run
-  
+
     kapua/deployment/docker/docker-deploy.sh
-    
+
 After Kapua has been started, you can navigate your browser to http://localhost:8080 and log in using the following credentials:
 `kapua-sys` : `kapua-password`
 
@@ -30,9 +30,9 @@ the IP address of your docker instance.
 By default, the `latest` version of images will be used. If you want to run some other version of Kapua, set the `IMAGE_VERSION` environment variable, like
 
     export IMAGE_VERSION=0.2.0
-    
+
 To stop Kapua, run
-    
+
     kapua/deployment/docker/docker-undeploy.sh
 
 ## OpenShift
@@ -157,42 +157,42 @@ For example, if your Openshift deployment is running at the address `192.168.64.
 Not all MQTT clients have WebSocket support, so we need to enable direct MQTT over TCP access to the broker as well. By default, Kapua comes with the NodePort service that routes all traffic from port `31883` to the broker.
 So you can connect your MQTT clients directly to this service. For the simulator example similar to the above, that would look something like
 
-    java -jar target/kapua-simulator-kura-1.4.1-app.jar --broker tcp://kapua-broker:kapua-password@192.168.64.2:31883
+    java -jar target/kapua-simulator-kura-1.4.2-SNAPSHOT-app.jar --broker tcp://kapua-broker:kapua-password@192.168.64.2:31883
 
 This is suitable only for the local deployments. In the cloud or production environments, you should deploy a proper LoadBalancer Openshift service to enable external traffic flow to the broker.
 
 ### Ensuring enough entropy
- 
+
  It may happen that firing up docker containers and starting up application which use
  Java's `SecureRandom` (which happens in the next step a few times) run dry the Linux
  Kernel's entropy pool. The result is that some application will block during startup
  (even longer than 30 seconds) which will trigger OpenShift to kill the pods since they
  are considered unresponsive (which they actually are).
- 
+
  You can check the amount of entropy the kernel has available with the following command:
- 
+
      cat /proc/sys/kernel/random/entropy_avail
- 
+
  If this number drops to zero, then the kernel has run out of entropy and application will
  block.
- 
+
  One solution (there are a few others) is to install `haveged` a user-space daemon
  which provides entropy to the kernel.
- 
+
  On CentOS 7 it can be installed with the following commands (all as `root`):
- 
-     yum install epel-release # only if you 
+
+     yum install epel-release # only if you
      yum install haveged
      systemctl enable --now haveged
- 
+
  As the package comes from the [EPEL repositories](https://fedoraproject.org/wiki/EPEL "Information about EPEL").
  If you haven't yet enabled those repositories, then you need to do this before trying to
  install `haveged`:
- 
+
      yum install epel-release
- 
+
  For more information about `haveged` see http://www.issihosts.com/haveged/
- 
+
  For more information about the "EPEL repositories" see https://fedoraproject.org/wiki/EPEL
 
 ## Vagrant
@@ -208,15 +208,15 @@ Before Vargant can be used to run Kapua it needs to be installed. This is differ
 {% hint style='info' %}
 Do not use Vagrant from Fedora 25. Kapua requires to use the VirtualBox provide from Vargant and cannot run
 with the `libvirt` provider which Fedora uses. So it is necessary to install Virtualbox and Vagrant from different locations.
-{% endhint %} 
+{% endhint %}
 
 Run the following commands in order to install Vagrant (all as `root`):
 
     dnf install kernel-devel
-    
+
     wget https://www.virtualbox.org/download/oracle_vbox.asc
     rpm --import oracle_vbox.asc
-    
+
     dnf install http://download.virtualbox.org/virtualbox/5.1.14/VirtualBox-5.1-5.1.14_112924_fedora25-1.x86_64.rpm
     dnf install https://releases.hashicorp.com/vagrant/1.9.2/vagrant_1.9.2_x86_64.rpm
 
@@ -234,4 +234,3 @@ After Vagrant is installed you can run Kapua by running:
 
     cd dev-tools/vagrant
     sudo ./start.sh base-box
-
