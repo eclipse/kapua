@@ -48,23 +48,6 @@ public interface KapuaRequestChannel extends KapuaAppChannel {
      * @since 1.0.0
      */
     void setMethod(KapuaMethod method);
-//
-//    /**
-//     * Gets the resource {@link List}.
-//     *
-//     * @return The resource {@link List}.
-//     * @since 1.5.0
-//     */
-//    @XmlElement(name = "resources")
-//    List<String> getResources();
-//
-//    /**
-//     * Sets the resource {@link List}.
-//     *
-//     * @param resources The resource {@link List}.
-//     * @since 1.5.0
-//     */
-//    void setResources(List<String> resources);
 
     /**
      * Gets the requested resource.

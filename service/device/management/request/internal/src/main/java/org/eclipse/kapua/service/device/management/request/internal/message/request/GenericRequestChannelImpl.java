@@ -31,7 +31,7 @@ public class GenericRequestChannelImpl extends KapuaRequestChannelImpl implement
 
     @Override
     public List<String> getResources() {
-        if (resources != null) {
+        if (resources == null) {
             resources = new ArrayList<>();
         }
 
