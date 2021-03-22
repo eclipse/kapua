@@ -13,10 +13,11 @@
 package org.eclipse.kapua.app.console.module.endpoint.shared.model;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
+import org.eclipse.kapua.app.console.module.endpoint.client.EndpointModel;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GwtEndpoint extends GwtUpdatableEntityModel {
+public class GwtEndpoint extends GwtUpdatableEntityModel implements EndpointModel {
 
     public enum GwtEndpointSecure implements IsSerializable {
         ANY, TRUE, FALSE;
@@ -35,40 +36,58 @@ public class GwtEndpoint extends GwtUpdatableEntityModel {
         }
     }
 
+    @Override
     public String getSchema() {
         return get("schema");
     }
 
+    @Override
     public void setSchema(String schema) {
         set("schema", schema);
     }
 
+    @Override
     public String getDns() {
         return get("dns");
     }
 
+    @Override
     public void setDns(String dns) {
         set("dns", dns);
     }
 
+    @Override
     public Number getPort() {
         return get("port");
     }
 
+    @Override
     public void setPort(Number port) {
         set("port", port);
     }
 
+    @Override
     public boolean getSecure() {
         return get("secure");
     }
 
+    @Override
     public void setSecure(boolean secure) {
         set("secure", secure);
     }
 
     public GwtEndpointSecure gwtEndpointSecureEnum() {
         return (GwtEndpointSecure) get("secureEnum");
+    }
+
+    @Override
+    public String getEndpointType() {
+        return get("endpointType");
+    }
+
+    @Override
+    public void setEndpointType(String endpointType) {
+        set("endpointType", endpointType);
     }
 
     @Override

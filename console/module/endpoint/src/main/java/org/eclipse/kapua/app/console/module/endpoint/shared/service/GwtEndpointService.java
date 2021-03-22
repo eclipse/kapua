@@ -19,6 +19,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.endpoint.client.EndpointModel;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointCreator;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointQuery;
@@ -28,18 +29,20 @@ import java.util.List;
 @RemoteServiceRelativePath("endpoint")
 public interface GwtEndpointService extends RemoteService {
 
-    public GwtEndpoint create(GwtEndpointCreator gwtEndpointCreator) throws GwtKapuaException;
+    GwtEndpoint create(GwtEndpointCreator gwtEndpointCreator) throws GwtKapuaException;
 
-    public GwtEndpoint update(GwtEndpoint gwtEndpoint) throws GwtKapuaException;
+    GwtEndpoint update(GwtEndpoint gwtEndpoint) throws GwtKapuaException;
 
-    public GwtEndpoint find(String scopeShortId, String roleShortId) throws GwtKapuaException;
+    GwtEndpoint find(String scopeShortId, String roleShortId) throws GwtKapuaException;
 
-    public PagingLoadResult<GwtEndpoint> query(PagingLoadConfig loadConfig, GwtEndpointQuery gwtEndpointQuery) throws GwtKapuaException;
+    PagingLoadResult<GwtEndpoint> query(PagingLoadConfig loadConfig, GwtEndpointQuery gwtEndpointQuery, String section) throws GwtKapuaException;
 
-    public void delete(String scopeId, String endpointId) throws GwtKapuaException;
+    void delete(String scopeId, String endpointId) throws GwtKapuaException;
 
-    public ListLoadResult<GwtGroupedNVPair> getEndpointDescription(String scopeShortId, String endpointShortId) throws GwtKapuaException;
+    ListLoadResult<GwtGroupedNVPair> getEndpointDescription(String scopeShortId, String endpointShortId) throws GwtKapuaException;
 
-    public List<GwtEndpoint> findAll(String scopeId) throws GwtKapuaException;
+    List<GwtEndpoint> findAll(String scopeId) throws GwtKapuaException;
+
+    public EndpointModel parseEndpointModel(EndpointModel endpointModel, String origin) throws GwtKapuaException;
 
 }

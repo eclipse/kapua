@@ -36,4 +36,11 @@ public interface EndpointInfoService extends KapuaEntityService<EndpointInfo, En
     @Override
     EndpointInfoListResult query(KapuaQuery query)
             throws KapuaException;
+
+    EndpointInfoListResult query(KapuaQuery query, String section)
+            throws KapuaException;
+
+    long count(KapuaQuery query, String section)
+            throws KapuaException;
+
 }

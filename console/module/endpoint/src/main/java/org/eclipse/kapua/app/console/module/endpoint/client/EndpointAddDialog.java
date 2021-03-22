@@ -29,6 +29,7 @@ import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointCre
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.validation.GwtEndpointValidationRegex;
 import org.eclipse.kapua.app.console.module.endpoint.shared.service.GwtEndpointService;
 import org.eclipse.kapua.app.console.module.endpoint.shared.service.GwtEndpointServiceAsync;
+import org.eclipse.kapua.service.endpoint.EndpointInfo;
 
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
@@ -128,6 +129,7 @@ public class EndpointAddDialog extends EntityAddEditDialog {
         gwtEndpointCreator.setDns(endpointDnsField.getValue());
         gwtEndpointCreator.setPort(endpointPortField.getValue());
         gwtEndpointCreator.setSecure(endpointSecureCheckboxGroup.getValue() != null);
+        gwtEndpointCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
 
         GWT_ENDPOINT_SERVICE.create(gwtEndpointCreator, new AsyncCallback<GwtEndpoint>() {
 

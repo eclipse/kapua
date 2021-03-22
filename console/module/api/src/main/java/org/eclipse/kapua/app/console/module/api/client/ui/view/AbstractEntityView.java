@@ -37,15 +37,6 @@ import java.util.List;
 
 public abstract class AbstractEntityView<M extends GwtEntityModel> extends AbstractView implements EntityView<M> {
 
-    @Override
-    public void onUserChange() {
-        if (entityGrid != null) {
-            entityGrid.getFilterQuery().setScopeId(currentSession.getSelectedAccountId());
-            entityGrid.refresh();
-        }
-    }
-
-
     private EntityGrid<M> entityGrid;
     private KapuaTabPanel<M> tabsPanel;
 
@@ -62,6 +53,14 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
 
     public void setSelectedEntity(M entity) {
         tabsPanel.setEntity(entity);
+    }
+
+    @Override
+    public void onUserChange() {
+        if (entityGrid != null) {
+            entityGrid.getFilterQuery().setScopeId(currentSession.getSelectedAccountId());
+            entityGrid.refresh();
+        }
     }
 
     @Override
@@ -104,7 +103,6 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
             @Override
             public void onSuccess(List<TabDescriptor> result) {
                 tabsPanel = new KapuaTabPanel<M>();
-
                 for (TabDescriptor tabDescriptor : result) {
                     if (tabDescriptor.isEnabled(currentSession)) {
                         tabsPanel.add(tabDescriptor.getTabViewInstance(AbstractEntityView.this, currentSession));

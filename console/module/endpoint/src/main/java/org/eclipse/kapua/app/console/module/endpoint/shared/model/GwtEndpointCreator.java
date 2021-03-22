@@ -13,47 +13,68 @@
 package org.eclipse.kapua.app.console.module.endpoint.shared.model;
 
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtEntityCreator;
+import org.eclipse.kapua.app.console.module.endpoint.client.EndpointModel;
 
-public class GwtEndpointCreator extends GwtEntityCreator {
+public class GwtEndpointCreator extends GwtEntityCreator implements EndpointModel {
 
     private String schema;
     private String dns;
     private Number port;
     private boolean secure;
+    private String endpointType;
 
     public GwtEndpointCreator() {
         super();
     }
 
+    @Override
     public String getSchema() {
         return schema;
     }
 
+    @Override
     public void setSchema(String schema) {
         this.schema = schema;
     }
 
+    @Override
     public String getDns() {
         return dns;
     }
 
+    @Override
     public void setDns(String dns) {
         this.dns = dns;
     }
 
+    @Override
     public Number getPort() {
         return port;
     }
 
+    @Override
     public void setPort(Number port) {
         this.port = port;
     }
 
+    @Override
     public boolean getSecure() {
         return secure;
     }
 
+    @Override
     public void setSecure(boolean secure) {
         this.secure = secure;
     }
+
+    @Override
+    public String getEndpointType() {
+        return endpointType;
+    }
+
+    @Override
+    public void setEndpointType(String endpointType) {
+        this.endpointType = endpointType;
+    }
+
 }
