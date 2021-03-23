@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.message;
 
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * Device Application {@link KapuaControlChannel} definition.
  * <p>
@@ -28,6 +30,7 @@ public interface KapuaAppChannel extends KapuaControlChannel {
      * @return The device application name.
      * @since 1.0.0
      */
+    @XmlElement(name = "appName")
     KapuaAppProperties getAppName();
 
     /**
@@ -44,6 +47,7 @@ public interface KapuaAppChannel extends KapuaControlChannel {
      * @return The device application version.
      * @since 1.0.0
      */
+    @XmlElement(name = "version")
     KapuaAppProperties getVersion();
 
     /**

@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.management.request.message.request;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 import org.eclipse.kapua.service.device.management.request.GenericRequestXmlRegistry;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public interface GenericRequestChannel extends KapuaRequestChannel {
      * @return The resources.
      * @since 1.0.0
      */
+    @XmlElement(name = "resources")
     List<String> getResources();
 
     /**
