@@ -55,6 +55,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
 import org.eclipse.kapua.service.device.registry.DeviceDomains;
+import org.eclipse.kapua.service.device.registry.DeviceExtendedProperty;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
@@ -293,6 +294,18 @@ public class GwtDeviceServiceImpl extends KapuaRemoteServiceServlet implements G
                 pairs.add(new GwtGroupedNVPair(MODEM_INFO, "modemImei", device.getImei()));
                 pairs.add(new GwtGroupedNVPair(MODEM_INFO, "modemImsi", device.getImsi()));
                 pairs.add(new GwtGroupedNVPair(MODEM_INFO, "modemIccid", device.getIccid()));
+
+                //
+                // Extended Properties
+                for (DeviceExtendedProperty deviceExtendedProperty : device.getExtendedProperties()) {
+                    pairs.add(
+                            new GwtGroupedNVPair(
+                                    deviceExtendedProperty.getGroupName(),
+                                    deviceExtendedProperty.getName(),
+                                    deviceExtendedProperty.getValue()
+                            )
+                    );
+                }
             }
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);

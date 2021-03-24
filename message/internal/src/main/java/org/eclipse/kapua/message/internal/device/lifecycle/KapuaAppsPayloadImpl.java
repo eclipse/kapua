@@ -21,6 +21,8 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaAppsPayload;
  */
 public class KapuaAppsPayloadImpl extends KapuaBirthPayloadImpl implements KapuaAppsPayload {
 
+    private static final long serialVersionUID = -918081814625264739L;
+
     /**
      * Constructor.
      *
@@ -63,7 +65,8 @@ public class KapuaAppsPayloadImpl extends KapuaBirthPayloadImpl implements Kapua
                                 String osArch,
                                 String modemImei,
                                 String modemImsi,
-                                String modemIccid) {
+                                String modemIccid,
+                                String extendedProperties) {
         super(uptime,
                 displayName,
                 modelName,
@@ -92,6 +95,7 @@ public class KapuaAppsPayloadImpl extends KapuaBirthPayloadImpl implements Kapua
                 osArch,
                 modemImei,
                 modemImsi,
-                modemIccid);
+                modemIccid,
+                extendedProperties);
     }
 }

@@ -57,4 +57,14 @@ public class DeviceXmlRegistry {
     public DeviceQuery newQuery() {
         return DEVICE_FACTORY.newQuery(null);
     }
+
+    /**
+     * Instantiates a new {@link DeviceExtendedProperty}.
+     *
+     * @return The newly instantiated {@link DeviceExtendedProperty}.
+     * @since 1.5.0
+     */
+    public DeviceExtendedProperty newDeviceExtendedProperty() {
+        return DEVICE_FACTORY.newExtendedProperty(null, null, null);
+    }
 }

@@ -228,11 +228,20 @@ public class AbstractKuraAppsBirthPayload extends AbstractKuraLifecyclePayload i
     protected static final String MODEM_ICCID = "modem_iccid";
 
     /**
+     * {@link Device} extended properties metric name.
+     *
+     * @since 1.5.0
+     */
+    protected static final String EXTENDED_PROPERTIES = "extended_properties";
+
+    /**
      * {@link Device} default application framework metric name.
      *
      * @since 1.0.0
      */
     protected static final String DEFAULT_APPLICATION_FRAMEWORK = "Kura";
+    private static final long serialVersionUID = 5490945197263668115L;
+
 
     /**
      * Constructor.
@@ -273,6 +282,7 @@ public class AbstractKuraAppsBirthPayload extends AbstractKuraLifecyclePayload i
      * @param modemImei                   {@link Device} modem IMEI.
      * @param modemImsi                   {@link Device} modem IMSI.
      * @param modemIccid                  {@link Device} modem ICCID.
+     * @param extendedProperties          {@link Device} extended properties.
      * @since 1.0.0
      */
     public AbstractKuraAppsBirthPayload(String uptime,
@@ -301,7 +311,8 @@ public class AbstractKuraAppsBirthPayload extends AbstractKuraLifecyclePayload i
                                         String osgiFrameworkVersion,
                                         String modemImei,
                                         String modemImsi,
-                                        String modemIccid) {
+                                        String modemIccid,
+                                        String extendedProperties) {
         super();
 
         if (uptime != null) {
@@ -384,6 +395,9 @@ public class AbstractKuraAppsBirthPayload extends AbstractKuraLifecyclePayload i
         }
         if (modemIccid != null) {
             getMetrics().put(MODEM_ICCID, modemIccid);
+        }
+        if (extendedProperties != null) {
+            getMetrics().put(EXTENDED_PROPERTIES, extendedProperties);
         }
     }
 
@@ -688,4 +702,16 @@ public class AbstractKuraAppsBirthPayload extends AbstractKuraLifecyclePayload i
     public String getModemIccid() {
         return (String) getMetrics().get(MODEM_ICCID);
     }
+
+    /**
+     * Gets the {@link Device} extended properties.
+     *
+     * @return The {@link Device} extended properties.
+     * @since 1.5.0
+     */
+    public String getExtendedProperties() {
+        return (String) getMetrics().get(EXTENDED_PROPERTIES);
+    }
+
+
 }

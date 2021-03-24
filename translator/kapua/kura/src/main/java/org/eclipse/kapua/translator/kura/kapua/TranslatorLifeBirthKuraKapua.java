@@ -114,7 +114,8 @@ public class TranslatorLifeBirthKuraKapua extends Translator<KuraBirthMessage, K
                 kuraBirthPayload.getOsArch(),
                 kuraBirthPayload.getModemImei(),
                 kuraBirthPayload.getModemImsi(),
-                kuraBirthPayload.getModemIccid());
+                kuraBirthPayload.getModemIccid(),
+                kuraBirthPayload.getExtendedProperties());
     }
 
     @Override

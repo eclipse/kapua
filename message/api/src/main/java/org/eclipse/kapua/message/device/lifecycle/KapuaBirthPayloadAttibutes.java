@@ -168,4 +168,9 @@ public class KapuaBirthPayloadAttibutes {
      * @since 1.0.0
      */
     public static final String MODEM_ICCID = "modemIccid";
+
+    /**
+     * @since 1.5.0
+     */
+    public static final String EXTENDED_PROPERTIES = "extendedProperties";
 }

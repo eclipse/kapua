@@ -23,6 +23,8 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaBirthPayloadAttibutes;
  */
 public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implements KapuaBirthPayload {
 
+    private static final long serialVersionUID = 304433271740125817L;
+
     /**
      * Constructor.
      *
@@ -66,6 +68,7 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
      * @param modemImei                   The {@link KapuaBirthPayloadAttibutes#MODEM_IMEI} of the {@link KapuaBirthMessage}
      * @param modemImsi                   The {@link KapuaBirthPayloadAttibutes#MODEM_IMSI} of the {@link KapuaBirthMessage}
      * @param modemIccid                  The {@link KapuaBirthPayloadAttibutes#MODEM_ICCID} of the {@link KapuaBirthMessage}
+     * @param extendedProperties          The {@link KapuaBirthPayloadAttibutes#EXTENDED_PROPERTIES} of the {@link KapuaBirthMessage}
      * @since 1.0.0
      */
     public KapuaBirthPayloadImpl(String uptime,
@@ -96,7 +99,8 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
                                  String osArch,
                                  String modemImei,
                                  String modemImsi,
-                                 String modemIccid) {
+                                 String modemIccid,
+                                 String extendedProperties) {
 
         setUptime(uptime);
         setDisplayName(displayName);
@@ -127,6 +131,7 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         setModemImei(modemImei);
         setModemImsi(modemImsi);
         setModemIccid(modemIccid);
+        setExtendedProperties(extendedProperties);
     }
 
     @Override
@@ -419,4 +424,13 @@ public class KapuaBirthPayloadImpl extends AbstractLifecyclePayloadImpl implemen
         getMetrics().put(KapuaBirthPayloadAttibutes.MODEM_ICCID, modemIccid);
     }
 
+    @Override
+    public String getExtendedProperties() {
+        return (String) getMetrics().get(KapuaBirthPayloadAttibutes.EXTENDED_PROPERTIES);
+    }
+
+    @Override
+    public void setExtendedProperties(String extendedProperties) {
+        getMetrics().put(KapuaBirthPayloadAttibutes.EXTENDED_PROPERTIES, extendedProperties);
+    }
 }

@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceExtendedProperty;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionImpl;
@@ -39,7 +40,9 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -182,6 +185,10 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     @Column(name = "custom_attribute_5")
     private String customAttribute5;
 
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "dvc_device_extended_properties", joinColumns = @JoinColumn(name = "device_id", referencedColumnName = "id"))
+    private List<DeviceExtendedPropertyImpl> extendedProperties;
+
     /**
      * Constructor
      *
@@ -204,7 +211,7 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     /**
      * Clone constructor.
      *
-     * @param device
+     * @param device The {@link Device} to clone.
      * @throws KapuaException
      * @since 1.1.0
      */
@@ -241,6 +248,7 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
         setCustomAttribute3(device.getCustomAttribute3());
         setCustomAttribute4(device.getCustomAttribute4());
         setCustomAttribute5(device.getCustomAttribute5());
+        setExtendedProperties(device.getExtendedProperties());
     }
 
     @Override
@@ -551,6 +559,33 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     @Override
     public void setCustomAttribute5(String customAttribute5) {
         this.customAttribute5 = customAttribute5;
+    }
+
+    @Override
+    public List<DeviceExtendedProperty> getExtendedProperties() {
+        if (extendedProperties == null) {
+            extendedProperties = new ArrayList<>();
+        }
+
+        return new ArrayList<>(extendedProperties);
+    }
+
+    @Override
+    public void addExtendedProperty(DeviceExtendedProperty extendedProperty) {
+        if (extendedProperties == null) {
+            extendedProperties = new ArrayList<>();
+        }
+
+        extendedProperties.add(DeviceExtendedPropertyImpl.parse(extendedProperty));
+    }
+
+    @Override
+    public void setExtendedProperties(List<DeviceExtendedProperty> extendedProperties) {
+        this.extendedProperties = new ArrayList<>();
+
+        if (extendedProperties != null) {
+            extendedProperties.forEach(dep -> this.extendedProperties.add(DeviceExtendedPropertyImpl.parse(dep)));
+        }
     }
 
     @Override

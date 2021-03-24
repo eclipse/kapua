@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.lifecycle.internal;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
@@ -27,11 +29,14 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaBirthPayload;
 import org.eclipse.kapua.message.device.lifecycle.KapuaDisconnectMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
+import org.eclipse.kapua.message.internal.device.lifecycle.model.BirthExtendedProperties;
+import org.eclipse.kapua.message.internal.device.lifecycle.model.BirthExtendedProperty;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceExtendedProperty;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
@@ -39,11 +44,17 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
+import org.eclipse.kapua.service.device.registry.internal.DeviceExtendedPropertyImpl;
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * {@link DeviceLifeCycleService} implementation.
@@ -58,6 +69,11 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
     private static final int MAX_RETRY = 3;
     private static final double MAX_WAIT = 500d;
 
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     private static final DeviceEventService DEVICE_EVENT_SERVICE = LOCATOR.getService(DeviceEventService.class);
@@ -67,51 +83,52 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
     private static final DeviceFactory DEVICE_FACTORY = LOCATOR.getFactory(DeviceFactory.class);
 
     @Override
-    public void birth(KapuaId connectionId, KapuaBirthMessage message) throws KapuaException {
+    public void birth(KapuaId connectionId, KapuaBirthMessage birthMessage) throws KapuaException {
 
-        KapuaId scopeId = message.getScopeId();
-        KapuaId deviceId = message.getDeviceId();
+        KapuaId scopeId = birthMessage.getScopeId();
+        KapuaId deviceId = birthMessage.getDeviceId();
 
-        KapuaBirthPayload payload = message.getPayload();
-        KapuaBirthChannel channel = message.getChannel();
+        KapuaBirthPayload birthPayload = birthMessage.getPayload();
+        KapuaBirthChannel birthChannel = birthMessage.getChannel();
 
         //
         // Device update
         Device device;
         if (deviceId == null) {
-            String clientId = channel.getClientId();
+            DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(scopeId);
 
-            DeviceCreator deviceCreator = DEVICE_FACTORY.newCreator(scopeId, clientId);
+            deviceCreator.setClientId(birthChannel.getClientId());
+            deviceCreator.setDisplayName(birthPayload.getDisplayName());
+            deviceCreator.setSerialNumber(birthPayload.getSerialNumber());
+            deviceCreator.setModelId(birthPayload.getModelId());
+            deviceCreator.setModelName(birthPayload.getModelName());
+            deviceCreator.setImei(birthPayload.getModemImei());
+            deviceCreator.setImsi(birthPayload.getModemImsi());
+            deviceCreator.setIccid(birthPayload.getModemIccid());
+            deviceCreator.setBiosVersion(birthPayload.getBiosVersion());
+            deviceCreator.setFirmwareVersion(birthPayload.getFirmwareVersion());
+            deviceCreator.setOsVersion(birthPayload.getOsVersion());
+            deviceCreator.setJvmVersion(birthPayload.getJvmVersion());
+            deviceCreator.setOsgiFrameworkVersion(birthPayload.getContainerFrameworkVersion());
+            deviceCreator.setApplicationFrameworkVersion(birthPayload.getApplicationFrameworkVersion());
+            deviceCreator.setConnectionInterface(birthPayload.getConnectionInterface());
+            deviceCreator.setConnectionIp(birthPayload.getConnectionIp());
+            deviceCreator.setApplicationIdentifiers(birthPayload.getApplicationIdentifiers());
+            deviceCreator.setAcceptEncoding(birthPayload.getAcceptEncoding());
 
-            deviceCreator.setDisplayName(payload.getDisplayName());
-            deviceCreator.setSerialNumber(payload.getSerialNumber());
-            deviceCreator.setModelId(payload.getModelId());
-            deviceCreator.setModelName(payload.getModelName());
-            deviceCreator.setImei(payload.getModemImei());
-            deviceCreator.setImsi(payload.getModemImsi());
-            deviceCreator.setIccid(payload.getModemIccid());
-            deviceCreator.setBiosVersion(payload.getBiosVersion());
-            deviceCreator.setFirmwareVersion(payload.getFirmwareVersion());
-            deviceCreator.setOsVersion(payload.getOsVersion());
-            deviceCreator.setJvmVersion(payload.getJvmVersion());
-            deviceCreator.setOsgiFrameworkVersion(payload.getContainerFrameworkVersion());
-            deviceCreator.setApplicationFrameworkVersion(payload.getApplicationFrameworkVersion());
-            deviceCreator.setConnectionInterface(payload.getConnectionInterface());
-            deviceCreator.setConnectionIp(payload.getConnectionIp());
-            deviceCreator.setApplicationIdentifiers(payload.getApplicationIdentifiers());
-            deviceCreator.setAcceptEncoding(payload.getAcceptEncoding());
+            deviceCreator.setExtendedProperties(buildDeviceExtendedPropertyFromBirth(birthPayload.getExtendedProperties()));
 
             // issue #57
             deviceCreator.setConnectionId(connectionId);
 
             device = DEVICE_REGISTRY_SERVICE.create(deviceCreator);
         } else {
-            device = updateDeviceInfoFromMessage(scopeId, deviceId, message.getPayload(), connectionId);
+            device = updateDeviceInfoFromMessage(scopeId, deviceId, birthPayload, connectionId);
         }
 
         //
         // Event create
-        createLifecycleEvent(device, "BIRTH", message);
+        createLifecycleEvent(device, "BIRTH", birthMessage);
     }
 
     @Override
@@ -151,13 +168,13 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
      *
      * @param scopeId      The {@link Device#getScopeId()} to update.
      * @param deviceId     The {@link Device#getId()} to update.
-     * @param payload      The {@link KapuaBirthPayload} from which extract data.
+     * @param birthPayload The {@link KapuaBirthPayload} from which extract data.
      * @param connectionId The {@link DeviceConnection#getId()}
      * @return The updated {@link Device}.
      * @throws KapuaException If {@link Device} does not exists or {@link DeviceRegistryService#update(KapuaEntity)} causes an error.
      * @since 1.2.0
      */
-    private Device updateDeviceInfoFromMessage(KapuaId scopeId, KapuaId deviceId, KapuaBirthPayload payload, KapuaId connectionId) throws KapuaException {
+    private Device updateDeviceInfoFromMessage(KapuaId scopeId, KapuaId deviceId, KapuaBirthPayload birthPayload, KapuaId connectionId) throws KapuaException {
 
         Device device = null;
 
@@ -173,26 +190,28 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
                 }
 
                 // If the BirthMessage does not contain a 'Display Name' keep the one registered on the DeviceRegistryService.
-                if (!Strings.isNullOrEmpty(payload.getDisplayName())) {
-                    device.setDisplayName(payload.getDisplayName());
+                if (!Strings.isNullOrEmpty(birthPayload.getDisplayName())) {
+                    device.setDisplayName(birthPayload.getDisplayName());
                 }
 
-                device.setSerialNumber(payload.getSerialNumber());
-                device.setModelId(payload.getModelId());
-                device.setModelName(payload.getModelName());
-                device.setImei(payload.getModemImei());
-                device.setImsi(payload.getModemImsi());
-                device.setIccid(payload.getModemIccid());
-                device.setBiosVersion(payload.getBiosVersion());
-                device.setFirmwareVersion(payload.getFirmwareVersion());
-                device.setOsVersion(payload.getOsVersion());
-                device.setJvmVersion(payload.getJvmVersion());
-                device.setOsgiFrameworkVersion(payload.getContainerFrameworkVersion());
-                device.setApplicationFrameworkVersion(payload.getApplicationFrameworkVersion());
-                device.setConnectionInterface(payload.getConnectionInterface());
-                device.setConnectionIp(payload.getConnectionIp());
-                device.setApplicationIdentifiers(payload.getApplicationIdentifiers());
-                device.setAcceptEncoding(payload.getAcceptEncoding());
+                device.setSerialNumber(birthPayload.getSerialNumber());
+                device.setModelId(birthPayload.getModelId());
+                device.setModelName(birthPayload.getModelName());
+                device.setImei(birthPayload.getModemImei());
+                device.setImsi(birthPayload.getModemImsi());
+                device.setIccid(birthPayload.getModemIccid());
+                device.setBiosVersion(birthPayload.getBiosVersion());
+                device.setFirmwareVersion(birthPayload.getFirmwareVersion());
+                device.setOsVersion(birthPayload.getOsVersion());
+                device.setJvmVersion(birthPayload.getJvmVersion());
+                device.setOsgiFrameworkVersion(birthPayload.getContainerFrameworkVersion());
+                device.setApplicationFrameworkVersion(birthPayload.getApplicationFrameworkVersion());
+                device.setConnectionInterface(birthPayload.getConnectionInterface());
+                device.setConnectionIp(birthPayload.getConnectionIp());
+                device.setApplicationIdentifiers(birthPayload.getApplicationIdentifiers());
+                device.setAcceptEncoding(birthPayload.getAcceptEncoding());
+
+                device.setExtendedProperties(buildDeviceExtendedPropertyFromBirth(birthPayload.getExtendedProperties()));
 
                 // issue #57
                 device.setConnectionId(connectionId);
@@ -213,7 +232,7 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
                 }
             }
         }
-        while (retry < MAX_RETRY);
+        while (true);
 
         return device;
     }
@@ -264,5 +283,34 @@ public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
         }
 
         return KapuaSecurityUtils.doPrivileged(() -> DEVICE_EVENT_SERVICE.create(deviceEventCreator));
+    }
+
+    /**
+     * Builds the {@link List} of {@link DeviceExtendedProperty}es from the {@link KapuaBirthPayload#getExtendedProperties()} property.
+     *
+     * @param extendedPropertiesString The {@link KapuaBirthPayload#getExtendedProperties()} to parse.
+     * @return The {@link List} of {@link DeviceExtendedProperty}es parsed.
+     * @throws KapuaException If there are exception while parsing the JSON-formatted metric.
+     * @since 1.5.0
+     */
+    private List<DeviceExtendedProperty> buildDeviceExtendedPropertyFromBirth(@Nullable String extendedPropertiesString) throws KapuaException {
+        if (Strings.isNullOrEmpty(extendedPropertiesString)) {
+            return Collections.emptyList();
+        }
+
+        try {
+            BirthExtendedProperties birthExtendedProperties = JSON_MAPPER.readValue(extendedPropertiesString, BirthExtendedProperties.class);
+
+            List<DeviceExtendedProperty> deviceExtendedProperties = new ArrayList<>();
+            for (Map.Entry<String, BirthExtendedProperty> eps : birthExtendedProperties.getExtendedProperties().entrySet()) {
+                for (Map.Entry<String, String> ep : eps.getValue().entrySet()) {
+                    deviceExtendedProperties.add(new DeviceExtendedPropertyImpl(eps.getKey(), ep.getKey(), ep.getValue()));
+                }
+            }
+
+            return deviceExtendedProperties;
+        } catch (Exception e) {
+            throw KapuaException.internalError(e, "Error while parsing Device's extended properties!");
+        }
     }
 }

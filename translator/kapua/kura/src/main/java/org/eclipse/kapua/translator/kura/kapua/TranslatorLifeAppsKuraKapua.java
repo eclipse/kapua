@@ -113,7 +113,8 @@ public class TranslatorLifeAppsKuraKapua extends Translator<KuraAppsMessage, Kap
                 kuraAppsPayload.getOsArch(),
                 kuraAppsPayload.getModemImei(),
                 kuraAppsPayload.getModemImsi(),
-                kuraAppsPayload.getModemIccid());
+                kuraAppsPayload.getModemIccid(),
+                kuraAppsPayload.getExtendedProperties());
     }
 
     @Override

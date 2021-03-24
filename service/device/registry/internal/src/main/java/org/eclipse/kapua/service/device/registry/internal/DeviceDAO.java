@@ -68,6 +68,7 @@ public class DeviceDAO extends ServiceDAO {
         device.setCustomAttribute3(deviceCreator.getCustomAttribute3());
         device.setCustomAttribute4(deviceCreator.getCustomAttribute4());
         device.setCustomAttribute5(deviceCreator.getCustomAttribute5());
+        device.setExtendedProperties(deviceCreator.getExtendedProperties());
 
         device.setConnectionId(deviceCreator.getConnectionId());
         device.setLastEventId(deviceCreator.getLastEventId());
@@ -119,13 +120,13 @@ public class DeviceDAO extends ServiceDAO {
         List<String> fetchAttributes = query.getFetchAttributes();
 
         boolean deviceConnectionFetchAdded = false;
-        if (fetchAttributes == null || !fetchAttributes.contains(DeviceAttributes.CONNECTION)) {
+        if (!fetchAttributes.contains(DeviceAttributes.CONNECTION)) {
             deviceConnectionFetchAdded = true;
             query.addFetchAttributes(DeviceAttributes.CONNECTION);
         }
 
         boolean deviceLastEventFetchAdded = false;
-        if (fetchAttributes == null || !fetchAttributes.contains(DeviceAttributes.LAST_EVENT)) {
+        if (!fetchAttributes.contains(DeviceAttributes.LAST_EVENT)) {
             deviceLastEventFetchAdded = true;
             query.addFetchAttributes(DeviceAttributes.LAST_EVENT);
         }

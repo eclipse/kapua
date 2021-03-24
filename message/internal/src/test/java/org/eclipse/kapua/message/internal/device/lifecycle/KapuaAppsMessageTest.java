@@ -41,6 +41,7 @@ public class KapuaAppsMessageTest extends Assert {
             "~~containerFramework=containerFramework" +
             "~~containerFrameworkVersion=containerFrameworkV-1" +
             "~~displayName=Display Name" +
+            "~~extendedProperties=" + "{\n  \"version\": \"1.0\",\n  \"properties\": {\n    \"GroupName\": {\n      \"propertyName\": \"propertyValue\"\n    }\n  }\n}" +
             "~~firmware=firmware-1" +
             "~~firmwareVersion=firmwareV-1" +
             "~~jvm=Oracle HotSpot" +
@@ -91,6 +92,7 @@ public class KapuaAppsMessageTest extends Assert {
         assertEquals("49-015420-323751", kapuaAppsPayload.getModemImei());
         assertEquals("359881234567890", kapuaAppsPayload.getModemImsi());
         assertEquals("8991101200003204510", kapuaAppsPayload.getModemIccid());
+        assertEquals("{\n  \"version\": \"1.0\",\n  \"properties\": {\n    \"GroupName\": {\n      \"propertyName\": \"propertyValue\"\n    }\n  }\n}", kapuaAppsPayload.getExtendedProperties());
     }
 
     @Test
@@ -151,7 +153,15 @@ public class KapuaAppsMessageTest extends Assert {
                 "Linux x86",
                 "49-015420-323751",
                 "359881234567890",
-                "8991101200003204510"
+                "8991101200003204510",
+                "{\n" +
+                        "  \"version\": \"1.0\",\n" +
+                        "  \"properties\": {\n" +
+                        "    \"GroupName\": {\n" +
+                        "      \"propertyName\": \"propertyValue\"\n" +
+                        "    }\n" +
+                        "  }\n" +
+                        "}"
         );
     }
 }

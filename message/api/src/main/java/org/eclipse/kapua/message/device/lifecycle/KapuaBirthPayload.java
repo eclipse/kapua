@@ -483,4 +483,19 @@ public interface KapuaBirthPayload extends KapuaLifecyclePayload {
      */
     void setModemIccid(String modemIccid);
 
+    /**
+     * Gets the extended properties.
+     *
+     * @return The extended properties.
+     * @since 1.5.0
+     */
+    String getExtendedProperties();
+
+    /**
+     * Sets the extended properties.
+     *
+     * @param extendedProperties The extended properties.
+     * @since 1.5.0
+     */
+    void setExtendedProperties(String extendedProperties);
 }
