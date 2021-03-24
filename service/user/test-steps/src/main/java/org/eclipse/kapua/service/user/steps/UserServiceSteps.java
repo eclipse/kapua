@@ -270,25 +270,25 @@ public class UserServiceSteps extends TestBase {
         UserCreator userCreator = (UserCreator) stepData.get(USER_CREATOR);
         User user = (User) stepData.get("User");
 
-        assertNotNull(user.getId());
-        assertNotNull(user.getId().getId());
-        assertTrue(user.getOptlock() >= 0);
-        assertNotNull(user.getScopeId());
-        assertEquals(userName, user.getName());
-        assertNotNull(user.getCreatedOn());
-        assertNotNull(user.getCreatedBy());
-        assertNotNull(user.getModifiedOn());
-        assertNotNull(user.getModifiedBy());
-        assertEquals(userCreator.getDisplayName(), user.getDisplayName());
-        assertEquals(userCreator.getEmail(), user.getEmail());
-        assertEquals(userCreator.getPhoneNumber(), user.getPhoneNumber());
-        assertEquals(UserStatus.ENABLED, user.getStatus());
+        Assert.assertNotNull(user.getId());
+        Assert.assertNotNull(user.getId().getId());
+        Assert.assertTrue(user.getOptlock() >= 0);
+        Assert.assertNotNull(user.getScopeId());
+        Assert.assertEquals(userName, user.getName());
+        Assert.assertNotNull(user.getCreatedOn());
+        Assert.assertNotNull(user.getCreatedBy());
+        Assert.assertNotNull(user.getModifiedOn());
+        Assert.assertNotNull(user.getModifiedBy());
+        Assert.assertEquals(userCreator.getDisplayName(), user.getDisplayName());
+        Assert.assertEquals(userCreator.getEmail(), user.getEmail());
+        Assert.assertEquals(userCreator.getPhoneNumber(), user.getPhoneNumber());
+        Assert.assertEquals(UserStatus.ENABLED, user.getStatus());
     }
 
     @Then("^I don't find user with name \"(.*)\"$")
     public void dontFindUserWithName(String userName) throws Exception {
         User user = userService.findByName(userName);
-        assertNull(user);
+        Assert.assertNull(user);
     }
 
     @Then("^I find user$")
@@ -316,7 +316,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getName()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getName()));
             }
         }
     }
@@ -324,7 +324,7 @@ public class UserServiceSteps extends TestBase {
     @Then("^I find no user$")
     public void noUserFound() {
 
-        assertNull(stepData.get("User"));
+        Assert.assertNull(stepData.get("User"));
     }
 
     @When("^I search for user with id (\\d+) in scope with id (\\d+)$")
@@ -372,13 +372,13 @@ public class UserServiceSteps extends TestBase {
 
     @Then("^I count (\\d+) (?:user|users)$")
     public void countUserCount(Long cnt) {
-        assertEquals(cnt, stepData.get(COUNT));
+        Assert.assertEquals(cnt, stepData.get(COUNT));
     }
 
     @Then("^I count (\\d+) (?:user|users) as query result list$")
     public void countUserQuery(long cnt) {
         Set<ComparableUser> userLst = (Set<ComparableUser>) stepData.get(USER_LIST);
-        assertEquals(cnt, userLst.size());
+        Assert.assertEquals(cnt, userLst.size());
     }
 
     @Then("^I create same user$")
@@ -473,7 +473,7 @@ public class UserServiceSteps extends TestBase {
     @Then("^I have metadata$")
     public void haveMetadata() {
         KapuaTocd metadata = (KapuaTocd) stepData.get(METADATA);
-        assertNotNull("Metadata should be retrieved.", metadata);
+        Assert.assertNotNull("Metadata should be retrieved.", metadata);
     }
 
     @Given("^I add credentials$")
@@ -501,7 +501,7 @@ public class UserServiceSteps extends TestBase {
     @Given("^I find (\\d+) credentials$")
     public void checkCredentialsNumber(int expectedCount) throws Exception {
         int count = (int) stepData.get("CredentialsCount");
-        assertEquals(expectedCount, count);
+        Assert.assertEquals(expectedCount, count);
     }
 
     @Given("^I delete the last created user's credential$")
@@ -554,7 +554,7 @@ public class UserServiceSteps extends TestBase {
     @Given("I find the last permission added to the new user$")
     public void checkForNullLastAddedPermission() {
         AccessPermission accessPermission = (AccessPermission) stepData.get(LAST_FOUND_ACCESS_PERMISSION);
-        assertNotNull(accessPermission);
+        Assert.assertNotNull(accessPermission);
     }
 
     @Given("^User A$")
@@ -951,26 +951,26 @@ public class UserServiceSteps extends TestBase {
     }
 
     private boolean matchUserData(User user, CucUser cucUser) {
-        assertNotNull(user.getId());
-        assertNotNull(user.getScopeId());
+        Assert.assertNotNull(user.getId());
+        Assert.assertNotNull(user.getScopeId());
         if ((cucUser.getName() != null) && (cucUser.getName().length() > 0)) {
-            assertEquals(cucUser.getName(), user.getName());
+            Assert.assertEquals(cucUser.getName(), user.getName());
         }
-        assertNotNull(user.getCreatedOn());
-        assertNotNull(user.getCreatedBy());
-        assertNotNull(user.getModifiedOn());
-        assertNotNull(user.getModifiedBy());
+        Assert.assertNotNull(user.getCreatedOn());
+        Assert.assertNotNull(user.getCreatedBy());
+        Assert.assertNotNull(user.getModifiedOn());
+        Assert. assertNotNull(user.getModifiedBy());
         if ((cucUser.getDisplayName() != null) && (cucUser.getDisplayName().length() > 0)) {
-            assertEquals(cucUser.getDisplayName(), user.getDisplayName());
+            Assert.assertEquals(cucUser.getDisplayName(), user.getDisplayName());
         }
         if ((cucUser.getEmail() != null) && (cucUser.getEmail().length() > 0)) {
-            assertEquals(cucUser.getEmail(), user.getEmail());
+            Assert.assertEquals(cucUser.getEmail(), user.getEmail());
         }
         if ((cucUser.getPhoneNumber() != null) && (cucUser.getPhoneNumber().length() > 0)) {
-            assertEquals(cucUser.getPhoneNumber(), user.getPhoneNumber());
+            Assert.assertEquals(cucUser.getPhoneNumber(), user.getPhoneNumber());
         }
         if (cucUser.getStatus() != null) {
-            assertEquals(cucUser.getStatus(), user.getStatus());
+            Assert.assertEquals(cucUser.getStatus(), user.getStatus());
         }
         return true;
     }
@@ -1010,7 +1010,7 @@ public class UserServiceSteps extends TestBase {
     @And("^I create user with name \"([^\"]*)\" in account \"([^\"]*)\"$")
     public void iCreateUserWithNameInSubaccount(String name, String accountName) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        assertEquals(accountName, account.getName());
+        Assert.assertEquals(accountName, account.getName());
 
         UserCreator userCreator = userFactory.newCreator(account.getId());
         userCreator.setName(name);
@@ -1097,7 +1097,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
             }
         }
     }
@@ -1141,7 +1141,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
             }
         }
     }
@@ -1183,7 +1183,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
             }
         }
     }
@@ -1193,7 +1193,7 @@ public class UserServiceSteps extends TestBase {
 
             UserListResult users = (UserListResult) stepData.get(FOUND_USERS);
             for (User user : users.getItems()){
-               assertEquals(user.getPhoneNumber(),(phoneNumber));
+                Assert.assertEquals(user.getPhoneNumber(),(phoneNumber));
             }
             stepData.put(USER_LIST, users);
 
@@ -1214,7 +1214,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getEmail()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getEmail()));
             }
         }
     }
@@ -1234,7 +1234,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getName()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getName()));
             }
         }
     }
@@ -1254,7 +1254,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getName()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getName()));
             }
         }
     }
@@ -1279,7 +1279,7 @@ public class UserServiceSteps extends TestBase {
     public void iFindUsersWithEmail(String email) {
        UserListResult users = (UserListResult) stepData.get(FOUND_USERS);
        for (User user : users.getItems()){
-           assertEquals(user.getEmail(), (email));
+           Assert.assertEquals(user.getEmail(), (email));
        }
        stepData.put(USER_LIST, users);
     }

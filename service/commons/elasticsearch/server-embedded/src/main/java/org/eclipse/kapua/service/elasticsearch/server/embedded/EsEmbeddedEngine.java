@@ -50,12 +50,19 @@ public class EsEmbeddedEngine implements Closeable {
 
     private static final EmbeddedNodeSettings EMBEDDED_NODE_SETTINGS = EmbeddedNodeSettings.getInstance();
 
+    // added to fix problems between Elasticsearch and SpringBoot
+    static {
+        System.setProperty("es.set.netty.runtime.available.processors", "false");
+    }
+
     /**
      * The {@link Node}
      *
      * @since 1.0.0
      */
-    private static volatile Node node;
+    //removed volatile. sonar complains about the lazy synchronization and we can avoid by synchronizing the whole constructor but do not use volatile.
+    //since it's a test and I don't expect concurrency while initializing the resource I think we can preserve the the lazy synchronization
+    private static Node node;
 
     /**
      * Constructor.

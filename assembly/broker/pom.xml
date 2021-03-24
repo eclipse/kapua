@@ -107,19 +107,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-engine-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-engine-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-scheduler-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-scheduler-quartz</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -336,6 +324,10 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
         </dependency>
         <dependency>
             <groupId>io.dropwizard.metrics</groupId>
@@ -639,6 +631,13 @@
                                 <artifactItem>
                                     <groupId>org.springframework.security</groupId>
                                     <artifactId>spring-security-core</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>target/broker_dependency</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.springframework.security</groupId>
+                                    <artifactId>spring-security-crypto</artifactId>
                                     <type>jar</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>target/broker_dependency</outputDirectory>

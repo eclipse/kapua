@@ -220,6 +220,7 @@
                 <include>org.slf4j:log4j-over-slf4j</include>
                 <include>org.slf4j:slf4j-api</include>
                 <include>org.springframework.security:spring-security-core</include>
+                <include>org.springframework.security:spring-security-crypto</include>
                 <include>org.yaml:snakeyaml</include>
                 <include>javax.cache:cache-api</include>
                 <include>com.warrenstrange:googleauth</include>

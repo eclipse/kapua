@@ -63,8 +63,8 @@ public class DockerSteps {
     private static final Logger logger = LoggerFactory.getLogger(DockerSteps.class);
 
     private static final String NETWORK_PREFIX = "kapua-net";
-    private static final String KAPUA_VERSION = "1.5.0-CAMEL-SNAPSHOT";
-    private static final String ES_IMAGE = "elasticsearch:6.8.7";
+    private static final String KAPUA_VERSION = "1.6.0-SNAPSHOT";
+    private static final String ES_IMAGE = "elasticsearch:7.8.1";
     private static final List<String> DEFAULT_DEPLOYMENT_CONTAINERS_NAME;
     private static final int WAIT_COUNT = 120;//total wait time = 240 secs (120 * 2000ms)
     private static final long WAIT_STEP = 2000;

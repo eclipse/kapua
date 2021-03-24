@@ -17,17 +17,14 @@ import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
-import org.eclipse.kapua.qa.common.utils.EmbeddedBroker;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
@@ -41,11 +38,14 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.junit.Assert;
+
+import com.google.inject.Singleton;
 
 import javax.inject.Inject;
 import java.util.List;
 
-@ScenarioScoped
+@Singleton
 public class DeviceManagementKeystoreSteps extends TestBase {
 
     private static final String KEYSTORES = "keystores";
@@ -63,10 +63,8 @@ public class DeviceManagementKeystoreSteps extends TestBase {
      * Scenario scoped step data.
      */
     @Inject
-    public DeviceManagementKeystoreSteps(/* dependency */ EmbeddedBroker broker, DBHelper database, StepData stepData) {
-
-        this.stepData = stepData;
-        this.database = database;
+    public DeviceManagementKeystoreSteps(StepData stepData) {
+        super(stepData);
     }
 
     @Before
@@ -119,13 +117,13 @@ public class DeviceManagementKeystoreSteps extends TestBase {
     @Then("^Keystores are received$")
     public void keystoreReceived() {
         List<DeviceKeystore> deviceKeystores = (List<DeviceKeystore>) stepData.get(KEYSTORES);
-        assertNotNull(deviceKeystores);
+        Assert.assertNotNull(deviceKeystores);
     }
 
     @Then("^Keystores are (\\d+)$")
     public void keystoreAreSize(long size) {
         List<DeviceKeystore> keystores = (List<DeviceKeystore>) stepData.get(KEYSTORES);
-        assertEquals(size, keystores.size());
+        Assert.assertEquals(size, keystores.size());
     }
 
     @Then("^Keystores has Keystore named \"(.*)\" is present$")
@@ -133,7 +131,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         List<DeviceKeystore> keystores = (List<DeviceKeystore>) stepData.get(KEYSTORES);
 
         DeviceKeystore keystore = keystores.stream().filter(k -> k.getId().equals(keystoreName)).findAny().orElse(null);
-        assertNotNull(keystore);
+        Assert.assertNotNull(keystore);
     }
 
     @Then("^Keystores has Keystore named \"(.*)\" has type \"(.*)\"$")
@@ -141,8 +139,8 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         List<DeviceKeystore> keystores = (List<DeviceKeystore>) stepData.get(KEYSTORES);
 
         DeviceKeystore keystore = keystores.stream().filter(k -> k.getId().equals(keystoreName)).findAny().orElse(null);
-        assertNotNull(keystore);
-        assertEquals(keystoreType, keystore.getKeystoreType());
+        Assert.assertNotNull(keystore);
+        Assert.assertEquals(keystoreType, keystore.getKeystoreType());
     }
 
     @Then("^Keystores has Keystore named \"(.*)\" has size (\\d+)$")
@@ -150,8 +148,8 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         List<DeviceKeystore> keystores = (List<DeviceKeystore>) stepData.get(KEYSTORES);
 
         DeviceKeystore keystore = keystores.stream().filter(k -> k.getId().equals(keystoreName)).findAny().orElse(null);
-        assertNotNull(keystore);
-        assertEquals(keystoreSize, keystore.getSize());
+        Assert.assertNotNull(keystore);
+        Assert.assertEquals(keystoreSize, keystore.getSize());
     }
 
     @When("^All Keystore Items are requested$")
@@ -208,13 +206,13 @@ public class DeviceManagementKeystoreSteps extends TestBase {
     @Then("^Keystore Items are received$")
     public void keystoreItemsReceived() {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
-        assertNotNull(deviceKeystoreItems);
+        Assert.assertNotNull(deviceKeystoreItems);
     }
 
     @Then("^Keystore Items are (\\d+)$")
     public void keystoreItemsAreSize(long size) {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
-        assertEquals(size, deviceKeystoreItems.size());
+        Assert.assertEquals(size, deviceKeystoreItems.size());
     }
 
     @Then("^Keystore Items has Item with alias \"(.*)\" is present$")
@@ -222,7 +220,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
 
         DeviceKeystoreItem keystoreItem = deviceKeystoreItems.stream().filter(k -> k.getAlias().equals(keystoreItemAlias)).findAny().orElse(null);
-        assertNotNull(keystoreItem);
+        Assert.assertNotNull(keystoreItem);
     }
 
     @Then("^Keystore Items has Item with alias \"(.*)\" is not present$")
@@ -230,7 +228,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
 
         DeviceKeystoreItem keystoreItem = deviceKeystoreItems.stream().filter(k -> k.getAlias().equals(keystoreItemAlias)).findAny().orElse(null);
-        assertNull(keystoreItem);
+        Assert.assertNull(keystoreItem);
     }
 
     @Then("^Keystore Items has Item with alias \"(.*)\" has type \"(.*)\"$")
@@ -238,8 +236,8 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         List<DeviceKeystoreItem> keystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
 
         DeviceKeystoreItem keystoreItem = keystoreItems.stream().filter(k -> k.getAlias().equals(keystoreName)).findAny().orElse(null);
-        assertNotNull(keystoreItem);
-        assertEquals(keystoreType, keystoreItem.getItemType());
+        Assert.assertNotNull(keystoreItem);
+        Assert.assertEquals(keystoreType, keystoreItem.getItemType());
     }
 
     @When("^Keystore Item with keystore id \"(.*)\" and alias \"(.*)\" is requested$")
@@ -260,19 +258,19 @@ public class DeviceManagementKeystoreSteps extends TestBase {
     public void keystoreItemIsReceived() {
         DeviceKeystoreItem deviceKeystoreItem = (DeviceKeystoreItem) stepData.get(KEYSTORES_ITEM);
 
-        assertNotNull(deviceKeystoreItem);
+        Assert.assertNotNull(deviceKeystoreItem);
     }
 
     @Then("^Keystore Item matches expected$")
     public void keystoreItemMatchesExpected() {
         DeviceKeystoreItem deviceKeystoreItem = (DeviceKeystoreItem) stepData.get(KEYSTORES_ITEM);
 
-        assertNotNull(deviceKeystoreItem);
-        assertEquals("HttpsKeystore", deviceKeystoreItem.getKeystoreId());
-        assertEquals("localhost", deviceKeystoreItem.getAlias());
-        assertEquals(new Integer(2048), deviceKeystoreItem.getSize());
-        assertEquals("PRIVATE_KEY", deviceKeystoreItem.getItemType());
-        assertNotNull(deviceKeystoreItem.getCertificateChain());
+        Assert.assertNotNull(deviceKeystoreItem);
+        Assert.assertEquals("HttpsKeystore", deviceKeystoreItem.getKeystoreId());
+        Assert.assertEquals("localhost", deviceKeystoreItem.getAlias());
+        Assert.assertEquals(new Integer(2048), deviceKeystoreItem.getSize());
+        Assert.assertEquals("PRIVATE_KEY", deviceKeystoreItem.getItemType());
+        Assert.assertNotNull(deviceKeystoreItem.getCertificateChain());
     }
 
     @When("^I install a Keystore Certificate with alias \"(.*)\"$")
@@ -351,19 +349,19 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
 
         DeviceKeystoreItem keystoreItem = deviceKeystoreItems.stream().filter(k -> k.getAlias().equals(keystoreItemAlias)).findAny().orElse(null);
-        assertNotNull(keystoreItem);
+        Assert.assertNotNull(keystoreItem);
 
-        assertEquals("SSLKeystore", keystoreItem.getKeystoreId());
-        assertEquals("CN=mqtt.eclipse.org", keystoreItem.getSubjectDN());
-        assertEquals(1, keystoreItem.getSubjectAN().size());
-        assertEquals("CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US", keystoreItem.getIssuer());
-        assertNotNull(keystoreItem.getNotBefore());
-        assertEquals(1563531677000L, keystoreItem.getNotBefore().getTime());
-        assertNotNull(keystoreItem.getNotAfter());
-        assertEquals(1571307677000L, keystoreItem.getNotAfter().getTime());
-        assertEquals("SHA256withRSA", keystoreItem.getAlgorithm());
-        assertEquals(new Integer(2048), keystoreItem.getSize());
-        assertEquals("TRUSTED_CERTIFICATE", keystoreItem.getItemType());
+        Assert.assertEquals("SSLKeystore", keystoreItem.getKeystoreId());
+        Assert.assertEquals("CN=mqtt.eclipse.org", keystoreItem.getSubjectDN());
+        Assert.assertEquals(1, keystoreItem.getSubjectAN().size());
+        Assert.assertEquals("CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US", keystoreItem.getIssuer());
+        Assert.assertNotNull(keystoreItem.getNotBefore());
+        Assert.assertEquals(1563531677000L, keystoreItem.getNotBefore().getTime());
+        Assert.assertNotNull(keystoreItem.getNotAfter());
+        Assert.assertEquals(1571307677000L, keystoreItem.getNotAfter().getTime());
+        Assert.assertEquals("SHA256withRSA", keystoreItem.getAlgorithm());
+        Assert.assertEquals(new Integer(2048), keystoreItem.getSize());
+        Assert.assertEquals("TRUSTED_CERTIFICATE", keystoreItem.getItemType());
     }
 
     @Then("^Keystore Items has Item with alias \"(.*)\" that matches the installed keypair$")
@@ -371,15 +369,15 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
 
         DeviceKeystoreItem keystoreItem = deviceKeystoreItems.stream().filter(k -> k.getAlias().equals(keystoreItemAlias)).findAny().orElse(null);
-        assertNotNull(keystoreItem);
+        Assert.assertNotNull(keystoreItem);
 
         DeviceKeystoreKeypair keystoreKeypair = (DeviceKeystoreKeypair) stepData.get(DEVICE_KEYSTORE_KEYPAIR);
-        assertNotNull(keystoreKeypair);
+        Assert.assertNotNull(keystoreKeypair);
 
-        assertEquals(keystoreKeypair.getKeystoreId(), keystoreItem.getKeystoreId());
-        assertEquals(keystoreKeypair.getAlgorithm(), keystoreItem.getAlgorithm());
-        assertEquals(keystoreKeypair.getSize(), keystoreItem.getSize());
-        assertEquals("PRIVATE_KEY", keystoreItem.getItemType());
+        Assert.assertEquals(keystoreKeypair.getKeystoreId(), keystoreItem.getKeystoreId());
+        Assert.assertEquals(keystoreKeypair.getAlgorithm(), keystoreItem.getAlgorithm());
+        Assert.assertEquals(keystoreKeypair.getSize(), keystoreItem.getSize());
+        Assert.assertEquals("PRIVATE_KEY", keystoreItem.getItemType());
     }
 
     @When("^I delete a Keystore Item from keystore \"(.*)\" with alias \"(.*)\"$")
@@ -419,15 +417,15 @@ public class DeviceManagementKeystoreSteps extends TestBase {
     public void keystoreCertificateSigningRequestIsReceived() {
         DeviceKeystoreCSR deviceKeystoreCSR = (DeviceKeystoreCSR) stepData.get(DEVICE_KEYSTORE_CSR);
 
-        assertNotNull(deviceKeystoreCSR);
+        Assert.assertNotNull(deviceKeystoreCSR);
     }
 
     @Then("^The Certificate Signing Request matches expected")
     public void keystoreCertificateSigningRequestMatchesExpected() {
         DeviceKeystoreCSR deviceKeystoreCSR = (DeviceKeystoreCSR) stepData.get(DEVICE_KEYSTORE_CSR);
 
-        assertNotNull(deviceKeystoreCSR);
-        assertEquals("-----BEGIN CERTIFICATE REQUEST-----\n" +
+        Assert.assertNotNull(deviceKeystoreCSR);
+        Assert.assertEquals("-----BEGIN CERTIFICATE REQUEST-----\n" +
                 "MIICgTCCAWkCAQAwPDELMAkGA1UEBhMCVVMxEDAOBgNVBAoTB0VjbGlwc2UxDDAK\n" +
                 "BgNVBAsTA0lvVDENMAsGA1UEAxMES3VyYTCCASIwDQYJKoZIhvcNAQEBBQADggEP\n" +
                 "ADCCAQoCggEBAKpmnJeOJ7wczIMj3nUe+qxAtfJaXhUJkGy+bQuEfSEKRhA9QXAT\n" +

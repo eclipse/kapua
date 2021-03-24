@@ -26,7 +26,7 @@
     <artifactId>kapua-assembly-jetty-base</artifactId>
 
     <properties>
-        <jetty.url>https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.12.v20180830/jetty-distribution-9.4.12.v20180830.tar.gz</jetty.url>
+        <jetty.url>https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-distribution/9.4.39.v20210325/jetty-distribution-9.4.39.v20210325.tar.gz</jetty.url>
     </properties>
 
     <profiles>

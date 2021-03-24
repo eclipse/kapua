@@ -107,6 +107,17 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                     DeviceCommandInput.class,
                     DeviceCommandOutput.class,
 
+                    DeviceKeystore.class,
+                    DeviceKeystoreCSR.class,
+                    DeviceKeystoreCSRInfo.class,
+                    DeviceKeystoreCertificate.class,
+                    DeviceKeystoreItem.class,
+                    DeviceKeystoreItemQuery.class,
+                    DeviceKeystoreItems.class,
+                    DeviceKeystoreKeypair.class,
+                    DeviceKeystoreXmlRegistry.class,
+                    DeviceKeystores.class,
+
                     KuraDeviceComponentConfiguration.class,
                     KuraDeviceConfiguration.class,
                     KuraDeploymentPackage.class,
@@ -121,7 +132,6 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                     DeviceBundle.class,
                     DeviceBundles.class,
                     DeviceConfiguration.class,
-                    DevicePackage.class,
                     DevicePackages.class,
                     DevicePackageDownloadRequest.class,
                     DevicePackageUninstallRequest.class

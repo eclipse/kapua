@@ -87,6 +87,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
+import org.junit.Assert;
 
 import com.google.inject.Singleton;
 
@@ -291,8 +292,8 @@ public class AuthorizationServiceSteps extends TestBase {
         primeException();
         for (CucRolePermission tmpCPerm : perms) {
             tmpCPerm.doParse();
-            assertNotNull(tmpCPerm.getScopeId());
-            assertNotNull(tmpCPerm.getAction());
+            Assert.assertNotNull(tmpCPerm.getScopeId());
+            Assert.assertNotNull(tmpCPerm.getAction());
 
             domain.setScopeId(tmpCPerm.getScopeId());
 
@@ -352,7 +353,7 @@ public class AuthorizationServiceSteps extends TestBase {
             throws Exception {
 
         Role role = (Role) stepData.get("Role");
-        assertEquals(roleName, role.getName());
+        Assert.assertEquals(roleName, role.getName());
 
         stepData.remove(ROLE_FOUND);
 
@@ -403,7 +404,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         primeException();
         try {
-            assertEquals(roleName, role.getName());
+            Assert.assertEquals(roleName, role.getName());
             KapuaId roleId = role.getId();
             roleService.delete(role.getScopeId(), roleId);
         } catch (KapuaException ex) {
@@ -486,17 +487,17 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @Then("^The role was found$")
     public void chackThatSomethingWasFound() {
-        assertNotNull(stepData.get(ROLE_FOUND));
+        Assert.assertNotNull(stepData.get(ROLE_FOUND));
     }
 
     @Then("^I find no roles$")
     public void chackThatNothingWasFound() {
-        assertNull(stepData.get(ROLE_FOUND));
+        Assert.assertNull(stepData.get(ROLE_FOUND));
     }
 
     @Then("^I find no permissions$")
     public void checkThatNoPermissionWasFound() {
-        assertNull(stepData.get(ROLE_PERMISSION_FOUND));
+        Assert.assertNull(stepData.get(ROLE_PERMISSION_FOUND));
     }
 
     @Then("^The role matches the creator$")
@@ -505,14 +506,14 @@ public class AuthorizationServiceSteps extends TestBase {
         Role role = (Role) stepData.get("Role");
         RoleCreator roleCreator = (RoleCreator) stepData.get(ROLE_CREATOR);
 
-        assertNotNull(role);
-        assertNotNull(roleCreator);
-        assertEquals(roleCreator.getScopeId(), role.getScopeId());
-        assertEquals(roleCreator.getName(), role.getName());
-        assertNotNull(role.getCreatedBy());
-        assertNotNull(role.getCreatedOn());
-        assertNotNull(role.getModifiedBy());
-        assertNotNull(role.getModifiedOn());
+        Assert.assertNotNull(role);
+        Assert.assertNotNull(roleCreator);
+        Assert.assertEquals(roleCreator.getScopeId(), role.getScopeId());
+        Assert.assertEquals(roleCreator.getName(), role.getName());
+        Assert.assertNotNull(role.getCreatedBy());
+        Assert.assertNotNull(role.getCreatedOn());
+        Assert.assertNotNull(role.getModifiedBy());
+        Assert.assertNotNull(role.getModifiedOn());
     }
 
     @Then("^The permissions match$")
@@ -522,9 +523,9 @@ public class AuthorizationServiceSteps extends TestBase {
         RolePermissionListResult permissionList = (RolePermissionListResult) stepData.get(PERMISSION_LIST);
 
         boolean found;
-        assertNotNull(permissions);
-        assertNotNull(permissionList);
-        assertEquals(permissions.size(), permissionList.getSize());
+        Assert.assertNotNull(permissions);
+        Assert.assertNotNull(permissionList);
+        Assert.assertEquals(permissions.size(), permissionList.getSize());
         if (permissions.size() > 0) {
             for (RolePermission tmpRolePerm : permissionList.getItems()) {
                 found = false;
@@ -534,7 +535,7 @@ public class AuthorizationServiceSteps extends TestBase {
                         break;
                     }
                 }
-                assertTrue(found);
+                Assert.assertTrue(found);
             }
         }
     }
@@ -544,18 +545,18 @@ public class AuthorizationServiceSteps extends TestBase {
 
         RolePermissionListResult permissionList = (RolePermissionListResult) stepData.get(PERMISSION_LIST);
 
-        assertNotNull(roles);
-        assertEquals(1, roles.size());
+        Assert.assertNotNull(roles);
+        Assert.assertEquals(1, roles.size());
         CucRole tmpRole = roles.get(0);
-        assertNotNull(tmpRole);
+        Assert.assertNotNull(tmpRole);
         tmpRole.doParse();
         Set<Actions> actLst = tmpRole.getActions();
-        assertNotNull(actLst);
-        assertNotNull(permissionList);
-        assertNotEquals(0, permissionList.getSize());
-        assertEquals(actLst.size(), permissionList.getSize());
+        Assert.assertNotNull(actLst);
+        Assert.assertNotNull(permissionList);
+        Assert.assertNotEquals(0, permissionList.getSize());
+        Assert.assertEquals(actLst.size(), permissionList.getSize());
         for (RolePermission tmpPerm : permissionList.getItems()) {
-            assertTrue(actLst.contains(tmpPerm.getPermission().getAction()));
+            Assert.assertTrue(actLst.contains(tmpPerm.getPermission().getAction()));
         }
     }
 
@@ -565,15 +566,15 @@ public class AuthorizationServiceSteps extends TestBase {
         Role role = (Role) stepData.get("Role");
         Role roleFound = (Role) stepData.get(ROLE_FOUND);
 
-        assertNotNull(role);
-        assertNotNull(roleFound);
-        assertEquals(role.getId(), roleFound.getId());
-        assertEquals(role.getScopeId(), roleFound.getScopeId());
-        assertEquals(role.getName(), roleFound.getName());
-        assertEquals(role.getCreatedBy(), roleFound.getCreatedBy());
-        assertEquals(role.getCreatedOn(), roleFound.getCreatedOn());
-        assertEquals(role.getModifiedBy(), roleFound.getModifiedBy());
-        assertEquals(role.getModifiedOn(), roleFound.getModifiedOn());
+        Assert.assertNotNull(role);
+        Assert.assertNotNull(roleFound);
+        Assert.assertEquals(role.getId(), roleFound.getId());
+        Assert.assertEquals(role.getScopeId(), roleFound.getScopeId());
+        Assert.assertEquals(role.getName(), roleFound.getName());
+        Assert.assertEquals(role.getCreatedBy(), roleFound.getCreatedBy());
+        Assert.assertEquals(role.getCreatedOn(), roleFound.getCreatedOn());
+        Assert.assertEquals(role.getModifiedBy(), roleFound.getModifiedBy());
+        Assert.assertEquals(role.getModifiedOn(), roleFound.getModifiedOn());
     }
 
     @Then("^The correct role permission entry was found$")
@@ -582,12 +583,12 @@ public class AuthorizationServiceSteps extends TestBase {
         RolePermission rolePermission = (RolePermission) stepData.get(ROLE_PERMISSION);
         RolePermission rolePermissionFound = (RolePermission) stepData.get(ROLE_PERMISSION_FOUND);
 
-        assertNotNull(rolePermission);
-        assertNotNull(rolePermissionFound);
-        assertEquals(rolePermission.getId(), rolePermissionFound.getId());
-        assertEquals(rolePermission.getScopeId(), rolePermissionFound.getScopeId());
-        assertEquals(rolePermission.getCreatedBy(), rolePermissionFound.getCreatedBy());
-        assertEquals(rolePermission.getCreatedOn(), rolePermissionFound.getCreatedOn());
+        Assert.assertNotNull(rolePermission);
+        Assert.assertNotNull(rolePermissionFound);
+        Assert.assertEquals(rolePermission.getId(), rolePermissionFound.getId());
+        Assert.assertEquals(rolePermission.getScopeId(), rolePermissionFound.getScopeId());
+        Assert.assertEquals(rolePermission.getCreatedBy(), rolePermissionFound.getCreatedBy());
+        Assert.assertEquals(rolePermission.getCreatedOn(), rolePermissionFound.getCreatedOn());
     }
 
     @Then("^The role was successfully updated$")
@@ -596,34 +597,34 @@ public class AuthorizationServiceSteps extends TestBase {
         Role role = (Role) stepData.get("Role");
         Role roleFound = (Role) stepData.get(ROLE_FOUND);
 
-        assertNotNull(role);
-        assertNotNull(roleFound);
-        assertEquals(role.getId(), roleFound.getId());
-        assertEquals(role.getScopeId(), roleFound.getScopeId());
-        assertNotEquals(role.getName(), roleFound.getName());
-        assertEquals(role.getCreatedBy(), roleFound.getCreatedBy());
-        assertEquals(role.getCreatedOn(), roleFound.getCreatedOn());
-        assertEquals(role.getModifiedBy(), roleFound.getModifiedBy());
-        assertNotEquals(role.getModifiedOn(), roleFound.getModifiedOn());
+        Assert.assertNotNull(role);
+        Assert.assertNotNull(roleFound);
+        Assert.assertEquals(role.getId(), roleFound.getId());
+        Assert.assertEquals(role.getScopeId(), roleFound.getScopeId());
+        Assert.assertNotEquals(role.getName(), roleFound.getName());
+        Assert.assertEquals(role.getCreatedBy(), roleFound.getCreatedBy());
+        Assert.assertEquals(role.getCreatedOn(), roleFound.getCreatedOn());
+        Assert.assertEquals(role.getModifiedBy(), roleFound.getModifiedBy());
+        Assert.assertNotEquals(role.getModifiedOn(), roleFound.getModifiedOn());
     }
 
     @Then("^The role factory returns sane results$")
     public void performRoleFactorySanityChecks() {
 
-        assertNotNull(roleFactory.newEntity(SYS_SCOPE_ID));
-        assertNotNull(roleFactory.newCreator(SYS_SCOPE_ID));
-        assertNotNull(roleFactory.newQuery(SYS_SCOPE_ID));
-        assertNotNull(roleFactory.newListResult());
-        assertNotNull(roleFactory.newRolePermission());
+        Assert.assertNotNull(roleFactory.newEntity(SYS_SCOPE_ID));
+        Assert.assertNotNull(roleFactory.newCreator(SYS_SCOPE_ID));
+        Assert.assertNotNull(roleFactory.newQuery(SYS_SCOPE_ID));
+        Assert.assertNotNull(roleFactory.newListResult());
+        Assert.assertNotNull(roleFactory.newRolePermission());
     }
 
     @Then("^The role permission factory returns sane results$")
     public void performRolePermissionFactorySanityChecks() {
 
-        assertNotNull(rolePermissionFactory.newEntity(SYS_SCOPE_ID));
-        assertNotNull(rolePermissionFactory.newCreator(SYS_SCOPE_ID));
-        assertNotNull(rolePermissionFactory.newQuery(SYS_SCOPE_ID));
-        assertNotNull(rolePermissionFactory.newListResult());
+        Assert.assertNotNull(rolePermissionFactory.newEntity(SYS_SCOPE_ID));
+        Assert.assertNotNull(rolePermissionFactory.newCreator(SYS_SCOPE_ID));
+        Assert.assertNotNull(rolePermissionFactory.newQuery(SYS_SCOPE_ID));
+        Assert.assertNotNull(rolePermissionFactory.newListResult());
     }
 
     @Then("^The role comparator does its job$")
@@ -633,20 +634,20 @@ public class AuthorizationServiceSteps extends TestBase {
         Role role2 = roleFactory.newEntity(SYS_SCOPE_ID);
         Integer miscObj = 10;
 
-        assertNotNull(role1);
-        assertNotNull(role2);
-        assertNotNull(miscObj);
+        Assert.assertNotNull(role1);
+        Assert.assertNotNull(role2);
+        Assert.assertNotNull(miscObj);
 
-        assertTrue(role1.equals(role1));
-        assertFalse(role1.equals(null));
-        assertFalse(role1.equals(miscObj));
-        assertTrue(role1.equals(role2));
+        Assert.assertTrue(role1.equals(role1));
+        Assert.assertFalse(role1.equals(null));
+        Assert.assertFalse(role1.equals(miscObj));
+        Assert.assertTrue(role1.equals(role2));
         role2.setName("test_name_2");
-        assertFalse(role1.equals(role2));
+        Assert.assertFalse(role1.equals(role2));
         role1.setName("test_name_1");
-        assertFalse(role1.equals(role2));
+        Assert.assertFalse(role1.equals(role2));
         role2.setName("test_name_1");
-        assertTrue(role1.equals(role2));
+        Assert.assertTrue(role1.equals(role2));
     }
 
     @Then("^The role permission comparator does its job$")
@@ -659,28 +660,28 @@ public class AuthorizationServiceSteps extends TestBase {
         KapuaId tmpRoleId1 = getKapuaId();
         KapuaId tmpRoleId2 = getKapuaId();
 
-        assertNotNull(perm1);
-        assertNotNull(perm2);
-        assertTrue(perm1.equals(perm1));
-        assertFalse(perm1.equals(null));
-        assertFalse(perm1.equals(miscObj));
-        assertTrue(perm1.equals(perm2));
+        Assert.assertNotNull(perm1);
+        Assert.assertNotNull(perm2);
+        Assert.assertTrue(perm1.equals(perm1));
+        Assert.assertFalse(perm1.equals(null));
+        Assert.assertFalse(perm1.equals(miscObj));
+        Assert.assertTrue(perm1.equals(perm2));
 
         perm2.setPermission(tmpPermission2);
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
 
         perm1.setPermission(tmpPermission1);
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
 
         perm2.setPermission(tmpPermission1);
-        assertTrue(perm1.equals(perm2));
+        Assert.assertTrue(perm1.equals(perm2));
 
         perm2.setRoleId(tmpRoleId1);
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
         perm1.setRoleId(tmpRoleId1);
-        assertTrue(perm1.equals(perm2));
+        Assert.assertTrue(perm1.equals(perm2));
         perm2.setRoleId(tmpRoleId2);
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
     }
 
     @Then("^The role permission object constructors are sane$")
@@ -690,7 +691,7 @@ public class AuthorizationServiceSteps extends TestBase {
         KapuaId tmpRoleId = getKapuaId();
 
         RolePermission perm1 = rolePermissionFactory.newEntity(SYS_SCOPE_ID);
-        assertNotNull(perm1);
+        Assert.assertNotNull(perm1);
 //        RolePermission perm2 = new RolePermissionImpl(perm1);
 //        assertNotNull(perm2);
 //        assertTrue(perm1.equals(perm2));
@@ -698,9 +699,9 @@ public class AuthorizationServiceSteps extends TestBase {
 //        assertNotNull(perm3);
 //        assertEquals(perm3.getPermission(), tmpPermission);
         perm1.setRoleId(tmpRoleId);
-        assertEquals(tmpRoleId, perm1.getRoleId());
+        Assert.assertEquals(tmpRoleId, perm1.getRoleId());
         perm1.setPermission(tmpPermission);
-        assertEquals(perm1.getPermission(), tmpPermission);
+        Assert.assertEquals(perm1.getPermission(), tmpPermission);
     }
 
     @Given("^I create the domain(?:|s)$")
@@ -841,14 +842,14 @@ public class AuthorizationServiceSteps extends TestBase {
     public void checkDomainNotNull() {
 
         Domain domain = (Domain) stepData.get(DOMAIN);
-        assertNotNull(domain);
+        Assert.assertNotNull(domain);
     }
 
     @Then("^There is no domain$")
     public void checkDomainIsNull() {
 
         Domain domain = (Domain) stepData.get(DOMAIN);
-        assertNull(domain);
+        Assert.assertNull(domain);
     }
 
     // The following test step is more of a filler. The only purpose is to achieve some coverage
@@ -871,29 +872,29 @@ public class AuthorizationServiceSteps extends TestBase {
             tmpAct.add(Actions.write);
             tmpCreator.setActions(tmpAct);
             Domain tmpDom1 = domainRegistryService.create(tmpCreator);
-            assertNotNull(tmpDom1);
+            Assert.assertNotNull(tmpDom1);
 
-            assertTrue(tmpDom1.equals(tmpDom1));
-            assertFalse(tmpDom1.equals(null));
-            assertFalse(tmpDom1.equals(String.valueOf("")));
+            Assert.assertTrue(tmpDom1.equals(tmpDom1));
+            Assert.assertFalse(tmpDom1.equals(null));
+            Assert.assertFalse(tmpDom1.equals(String.valueOf("")));
 
             Domain tmpDom2 = null;
             tmpDom2 = domainRegistryService.find(null, tmpDom1.getId());
-            assertNotNull(tmpDom2);
+            Assert.assertNotNull(tmpDom2);
 
             tmpCreator.setName("name_2");
             Domain tmpDom3 = domainRegistryService.create(tmpCreator);
-            assertNotNull(tmpDom3);
+            Assert.assertNotNull(tmpDom3);
 
             tmpCreator.setName("name_3");
             tmpAct.remove(Actions.write);
             tmpCreator.setActions(tmpAct);
             Domain tmpDom4 = domainRegistryService.create(tmpCreator);
-            assertNotNull(tmpDom4);
+            Assert.assertNotNull(tmpDom4);
 
-            assertTrue(tmpDom1.equals(tmpDom2));
-            assertFalse(tmpDom1.equals(tmpDom3));
-            assertFalse(tmpDom1.equals(tmpDom4));
+            Assert.assertTrue(tmpDom1.equals(tmpDom2));
+            Assert.assertFalse(tmpDom1.equals(tmpDom3));
+            Assert.assertFalse(tmpDom1.equals(tmpDom4));
             return null;
         });
     }
@@ -904,15 +905,15 @@ public class AuthorizationServiceSteps extends TestBase {
         Domain domain = (Domain) stepData.get(DOMAIN);
         DomainCreator domainCreator = (DomainCreator) stepData.get(DOMAIN_CREATOR);
 
-        assertNotNull(domain);
-        assertNotNull(domain.getId());
-        assertNotNull(domainCreator);
-        assertEquals(domainCreator.getName(), domain.getName());
+        Assert.assertNotNull(domain);
+        Assert.assertNotNull(domain.getId());
+        Assert.assertNotNull(domainCreator);
+        Assert.assertEquals(domainCreator.getName(), domain.getName());
         if (domainCreator.getActions() != null) {
-            assertNotNull(domain.getActions());
-            assertEquals(domainCreator.getActions().size(), domain.getActions().size());
+            Assert.assertNotNull(domain.getActions());
+            Assert.assertEquals(domainCreator.getActions().size(), domain.getActions().size());
             for (Actions a : domainCreator.getActions()) {
-                assertTrue(domain.getActions().contains(a));
+                Assert.assertTrue(domain.getActions().contains(a));
             }
         }
     }
@@ -922,17 +923,17 @@ public class AuthorizationServiceSteps extends TestBase {
 
         Domain domain = (Domain) stepData.get(DOMAIN);
 
-        assertEquals(1, domains.size());
+        Assert.assertEquals(1, domains.size());
         CucDomain tmpDom = domains.get(0);
         tmpDom.doParse();
 
         if (tmpDom.getName() != null) {
-            assertEquals(tmpDom.getName(), domain.getName());
+            Assert.assertEquals(tmpDom.getName(), domain.getName());
         }
         if (tmpDom.getActionSet() != null) {
-            assertEquals(tmpDom.getActionSet().size(), domain.getActions().size());
+            Assert.assertEquals(tmpDom.getActionSet().size(), domain.getActions().size());
             for (Actions a : tmpDom.getActionSet()) {
-                assertTrue(domain.getActions().contains(a));
+                Assert.assertTrue(domain.getActions().contains(a));
             }
         }
     }
@@ -943,7 +944,7 @@ public class AuthorizationServiceSteps extends TestBase {
         Long count = (Long) stepData.get(COUNT);
         Long initialCount = (Long) stepData.get("InitialCount");
 
-        assertEquals(cnt.longValue(), count.longValue() - initialCount.longValue());
+        Assert.assertEquals(cnt.longValue(), count.longValue() - initialCount.longValue());
     }
 
     @When("^I configure the group service$")
@@ -1075,7 +1076,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         primeException();
         try {
-            assertEquals(groupName, group.getName());
+            Assert.assertEquals(groupName, group.getName());
             groupService.delete(group.getScopeId(), group.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
@@ -1099,7 +1100,7 @@ public class AuthorizationServiceSteps extends TestBase {
             throws Exception {
 
         Group group = (Group) stepData.get(GROUP);
-        assertEquals(groupName, group.getName());
+        Assert.assertEquals(groupName, group.getName());
 
         primeException();
         try {
@@ -1153,32 +1154,32 @@ public class AuthorizationServiceSteps extends TestBase {
     @Then("^A group was created$")
     public void checkGroupNotNull() {
 
-        assertNotNull(stepData.get(GROUP));
+        Assert.assertNotNull(stepData.get(GROUP));
     }
 
     @Then("^No group was created$")
     public void checkGroupIsNull() {
 
-        assertNull(stepData.get(GROUP));
+        Assert.assertNull(stepData.get(GROUP));
     }
 
     @Then("^The group was found$")
     public void checkThatTheGroupWasFound() {
 
-        assertNotNull(stepData.get(GROUP_SECOND));
+        Assert.assertNotNull(stepData.get(GROUP_SECOND));
     }
 
     @Then("^No group was found$")
     public void checkNoGroupWasFound() {
 
-        assertNull(stepData.get(GROUP_SECOND));
+        Assert.assertNull(stepData.get(GROUP_SECOND));
     }
 
     @Then("^The group name is \"(.+)\"$")
     public void checkGroupName(String name) {
 
         Group group = (Group) stepData.get(GROUP);
-        assertEquals(group.getName(), name.trim());
+        Assert.assertEquals(group.getName(), name.trim());
     }
 
     @Then("^The group matches the creator$")
@@ -1187,15 +1188,15 @@ public class AuthorizationServiceSteps extends TestBase {
         Group group = (Group) stepData.get(GROUP);
         GroupCreator groupCreator = (GroupCreator) stepData.get(GROUP_CREATOR);
 
-        assertNotNull(group);
-        assertNotNull(group.getId());
-        assertNotNull(groupCreator);
-        assertEquals(groupCreator.getScopeId(), group.getScopeId());
-        assertEquals(groupCreator.getName(), group.getName());
-        assertNotNull(group.getCreatedBy());
-        assertNotNull(group.getCreatedOn());
-        assertNotNull(group.getModifiedBy());
-        assertNotNull(group.getModifiedOn());
+        Assert.assertNotNull(group);
+        Assert.assertNotNull(group.getId());
+        Assert.assertNotNull(groupCreator);
+        Assert.assertEquals(groupCreator.getScopeId(), group.getScopeId());
+        Assert.assertEquals(groupCreator.getName(), group.getName());
+        Assert.assertNotNull(group.getCreatedBy());
+        Assert.assertNotNull(group.getCreatedOn());
+        Assert.assertNotNull(group.getModifiedBy());
+        Assert.assertNotNull(group.getModifiedOn());
     }
 
     @Then("^The group was correctly updated$")
@@ -1204,14 +1205,14 @@ public class AuthorizationServiceSteps extends TestBase {
         Group group = (Group) stepData.get(GROUP);
         Group groupSecond = (Group) stepData.get(GROUP_SECOND);
 
-        assertNotNull(groupSecond);
-        assertNotNull(groupSecond.getId());
-        assertEquals(group.getScopeId(), groupSecond.getScopeId());
-        assertEquals(group.getName(), groupSecond.getName());
-        assertEquals(group.getCreatedBy(), groupSecond.getCreatedBy());
-        assertEquals(group.getCreatedOn(), groupSecond.getCreatedOn());
-        assertEquals(group.getModifiedBy(), groupSecond.getModifiedBy());
-        assertNotEquals(group.getModifiedOn(), groupSecond.getModifiedOn());
+        Assert.assertNotNull(groupSecond);
+        Assert.assertNotNull(groupSecond.getId());
+        Assert.assertEquals(group.getScopeId(), groupSecond.getScopeId());
+        Assert.assertEquals(group.getName(), groupSecond.getName());
+        Assert.assertEquals(group.getCreatedBy(), groupSecond.getCreatedBy());
+        Assert.assertEquals(group.getCreatedOn(), groupSecond.getCreatedOn());
+        Assert.assertEquals(group.getModifiedBy(), groupSecond.getModifiedBy());
+        Assert.assertNotEquals(group.getModifiedOn(), groupSecond.getModifiedOn());
     }
 
     @Then("^The group was correctly found$")
@@ -1220,14 +1221,14 @@ public class AuthorizationServiceSteps extends TestBase {
         Group group = (Group) stepData.get(GROUP);
         Group groupSecond = (Group) stepData.get(GROUP_SECOND);
 
-        assertNotNull(groupSecond);
-        assertNotNull(groupSecond.getId());
-        assertEquals(group.getScopeId(), groupSecond.getScopeId());
-        assertEquals(group.getName(), groupSecond.getName());
-        assertEquals(group.getCreatedBy(), groupSecond.getCreatedBy());
-        assertEquals(group.getCreatedOn(), groupSecond.getCreatedOn());
-        assertEquals(group.getModifiedBy(), groupSecond.getModifiedBy());
-        assertEquals(group.getModifiedOn(), groupSecond.getModifiedOn());
+        Assert.assertNotNull(groupSecond);
+        Assert.assertNotNull(groupSecond.getId());
+        Assert.assertEquals(group.getScopeId(), groupSecond.getScopeId());
+        Assert.assertEquals(group.getName(), groupSecond.getName());
+        Assert.assertEquals(group.getCreatedBy(), groupSecond.getCreatedBy());
+        Assert.assertEquals(group.getCreatedOn(), groupSecond.getCreatedOn());
+        Assert.assertEquals(group.getModifiedBy(), groupSecond.getModifiedBy());
+        Assert.assertEquals(group.getModifiedOn(), groupSecond.getModifiedOn());
     }
 
     @Given("^The permission(?:|s) \"(.+)\"$")
@@ -1235,8 +1236,8 @@ public class AuthorizationServiceSteps extends TestBase {
 
         // Split the parameter string and make sure there is at least one item
         String[] tmpList = permList.toLowerCase().split(",");
-        assertNotNull(tmpList);
-        assertNotEquals(0, tmpList.length);
+        Assert.assertNotNull(tmpList);
+        Assert.assertNotEquals(0, tmpList.length);
 
         // Parse the items and fill the list
         Set<Permission> permissions = new HashSet<>();
@@ -1265,7 +1266,7 @@ public class AuthorizationServiceSteps extends TestBase {
             }
         }
         // Make sure that there is at least one valid item
-        assertFalse(permissions.isEmpty());
+        Assert.assertFalse(permissions.isEmpty());
 
         stepData.put(PERMISSIONS, permissions);
     }
@@ -1636,13 +1637,13 @@ public class AuthorizationServiceSteps extends TestBase {
         try {
             primeException();
 
-            assertNotNull(accessInfoFactory.newCreator(getKapuaId()));
-            assertNotNull(accessInfoFactory.newEntity(null));
-            assertNotNull(accessInfoFactory.newQuery(getKapuaId()));
-            assertNotNull(accessInfoFactory.newListResult());
+            Assert.assertNotNull(accessInfoFactory.newCreator(getKapuaId()));
+            Assert.assertNotNull(accessInfoFactory.newEntity(null));
+            Assert.assertNotNull(accessInfoFactory.newQuery(getKapuaId()));
+            Assert.assertNotNull(accessInfoFactory.newListResult());
 
             AccessInfoCreator tmpCreator = accessInfoFactory.newCreator(getKapuaId());
-            assertNotNull(tmpCreator);
+            Assert.assertNotNull(tmpCreator);
 //            tmpCreator.setUserId(getKapuaId());
 //
 //            AccessInfoCreator tmpCreator2 = new AccessInfoCreatorImpl(tmpCreator);
@@ -1650,7 +1651,7 @@ public class AuthorizationServiceSteps extends TestBase {
 //            assertEquals(tmpCreator.getUserId(), tmpCreator2.getUserId());
 
             AccessInfo tmpAccInfo = accessInfoFactory.newEntity(getKapuaId());
-            assertNotNull(tmpAccInfo);
+            Assert.assertNotNull(tmpAccInfo);
 //            tmpAccInfo.setUserId(getKapuaId());
 //
 //            AccessInfo tmpAccInfo2 = new AccessInfoImpl(tmpAccInfo);
@@ -1661,7 +1662,7 @@ public class AuthorizationServiceSteps extends TestBase {
 //            assertNull(tmpAccInfo2.getUserId());
 
             tmpAccInfo.setUserId(null);
-            assertNull(tmpAccInfo.getUserId());
+            Assert.assertNull(tmpAccInfo.getUserId());
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -1669,24 +1670,24 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("^I check the sanity of the access permission factory$")
     public void accessPermissionFactorySanityCheck() {
-        assertNotNull(accessPermissionFactory.newCreator(getKapuaId()));
-        assertNotNull(accessPermissionFactory.newEntity(null));
-        assertNotNull(accessPermissionFactory.newEntity(getKapuaId()));
-        assertNotNull(accessPermissionFactory.newQuery(getKapuaId()));
-        assertNotNull(accessPermissionFactory.newListResult());
+        Assert.assertNotNull(accessPermissionFactory.newCreator(getKapuaId()));
+        Assert.assertNotNull(accessPermissionFactory.newEntity(null));
+        Assert.assertNotNull(accessPermissionFactory.newEntity(getKapuaId()));
+        Assert.assertNotNull(accessPermissionFactory.newQuery(getKapuaId()));
+        Assert.assertNotNull(accessPermissionFactory.newListResult());
 
         KapuaId tmpId = getKapuaId();
         AccessPermissionCreator tmpCreator = accessPermissionFactory.newCreator(tmpId);
-        assertNotNull(tmpCreator);
-        assertNotNull(tmpCreator.getScopeId());
-        assertEquals(tmpId, tmpCreator.getScopeId());
+        Assert.assertNotNull(tmpCreator);
+        Assert.assertNotNull(tmpCreator.getScopeId());
+        Assert.assertEquals(tmpId, tmpCreator.getScopeId());
 
         AccessPermission tmpAccPerm = accessPermissionFactory.newEntity(getKapuaId());
-        assertNotNull(tmpAccPerm);
+        Assert.assertNotNull(tmpAccPerm);
         tmpAccPerm.setAccessInfoId(getKapuaId());
         Permission tmpPerm = permissionFactory.newPermission(new TestDomain(), Actions.read, getKapuaId(), getKapuaId());
         tmpAccPerm.setPermission(tmpPerm);
-        assertEquals(tmpPerm, tmpAccPerm.getPermission());
+        Assert.assertEquals(tmpPerm, tmpAccPerm.getPermission());
 
 //        AccessPermission tmpAccPerm2 = new AccessPermissionImpl(tmpAccPerm);
 //        assertNotNull(tmpAccPerm2);
@@ -1694,12 +1695,12 @@ public class AuthorizationServiceSteps extends TestBase {
 //        assertEquals(tmpAccPerm.getPermission(), tmpAccPerm2.getPermission());
 
         tmpAccPerm.setAccessInfoId(null);
-        assertNull(tmpAccPerm.getAccessInfoId());
+        Assert.assertNull(tmpAccPerm.getAccessInfoId());
 
         // No typo. This is by design. When an object permissions are null, when asked for them, a
         // new set of empty permissions is returned instead.
         tmpAccPerm.setPermission(null);
-        assertNotNull(tmpAccPerm.getPermission());
+        Assert.assertNotNull(tmpAccPerm.getPermission());
     }
 
     @When("^I check the sanity of the access role factory$")
@@ -1709,19 +1710,19 @@ public class AuthorizationServiceSteps extends TestBase {
         try {
             primeException();
 
-            assertNotNull(accessRoleFactory.newCreator(getKapuaId()));
-            assertNotNull(accessRoleFactory.newEntity(getKapuaId()));
-            assertNotNull(accessRoleFactory.newQuery(getKapuaId()));
-            assertNotNull(accessRoleFactory.newListResult());
+            Assert.assertNotNull(accessRoleFactory.newCreator(getKapuaId()));
+            Assert.assertNotNull(accessRoleFactory.newEntity(getKapuaId()));
+            Assert.assertNotNull(accessRoleFactory.newQuery(getKapuaId()));
+            Assert.assertNotNull(accessRoleFactory.newListResult());
 
             KapuaId tmpId = getKapuaId();
             AccessRoleCreator tmpCreator = accessRoleFactory.newCreator(tmpId);
-            assertNotNull(tmpCreator);
-            assertNotNull(tmpCreator.getScopeId());
-            assertEquals(tmpId, tmpCreator.getScopeId());
+            Assert.assertNotNull(tmpCreator);
+            Assert.assertNotNull(tmpCreator.getScopeId());
+            Assert.assertEquals(tmpId, tmpCreator.getScopeId());
 
             AccessRole tmpRole = accessRoleFactory.newEntity(getKapuaId());
-            assertNotNull(tmpRole);
+            Assert.assertNotNull(tmpRole);
             tmpRole.setAccessInfoId(getKapuaId());
             tmpRole.setRoleId(getKapuaId());
 
@@ -1731,10 +1732,10 @@ public class AuthorizationServiceSteps extends TestBase {
 //            assertEquals(tmpRole.getAccessInfoId(), tmpRole2.getAccessInfoId());
 
             tmpRole.setAccessInfoId(null);
-            assertNull(tmpRole.getAccessInfoId());
+            Assert.assertNull(tmpRole.getAccessInfoId());
 
             tmpRole.setRoleId(null);
-            assertNull(tmpRole.getRoleId());
+            Assert.assertNull(tmpRole.getRoleId());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1743,55 +1744,55 @@ public class AuthorizationServiceSteps extends TestBase {
     @Then("^A role entity was created$")
     public void checkThatRoleWasCreated() {
         Role role = (Role) stepData.get("Role");
-        assertNotNull(role);
+        Assert.assertNotNull(role);
     }
 
     @Then("^An access role entity was created$")
     public void checkThatAccessRoleWasCreated() {
         AccessRole accessRole = (AccessRole) stepData.get(ACCESS_ROLE);
-        assertNotNull(accessRole);
+        Assert.assertNotNull(accessRole);
     }
 
     @Then("^I find an access role entity$")
     public void checkThatAnAccessRoleEntityWasFound() {
         AccessRole accessRoleFound = (AccessRole) stepData.get(ACCESS_ROLE_FOUND);
-        assertNotNull(accessRoleFound);
+        Assert.assertNotNull(accessRoleFound);
     }
 
     @Then("^An access info entity was created$")
     public void checkThatAccessInfoEntityExists() {
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
-        assertNotNull(accessInfo);
+        Assert.assertNotNull(accessInfo);
     }
 
     @Then("^I find an accessinfo entity$")
     public void checkThatAnAccessInfoEntityWasFound() {
         AccessInfo accessInfoFound = (AccessInfo) stepData.get(ACCESS_INFO_FOUND);
-        assertNotNull(accessInfoFound);
+        Assert.assertNotNull(accessInfoFound);
     }
 
     @Then("^I find no access info entity$")
     public void checkThatAnAccessInfoEntityWasNotFound() {
         AccessInfo accessInfoFound = (AccessInfo) stepData.get(ACCESS_INFO_FOUND);
-        assertNull(accessInfoFound);
+        Assert.assertNull(accessInfoFound);
     }
 
     @Then("^I find an access permission entity$")
     public void checkThatAnAccessPermissionWasFound() {
         AccessPermission accessPermissionFound = (AccessPermission) stepData.get(ACCESS_PERMISSION_FOUND);
-        assertNotNull(accessPermissionFound);
+        Assert.assertNotNull(accessPermissionFound);
     }
 
     @Then("^There are no such access permissions$")
     public void checkThatThePermissionsWereRemoved() {
         AccessPermissionListResult accessPermissions = (AccessPermissionListResult) stepData.get(ACCESS_PERMISSIONS);
-        assertEquals(0, accessPermissions.getSize());
+        Assert.assertEquals(0, accessPermissions.getSize());
     }
 
     @Then("^There are no such access roles$")
     public void checkThatTheRolesWereRemoved() {
         AccessRoleListResult accessRoles = (AccessRoleListResult) stepData.get(ACCESS_ROLES);
-        assertEquals(0, accessRoles.getSize());
+        Assert.assertEquals(0, accessRoles.getSize());
     }
 
     @Then("^The entity matches the creator$")
@@ -1800,8 +1801,8 @@ public class AuthorizationServiceSteps extends TestBase {
         AccessInfoCreator accessInfoCreator = (AccessInfoCreator) stepData.get(ACCESS_INFO_CREATOR);
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
 
-        assertEquals(accessInfoCreator.getUserId(), accessInfo.getUserId());
-        assertEquals(accessInfoCreator.getScopeId(), accessInfo.getScopeId());
+        Assert.assertEquals(accessInfoCreator.getUserId(), accessInfo.getUserId());
+        Assert.assertEquals(accessInfoCreator.getScopeId(), accessInfo.getScopeId());
     }
 
     @Then("^The permissions match the creator$")
@@ -1810,10 +1811,10 @@ public class AuthorizationServiceSteps extends TestBase {
         AccessInfoCreator accessInfoCreator = (AccessInfoCreator) stepData.get(ACCESS_INFO_CREATOR);
         AccessPermissionListResult accessPermissions = (AccessPermissionListResult) stepData.get(ACCESS_PERMISSIONS);
 
-        assertEquals(accessInfoCreator.getPermissions().size(), accessPermissions.getSize());
+        Assert.assertEquals(accessInfoCreator.getPermissions().size(), accessPermissions.getSize());
 
         for (int i = 0; i < accessPermissions.getSize(); i++) {
-            assertTrue(accessInfoCreator.getPermissions().contains(accessPermissions.getItem(i).getPermission()));
+            Assert.assertTrue(accessInfoCreator.getPermissions().contains(accessPermissions.getItem(i).getPermission()));
         }
     }
 
@@ -1823,11 +1824,11 @@ public class AuthorizationServiceSteps extends TestBase {
         AccessInfoCreator accessInfoCreator = (AccessInfoCreator) stepData.get(ACCESS_INFO_CREATOR);
         AccessRoleListResult accessRoles = (AccessRoleListResult) stepData.get(ACCESS_ROLES);
 
-        assertNotEquals(0, accessRoles.getSize());
-        assertEquals(accessInfoCreator.getRoleIds().size(), accessRoles.getSize());
+        Assert.assertNotEquals(0, accessRoles.getSize());
+        Assert.assertEquals(accessInfoCreator.getRoleIds().size(), accessRoles.getSize());
 
         for (int i = 0; i < accessRoles.getSize(); i++) {
-            assertTrue(accessInfoCreator.getRoleIds().contains(accessRoles.getItem(i).getRoleId()));
+            Assert.assertTrue(accessInfoCreator.getRoleIds().contains(accessRoles.getItem(i).getRoleId()));
         }
     }
 
@@ -1842,31 +1843,31 @@ public class AuthorizationServiceSteps extends TestBase {
 
         primeException();
         try {
-            assertTrue(accRole1.equals(accRole1));
-            assertFalse(accRole1.equals(null));
-            assertFalse(accRole1.equals(Integer.valueOf(15)));
+            Assert.assertTrue(accRole1.equals(accRole1));
+            Assert.assertFalse(accRole1.equals(null));
+            Assert.assertFalse(accRole1.equals(Integer.valueOf(15)));
 
-            assertTrue(accRole1.equals(accRole2));
+            Assert.assertTrue(accRole1.equals(accRole2));
 
             accRole2.setAccessInfoId(getKapuaId());
-            assertFalse(accRole1.equals(accRole2));
+            Assert.assertFalse(accRole1.equals(accRole2));
 
             accRole1.setAccessInfoId(getKapuaId());
             accRole2.setAccessInfoId(null);
-            assertFalse(accRole1.equals(accRole2));
+            Assert.assertFalse(accRole1.equals(accRole2));
 
             accRole2.setAccessInfoId(accRole1.getAccessInfoId());
-            assertTrue(accRole1.equals(accRole2));
+            Assert.assertTrue(accRole1.equals(accRole2));
 
             accRole2.setRoleId(getKapuaId());
-            assertFalse(accRole1.equals(accRole2));
+            Assert.assertFalse(accRole1.equals(accRole2));
 
             accRole1.setRoleId(getKapuaId());
             accRole2.setRoleId(null);
-            assertFalse(accRole1.equals(accRole2));
+            Assert.assertFalse(accRole1.equals(accRole2));
 
             accRole2.setRoleId(accRole1.getRoleId());
-            assertTrue(accRole1.equals(accRole2));
+            Assert.assertTrue(accRole1.equals(accRole2));
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1883,41 +1884,41 @@ public class AuthorizationServiceSteps extends TestBase {
         Permission tmpPerm1 = permissionFactory.newPermission(new TestDomain(), Actions.read, SYS_SCOPE_ID, getKapuaId());
         Permission tmpPerm2 = permissionFactory.newPermission(new TestDomain(), Actions.write, SYS_SCOPE_ID, getKapuaId());
 
-        assertTrue(accPerm1.equals(accPerm1));
-        assertFalse(accPerm1.equals(null));
-        assertFalse(accPerm1.equals(Integer.valueOf(15)));
+        Assert.assertTrue(accPerm1.equals(accPerm1));
+        Assert.assertFalse(accPerm1.equals(null));
+        Assert.assertFalse(accPerm1.equals(Integer.valueOf(15)));
 
-        assertTrue(accPerm1.equals(accPerm2));
+        Assert.assertTrue(accPerm1.equals(accPerm2));
 
         accPerm1.setAccessInfoId(null);
         accPerm2.setAccessInfoId(getKapuaId());
-        assertFalse(accPerm1.equals(accPerm2));
+        Assert.assertFalse(accPerm1.equals(accPerm2));
 
         accPerm1.setAccessInfoId(getKapuaId());
         accPerm2.setAccessInfoId(null);
-        assertFalse(accPerm1.equals(accPerm2));
+        Assert.assertFalse(accPerm1.equals(accPerm2));
 
         accPerm1.setAccessInfoId(getKapuaId());
         accPerm2.setAccessInfoId(getKapuaId());
-        assertFalse(accPerm1.equals(accPerm2));
+        Assert.assertFalse(accPerm1.equals(accPerm2));
 
         accPerm2.setAccessInfoId(accPerm1.getAccessInfoId());
-        assertTrue(accPerm1.equals(accPerm2));
+        Assert.assertTrue(accPerm1.equals(accPerm2));
 
         accPerm1.setPermission(null);
         accPerm2.setPermission(tmpPerm2);
-        assertFalse(accPerm1.equals(accPerm2));
+        Assert.assertFalse(accPerm1.equals(accPerm2));
 
         accPerm1.setPermission(tmpPerm1);
         accPerm2.setPermission(null);
-        assertFalse(accPerm1.equals(accPerm2));
+        Assert.assertFalse(accPerm1.equals(accPerm2));
 
         accPerm1.setPermission(tmpPerm1);
         accPerm2.setPermission(tmpPerm2);
-        assertFalse(accPerm1.equals(accPerm2));
+        Assert.assertFalse(accPerm1.equals(accPerm2));
 
         accPerm2.setPermission(accPerm1.getPermission());
-        assertTrue(accPerm1.equals(accPerm2));
+        Assert.assertTrue(accPerm1.equals(accPerm2));
     }
 
     // The following test step is more of a filler. The only purpose is to achieve some coverage
@@ -1931,28 +1932,28 @@ public class AuthorizationServiceSteps extends TestBase {
         TestDomain tmpDomain = new TestDomain();
 
         tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.read, SYS_SCOPE_ID);
-        assertNotNull(tmpPerm);
-        assertNotNull(tmpPerm.getDomain());
-        assertEquals(tmpDomain.getName(), tmpPerm.getDomain());
-        assertEquals(Actions.read, tmpPerm.getAction());
+        Assert.assertNotNull(tmpPerm);
+        Assert.assertNotNull(tmpPerm.getDomain());
+        Assert.assertEquals(tmpDomain.getName(), tmpPerm.getDomain());
+        Assert.assertEquals(Actions.read, tmpPerm.getAction());
 
         tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.write, SYS_SCOPE_ID, getKapuaId(9));
-        assertNotNull(tmpPerm);
-        assertNotNull(tmpPerm.getDomain());
-        assertEquals(tmpDomain.getName(), tmpPerm.getDomain());
-        assertEquals(Actions.write, tmpPerm.getAction());
-        assertEquals(getKapuaId(9), tmpPerm.getGroupId());
-        assertFalse(tmpPerm.getForwardable());
+        Assert.assertNotNull(tmpPerm);
+        Assert.assertNotNull(tmpPerm.getDomain());
+        Assert.assertEquals(tmpDomain.getName(), tmpPerm.getDomain());
+        Assert.assertEquals(Actions.write, tmpPerm.getAction());
+        Assert.assertEquals(getKapuaId(9), tmpPerm.getGroupId());
+        Assert.assertFalse(tmpPerm.getForwardable());
 
         tmpPerm = permissionFactory.newPermission(null, Actions.execute, SYS_SCOPE_ID, getKapuaId(9), true);
-        assertNotNull(tmpPerm);
-        assertEquals(Actions.execute, tmpPerm.getAction());
-        assertTrue(tmpPerm.getForwardable());
+        Assert.assertNotNull(tmpPerm);
+        Assert.assertEquals(Actions.execute, tmpPerm.getAction());
+        Assert.assertTrue(tmpPerm.getForwardable());
 
         tmpDomain.setName(null);
         tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.connect, SYS_SCOPE_ID, getKapuaId());
-        assertNotNull(tmpPerm);
-        assertEquals(Actions.connect, tmpPerm.getAction());
+        Assert.assertNotNull(tmpPerm);
+        Assert.assertEquals(Actions.connect, tmpPerm.getAction());
     }
 
     // The following test step is more of a filler. The only purpose is to achieve some coverage
@@ -1964,50 +1965,50 @@ public class AuthorizationServiceSteps extends TestBase {
         Permission perm1 = permissionFactory.newPermission(new TestDomain("test_domain_1"), Actions.read, getKapuaId(10), getKapuaId(100));
         Permission perm2 = permissionFactory.newPermission(new TestDomain("test_domain_1"), Actions.read, getKapuaId(10), getKapuaId(100));
 
-        assertTrue(perm1.equals(perm1));
-        assertFalse(perm1.equals(null));
-        assertFalse(perm1.equals(Integer.valueOf(10)));
+        Assert.assertTrue(perm1.equals(perm1));
+        Assert.assertFalse(perm1.equals(null));
+        Assert.assertFalse(perm1.equals(Integer.valueOf(10)));
 
-        assertTrue(perm1.equals(perm2));
+        Assert.assertTrue(perm1.equals(perm2));
 
         perm1.setDomain(null);
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
         perm2.setDomain(null);
-        assertTrue(perm1.equals(perm2));
+        Assert.assertTrue(perm1.equals(perm2));
         perm1.setDomain("test_1");
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
         perm2.setDomain("test_2");
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
 
         perm1.setDomain("test");
         perm2.setDomain("test");
 
         perm1.setTargetScopeId(null);
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
         perm2.setTargetScopeId(null);
-        assertTrue(perm1.equals(perm2));
+        Assert.assertTrue(perm1.equals(perm2));
         perm1.setTargetScopeId(getKapuaId(10));
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
         perm2.setTargetScopeId(getKapuaId(15));
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
 
         perm1.setTargetScopeId(getKapuaId(10));
         perm2.setTargetScopeId(getKapuaId(10));
 
         perm1.setGroupId(null);
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
         perm2.setGroupId(null);
-        assertTrue(perm1.equals(perm2));
+        Assert.assertTrue(perm1.equals(perm2));
         perm1.setGroupId(getKapuaId(100));
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
         perm2.setGroupId(getKapuaId(101));
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
         perm2.setGroupId(getKapuaId(100));
-        assertTrue(perm1.equals(perm2));
+        Assert.assertTrue(perm1.equals(perm2));
 
         perm1.setAction(Actions.read);
         perm2.setAction(Actions.write);
-        assertFalse(perm1.equals(perm2));
+        Assert.assertFalse(perm1.equals(perm2));
     }
 
     @Then("^Access role with name \"([^\"]*)\" is found$")
@@ -2022,7 +2023,7 @@ public class AuthorizationServiceSteps extends TestBase {
             AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(getCurrentScopeId());
             accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ROLE_ID, roleList.getFirstItem().getId()));
             AccessRoleListResult searchAccessRole = accessRoleService.query(accessRoleQuery);
-            assertTrue(searchAccessRole.getSize() > 0);
+            Assert.assertTrue(searchAccessRole.getSize() > 0);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -2077,7 +2078,7 @@ public class AuthorizationServiceSteps extends TestBase {
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
         List<Role> roleList = (List<Role>) stepData.get(ROLE_LIST);
         User user = (User) stepData.get("User");
-        assertEquals(userName, user.getName());
+        Assert.assertEquals(userName, user.getName());
         AccessRoleCreator accessRoleCreator = accessRoleFactory.newCreator(getCurrentScopeId());
 
         for (Role role : roleList) {
@@ -2114,8 +2115,8 @@ public class AuthorizationServiceSteps extends TestBase {
 
         try {
             primeException();
-            assertEquals(groupName, group.getName());
-            assertNotNull(groupService.find(getCurrentScopeId(), group.getId()));
+            Assert.assertEquals(groupName, group.getName());
+            Assert.assertNotNull(groupService.find(getCurrentScopeId(), group.getId()));
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -2134,7 +2135,7 @@ public class AuthorizationServiceSteps extends TestBase {
             stepData.put(ROLE_LIST_RESULT, roleListResult);
             stepData.put("Role", roleListResult.getFirstItem());
 
-            assertTrue(roleListResult.getSize() > 0);
+            Assert.assertTrue(roleListResult.getSize() > 0);
         } catch (KapuaException ke) {
             verifyException(ke);
         }
@@ -2193,7 +2194,7 @@ public class AuthorizationServiceSteps extends TestBase {
     public void iSearchForThePermissionsOfTheRole(String roleName) throws Exception {
         Role role = (Role) stepData.get("Role");
         ArrayList<RolePermission> rolePermissionList = new ArrayList<>();
-        assertEquals(roleName, role.getName());
+        Assert.assertEquals(roleName, role.getName());
 
         RolePermissionQuery rolePermissionQuery = rolePermissionFactory.newQuery(getCurrentScopeId());
         rolePermissionQuery.setPredicate(rolePermissionQuery.attributePredicate(RolePermissionAttributes.ROLE_ID, role.getId(), AttributePredicate.Operator.EQUAL));
@@ -2252,7 +2253,7 @@ public class AuthorizationServiceSteps extends TestBase {
         AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(getCurrentScopeId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
 
-        assertEquals(userName, lastUser.getName());
+        Assert.assertEquals(userName, lastUser.getName());
 
         try {
             primeException();
@@ -2301,14 +2302,14 @@ public class AuthorizationServiceSteps extends TestBase {
         }
 
         for (CucUser user : grantedUsers) {
-            assertTrue(grantedUserNames.contains(user.getName()));
+            Assert.assertTrue(grantedUserNames.contains(user.getName()));
         }
     }
 
     @And("^I try to find role with name \"([^\"]*)\" in account \"([^\"]*)\"$")
     public void iFindSpecificRoleInChildAccount(String roleName, String accountName) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        assertEquals(accountName, account.getName());
+        Assert.assertEquals(accountName, account.getName());
 
         RoleQuery roleQuery = roleFactory.newQuery(account.getId());
 
@@ -2321,7 +2322,7 @@ public class AuthorizationServiceSteps extends TestBase {
     @And("^I create role \"([^\"]*)\" in account \"([^\"]*)\"$")
     public void iCreateRoleInSubaccount(String roleName, String accountName) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        assertEquals(accountName, account.getName());
+        Assert.assertEquals(accountName, account.getName());
         RoleCreator roleCreator = null;
 
         roleCreator = roleFactory.newCreator(account.getId());
@@ -2340,7 +2341,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
         Role role = (Role) stepData.get("Role");
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        assertEquals(accountName, account.getName());
+        Assert.assertEquals(accountName, account.getName());
         Domain domain = (Domain) stepData.get(DOMAIN);
         RolePermission rolePermission = null;
         ArrayList<RolePermission> rolePermissions = new ArrayList<>();
@@ -2350,8 +2351,8 @@ public class AuthorizationServiceSteps extends TestBase {
         primeException();
         for (CucRolePermission tmpCPerm : perms) {
             tmpCPerm.doParse();
-            assertNotNull(tmpCPerm.getScopeId());
-            assertNotNull(tmpCPerm.getAction());
+            Assert.assertNotNull(tmpCPerm.getScopeId());
+            Assert.assertNotNull(tmpCPerm.getAction());
 
             domain.setScopeId(tmpCPerm.getScopeId());
 
@@ -2373,9 +2374,9 @@ public class AuthorizationServiceSteps extends TestBase {
     @And("^I search for the permissions of found role \"([^\"]*)\" in account \"([^\"]*)\"$")
     public void iSearchForThePermissionsOfFoundedRoleInSubaccount(String roleName, String accountName) throws Exception {
         Role role = (Role) stepData.get("Role");
-        assertEquals(roleName, role.getName());
+        Assert.assertEquals(roleName, role.getName());
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        assertEquals(accountName, account.getName());
+        Assert.assertEquals(accountName, account.getName());
         ArrayList<RolePermission> rolePermissionList = new ArrayList<>();
 
         RolePermissionQuery rolePermissionQuery = rolePermissionFactory.newQuery(account.getId());
@@ -2400,10 +2401,10 @@ public class AuthorizationServiceSteps extends TestBase {
         RoleListResult childRolesList = (RoleListResult) stepData.get("ChildRolesList");
         Role role = (Role) stepData.get("Role");
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        assertEquals(roleName, role.getName());
-        assertEquals(accountName, account.getName());
+        Assert.assertEquals(roleName, role.getName());
+        Assert.assertEquals(accountName, account.getName());
 
-        assertTrue(childRolesList.getSize() > 0);
+        Assert.assertTrue(childRolesList.getSize() > 0);
     }
 
     @And("^I add access role \"([^\"]*)\" to user \"([^\"]*)\" in account \"([^\"]*)\"$")
@@ -2417,9 +2418,9 @@ public class AuthorizationServiceSteps extends TestBase {
         accessRoleCreator.setRoleId(role.getId());
         stepData.put("ChildAccountAccessRoleCreator", accessRoleCreator);
 
-        assertEquals(roleName, role.getName());
-        assertEquals(accountName, account.getName());
-        assertEquals(childUserName, childUser.getName());
+        Assert.assertEquals(roleName, role.getName());
+        Assert.assertEquals(accountName, account.getName());
+        Assert.assertEquals(childUserName, childUser.getName());
 
         try {
             primeException();
@@ -2439,7 +2440,7 @@ public class AuthorizationServiceSteps extends TestBase {
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
         accessInfoCreator.setUserId(tmpUser.getId());
 
-        assertEquals(accountName, account.getName());
+        Assert.assertEquals(accountName, account.getName());
 
         Set<Permission> permissions = (Set<Permission>) stepData.get(PERMISSIONS);
         Set<KapuaId> roleIds = (Set<KapuaId>) stepData.get(ROLE_IDS);
@@ -2472,7 +2473,7 @@ public class AuthorizationServiceSteps extends TestBase {
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
         User user = (User) stepData.get("User");
 
-        assertEquals(userName, user.getName());
+        Assert.assertEquals(userName, user.getName());
 
         AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(getCurrentScopeId());
         accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
@@ -2490,7 +2491,7 @@ public class AuthorizationServiceSteps extends TestBase {
     public void iCountTheAccessRolesFromUserInChildAccount(String accountName) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         AccessInfo accessInfo = (AccessInfo) stepData.get(CHILD_ACCOUNT_ACCESS_INFO);
-        assertEquals(accountName, account.getName());
+        Assert.assertEquals(accountName, account.getName());
 
         AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(account.getId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
@@ -2631,8 +2632,8 @@ public class AuthorizationServiceSteps extends TestBase {
 
         primeException();
         try {
-            assertEquals(roleName, role.getName());
-            assertEquals(roleDescription, role.getDescription());
+            Assert.assertEquals(roleName, role.getName());
+            Assert.assertEquals(roleDescription, role.getDescription());
             KapuaId roleId = role.getId();
             roleService.delete(role.getScopeId(), roleId);
         } catch (KapuaException ex) {
@@ -2793,7 +2794,7 @@ public class AuthorizationServiceSteps extends TestBase {
     public void iSearchForTheGroupWithDescription(String description) throws Exception {
 
         Group group = (Group) stepData.get(GROUP);
-        assertEquals(description, group.getDescription());
+        Assert.assertEquals(description, group.getDescription());
 
         primeException();
         try {
@@ -2810,8 +2811,8 @@ public class AuthorizationServiceSteps extends TestBase {
 
         try {
             primeException();
-            assertEquals(description, group.getDescription());
-            assertNotNull(groupService.find(getCurrentScopeId(), group.getId()));
+            Assert.assertEquals(description, group.getDescription());
+            Assert.assertNotNull(groupService.find(getCurrentScopeId(), group.getId()));
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -2820,7 +2821,7 @@ public class AuthorizationServiceSteps extends TestBase {
     @When("^I update the group name from \"([^\"]*)\" to \"([^\"]*)\"$")
     public void iUpdateTheGroupNameFromTo(String name1, String name2) throws Exception {
         Group group = (Group) stepData.get(GROUP);
-        assertEquals(name1, group.getName());
+        Assert.assertEquals(name1, group.getName());
         group.setName(name2);
 
         try {
@@ -2834,7 +2835,7 @@ public class AuthorizationServiceSteps extends TestBase {
     @When("^I update the group description from \"([^\"]*)\" to \"([^\"]*)\"$")
     public void iUpdateTheGroupDescriptionFromTo(String description1, String description2) throws Exception {
         Group group = (Group) stepData.get(GROUP);
-        assertEquals(description1, group.getDescription());
+        Assert.assertEquals(description1, group.getDescription());
         group.setDescription(description2);
 
         try {
@@ -2867,7 +2868,7 @@ public class AuthorizationServiceSteps extends TestBase {
     @When("^I update the group name from \"([^\"]*)\" to name with special characters \"([^\"]*)\"$")
     public void iUpdateTheGroupNameFromToNameWithSpecialCharacters(String name, String invalidSymbols) throws Exception {
         Group group = (Group) stepData.get(GROUP);
-        assertEquals(name, group.getName());
+        Assert.assertEquals(name, group.getName());
         for (int i = 0; i < invalidSymbols.length(); i++) {
             String groupName = name + invalidSymbols.charAt(i);
             group.setName(groupName);

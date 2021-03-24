@@ -15,7 +15,7 @@ package org.eclipse.kapua.broker.client.setting;
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
 /**
- * Broker setting implementation.<br>
+ * Broker client setting implementation.<br>
  * This class handles settings for the {@link BrokerClientSettingKey}.
  */
 public final class BrokerClientSetting extends AbstractKapuaSetting<BrokerClientSettingKey> {
@@ -29,7 +29,7 @@ public final class BrokerClientSetting extends AbstractKapuaSetting<BrokerClient
     }
 
     /**
-     * Return the broker setting instance (singleton)
+     * Return the broker client setting instance (singleton)
      */
     public static BrokerClientSetting getInstance() {
         synchronized (BrokerClientSetting.class) {

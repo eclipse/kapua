@@ -32,7 +32,5 @@ import org.junit.runner.RunWith;
         strict = true,
         monochrome = true)
 
-//@CucumberProperty(key="certificate.jwt.private.key", value= "certificates/key.pk8")
-//@CucumberProperty(key="certificate.jwt.certificate", value= "certificates/certificate.pem")
 public class RunRestUserTest {
 }

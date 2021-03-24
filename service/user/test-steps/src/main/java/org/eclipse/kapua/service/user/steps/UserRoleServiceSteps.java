@@ -29,6 +29,7 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.user.User;
+import org.junit.Assert;
 
 import com.google.inject.Singleton;
 
@@ -70,8 +71,8 @@ public class UserRoleServiceSteps extends TestBase {
             accessRoleCreator.setRoleId(role.getId());
             stepData.put("AccessRoleCreator", accessRoleCreator);
 
-            assertEquals(roleName, role.getName());
-            assertEquals(userName, user.getName());
+            Assert.assertEquals(roleName, role.getName());
+            Assert.assertEquals(userName, user.getName());
 
             try {
                 primeException();
@@ -89,7 +90,7 @@ public class UserRoleServiceSteps extends TestBase {
         AccessRole accessRole = (AccessRole) stepData.get(ACCESS_ROLE);
 
         try {
-            assertEquals(null, accessRoleService.find(getCurrentScopeId(), accessRole.getId()));
+            Assert.assertEquals(null, accessRoleService.find(getCurrentScopeId(), accessRole.getId()));
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -104,7 +105,7 @@ public class UserRoleServiceSteps extends TestBase {
         AccessRoleCreator accessRoleCreator = accessRoleFactory.newCreator(getCurrentScopeId());
         accessRoleCreator.setRoleId(role.getId());
         stepData.put("AccessRoleCreator", accessRoleCreator);
-        assertEquals(roleName, role.getName());
+        Assert.assertEquals(roleName, role.getName());
 
         for (AccessInfo accessInfo : accessInfoList) {
             accessRoleCreator.setAccessInfoId(accessInfo.getId());

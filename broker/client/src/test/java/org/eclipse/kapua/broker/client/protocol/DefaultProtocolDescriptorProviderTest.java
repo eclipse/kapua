@@ -28,8 +28,8 @@ public class DefaultProtocolDescriptorProviderTest {
 
 
     String[] connectorName;
-    private static final String BROKER_CONN_DESC_DEFAULT_DISABLE_PROP_KEY = "protocol_descriptor.default.disable";
-    private static final String BROKER_CONN_DESC_CONF_URI_PROP_KEY = "protocol_descriptor.configuration.uri";
+    private static final String BROKER_CONN_DESC_DEFAULT_DISABLE_PROP_KEY = "protocol.descriptor.default.disable";
+    private static final String BROKER_CONN_DESC_CONF_URI_PROP_KEY = "protocol.descriptor.configuration.uri";
 
     @Before
     public void initialize() {

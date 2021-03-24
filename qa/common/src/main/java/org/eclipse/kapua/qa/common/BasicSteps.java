@@ -30,6 +30,7 @@ import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -275,33 +276,33 @@ public class BasicSteps extends TestBase {
     public void exceptionCaught() {
         String exName = stepData.contains(EXCEPTION_NAME) ? (String)stepData.get(EXCEPTION_NAME) : "Unknown";
         boolean exCaught = stepData.contains(EXCEPTION_CAUGHT) ? (boolean) stepData.get(EXCEPTION_CAUGHT) : false;
-        assertTrue(String.format("Exception %s was expected but was not raised.", exName), exCaught);
+        Assert.assertTrue(String.format("Exception %s was expected but was not raised.", exName), exCaught);
     }
 
     @Then("^No exception was thrown$")
     public void noExceptionCaught() {
         boolean exCaught = stepData.contains(EXCEPTION_CAUGHT) ? (boolean) stepData.get(EXCEPTION_CAUGHT) : false;
-        assertFalse("An unexpected exception was raised!", exCaught);
+        Assert.assertFalse("An unexpected exception was raised!", exCaught);
     }
 
     @Then("^I count (\\d+)$")
     public void checkCountResult(Long num) {
-        assertEquals(num, stepData.get("Count"));
+        Assert.assertEquals(num, stepData.get("Count"));
     }
 
     @Then("^I count (\\d+) or more$")
     public void checkAsyncCountResult(Long num) {
-        assertTrue((Long) stepData.get("Count") >= num);
+        Assert.assertTrue((Long) stepData.get("Count") >= num);
     }
 
     @Then("^I get the integer (\\d+)$")
     public void checkIntResult(int num) {
-        assertEquals(num, (int) stepData.get("IntValue"));
+        Assert.assertEquals(num, (int) stepData.get("IntValue"));
     }
 
     @Then("^I get the boolean \"(.+)\"$")
     public void checkBoolResult(String val) {
-        assertEquals(Boolean.valueOf(val), stepData.get("BoolValue"));
+        Assert.assertEquals(Boolean.valueOf(val), stepData.get("BoolValue"));
     }
 
     @Given("^The text \"(.+)\"$")
@@ -311,7 +312,7 @@ public class BasicSteps extends TestBase {
 
     @Then("^I get the text \"(.+)\"$")
     public void checkStringResult(String text) {
-        assertEquals(text, stepData.get("Text"));
+        Assert.assertEquals(text, stepData.get("Text"));
     }
 
     @Given("^The date \"(.+)\"$")
@@ -345,7 +346,7 @@ public class BasicSteps extends TestBase {
     public void anAssertionErrorWasThrown() {
         String assertErrorName = stepData.contains(ASSERT_ERROR_NAME) ? (String) stepData.get(ASSERT_ERROR_NAME) : "Unknown";
         boolean assertErrorCaught = stepData.contains(ASSERT_ERROR_CAUGHT) ? (boolean) stepData.get(ASSERT_ERROR_CAUGHT) : false;
-        assertTrue(String.format("Assert error was expected but was not raised.", assertErrorName), assertErrorCaught);
+        Assert.assertTrue(String.format("Assert error was expected but was not raised.", assertErrorName), assertErrorCaught);
     }
 
     @And("^I expect the assertion error \"([^\"]*)\" with the text \"([^\"]*)\"$")
@@ -358,7 +359,7 @@ public class BasicSteps extends TestBase {
     @And("^No assertion error was thrown$")
     public void noAssertionErrorWasThrown() {
         boolean assertErrorCaught = stepData.contains(ASSERT_ERROR_CAUGHT) ? (boolean) stepData.get(ASSERT_ERROR_CAUGHT) : false;
-        assertFalse("An unexpected assert error was raised!", assertErrorCaught);
+        Assert.assertFalse("An unexpected assert error was raised!", assertErrorCaught);
     }
 
     @And("^I wait for (\\d+) millisecond(?:|s) for processes to settle down$")
