@@ -18,7 +18,6 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
-import org.junit.Assert;
 
 import java.math.BigInteger;
 import java.text.DateFormat;
@@ -29,7 +28,7 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.Random;
 
-public class TestBase extends Assert {
+public class TestBase {
 
     private static final String LAST_ACCOUNT = "LastAccount";
 

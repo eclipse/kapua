@@ -212,14 +212,14 @@ public class TagServiceSteps extends TestBase {
     @Then("^No tag was found$")
     public void checkNoTagWasFound() {
 
-        assertNull(stepData.get("tag"));
+        Assert.assertNull(stepData.get("tag"));
     }
 
     @Then("^Tag with name \"([^\"]*)\" is not found$")
     public void tagWithNameNotFound(String tagName) {
 
         Tag foundTag = (Tag) stepData.get("tag");
-        assertNull(foundTag);
+        Assert.assertNull(foundTag);
     }
 
     @Then("^I find and delete tag with name \"([^\"]*)\"$")
@@ -335,7 +335,7 @@ public class TagServiceSteps extends TestBase {
         Device device = (Device) stepData.get("Device");
         try {
             Set<KapuaId> tagIds = device.getTagIds();
-            assertTrue(tagIds.contains(tag.getId()));
+            Assert.assertTrue(tagIds.contains(tag.getId()));
         } catch (Exception e) {
             verifyException(e);
         }
@@ -347,7 +347,7 @@ public class TagServiceSteps extends TestBase {
         Device device = (Device) stepData.get("Device");
         try {
             Set<KapuaId> tagIds = device.getTagIds();
-            assertFalse(tagIds.contains(tag.getId()));
+            Assert.assertFalse(tagIds.contains(tag.getId()));
         } catch (Exception e) {
             verifyException(e);
         }

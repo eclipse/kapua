@@ -71,6 +71,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 import org.joda.time.DateTime;
+import org.junit.Assert;
 
 import com.google.inject.Singleton;
 
@@ -483,7 +484,7 @@ public class JobServiceSteps extends TestBase {
             Job job = jobService.query(tmpQuery).getFirstItem();
             stepData.put("Job", job);
 
-            assertEquals(name, job.getName());
+            Assert.assertEquals(name, job.getName());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -495,59 +496,59 @@ public class JobServiceSteps extends TestBase {
         Job job = (Job) stepData.get("Job");
         JobCreator jobCreator = (JobCreator) stepData.get(JOB_CREATOR);
 
-        assertEquals("The job scope does not match the creator.", jobCreator.getScopeId(), job.getScopeId());
-        assertEquals("The job name does not match the creator.", jobCreator.getName(), job.getName());
-        assertEquals("The job description does not match the creator.", jobCreator.getDescription(), job.getDescription());
+        Assert.assertEquals("The job scope does not match the creator.", jobCreator.getScopeId(), job.getScopeId());
+        Assert. assertEquals("The job name does not match the creator.", jobCreator.getName(), job.getName());
+        Assert.assertEquals("The job description does not match the creator.", jobCreator.getDescription(), job.getDescription());
     }
 
     @Then("^The job has (\\d+) steps$")
     public void checkNumberOfJobSteps(int num) {
 
         Job job = (Job) stepData.get("Job");
-        assertEquals("The job item has the wrong number of steps", num, job.getJobSteps().size());
+        Assert.assertEquals("The job item has the wrong number of steps", num, job.getJobSteps().size());
     }
 
     @Then("^I find a job item in the database$")
     public void checkThatAJobWasFound() {
 
-        assertNotNull("Unexpected null value for the job.", stepData.get("Job"));
+        Assert.assertNotNull("Unexpected null value for the job.", stepData.get("Job"));
     }
 
     @Then("^There is no such job item in the database$")
     public void checkThatNoJobWasFound() {
 
-        assertNull("Unexpected job item was found!", stepData.get("Job"));
+        Assert.assertNull("Unexpected job item was found!", stepData.get("Job"));
     }
 
     @Then("The job name is \"(.+)\"")
     public void checkJobItemName(String name) {
 
         Job job = (Job) stepData.get("Job");
-        assertEquals("The job name does not match!", name, job.getName());
+        Assert.assertEquals("The job name does not match!", name, job.getName());
     }
 
     @Then("The job description is \"(.+)\"")
     public void checkJobItemDescription(String description) {
 
         Job job = (Job) stepData.get("Job");
-        assertEquals("The job description does not match!", description, job.getDescription());
+        Assert.assertEquals("The job description does not match!", description, job.getDescription());
     }
 
     @Then("The job XML definition is \"(.+)\"")
     public void checkJobItemXMLDefinition(String definition) {
 
         Job job = (Job) stepData.get("Job");
-        assertEquals("The job XML definition does not match!", definition, job.getJobXmlDefinition());
+        Assert.assertEquals("The job XML definition does not match!", definition, job.getJobXmlDefinition());
     }
 
     @When("^I test the sanity of the job factory$")
     public void testJobFactorySanity() {
 
         primeException();
-        assertNotNull("The job factory returned a null creator!", jobFactory.newCreator(SYS_SCOPE_ID));
-        assertNotNull("The job factory returned a null job object!", jobFactory.newEntity(SYS_SCOPE_ID));
-        assertNotNull("The job factory returned a null job query!", jobFactory.newQuery(SYS_SCOPE_ID));
-        assertNotNull("The job factory returned a null job list result!", jobFactory.newListResult());
+        Assert.assertNotNull("The job factory returned a null creator!", jobFactory.newCreator(SYS_SCOPE_ID));
+        Assert.assertNotNull("The job factory returned a null job object!", jobFactory.newEntity(SYS_SCOPE_ID));
+        Assert.assertNotNull("The job factory returned a null job query!", jobFactory.newQuery(SYS_SCOPE_ID));
+        Assert.assertNotNull("The job factory returned a null job list result!", jobFactory.newListResult());
     }
 
     // ************************************************************************************
@@ -807,18 +808,18 @@ public class JobServiceSteps extends TestBase {
         JobStepDefinitionCreator stepDefinitionCreator = (JobStepDefinitionCreator) stepData.get(JOB_STEP_DEFINITION_CREATOR);
         JobStepDefinition stepDefinition = (JobStepDefinition) stepData.get(JOB_STEP_DEFINITION);
 
-        assertEquals("The step definition has the wrong name!", stepDefinitionCreator.getName(), stepDefinition.getName());
-        assertEquals("The step definition has the wrong description!", stepDefinitionCreator.getDescription(), stepDefinition.getDescription());
-        assertEquals("The step definition has the wrong reader name!", stepDefinitionCreator.getReaderName(), stepDefinition.getReaderName());
-        assertEquals("The step definition has the wrong processor name!", stepDefinitionCreator.getProcessorName(), stepDefinition.getProcessorName());
-        assertEquals("The step definition has the wrong writer name!", stepDefinitionCreator.getWriterName(), stepDefinition.getWriterName());
-        assertEquals("The step definition has a wrong step type!", stepDefinitionCreator.getStepType(), stepDefinition.getStepType());
-        assertNotNull("The step definition has no properties!", stepDefinition.getStepProperties());
-        assertEquals("The step definition has a wrong number of properties!", stepDefinitionCreator.getStepProperties().size(), stepDefinition.getStepProperties().size());
+        Assert.assertEquals("The step definition has the wrong name!", stepDefinitionCreator.getName(), stepDefinition.getName());
+        Assert.assertEquals("The step definition has the wrong description!", stepDefinitionCreator.getDescription(), stepDefinition.getDescription());
+        Assert.assertEquals("The step definition has the wrong reader name!", stepDefinitionCreator.getReaderName(), stepDefinition.getReaderName());
+        Assert.assertEquals("The step definition has the wrong processor name!", stepDefinitionCreator.getProcessorName(), stepDefinition.getProcessorName());
+        Assert.assertEquals("The step definition has the wrong writer name!", stepDefinitionCreator.getWriterName(), stepDefinition.getWriterName());
+        Assert.assertEquals("The step definition has a wrong step type!", stepDefinitionCreator.getStepType(), stepDefinition.getStepType());
+        Assert.assertNotNull("The step definition has no properties!", stepDefinition.getStepProperties());
+        Assert.assertEquals("The step definition has a wrong number of properties!", stepDefinitionCreator.getStepProperties().size(), stepDefinition.getStepProperties().size());
         for (int i = 0; i < stepDefinitionCreator.getStepProperties().size(); i++) {
-            assertEquals(stepDefinitionCreator.getStepProperties().get(i).getName(), stepDefinition.getStepProperties().get(i).getName());
-            assertEquals(stepDefinitionCreator.getStepProperties().get(i).getPropertyType(), stepDefinition.getStepProperties().get(i).getPropertyType());
-            assertEquals(stepDefinitionCreator.getStepProperties().get(i).getPropertyValue(), stepDefinition.getStepProperties().get(i).getPropertyValue());
+            Assert.assertEquals(stepDefinitionCreator.getStepProperties().get(i).getName(), stepDefinition.getStepProperties().get(i).getName());
+            Assert.assertEquals(stepDefinitionCreator.getStepProperties().get(i).getPropertyType(), stepDefinition.getStepProperties().get(i).getPropertyType());
+            Assert.assertEquals(stepDefinitionCreator.getStepProperties().get(i).getPropertyValue(), stepDefinition.getStepProperties().get(i).getPropertyValue());
         }
     }
 
@@ -826,38 +827,38 @@ public class JobServiceSteps extends TestBase {
     public void checkThatNoStepDefinitionWasFound() {
 
         JobStepDefinition stepDefinition = (JobStepDefinition) stepData.get(JOB_STEP_DEFINITION);
-        assertNull("Unexpected step definition item was found!", stepDefinition);
+        Assert.assertNull("Unexpected step definition item was found!", stepDefinition);
     }
 
     @Then("^The step definition name is \"(.+)\"$")
     public void checkStepDefinitionName(String name) {
 
         JobStepDefinition stepDefinition = (JobStepDefinition) stepData.get(JOB_STEP_DEFINITION);
-        assertEquals("The step definition name does not match!", name, stepDefinition.getName());
+        Assert.assertEquals("The step definition name does not match!", name, stepDefinition.getName());
     }
 
     @Then("^The step definition type is \"(.+)\"$")
     public void checkStepDefinitionType(String type) {
 
         JobStepDefinition stepDefinition = (JobStepDefinition) stepData.get(JOB_STEP_DEFINITION);
-        assertEquals("The step definition type does not match!", getTypeFromString(type), stepDefinition.getStepType());
+        Assert.assertEquals("The step definition type does not match!", getTypeFromString(type), stepDefinition.getStepType());
     }
 
     @Then("^The step definition processor name is \"(.+)\"$")
     public void checkStepDefinitionProcessorName(String name) {
 
         JobStepDefinition stepDefinition = (JobStepDefinition) stepData.get(JOB_STEP_DEFINITION);
-        assertEquals("The step definition processor name does not match!", name, stepDefinition.getProcessorName());
+        Assert.assertEquals("The step definition processor name does not match!", name, stepDefinition.getProcessorName());
     }
 
     @When("^I test the sanity of the step definition factory$")
     public void testTheStepDefinitionFactory() {
 
-        assertNotNull(jobStepDefinitionFactory.newCreator(SYS_SCOPE_ID));
-        assertNotNull(jobStepDefinitionFactory.newEntity(SYS_SCOPE_ID));
-        assertNotNull(jobStepDefinitionFactory.newListResult());
-        assertNotNull(jobStepDefinitionFactory.newQuery(SYS_SCOPE_ID));
-        assertNotNull(jobStepDefinitionFactory.newStepProperty("TestName", "TestType", "TestValue", "TestExampleValue"));
+        Assert.assertNotNull(jobStepDefinitionFactory.newCreator(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobStepDefinitionFactory.newEntity(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobStepDefinitionFactory.newListResult());
+        Assert.assertNotNull(jobStepDefinitionFactory.newQuery(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobStepDefinitionFactory.newStepProperty("TestName", "TestType", "TestValue", "TestExampleValue"));
     }
 
 
@@ -912,7 +913,7 @@ public class JobServiceSteps extends TestBase {
             JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
             tmpQuery.setPredicate(tmpQuery.attributePredicate(JobStepAttributes.JOB_ID, currentJobId, AttributePredicate.Operator.EQUAL));
             JobStepListResult jobStepListResult = jobStepService.query(tmpQuery);
-            assertEquals(count, jobStepListResult.getSize());
+            Assert.assertEquals(count, jobStepListResult.getSize());
         } catch (KapuaException ke) {
             verifyException(ke);
         }
@@ -1021,27 +1022,27 @@ public class JobServiceSteps extends TestBase {
         JobStep step = (JobStep) stepData.get(JOB_STEP);
         JobStepCreator stepCreator = (JobStepCreator) stepData.get(JOB_STEP_CREATOR);
 
-        assertEquals(stepCreator.getJobId(), step.getJobId());
-        assertEquals(stepCreator.getJobStepDefinitionId(), step.getJobStepDefinitionId());
-        assertEquals(stepCreator.getName(), step.getName());
-        assertEquals(stepCreator.getDescription(), step.getDescription());
-        assertEquals(stepCreator.getStepIndex(), (Integer) step.getStepIndex());
-        assertEquals(stepCreator.getStepProperties().size(), step.getStepProperties().size());
+        Assert.assertEquals(stepCreator.getJobId(), step.getJobId());
+        Assert.assertEquals(stepCreator.getJobStepDefinitionId(), step.getJobStepDefinitionId());
+        Assert.assertEquals(stepCreator.getName(), step.getName());
+        Assert.assertEquals(stepCreator.getDescription(), step.getDescription());
+        Assert.assertEquals(stepCreator.getStepIndex(), (Integer) step.getStepIndex());
+        Assert.assertEquals(stepCreator.getStepProperties().size(), step.getStepProperties().size());
     }
 
     @Then("^There is no such step item in the database$")
     public void checkThatNoStepWasFound() {
-        assertNull("Unexpected step item found!", stepData.get(JOB_STEP));
+        Assert.assertNull("Unexpected step item found!", stepData.get(JOB_STEP));
     }
 
     @When("^I test the sanity of the step factory$")
     public void testTheStepFactory() {
 
-        assertNotNull(jobStepFactory.newCreator(SYS_SCOPE_ID));
-        assertNotNull(jobStepFactory.newEntity(SYS_SCOPE_ID));
-        assertNotNull(jobStepFactory.newListResult());
-        assertNotNull(jobStepFactory.newQuery(SYS_SCOPE_ID));
-        assertNotNull(jobStepFactory.newStepProperty("TestName", "TestType", "TestValue"));
+        Assert.assertNotNull(jobStepFactory.newCreator(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobStepFactory.newEntity(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobStepFactory.newListResult());
+        Assert.assertNotNull(jobStepFactory.newQuery(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobStepFactory.newStepProperty("TestName", "TestType", "TestValue"));
     }
 
     // ************************************************************************************
@@ -1103,8 +1104,8 @@ public class JobServiceSteps extends TestBase {
     public void checkStepIndexAndStatus(int stepIndex, String status) throws KapuaException {
         JobTarget jobTarget = (JobTarget) stepData.get(JOB_TARGET);
         JobTarget target = jobTargetService.find(jobTarget.getScopeId(), jobTarget.getId());
-        assertEquals(stepIndex, target.getStepIndex());
-        assertEquals(status, target.getStatus().toString());
+        Assert.assertEquals(stepIndex, target.getStepIndex());
+        Assert.assertEquals(status, target.getStatus().toString());
     }
 
     @When("^I delete the last job target in the database$")
@@ -1230,21 +1231,21 @@ public class JobServiceSteps extends TestBase {
     public void checkTargetStepIndex(int i) {
 
         JobTarget target = (JobTarget) stepData.get(JOB_TARGET);
-        assertEquals(String.format("The step index should be %d but is in fact %d.", i, target.getStepIndex()), i, target.getStepIndex());
+        Assert.assertEquals(String.format("The step index should be %d but is in fact %d.", i, target.getStepIndex()), i, target.getStepIndex());
     }
 
     @Then("^The target step exception message is indeed \"(.+)\"$")
     public void checkTargetStepExceptionMessage(String text) {
 
         JobTarget target = (JobTarget) stepData.get(JOB_TARGET);
-        assertEquals(text, target.getException().getMessage());
+        Assert.assertEquals(text, target.getException().getMessage());
     }
 
     @Then("^The target step status is indeed \"(.+)\"$")
     public void checkTargetStepStatus(String stat) {
 
         JobTarget target = (JobTarget) stepData.get(JOB_TARGET);
-        assertEquals(parseJobTargetStatusFromString(stat), target.getStatus());
+        Assert.assertEquals(parseJobTargetStatusFromString(stat), target.getStatus());
     }
 
     @Then("^The job target matches the creator$")
@@ -1253,23 +1254,23 @@ public class JobServiceSteps extends TestBase {
         JobTarget target = (JobTarget) stepData.get(JOB_TARGET);
         JobTargetCreator targetCreator = (JobTargetCreator) stepData.get(JOB_TARGET_CREATOR);
 
-        assertEquals(targetCreator.getJobId(), target.getJobId());
-        assertEquals(targetCreator.getJobTargetId(), target.getJobTargetId());
-        assertEquals(targetCreator.getScopeId(), target.getScopeId());
+        Assert.assertEquals(targetCreator.getJobId(), target.getJobId());
+        Assert.assertEquals(targetCreator.getJobTargetId(), target.getJobTargetId());
+        Assert.assertEquals(targetCreator.getScopeId(), target.getScopeId());
     }
 
     @Then("^There is no such job target item in the database$")
     public void checkThatNoTargetWasFound() {
-        assertNull("Unexpected job target item found!", stepData.get(JOB_TARGET));
+        Assert.assertNull("Unexpected job target item found!", stepData.get(JOB_TARGET));
     }
 
     @When("^I test the sanity of the job target factory$")
     public void testTheJobTargetFactory() {
 
-        assertNotNull(jobTargetFactory.newCreator(SYS_SCOPE_ID));
-        assertNotNull(jobTargetFactory.newEntity(SYS_SCOPE_ID));
-        assertNotNull(jobTargetFactory.newListResult());
-        assertNotNull(jobTargetFactory.newQuery(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobTargetFactory.newCreator(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobTargetFactory.newEntity(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobTargetFactory.newListResult());
+        Assert.assertNotNull(jobTargetFactory.newQuery(SYS_SCOPE_ID));
     }
     // ************************************************************************************
     // * Job Execution Service Test steps                                                 *
@@ -1411,7 +1412,7 @@ public class JobServiceSteps extends TestBase {
             stepData.put(JOB_EXECUTION_LIST, resultList);
             stepData.put(COUNT, itemCount);
 
-            assertEquals(num, itemCount);
+            Assert.assertEquals(num, itemCount);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1421,8 +1422,8 @@ public class JobServiceSteps extends TestBase {
     public void confirmJobIsFinished() {
         JobExecutionListResult resultList = (JobExecutionListResult) stepData.get(JOB_EXECUTION_LIST);
         JobExecution jobExecution = resultList.getFirstItem();
-        assertNotNull(jobExecution.getEndedOn());
-        assertNotNull(jobExecution.getLog());
+        Assert.assertNotNull(jobExecution.getEndedOn());
+        Assert.assertNotNull(jobExecution.getLog());
     }
 
     @Then("^The job execution matches the creator$")
@@ -1431,9 +1432,9 @@ public class JobServiceSteps extends TestBase {
         JobExecutionCreator executionCreator = (JobExecutionCreator) stepData.get("JobExecutionCreator");
         JobExecution execution = (JobExecution) stepData.get(JOB_EXECUTION);
 
-        assertEquals(executionCreator.getScopeId(), execution.getScopeId());
-        assertEquals(executionCreator.getJobId(), execution.getJobId());
-        assertEquals(executionCreator.getStartedOn(), execution.getStartedOn());
+        Assert.assertEquals(executionCreator.getScopeId(), execution.getScopeId());
+        Assert.assertEquals(executionCreator.getJobId(), execution.getJobId());
+        Assert.assertEquals(executionCreator.getStartedOn(), execution.getStartedOn());
     }
 
     @Then("^The job execution items match$")
@@ -1442,24 +1443,24 @@ public class JobServiceSteps extends TestBase {
         JobExecution execution = (JobExecution) stepData.get(JOB_EXECUTION);
         JobExecution foundExecution = (JobExecution) stepData.get("JobExecutionFound");
 
-        assertEquals(execution.getScopeId(), foundExecution.getScopeId());
-        assertEquals(execution.getJobId(), foundExecution.getJobId());
-        assertEquals(execution.getStartedOn(), foundExecution.getStartedOn());
-        assertEquals(execution.getEndedOn(), foundExecution.getEndedOn());
+        Assert.assertEquals(execution.getScopeId(), foundExecution.getScopeId());
+        Assert.assertEquals(execution.getJobId(), foundExecution.getJobId());
+        Assert.assertEquals(execution.getStartedOn(), foundExecution.getStartedOn());
+        Assert.assertEquals(execution.getEndedOn(), foundExecution.getEndedOn());
     }
 
     @Then("^There is no such job execution item in the database$")
     public void checkThatNoExecutionWasFound() {
-        assertNull("Unexpected job execution item found!", stepData.get("JobExecutionFound"));
+        Assert.assertNull("Unexpected job execution item found!", stepData.get("JobExecutionFound"));
     }
 
     @When("^I test the sanity of the job execution factory$")
     public void testTheJobExecutionFactory() {
 
-        assertNotNull(jobExecutionFactory.newCreator(SYS_SCOPE_ID));
-        assertNotNull(jobExecutionFactory.newEntity(SYS_SCOPE_ID));
-        assertNotNull(jobExecutionFactory.newListResult());
-        assertNotNull(jobExecutionFactory.newQuery(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobExecutionFactory.newCreator(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobExecutionFactory.newEntity(SYS_SCOPE_ID));
+        Assert.assertNotNull(jobExecutionFactory.newListResult());
+        Assert.assertNotNull(jobExecutionFactory.newQuery(SYS_SCOPE_ID));
     }
 
     @When("^I start a job$")
@@ -1619,8 +1620,8 @@ public class JobServiceSteps extends TestBase {
     @And("^I confirm the step index is different than (\\d+) and status is \"([^\"]*)\"$")
     public void iConfirmTheStepIndexIsDifferentThanAndStatusIs(int stepIndex, String status) {
         JobTarget jobTarget = (JobTarget) stepData.get(JOB_TARGET);
-        assertNotEquals(stepIndex, jobTarget.getStepIndex());
-        assertEquals(status, jobTarget.getStatus().toString());
+        Assert.assertNotEquals(stepIndex, jobTarget.getStepIndex());
+        Assert.assertEquals(status, jobTarget.getStatus().toString());
     }
 
     @And("^I stop the job$")
@@ -1719,7 +1720,7 @@ public class JobServiceSteps extends TestBase {
     @Then("^I find a job with name \"([^\"]*)\"$")
     public void iFindAJobWithName(String jobName) {
         Job job = (Job) stepData.get("Job");
-        assertEquals(job.getName(), jobName);
+        Assert.assertEquals(job.getName(), jobName);
     }
 
     @Then("^I try to delete the job with name \"([^\"]*)\"$")
@@ -1765,7 +1766,7 @@ public class JobServiceSteps extends TestBase {
             stepData.put(JOB_EXECUTION_LIST, resultList);
             stepData.put(COUNT, executionsCount);
 
-            assertTrue(executionsCount >= numberOfExecutions);
+            Assert.assertTrue(executionsCount >= numberOfExecutions);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1782,7 +1783,7 @@ public class JobServiceSteps extends TestBase {
             Job job = jobService.query(tmpQuery).getFirstItem();
             stepData.put("Job", job);
 
-            assertEquals(jobName, job.getName());
+            Assert.assertEquals(jobName, job.getName());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1812,7 +1813,7 @@ public class JobServiceSteps extends TestBase {
             stepData.remove(COUNT);
             Long targetCount = jobTargetService.count(tmpQuery);
             stepData.put(COUNT, targetCount);
-            assertEquals(targetNum, targetCount);
+            Assert.assertEquals(targetNum, targetCount);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1842,8 +1843,8 @@ public class JobServiceSteps extends TestBase {
         while (System.currentTimeMillis() < endWaitTime);
         //lets the test fail for the right reason
         targetFound = jobTargetService.find(jobTarget.getScopeId(), jobTarget.getId());
-        assertEquals(jobTargetStatus, targetFound.getStatus().toString());
-        assertEquals(stepIndex, targetFound.getStepIndex());
+        Assert.assertEquals(jobTargetStatus, targetFound.getStatus().toString());
+        Assert.assertEquals(stepIndex, targetFound.getStepIndex());
     }
 
     @Given("^I prepare a job with name \"([^\"]*)\" and description \"([^\"]*)\"$")
@@ -1892,7 +1893,7 @@ public class JobServiceSteps extends TestBase {
     @Then("^I find a job with description \"([^\"]*)\"$")
     public void iFindAJobWithDescription(String jobDescription) throws Throwable {
         Job job = (Job) stepData.get("Job");
-        assertEquals(job.getDescription(), jobDescription);
+        Assert.assertEquals(job.getDescription(), jobDescription);
     }
 
     @Then("^I try to update job name with permitted symbols \"([^\"]*)\" in name$")
@@ -1955,7 +1956,7 @@ public class JobServiceSteps extends TestBase {
     @And("^There is no job with name \"([^\"]*)\" in database$")
     public void thereIsNoJobWithNameInDatabase(String jobName) throws Throwable {
         Job job = (Job) stepData.get("Job");
-        assertNotEquals(job.getName(), jobName);
+        Assert.assertNotEquals(job.getName(), jobName);
     }
 
     @When("^I change the job description from \"([^\"]*)\" to \"([^\"]*)\"$")

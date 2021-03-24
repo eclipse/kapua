@@ -43,6 +43,7 @@ import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.Organization;
+import org.junit.Assert;
 
 import com.google.inject.Singleton;
 
@@ -441,8 +442,8 @@ public class AccountServiceSteps extends TestBase {
         String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
         Account tmpAcc = accountService.findByName(adminUserName);
 
-        assertNotNull(tmpAcc);
-        assertNotNull(tmpAcc.getId());
+        Assert.assertNotNull(tmpAcc);
+        Assert.assertNotNull(tmpAcc.getId());
 
         try {
             primeException();
@@ -624,26 +625,26 @@ public class AccountServiceSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         AccountCreator accountCreator = (AccountCreator) stepData.get(ACCOUNT_CREATOR);
 
-        assertNotNull(account);
-        assertNotNull(account.getId());
-        assertNotNull(account.getId().getId());
-        assertTrue(account.getOptlock() >= 0);
-        assertEquals(SYS_SCOPE_ID, account.getScopeId());
-        assertNotNull(account.getCreatedOn());
-        assertNotNull(account.getCreatedBy());
-        assertNotNull(account.getModifiedOn());
-        assertNotNull(account.getModifiedBy());
-        assertNotNull(account.getOrganization());
-        assertEquals(accountCreator.getOrganizationName(), account.getOrganization().getName());
-        assertEquals(accountCreator.getOrganizationPersonName(), account.getOrganization().getPersonName());
-        assertEquals(accountCreator.getOrganizationCountry(), account.getOrganization().getCountry());
-        assertEquals(accountCreator.getOrganizationStateProvinceCounty(), account.getOrganization().getStateProvinceCounty());
-        assertEquals(accountCreator.getOrganizationCity(), account.getOrganization().getCity());
-        assertEquals(accountCreator.getOrganizationAddressLine1(), account.getOrganization().getAddressLine1());
-        assertEquals(accountCreator.getOrganizationAddressLine2(), account.getOrganization().getAddressLine2());
-        assertEquals(accountCreator.getOrganizationEmail(), account.getOrganization().getEmail());
-        assertEquals(accountCreator.getOrganizationZipPostCode(), account.getOrganization().getZipPostCode());
-        assertEquals(accountCreator.getOrganizationPhoneNumber(), account.getOrganization().getPhoneNumber());
+        Assert.assertNotNull(account);
+        Assert.assertNotNull(account.getId());
+        Assert.assertNotNull(account.getId().getId());
+        Assert.assertTrue(account.getOptlock() >= 0);
+        Assert.assertEquals(SYS_SCOPE_ID, account.getScopeId());
+        Assert.assertNotNull(account.getCreatedOn());
+        Assert.assertNotNull(account.getCreatedBy());
+        Assert.assertNotNull(account.getModifiedOn());
+        Assert.assertNotNull(account.getModifiedBy());
+        Assert.assertNotNull(account.getOrganization());
+        Assert.assertEquals(accountCreator.getOrganizationName(), account.getOrganization().getName());
+        Assert.assertEquals(accountCreator.getOrganizationPersonName(), account.getOrganization().getPersonName());
+        Assert.assertEquals(accountCreator.getOrganizationCountry(), account.getOrganization().getCountry());
+        Assert.assertEquals(accountCreator.getOrganizationStateProvinceCounty(), account.getOrganization().getStateProvinceCounty());
+        Assert.assertEquals(accountCreator.getOrganizationCity(), account.getOrganization().getCity());
+        Assert.assertEquals(accountCreator.getOrganizationAddressLine1(), account.getOrganization().getAddressLine1());
+        Assert.assertEquals(accountCreator.getOrganizationAddressLine2(), account.getOrganization().getAddressLine2());
+        Assert.assertEquals(accountCreator.getOrganizationEmail(), account.getOrganization().getEmail());
+        Assert.assertEquals(accountCreator.getOrganizationZipPostCode(), account.getOrganization().getZipPostCode());
+        Assert.assertEquals(accountCreator.getOrganizationPhoneNumber(), account.getOrganization().getPhoneNumber());
     }
 
     @Then("^Account \"(.*)\" exists$")
@@ -652,7 +653,7 @@ public class AccountServiceSteps extends TestBase {
 
         Account tmpAcc = accountService.findByName(name);
 
-        assertNotNull(tmpAcc);
+        Assert.assertNotNull(tmpAcc);
     }
 
     @Then("^Account \"(.*)\" is correctly modified$")
@@ -662,8 +663,8 @@ public class AccountServiceSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Account tmpAcc = accountService.findByName(name);
 
-        assertEquals(account.getOrganization().getName(), tmpAcc.getOrganization().getName());
-        assertEquals(account.getOrganization().getCity(), tmpAcc.getOrganization().getCity());
+        Assert.assertEquals(account.getOrganization().getName(), tmpAcc.getOrganization().getName());
+        Assert.assertEquals(account.getOrganization().getCity(), tmpAcc.getOrganization().getCity());
     }
 
     @Then("^The account with name \"([^\"]*)\" has (\\d+) subaccount(?:|s)$")
@@ -672,10 +673,10 @@ public class AccountServiceSteps extends TestBase {
 
         KapuaQuery query = accountFactory.newQuery(getCurrentScopeId());
         Account account = accountService.find(getCurrentScopeId());
-        assertEquals(accountName, account.getName());
+        Assert.assertEquals(accountName, account.getName());
 
         long accountCnt = accountService.count(query);
-        assertEquals(num, accountCnt);
+        Assert.assertEquals(num, accountCnt);
     }
 
     @Then("^Account \"(.*)\" has (\\d+) children$")
@@ -688,7 +689,7 @@ public class AccountServiceSteps extends TestBase {
             KapuaQuery query = accountFactory.newQuery(tmpAcc.getId());
             long accountCnt = accountService.count(query);
 
-            assertEquals(num, accountCnt);
+            Assert.assertEquals(num, accountCnt);
         } catch (KapuaException ke) {
             verifyException(ke);
         }
@@ -699,7 +700,7 @@ public class AccountServiceSteps extends TestBase {
 
         Account account = (Account) stepData.get(LAST_ACCOUNT);
 
-        assertNull(account);
+        Assert.assertNull(account);
     }
 
     @Then("^The System account exists$")
@@ -709,7 +710,7 @@ public class AccountServiceSteps extends TestBase {
         String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
         Account tmpAcc = accountService.findByName(adminUserName);
 
-        assertNotNull(tmpAcc);
+        Assert.assertNotNull(tmpAcc);
     }
 
     @Then("^The account has the following parameters$")
@@ -720,7 +721,7 @@ public class AccountServiceSteps extends TestBase {
         Properties accProps = account.getEntityProperties();
 
         for (StringTuple param : paramList) {
-            assertEquals(param.getValue(), accProps.getProperty(param.getName()));
+            Assert.assertEquals(param.getValue(), accProps.getProperty(param.getName()));
         }
     }
 
@@ -731,7 +732,7 @@ public class AccountServiceSteps extends TestBase {
         KapuaId accountId = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         KapuaTocd metaData = accountService.getConfigMetadata(accountId);
 
-        assertNotNull(metaData);
+        Assert.assertNotNull(metaData);
     }
 
     @Then("^The default configuration for the account is set$")
@@ -741,8 +742,8 @@ public class AccountServiceSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Map<String, Object> valuesRead = accountService.getConfigValues(account.getId());
 
-        assertTrue(valuesRead.containsKey("maxNumberChildEntities"));
-        assertEquals(0, valuesRead.get("maxNumberChildEntities"));
+        Assert.assertTrue(valuesRead.containsKey("maxNumberChildEntities"));
+        Assert.assertEquals(0, valuesRead.get("maxNumberChildEntities"));
     }
 
     @Then("^The config item \"(.*)\" is set to \"(.*)\"$")
@@ -752,8 +753,8 @@ public class AccountServiceSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Map<String, Object> valuesRead = accountService.getConfigValues(account.getId());
 
-        assertTrue(valuesRead.containsKey(name));
-        assertEquals(value, valuesRead.get(name).toString());
+        Assert.assertTrue(valuesRead.containsKey(name));
+        Assert.assertEquals(value, valuesRead.get(name).toString());
     }
 
     @Then("^The config item \"(.*)\" is missing$")
@@ -763,7 +764,7 @@ public class AccountServiceSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Map<String, Object> valuesRead = accountService.getConfigValues(account.getId());
 
-        assertFalse(valuesRead.containsKey(name));
+        Assert.assertFalse(valuesRead.containsKey(name));
     }
 
     @Then("^The returned value is (\\d+)$")
@@ -771,7 +772,7 @@ public class AccountServiceSteps extends TestBase {
 
         int intVal = (int) stepData.get(INT_VALUE);
 
-        assertEquals(val, intVal);
+        Assert.assertEquals(val, intVal);
     }
 
     @When("^I configure account service$")
@@ -882,7 +883,7 @@ public class AccountServiceSteps extends TestBase {
         AccountQuery accountQuery = accountFactory.newQuery(getCurrentScopeId());
         accountQuery.setPredicate(accountQuery.attributePredicate(AccountAttributes.NAME, accountName, AttributePredicate.Operator.EQUAL));
         AccountListResult accountListResult = accountService.query(accountQuery);
-        assertTrue(accountListResult.getSize() > 0);
+        Assert.assertTrue(accountListResult.getSize() > 0);
     }
 
     @And("^I try to edit description to \"([^\"]*)\"$")
@@ -940,7 +941,7 @@ public class AccountServiceSteps extends TestBase {
 
     @Then("^I am able to read my account info")
     public void verifySelfAccount() throws Exception {
-        assertNotNull(stepData.get(LAST_ACCOUNT));
+        Assert.assertNotNull(stepData.get(LAST_ACCOUNT));
     }
 
     @And("^I create an account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email address \"([^\"]*)\" and child account$")
@@ -978,7 +979,7 @@ public class AccountServiceSteps extends TestBase {
     @When("^I find (\\d+) accounts?$")
     public void iFindAccounts(int numberOfAccounts) {
         int foundAccounts = (int) stepData.get("NumberOfFoundAccounts");
-        assertEquals(foundAccounts, numberOfAccounts);
+        Assert.assertEquals(foundAccounts, numberOfAccounts);
     }
 
 

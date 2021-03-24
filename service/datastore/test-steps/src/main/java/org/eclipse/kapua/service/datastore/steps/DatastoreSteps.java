@@ -152,7 +152,7 @@ public class DatastoreSteps extends TestBase {
     @Then("^Number of received data messages is different than (\\d+)$")
     public void numberOfReceivedDataMessagesIsDifferentThan(int numberOfMessages) {
         long count = (long) stepData.get(MESSAGE_COUNT_RESULT);
-        assertNotEquals(numberOfMessages, count);
+        Assert.assertNotEquals(numberOfMessages, count);
     }
 
     @And("^I set the following metrics with messages from the list \"([^\"]*)\"$")
@@ -181,7 +181,7 @@ public class DatastoreSteps extends TestBase {
                     break;
                 }
                 default: {
-                    fail(String.format("Unknown metric type [%s]", tmpMet.getType()));
+                    Assert.fail(String.format("Unknown metric type [%s]", tmpMet.getType()));
                     break;
                 }
             }
@@ -229,7 +229,7 @@ public class DatastoreSteps extends TestBase {
             for (Long num : listOfCounts) {
                 endMetricCount += num;
             }
-            assertEquals("This two values are not equal", metricCount, endMetricCount);
+            Assert.assertEquals("This two values are not equal", metricCount, endMetricCount);
         } catch (AssertionError assertError) {
             verifyAssertionError(assertError);
         }
@@ -624,7 +624,7 @@ public class DatastoreSteps extends TestBase {
                     break;
                 }
                 default: {
-                    fail(String.format("Unknown metric type [%s]", tmpMet.getType()));
+                    Assert.fail(String.format("Unknown metric type [%s]", tmpMet.getType()));
                     break;
                 }
             }
@@ -942,13 +942,13 @@ public class DatastoreSteps extends TestBase {
         ChannelInfoListResult tmpList = (ChannelInfoListResult) stepData.get(lstKey);
         Set<String> infoTopics = new HashSet<>();
 
-        assertEquals("Wrong number of topics found!", tmpList.getSize(), topics.size());
+        Assert.assertEquals("Wrong number of topics found!", tmpList.getSize(), topics.size());
 
         for (ChannelInfo tmpInfo : tmpList.getItems()) {
             infoTopics.add(tmpInfo.getName());
         }
         for (CucTopic tmpTop : topics) {
-            assertTrue(String.format("The topic [%s] was not found!", tmpTop.getTopic()), infoTopics.contains(tmpTop.getTopic()));
+            Assert.assertTrue(String.format("The topic [%s] was not found!", tmpTop.getTopic()), infoTopics.contains(tmpTop.getTopic()));
         }
     }
 
@@ -1033,7 +1033,7 @@ public class DatastoreSteps extends TestBase {
     @Then("^There (?:is|are) exactly (\\d+) channel(?:|s) in the list \"(.*)\"$")
     public void checkNumberOfQueriedChannels(int cnt, String lstKey) {
 
-        assertEquals(cnt, ((ChannelInfoListResult) stepData.get(lstKey)).getSize());
+        Assert.assertEquals(cnt, ((ChannelInfoListResult) stepData.get(lstKey)).getSize());
     }
 
     @Then("^Client \"(.+)\" first published on a channel in the list \"(.+)\" on \"(.+)\"$")
@@ -1044,11 +1044,11 @@ public class DatastoreSteps extends TestBase {
 
         for (ChannelInfo tmpInfo : chnList.getItems()) {
             if (tmpInfo.getClientId().equals(clientId)) {
-                assertEquals(tmpCaptured, tmpInfo.getFirstMessageOn());
+                Assert.assertEquals(tmpCaptured, tmpInfo.getFirstMessageOn());
                 return;
             }
         }
-        fail(String.format("No channel matches the client id [%s]", clientId));
+        Assert.fail(String.format("No channel matches the client id [%s]", clientId));
     }
 
     @Then("^Client \"(.+)\" last published on a channel in the list \"(.+)\" on \"(.+)\"$")
@@ -1059,11 +1059,11 @@ public class DatastoreSteps extends TestBase {
 
         for (ChannelInfo tmpInfo : chnList.getItems()) {
             if (tmpInfo.getClientId().equals(clientId)) {
-                assertEquals(tmpCaptured, tmpInfo.getLastMessageOn());
+                Assert.assertEquals(tmpCaptured, tmpInfo.getLastMessageOn());
                 return;
             }
         }
-        fail(String.format("No channel matches the client id [%s]", clientId));
+        Assert.fail(String.format("No channel matches the client id [%s]", clientId));
     }
 
     @When("^I delete all channels from the list \"(.*)\"$")
@@ -1193,7 +1193,7 @@ public class DatastoreSteps extends TestBase {
     public void checkNumberOfQueriedMetrics(int cnt, String lstKey) {
 
         MetricInfoListResult tmpResults = (MetricInfoListResult) stepData.get(lstKey);
-        assertEquals(cnt, tmpResults.getSize());
+        Assert.assertEquals(cnt, tmpResults.getSize());
     }
 
     @Then("^Client \"(.+)\" first published a metric in the list \"(.+)\" on \"(.+)\"$")
@@ -1204,11 +1204,11 @@ public class DatastoreSteps extends TestBase {
 
         for (MetricInfo tmpMet : metList.getItems()) {
             if (tmpMet.getClientId().equals(clientId)) {
-                assertEquals(tmpMet.getFirstMessageOn(), tmpCaptured);
+                Assert.assertEquals(tmpMet.getFirstMessageOn(), tmpCaptured);
                 return;
             }
         }
-        fail(String.format("No metric matches the client id [%s]", clientId));
+        Assert.fail(String.format("No metric matches the client id [%s]", clientId));
     }
 
     @Then("^Client \"(.+)\" last published a metric in the list \"(.+)\" on \"(.+)\"$")
@@ -1219,11 +1219,11 @@ public class DatastoreSteps extends TestBase {
 
         for (MetricInfo tmpMet : metList.getItems()) {
             if (tmpMet.getClientId().equals(clientId)) {
-                assertEquals(tmpMet.getLastMessageOn(), tmpCaptured);
+                Assert.assertEquals(tmpMet.getLastMessageOn(), tmpCaptured);
                 return;
             }
         }
-        fail(String.format("No metric matches the client id [%s]", clientId));
+        Assert.fail(String.format("No metric matches the client id [%s]", clientId));
     }
 
     @Then("^The metric \"(.+)\" was first published in the list \"(.+)\" on \"(.+)\"$")
@@ -1234,11 +1234,11 @@ public class DatastoreSteps extends TestBase {
 
         for (MetricInfo tmpMet : metList.getItems()) {
             if (tmpMet.getName().equals(metric)) {
-                assertEquals(tmpMet.getFirstMessageOn(), tmpCaptured);
+                Assert.assertEquals(tmpMet.getFirstMessageOn(), tmpCaptured);
                 return;
             }
         }
-        fail(String.format("There is no metric [%s]", metric));
+        Assert.fail(String.format("There is no metric [%s]", metric));
     }
 
     @Then("^The metric \"(.+)\" was last published in the list \"(.+)\" on \"(.+)\"$")
@@ -1249,11 +1249,11 @@ public class DatastoreSteps extends TestBase {
 
         for (MetricInfo tmpMet : metList.getItems()) {
             if (tmpMet.getName().equals(metric)) {
-                assertEquals(tmpMet.getLastMessageOn(), tmpCaptured);
+                Assert.assertEquals(tmpMet.getLastMessageOn(), tmpCaptured);
                 return;
             }
         }
-        fail(String.format("There is no metric [%s]", metric));
+        Assert.fail(String.format("There is no metric [%s]", metric));
     }
 
     @When("^I delete all metrics from the list \"(.*)\"$")
@@ -1335,7 +1335,7 @@ public class DatastoreSteps extends TestBase {
     @Then("^There (?:is|are) exactly (\\d+) client(?:|s) in the list \"(.*)\"$")
     public void checkNumberOfQueriedClients(int cnt, String lstKey) {
 
-        assertEquals(cnt, ((ClientInfoListResult) stepData.get(lstKey)).getSize());
+        Assert.assertEquals(cnt, ((ClientInfoListResult) stepData.get(lstKey)).getSize());
     }
 
     @Then("^Client \"(.+)\" first message in the list \"(.+)\" is on \"(.+)\"$")
@@ -1346,11 +1346,11 @@ public class DatastoreSteps extends TestBase {
 
         for (ClientInfo tmpInfo : cliList.getItems()) {
             if (tmpInfo.getClientId().equals(clientId)) {
-                assertEquals(tmpInfo.getFirstMessageOn(), tmpCaptured);
+                Assert.assertEquals(tmpInfo.getFirstMessageOn(), tmpCaptured);
                 return;
             }
         }
-        fail(String.format("No client info item matches the client id [%s]", clientId));
+        Assert.fail(String.format("No client info item matches the client id [%s]", clientId));
     }
 
     @Then("^Client \"(.+)\" last message in the list \"(.+)\" is on \"(.+)\"$")
@@ -1361,11 +1361,11 @@ public class DatastoreSteps extends TestBase {
 
         for (ClientInfo tmpInfo : cliList.getItems()) {
             if (tmpInfo.getClientId().equals(clientId)) {
-                assertEquals(tmpInfo.getLastMessageOn(), tmpCaptured);
+                Assert.assertEquals(tmpInfo.getLastMessageOn(), tmpCaptured);
                 return;
             }
         }
-        fail(String.format("No client info item matches the client id [%s]", clientId));
+        Assert.fail(String.format("No client info item matches the client id [%s]", clientId));
     }
 
     @When("^I delete all clients from the list \"(.*)\"$")
@@ -1404,13 +1404,13 @@ public class DatastoreSteps extends TestBase {
     public void dontFindMessage() {
 
         DatastoreMessage message = (DatastoreMessage) stepData.get("message");
-        assertNull(message);
+        Assert.assertNull(message);
     }
 
     @Then("^Message \"(.*)\" is null$")
     public void checkThatTheMessageIsActuallyNull(String msgKey) {
 
-        assertNull(stepData.get(msgKey));
+        Assert.assertNull(stepData.get(msgKey));
     }
 
     @Then("^The datastore message \"(.*)\" matches the prepared message \"(.*)\"$")
@@ -1466,7 +1466,7 @@ public class DatastoreSteps extends TestBase {
     public void dontFindChannelInfo() {
 
         ChannelInfo channelInfo = (ChannelInfo) stepData.get("channelInfo");
-        assertNull(channelInfo);
+        Assert.assertNull(channelInfo);
     }
 
     @Then("^The channel info items \"(.+)\" match the prepared messages in \"(.+)\"$")
@@ -1490,7 +1490,7 @@ public class DatastoreSteps extends TestBase {
     public void dontFindMetricInfo() {
 
         MetricInfo metricInfo = (MetricInfo) stepData.get("metricInfo");
-        assertNull(metricInfo);
+        Assert.assertNull(metricInfo);
     }
 
     @Then("^The metric info items \"(.+)\" match the prepared messages in \"(.+)\"$")
@@ -1514,7 +1514,7 @@ public class DatastoreSteps extends TestBase {
     public void dontFindClientInfo() {
 
         ClientInfo clientInfo = (ClientInfo) stepData.get("clientInfo");
-        assertNull(clientInfo);
+        Assert.assertNull(clientInfo);
     }
 
     @Then("^The client info items \"(.+)\" match the prepared messages in \"(.+)\"$")
@@ -1577,7 +1577,7 @@ public class DatastoreSteps extends TestBase {
     public void getEmptyMessageListResult() {
 
         MessageListResult result = (MessageListResult) stepData.get("messageListResult");
-        assertTrue(result.isEmpty());
+        Assert.assertTrue(result.isEmpty());
     }
 
     @When("^I count for data messages?$")
@@ -1594,7 +1594,7 @@ public class DatastoreSteps extends TestBase {
         try {
             primeException();
             long count = (long) stepData.get(MESSAGE_COUNT_RESULT);
-            assertEquals("This two values are not equal", desiredCount, count);
+            Assert.assertEquals("This two values are not equal", desiredCount, count);
         } catch (AssertionError assertError) {
             verifyAssertionError(assertError);
         }
@@ -1650,7 +1650,7 @@ public class DatastoreSteps extends TestBase {
     public void getEmptyChannelInfoListResult() {
 
         ChannelInfoListResult result = (ChannelInfoListResult) stepData.get("channelInfoListResult");
-        assertTrue(result.isEmpty());
+        Assert.assertTrue(result.isEmpty());
     }
 
     @When("^I count for channel info$")
@@ -1665,7 +1665,7 @@ public class DatastoreSteps extends TestBase {
     public void getDesiredChannelInfoCountResult(int desiredCount) {
 
         long count = (long) stepData.get("channelInfoCountResult");
-        assertEquals(desiredCount, count);
+        Assert.assertEquals(desiredCount, count);
     }
 
     @Given("^I create metric info query for current account with limit (\\d+)$")
@@ -1689,7 +1689,7 @@ public class DatastoreSteps extends TestBase {
     public void getEmptyMetricInfoListResult() {
 
         MetricInfoListResult result = (MetricInfoListResult) stepData.get("metricInfoListResult");
-        assertTrue(result.isEmpty());
+        Assert.assertTrue(result.isEmpty());
     }
 
     @When("^I delete the metric info data based on the last query$")
@@ -1718,7 +1718,7 @@ public class DatastoreSteps extends TestBase {
     public void getDesiredMetricInfoCountResult(int desiredCount) {
 
         long count = (long) stepData.get("metricInfoCountResult");
-        assertEquals(desiredCount, count);
+        Assert.assertEquals(desiredCount, count);
     }
 
     @Given("^I create client info query for current account with limit (\\d+)$")
@@ -1742,7 +1742,7 @@ public class DatastoreSteps extends TestBase {
     public void getEmptyClientInfoListResult() {
 
         ClientInfoListResult result = (ClientInfoListResult) stepData.get("clientInfoListResult");
-        assertTrue(result.isEmpty());
+        Assert.assertTrue(result.isEmpty());
     }
 
     @When("^I delete the client info data based on the last query$")
@@ -1771,12 +1771,12 @@ public class DatastoreSteps extends TestBase {
     public void getDesiredClientInfoCountResult(int desiredCount) {
 
         long count = (long) stepData.get("clientInfoCountResult");
-        assertEquals(desiredCount, count);
+        Assert.assertEquals(desiredCount, count);
     }
 
     @Then("^The value of \"(.*)\" is exactly (\\d+)$")
     public void checkValueOfIntegerItem(String valKey, long value) {
-        assertEquals(value, (long) stepData.get(valKey));
+        Assert.assertEquals(value, (long) stepData.get(valKey));
     }
 
     @Then("^The messages in the list \"(.*)\" are stored in the default order$")
@@ -2019,12 +2019,12 @@ public class DatastoreSteps extends TestBase {
 
     private boolean areMetricsEqual(Map<String, Object> properties1, Map<String, Object> properties2) {
 
-        assertEquals(properties1.size(), properties2.size());
+        Assert.assertEquals(properties1.size(), properties2.size());
 
         if (properties1.size() > 0) {
             for (Map.Entry<String, Object> entry : properties1.entrySet()) {
-                assertTrue(properties2.containsKey(entry.getKey()));
-                assertEquals(entry.getValue(), properties2.get(entry.getKey()));
+                Assert.assertTrue(properties2.containsKey(entry.getKey()));
+                Assert.assertEquals(entry.getValue(), properties2.get(entry.getKey()));
             }
         }
         return true;
@@ -2041,11 +2041,11 @@ public class DatastoreSteps extends TestBase {
         channelInfoQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
         ChannelInfoListResult channelInfoList = channelInfoRegistryService.query(channelInfoQuery);
 
-        assertNotNull(CANNOT_FIND_CHANNEL_INFO_REGISTRY, channelInfoList);
-        assertNotEquals(CANNOT_FIND_CHANNEL_INFO_REGISTRY, channelInfoList.getSize(), 0);
-        assertNotNull(CANNOT_FIND_CHANNEL_INFO_REGISTRY, channelInfoList.getFirstItem());
-        assertEquals("Wrong channel info message id!", channelInfoList.getFirstItem().getFirstMessageId(), msgId);
-        assertEquals("Wrong channel info message on!", channelInfoList.getFirstItem().getFirstMessageOn(), storedOn);
+        Assert.assertNotNull(CANNOT_FIND_CHANNEL_INFO_REGISTRY, channelInfoList);
+        Assert.assertNotEquals(CANNOT_FIND_CHANNEL_INFO_REGISTRY, channelInfoList.getSize(), 0);
+        Assert.assertNotNull(CANNOT_FIND_CHANNEL_INFO_REGISTRY, channelInfoList.getFirstItem());
+        Assert.assertEquals("Wrong channel info message id!", channelInfoList.getFirstItem().getFirstMessageId(), msgId);
+        Assert.assertEquals("Wrong channel info message on!", channelInfoList.getFirstItem().getFirstMessageOn(), storedOn);
     }
 
     private void isClientForFirstMessageInStoreOK(StorableId msgId, Date storedOn) throws KapuaException {
@@ -2060,11 +2060,11 @@ public class DatastoreSteps extends TestBase {
 
         ClientInfoListResult clientInfoList = clientInfoRegistryService.query(clientInfoQuery);
 
-        assertNotNull(CANNOT_FIND_CLIENT_INFO_REGISTRY, clientInfoList);
-        assertNotEquals(CANNOT_FIND_CLIENT_INFO_REGISTRY, clientInfoList.getSize(), 0);
-        assertNotNull(CANNOT_FIND_CLIENT_INFO_REGISTRY, clientInfoList.getFirstItem());
-        assertEquals("Wrong client info message id!", clientInfoList.getFirstItem().getFirstMessageId(), msgId);
-        assertEquals("Wrong client info message on!", clientInfoList.getFirstItem().getFirstMessageOn(), storedOn);
+        Assert.assertNotNull(CANNOT_FIND_CLIENT_INFO_REGISTRY, clientInfoList);
+        Assert.assertNotEquals(CANNOT_FIND_CLIENT_INFO_REGISTRY, clientInfoList.getSize(), 0);
+        Assert.assertNotNull(CANNOT_FIND_CLIENT_INFO_REGISTRY, clientInfoList.getFirstItem());
+        Assert.assertEquals("Wrong client info message id!", clientInfoList.getFirstItem().getFirstMessageId(), msgId);
+        Assert.assertEquals("Wrong client info message on!", clientInfoList.getFirstItem().getFirstMessageOn(), storedOn);
     }
 
     private void isMetricForFirstMessageInStoreOK(StorableId msgId, Date storedOn) throws KapuaException {
@@ -2079,24 +2079,24 @@ public class DatastoreSteps extends TestBase {
 
         MetricInfoListResult metricInfoList = metricInfoRegistryService.query(metricInfoQuery);
 
-        assertNotNull(CANNOT_FIND_METRIC_INFO_REGISTRY, metricInfoList);
-        assertNotEquals(CANNOT_FIND_METRIC_INFO_REGISTRY, metricInfoList.getSize(), 0);
-        assertNotNull(CANNOT_FIND_METRIC_INFO_REGISTRY, metricInfoList.getFirstItem());
-        assertEquals("Wrong metric info message id!", metricInfoList.getFirstItem().getFirstMessageId(), msgId);
-        assertEquals("Wrong metric info message on!", metricInfoList.getFirstItem().getFirstMessageOn(), storedOn);
+        Assert.assertNotNull(CANNOT_FIND_METRIC_INFO_REGISTRY, metricInfoList);
+        Assert.assertNotEquals(CANNOT_FIND_METRIC_INFO_REGISTRY, metricInfoList.getSize(), 0);
+        Assert.assertNotNull(CANNOT_FIND_METRIC_INFO_REGISTRY, metricInfoList.getFirstItem());
+        Assert.assertEquals("Wrong metric info message id!", metricInfoList.getFirstItem().getFirstMessageId(), msgId);
+        Assert.assertEquals("Wrong metric info message on!", metricInfoList.getFirstItem().getFirstMessageOn(), storedOn);
     }
 
     private boolean arePositionsEqual(KapuaPosition position1, KapuaPosition position2) {
 
-        assertEquals(position1.getAltitude(), position2.getAltitude());
-        assertEquals(position1.getHeading(), position2.getHeading());
-        assertEquals(position1.getLatitude(), position2.getLatitude());
-        assertEquals(position1.getLongitude(), position2.getLongitude());
-        assertEquals(position1.getPrecision(), position2.getPrecision());
-        assertEquals(position1.getSatellites(), position2.getSatellites());
-        assertEquals(position1.getSpeed(), position2.getSpeed());
-        assertEquals(position1.getStatus(), position2.getStatus());
-        assertEquals(position1.getTimestamp(), position2.getTimestamp());
+        Assert.assertEquals(position1.getAltitude(), position2.getAltitude());
+        Assert.assertEquals(position1.getHeading(), position2.getHeading());
+        Assert.assertEquals(position1.getLatitude(), position2.getLatitude());
+        Assert.assertEquals(position1.getLongitude(), position2.getLongitude());
+        Assert.assertEquals(position1.getPrecision(), position2.getPrecision());
+        Assert.assertEquals(position1.getSatellites(), position2.getSatellites());
+        Assert.assertEquals(position1.getSpeed(), position2.getSpeed());
+        Assert.assertEquals(position1.getStatus(), position2.getStatus());
+        Assert.assertEquals(position1.getTimestamp(), position2.getTimestamp());
         return true;
     }
 
@@ -2118,17 +2118,17 @@ public class DatastoreSteps extends TestBase {
     // Check whether the message that was inserted into the message store matches the originally prepared message
     private boolean checkThatTheInsertedMessageMatchesTheOriginal(KapuaDataMessage origMsg, DatastoreMessage foundMsg) {
 
-        assertTrue(areSemanticPartsEqual(origMsg.getChannel().getSemanticParts(), foundMsg.getChannel().getSemanticParts()));
+        Assert.assertTrue(areSemanticPartsEqual(origMsg.getChannel().getSemanticParts(), foundMsg.getChannel().getSemanticParts()));
         if (origMsg.getPayload() != null) {
-            assertArrayEquals(origMsg.getPayload().getBody(), foundMsg.getPayload().getBody());
-            assertTrue(areMetricsEqual(origMsg.getPayload().getMetrics(), foundMsg.getPayload().getMetrics()));
+            Assert.assertArrayEquals(origMsg.getPayload().getBody(), foundMsg.getPayload().getBody());
+            Assert.assertTrue(areMetricsEqual(origMsg.getPayload().getMetrics(), foundMsg.getPayload().getMetrics()));
         }
-        assertTrue(arePositionsEqual(origMsg.getPosition(), foundMsg.getPosition()));
-        assertTrue(foundMsg.getTimestamp().compareTo(origMsg.getReceivedOn()) >= 0);
-        assertTrue(foundMsg.getTimestamp().compareTo(new Date(origMsg.getReceivedOn().getTime() + 10000)) <= 0);
-        assertEquals(origMsg.getCapturedOn(), foundMsg.getCapturedOn());
-        assertEquals(origMsg.getSentOn(), foundMsg.getSentOn());
-        assertEquals(origMsg.getReceivedOn(), foundMsg.getReceivedOn());
+        Assert.assertTrue(arePositionsEqual(origMsg.getPosition(), foundMsg.getPosition()));
+        Assert.assertTrue(foundMsg.getTimestamp().compareTo(origMsg.getReceivedOn()) >= 0);
+        Assert.assertTrue(foundMsg.getTimestamp().compareTo(new Date(origMsg.getReceivedOn().getTime() + 10000)) <= 0);
+        Assert.assertEquals(origMsg.getCapturedOn(), foundMsg.getCapturedOn());
+        Assert.assertEquals(origMsg.getSentOn(), foundMsg.getSentOn());
+        Assert.assertEquals(origMsg.getReceivedOn(), foundMsg.getReceivedOn());
 
         return true;
     }
@@ -2136,17 +2136,17 @@ public class DatastoreSteps extends TestBase {
     // Check that two datastore messages match
     private boolean checkThatDatastoreMessagesMatch(DatastoreMessage firstMsg, DatastoreMessage secondMsg) {
 
-        assertEquals(firstMsg.getDatastoreId().toString(), secondMsg.getDatastoreId().toString());
-        assertTrue(areSemanticPartsEqual(firstMsg.getChannel().getSemanticParts(), secondMsg.getChannel().getSemanticParts()));
+        Assert.assertEquals(firstMsg.getDatastoreId().toString(), secondMsg.getDatastoreId().toString());
+        Assert.assertTrue(areSemanticPartsEqual(firstMsg.getChannel().getSemanticParts(), secondMsg.getChannel().getSemanticParts()));
         if ((firstMsg.getPayload() != null) || (secondMsg.getPayload() != null)) {
-            assertArrayEquals(firstMsg.getPayload().getBody(), secondMsg.getPayload().getBody());
-            assertTrue(areMetricsEqual(firstMsg.getPayload().getMetrics(), secondMsg.getPayload().getMetrics()));
+            Assert.assertArrayEquals(firstMsg.getPayload().getBody(), secondMsg.getPayload().getBody());
+            Assert.assertTrue(areMetricsEqual(firstMsg.getPayload().getMetrics(), secondMsg.getPayload().getMetrics()));
         }
-        assertTrue(arePositionsEqual(firstMsg.getPosition(), secondMsg.getPosition()));
-        assertEquals(firstMsg.getTimestamp(), secondMsg.getTimestamp());
-        assertEquals(firstMsg.getCapturedOn(), secondMsg.getCapturedOn());
-        assertEquals(firstMsg.getSentOn(), secondMsg.getSentOn());
-        assertEquals(firstMsg.getReceivedOn(), secondMsg.getReceivedOn());
+        Assert.assertTrue(arePositionsEqual(firstMsg.getPosition(), secondMsg.getPosition()));
+        Assert.assertEquals(firstMsg.getTimestamp(), secondMsg.getTimestamp());
+        Assert.assertEquals(firstMsg.getCapturedOn(), secondMsg.getCapturedOn());
+        Assert.assertEquals(firstMsg.getSentOn(), secondMsg.getSentOn());
+        Assert.assertEquals(firstMsg.getReceivedOn(), secondMsg.getReceivedOn());
 
         return true;
     }
@@ -2160,8 +2160,8 @@ public class DatastoreSteps extends TestBase {
         Set<String> infoTopics = new HashSet<>();
         Set<String> infoClients = new HashSet<>();
 
-        assertNotNull("No channel info data!", chnInfo);
-        assertNotNull(NO_MESSAGES_TO_COMPARE_TO, msgLst);
+        Assert.assertNotNull("No channel info data!", chnInfo);
+        Assert.assertNotNull(NO_MESSAGES_TO_COMPARE_TO, msgLst);
 
         for (KapuaDataMessage tmpMsg : msgLst) {
             msgClients.add(tmpMsg.getClientId());
@@ -2172,15 +2172,15 @@ public class DatastoreSteps extends TestBase {
             infoTopics.add(tmpInfo.getName());
         }
 
-        assertEquals(NUMBER_OF_CLIENTS_DOES_NOT_MATCH, msgClients.size(), infoClients.size());
-        assertEquals("The number of topics does not match!", msgTopics.size(), infoTopics.size());
+        Assert.assertEquals(NUMBER_OF_CLIENTS_DOES_NOT_MATCH, msgClients.size(), infoClients.size());
+        Assert.assertEquals("The number of topics does not match!", msgTopics.size(), infoTopics.size());
 
         for (String tmpTopic : msgTopics) {
-            assertTrue(String.format("The topic [%s] is not found in the info list!", tmpTopic), infoTopics.contains(tmpTopic));
+            Assert.assertTrue(String.format("The topic [%s] is not found in the info list!", tmpTopic), infoTopics.contains(tmpTopic));
         }
 
         for (String tmpClient : msgClients) {
-            assertTrue(String.format(CLIENT_ID_NOT_FOUND, tmpClient), infoClients.contains(tmpClient));
+            Assert.assertTrue(String.format(CLIENT_ID_NOT_FOUND, tmpClient), infoClients.contains(tmpClient));
         }
     }
 
@@ -2193,8 +2193,8 @@ public class DatastoreSteps extends TestBase {
         Set<String> infoMetrics = new HashSet<>();
         Set<String> infoClients = new HashSet<>();
 
-        assertNotNull("No channel info data!", metInfo);
-        assertNotNull(NO_MESSAGES_TO_COMPARE_TO, msgLst);
+        Assert.assertNotNull("No channel info data!", metInfo);
+        Assert.assertNotNull(NO_MESSAGES_TO_COMPARE_TO, msgLst);
 
         for (KapuaDataMessage tmpMsg : msgLst) {
             msgClients.add(tmpMsg.getClientId());
@@ -2207,15 +2207,15 @@ public class DatastoreSteps extends TestBase {
             infoMetrics.add(tmpMet.getName());
         }
 
-        assertEquals(NUMBER_OF_CLIENTS_DOES_NOT_MATCH, msgClients.size(), infoClients.size());
-        assertEquals("The number of topics does not match!", msgMetrics.size(), infoMetrics.size());
+        Assert.assertEquals(NUMBER_OF_CLIENTS_DOES_NOT_MATCH, msgClients.size(), infoClients.size());
+        Assert.assertEquals("The number of topics does not match!", msgMetrics.size(), infoMetrics.size());
 
         for (String tmpMetric : msgMetrics) {
-            assertTrue(String.format("The topic [%s] is not found in the info list!", tmpMetric), infoMetrics.contains(tmpMetric));
+            Assert.assertTrue(String.format("The topic [%s] is not found in the info list!", tmpMetric), infoMetrics.contains(tmpMetric));
         }
 
         for (String tmpClient : msgClients) {
-            assertTrue(String.format(CLIENT_ID_NOT_FOUND, tmpClient), infoClients.contains(tmpClient));
+            Assert.assertTrue(String.format(CLIENT_ID_NOT_FOUND, tmpClient), infoClients.contains(tmpClient));
         }
     }
 
@@ -2226,8 +2226,8 @@ public class DatastoreSteps extends TestBase {
         Set<String> msgClients = new HashSet<>();
         Set<String> infoClients = new HashSet<>();
 
-        assertNotNull("No client info data!", cliInfo);
-        assertNotNull(NO_MESSAGES_TO_COMPARE_TO, msgLst);
+        Assert.assertNotNull("No client info data!", cliInfo);
+        Assert.assertNotNull(NO_MESSAGES_TO_COMPARE_TO, msgLst);
 
         for (KapuaDataMessage tmpMsg : msgLst) {
             msgClients.add(tmpMsg.getClientId());
@@ -2236,10 +2236,10 @@ public class DatastoreSteps extends TestBase {
             infoClients.add(tmpClient.getClientId());
         }
 
-        assertEquals(NUMBER_OF_CLIENTS_DOES_NOT_MATCH, msgClients.size(), infoClients.size());
+        Assert.assertEquals(NUMBER_OF_CLIENTS_DOES_NOT_MATCH, msgClients.size(), infoClients.size());
 
         for (String tmpClient : msgClients) {
-            assertTrue(String.format(CLIENT_ID_NOT_FOUND, tmpClient), infoClients.contains(tmpClient));
+            Assert.assertTrue(String.format(CLIENT_ID_NOT_FOUND, tmpClient), infoClients.contains(tmpClient));
         }
     }
 
@@ -2331,10 +2331,10 @@ public class DatastoreSteps extends TestBase {
     private static <T extends Comparable<T>> void checkNextValueCoherence(final SortField field, final T currentValue, final T previousValue) {
 
         if (SortDirection.ASC.equals(field.getSortDirection())) {
-            assertTrue(String.format("The field [%s] is not correctly ordered as [%s] (%s -> %s)!", field.getField(), field.getSortDirection(), currentValue, previousValue),
+            Assert.assertTrue(String.format("The field [%s] is not correctly ordered as [%s] (%s -> %s)!", field.getField(), field.getSortDirection(), currentValue, previousValue),
                     currentValue.compareTo(previousValue) > 0);
         } else {
-            assertTrue(String.format("The field [%s] is not correctly ordered as [%s] (%s -> %s)!", field.getField(), field.getSortDirection(), currentValue, previousValue),
+            Assert.assertTrue(String.format("The field [%s] is not correctly ordered as [%s] (%s -> %s)!", field.getField(), field.getSortDirection(), currentValue, previousValue),
                     currentValue.compareTo(previousValue) < 0);
         }
     }

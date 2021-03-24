@@ -16,7 +16,6 @@ package org.eclipse.kapua.integration.service.device;
 import cucumber.api.CucumberOptions;
 import cucumber.api.junit.Cucumber;
 
-import org.eclipse.kapua.qa.common.cucumber.CucumberProperty;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
@@ -35,5 +34,4 @@ import org.junit.runner.RunWith;
                  },
         strict = true,
         monochrome = true )
-@CucumberProperty(key="kapua.config.url", value="broker.setting/kapua-broker-setting-1.properties")
 public class RunDeviceBrokerIpConfigFileI9nTest {}

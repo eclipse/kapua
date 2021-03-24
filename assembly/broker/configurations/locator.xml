@@ -113,9 +113,6 @@
         <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService</api>
         <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory</api>
         <api>org.eclipse.kapua.transport.TransportClientFactory</api>
-        <api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
-        <api>org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory</api>
-        <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory</api>
         <provide>
             <interceptor>annotation</interceptor>
             <with>Impl</with>

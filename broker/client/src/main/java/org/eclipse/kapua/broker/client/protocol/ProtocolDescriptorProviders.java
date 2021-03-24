@@ -84,7 +84,7 @@ public final class ProtocolDescriptorProviders {
             if (result == null) {
                 result = provider;
             } else {
-                logger.warn("Multiple instances of ConnectorDescriptorProvider.class found via ServiceLoader - first: {}, additional: {}", result, provider);
+                logger.warn("Multiple instances of ProtocolDescriptorProvider.class found via ServiceLoader - first: {}, additional: {}", result, provider);
             }
         }
 

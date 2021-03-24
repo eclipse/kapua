@@ -30,7 +30,6 @@ import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
-import org.eclipse.kapua.service.device.management.asset.internal.DeviceAssetsImpl;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -311,14 +310,14 @@ public class BrokerSteps extends TestBase {
 
         List<DevicePackage> packages = (List<DevicePackage>) stepData.get(PACKAGES);
         if (packages != null) {
-            assertEquals(1, packages.size());
+            Assert.assertEquals(1, packages.size());
         }
     }
 
     @Then("^Number of received packages is (\\d+)$")
     public void checkNumberOfReceivedDevicePackages(long number) {
         List<DevicePackage> receivedPackages = (List<DevicePackage>) stepData.get(PACKAGES);
-        assertEquals(number, receivedPackages.size());
+        Assert.assertEquals(number, receivedPackages.size());
     }
 
     @Then("Package named (.*) with version (.*) is received$")
@@ -361,7 +360,7 @@ public class BrokerSteps extends TestBase {
     @Then("^Bundles are received$")
     public void bundlesReceived() {
         List<DeviceBundle> bundles = (List<DeviceBundle>) stepData.get(BUNDLES);
-        assertEquals(137, bundles.size());
+        Assert.assertEquals(137, bundles.size());
     }
 
     @When("A bundle named (.*) with id (.*) and version (.*) is present and (.*)$")
@@ -447,7 +446,7 @@ public class BrokerSteps extends TestBase {
     @Then("^Configuration is received$")
     public void configurationReceived() {
         DeviceConfiguration configurations = (DeviceConfiguration) stepData.get(CONFIGURATIONS);
-        assertEquals(17, configurations.getComponentConfigurations().size());
+        Assert.assertEquals(17, configurations.getComponentConfigurations().size());
     }
 
     @When("^Command (.*) is executed$")
@@ -470,7 +469,7 @@ public class BrokerSteps extends TestBase {
     public void configurationReceived(int expectedExitCode) {
 
         Integer commandExitCode = (Integer) stepData.get("commandExitCode");
-        assertEquals(expectedExitCode, commandExitCode.intValue());
+        Assert.assertEquals(expectedExitCode, commandExitCode.intValue());
     }
 
     @Then("^Device is connected with \"(.*)\" server ip$")
@@ -486,7 +485,7 @@ public class BrokerSteps extends TestBase {
             stepData.put("ExceptionCaught", true);
             return;
         }
-        assertEquals(serverIp, deviceConn.getServerIp());
+        Assert.assertEquals(serverIp, deviceConn.getServerIp());
     }
 
 
@@ -529,7 +528,7 @@ public class BrokerSteps extends TestBase {
         if (mqttClient == null) {
             throw new Exception(MQTT_TEST_CLIENT_NOT_FOUND);
         }
-        assertEquals(true, mqttClient.isConnected());
+        Assert.assertEquals(true, mqttClient.isConnected());
     }
 
     @Then("^Client named \"(.*)\" is not connected$")
@@ -538,7 +537,7 @@ public class BrokerSteps extends TestBase {
         if (mqttClient == null) {
             throw new Exception(MQTT_TEST_CLIENT_NOT_FOUND);
         }
-        assertEquals(false, mqttClient.isConnected());
+        Assert.assertEquals(false, mqttClient.isConnected());
     }
 
     @Then("^Disconnect client with name \"(.*)\"$")
@@ -563,7 +562,7 @@ public class BrokerSteps extends TestBase {
         for (KuraDevice kuraDevice : kuraDevices) {
             deviceConn = deviceConnectionService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
         }
-        assertEquals(deviceStatus, deviceConn.getStatus().toString());
+        Assert.assertEquals(deviceStatus, deviceConn.getStatus().toString());
     }
 
     @And("^I add (\\d+) devices to Kura Mock$")
@@ -601,8 +600,8 @@ public class BrokerSteps extends TestBase {
         DeviceAsset asset = findAssetByName(assetName);
         Assert.assertEquals(assetName, asset.getName());
         for (DeviceAssetChannel deviceAssetChannel : asset.getChannels()) {
-            assertEquals(channelName, deviceAssetChannel.getName());
-            assertEquals(channelValue, deviceAssetChannel.getValue());
+            Assert.assertEquals(channelName, deviceAssetChannel.getName());
+            Assert.assertEquals(channelValue, deviceAssetChannel.getValue());
         }
     }
 
@@ -616,7 +615,7 @@ public class BrokerSteps extends TestBase {
                 List<DevicePackage> packages = deploymentPackages.getPackages();
                 stepData.put(PACKAGES, packages);
 
-                assertEquals(numberOfPackages, packages.size());
+                Assert.assertEquals(numberOfPackages, packages.size());
             }
         }
     }

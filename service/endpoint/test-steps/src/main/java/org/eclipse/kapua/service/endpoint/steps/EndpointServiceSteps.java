@@ -32,6 +32,7 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
+import org.junit.Assert;
 
 import com.google.inject.Singleton;
 
@@ -176,9 +177,9 @@ public class EndpointServiceSteps extends TestBase {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
             EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
-            assertEquals(schema, endpointInfo.getSchema());
-            assertEquals(domain, endpointInfo.getDns());
-            assertEquals(port, endpointInfo.getPort());
+            Assert.assertEquals(schema, endpointInfo.getSchema());
+            Assert.assertEquals(domain, endpointInfo.getDns());
+            Assert.assertEquals(port, endpointInfo.getPort());
 
             endpointInfoService.delete(SYS_SCOPE_ID, endpointInfo.getId());
         } catch (KapuaException ex) {
@@ -194,9 +195,9 @@ public class EndpointServiceSteps extends TestBase {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
             EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
-            assertEquals(schema, endpointInfo.getSchema());
-            assertEquals(domain, endpointInfo.getDns());
-            assertEquals(port, endpointInfo.getPort());
+            Assert.assertEquals(schema, endpointInfo.getSchema());
+            Assert.assertEquals(domain, endpointInfo.getDns());
+            Assert.assertEquals(port, endpointInfo.getPort());
 
             stepData.put(ENDPOINT_INFO, endpointInfo);
             stepData.put("EndpointInfoId", endpointInfo.getId());
@@ -213,7 +214,7 @@ public class EndpointServiceSteps extends TestBase {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
             EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
-            assertEquals(schema, endpointInfo.getSchema());
+            Assert.assertEquals(schema, endpointInfo.getSchema());
 
             stepData.put(ENDPOINT_INFO, endpointInfo);
             stepData.put("EndpointInfoId", endpointInfo.getId());
@@ -296,30 +297,30 @@ public class EndpointServiceSteps extends TestBase {
     @Then("^I find (\\d+) endpoints")
     public void iFindEndpoint(int numberOfEndpoints) {
         int foundEndpoints = (int) stepData.get("NumberOfEndpoints");
-        assertEquals(foundEndpoints, numberOfEndpoints);
+        Assert.assertEquals(foundEndpoints, numberOfEndpoints);
     }
 
     @Then("^I found endpoint with schema \"([^\"]*)\"$")
     public void iFoundEndpoint(String endpointSchema) {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
 
-        assertEquals(endpointSchema, endpointInfo.getSchema());
+        Assert.assertEquals(endpointSchema, endpointInfo.getSchema());
     }
 
     @Then("^I found endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
     public void iFoundEndpointWithSchemaDomainAndPort(String endpointSchema, String domainName, int port) {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
 
-        assertEquals(endpointSchema, endpointInfo.getSchema());
-        assertEquals(domainName, endpointInfo.getDns());
-        assertEquals(port, endpointInfo.getPort());
+        Assert.assertEquals(endpointSchema, endpointInfo.getSchema());
+        Assert.assertEquals(domainName, endpointInfo.getDns());
+        Assert.assertEquals(port, endpointInfo.getPort());
     }
 
     @Then("^I did not find endpoint with schema \"([^\"]*)\"$")
     public void notFoundEndpointWithSchema(String endpointSchema) {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
 
-        assertNotEquals(endpointSchema, endpointInfo.getSchema());
+        Assert.assertNotEquals(endpointSchema, endpointInfo.getSchema());
     }
 
     @When("^I delete all endpoints with schema \"([^\"]*)\"$")

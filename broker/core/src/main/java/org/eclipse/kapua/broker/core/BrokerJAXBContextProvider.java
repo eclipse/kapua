@@ -44,21 +44,8 @@ import org.eclipse.kapua.model.config.metatype.KapuaTobject;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.model.config.metatype.MetatypeXmlRegistry;
-import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundle;
-import org.eclipse.kapua.service.device.call.kura.model.bundle.KuraBundles;
-import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceComponentConfiguration;
-import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
-import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraBundleInfo;
-import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackage;
-import org.eclipse.kapua.service.device.call.kura.model.deploy.KuraDeploymentPackages;
-import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
-import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
-import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
-import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
-import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
-import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobXmlRegistry;
@@ -111,20 +98,6 @@ public class BrokerJAXBContextProvider implements JAXBContextProvider {
                     DeviceCommandInput.class,
                     DeviceCommandOutput.class,
 
-                    KuraDeviceComponentConfiguration.class,
-                    KuraDeviceConfiguration.class,
-                    KuraDeploymentPackage.class,
-                    KuraDeploymentPackages.class,
-                    KuraBundle.class,
-                    KuraBundles.class,
-                    KuraBundleInfo.class,
-                    KuraSnapshotIds.class,
-
-                    DeviceAssets.class,
-                    DeviceConfiguration.class,
-                    DevicePackages.class,
-                    DevicePackage.class,
-                    DevicePackageDownloadRequest.class,
                     // Job Engine
                     JobStartOptions.class,
 
@@ -149,7 +122,7 @@ public class BrokerJAXBContextProvider implements JAXBContextProvider {
             try {
                 context = JAXBContextFactory.createContext(classes, properties);
                 LOG.debug("Default JAXB context initialized!");
-            } catch (JAXBContext e) {
+            } catch (JAXBException e) {
                 throw KapuaException.internalError(e, "Error creating JAXBContext!");
             }
         }

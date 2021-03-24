@@ -38,11 +38,11 @@ public enum BrokerClientSettingKey implements SettingKey {
     /**
      * Allow disabling the default connector descriptor
      */
-    DISABLE_DEFAULT_PROTOCOL_DESCRIPTOR("protocol_descriptor.default.disable"),
+    DISABLE_DEFAULT_PROTOCOL_DESCRIPTOR("protocol.descriptor.default.disable"),
     /**
      * A URI to a configuration file for providing additional {@link ProtocolDescriptor} configurations
      */
-    CONFIGURATION_URI("protocol_descriptor.configuration.uri");
+    CONFIGURATION_URI("protocol.descriptor.configuration.uri");
 
     private String key;
 

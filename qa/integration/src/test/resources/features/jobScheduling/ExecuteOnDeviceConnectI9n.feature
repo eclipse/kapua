@@ -59,7 +59,7 @@ Feature: JobEngineService execute job on device connect
     And The trigger is set to start today at 00:00.
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
-    And I wait 2 seconds
+    And I wait 3 seconds
     When Device is connected
     And I wait 10 seconds
     Given I query for the job with the name "TestJob"
@@ -109,7 +109,7 @@ Feature: JobEngineService execute job on device connect
     And The trigger is set to start tomorrow at 06:00.
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
-    And I wait 2 seconds
+    And I wait 3 seconds
     When Device is connected
     And I wait 10 seconds
     Given I query for the job with the name "TestJob"
@@ -159,7 +159,7 @@ Feature: JobEngineService execute job on device connect
     And The trigger is set to end tomorrow at 20:00.
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
-    And I wait 2 seconds
+    And I wait 3 seconds
     When Device is connected
     And I wait 10 seconds
     Given I query for the job with the name "TestJob"
@@ -211,7 +211,7 @@ Feature: JobEngineService execute job on device connect
     Then I create a new trigger from the existing creator with previously defined date properties
     And I wait 11 seconds
     And I restart the Kura Mock
-    And I wait 2 seconds
+    And I wait 3 seconds
     When Device is connected
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
@@ -261,12 +261,12 @@ Feature: JobEngineService execute job on device connect
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     When Device is connected
-    And I wait 2 seconds
+    And I wait 3 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 4 device events
     And The type of the last event is "COMMAND"
     Then KuraMock is disconnected
-    And I wait 2 seconds
+    And I wait 3 seconds
     When I restart the Kura Mock
     Then Device is connected
     And I wait 10 seconds
@@ -311,12 +311,12 @@ Feature: JobEngineService execute job on device connect
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     When Device is connected
-    And I wait 2 seconds
+    And I wait 3 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 3 device events
     And The type of the last event is "BIRTH"
     Then KuraMock is disconnected
-    And I wait 2 seconds
+    And I wait 3 seconds
     When I restart the Kura Mock
     Then Device is connected
     And I wait 10 seconds

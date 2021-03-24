@@ -41,6 +41,7 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionF
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerProperty;
+import org.junit.Assert;
 
 import javax.inject.Inject;
 import java.text.ParseException;
@@ -444,7 +445,7 @@ public class JobScheduleServiceSteps extends TestBase {
 
     @And("^There is no trigger with the name \"([^\"]*)\" in the database$")
     public void thereIsNoTriggerWithTheNameInTheDatabase(String triggerName) throws Throwable {
-        assertNull(stepData.get(TRIGGER));
+        Assert.assertNull(stepData.get(TRIGGER));
     }
 
     @And("^I try to edit trigger definition to \"([^\"]*)\"$")
