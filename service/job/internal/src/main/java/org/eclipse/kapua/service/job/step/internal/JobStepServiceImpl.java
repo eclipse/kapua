@@ -122,7 +122,9 @@ public class JobStepServiceImpl extends AbstractKapuaService
         //
         // Check Job Executions
         JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(jobStepCreator.getScopeId());
-        jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStepCreator.getJobId());
+        jobExecutionQuery.setPredicate(
+                jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStepCreator.getJobId())
+        );
 
         if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
             throw new CannotModifyJobStepsException(jobStepCreator.getJobId());
@@ -214,7 +216,9 @@ public class JobStepServiceImpl extends AbstractKapuaService
         //
         // Check Job Executions
         JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(jobStep.getScopeId());
-        jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStep.getJobId());
+        jobExecutionQuery.setPredicate(
+                jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStep.getJobId())
+        );
 
         if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
             throw new CannotModifyJobStepsException(jobStep.getJobId());
@@ -291,7 +295,9 @@ public class JobStepServiceImpl extends AbstractKapuaService
         //
         // Check Job Executions
         JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(scopeId);
-        jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStep.getJobId());
+        jobExecutionQuery.setPredicate(
+                jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStep.getJobId())
+        );
 
         if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
             throw new CannotModifyJobStepsException(jobStep.getJobId());
