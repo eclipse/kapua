@@ -59,7 +59,9 @@
                 baseColumnNames="trigger_id"
                 constraintName="fk-schdl_trigger_fired-triggerId"
                 referencedTableName="schdl_trigger"
-                referencedColumnNames="id"/>
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="RESTRICT"/>
 
         <rollback>
             <dropIndex tableName="schdl_trigger_fired" indexName="idx_schdl_trigger_fired_scopeId_triggerId_firedOn"/>
