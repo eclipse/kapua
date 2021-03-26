@@ -24,8 +24,9 @@ public class CredentialQueryImplTest extends Assert {
     @Test
     public void credentialQueryImplWithoutParameterTest() {
         CredentialQueryImpl credentialQueryImpl = new CredentialQueryImpl();
-        assertNotNull("NotNull expected.", credentialQueryImpl.getSortCriteria());
         assertNull("Null expected.", credentialQueryImpl.getScopeId());
+        assertNull("credentialQueryImpl.sortCriteria", credentialQueryImpl.getSortCriteria());
+        assertNotNull("credentialQueryImpl.defaultSortCriteria", credentialQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
@@ -33,8 +34,9 @@ public class CredentialQueryImplTest extends Assert {
         KapuaId[] scopeIds = {null, KapuaId.ONE};
         for (KapuaId scopeId : scopeIds) {
             CredentialQueryImpl credentialQueryImpl = new CredentialQueryImpl(scopeId);
-            assertNotNull("NotNull expected.", credentialQueryImpl.getSortCriteria());
             assertEquals("Expected and actual values should be the same.", scopeId, credentialQueryImpl.getScopeId());
+            assertNull("credentialQueryImpl.sortCriteria", credentialQueryImpl.getSortCriteria());
+            assertNotNull("credentialQueryImpl.defaultSortCriteria", credentialQueryImpl.getDefaultSortCriteria());
         }
     }
 }

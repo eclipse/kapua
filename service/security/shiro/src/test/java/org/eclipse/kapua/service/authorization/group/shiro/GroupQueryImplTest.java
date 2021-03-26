@@ -25,13 +25,15 @@ public class GroupQueryImplTest extends Assert {
     public void groupQueryImplTest() {
         GroupQueryImpl groupQueryImpl = new GroupQueryImpl(KapuaId.ONE);
         assertEquals("Expected and actual values should be the same.", KapuaId.ONE, groupQueryImpl.getScopeId());
-        assertNotNull("NotNull expected.", groupQueryImpl.getSortCriteria());
+        assertNull("groupQueryImpl.sortCriteria", groupQueryImpl.getSortCriteria());
+        assertNotNull("groupQueryImpl.defaultSortCriteria", groupQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
     public void groupQueryImplNullTest() {
         GroupQueryImpl groupQueryImpl = new GroupQueryImpl(null);
         assertNull("Null expected.", groupQueryImpl.getScopeId());
-        assertNotNull("NotNull expected.", groupQueryImpl.getSortCriteria());
+        assertNull("groupQueryImpl.sortCriteria", groupQueryImpl.getSortCriteria());
+        assertNotNull("groupQueryImpl.defaultSortCriteria", groupQueryImpl.getDefaultSortCriteria());
     }
 }

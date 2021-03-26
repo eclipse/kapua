@@ -13,35 +13,41 @@
 package org.eclipse.kapua.service.device.registry.event.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
-import org.eclipse.kapua.commons.model.query.FieldSortCriteriaImpl;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventAttributes;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 
 /**
- * Device event query.
+ * {@link DeviceEventQuery} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class DeviceEventQueryImpl extends AbstractKapuaQuery implements DeviceEventQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     private DeviceEventQueryImpl() {
         super();
-
-        setSortCriteria(new FieldSortCriteriaImpl(DeviceEventAttributes.RECEIVED_ON, SortOrder.DESCENDING));
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public DeviceEventQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
+    }
+
+    @Override
+    public KapuaSortCriteria getDefaultSortCriteria() {
+        return fieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.DESCENDING);
     }
 }

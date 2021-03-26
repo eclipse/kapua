@@ -20,11 +20,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link ScratchCode} query definition.
+ * {@link ScratchCode} {@link KapuaQuery} definition.
+ *
+ * @see KapuaQuery
+ * @since 1.3.0
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = ScratchCodeXmlRegistry.class, factoryMethod = "newQuery")
 public interface ScratchCodeQuery extends KapuaQuery {
-
 }

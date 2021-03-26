@@ -20,13 +20,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link ManagementOperationNotificationQuery} definition.
+ * {@link ManagementOperationNotification} {@link KapuaQuery} definition.
  *
- * @since 1.0
+ * @see KapuaQuery
+ * @since 1.0.0
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = ManagementOperationNotificationXmlRegistry.class, factoryMethod = "newQuery")
 public interface ManagementOperationNotificationQuery extends KapuaQuery {
-
 }

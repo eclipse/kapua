@@ -17,23 +17,26 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 
 /**
- * Credential query implementation.
+ * {@link CredentialQuery} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class CredentialQueryImpl extends AbstractKapuaQuery implements CredentialQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public CredentialQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public CredentialQueryImpl(KapuaId scopeId) {
         this();

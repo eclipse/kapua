@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
-import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 
@@ -21,15 +21,23 @@ import org.eclipse.kapua.service.authorization.domain.DomainQuery;
  *
  * @since 1.0.0
  */
-public class DomainQueryImpl extends AbstractKapuaQuery implements DomainQuery {
+public class DomainQueryImpl extends AbstractKapuaNamedQuery implements DomainQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public DomainQueryImpl() {
         super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.5.0
+     */
     public DomainQueryImpl(KapuaId scopeId) {
         super(scopeId);
     }

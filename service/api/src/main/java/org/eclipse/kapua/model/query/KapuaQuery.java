@@ -114,6 +114,14 @@ public interface KapuaQuery {
     void setSortCriteria(@NotNull KapuaSortCriteria sortCriteria);
 
     /**
+     * Gets the default {@link KapuaSortCriteria} to use if {@link #getSortCriteria()} is not specified.
+     *
+     * @return The default {@link KapuaSortCriteria}
+     * @since 1.5.0
+     */
+    KapuaSortCriteria getDefaultSortCriteria();
+
+    /**
      * Gets the {@link KapuaQuery} offset.
      *
      * @return The {@link KapuaQuery} offset.

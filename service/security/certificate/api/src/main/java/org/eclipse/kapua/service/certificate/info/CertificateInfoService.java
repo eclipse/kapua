@@ -21,11 +21,21 @@ import org.eclipse.kapua.service.certificate.CertificateUsage;
 import java.util.List;
 
 /**
+ * {@link CertificateInfo} {@link KapuaEntityService} definition.
+ *
  * @since 1.1.0
  */
 public interface CertificateInfoService extends KapuaEntityService<CertificateInfo, CertificateInfoCreator> {
+
     @Override
     CertificateInfoListResult query(KapuaQuery query) throws KapuaException;
 
+    /**
+     * @param scopeId
+     * @param usage
+     * @return
+     * @throws KapuaException
+     * @since 1.1.0
+     */
     List<CertificateInfo> findAncestorsCertificates(KapuaId scopeId, CertificateUsage usage) throws KapuaException;
 }

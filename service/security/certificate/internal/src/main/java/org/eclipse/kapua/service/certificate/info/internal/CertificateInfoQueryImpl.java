@@ -12,30 +12,37 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.certificate.info.internal;
 
-import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
 
-public class CertificateInfoQueryImpl extends AbstractKapuaQuery implements CertificateInfoQuery {
+/**
+ * {@link CertificateInfoQuery} implementation.
+ *
+ * @since 1.0.0
+ */
+public class CertificateInfoQueryImpl extends AbstractKapuaNamedQuery implements CertificateInfoQuery {
 
     private Boolean includeInherited = Boolean.FALSE;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     private CertificateInfoQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public CertificateInfoQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
-
     }
 
     @Override

@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * {@link FiredTrigger} {@link KapuaQuery} definition.
  *
+ * @see KapuaQuery
  * @since 1.5.0
  */
 @XmlRootElement(name = "query")

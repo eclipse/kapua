@@ -12,16 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.internal;
 
-import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.JobQuery;
 
-public class JobQueryImpl extends AbstractKapuaQuery implements JobQuery {
+/**
+ * {@link JobQuery} implementation.
+ *
+ * @since 1.0.0
+ */
+public class JobQueryImpl extends AbstractKapuaNamedQuery implements JobQuery {
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public JobQueryImpl(KapuaId scopeId) {
         super(scopeId);

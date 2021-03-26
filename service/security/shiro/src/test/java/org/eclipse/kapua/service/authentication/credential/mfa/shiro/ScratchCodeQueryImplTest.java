@@ -25,7 +25,8 @@ public class ScratchCodeQueryImplTest extends Assert {
     public void scratchCodeQueryImplWithoutParameterTest() {
         ScratchCodeQueryImpl scratchCodeQueryImpl = new ScratchCodeQueryImpl();
         assertNull("Null expected.", scratchCodeQueryImpl.getScopeId());
-        assertNotNull("NotNull expected.", scratchCodeQueryImpl.getSortCriteria());
+        assertNull("scratchCodeQueryImpl.sortCriteria", scratchCodeQueryImpl.getSortCriteria());
+        assertNotNull("scratchCodeQueryImpl.defaultSortCriteria", scratchCodeQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
@@ -34,7 +35,8 @@ public class ScratchCodeQueryImplTest extends Assert {
         for (KapuaId scopeId : scopeIds) {
             ScratchCodeQueryImpl scratchCodeQueryImpl = new ScratchCodeQueryImpl(scopeId);
             assertEquals("Expected and actual values should be the same.", scopeId, scratchCodeQueryImpl.getScopeId());
-            assertNotNull("NotNull expected.", scratchCodeQueryImpl.getSortCriteria());
+            assertNull("scratchCodeQueryImpl.sortCriteria", scratchCodeQueryImpl.getSortCriteria());
+            assertNotNull("scratchCodeQueryImpl.defaultSortCriteria", scratchCodeQueryImpl.getDefaultSortCriteria());
         }
     }
 }

@@ -12,24 +12,31 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
+import org.eclipse.kapua.model.query.KapuaQuery;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.model.query.KapuaQuery;
-
 /**
- * {@link Device} query definition.
+ * {@link Device} {@link KapuaQuery} definition.
  *
+ * @see KapuaQuery
  * @since 1.0.0
- *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DeviceXmlRegistry.class, factoryMethod = "newQuery")
 public interface DeviceQuery extends KapuaQuery {
 
+    /**
+     * Instantiates a new {@link DeviceMatchPredicate}.
+     *
+     * @param matchTerm The term to use to match.
+     * @param <T>       The type of the term
+     * @return The newly instantiated {@link DeviceMatchPredicate}.
+     * @since 1.3.0
+     */
     <T> DeviceMatchPredicate<T> matchPredicate(T matchTerm);
-
 }

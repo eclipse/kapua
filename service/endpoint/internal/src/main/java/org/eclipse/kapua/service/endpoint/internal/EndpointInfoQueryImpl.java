@@ -23,6 +23,12 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
  */
 public class EndpointInfoQueryImpl extends AbstractKapuaQuery implements EndpointInfoQuery {
 
+    /**
+     * Constructor.
+     *
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
+     */
     public EndpointInfoQueryImpl(KapuaId scopeId) {
         super(scopeId);
     }

@@ -12,23 +12,32 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
+import org.eclipse.kapua.model.query.KapuaQuery;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.model.query.KapuaQuery;
-
 /**
- * User query definition.
+ * {@link User} {@link KapuaQuery} definition.
  *
- * @since 1.0
+ * @see KapuaQuery
+ * @since 1.0.0
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = UserXmlRegistry.class, factoryMethod = "newQuery")
 public interface UserQuery extends KapuaQuery {
 
+    /**
+     * Instantiates a new {@link UserMatchPredicate}.
+     *
+     * @param matchTerm The term to use to match.
+     * @param <T>       The type of the term
+     * @return The newly instantiated {@link UserMatchPredicate}.
+     * @since 1.3.0
+     */
     <T> UserMatchPredicate<T> matchPredicate(T matchTerm);
 
 }

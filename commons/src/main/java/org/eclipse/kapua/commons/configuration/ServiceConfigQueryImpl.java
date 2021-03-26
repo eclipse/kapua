@@ -16,23 +16,26 @@ import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * Service configuration query reference implementation.
+ * {@link ServiceConfigQuery} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class ServiceConfigQueryImpl extends AbstractKapuaQuery implements ServiceConfigQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     private ServiceConfigQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public ServiceConfigQueryImpl(KapuaId scopeId) {
         this();

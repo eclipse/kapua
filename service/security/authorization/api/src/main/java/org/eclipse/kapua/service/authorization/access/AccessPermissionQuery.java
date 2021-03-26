@@ -12,18 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access;
 
+import org.eclipse.kapua.model.query.KapuaQuery;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.model.query.KapuaQuery;
-
 /**
- * {@link AccessPermission} query definition.
+ * {@link AccessPermission} {@link KapuaQuery} definition.
  *
+ * @see KapuaQuery
  * @since 1.0.0
- *
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)

@@ -14,29 +14,40 @@ package org.eclipse.kapua.service.device.registry.connection.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
+import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionQuery;
 
 /**
- * Device connection query.
+ * {@link DeviceConnectionQuery} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class DeviceConnectionQueryImpl extends AbstractKapuaQuery implements DeviceConnectionQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     private DeviceConnectionQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public DeviceConnectionQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
+    }
+
+    @Override
+    public KapuaSortCriteria getDefaultSortCriteria() {
+        return fieldSortCriteria(DeviceAttributes.CLIENT_ID, SortOrder.ASCENDING);
     }
 }

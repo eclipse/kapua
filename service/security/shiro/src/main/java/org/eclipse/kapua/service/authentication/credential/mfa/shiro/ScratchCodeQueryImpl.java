@@ -17,21 +17,26 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
 
 /**
- * {@link ScratchCodeQuery} query implementation.
+ * {@link ScratchCodeQuery} implementation.
+ *
+ * @since 1.3.0
  */
 public class ScratchCodeQueryImpl extends AbstractKapuaQuery implements ScratchCodeQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.3.0
      */
     public ScratchCodeQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.3.0
      */
     public ScratchCodeQueryImpl(KapuaId scopeId) {
         this();

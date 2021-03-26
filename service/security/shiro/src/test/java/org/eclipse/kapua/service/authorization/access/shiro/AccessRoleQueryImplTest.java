@@ -25,13 +25,15 @@ public class AccessRoleQueryImplTest extends Assert {
     public void accessRoleQueryImplWithoutParametersTest() {
         AccessRoleQueryImpl accessRoleQueryImpl = new AccessRoleQueryImpl();
         assertNull("Null expected.", accessRoleQueryImpl.getScopeId());
-        assertNotNull("NotNull expected.", accessRoleQueryImpl.getSortCriteria());
+        assertNull("accessRoleQueryImpl.sortCriteria", accessRoleQueryImpl.getSortCriteria());
+        assertNotNull("accessRoleQueryImpl.defaultSortCriteria", accessRoleQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
     public void accessRoleQueryImplScopeIdParameterTest() {
         AccessRoleQueryImpl accessRoleQueryImpl = new AccessRoleQueryImpl(KapuaId.ONE);
         assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessRoleQueryImpl.getScopeId());
-        assertNotNull("NotNull expected.", accessRoleQueryImpl.getSortCriteria());
+        assertNull("accessRoleQueryImpl.sortCriteria", accessRoleQueryImpl.getSortCriteria());
+        assertNotNull("accessRoleQueryImpl.defaultSortCriteria", accessRoleQueryImpl.getDefaultSortCriteria());
     }
 }

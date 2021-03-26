@@ -12,32 +12,34 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountQuery;
 
 /**
- * User roles factory service implementation.
+ * {@link AccountQuery} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
-public class AccountQueryImpl extends AbstractKapuaQuery implements AccountQuery {
+public class AccountQueryImpl extends AbstractKapuaNamedQuery implements AccountQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     private AccountQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public AccountQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
     }
-
 }
