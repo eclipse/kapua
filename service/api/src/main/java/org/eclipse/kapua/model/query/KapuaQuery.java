@@ -119,6 +119,7 @@ public interface KapuaQuery {
      * @return The default {@link KapuaSortCriteria}
      * @since 1.5.0
      */
+    @XmlTransient
     KapuaSortCriteria getDefaultSortCriteria();
 
     /**
