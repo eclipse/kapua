@@ -135,7 +135,7 @@ public abstract class AbstractKapuaQuery implements KapuaQuery {
 
     @Override
     public KapuaSortCriteria getDefaultSortCriteria() {
-        return fieldSortCriteria(KapuaEntityAttributes.CREATED_ON, SortOrder.ASCENDING);
+        return fieldSortCriteria(KapuaEntityAttributes.ENTITY_ID, SortOrder.ASCENDING);
     }
 
     @Override
