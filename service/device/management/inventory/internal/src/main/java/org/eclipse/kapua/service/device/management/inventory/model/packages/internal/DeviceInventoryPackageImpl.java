@@ -10,38 +10,32 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.bundle.model.bundle.internal.internal;
+package org.eclipse.kapua.service.device.management.inventory.model.packages.internal;
 
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackage;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * {@link DeviceInventoryBundle} implementation.
+ * {@link DeviceInventoryItem} implementation.
  *
  * @since 1.5.0
  */
-public class DeviceInventoryBundleImpl implements DeviceInventoryBundle {
+public class DeviceInventoryPackageImpl implements DeviceInventoryPackage {
 
-    private String id;
     private String name;
     private String version;
-    private String status;
+    private List<DeviceInventoryBundle> packageBundles;
 
     /**
      * Constructor.
      *
      * @since 1.5.0
      */
-    public DeviceInventoryBundleImpl() {
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(String id) {
-        this.id = id;
+    public DeviceInventoryPackageImpl() {
     }
 
     @Override
@@ -65,12 +59,21 @@ public class DeviceInventoryBundleImpl implements DeviceInventoryBundle {
     }
 
     @Override
-    public String getStatus() {
-        return status;
+    public List<DeviceInventoryBundle> getPackageBundles() {
+        if (packageBundles == null) {
+            packageBundles = new ArrayList<>();
+        }
+
+        return packageBundles;
     }
 
     @Override
-    public void setStatus(String status) {
-        this.status = status;
+    public void addPackageBundle(DeviceInventoryBundle inventoryBundle) {
+        getPackageBundles().add(inventoryBundle);
+    }
+
+    @Override
+    public void setPackageBundles(List<DeviceInventoryBundle> packageBundles) {
+        this.packageBundles = packageBundles;
     }
 }

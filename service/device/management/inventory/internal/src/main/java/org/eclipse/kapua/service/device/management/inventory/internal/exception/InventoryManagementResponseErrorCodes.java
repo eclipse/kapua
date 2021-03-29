@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.bundle.internal.exception;
+package org.eclipse.kapua.service.device.management.inventory.internal.exception;
 
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementErrorCodes;
 
