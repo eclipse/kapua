@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.bundle.internal;
+package org.eclipse.kapua.service.device.management.inventory.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -18,7 +18,6 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
-import org.eclipse.kapua.service.device.management.bundle.internal.exception.DeviceInventoryGetManagementException;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestChannel;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestPayload;
@@ -28,6 +27,7 @@ import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagem
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
+import org.eclipse.kapua.service.device.management.inventory.internal.exception.DeviceInventoryGetManagementException;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
