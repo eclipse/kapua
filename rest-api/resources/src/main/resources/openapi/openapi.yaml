@@ -166,7 +166,7 @@ paths:
     $ref: './deviceConfiguration/deviceConfiguration-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1configurations'
   /{scopeId}/devices/{deviceId}/configurations/{componentId}:
     $ref: './deviceConfiguration/deviceConfiguration-scopeId-deviceId-componentId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1configurations~1{componentId}'
-  ### Device Bundle ###
+  ### Device Inventory ###
   /{scopeId}/devices/{deviceId}/inventory:
     $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory'
   /{scopeId}/devices/{deviceId}/inventory/bundles:
@@ -631,6 +631,10 @@ components:
     clientInfoListResult:
       $ref: './dataClient/dataClient.yaml#/components/schemas/clientInfoListResult'
     ### Data Message Entities ###
+    metric:
+      $ref: './dataMessage/dataMessage.yaml#/components/schemas/metric'
+    position:
+      $ref: './dataMessage/dataMessage.yaml#/components/schemas/position'
     dataMessage:
       $ref: './dataMessage/dataMessage.yaml#/components/schemas/dataMessage'
     dataMessageInsertResponse:
@@ -643,6 +647,8 @@ components:
     metricInfoListResult:
       $ref: './dataMetric/dataMetric.yaml#/components/schemas/metricInfoListResult'
     ### Device Entities ###
+    fetchAttribute:
+      $ref: './device/device.yaml#/components/schemas/fetchAttribute'
     device:
       $ref: './device/device.yaml#/components/schemas/device'
     deviceCreator:
@@ -681,6 +687,14 @@ components:
       $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/componentConfigurations'
     componentConfigurationsInput:
       $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/componentConfigurationsInput'
+    icon:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/icon'
+    propertyDefinition:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/propertyDefinition'
+    option:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/option'
+    attributeDefinition:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/attributeDefinition'
     ### Device Connection Entities ###
     connection:
       $ref: './deviceConnection/deviceConnection.yaml#/components/schemas/connection'
@@ -692,13 +706,21 @@ components:
     deviceEventListResult:
       $ref: './deviceEvent/deviceEvent.yaml#/components/schemas/deviceEventListResult'
     ### Device Inventory Entities ###
+    inventoryItem:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/inventoryItem'
     deviceInventory:
       $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventory'
+    deviceInventoryBundle:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryBundle'
     deviceInventoryBundles:
       $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryBundles'
+    deviceInventoryPackage:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventorySystemPackage'
     deviceInventoryPackages:
       $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventorySystemPackages'
-    deviceInventoryDeploymenyPackages:
+    deviceInventoryDeploymentPackage:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryDeploymentPackage'
+    deviceInventoryDeploymentPackages:
       $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryDeploymentPackages'
     ### Device Notification Entities ###
     deviceNotification:
@@ -706,11 +728,15 @@ components:
     deviceNotificationListResult:
       $ref: './deviceNotification/deviceNotification.yaml#/components/schemas/deviceNotificationListResult'
     ### Device Operation Entities ###
+    operationProperty:
+      $ref: './deviceOperation/deviceOperation.yaml#/components/schemas/operationProperty'
     deviceOperation:
       $ref: './deviceOperation/deviceOperation.yaml#/components/schemas/deviceOperation'
     deviceOperationListResult:
       $ref: './deviceOperation/deviceOperation.yaml#/components/schemas/deviceOperationListResult'
     ### Device Package Entities ###
+    bundleInfo:
+      $ref: './devicePackage/devicePackage.yaml#/components/schemas/bundleInfo'
     devicePackage:
       $ref: './devicePackage/devicePackage.yaml#/components/schemas/devicePackage'
     devicePackages:
@@ -733,6 +759,8 @@ components:
     domainListResult:
       $ref: './domain/domain.yaml#/components/schemas/domainListResult'
     ### Endpoint Info Entities ###
+    usage:
+      $ref: './endpointInfo/endpointInfo.yaml#/components/schemas/usage'
     endpointInfo:
       $ref: './endpointInfo/endpointInfo.yaml#/components/schemas/endpointInfo'
     endpointInfoCreator:
@@ -810,6 +838,10 @@ components:
     rolePermissionListResult:
       $ref: './role/role.yaml#/components/schemas/rolePermissionListResult'
     ### Service Configuration Entities ###
+    servicePropertyDefinition:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/propertyDefinition'
+    serviceIcon:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/icon'
     serviceComponentConfiguration:
       $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/componentConfiguration'
     serviceComponentConfigurationInput:
@@ -818,6 +850,10 @@ components:
       $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/componentConfigurations'
     serviceComponentConfigurationsInput:
       $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/componentConfigurationsInput'
+    serviceOption:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/option'
+    serviceAttributeDefinition:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/attributeDefinition'
     ### Tag Entities ###
     tag:
       $ref: './tag/tag.yaml#/components/schemas/tag'
@@ -826,6 +862,8 @@ components:
     tagListResult:
       $ref: './tag/tag.yaml#/components/schemas/tagListResult'
     ### Trigger Definition Entities ###
+    triggerDefinitionProperty:
+      $ref: './triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerDefinitionProperty'
     triggerDefinition:
       $ref: './triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerDefinition'
     triggerDefinitionListResult:

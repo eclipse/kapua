@@ -66,14 +66,7 @@ components:
             metrics:
               type: array
               items:
-                type: object
-                properties:
-                  valueType:
-                    type: string
-                  value:
-                    type: string
-                  name:
-                    type: string
+                $ref: '#/components/schemas/metric'
             body:
               type: string
               format: base64
@@ -217,3 +210,12 @@ components:
         status:
           type: integer
           format: int32
+    metric:
+      type: object
+      properties:
+        valueType:
+          type: string
+        value:
+          type: string
+        name:
+          type: string

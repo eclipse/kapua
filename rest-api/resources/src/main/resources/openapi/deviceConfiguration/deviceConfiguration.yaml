@@ -29,12 +29,7 @@ components:
         Option:
           type: array
           items:
-            type: object
-            properties:
-              label:
-                type: string
-              value:
-                type: string
+            $ref: '#/components/schemas/option'
         default:
           type: string
         type:
@@ -100,12 +95,7 @@ components:
             Icon:
               type: array
               items:
-                type: object
-                properties:
-                  resource:
-                    type: string
-                  size:
-                    type: integer
+                $ref: '#/components/schemas/icon'
             name:
               type: string
             description:
@@ -226,3 +216,17 @@ components:
                   type: String
                   value:
                     - org.eclipse.kura.wire.graph.WireGraphService
+    icon:
+      type: object
+      properties:
+        resource:
+          type: string
+        size:
+          type: integer
+    option:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: string
