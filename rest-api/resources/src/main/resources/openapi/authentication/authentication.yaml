@@ -38,6 +38,9 @@ components:
             refreshExpiresOn:
               type: string
               format: 'date-time'
+            trustKey:
+              allOf:
+                - $ref: '#/components/schemas/trustKey'
     loginInfo:
       type: object
       properties:
