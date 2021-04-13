@@ -22,11 +22,13 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -78,6 +80,7 @@ public class EndpointInfoServiceImpl
             throws KapuaException {
         ArgumentValidator.notNull(endpointInfoCreator, "endpointInfoCreator");
         ArgumentValidator.notNull(endpointInfoCreator.getScopeId(), "endpointInfoCreator.scopeId");
+        ArgumentValidator.notNull(endpointInfoCreator.getEndpointType(), "endpointInfoCreator.endpointType");
 
         ArgumentValidator.notEmptyOrNull(endpointInfoCreator.getSchema(), ENDPOINT_INFO_CREATOR_SCHEMA);
         ArgumentValidator.match(endpointInfoCreator.getSchema(), CommonsValidationRegex.URI_SCHEME, ENDPOINT_INFO_CREATOR_SCHEMA);
@@ -172,13 +175,19 @@ public class EndpointInfoServiceImpl
     }
 
     @Override
-    public EndpointInfoListResult query(KapuaQuery query)
+    public EndpointInfoListResult query(KapuaQuery query) throws KapuaException {
+        return query(query, EndpointInfo.ENDPOINT_TYPE_RESOURCE);
+    }
+
+    @Override
+    public EndpointInfoListResult query(KapuaQuery query, String section)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
         //
         // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId()));
+        addSectionToPredicate(query, section);
 
         //
         // Do Query
@@ -188,7 +197,7 @@ public class EndpointInfoServiceImpl
             if (endpointInfoListResult.isEmpty() && query.getScopeId() != null) {
 
                 // First check if there are any endpoint specified at all
-                if (countAllEndpointsInScope(em, query.getScopeId())) {
+                if (countAllEndpointsInScope(em, query.getScopeId(), section)) {
                     // if there are endpoints (even not matching the query), return the empty list
                     return endpointInfoListResult;
                 }
@@ -201,7 +210,11 @@ public class EndpointInfoServiceImpl
                     if (account == null) {
                         throw new KapuaEntityNotFoundException(Account.TYPE, query.getScopeId());
                     }
-
+                    if (account.getScopeId() == null) {
+                        // Query was originally on root account, and querying on parent scope id would mean querying in null,
+                        // i.e. querying on all accounts. Since that's not what we want, break away.
+                        break;
+                    }
                     query.setScopeId(account.getScopeId());
                     endpointInfoListResult = EndpointInfoDAO.query(em, query);
                 }
@@ -215,7 +228,12 @@ public class EndpointInfoServiceImpl
     }
 
     @Override
-    public long count(KapuaQuery query)
+    public long count(KapuaQuery query) throws KapuaException {
+        return count(query, EndpointInfo.ENDPOINT_TYPE_RESOURCE);
+    }
+
+    @Override
+    public long count(KapuaQuery query, String section)
             throws KapuaException {
         ArgumentValidator.notNull(query, "query");
 
@@ -231,7 +249,7 @@ public class EndpointInfoServiceImpl
             if (endpointInfoCount == 0 && query.getScopeId() != null) {
 
                 // First check if there are any endpoint specified at all
-                if (countAllEndpointsInScope(em, query.getScopeId())) {
+                if (countAllEndpointsInScope(em, query.getScopeId(), section)) {
                     // if there are endpoints (even not matching the query), return 0
                     return endpointInfoCount;
                 }
@@ -280,17 +298,17 @@ public class EndpointInfoServiceImpl
                 query.attributePredicate(EndpointInfoAttributes.SCHEMA, schema),
                 query.attributePredicate(EndpointInfoAttributes.DNS, dns),
                 query.attributePredicate(EndpointInfoAttributes.PORT, port)
-        );
+                                                      );
 
         if (entityId != null) {
-            andPredicate.and(query.attributePredicate(EndpointInfoAttributes.ENTITY_ID, entityId, Operator.NOT_EQUAL));
+            andPredicate.and(query.attributePredicate(KapuaEntityAttributes.ENTITY_ID, entityId, Operator.NOT_EQUAL));
         }
 
         query.setPredicate(andPredicate);
 
         if (count(query) > 0) {
             List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
-            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoAttributes.SCOPE_ID, scopeId));
+            uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(KapuaEntityAttributes.SCOPE_ID, scopeId));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoAttributes.SCHEMA, schema));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoAttributes.DNS, dns));
             uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(EndpointInfoAttributes.PORT, port));
@@ -299,9 +317,17 @@ public class EndpointInfoServiceImpl
         }
     }
 
-    private boolean countAllEndpointsInScope(EntityManager em, KapuaId scopeId) throws KapuaException {
+    private boolean countAllEndpointsInScope(EntityManager em, KapuaId scopeId, String section) throws KapuaException {
         EndpointInfoQuery totalQuery = ENDPOINT_INFO_FACTORY.newQuery(scopeId);
+        addSectionToPredicate(totalQuery, section);
         long totalCount = EndpointInfoDAO.count(em, totalQuery);
         return totalCount != 0;
     }
+
+    private void addSectionToPredicate(KapuaQuery query, String section) {
+        QueryPredicate sectionPredicate = query.attributePredicate(EndpointInfoAttributes.ENDPOINT_TYPE, section);
+        QueryPredicate currentPredicate = query.getPredicate();
+        query.setPredicate(currentPredicate == null ? sectionPredicate : query.andPredicate(currentPredicate, sectionPredicate));
+    }
+
 }

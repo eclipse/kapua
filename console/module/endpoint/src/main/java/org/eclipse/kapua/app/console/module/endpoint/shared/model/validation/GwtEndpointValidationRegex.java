@@ -30,7 +30,9 @@ public enum GwtEndpointValidationRegex implements GwtValidationRegex, IsSerializ
     /**
      * ^[a-zA-Z][a-zA-Z0-9\-\.\+]{0,}$
      */
-    URI_PORT("^[0-9]{1,5}$");
+    URI_PORT("^[0-9]{1,5}$"),
+
+    URI_ORIGIN("^(https?)://([A-Za-z0-9\\-\\.]+)(:(\\d{1-5}))?$");
 
     private String regex;
 

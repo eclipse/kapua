@@ -47,6 +47,7 @@ public class EndpointInfoDAO extends ServiceDAO {
         endpointInfo.setPort(creator.getPort());
         endpointInfo.setSecure(creator.getSecure());
         endpointInfo.setUsages(creator.getUsages());
+        endpointInfo.setEndpointType(creator.getEndpointType());
 
         return ServiceDAO.create(em, endpointInfo);
     }

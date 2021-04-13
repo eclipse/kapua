@@ -23,11 +23,13 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
+
 import org.eclipse.kapua.app.console.module.account.client.messages.ConsoleAccountMessages;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.AbstractView;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.endpoint.shared.model.permission.EndpointSessionPermission;
 
 public class AccountDetailsView extends AbstractView {
 
@@ -79,8 +81,14 @@ public class AccountDetailsView extends AbstractView {
         AccountDetailsTabDescription accountDescriptionTab = new AccountDetailsTabDescription(currentSession);
         settingsTabItem.setDescriptionTab(accountDescriptionTab);
         accountDescriptionTab.setEntity(selectedAccount);
+
         tabPanel.add(accountDescriptionTab);
         tabPanel.add(settingsTabItem);
+        if (currentSession.hasPermission(EndpointSessionPermission.read())) {
+            AccountDetailsTabCors accountDetailsTabCors = new AccountDetailsTabCors(currentSession, this);
+            accountDetailsTabCors.setEntity(selectedAccount);
+            tabPanel.add(accountDetailsTabCors);
+        }
         bodyLayoutContainer.add(tabPanel, northData);
 
         add(bodyLayoutContainer);

@@ -22,6 +22,7 @@
 
         <class>org.eclipse.kapua.service.endpoint.internal.EndpointInfoImpl</class>
         <class>org.eclipse.kapua.service.endpoint.internal.EndpointUsageImpl</class>
+        <class>org.eclipse.kapua.service.endpoint.internal.cors.CorsEndpointInfoImpl</class>
 
         <!-- Base classes and External classes -->
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>

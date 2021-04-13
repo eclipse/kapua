@@ -63,7 +63,7 @@ public class GwtConsoleServiceImpl extends KapuaRemoteServiceServlet implements 
         for (MainViewDescriptor descriptorClass : MAIN_VIEW_DESCRIPTOR_CLASSES) {
             for (int i = 0; i < MAIN_VIEW_DESCRIPTORS.size(); i++) {
                 JsonObject descriptor = MAIN_VIEW_DESCRIPTORS.getJsonObject(i);
-                if (descriptor.getString("descriptor").equals(descriptorClass.getClass().getName())) {
+                if (descriptor.containsKey("descriptor") && descriptorClass.getClass().getName().equals(descriptor.getString("descriptor"))) {
                     views.add(descriptorClass);
                     break;
                 }

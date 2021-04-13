@@ -67,7 +67,6 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
     protected SelectionMode selectionMode = SelectionMode.SINGLE;
     protected boolean keepSelectedItemsAfterLoad = true;
     protected boolean entityGridConfigured;
-    private EntityGridLoadListener<M> entityGridLoadListener;
     protected boolean selectedAgain;
     protected M selectedItem;
     private boolean deselectable;
@@ -206,7 +205,7 @@ public abstract class EntityGrid<M extends GwtEntityModel> extends ContentPanel 
 
         //
         // Grid Data Load Listener
-        entityGridLoadListener = new EntityGridLoadListener<M>(this, entityStore, EntityFilterPanel.getSearchButton(), EntityFilterPanel.getResetButton());
+        EntityGridLoadListener<M> entityGridLoadListener = new EntityGridLoadListener<M>(this, entityStore, EntityFilterPanel.getSearchButton(), EntityFilterPanel.getResetButton());
         entityGridLoadListener.setKeepSelectedOnLoad(keepSelectedItemsAfterLoad);
 
         entityLoader.addLoadListener(entityGridLoadListener);

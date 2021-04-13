@@ -17,12 +17,14 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
+import org.eclipse.kapua.app.console.module.endpoint.client.EndpointModel;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointCreator;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointQuery;
@@ -45,6 +47,8 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -77,6 +81,7 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
             endpointCreator.setDns(gwtEndpointCreator.getDns());
             endpointCreator.setPort(gwtEndpointCreator.getPort().intValue());
             endpointCreator.setSecure(gwtEndpointCreator.getSecure());
+            endpointCreator.setEndpointType(gwtEndpointCreator.getEndpointType());
 
             EndpointInfo endpointInfo = ENDPOINT_INFO_SERVICE.create(endpointCreator);
 
@@ -131,13 +136,13 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
     }
 
     @Override
-    public PagingLoadResult<GwtEndpoint> query(PagingLoadConfig loadConfig, final GwtEndpointQuery gwtEndpointQuery) throws GwtKapuaException {
+    public PagingLoadResult<GwtEndpoint> query(PagingLoadConfig loadConfig, final GwtEndpointQuery gwtEndpointQuery, String section) throws GwtKapuaException {
         int totalLength = 0;
         List<GwtEndpoint> gwtEndpointList = new ArrayList<GwtEndpoint>();
         try {
             EndpointInfoQuery endpointQuery = GwtKapuaEndpointModelConverter.convertEndpointQuery(loadConfig, gwtEndpointQuery);
 
-            EndpointInfoListResult endpoints = ENDPOINT_INFO_SERVICE.query(endpointQuery);
+            EndpointInfoListResult endpoints = ENDPOINT_INFO_SERVICE.query(endpointQuery, section);
             totalLength = endpoints.getTotalCount().intValue();
 
             if (!endpoints.isEmpty()) {
@@ -165,7 +170,7 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
             KapuaExceptionHandler.handle(e);
         }
         return new BasePagingLoadResult<GwtEndpoint>(gwtEndpointList, loadConfig.getOffset(),
-                totalLength);
+                                                     totalLength);
     }
 
     @Override
@@ -218,10 +223,10 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
 
                 gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointModifiedOn", endpointInfo.getModifiedOn()));
                 gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointModifiedBy",
-                        endpointInfo.getModifiedBy() != null ? usernameMap.get(endpointInfo.getModifiedBy().toCompactId()) : null));
+                                                                endpointInfo.getModifiedBy() != null ? usernameMap.get(endpointInfo.getModifiedBy().toCompactId()) : null));
                 gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointCreatedOn", endpointInfo.getCreatedOn()));
                 gwtEndpointDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "endpointCreatedBy",
-                        endpointInfo.getCreatedBy() != null ? usernameMap.get(endpointInfo.getCreatedBy().toCompactId()) : null));
+                                                                endpointInfo.getCreatedBy() != null ? usernameMap.get(endpointInfo.getCreatedBy().toCompactId()) : null));
 
             }
         } catch (Exception e) {
@@ -246,4 +251,30 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
         }
         return endpointList;
     }
+
+    @Override
+    public EndpointModel parseEndpointModel(EndpointModel endpointModel, String origin) throws GwtKapuaException {
+        try {
+            URL url;
+            url = new URL(origin);
+            String protocol = url.getProtocol();
+            endpointModel.setSchema(protocol);
+            int port = url.getPort();
+            if (port == -1) {
+                if (protocol.equalsIgnoreCase("http")) {
+                    port = 80;
+                } else if (protocol.equalsIgnoreCase("https")) {
+                    port = 443;
+                }
+            }
+            endpointModel.setPort(port == -1 ? 80 : port);
+            endpointModel.setDns(url.getHost());
+            endpointModel.setSecure(protocol.equals("https"));
+            endpointModel.setEndpointType(EndpointInfo.ENDPOINT_TYPE_CORS);
+            return endpointModel;
+        } catch (MalformedURLException malformedURLException) {
+            throw KapuaExceptionHandler.buildExceptionFromError(malformedURLException);
+        }
+    }
+
 }

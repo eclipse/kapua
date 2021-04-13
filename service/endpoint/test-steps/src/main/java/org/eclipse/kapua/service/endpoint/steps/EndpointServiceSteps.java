@@ -134,6 +134,7 @@ public class EndpointServiceSteps extends TestBase {
         endpointInfoCreator.setSchema(schema);
         endpointInfoCreator.setDns(dns);
         endpointInfoCreator.setPort(port);
+        endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
         try {
             stepData.remove(ENDPOINT_INFO);
             EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
@@ -157,6 +158,7 @@ public class EndpointServiceSteps extends TestBase {
             endpointInfoCreator.setSchema(schema);
             endpointInfoCreator.setDns("dns.com");
             endpointInfoCreator.setPort(2222);
+            endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
             try {
                 stepData.remove("EndpointInfo");
                 EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
@@ -172,6 +174,7 @@ public class EndpointServiceSteps extends TestBase {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setDns(dns);
         endpointInfoCreator.setPort(port);
+        endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
         try {
             EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
             stepData.put("EndpointInfo", endpointInfo);
@@ -184,6 +187,7 @@ public class EndpointServiceSteps extends TestBase {
     public void iCreateEndpointWithSchemaOnly(String schema) throws Exception {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setSchema(schema);
+        endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
         try {
             EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
             stepData.put("EndpointInfo", endpointInfo);
@@ -198,6 +202,7 @@ public class EndpointServiceSteps extends TestBase {
         endpointInfoCreator.setSchema(null);
         endpointInfoCreator.setDns(null);
         endpointInfoCreator.setPort(0);
+        endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
         try {
             EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
             stepData.put("EndpointInfo", endpointInfo);
@@ -443,6 +448,7 @@ public class EndpointServiceSteps extends TestBase {
         endpointInfoCreator.setSchema(schema);
         endpointInfoCreator.setPort(port);
         endpointInfoCreator.setDns(null);
+        endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
         try {
             EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
             stepData.put("EndpointInfo", endpointInfo);
@@ -455,6 +461,7 @@ public class EndpointServiceSteps extends TestBase {
     public void iCreateEndpointWithDomainWithoutSchemaAndPort(String domainName) throws Throwable{
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setDns(domainName);
+        endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
         try {
             EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
             stepData.put("EndpointInfo", endpointInfo);
@@ -468,6 +475,7 @@ public class EndpointServiceSteps extends TestBase {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setDns(domainName);
         endpointInfoCreator.setSchema(schema);
+        endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
         try {
             EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
             stepData.put("EndpointInfo", endpointInfo);
@@ -480,6 +488,7 @@ public class EndpointServiceSteps extends TestBase {
     public void iCreateEndpointWithPortWithoutSchemaAndDomain(int port) throws Throwable{
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setPort(port);
+        endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
         try {
             EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
             stepData.put("EndpointInfo", endpointInfo);
@@ -494,6 +503,7 @@ public class EndpointServiceSteps extends TestBase {
         endpointInfoCreator.setSchema(schema);
         endpointInfoCreator.setDns(domainName);
         endpointInfoCreator.setPort(port);
+        endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
         if (secureField.equals("ENABLED")) {
             endpointInfoCreator.setSecure(true);
         } else {

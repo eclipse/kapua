@@ -41,6 +41,7 @@ public class KapuaGwtEndpointModelConverter {
         gwtEndpoint.setDns(endpoint.getDns());
         gwtEndpoint.setPort(endpoint.getPort());
         gwtEndpoint.setSecure(endpoint.getSecure());
+        gwtEndpoint.setEndpointType(endpoint.getEndpointType());
 
         return gwtEndpoint;
     }

@@ -33,6 +33,7 @@ public class EndpointInfoCreatorImpl extends AbstractKapuaEntityCreator<Endpoint
     private int port;
     private boolean secure;
     private Set<EndpointUsage> usages;
+    private String endpointType;
 
     protected EndpointInfoCreatorImpl(KapuaId scopeId) {
         super(scopeId);
@@ -91,4 +92,15 @@ public class EndpointInfoCreatorImpl extends AbstractKapuaEntityCreator<Endpoint
     public void setUsages(Set<EndpointUsage> usages) {
         this.usages = usages;
     }
+
+    @Override
+    public String getEndpointType() {
+        return endpointType;
+    }
+
+    @Override
+    public void setEndpointType(String endpointType) {
+        this.endpointType = endpointType;
+    }
+
 }
