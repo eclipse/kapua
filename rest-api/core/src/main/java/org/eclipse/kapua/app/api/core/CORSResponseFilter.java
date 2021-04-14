@@ -106,8 +106,8 @@ public class CORSResponseFilter implements Filter {
         httpResponse.addHeader(ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
         httpResponse.addHeader(ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
 
-        if (httpRequest.getMethod().equals("OPTIONS")) {
-            // Preflight request
+        if (httpRequest.getMethod().equals("OPTIONS") || KapuaSecurityUtils.getSession() == null) {
+            // Preflight request, or session not yet established (Authentication)
             if (checkOrigin(origin, null)) {
                 // Origin matches at least one defined Endpoint
                 httpResponse.addHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
