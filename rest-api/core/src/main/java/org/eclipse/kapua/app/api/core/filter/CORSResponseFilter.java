@@ -74,6 +74,7 @@ public class CORSResponseFilter implements Filter {
         logger.info("Initializing with FilterConfig: {}", filterConfig);
         int intervalSecs = KapuaApiSetting.getInstance().getInt(KapuaApiSettingKeys.API_CORS_REFRESH_INTERVAL, 60);
         initRefreshThread(intervalSecs);
+        logger.info("Initializing with FilterConfig: {}... DONE!", filterConfig);
     }
 
     @Override
@@ -100,27 +101,28 @@ public class CORSResponseFilter implements Filter {
         httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
         httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
 
-        if (httpRequest.getMethod().equals("OPTIONS") || KapuaSecurityUtils.getSession() == null) {
-            // Preflight request, or session not yet established (Authentication)
-            if (checkOrigin(origin, null)) {
+        // Depending on the type of the request the KapuaSession might not yet be present.
+        // For preflight request or session not yet established the KapuaSession will be null.
+        // For the actual request it will be available and we will check the CORS according to the scope.
+        KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
+
+        if (httpRequest.getMethod().equals("OPTIONS")) {
+            if (checkOrigin(origin, scopeId)) {
                 // Origin matches at least one defined Endpoint
                 httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
                 httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
                 httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
             } else {
-                throw new ServletException(String.format("HTTP Origin not allowed: %s", origin));
-            }
-        } else {
-            // Actual request
-            if (checkOrigin(origin, KapuaSecurityUtils.getSession().getScopeId())) {
-                // Origin matches at least one defined Endpoint
-                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-                httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
-            } else {
-                throw new ServletException(String.format("HTTP Origin not allowed: %s", origin));
+                String msg = scopeId != null ?
+                        String.format("HTTP Origin not allowed: %s for scope: %s", origin, scopeId.toCompactId()) :
+                        String.format("HTTP Origin not allowed: %s", origin);
+
+                logger.error(msg);
+                httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, msg);
+                return;
             }
         }
+
         chain.doFilter(request, response);
     }
 
@@ -129,6 +131,7 @@ public class CORSResponseFilter implements Filter {
         if (originUrl.getPort() != -1) {
             return origin;
         }
+
         switch (originUrl.getProtocol()) {
             case "http":
                 return origin + ":80";
@@ -146,6 +149,7 @@ public class CORSResponseFilter implements Filter {
         } catch (MalformedURLException malformedURLException) {
             return false;
         }
+
         if (scopeId == null) {
             // No scopeId, so the call is no authenticated. Return true only if origin
             // is enabled in any account or system settings
