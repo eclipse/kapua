@@ -53,6 +53,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * CORS {@link Filter} implementation.
+ * <p>
+ * This filter handles the CORS request per-scope basis.
+ *
+ * @since 1.5.0
+ */
 public class CORSResponseFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(CORSResponseFilter.class);
@@ -170,6 +177,7 @@ public class CORSResponseFilter implements Filter {
     private synchronized void refreshOrigins() {
         try {
             logger.info("Refreshing list of origins...");
+
             Multimap<String, KapuaId> newAllowedOrigins = HashMultimap.create();
             AccountQuery accounts = accountFactory.newQuery(null);
             AccountListResult accountListResult = KapuaSecurityUtils.doPrivileged(() -> accountService.query(accounts));
@@ -182,18 +190,20 @@ public class CORSResponseFilter implements Filter {
                     logger.warn("Unable to add endpoints for account {} to CORS filter", account.getId().toCompactId(), kapuaException);
                 }
             });
+
             for (String allowedSystemOrigin : allowedSystemOrigins) {
                 try {
                     String explicitAllowedSystemOrigin = getExplicitOrigin(allowedSystemOrigin);
                     newAllowedOrigins.put(explicitAllowedSystemOrigin, KapuaId.ANY);
                 } catch (MalformedURLException malformedURLException) {
-                    logger.warn(String.format("Unable to parse origin %s", allowedSystemOrigin), malformedURLException);
+                    logger.warn("Unable to parse origin: {}", allowedSystemOrigin, malformedURLException);
                 }
             }
             allowedOrigins = newAllowedOrigins;
-            logger.info("Refreshing list of origins... DONE!");
+
+            logger.info("Refreshing list of origins... DONE! Loaded {} origins", allowedOrigins.size());
         } catch (Exception exception) {
-            logger.warn("Unable to refresh list of origins", exception);
+            logger.warn("Refreshing list of origins... ERROR!", exception);
         }
     }
 }
