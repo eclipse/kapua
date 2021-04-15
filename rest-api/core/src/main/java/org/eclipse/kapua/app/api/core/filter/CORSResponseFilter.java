@@ -10,27 +10,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.core;
+package org.eclipse.kapua.app.api.core.filter;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.net.HttpHeaders;
+import liquibase.util.StringUtils;
+import org.apache.shiro.web.util.WebUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
 import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
@@ -46,29 +32,43 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoFactory;
 import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import liquibase.util.StringUtils;
-import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * CORS {@link Filter} implementation.
+ * <p>
+ * This filter handles the CORS request per-scope basis.
+ *
+ * @since 1.5.0
+ */
 public class CORSResponseFilter implements Filter {
+
+    private final Logger logger = LoggerFactory.getLogger(CORSResponseFilter.class);
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final AccountService accountService = locator.getService(AccountService.class);
     private final AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
     private final EndpointInfoService endpointInfoService = locator.getService(EndpointInfoService.class);
     private final EndpointInfoFactory endpointInfoFactory = locator.getFactory(EndpointInfoFactory.class);
-
-    private static final String ACCESS_CONTROL_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
-    private static final String ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headers";
-    private static final String ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
-    private static final String ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
-    private static final String ORIGIN = "Origin";
-
-    private final Logger logger = LoggerFactory.getLogger(CORSResponseFilter.class);
 
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> refreshTask;
@@ -78,9 +78,10 @@ public class CORSResponseFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        logger.info("Initializing with FilterConfig: {}", filterConfig);
+        logger.info("Initializing with FilterConfig: {}...", filterConfig);
         int intervalSecs = KapuaApiCoreSetting.getInstance().getInt(KapuaApiCoreSettingKeys.API_CORS_REFRESH_INTERVAL, 60);
         initRefreshThread(intervalSecs);
+        logger.info("Initializing with FilterConfig: {}... DONE!", filterConfig);
     }
 
     @Override
@@ -96,37 +97,37 @@ public class CORSResponseFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         HttpServletRequest httpRequest = WebUtils.toHttp(request);
-        String origin = httpRequest.getHeader(ORIGIN);
+
+        String origin = httpRequest.getHeader(HttpHeaders.ORIGIN);
         if (StringUtils.isEmpty(origin)) {
             // Not a CORS request. Move along.
             chain.doFilter(request, response);
             return;
         }
 
-        httpResponse.addHeader(ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
-        httpResponse.addHeader(ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
+        httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
+        httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
 
-        if (httpRequest.getMethod().equals("OPTIONS") || KapuaSecurityUtils.getSession() == null) {
-            // Preflight request, or session not yet established (Authentication)
-            if (checkOrigin(origin, null)) {
-                // Origin matches at least one defined Endpoint
-                httpResponse.addHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-                httpResponse.addHeader(ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-                httpResponse.addHeader("Vary", ORIGIN);
-            } else {
-                throw new ServletException(String.format("HTTP Origin not allowed: %s", origin));
-            }
+        // Depending on the type of the request the KapuaSession might not yet be present.
+        // For preflight request or session not yet established the KapuaSession will be null.
+        // For the actual request it will be available and we will check the CORS according to the scope.
+        KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
+
+        if (checkOrigin(origin, scopeId)) {
+            // Origin matches at least one defined Endpoint
+            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
         } else {
-            // Actual request
-            if (checkOrigin(origin, KapuaSecurityUtils.getSession().getScopeId())) {
-                // Origin matches at least one defined Endpoint
-                httpResponse.addHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-                httpResponse.addHeader(ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-                httpResponse.addHeader("Vary", ORIGIN);
-            } else {
-                throw new ServletException(String.format("HTTP Origin not allowed: %s", origin));
-            }
+            String msg = scopeId != null ?
+                    String.format("HTTP Origin not allowed: %s for scope: %s", origin, scopeId.toCompactId()) :
+                    String.format("HTTP Origin not allowed: %s", origin);
+
+            logger.error(msg);
+            httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, msg);
+            return;
         }
+
         chain.doFilter(request, response);
     }
 
@@ -135,6 +136,7 @@ public class CORSResponseFilter implements Filter {
         if (originUrl.getPort() != -1) {
             return origin;
         }
+
         switch (originUrl.getProtocol()) {
             case "http":
                 return origin + ":80";
@@ -152,6 +154,7 @@ public class CORSResponseFilter implements Filter {
         } catch (MalformedURLException malformedURLException) {
             return false;
         }
+
         if (scopeId == null) {
             // No scopeId, so the call is no authenticated. Return true only if origin
             // is enabled in any account or system settings
@@ -172,6 +175,7 @@ public class CORSResponseFilter implements Filter {
     private synchronized void refreshOrigins() {
         try {
             logger.info("Refreshing list of origins...");
+
             Multimap<String, KapuaId> newAllowedOrigins = HashMultimap.create();
             AccountQuery accounts = accountFactory.newQuery(null);
             AccountListResult accountListResult = KapuaSecurityUtils.doPrivileged(() -> accountService.query(accounts));
@@ -184,19 +188,20 @@ public class CORSResponseFilter implements Filter {
                     logger.warn("Unable to add endpoints for account {} to CORS filter", account.getId().toCompactId(), kapuaException);
                 }
             });
+
             for (String allowedSystemOrigin : allowedSystemOrigins) {
                 try {
                     String explicitAllowedSystemOrigin = getExplicitOrigin(allowedSystemOrigin);
                     newAllowedOrigins.put(explicitAllowedSystemOrigin, KapuaId.ANY);
                 } catch (MalformedURLException malformedURLException) {
-                    logger.warn(String.format("Unable to parse origin %s", allowedSystemOrigin), malformedURLException);
+                    logger.warn("Unable to parse origin: {}", allowedSystemOrigin, malformedURLException);
                 }
             }
             allowedOrigins = newAllowedOrigins;
-            logger.info("Refreshing list of origins... DONE!");
+
+            logger.info("Refreshing list of origins... DONE! Loaded {} origins", allowedOrigins.size());
         } catch (Exception exception) {
-            logger.warn("Unable to refresh list of origins", exception);
+            logger.warn("Refreshing list of origins... ERROR!", exception);
         }
     }
-
 }

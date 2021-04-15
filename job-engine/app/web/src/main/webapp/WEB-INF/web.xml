@@ -36,7 +36,7 @@
 
     <filter>
         <filter-name>CORSResponseFilter</filter-name>
-        <filter-class>org.eclipse.kapua.app.api.core.CORSResponseFilter</filter-class>
+        <filter-class>org.eclipse.kapua.app.api.core.filter.CORSResponseFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>CORSResponseFilter</filter-name>
