@@ -64,7 +64,7 @@
     <!-- -->
     <!-- Servlets -->
     <servlet>
-        <servlet-name>Jersey Web Application</servlet-name>
+        <servlet-name>Eclipse Kapua REST API</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
@@ -79,7 +79,7 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Jersey Web Application</servlet-name>
+        <servlet-name>Eclipse Kapua REST API</servlet-name>
         <url-pattern>/v1/*</url-pattern>
     </servlet-mapping>
 
