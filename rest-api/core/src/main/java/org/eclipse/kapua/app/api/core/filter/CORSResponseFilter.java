@@ -113,21 +113,19 @@ public class CORSResponseFilter implements Filter {
         // For the actual request it will be available and we will check the CORS according to the scope.
         KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
 
-        if (httpRequest.getMethod().equals("OPTIONS")) {
-            if (checkOrigin(origin, scopeId)) {
-                // Origin matches at least one defined Endpoint
-                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-                httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
-            } else {
-                String msg = scopeId != null ?
-                        String.format("HTTP Origin not allowed: %s for scope: %s", origin, scopeId.toCompactId()) :
-                        String.format("HTTP Origin not allowed: %s", origin);
+        if (checkOrigin(origin, scopeId)) {
+            // Origin matches at least one defined Endpoint
+            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+            httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
+        } else {
+            String msg = scopeId != null ?
+                    String.format("HTTP Origin not allowed: %s for scope: %s", origin, scopeId.toCompactId()) :
+                    String.format("HTTP Origin not allowed: %s", origin);
 
-                logger.error(msg);
-                httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, msg);
-                return;
-            }
+            logger.error(msg);
+            httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, msg);
+            return;
         }
 
         chain.doFilter(request, response);
