@@ -105,9 +105,10 @@
 
                         <api>org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory</api>
 
-                        <api>org.eclipse.kapua.service.endpoint.EndpointInfoFactory</api>
-                        <api>org.eclipse.kapua.service.endpoint.EndpointInfoService</api>
         -->
+        <api>org.eclipse.kapua.service.endpoint.EndpointInfoFactory</api>
+        <api>org.eclipse.kapua.service.endpoint.EndpointInfoService</api>
+
         <api>org.eclipse.kapua.service.job.JobService</api>
         <api>org.eclipse.kapua.service.job.JobFactory</api>
 
