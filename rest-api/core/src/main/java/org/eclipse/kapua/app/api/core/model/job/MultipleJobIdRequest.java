@@ -12,41 +12,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.model.job;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
-public class IsJobRunningResponse {
+public class MultipleJobIdRequest {
 
-    private KapuaId jobId;
-    private Boolean isRunning;
+    private Set<KapuaId> jobIds = new HashSet<>();
 
-    public IsJobRunningResponse() {
-    }
-
-    public IsJobRunningResponse(KapuaId jobId, Boolean isRunning) {
-        this.jobId = jobId;
-        this.isRunning = isRunning;
-    }
-
+    @XmlElementWrapper(name = "jobIds")
+    @XmlElement(name = "jobId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    public KapuaId getJobId() {
-        return jobId;
+    public Set<KapuaId> getJobIds() {
+        return jobIds;
     }
 
-    public void setJobId(KapuaId jobId) {
-        this.jobId = jobId;
-    }
-
-    @XmlElement(name = "isRunning")
-    public Boolean isRunning() {
-        return isRunning;
-    }
-
-    public void setRunning(Boolean isRunning) {
-        this.isRunning = isRunning;
+    public void setJobIds(Set<KapuaId> jobIds) {
+        this.jobIds = jobIds;
     }
 
 }

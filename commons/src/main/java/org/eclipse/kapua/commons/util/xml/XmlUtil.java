@@ -306,6 +306,20 @@ public class XmlUtil {
     }
 
     /**
+     * Unmarshals the given JSON {@link String} as the given {@link Class type}
+     *
+     * @param objectString The {@link String} serialized.
+     * @param type         The {@link Class} type to unmarshal to.
+     * @return The unmarshalled {@link Object}.
+     * @throws JAXBException See {@link #getContext()}.
+     * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
+     * @since 1.5.0
+     */
+    public static <T> T unmarshalJson(@NotNull String objectString, @NotNull Class<T> type) throws JAXBException, SAXException {
+        return unmarshalJson(objectString, type, null);
+    }
+
+    /**
      * Unmarshals the given JSON {@link String} as the given {@link Class type} according to the given namespace {@link java.net.URI}.
      *
      * @param objectString The {@link String} serialized.

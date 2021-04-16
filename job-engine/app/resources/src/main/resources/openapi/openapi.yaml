@@ -49,6 +49,8 @@ servers:
 paths:
   /clean-data/{scopeId}/{jobId}:
     $ref: './jobEngine-scopeId-jobId.yaml#/paths/~1clean-data~1{scopeId}~1{jobId}'
+  /is-running/{scopeId}:
+    $ref: './jobEngine-scopeId.yaml#/paths/~1is-running~1{scopeId}'
   /is-running/{scopeId}/{jobId}:
     $ref: './jobEngine-scopeId-jobId.yaml#/paths/~1is-running~1{scopeId}~1{jobId}'
   /start/{scopeId}/{jobId}:

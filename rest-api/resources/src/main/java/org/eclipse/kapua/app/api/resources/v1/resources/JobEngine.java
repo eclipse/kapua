@@ -18,11 +18,14 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBException;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.model.job.IsJobRunningMultipleResponse;
 import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
+import org.eclipse.kapua.app.api.core.model.job.MultipleJobIdRequest;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
@@ -57,7 +60,15 @@ public class JobEngine extends AbstractKapuaResource {
     public IsJobRunningResponse isRunning(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("jobId") EntityId jobId) throws KapuaException {
-        return new IsJobRunningResponse(jobEngineService.isRunning(scopeId, jobId));
+        return new IsJobRunningResponse(jobId, jobEngineService.isRunning(scopeId, jobId));
+    }
+
+    @POST
+    @Path("_isRunning")
+    public IsJobRunningMultipleResponse isRunning(
+            @PathParam("scopeId") ScopeId scopeId,
+            MultipleJobIdRequest jobIds) throws KapuaException, JAXBException {
+        return new IsJobRunningMultipleResponse(jobEngineService.isRunning(scopeId, jobIds.getJobIds()));
     }
 
     @POST

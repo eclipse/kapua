@@ -271,6 +271,8 @@ paths:
     $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_start'
   /{scopeId}/jobs/{jobId}/_stop:
     $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_stop'
+  /{scopeId}/jobs/_isRunning:
+    $ref: './jobEngine/jobEngine-scopeId.yaml#/paths/~1{scopeId}~1jobs~1_isRunning'
   /{scopeId}/jobs/{jobId}/_isRunning:
     $ref: './jobEngine/jobEngine-scopeId-jobId.yaml#/paths/~1{scopeId}~1jobs~1{jobId}~1_isRunning'
   /{scopeId}/jobs/{jobId}/executions/{executionId}/_resume:

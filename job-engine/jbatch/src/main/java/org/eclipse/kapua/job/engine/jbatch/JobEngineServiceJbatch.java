@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -145,6 +149,10 @@ public class JobEngineServiceJbatch implements JobEngineService {
         // Check Access
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
 
+        return internalIsRunning(scopeId, jobId);
+    }
+
+    private boolean internalIsRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         //
         // Check existence
         Job job = JOB_SERVICE.find(scopeId, jobId);
@@ -159,6 +167,29 @@ public class JobEngineServiceJbatch implements JobEngineService {
         } catch (Exception e) {
             throw new JobCheckRunningException(e, scopeId, jobId);
         }
+    }
+
+    @Override
+    public Map<KapuaId, Boolean> isRunning(KapuaId scopeId, Set<KapuaId> jobIds) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, KapuaEntityAttributes.SCOPE_ID);
+
+        //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+
+        Map<KapuaId, Boolean> isRunningMap = new HashMap<>();
+        jobIds.forEach(jobId -> {
+            try {
+                ArgumentValidator.notNull(jobId, KapuaEntityAttributes.ENTITY_ID);
+                isRunningMap.put(jobId, internalIsRunning(scopeId, jobId));
+            } catch (KapuaException kapuaException) {
+                // No other way to report an error?
+                isRunningMap.put(jobId, null);
+            }
+        });
+        return isRunningMap;
     }
 
     @Override
