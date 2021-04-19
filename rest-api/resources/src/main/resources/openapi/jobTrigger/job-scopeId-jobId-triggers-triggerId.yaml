@@ -37,3 +37,54 @@ paths:
           $ref: '../openapi.yaml#/components/responses/entityNotFound'
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - Job - Trigger
+      summary: Update a single Job Trigger
+      operationId: jobTriggerUpdate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../job/job.yaml#/components/parameters/jobId'
+        - $ref: './jobTrigger.yaml#/components/parameters/triggerId'
+      requestBody:
+        description: An object containing the new properties for the Job Trigger to update
+        content:
+          application/json:
+            schema:
+              $ref: './jobTrigger.yaml#/components/schemas/jobTrigger'
+        required: true
+      responses:
+        200:
+          description: The details of the updated Job Trigger
+          content:
+            application/json:
+              schema:
+                $ref: './jobTrigger.yaml#/components/schemas/jobTrigger'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Job - Trigger
+      summary: Delete a single Job Trigger
+      operationId: jobTriggerDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../job/job.yaml#/components/parameters/jobId'
+        - $ref: './jobTrigger.yaml#/components/parameters/triggerId'
+      responses:
+        204:
+          description: The Job Trigger has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

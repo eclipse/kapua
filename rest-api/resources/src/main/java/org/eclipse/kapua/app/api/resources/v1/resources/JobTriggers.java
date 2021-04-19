@@ -20,6 +20,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -233,6 +234,41 @@ public class JobTriggers extends AbstractKapuaResource {
         triggerProperties.add(triggerFactory.newTriggerProperty("scopeId", KapuaId.class.getCanonicalName(), scopeId.toCompactId()));
         triggerProperties.add(triggerFactory.newTriggerProperty("jobId", KapuaId.class.getCanonicalName(), jobId.toCompactId()));
         return returnCreated(triggerService.create(triggerCreator));
+    }
+
+    /**
+     * Updates a {@link Trigger} based on the information provided in the provided {@link Trigger}
+     * parameter.
+     *
+     * @param scopeId           The {@link ScopeId} in which to create the {@link Trigger}
+     * @param triggerId         The ID of the {@link Trigger} to update
+     * @param trigger           Provides the information for the new {@link Trigger} to be updated.
+     * @param jobId             The ID of the {@link Job} to attach the {@link Trigger} to
+     * @return                  The updated {@link Trigger} object.
+     * @throws                  KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+
+    @PUT
+    @Path("{triggerId}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Trigger update(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("jobId") EntityId jobId,
+            @PathParam("triggerId") EntityId triggerId,
+            Trigger trigger) throws KapuaException {
+        List<TriggerProperty> triggerProperties = trigger.getTriggerProperties();
+        if (triggerProperties == null) {
+            triggerProperties = new ArrayList<>();
+            trigger.setTriggerProperties(triggerProperties);
+        }
+        triggerProperties.removeIf(triggerProperty -> Arrays.stream(new String[]{ "scopeId", "jobId" }).anyMatch(propertyToRemove -> propertyToRemove.equals(triggerProperty.getName())));
+        triggerProperties.add(triggerFactory.newTriggerProperty("scopeId", KapuaId.class.getCanonicalName(), scopeId.toCompactId()));
+        triggerProperties.add(triggerFactory.newTriggerProperty("jobId", KapuaId.class.getCanonicalName(), jobId.toCompactId()));
+        trigger.setScopeId(scopeId);
+        trigger.setId(triggerId);
+        return triggerService.update(trigger);
     }
 
     /**
