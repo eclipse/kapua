@@ -12,19 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
-import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.user.UserQuery;
 
 /**
- * User query implementation.
+ * {@link UserQuery} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
-public class UserQueryImpl extends AbstractKapuaQuery implements UserQuery {
+public class UserQueryImpl extends AbstractKapuaNamedQuery implements UserQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     private UserQueryImpl() {
         super();
@@ -33,7 +35,8 @@ public class UserQueryImpl extends AbstractKapuaQuery implements UserQuery {
     /**
      * Constructor
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public UserQueryImpl(KapuaId scopeId) {
         this();
@@ -44,5 +47,4 @@ public class UserQueryImpl extends AbstractKapuaQuery implements UserQuery {
     public <T> UserMatchPredicateImpl<T> matchPredicate(T matchTerm) {
         return new UserMatchPredicateImpl<>(matchTerm);
     }
-
 }

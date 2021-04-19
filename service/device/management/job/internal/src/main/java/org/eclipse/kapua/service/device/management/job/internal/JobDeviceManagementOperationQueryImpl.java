@@ -26,7 +26,7 @@ public class JobDeviceManagementOperationQueryImpl extends AbstractKapuaQuery im
     /**
      * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
      * @since 1.1.0
      */
     public JobDeviceManagementOperationQueryImpl(KapuaId scopeId) {

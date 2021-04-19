@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.definition.quartz;
 
-import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
+import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQuery;
 
@@ -21,12 +21,12 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionQ
  *
  * @since 1.1.0
  */
-public class TriggerDefinitionQueryImpl extends AbstractKapuaQuery implements TriggerDefinitionQuery {
+public class TriggerDefinitionQueryImpl extends AbstractKapuaNamedQuery implements TriggerDefinitionQuery {
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} of the {@link TriggerDefinitionQuery}
+     * @param scopeId The {@link #getScopeId()}.
      * @since 1.1.0
      */
     public TriggerDefinitionQueryImpl(KapuaId scopeId) {

@@ -19,20 +19,25 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionQuery;
 
 /**
  * {@link MfaOption} query implementation.
+ *
+ * @since 1.3.0
  */
 public class MfaOptionQueryImpl extends AbstractKapuaQuery implements MfaOptionQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.3.0
      */
     public MfaOptionQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.3.0
      */
     public MfaOptionQueryImpl(KapuaId scopeId) {
         this();

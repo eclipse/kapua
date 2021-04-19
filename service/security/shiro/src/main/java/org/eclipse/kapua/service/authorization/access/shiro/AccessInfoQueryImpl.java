@@ -17,23 +17,26 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessInfoQuery;
 
 /**
- * Access info query implementation.
+ * {@link AccessInfoQuery} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class AccessInfoQueryImpl extends AbstractKapuaQuery implements AccessInfoQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public AccessInfoQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public AccessInfoQueryImpl(KapuaId scopeId) {
         this();

@@ -17,23 +17,26 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 
 /**
- * Access token query implementation.
+ * {@link AccessTokenQuery} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class AccessTokenQueryImpl extends AbstractKapuaQuery implements AccessTokenQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     private AccessTokenQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public AccessTokenQueryImpl(KapuaId scopeId) {
         this();

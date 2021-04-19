@@ -17,23 +17,26 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionQuery;
 
 /**
- * Device connection options query.
+ * {@link DeviceConnectionOptionQuery} implementation.
  *
  * @since 1.0.0
  */
 public class DeviceConnectionOptionQueryImpl extends AbstractKapuaQuery implements DeviceConnectionOptionQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     private DeviceConnectionOptionQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public DeviceConnectionOptionQueryImpl(KapuaId scopeId) {
         this();

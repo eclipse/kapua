@@ -20,11 +20,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link MfaOption} query definition.
+ * {@link MfaOption} {@link KapuaQuery} definition.
+ *
+ * @see KapuaQuery
+ * @since 1.3.0
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = MfaOptionXmlRegistry.class, factoryMethod = "newQuery")
 public interface MfaOptionQuery extends KapuaQuery {
-
 }

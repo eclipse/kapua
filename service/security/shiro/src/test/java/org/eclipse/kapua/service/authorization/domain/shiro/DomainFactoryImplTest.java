@@ -68,14 +68,16 @@ public class DomainFactoryImplTest extends Assert {
     public void newQueryTest() {
         DomainQuery domainQuery = domainFactoryImpl.newQuery(KapuaId.ONE);
         assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domainQuery.getScopeId());
-        assertNotNull("NotNull expected.", domainQuery.getSortCriteria());
+        assertNull("domainQuery.sortCriteria", domainQuery.getSortCriteria());
+        assertNotNull("domainQuery.defaultSortCriteria", domainQuery.getDefaultSortCriteria());
     }
 
     @Test
     public void newQueryNullTest() {
         DomainQuery domainQuery = domainFactoryImpl.newQuery(null);
         assertNull("Null expected.", domainQuery.getScopeId());
-        assertNotNull("NotNull expected.", domainQuery.getSortCriteria());
+        assertNull("domainQuery.sortCriteria", domainQuery.getSortCriteria());
+        assertNotNull("domainQuery.defaultSortCriteria", domainQuery.getDefaultSortCriteria());
     }
 
     @Test

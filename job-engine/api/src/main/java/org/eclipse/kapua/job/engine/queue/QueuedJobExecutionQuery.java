@@ -20,8 +20,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link QueuedJobExecutionQuery} definition.
+ * {@link QueuedJobExecution} {@link KapuaQuery} definition.
  *
+ * @see KapuaQuery
  * @since 1.1.0
  */
 @XmlRootElement(name = "query")

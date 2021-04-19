@@ -14,27 +14,29 @@ package org.eclipse.kapua.service.authorization.access.shiro;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleQuery;
 
 /**
- * {@link AccessRole} query implementation.
+ * {@link AccessRoleQuery} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class AccessRoleQueryImpl extends AbstractKapuaQuery implements AccessRoleQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public AccessRoleQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public AccessRoleQueryImpl(KapuaId scopeId) {
         this();

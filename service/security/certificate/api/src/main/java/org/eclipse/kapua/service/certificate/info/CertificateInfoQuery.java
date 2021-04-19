@@ -22,6 +22,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
+ * {@link CertificateInfo} {@link KapuaQuery} definition.
+ *
+ * @see KapuaQuery
  * @since 1.1.0
  */
 @XmlRootElement(name = "query")
@@ -29,8 +32,20 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(factoryClass = CertificateInfoXmlRegistry.class, factoryMethod = "newQuery")
 public interface CertificateInfoQuery extends KapuaQuery {
 
+    /**
+     * Gets whether or not to get also inherited {@link CertificateInfo}s
+     *
+     * @return {@code true} if set to get inherited {@link CertificateInfo}s, {@code false} otherwise.
+     * @since 1.1.0
+     */
     @XmlElement(name = "includeInherited")
     Boolean getIncludeInherited();
 
+    /**
+     * Sets whether or not to get also inherited {@link CertificateInfo}s
+     *
+     * @param includeInherited {@code true} to get inherited {@link CertificateInfo}s, {@code false} otherwise.
+     * @since 1.1.0
+     */
     void setIncludeInherited(Boolean includeInherited);
 }

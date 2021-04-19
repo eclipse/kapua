@@ -25,7 +25,8 @@ public class RolePermissionQueryImplTest extends Assert {
     public void rolePermissionQueryImplWithoutParametersTest() {
         RolePermissionQueryImpl rolePermissionQueryImpl = new RolePermissionQueryImpl();
         assertNull("Null expected.", rolePermissionQueryImpl.getScopeId());
-        assertNotNull("NotNull expected.", rolePermissionQueryImpl.getSortCriteria());
+        assertNull("rolePermissionQueryImpl.sortCriteria", rolePermissionQueryImpl.getSortCriteria());
+        assertNotNull("rolePermissionQueryImpl.defaultSortCriteria", rolePermissionQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
@@ -35,7 +36,8 @@ public class RolePermissionQueryImplTest extends Assert {
         for (KapuaId scopeId : scopeIds) {
             RolePermissionQueryImpl rolePermissionQueryImpl = new RolePermissionQueryImpl(scopeId);
             assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionQueryImpl.getScopeId());
-            assertNotNull("NotNull expected.", rolePermissionQueryImpl.getSortCriteria());
+            assertNull("rolePermissionQueryImpl.sortCriteria", rolePermissionQueryImpl.getSortCriteria());
+            assertNotNull("rolePermissionQueryImpl.defaultSortCriteria", rolePermissionQueryImpl.getDefaultSortCriteria());
         }
     }
 }

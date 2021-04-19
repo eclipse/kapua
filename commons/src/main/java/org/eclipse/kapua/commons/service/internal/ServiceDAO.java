@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.internal;
 
+import com.google.common.base.MoreObjects;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -433,15 +434,14 @@ public class ServiceDAO {
         // ORDER BY
         // Default to the KapuaEntity id if no ordering is specified.
         Order order;
-        if (kapuaQuery.getSortCriteria() != null) {
-            FieldSortCriteria sortCriteria = (FieldSortCriteria) kapuaQuery.getSortCriteria();
+        if (kapuaQuery.getSortCriteria() != null || kapuaQuery.getDefaultSortCriteria() != null) {
+            FieldSortCriteria sortCriteria = (FieldSortCriteria) MoreObjects.firstNonNull(kapuaQuery.getSortCriteria(), kapuaQuery.getDefaultSortCriteria());
 
             if (SortOrder.DESCENDING.equals(sortCriteria.getSortOrder())) {
                 order = cb.desc(extractAttribute(entityRoot, sortCriteria.getAttributeName()));
             } else {
                 order = cb.asc(extractAttribute(entityRoot, sortCriteria.getAttributeName()));
             }
-
         } else {
             order = cb.asc(entityRoot.get(entityType.getSingularAttribute(KapuaEntityAttributes.ENTITY_ID)));
         }

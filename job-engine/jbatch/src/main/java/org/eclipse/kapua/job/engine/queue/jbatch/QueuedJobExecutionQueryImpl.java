@@ -17,16 +17,17 @@ import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 
 /**
- * {@link QueuedJobExecutionQuery} implementation
+ * {@link QueuedJobExecutionQuery} implementation.
  *
  * @since 1.1.0
  */
 public class QueuedJobExecutionQueryImpl extends AbstractKapuaQuery implements QueuedJobExecutionQuery {
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.1.0
      */
     public QueuedJobExecutionQueryImpl(KapuaId scopeId) {
         super(scopeId);

@@ -27,7 +27,8 @@ public class EventStoreQueryImplTest extends Assert {
     @Test
     public void eventStoreQueryImplTest1() {
         EventStoreQueryImpl eventStoreQueryImpl = new EventStoreQueryImpl();
-        assertNotNull("Null not expected.", eventStoreQueryImpl.getSortCriteria());
+        assertNull("query.sortCriteria", eventStoreQueryImpl.getSortCriteria());
+        assertNotNull("query.defaultSortCriteria", eventStoreQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
@@ -35,11 +36,13 @@ public class EventStoreQueryImplTest extends Assert {
         KapuaId scopeId = new KapuaIdStatic(BigInteger.ONE);
 
         EventStoreQueryImpl eventStoreQueryImpl1 = new EventStoreQueryImpl(null);
-        assertNotNull("Null not expected.", eventStoreQueryImpl1.getSortCriteria());
+        assertNull("query.sortCriteria", eventStoreQueryImpl1.getSortCriteria());
+        assertNotNull("query.defaultSortCriteria", eventStoreQueryImpl1.getDefaultSortCriteria());
         assertNull("Null expected.", eventStoreQueryImpl1.getScopeId());
 
         EventStoreQueryImpl eventStoreQueryImpl2 = new EventStoreQueryImpl(scopeId);
-        assertNotNull("Null not expected.", eventStoreQueryImpl2.getSortCriteria());
+        assertNull("query.sortCriteria", eventStoreQueryImpl2.getSortCriteria());
+        assertNotNull("query.defaultSortCriteria", eventStoreQueryImpl2.getDefaultSortCriteria());
         assertEquals("Expected and actual values should be the same.", scopeId, eventStoreQueryImpl2.getScopeId());
     }
 }

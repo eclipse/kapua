@@ -16,12 +16,18 @@ import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 
+/**
+ * {@link JobExecutionQuery} implementation.
+ *
+ * @since 1.0.0
+ */
 public class JobExecutionQueryImpl extends AbstractKapuaQuery implements JobExecutionQuery {
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public JobExecutionQueryImpl(KapuaId scopeId) {
         super(scopeId);

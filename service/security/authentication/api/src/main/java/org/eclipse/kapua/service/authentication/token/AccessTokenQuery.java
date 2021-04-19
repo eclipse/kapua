@@ -15,11 +15,10 @@ package org.eclipse.kapua.service.authentication.token;
 import org.eclipse.kapua.model.query.KapuaQuery;
 
 /**
- * Access token query definition.
+ * {@link AccessToken} {@link KapuaQuery} definition.
  *
- * @since 1.0
- *
+ * @see KapuaQuery
+ * @since 1.0.0
  */
 public interface AccessTokenQuery extends KapuaQuery {
-
 }

@@ -16,23 +16,30 @@ import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.model.id.KapuaId;
 
+/**
+ * {@link EventStoreRecordQuery} implementation.
+ *
+ * @since 1.0.0
+ */
 public class EventStoreQueryImpl extends AbstractKapuaQuery implements EventStoreRecordQuery {
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public EventStoreQueryImpl() {
         super();
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link #getScopeId()}.
+     * @since 1.0.0
      */
     public EventStoreQueryImpl(KapuaId scopeId) {
         this();
         setScopeId(scopeId);
     }
-
 }

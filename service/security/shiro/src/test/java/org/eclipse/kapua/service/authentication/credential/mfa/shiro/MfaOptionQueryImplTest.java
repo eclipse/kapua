@@ -24,8 +24,9 @@ public class MfaOptionQueryImplTest extends Assert {
     @Test
     public void mfaOptionQueryImplTest() {
         MfaOptionQueryImpl mfaOptionQueryImpl = new MfaOptionQueryImpl();
-        assertNotNull("NotNull expected.", mfaOptionQueryImpl.getSortCriteria());
         assertNull("Null expected.", mfaOptionQueryImpl.getScopeId());
+        assertNull("mfaOptionQueryImpl.sortCriteria", mfaOptionQueryImpl.getSortCriteria());
+        assertNotNull("mfaOptionQueryImpl.defaultSortCriteria", mfaOptionQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
@@ -34,8 +35,9 @@ public class MfaOptionQueryImplTest extends Assert {
 
         for (KapuaId scopeId : scopeIds) {
             MfaOptionQueryImpl mfaOptionQueryImpl = new MfaOptionQueryImpl(scopeId);
-            assertNotNull("NotNull expected.", mfaOptionQueryImpl.getSortCriteria());
             assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionQueryImpl.getScopeId());
+            assertNull("mfaOptionQueryImpl.sortCriteria", mfaOptionQueryImpl.getSortCriteria());
+            assertNotNull("mfaOptionQueryImpl.defaultSortCriteria", mfaOptionQueryImpl.getDefaultSortCriteria());
         }
     }
 }

@@ -20,8 +20,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link EndpointInfo} query definition.
+ * {@link EndpointInfo} {@link KapuaQuery} definition.
  *
+ * @see KapuaQuery
  * @since 1.0.0
  */
 @XmlRootElement(name = "query")

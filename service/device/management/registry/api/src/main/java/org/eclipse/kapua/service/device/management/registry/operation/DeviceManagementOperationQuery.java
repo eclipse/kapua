@@ -20,13 +20,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * {@link DeviceManagementOperationQuery} definition.
+ * {@link DeviceManagementOperation} {@link KapuaQuery} definition.
  *
- * @since 1.0
+ * @see KapuaQuery
+ * @since 1.0.0
  */
 @XmlRootElement(name = "query")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DeviceManagementOperationXmlRegistry.class, factoryMethod = "newQuery")
 public interface DeviceManagementOperationQuery extends KapuaQuery {
-
 }
