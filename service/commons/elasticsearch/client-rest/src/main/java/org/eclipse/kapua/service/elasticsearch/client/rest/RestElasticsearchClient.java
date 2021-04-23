@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
@@ -239,6 +240,10 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
                         String failureMessage = MSG_EMPTY_ERROR;
                         if (failureNode != null) {
                             failureMessage = failureNode.asText();
+                        }
+                        String reason = jsonNode.at("/error/reason").asText();
+                        if (StringUtils.isNotBlank(reason)) {
+                            failureMessage = reason;
                         }
                         bulkResponse.add(new UpdateResponse(metricId, new TypeDescriptor(indexName, typeName), failureMessage));
                         LOG.info("Upsert failed [{}, {}, {}]", indexName, typeName, failureMessage);
