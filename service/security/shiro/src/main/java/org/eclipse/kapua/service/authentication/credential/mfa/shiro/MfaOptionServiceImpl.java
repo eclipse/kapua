@@ -18,6 +18,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.http.client.utils.URIBuilder;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
@@ -71,6 +72,8 @@ import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
@@ -152,7 +155,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
 
             // generating base64 QR code image
             Account account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(finalMfaOptionCreator.getScopeId()));
-            mfaOption.setQRCodeImage(generateQRCode(account.getName(), user.getName(), fullKey));
+            mfaOption.setQRCodeImage(generateQRCode(account.getOrganization().getName(), account.getName(), user.getName(), fullKey));
 
             em.commit();
 
@@ -389,24 +392,27 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
     }
 
     /**
-     * Produce a QR code in base64 format for the authenticator app
+     * Produce a QR code in base64 format for the authenticator app.
+     * This QR code generator follows the spec detailed here for the URI format: https://github.com/google/google-authenticator/wiki/Key-Uri-Format
      *
+     * @param organizationName the organization name to be used as issuer in the QR code
      * @param accountName the account name of the account to which the user belongs
      * @param username    the username
      * @param key         the Mfa secret key in plain text
      * @return the QR code image in base64 format
      */
-    private String generateQRCode(String accountName, String username, String key) throws IOException, WriterException {
+    private String generateQRCode(String organizationName, String accountName, String username, String key)
+            throws IOException, WriterException, URISyntaxException {
         // url to qr_barcode encoding
-        StringBuilder sb = new StringBuilder();
-        sb.append("otpauth://totp/")
-                .append(username)
-                .append("@")
-                .append(accountName) // TODO: not sure that we also need the account name
-                .append("?secret=")
-                .append(key);
+        URI uri = new URIBuilder()
+                .setScheme("otpauth")
+                .setHost("totp")
+                .setPath(organizationName + ":" + username + "@" + accountName)
+                .setParameter("secret", key)
+                .setParameter("issuer", organizationName)
+                .build();
 
-        BitMatrix bitMatrix = new QRCodeWriter().encode(sb.toString(), BarcodeFormat.QR_CODE, QR_CODE_SIZE, QR_CODE_SIZE);
+        BitMatrix bitMatrix = new QRCodeWriter().encode(uri.toString(), BarcodeFormat.QR_CODE, QR_CODE_SIZE, QR_CODE_SIZE);
         BufferedImage image = buildImage(bitMatrix);
         return imgToBase64(image);
     }
