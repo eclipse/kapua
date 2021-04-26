@@ -28,8 +28,6 @@
     <modules>
         <module>client-api</module>
         <module>client-rest</module>
-        <module>client-transport</module>
-
         <module>server-embedded</module>
     </modules>
 </project>
