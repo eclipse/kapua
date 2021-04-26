@@ -34,6 +34,15 @@ docker_compose() {
         COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.broker-debug.yml")
     fi
 
+    if [[ -n "${KAPUA_REST_DEBUG_PORT}" ]]; then
+        if [[ "${KAPUA_REST_DEBUG_SUSPEND}" == "true" ]]; then
+            KAPUA_REST_DEBUG_SUSPEND="y"
+        else
+            KAPUA_REST_DEBUG_SUSPEND="n"
+        fi
+        COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.rest-debug.yml")
+    fi
+
     if [[ -n "${KAPUA_ELASTICSEARCH_DATA_DIR}" ]]; then
         COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.es-storage-dir.yml")
     fi

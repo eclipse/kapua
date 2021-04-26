@@ -5,4 +5,4 @@ services:
     ports:
       - ${KAPUA_BROKER_DEBUG_PORT}:5005
     environment:
-      - ACTIVEMQ_DEBUG_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${KAPUA_BROKER_DEBUG_SUSPEND:-n},address=5005"
+      - ACTIVEMQ_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=${KAPUA_BROKER_DEBUG_SUSPEND:-n},address=5005
