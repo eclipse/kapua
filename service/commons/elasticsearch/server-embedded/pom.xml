@@ -45,6 +45,18 @@
             <artifactId>transport</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.elasticsearch.plugin</groupId>
+            <artifactId>reindex-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.plugin</groupId>
+            <artifactId>lang-mustache-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.plugin</groupId>
+            <artifactId>percolator-client</artifactId>
+        </dependency>
+        <dependency>
             <!--
                 This dependency is required to run Elasticsearch due to the fact that ES Embedded Node
                 has some references to log4j classes, which this dependency mocks.
