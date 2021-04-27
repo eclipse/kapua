@@ -20,7 +20,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.api.core.model.job.IsJobRunningMultipleResponse;
 import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
+import org.eclipse.kapua.app.api.core.model.job.MultipleJobIdRequest;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -42,7 +44,13 @@ public class JobEngineResource {
     @GET
     @Path("is-running/{scopeId}/{jobId}")
     public IsJobRunningResponse isRunning(@PathParam("scopeId") KapuaId scopeId, @PathParam("jobId") KapuaId jobId) throws KapuaException {
-        return new IsJobRunningResponse(jobEngineService.isRunning(scopeId, jobId));
+        return new IsJobRunningResponse(jobId, jobEngineService.isRunning(scopeId, jobId));
+    }
+
+    @POST
+    @Path("is-running/{scopeId}")
+    public IsJobRunningMultipleResponse isRunning(@PathParam("scopeId") KapuaId scopeId, MultipleJobIdRequest jobIds) throws KapuaException {
+        return new IsJobRunningMultipleResponse(jobEngineService.isRunning(scopeId, jobIds.getJobIds()));
     }
 
     @POST

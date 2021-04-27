@@ -39,6 +39,7 @@ import org.eclipse.kapua.app.api.core.model.data.JsonDatastoreMessage;
 import org.eclipse.kapua.app.api.core.model.data.JsonMessageQuery;
 import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericRequestMessage;
 import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericResponseMessage;
+import org.eclipse.kapua.app.api.core.model.job.IsJobRunningMultipleResponse;
 import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
 import org.eclipse.kapua.app.api.core.model.message.JsonKapuaPayload;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
@@ -48,6 +49,7 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.job.engine.JobEngineXmlRegistry;
 import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.app.api.core.model.job.MultipleJobIdRequest;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
@@ -305,7 +307,7 @@ import java.util.Map;
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
-    private JAXBContext jaxbContext;
+    private final JAXBContext jaxbContext;
 
     public JaxbContextResolver() {
         try {
@@ -636,6 +638,8 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     Job.class,
                     JobStartOptions.class,
                     IsJobRunningResponse.class,
+                    IsJobRunningMultipleResponse.class,
+                    MultipleJobIdRequest.class,
                     JobCreator.class,
                     JobListResult.class,
                     JobQuery.class,

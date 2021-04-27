@@ -37,3 +37,55 @@ paths:
           $ref: '../openapi.yaml#/components/responses/entityNotFound'
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
+    put:
+      tags:
+        - Job - Step
+      summary: Update a single Job Step
+      operationId: jobStepUpdate
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../job/job.yaml#/components/parameters/jobId'
+        - $ref: './jobStep.yaml#/components/parameters/stepId'
+      requestBody:
+        description: An object containing the new properties for the Job Step to update
+        content:
+          application/json:
+            schema:
+              $ref: './jobStep.yaml#/components/schemas/jobStep'
+        required: true
+      responses:
+        200:
+          description: The details of the updated Job Step
+          content:
+            application/json:
+              schema:
+                $ref: './jobStep.yaml#/components/schemas/jobStep'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Job - Step
+      summary: Delete a single Job Step
+      operationId: jobStepDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../job/job.yaml#/components/parameters/jobId'
+        - $ref: './jobStep.yaml#/components/parameters/stepId'
+      responses:
+        204:
+          description: The Job Step has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+

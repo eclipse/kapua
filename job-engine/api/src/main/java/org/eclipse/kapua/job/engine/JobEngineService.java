@@ -12,6 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
@@ -56,6 +59,18 @@ public interface JobEngineService extends KapuaService {
      * @since 1.0.0
      */
     boolean isRunning(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) throws KapuaException;
+
+    /**
+     * Checks whether or not multiple {@link org.eclipse.kapua.service.job.Job}s are running.
+     *
+     * @param scopeId The scopeId of the {@link org.eclipse.kapua.service.job.Job}
+     * @param jobIds  A {@link java.util.Set} containing The ids of the {@link org.eclipse.kapua.service.job.Job}s
+     * @return A {@link java.util.Map} whose keys are {@link org.eclipse.kapua.service.job.Job} and values are {@code true} if the {@link org.eclipse.kapua.service.job.Job}
+     *         are currently running inside the {@link JobEngineService}
+     * @throws KapuaException if something goes bad when checking the status of the job
+     * @since 1.5.0
+     */
+    Map<KapuaId, Boolean> isRunning(@NotNull KapuaId scopeId, @NotNull Set<KapuaId> jobIds) throws KapuaException;
 
     /**
      * Stops all the running {@link org.eclipse.kapua.service.job.execution.JobExecution} of the {@link org.eclipse.kapua.service.job.Job}.

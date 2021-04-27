@@ -17,6 +17,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -183,7 +184,6 @@ public class JobSteps extends AbstractKapuaResource {
      * @throws                  KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
-
     @POST
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -197,6 +197,33 @@ public class JobSteps extends AbstractKapuaResource {
     }
 
     /**
+     * Updates a new {@link JobStep} based on the information provided in {@link JobStep}
+     * parameter.
+     *
+     * @param scopeId           The {@link ScopeId} in which to create the {@link JobStep}
+     * @param jobId             The ID of the {@link Job} to attach the {@link JobStep} to
+     * @param jobStep           Provides the information for the new {@link JobStep} to be created.
+     * @param jobStepId         The ID of the {@link JobStep} to be updated
+     * @return                  The newly created {@link JobStep} object.
+     * @throws                  KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+    @PUT
+    @Path("{stepId}")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public JobStep update(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("jobId") EntityId jobId,
+            @PathParam("stepId") EntityId jobStepId,
+            JobStep jobStep) throws KapuaException {
+        jobStep.setScopeId(scopeId);
+        jobStep.setJobId(jobId);
+        jobStep.setId(jobStepId);
+        return jobStepService.update(jobStep);
+    }
+
+    /**
      * Deletes the JobStep specified by the "stepId" path parameter.
      *
      * @param scopeId        The ScopeId of the requested {@link JobStep}.
@@ -205,14 +232,12 @@ public class JobSteps extends AbstractKapuaResource {
      * @throws               KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
-
     @DELETE
     @Path("{stepId}")
     public Response deleteJobStep(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("stepId") EntityId stepId) throws KapuaException {
         jobStepService.delete(scopeId, stepId);
-
         return returnNoContent();
     }
 

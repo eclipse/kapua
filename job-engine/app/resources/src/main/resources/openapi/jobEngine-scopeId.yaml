@@ -1,0 +1,46 @@
+openapi: 3.0.2
+
+info:
+  title: Eclipse Kapua REST API - Job Engine
+  version: '1.0'
+  contact:
+    name: Eclipse Kapua Dev Team
+    url: https://eclipse.org/kapua
+    email: kapua-dev@eclipse.org
+  license:
+    name: Eclipse Public License 2.0
+    url: https://www.eclipse.org/legal/epl-2.0
+
+paths:
+  /is-running/{scopeId}/{jobId}:
+    post:
+      tags:
+        - Job Engine
+      summary: Check if multiple Jobs are running
+      operationId: multipleJobIsRunning
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './jobEngine.yaml#/components/schemas/multipleJobIdRequest'
+      responses:
+        200:
+          description: |
+            An object representing the running status of multiple Jobs.
+            Please note that an items that only contains the `jobId` property
+            but not the `isRunning` property means that an error occurred while
+            retrieving the status of that specific job.
+          content:
+            application/json:
+              schema:
+                $ref: './jobEngine.yaml#/components/schemas/multipleIsJobRunning'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'

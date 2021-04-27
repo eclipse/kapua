@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.client;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
@@ -30,7 +34,9 @@ import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
+import org.eclipse.kapua.app.api.core.model.job.IsJobRunningMultipleResponse;
 import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
+import org.eclipse.kapua.app.api.core.model.job.MultipleJobIdRequest;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
@@ -49,6 +55,7 @@ import org.eclipse.kapua.job.engine.exception.JobStartingException;
 import org.eclipse.kapua.job.engine.exception.JobStoppingException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
+
 import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,6 +140,37 @@ public class JobEngineServiceClient implements JobEngineService {
             }
             IsJobRunningResponse isRunningJobResponse = XmlUtil.unmarshalJson(responseText, IsJobRunningResponse.class, null);
             return isRunningJobResponse.isRunning();
+        } catch (ClientErrorException | JAXBException | SAXException e) {
+            throw KapuaException.internalError(e);
+        }
+    }
+
+    @Override
+    public Map<KapuaId, Boolean> isRunning(KapuaId scopeId, Set<KapuaId> jobIds) throws KapuaException {
+        try {
+            String path = String.format("is-running/%s", scopeId.toCompactId());
+            MultipleJobIdRequest multipleJobIdRequest = new MultipleJobIdRequest();
+            multipleJobIdRequest.setJobIds(jobIds);
+            String requestBody = XmlUtil.marshalJson(multipleJobIdRequest);
+            log.debug("JobEngine POST Call to {}, body {}", path, requestBody);
+            Response response = jobEngineTarget.path(path)
+                                               .request(MediaType.APPLICATION_JSON_TYPE)
+                                               .accept(MediaType.APPLICATION_JSON_TYPE)
+                                               .post(Entity.json(requestBody));
+            String responseText = response.readEntity(String.class);
+            log.debug("JobEngine GET Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
+            Family family = response.getStatusInfo().getFamily();
+            if (family == Family.CLIENT_ERROR || family == Family.SERVER_ERROR) {
+                handleJobEngineException(responseText, response.getStatus());
+            }
+            IsJobRunningMultipleResponse isJobRunningMultipleResponse = XmlUtil.unmarshalJson(responseText, IsJobRunningMultipleResponse.class);
+            isJobRunningMultipleResponse.getList().forEach(item -> {
+                System.out.println(item.getJobId());
+                System.out.println(item.isRunning());
+            });
+            Map<KapuaId, Boolean> isRunningMap = new HashMap<>();
+            isJobRunningMultipleResponse.getList().forEach(item -> isRunningMap.put(item.getJobId(), item.isRunning()));
+            return isRunningMap;
         } catch (ClientErrorException | JAXBException | SAXException e) {
             throw KapuaException.internalError(e);
         }

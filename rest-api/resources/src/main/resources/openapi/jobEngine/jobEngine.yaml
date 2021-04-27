@@ -41,7 +41,35 @@ components:
     isJobRunning:
       type: object
       properties:
+        jobId:
+          $ref: '../openapi.yaml#/components/schemas/kapuaId'
         isRunning:
           type: boolean
       example:
         isRunning: true
+    multipleIsJobRunning:
+      type: object
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/isJobRunning'
+      example:
+        list:
+          - jobId: AQ
+          - jobId: TqcLqDS4Wj4
+            isRunning: false
+          - jobId: dX63xIXNstA
+            isRunning: false
+    multipleJobIdRequest:
+      type: object
+      properties:
+        jobIds:
+          type: array
+          items:
+            $ref: '../openapi.yaml#/components/schemas/kapuaId'
+      example:
+        jobIds:
+          - dX63xIXNstA
+          - TqcLqDS4Wj4
+          - AQ
