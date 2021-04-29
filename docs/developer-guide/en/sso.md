@@ -9,9 +9,10 @@ using Docker and OpenShift.
 
 ## Enabling single sign-on
 
-In order to enable single sign-on you will need to select an OpenID provider. You can do this using the
-configuration option `sso.openid.provider`. Currently there are two default providers in Kapua. However additional
-providers can be added to Kapua by using the Java service loader framework. 
+In order to enable single sign-on you will need to select an OpenID provider.
+You can do this using the configuration property `sso.openid.provider`.
+Currently, there are two default providers in Kapua.
+However, additional providers can be added to Kapua by using the Java service loader framework.
 The current default providers are:
 
 * `generic` – A generic OpenID Connect provider
@@ -24,9 +25,9 @@ options:
     This represents also the JWT audience to search for in the OpenID Connect ID Token
     (for more information see [here](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) )
 - **`sso.openid.client.secret` (optional)** : the "client secret" used when communicating with the OpenID Connect server.
-- **`sso.openid.conf.wellknown.path` (optional)** : to provide a custom OpenID well-known suffix (the default one is `.well-known/openid-configuration` and 
+- **`sso.openid.conf.path` (optional)** : to provide a custom OpenID well-known suffix (the default one is `.well-known/openid-configuration` and
     it's attached as suffix to the issuer).
-- **`sso.openid.jwt-processor-timeout` (optional)** : the JwtProcessor expiration time (the default value is 1 hour).
+- **`sso.openid.jwt_processor_timeout` (optional)** : the JwtProcessor expiration time (the default value is 1 hour).
 
 It is also necessary to configure the Web Console external endpoint address.
 
@@ -43,11 +44,15 @@ The `issuer` is the only required parameter. However, custom parameters can be a
 configuration through the `well-known` document fails.
 The required values are specific to your OpenID Connect solution, please use its documentation to look up the required values:
 
-- **`sso.generic.openid.jwt.issuer.allowed`** : the base URL to the OpenID server provider.
-- **`sso.generic.openid.jwt.audience.allowed`** : the JWT audience.
+- **`sso.openid.generic.jwt.issuer.allowed`** : the base URL to the OpenID server provider.
+- **`sso.openid.generic.jwt.audience.allowed`** : the JWT audience.
 - **`sso.openid.generic.server.endpoint.auth` (optional)** : the endpoint URL to the authentication API.
 - **`sso.openid.generic.server.endpoint.logout`(optional)** : the logout endpoint of the OpenID provider.
 - **`sso.openid.generic.server.endpoint.token` (optional)** : the endpoint URL to the token API.
+
+Note that these properties, in combination with the ones defined in the previous paragraph,
+ can be set via environment variables thanks to the `run-console` bash script included in the Console docker container.
+Please refer to the [assembly module README file](assembly/README.md) for detailed information about those properties.
 
 #### Note about 'client id' and 'audience' values
 
@@ -73,8 +78,11 @@ The Keycloak provider can be configured using the following configuration parame
 - **`sso.openid.keycloak.realm`** : the name of the realm to use.
 
 Note that the _auth_ and _token_ endpoints are automatically computed by the Keycloak provider.
+For more information about Keycloak, see the [Keycloak Documentation](http://www.keycloak.org/documentation.html).
 
-For more information see the [Keycloak Documentation](http://www.keycloak.org/documentation.html).
+Similarly to the 'generic' provider, these properties, in combination with the common properties defined previously,
+ can be set via environment variables thanks to the `run-console` bash script included in the Console docker container.
+Please refer to the [assembly module README file](assembly/README.md) for detailed information about these environment variables.
 
 ### Enabling users to SSO
 
@@ -195,7 +203,7 @@ Open the Keycloak Admin Console on your preferred browser and follow the steps b
     - Access : "_public_"
     - Standard Flow Enabled : _ON_
     - Direct Access Grants Enabled : _ON_
-    - Valid Redirect URIs : _http://localhost:8080/*_  (user your IP address in place of localhost)
+    - Valid Redirect URIs : _http://localhost:8080/*_  (use your IP address in place of localhost)
     - Base URL : _http://localhost:8080/_
 3. Under the "Mappers" tab, create a new mapper called "console" with the following parameters:
     - Name : "_console_"
@@ -232,6 +240,9 @@ Note that even if the Keycloak server is running locally on a docker container, 
 IP address instead of 'localhost', since this one can be misinterpreted by docker as the 'localhost' of the container 
 in which the Kapua component or Keycloak are running (this is automatically done through the `sso-docker-deploy.sh`
 script). 
+
+Please refer to the [assembly module README file](assembly/README.md) for detailed information about the Console docker container
+and related environment variables.
 
 ### Setting Up a user on the Keycloak server
 
