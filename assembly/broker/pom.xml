@@ -464,6 +464,16 @@
             <artifactId>core</artifactId>
         </dependency>
 
+        <!-- C3P0 -->
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>mchange-commons-java</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
