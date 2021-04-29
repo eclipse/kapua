@@ -24,6 +24,9 @@ the IP address of your docker instance.
 
 **Note:** This is only a setup for testing SSO support.
 
+The following paragraphs describe how to set up an SSO OpenID Connect Provider in Kapua via environment variables.
+For further information, please see the [SSO Developer Guide](docs/developer-guide/en/sso.md).
+
 #### Keycloak Provider
 
 It is possible to test the sso with a Keycloak image by simply launching the `deploy` scripts located in the `deployment/docker/unix/sso` directory.
@@ -41,21 +44,30 @@ Starting the `kapua-console` image with the following command line instead:
 You will also need to create a new realm named `kapua` in the Keycloak web UI and create a new client called `console`, 
 assigning `http://localhost:8080/*` as a valid redirect URI.
 
-For further information take a look at the `sso.md` manual located in the `docs/developer-guide/en` directory.
+To use the Keycloak provider with the Kapua Console, the following environment variables must be provided:
+
+- `KAPUA_CONSOLE_URL` : the `kapua-console` URL;
+- `KEYCLOAK_URL` : the URL of the Keycloak instance;
+- `KEYCLOAK_REALM` : the keycloak realm (the default value is `kapua`);
+- `KEYCLOAK_CLIENT_ID` : the client id in the keycloak realm (the default value is `console`);
+- `KAPUA_OPENID_CLIENT_SECRET` : the client secret (optional).
 
 #### Generic Provider
 
 It is also possible to use a generic OpenID Connect provider, by providing to the console the following environment 
 variables:
 
-- `KAPUA_OPENID_JWT_ISSUER` : the base URL to the OpenID Connect server provider.
-- `KAPUA_OPENID_CLIENT_ID` : the client id (the default value is `console`).
-- `KAPUA_OPENID_CLIENT_SECRET` : the client secret (optional).
-- `KAPUA_OPENID_JWT_AUDIENCE` : the JWT audience (the default value is `console`).
-- `KAPUA_OPENID_AUTH_ENDPOINT` : the endpoint URL to the authentication API (optional, already retrieved via well-known document).
-- `KAPUA_OPENID_TOKEN_ENDPOINT` : the endpoint URL to the token API (optional, already retrieved via well-known document).
+- `KAPUA_CONSOLE_URL` : the `kapua-console` URL;
+- `KAPUA_OPENID_JWT_ISSUER` : the base URL to the OpenID Connect server provider;
+- `KAPUA_OPENID_JWT_AUDIENCE` : the JWT audience (the default value is `console`);
+- `KAPUA_OPENID_CLIENT_ID` : the client id (the default value is `console`);
+- `KAPUA_OPENID_CLIENT_SECRET` : the client secret (optional);
+- `KAPUA_OPENID_AUTH_ENDPOINT` : the endpoint URL to the authentication API (optional, already retrieved via well-known document);
+- `KAPUA_OPENID_TOKEN_ENDPOINT` : the endpoint URL to the token API (optional, already retrieved via well-known document);
 - `KAPUA_OPENID_LOGOUT_ENDPOINT` : the URL to the logout endpoint (optional, already retrieved via well-known document).
-- `KAPUA_CONSOLE_URL` : the `kapua-console` URL.
+
+Note that `OPENID_CLIENT_ID` and `JWT_AUDIENCE` are usually mapped with the same value,
+(see the [SSO Developer Guide](docs/developer-guide/en/sso.md) for further information).
 
 ### Tomcat images
 
