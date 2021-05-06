@@ -25,11 +25,13 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseBadRequestException;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseCodeException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseContentException;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseInternalErrorException;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseNotFoundException;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseUnknownCodeException;
 import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
@@ -41,10 +43,13 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * Utility {@code abstract} {@link Class} used to provide utility methods to all implementation of {@link DeviceManagementService}s.
@@ -77,7 +82,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
      * @throws KapuaException If the creation of the {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} fails for some reasons
      * @since 1.0.0
      */
-    protected void createDeviceEvent(KapuaId scopeId, KapuaId deviceId, KapuaRequestMessage<?, ?> requestMessage, KapuaResponseMessage responseMessage) throws KapuaException {
+    protected void createDeviceEvent(KapuaId scopeId, KapuaId deviceId, KapuaRequestMessage<?, ?> requestMessage, KapuaResponseMessage<?, ?> responseMessage) throws KapuaException {
 
         DeviceEventCreator deviceEventCreator =
                 DEVICE_EVENT_FACTORY.newCreator(
@@ -134,6 +139,51 @@ public abstract class AbstractDeviceManagementServiceImpl {
         KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation));
     }
 
+
+    /**
+     * Checks the {@link KapuaResponseMessage#getResponseCode()} if it is {@link KapuaResponseCode#ACCEPTED} or throws the proper {@link DeviceManagementResponseCodeException}.
+     *
+     * @param responseMessage The {@link KapuaResponseMessage} to check.
+     * @throws DeviceManagementResponseCodeException if {@link KapuaResponseMessage#getResponseCode()} is not {@link KapuaResponseCode#ACCEPTED}.
+     * @since 1.5.0
+     */
+    protected void checkResponseAcceptedOrThrowError(@NotNull KapuaResponseMessage<?, ?> responseMessage) throws DeviceManagementResponseCodeException {
+        try {
+            checkResponseAcceptedOrThrowError(responseMessage, null);
+        } catch (DeviceManagementResponseContentException e) {
+            // Ignored since it cannot be thrown when resultGetter is null.
+        }
+    }
+
+    /**
+     * Checks the {@link KapuaResponseMessage#getResponseCode()} and returns the result if it is {@link KapuaResponseCode#ACCEPTED} or throws the proper {@link DeviceManagementResponseCodeException}.
+     * <p>
+     * If {@link Callable} is not provided the returned result will be {@code null}.
+     *
+     * @param responseMessage The {@link KapuaResponseMessage} to check.
+     * @param resultGetter    The {@link Callable} that gets the result.
+     * @param <R>             The type of the result.
+     * @return The result from the {@link KapuaResponseMessage} if {@link KapuaResponseMessage#getResponseCode()} is {@link KapuaResponseCode#ACCEPTED}.
+     * @throws DeviceManagementResponseCodeException    if {@link KapuaResponseMessage#getResponseCode()} is not {@link KapuaResponseCode#ACCEPTED}.
+     * @throws DeviceManagementResponseContentException if getting the result causes any {@link Exception}.
+     * @since 1.5.0
+     */
+    protected <R> R checkResponseAcceptedOrThrowError(@NotNull KapuaResponseMessage<?, ?> responseMessage, @Null Callable<R> resultGetter) throws DeviceManagementResponseCodeException, DeviceManagementResponseContentException {
+        if (responseMessage.getResponseCode().isAccepted()) {
+            if (resultGetter != null) {
+                try {
+                    return resultGetter.call();
+                } catch (Exception e) {
+                    throw new DeviceManagementResponseContentException(e, responseMessage.getPayload());
+                }
+            } else {
+                return null;
+            }
+        } else {
+            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
+        }
+    }
+
     /**
      * Builds the {@link DeviceManagementResponseCodeException} from the {@link KapuaResponseMessage}.
      *
@@ -141,7 +191,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
      * @return The proper {@link DeviceManagementResponseCodeException} for the {@link KapuaResponseMessage#getResponseCode()}
      * @since 1.5.0
      */
-    protected DeviceManagementResponseCodeException buildExceptionFromDeviceResponseNotAccepted(KapuaResponseMessage kapuaResponseMessage) {
+    protected DeviceManagementResponseCodeException buildExceptionFromDeviceResponseNotAccepted(KapuaResponseMessage<?, ?> kapuaResponseMessage) {
 
         KapuaResponsePayload responsePayload = kapuaResponseMessage.getPayload();
 
@@ -157,7 +207,6 @@ public abstract class AbstractDeviceManagementServiceImpl {
                 return new DeviceManagementResponseUnknownCodeException(kapuaResponseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionMessage());
         }
     }
-
 
     private List<DeviceManagementOperationProperty> extractInputProperties(KapuaRequestMessage<?, ?> requestMessage) {
 

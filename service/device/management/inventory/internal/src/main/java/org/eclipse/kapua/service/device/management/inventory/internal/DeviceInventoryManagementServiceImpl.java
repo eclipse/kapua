@@ -22,10 +22,8 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Inven
 import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestPayload;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryResponseMessage;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseContentException;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
@@ -86,17 +84,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            InventoryResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceInventory();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, responsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceInventory());
     }
 
     @Override
@@ -139,17 +127,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            InventoryResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceInventoryBundles();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, responsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceInventoryBundles());
     }
 
     @Override
@@ -192,17 +170,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            InventoryResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceInventorySystemPackages();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, responsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceInventorySystemPackages());
     }
 
     @Override
@@ -245,16 +213,6 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            InventoryResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceInventoryPackages();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, responsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceInventoryPackages());
     }
 }

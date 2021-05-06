@@ -45,28 +45,28 @@ public enum DeviceManagementErrorCodes implements KapuaErrorCode {
     RESPONSE_CONTENT,
 
     /**
-     * See @{@link DeviceManagementResponseBadRequestException}.
+     * See {@link DeviceManagementResponseBadRequestException}.
      *
      * @since 1.0.0
      */
     RESPONSE_BAD_REQUEST,
 
     /**
-     * See @{@link DeviceManagementResponseNotFoundException}.
+     * See {@link DeviceManagementResponseNotFoundException}.
      *
      * @since 1.0.0
      */
     RESPONSE_NOT_FOUND,
 
     /**
-     * See @{@link DeviceManagementResponseInternalErrorException}.
+     * See {@link DeviceManagementResponseInternalErrorException}.
      *
      * @since 1.0.0
      */
     RESPONSE_INTERNAL_ERROR,
 
     /**
-     * See @{@link DeviceManagementRequestUnknownCodeException}.
+     * See {@link DeviceManagementResponseUnknownCodeException}.
      *
      * @since 1.5.0
      */
@@ -77,7 +77,7 @@ public enum DeviceManagementErrorCodes implements KapuaErrorCode {
     //
 
     /**
-     * See @{@link DeviceNotConnectedException}.
+     * See {@link DeviceNotConnectedException}.
      *
      * @since 1.0.0
      */

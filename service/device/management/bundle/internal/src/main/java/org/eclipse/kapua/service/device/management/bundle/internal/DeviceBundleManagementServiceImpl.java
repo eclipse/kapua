@@ -25,10 +25,8 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Bundl
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestPayload;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponseMessage;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseContentException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
 import java.util.Date;
@@ -83,17 +81,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            BundleResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceBundles();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, responsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceBundles());
     }
 
     @Override
@@ -138,9 +126,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
 
         //
         // Check response
-        if (!responseMessage.getResponseCode().isAccepted()) {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        checkResponseAcceptedOrThrowError(responseMessage);
     }
 
     @Override
@@ -185,9 +171,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
 
         //
         // Check response
-        if (!responseMessage.getResponseCode().isAccepted()) {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        checkResponseAcceptedOrThrowError(responseMessage);
     }
 
 }

@@ -24,11 +24,9 @@ import org.eclipse.kapua.service.device.management.asset.message.internal.AssetR
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestMessage;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestPayload;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseMessage;
-import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseContentException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
 import java.util.Date;
@@ -90,17 +88,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            AssetResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceAssets();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, responsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
     }
 
     @Override
@@ -148,17 +136,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            AssetResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceAssets();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, responsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
     }
 
     @Override
@@ -206,16 +184,6 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            AssetResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceAssets();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, responsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
     }
 }

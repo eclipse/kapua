@@ -32,9 +32,7 @@ import org.eclipse.kapua.service.device.management.configuration.message.interna
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestMessage;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestPayload;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponseMessage;
-import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponsePayload;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseContentException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.xml.sax.SAXException;
 
@@ -97,17 +95,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            ConfigurationResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceConfigurations();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, responsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceConfigurations());
     }
 
     @Override
@@ -161,9 +149,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Check response
-        if (!responseMessage.getResponseCode().isAccepted()) {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        checkResponseAcceptedOrThrowError(responseMessage);
     }
 
     @Override
@@ -225,8 +211,6 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Check response
-        if (!responseMessage.getResponseCode().isAccepted()) {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        checkResponseAcceptedOrThrowError(responseMessage);
     }
 }

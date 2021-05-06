@@ -25,7 +25,6 @@ import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagem
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseContentException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
@@ -113,17 +112,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            PackageResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDevicePackages();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, responsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDevicePackages());
     }
 
     //
@@ -220,12 +209,15 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Check response
-        if (!responseMessage.getResponseCode().isAccepted()) {
+        try {
+            checkResponseAcceptedOrThrowError(responseMessage);
+        } catch (Exception e) {
             closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
-
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
+            throw e;
         }
 
+        //
+        // Return operation id
         return deviceManagementOperationId;
     }
 
@@ -268,7 +260,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> {
             PackageResponsePayload responsePayload = responseMessage.getPayload();
 
             DevicePackageDownloadOperation downloadOperation = new DevicePackageDownloadOperationImpl();
@@ -278,9 +270,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
             downloadOperation.setProgress(responsePayload.getPackageDownloadOperationProgress());
 
             return downloadOperation;
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        });
     }
 
     @Override
@@ -322,9 +312,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Check response
-        if (!responseMessage.getResponseCode().isAccepted()) {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        checkResponseAcceptedOrThrowError(responseMessage);
     }
 
     //
@@ -399,12 +387,15 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Check response
-        if (!responseMessage.getResponseCode().isAccepted()) {
+        try {
+            checkResponseAcceptedOrThrowError(responseMessage);
+        } catch (Exception e) {
             closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
-
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
+            throw e;
         }
 
+        //
+        // Return operation id
         return deviceManagementOperationId;
     }
 
@@ -447,17 +438,7 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            PackageResponsePayload packageResponsePayload = responseMessage.getPayload();
-
-            try {
-                return packageResponsePayload.getDevicePackageInstallOperation();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, packageResponsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDevicePackageInstallOperation());
     }
 
     //
@@ -532,12 +513,15 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Check response
-        if (!responseMessage.getResponseCode().isAccepted()) {
+        try {
+            checkResponseAcceptedOrThrowError(responseMessage);
+        } catch (Exception e) {
             closeManagementOperation(scopeId, deviceId, operationId, responseMessage);
-
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
+            throw e;
         }
 
+        //
+        // Return operation id
         return deviceManagementOperationId;
     }
 
@@ -580,16 +564,6 @@ public class DevicePackageManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            PackageResponsePayload packageResponsePayload = responseMessage.getPayload();
-
-            try {
-                return packageResponsePayload.getDevicePackageUninstallOperation();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, packageResponsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDevicePackageUninstallOperation());
     }
 }

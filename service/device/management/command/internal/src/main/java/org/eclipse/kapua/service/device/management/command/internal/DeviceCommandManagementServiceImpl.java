@@ -90,7 +90,7 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> {
             CommandResponsePayload responsePayload = responseMessage.getPayload();
 
             DeviceCommandOutput deviceCommandOutput = new DeviceCommandOutputImpl();
@@ -102,8 +102,6 @@ public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagement
             deviceCommandOutput.setStdout(responsePayload.getStdout());
 
             return deviceCommandOutput;
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        });
     }
 }

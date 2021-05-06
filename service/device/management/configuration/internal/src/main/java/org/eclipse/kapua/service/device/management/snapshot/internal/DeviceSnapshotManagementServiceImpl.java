@@ -21,7 +21,6 @@ import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseContentException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
@@ -29,7 +28,6 @@ import org.eclipse.kapua.service.device.management.snapshot.message.internal.Sna
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestMessage;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestPayload;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponseMessage;
-import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponsePayload;
 
 import java.util.Date;
 
@@ -80,17 +78,7 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            SnapshotResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceSnapshots();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseContentException(e, responsePayload);
-            }
-        } else {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceSnapshots());
     }
 
     @Override
@@ -134,8 +122,6 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check response
-        if (!responseMessage.getResponseCode().isAccepted()) {
-            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
-        }
+        checkResponseAcceptedOrThrowError(responseMessage);
     }
 }
