@@ -14,14 +14,14 @@ package org.eclipse.kapua.service.device.management.configuration;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
 
 /**
  * Device configuration service definition.
  *
  * @since 1.0
  */
-public interface DeviceConfigurationManagementService extends KapuaService {
+public interface DeviceConfigurationManagementService extends DeviceManagementService {
 
     /**
      * Get the device configuration for the given device identifier and configuration identifier

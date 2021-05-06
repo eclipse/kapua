@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.management.asset;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
 
 /**
  * {@link DeviceAsset} {@link KapuaService} definition.
@@ -22,7 +23,7 @@ import org.eclipse.kapua.service.KapuaService;
  * @see org.eclipse.kapua.service.KapuaService
  * @since 1.0.0
  */
-public interface DeviceAssetManagementService extends KapuaService {
+public interface DeviceAssetManagementService extends DeviceManagementService {
 
     /**
      * Gets the {@link DeviceAssets} for the given Device.

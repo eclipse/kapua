@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.management.inventory;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
@@ -28,7 +29,7 @@ import org.eclipse.kapua.service.device.registry.Device;
  * @see org.eclipse.kapua.service.KapuaService
  * @since 1.5.0
  */
-public interface DeviceInventoryManagementService extends KapuaService {
+public interface DeviceInventoryManagementService extends DeviceManagementService {
 
     /**
      * Gets the {@link DeviceInventory}

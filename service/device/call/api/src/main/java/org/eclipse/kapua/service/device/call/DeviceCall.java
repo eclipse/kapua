@@ -104,7 +104,6 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
      */
     RS options(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
-
     /**
      * Get the {@link DeviceMessage} type.
      *

@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.management.command;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.registry.Device;
 
 /**
@@ -22,7 +23,7 @@ import org.eclipse.kapua.service.device.registry.Device;
  *
  * @since 1.0.0
  */
-public interface DeviceCommandManagementService extends KapuaService {
+public interface DeviceCommandManagementService extends DeviceManagementService {
 
     /**
      * Executes the given {@link DeviceCommandInput} on the target {@link Device}.

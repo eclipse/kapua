@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.device.management.packages;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOperation;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
@@ -35,7 +35,7 @@ import org.eclipse.kapua.service.device.registry.Device;
  *
  * @since 1.0.0
  */
-public interface DevicePackageManagementService extends KapuaService {
+public interface DevicePackageManagementService extends DeviceManagementService {
 
     /**
      * Gets the installed {@link DevicePackages}s
