@@ -24,6 +24,18 @@ import org.eclipse.kapua.message.KapuaMessage;
 public interface KapuaResponseMessage<C extends KapuaResponseChannel, P extends KapuaResponsePayload>
         extends KapuaMessage<C, P> {
 
+    @Override
+    C getChannel();
+
+    @Override
+    void setChannel(C semanticChannel);
+
+    @Override
+    P getPayload();
+
+    @Override
+    void setPayload(P payload);
+
     /**
      * Gets the {@link KapuaResponseCode}.
      *

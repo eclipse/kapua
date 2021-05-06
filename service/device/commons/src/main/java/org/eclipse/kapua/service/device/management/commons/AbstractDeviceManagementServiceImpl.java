@@ -23,9 +23,15 @@ import org.eclipse.kapua.model.type.ObjectValueConverter;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.management.DeviceManagementService;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseBadRequestException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseCodeException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseInternalErrorException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseNotFoundException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseUnknownCodeException;
 import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationCreator;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
@@ -126,6 +132,30 @@ public abstract class AbstractDeviceManagementServiceImpl {
         }
 
         KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation));
+    }
+
+    /**
+     * Builds the {@link DeviceManagementResponseCodeException} from the {@link KapuaResponseMessage}.
+     *
+     * @param kapuaResponseMessage The {@link KapuaResponseMessage} to build from.
+     * @return The proper {@link DeviceManagementResponseCodeException} for the {@link KapuaResponseMessage#getResponseCode()}
+     * @since 1.5.0
+     */
+    protected DeviceManagementResponseCodeException buildExceptionFromDeviceResponseNotAccepted(KapuaResponseMessage kapuaResponseMessage) {
+
+        KapuaResponsePayload responsePayload = kapuaResponseMessage.getPayload();
+
+        switch (kapuaResponseMessage.getResponseCode()) {
+            case BAD_REQUEST:
+                return new DeviceManagementResponseBadRequestException(kapuaResponseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionMessage());
+            case NOT_FOUND:
+                return new DeviceManagementResponseNotFoundException(kapuaResponseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionMessage());
+            case INTERNAL_ERROR:
+                return new DeviceManagementResponseInternalErrorException(kapuaResponseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionMessage());
+            case ACCEPTED:
+            default:
+                return new DeviceManagementResponseUnknownCodeException(kapuaResponseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionMessage());
+        }
     }
 
 

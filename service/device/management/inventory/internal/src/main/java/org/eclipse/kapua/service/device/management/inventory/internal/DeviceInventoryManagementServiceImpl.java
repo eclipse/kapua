@@ -25,15 +25,13 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Inven
 import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseContentException;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
-import org.eclipse.kapua.service.device.management.inventory.internal.exception.DeviceInventoryGetManagementException;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
-import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 import java.util.Date;
 
@@ -94,12 +92,10 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
             try {
                 return responsePayload.getDeviceInventory();
             } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload);
+                throw new DeviceManagementResponseContentException(e, responsePayload);
             }
         } else {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new DeviceInventoryGetManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
         }
     }
 
@@ -149,12 +145,10 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
             try {
                 return responsePayload.getDeviceInventoryBundles();
             } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload);
+                throw new DeviceManagementResponseContentException(e, responsePayload);
             }
         } else {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new DeviceInventoryGetManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
         }
     }
 
@@ -204,12 +198,10 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
             try {
                 return responsePayload.getDeviceInventorySystemPackages();
             } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload);
+                throw new DeviceManagementResponseContentException(e, responsePayload);
             }
         } else {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new DeviceInventoryGetManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
         }
     }
 
@@ -259,12 +251,10 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
             try {
                 return responsePayload.getDeviceInventoryPackages();
             } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload);
+                throw new DeviceManagementResponseContentException(e, responsePayload);
             }
         } else {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new DeviceInventoryGetManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
         }
     }
 }

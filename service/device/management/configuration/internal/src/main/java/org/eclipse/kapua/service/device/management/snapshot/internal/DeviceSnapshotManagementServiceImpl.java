@@ -21,12 +21,10 @@ import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationAppProperties;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseContentException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
-import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
-import org.eclipse.kapua.service.device.management.snapshot.internal.exception.SnapshotGetManagementException;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestChannel;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestMessage;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotRequestPayload;
@@ -88,12 +86,10 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
             try {
                 return responsePayload.getDeviceSnapshots();
             } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload);
+                throw new DeviceManagementResponseContentException(e, responsePayload);
             }
         } else {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new SnapshotGetManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
         }
     }
 
@@ -139,9 +135,7 @@ public class DeviceSnapshotManagementServiceImpl extends AbstractDeviceManagemen
         //
         // Check response
         if (!responseMessage.getResponseCode().isAccepted()) {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new SnapshotGetManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
         }
     }
 }

@@ -30,12 +30,7 @@ import java.util.Map;
  */
 @XmlRootElement(name = "configuration")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {
-        "id",
-        "name",
-        "definition",
-        "properties"
-}, factoryClass = DeviceConfigurationXmlRegistry.class, factoryMethod = "newComponentConfiguration")
+@XmlType(factoryClass = DeviceConfigurationXmlRegistry.class, factoryMethod = "newComponentConfiguration")
 public interface DeviceComponentConfiguration {
 
     /**
@@ -64,9 +59,9 @@ public interface DeviceComponentConfiguration {
     /**
      * Set device configuration component name
      *
-     * @param unescapedComponentName
+     * @param name
      */
-    void setName(String unescapedComponentName);
+    void setName(String name);
 
     /**
      * Get device configuration component definition

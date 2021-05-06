@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,82 +12,33 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.exception;
 
-import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
-import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
-
 import javax.validation.constraints.NotNull;
 
-public class DeviceManagementResponseException extends DeviceManagementException {
-
-    private static final long serialVersionUID = -5787008473862756065L;
-
-    private final KapuaResponsePayload responsePayload;
-    private final Object responsePayloadBody;
+/**
+ * {@link DeviceManagementException} for response-related problems.
+ *
+ * @since 1.5.0
+ */
+public abstract class DeviceManagementResponseException extends DeviceManagementException {
 
     /**
-     * Constructor.
+     * @since 1.5.0
      */
-    public DeviceManagementResponseException() {
-        super(DeviceManagementResponseErrorCodes.RESPONSE_PARSE_EXCEPTION);
-        this.responsePayload = null;
-        this.responsePayloadBody = null;
+    protected DeviceManagementResponseException(@NotNull DeviceManagementErrorCodes code) {
+        super(code);
     }
 
     /**
-     * Constructor.
-     *
-     * @param cause the root cause of the {@link Exception}.
+     * @since 1.5.0
      */
-    public DeviceManagementResponseException(@NotNull Throwable cause, @NotNull KapuaResponsePayload responsePayload) {
-        super(DeviceManagementResponseErrorCodes.RESPONSE_PARSE_EXCEPTION, cause, responsePayload);
-        this.responsePayload = responsePayload;
-        this.responsePayloadBody = null;
+    protected DeviceManagementResponseException(@NotNull DeviceManagementErrorCodes code, Object... arguments) {
+        super(code, arguments);
     }
 
     /**
-     * Constructor.
-     *
-     * @param cause the root cause of the {@link Exception}.
+     * @since 1.5.0
      */
-    public DeviceManagementResponseException(@NotNull Throwable cause, @NotNull Object responsePayloadBody) {
-        super(DeviceManagementResponseErrorCodes.RESPONSE_PARSE_EXCEPTION, cause, responsePayloadBody);
-        this.responsePayload = null;
-        this.responsePayloadBody = responsePayloadBody;
+    protected DeviceManagementResponseException(@NotNull DeviceManagementErrorCodes code, @NotNull Throwable cause, Object... arguments) {
+        super(code, cause, arguments);
     }
-
-    /**
-     * Constructor for overriding exception classes
-     *
-     * @param code
-     * @param responseCode
-     * @param exceptionMessage
-     * @param exceptionStack
-     * @param arguments
-     */
-    public DeviceManagementResponseException(DeviceManagementErrorCodes code, KapuaResponseCode responseCode, String exceptionMessage, String exceptionStack,
-                                             Object... arguments) {
-        super(code, responseCode, exceptionMessage, exceptionStack, arguments);
-        this.responsePayload = null;
-        this.responsePayloadBody = null;
-    }
-
-    /**
-     * Gets the {@link KapuaResponsePayload}
-     *
-     * @return The {@link KapuaResponsePayload}
-     */
-    public KapuaResponsePayload getResponsePayload() {
-        return responsePayload;
-    }
-
-    /**
-     * Gets the response payload body
-     *
-     * @return The response payload body
-     * @since 1.1.0
-     */
-    public Object getResponsePayloadBody() {
-        return responsePayloadBody;
-    }
-
 }

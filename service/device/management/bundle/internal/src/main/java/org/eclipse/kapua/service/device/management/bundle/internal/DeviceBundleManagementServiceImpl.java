@@ -21,8 +21,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
-import org.eclipse.kapua.service.device.management.bundle.internal.exception.BundleGetManagementException;
-import org.eclipse.kapua.service.device.management.bundle.internal.exception.BundleManagementResponseErrorCodes;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestChannel;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestPayload;
@@ -30,9 +28,8 @@ import org.eclipse.kapua.service.device.management.bundle.message.internal.Bundl
 import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseContentException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
-import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 import java.util.Date;
 
@@ -92,12 +89,10 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
             try {
                 return responsePayload.getDeviceBundles();
             } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload);
+                throw new DeviceManagementResponseContentException(e, responsePayload);
             }
         } else {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new BundleGetManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
+            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
         }
     }
 
@@ -144,9 +139,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
         //
         // Check response
         if (!responseMessage.getResponseCode().isAccepted()) {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new KapuaException(BundleManagementResponseErrorCodes.BUNDLE_START_ERROR);
+            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
         }
     }
 
@@ -193,9 +186,7 @@ public class DeviceBundleManagementServiceImpl extends AbstractDeviceManagementS
         //
         // Check response
         if (!responseMessage.getResponseCode().isAccepted()) {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new KapuaException(BundleManagementResponseErrorCodes.BUNDLE_STOP_ERROR);
+            throw buildExceptionFromDeviceResponseNotAccepted(responseMessage);
         }
     }
 
