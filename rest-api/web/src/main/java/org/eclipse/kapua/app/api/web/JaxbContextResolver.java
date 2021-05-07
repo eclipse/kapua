@@ -13,6 +13,12 @@
 package org.eclipse.kapua.app.api.web;
 
 import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.DeviceManagementRequestContentExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.DeviceManagementResponseCodeExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.DeviceManagementResponseContentExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.DeviceManagementSendExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.DeviceManagementTimeoutExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.DeviceNotConnectedExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalArgumentExceptionInfo;
@@ -41,6 +47,7 @@ import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericRequest
 import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericResponseMessage;
 import org.eclipse.kapua.app.api.core.model.job.IsJobRunningMultipleResponse;
 import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
+import org.eclipse.kapua.app.api.core.model.job.MultipleJobIdRequest;
 import org.eclipse.kapua.app.api.core.model.message.JsonKapuaPayload;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
@@ -49,7 +56,6 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.job.engine.JobEngineXmlRegistry;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.app.api.core.model.job.MultipleJobIdRequest;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
@@ -345,6 +351,14 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     JobRunningExceptionInfo.class,
                     JobStartingExceptionInfo.class,
                     JobStoppingExceptionInfo.class,
+
+                    // Device Management Exception Info
+                    DeviceManagementRequestContentExceptionInfo.class,
+                    DeviceManagementResponseCodeExceptionInfo.class,
+                    DeviceManagementResponseContentExceptionInfo.class,
+                    DeviceManagementSendExceptionInfo.class,
+                    DeviceManagementTimeoutExceptionInfo.class,
+                    DeviceNotConnectedExceptionInfo.class,
 
                     // Tocds
                     KapuaTocd.class,
