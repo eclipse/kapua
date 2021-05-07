@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.id;
 
+import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.model.KapuaEntity;
 
 import javax.xml.bind.annotation.XmlTransient;
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Base64;
 
@@ -27,7 +27,7 @@ import java.util.Base64;
  *
  * @since 1.0.0
  */
-public interface KapuaId extends Serializable {
+public interface KapuaId extends KapuaSerializable {
 
     @XmlTransient
     KapuaId ANY = new KapuaIdStatic(BigInteger.ONE.negate());
