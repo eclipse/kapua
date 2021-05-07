@@ -75,7 +75,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Do get
-        DeviceCallExecutor<InventoryRequestChannel, InventoryRequestPayload, InventoryRequestMessage, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
+        DeviceCallExecutor<?, ?, ?, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
         InventoryResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
@@ -118,7 +118,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Do get
-        DeviceCallExecutor<InventoryRequestChannel, InventoryRequestPayload, InventoryRequestMessage, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
+        DeviceCallExecutor<?, ?, ?, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
         InventoryResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
@@ -161,7 +161,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Do get
-        DeviceCallExecutor<InventoryRequestChannel, InventoryRequestPayload, InventoryRequestMessage, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
+        DeviceCallExecutor<?, ?, ?, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
         InventoryResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
@@ -204,7 +204,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Do get
-        DeviceCallExecutor<InventoryRequestChannel, InventoryRequestPayload, InventoryRequestMessage, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
+        DeviceCallExecutor<?, ?, ?, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
         InventoryResponseMessage responseMessage = deviceApplicationCall.send();
 
         //

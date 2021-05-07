@@ -86,8 +86,8 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Do get
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(configurationRequestMessage, timeout);
-        ConfigurationResponseMessage responseMessage = (ConfigurationResponseMessage) deviceApplicationCall.send();
+        DeviceCallExecutor<?, ?, ?, ConfigurationResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(configurationRequestMessage, timeout);
+        ConfigurationResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
         // Create event
@@ -140,8 +140,8 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Do put
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(configurationRequestMessage, timeout);
-        ConfigurationResponseMessage responseMessage = (ConfigurationResponseMessage) deviceApplicationCall.send();
+        DeviceCallExecutor<?, ?, ?, ConfigurationResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(configurationRequestMessage, timeout);
+        ConfigurationResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
         // Create event
@@ -202,8 +202,8 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
         //
         // Do put
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(configurationRequestMessage, timeout);
-        ConfigurationResponseMessage responseMessage = (ConfigurationResponseMessage) deviceApplicationCall.send();
+        DeviceCallExecutor<?, ?, ?, ConfigurationResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(configurationRequestMessage, timeout);
+        ConfigurationResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
         // Create event
