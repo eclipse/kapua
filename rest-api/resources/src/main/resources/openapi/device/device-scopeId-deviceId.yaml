@@ -63,7 +63,16 @@ paths:
               jvmVersion: 24.111-b01 mixed mode
               osgiFrameworkVersion: 1.7.0
               acceptEncoding: gzip
-              tagIds: []
+              extendedProperties:
+                - type: deviceExtendedProperty
+                  groupName: Hardware Info
+                  name: CPU Family
+                  value: ARM
+                - type: deviceExtendedProperty
+                  groupName: Hardware Info
+                  name: CPU Cores
+                  value: 4
+              tagIds: [ ]
         required: true
       responses:
         200:
