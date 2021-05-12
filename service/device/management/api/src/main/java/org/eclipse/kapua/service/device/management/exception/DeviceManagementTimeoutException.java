@@ -33,7 +33,7 @@ public class DeviceManagementTimeoutException extends DeviceManagementException 
      * @since 1.1.0
      */
     public DeviceManagementTimeoutException(@NotNull Throwable cause, @NotNull Long timeout) {
-        super(DeviceManagementTimeoutErrorCodes.TIMEOUT, cause, timeout);
+        super(DeviceManagementErrorCodes.TIMEOUT, cause, timeout);
 
         this.timeout = timeout;
     }

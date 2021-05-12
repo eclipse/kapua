@@ -12,11 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.exception;
 
-public class DeviceNeverConnectedException extends DeviceManagementException {
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+
+/**
+ * The {@link DeviceManagementException} to throw when the {@link Device} has no {@link DeviceConnection} assigned.
+ */
+public class DeviceNeverConnectedException extends DeviceNotConnectedException {
 
     private static final long serialVersionUID = -8225341071813065890L;
 
-    public DeviceNeverConnectedException() {
-        super(DeviceManagementConnectionErrorCodes.DEVICE_NEVER_CONNECTED);
+    public DeviceNeverConnectedException(KapuaId deviceId) {
+        super(deviceId);
     }
 }

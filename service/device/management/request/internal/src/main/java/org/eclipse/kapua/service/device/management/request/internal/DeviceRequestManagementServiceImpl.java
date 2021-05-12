@@ -13,9 +13,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.request.internal;
 
-import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -24,6 +22,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestBadMethodException;
 import org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestChannel;
@@ -74,7 +73,7 @@ public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagement
                 action = Actions.delete;
                 break;
             default:
-                throw new KapuaRuntimeException(KapuaErrorCodes.OPERATION_NOT_SUPPORTED);
+                throw new DeviceManagementRequestBadMethodException(requestInput.getChannel().getMethod());
         }
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, action, requestInput.getScopeId()));
 

@@ -20,20 +20,14 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
-import org.eclipse.kapua.service.device.management.asset.internal.exception.AssetGetManagementException;
-import org.eclipse.kapua.service.device.management.asset.internal.exception.AssetReadManagementException;
-import org.eclipse.kapua.service.device.management.asset.internal.exception.AssetWriteManagementException;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestChannel;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestMessage;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestPayload;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseMessage;
-import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponsePayload;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestException;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
-import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 import java.util.Date;
 
@@ -73,7 +67,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         try {
             assetRequestPayload.setDeviceAssets(deviceAssets);
         } catch (Exception e) {
-            throw new DeviceManagementRequestException(e, deviceAssets);
+            throw new DeviceManagementRequestContentException(e, deviceAssets);
         }
 
         AssetRequestMessage assetRequestMessage = new AssetRequestMessage();
@@ -85,8 +79,8 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Do get
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(assetRequestMessage, timeout);
-        AssetResponseMessage responseMessage = (AssetResponseMessage) deviceApplicationCall.send();
+        DeviceCallExecutor<?, ?, ?, AssetResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(assetRequestMessage, timeout);
+        AssetResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
         // Create event
@@ -94,19 +88,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            AssetResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceAssets();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload);
-            }
-        } else {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new AssetGetManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
     }
 
     @Override
@@ -133,7 +115,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         try {
             assetRequestPayload.setDeviceAssets(deviceAssets);
         } catch (Exception e) {
-            throw new DeviceManagementRequestException(e, deviceAssets);
+            throw new DeviceManagementRequestContentException(e, deviceAssets);
         }
 
         AssetRequestMessage assetRequestMessage = new AssetRequestMessage();
@@ -145,8 +127,8 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Do read
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(assetRequestMessage, timeout);
-        AssetResponseMessage responseMessage = (AssetResponseMessage) deviceApplicationCall.send();
+        DeviceCallExecutor<?, ?, ?, AssetResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(assetRequestMessage, timeout);
+        AssetResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
         // Create event
@@ -154,19 +136,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            AssetResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceAssets();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload);
-            }
-        } else {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new AssetReadManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
     }
 
     @Override
@@ -193,7 +163,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         try {
             assetRequestPayload.setDeviceAssets(deviceAssets);
         } catch (Exception e) {
-            throw new DeviceManagementRequestException(e, deviceAssets);
+            throw new DeviceManagementRequestContentException(e, deviceAssets);
         }
 
         AssetRequestMessage assetRequestMessage = new AssetRequestMessage();
@@ -205,8 +175,8 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Do write
-        DeviceCallExecutor deviceApplicationCall = new DeviceCallExecutor(assetRequestMessage, timeout);
-        AssetResponseMessage responseMessage = (AssetResponseMessage) deviceApplicationCall.send();
+        DeviceCallExecutor<?, ?, ?, AssetResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(assetRequestMessage, timeout);
+        AssetResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
         // Create event
@@ -214,18 +184,6 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
         //
         // Check response
-        if (responseMessage.getResponseCode().isAccepted()) {
-            AssetResponsePayload responsePayload = responseMessage.getPayload();
-
-            try {
-                return responsePayload.getDeviceAssets();
-            } catch (Exception e) {
-                throw new DeviceManagementResponseException(e, responsePayload);
-            }
-        } else {
-            KapuaResponsePayload responsePayload = responseMessage.getPayload();
-
-            throw new AssetWriteManagementException(responseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionStack());
-        }
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
     }
 }

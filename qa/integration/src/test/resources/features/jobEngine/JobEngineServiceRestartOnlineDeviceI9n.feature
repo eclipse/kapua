@@ -37,7 +37,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I start the Kura Mock
     When Device is connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -49,20 +49,20 @@ Feature: JobEngineService restart job tests with online device
     And I create a new job target item
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
-      | name         | type                                                                    | value                                                                                                                                         |
-      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput  | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
-      | timeout      | java.lang.Long                                                          | 10000                                                                                                                                         |
+      | name         | type                                                                   | value                                                                                                                                         |
+      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
+      | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
     And I create a new step entity from the existing creator
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     And I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -78,7 +78,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I start the Kura Mock
     When Device is connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -90,20 +90,20 @@ Feature: JobEngineService restart job tests with online device
     And I create a new job target item
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
-      | name         | type                                                                    | value                                                                                                                                         |
-      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput  | <?xml version="1.0" encoding="UTF-8"?><commandInput><commandInvalidTag>pwd</commandInvalidTag><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
-      | timeout      | java.lang.Long                                                          | 10000                                                                                                                                         |
+      | name         | type                                                                   | value                                                                                                                                                             |
+      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><commandInvalidTag>pwd</commandInvalidTag><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
+      | timeout      | java.lang.Long                                                         | 10000                                                                                                                                                             |
     And I create a new step entity from the existing creator
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     And I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -119,7 +119,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I start the Kura Mock
     And Device is connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -141,13 +141,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -165,7 +165,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I start the Kura Mock
     And Device is connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -187,13 +187,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -211,7 +211,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I start the Kura Mock
     And Device is connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -233,13 +233,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -257,7 +257,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I start the Kura Mock
     And Device is connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -279,13 +279,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -303,7 +303,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I start the Kura Mock
     And Device is connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -343,7 +343,7 @@ Feature: JobEngineService restart job tests with online device
   be 0 and the status PROCESS_FAILED
 
     Given I start the Kura Mock
-    And I wait 1 second
+    And I wait 2 second
     And Devices is connected
     Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
@@ -364,13 +364,13 @@ Feature: JobEngineService restart job tests with online device
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     And I search for events from device "rpione3" in account "kapua-sys"
@@ -391,7 +391,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I start the Kura Mock
     When Device is connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -437,7 +437,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I start the Kura Mock
     When Device is connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -463,13 +463,13 @@ Feature: JobEngineService restart job tests with online device
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -485,7 +485,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I start the Kura Mock
     And Device is connected
-    And I wait 1 second
+    And I wait 2 second
     And Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -515,13 +515,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -540,7 +540,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I start the Kura Mock
     And Device is connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -570,13 +570,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -599,7 +599,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I add 2 devices to Kura Mock
     When Devices are connected
-    And I wait 1 second
+    And I wait 2 second
     Then Devices status is "CONNECTED"
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -611,20 +611,20 @@ Feature: JobEngineService restart job tests with online device
     And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
-      | name         | type                                                                    | value                                                                                                                                         |
-      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput  | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
-      | timeout      | java.lang.Long                                                          | 10000                                                                                                                                         |
+      | name         | type                                                                   | value                                                                                                                                         |
+      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
+      | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
     And I create a new step entity from the existing creator
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search events from devices in account "kapua-sys" and 3 or more events are found
@@ -639,7 +639,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I add 2 devices to Kura Mock
     When Devices are connected
-    And I wait 1 second
+    And I wait 2 second
     Then Devices status is "CONNECTED"
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -651,20 +651,20 @@ Feature: JobEngineService restart job tests with online device
     And I add targets to job
     And Search for step definition with the name "Command Execution"
     And A regular step creator with the name "TestStep" and the following properties
-      | name         | type                                                                    | value                                                                                                                                         |
-      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput  | <?xml version="1.0" encoding="UTF-8"?><commandInput><commandInvalidTag>pwd</commandInvalidTag><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
-      | timeout      | java.lang.Long                                                          | 10000                                                                                                                                         |
+      | name         | type                                                                   | value                                                                                                                                                             |
+      | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><commandInvalidTag>pwd</commandInvalidTag><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
+      | timeout      | java.lang.Long                                                         | 10000                                                                                                                                                             |
     And I create a new step entity from the existing creator
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search events from devices in account "kapua-sys" and 2 events are found
@@ -679,7 +679,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I add 2 devices to Kura Mock
     And Devices are connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -700,13 +700,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search events from devices in account "kapua-sys" and 3 or more events are found
@@ -723,7 +723,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I add 2 devices to Kura Mock
     And Devices are connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -744,13 +744,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search events from devices in account "kapua-sys" and 2 events are found
@@ -767,7 +767,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I add 2 devices to Kura Mock
     And Devices are connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -788,13 +788,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search events from devices in account "kapua-sys" and 3 or more events are found
@@ -811,7 +811,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I add 2 devices to Kura Mock
     And Devices are connected
-    And I wait 1 second
+    And I wait 2 second
     Then Device status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -832,13 +832,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search events from devices in account "kapua-sys" and 2 events are found
@@ -855,7 +855,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I add 2 devices to Kura Mock
     And Devices are connected
-    And I wait 1 second
+    And I wait 2 second
     Then Devices status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -893,7 +893,7 @@ Feature: JobEngineService restart job tests with online device
   be 0 and the status PROCESS_FAILED
 
     Given I add 2 devices to Kura Mock
-    And I wait 1 second
+    And I wait 2 second
     And Devices are connected
     Then Devices status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
@@ -913,13 +913,13 @@ Feature: JobEngineService restart job tests with online device
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     And I search events from devices in account "kapua-sys" and 2 events are found
@@ -939,7 +939,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I add 2 devices to Kura Mock
     When Devices are connected
-    And I wait 1 second
+    And I wait 2 second
     Then Devices status is "CONNECTED"
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -984,7 +984,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I add 2 devices to Kura Mock
     When Devices are connected
-    And I wait 1 second
+    And I wait 2 second
     Then Devices status is "CONNECTED"
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1009,13 +1009,13 @@ Feature: JobEngineService restart job tests with online device
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     And I search for the last job target in the database
@@ -1033,7 +1033,7 @@ Feature: JobEngineService restart job tests with online device
 
     Given I add 2 devices to Kura Mock
     And Devices are connected
-    And I wait 1 second
+    And I wait 2 second
     Then Devices status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1062,13 +1062,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search events from devices in account "kapua-sys" and 4 or more events are found
@@ -1086,7 +1086,7 @@ Feature: JobEngineService restart job tests with online device
 
     When I add 2 devices to Kura Mock
     And Devices are connected
-    And I wait 1 second
+    And I wait 2 second
     Then Devices status is "CONNECTED"
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -1115,13 +1115,13 @@ Feature: JobEngineService restart job tests with online device
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_FAILED"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search events from devices in account "kapua-sys" and 2 events are found
@@ -1131,7 +1131,7 @@ Feature: JobEngineService restart job tests with online device
     And KuraMock is disconnected
     And I logout
 
-   Scenario: Stop broker after all scenarios
+  Scenario: Stop broker after all scenarios
     Given Stop Broker
 
   Scenario: Stop event broker for all scenarios

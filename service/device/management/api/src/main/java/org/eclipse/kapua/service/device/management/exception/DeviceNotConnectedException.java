@@ -19,7 +19,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStat
 import javax.validation.constraints.NotNull;
 
 /**
- * The {@link Exception} to throw when the {@link Device} is not connected.
+ * The {@link DeviceManagementException} to throw when the {@link Device} is not connected.
  *
  * @since 1.1.0
  */
@@ -32,21 +32,13 @@ public class DeviceNotConnectedException extends DeviceManagementException {
 
     /**
      * Constructor.
-     */
-    public DeviceNotConnectedException() {
-        super(DeviceManagementConnectionErrorCodes.DEVICE_NOT_CONNECTED);
-        this.deviceId = null;
-        this.currentConnectionStatus = null;
-    }
-
-    /**
-     * Constructor.
      *
      * @param deviceId The {@link Device#getId()} which is not {@link DeviceConnectionStatus#CONNECTED}
      * @since 1.1.0
      */
-    public DeviceNotConnectedException(@NotNull KapuaId deviceId) {
-        super(DeviceManagementConnectionErrorCodes.DEVICE_NOT_CONNECTED, null);
+    protected DeviceNotConnectedException(@NotNull KapuaId deviceId) {
+        super(DeviceManagementErrorCodes.DEVICE_NOT_CONNECTED, deviceId, null);
+
         this.deviceId = deviceId;
         this.currentConnectionStatus = null;
     }
@@ -59,7 +51,8 @@ public class DeviceNotConnectedException extends DeviceManagementException {
      * @since 1.1.0
      */
     public DeviceNotConnectedException(@NotNull KapuaId deviceId, @NotNull DeviceConnectionStatus currentConnectionStatus) {
-        super(DeviceManagementConnectionErrorCodes.DEVICE_NOT_CONNECTED, deviceId, currentConnectionStatus);
+        super(DeviceManagementErrorCodes.DEVICE_NOT_CONNECTED, deviceId, currentConnectionStatus);
+
         this.deviceId = deviceId;
         this.currentConnectionStatus = currentConnectionStatus;
     }

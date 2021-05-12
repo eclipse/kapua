@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,12 +10,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service;
+package org.eclipse.kapua.service.device.management;
+
+import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.device.registry.Device;
 
 /**
- * Kapua service definition. (Marker interface)
+ * Identifies a {@link Device} management {@link KapuaService}
  *
- * @since 1.0.0
+ * @since 1.5.0
  */
-public interface KapuaService {
+public interface DeviceManagementService extends KapuaService {
 }
