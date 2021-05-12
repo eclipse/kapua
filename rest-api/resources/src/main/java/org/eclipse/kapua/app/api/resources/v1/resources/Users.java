@@ -268,6 +268,9 @@ public class Users extends AbstractKapuaResource {
             throw new KapuaEntityNotFoundException(MfaOption.TYPE, "MfaOption");  // TODO: not sure "MfaOption" it's the best value to return here
         }
 
+        // Set the mfa secret key to null before returning the mfaOption, due to improve the security
+        mfaOption.setMfaSecretKey(null);
+
         return mfaOption;
     }
 
