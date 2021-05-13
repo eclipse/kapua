@@ -41,7 +41,8 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Ddatastore.disable=\${KAPUA_DISABLE_DATASTORE:-false} \
                -Ddevice.management.response.stacktrace.show=\${DEVICE_MANAGEMENT_RESPONSE_STACKTRACE_SHOW:-false} \
                -Djavax.xml.bind.context.factory=org.eclipse.persistence.jaxb.JAXBContextFactory \
-               -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR}"
+               -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR} \
+               \${JETTY_DEBUG_OPTS}"
 
 USER 0
 
