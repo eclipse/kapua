@@ -48,6 +48,7 @@ public class JobTargetExporterCsv extends JobTargetExporter {
     private String jobId;
     private DateFormat dateFormat;
     private CSVWriter writer;
+    private OutputStreamWriter outputWriter;
 
     public JobTargetExporterCsv(HttpServletResponse response) {
         super(response);
@@ -65,15 +66,11 @@ public class JobTargetExporterCsv extends JobTargetExporter {
         response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + URLEncoder.encode(jobId, CharEncoding.UTF_8) + "_job_targets.csv");
         response.setHeader("Cache-Control", "no-transform, max-age=0");
 
-        OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream(), Charset.forName(CharEncoding.UTF_8));
-        try {
-            writer = new CSVWriter(osw);
+        outputWriter = new OutputStreamWriter(response.getOutputStream(), Charset.forName(CharEncoding.UTF_8));
+        writer = new CSVWriter(outputWriter);
 
-            List<String> cols = new ArrayList<String>(Arrays.asList(JOB_TARGET_PROPERTIES));
-            writer.writeNext(cols.toArray(new String[]{ }));
-        } finally {
-            osw.close();
-        }
+        List<String> cols = new ArrayList<String>(Arrays.asList(JOB_TARGET_PROPERTIES));
+        writer.writeNext(cols.toArray(new String[]{ }));
     }
 
     @Override
@@ -138,7 +135,7 @@ public class JobTargetExporterCsv extends JobTargetExporter {
     @Override
     public void close()
             throws ServletException, IOException {
-        writer.flush();
+        outputWriter.close();
         writer.close();
     }
 }
