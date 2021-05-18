@@ -143,7 +143,7 @@ public class MfaManagementPanel extends ContentPanel {
                     public void onSuccess(final GwtXSRFToken xsrfToken) {
                         getButtonBar().disable();
 
-                        keyEnabled = gwtMfaCredentialOptions != null && gwtMfaCredentialOptions.getAuthenticationKey() != null;
+                        keyEnabled = gwtMfaCredentialOptions != null;
                         if (!keyEnabled) {
                             doMask(MSGS.maskEnableMfa());
                             // MFA is disabled, so enable it
@@ -488,7 +488,7 @@ public class MfaManagementPanel extends ContentPanel {
     }
 
     private void updateUIComponents(GwtMfaCredentialOptions gwtMfaCredentialOptions) {
-        boolean multiFactorAuth = gwtMfaCredentialOptions != null && gwtMfaCredentialOptions.getAuthenticationKey() != null;
+        boolean multiFactorAuth = gwtMfaCredentialOptions != null;
         boolean hasCredentialWrite = currentSession.hasPermission(CredentialSessionPermission.write());
         boolean hasCredentialDelete = currentSession.hasPermission(CredentialSessionPermission.delete());
 
