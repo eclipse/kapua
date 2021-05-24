@@ -49,8 +49,6 @@
         <eclipselink.version>2.7.7</eclipselink.version>
         <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
         <elasticsearch.version>6.8.7</elasticsearch.version>
-        <elasticsearch-client-rest.version>6.8.7</elasticsearch-client-rest.version>
-        <elasticsearch-client-transport.version>6.8.7</elasticsearch-client-transport.version>
         <findbugs.version>2.0.1</findbugs.version>
         <googleauth.version>1.5.0</googleauth.version>
         <gson.version>2.7</gson.version>
@@ -854,11 +852,6 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-service-elasticsearch-client-transport</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-service-elasticsearch-server-embedded</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1484,37 +1477,37 @@
             <dependency>
                 <groupId>org.elasticsearch.client</groupId>
                 <artifactId>transport</artifactId>
-                <version>${elasticsearch-client-transport.version}</version>
+                <version>${elasticsearch.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.elasticsearch.plugin</groupId>
+                <groupId>org.elasticsearch.client</groupId>
                 <artifactId>transport-netty4-client</artifactId>
-                <version>${elasticsearch-client-transport.version}</version>
+                <version>${elasticsearch.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.elasticsearch.client</groupId>
                 <artifactId>elasticsearch-rest-client</artifactId>
-                <version>${elasticsearch-client-rest.version}</version>
+                <version>${elasticsearch.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.elasticsearch.client</groupId>
                 <artifactId>elasticsearch-rest-high-level-client</artifactId>
-                <version>${elasticsearch-client-rest.version}</version>
+                <version>${elasticsearch.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.elasticsearch.plugin</groupId>
                 <artifactId>reindex-client</artifactId>
-                <version>${elasticsearch-client-transport.version}</version>
+                <version>${elasticsearch.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.elasticsearch.plugin</groupId>
                 <artifactId>lang-mustache-client</artifactId>
-                <version>${elasticsearch-client-transport.version}</version>
+                <version>${elasticsearch.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.elasticsearch.plugin</groupId>
                 <artifactId>percolator-client</artifactId>
-                <version>${elasticsearch-client-transport.version}</version>
+                <version>${elasticsearch.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.javassist</groupId>
@@ -1531,7 +1524,6 @@
                 <artifactId>metrics-core</artifactId>
                 <version>${dropwizard-metrics.version}</version>
             </dependency>
-
 
             <!-- -->
             <!-- Netty 3 -->

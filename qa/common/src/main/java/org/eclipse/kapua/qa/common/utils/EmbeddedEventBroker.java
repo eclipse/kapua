@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import cucumber.api.java.en.Given;
 import org.apache.activemq.artemis.core.config.Configuration;
@@ -28,10 +29,8 @@ import org.apache.activemq.artemis.jms.server.config.impl.JMSConfigurationImpl;
 import org.apache.activemq.artemis.jms.server.embedded.EmbeddedJMS;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-//import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.Suppressed;
-import org.elasticsearch.common.UUIDs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +43,7 @@ public class EmbeddedEventBroker {
 
     private static final Logger logger = LoggerFactory.getLogger(EmbeddedEventBroker.class);
 
-    private static final String DEFAULT_DATA_DIRECTORY_PREFIX = "target/artemis" + UUIDs.randomBase64UUID();
+    private static final String DEFAULT_DATA_DIRECTORY_PREFIX = "target/artemis" + UUID.randomUUID();
     private static final String DEFAULT_DATA_DIRECTORY = DEFAULT_DATA_DIRECTORY_PREFIX + "/data/journal";
 
     private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.broker.extraStartupDelay", 0);

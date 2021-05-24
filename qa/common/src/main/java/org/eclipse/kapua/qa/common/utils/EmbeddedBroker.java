@@ -19,13 +19,13 @@ import cucumber.api.java.en.Given;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.activemq.broker.BrokerFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.eclipse.kapua.qa.common.Ports;
 import org.eclipse.kapua.qa.common.Suppressed;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
-import org.elasticsearch.common.UUIDs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,7 @@ public class EmbeddedBroker {
 
     private static final Logger logger = LoggerFactory.getLogger(EmbeddedBroker.class);
 
-    private static final String DEFAULT_DATA_DIRECTORY_PREFIX = "target/activemq/" + UUIDs.randomBase64UUID();
+    private static final String DEFAULT_DATA_DIRECTORY_PREFIX = "target/activemq/" + UUID.randomUUID();
     private static final String DEFAULT_KAHA_DB_DIRECTORY = DEFAULT_DATA_DIRECTORY_PREFIX + "/kahaDB";
     private static final String DEFAULT_DATA_DIRECTORY = DEFAULT_DATA_DIRECTORY_PREFIX + "/data";
     private static final String KAHA_DB_DIRECTORY = "KAHA_DB_DIRECTORY";
