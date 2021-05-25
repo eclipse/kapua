@@ -732,7 +732,7 @@ Scenario: Init Security Context for all scenarios
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
-    And The trigger is set to end on 12-05-2021 at 10:00.
+    And The trigger is set to end tomorrow at 10:00.
     Then I set retry interval to 2
     And I create a new trigger from the existing creator with previously defined date properties
     Then I delete trigger with name "schedule0"
@@ -754,7 +754,7 @@ Scenario: Init Security Context for all scenarios
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start on 12-12-2020 at 10:00.
-    And The trigger is set to end on 12-05-2021 at 10:00.
+    And The trigger is set to end tomorrow at 20:00.
     Then I set cron expression to "0 15 10 * * ?"
     And I create a new trigger from the existing creator with previously defined date properties
     Then I delete trigger with name "schedule0"
