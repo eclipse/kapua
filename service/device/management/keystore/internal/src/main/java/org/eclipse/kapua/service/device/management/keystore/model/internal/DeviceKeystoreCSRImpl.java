@@ -1,0 +1,66 @@
+/*******************************************************************************
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.service.device.management.keystore.model.internal;
+
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+
+public class DeviceKeystoreCSRImpl implements DeviceKeystoreCSR {
+
+    private String keystoreId;
+    private String alias;
+    private String signatureAlgorithm;
+    private String attributes;
+
+    public DeviceKeystoreCSRImpl() {
+    }
+
+    @Override
+    public String getKeystoreId() {
+        return keystoreId;
+    }
+
+    @Override
+    public void setKeystoreId(String keystoreId) {
+        this.keystoreId = keystoreId;
+    }
+
+    @Override
+    public String getAlias() {
+        return alias;
+    }
+
+    @Override
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    @Override
+    public String getSignatureAlgorithm() {
+        return signatureAlgorithm;
+    }
+
+    @Override
+    public void setSignatureAlgorithm(String signatureAlgorithm) {
+        this.signatureAlgorithm = signatureAlgorithm;
+    }
+
+    @Override
+    public String getAttributes() {
+        return attributes;
+    }
+
+    @Override
+    public void setAttributes(String attributes) {
+        this.attributes = attributes;
+    }
+}
