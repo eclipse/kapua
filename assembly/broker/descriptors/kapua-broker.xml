@@ -256,6 +256,8 @@
                 <include>${pom.groupId}:kapua-device-management-configuration-internal</include>
                 <include>${pom.groupId}:kapua-device-management-inventory-api</include>
                 <include>${pom.groupId}:kapua-device-management-inventory-internal</include>
+                <include>${pom.groupId}:kapua-device-management-keystore-api</include>
+                <include>${pom.groupId}:kapua-device-management-keystore-internal</include>
                 <include>${pom.groupId}:kapua-device-management-job-api</include>
                 <include>${pom.groupId}:kapua-device-management-job-internal</include>
                 <include>${pom.groupId}:kapua-device-management-packages-api</include>

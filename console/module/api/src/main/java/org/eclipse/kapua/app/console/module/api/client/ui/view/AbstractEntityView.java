@@ -103,6 +103,8 @@ public abstract class AbstractEntityView<M extends GwtEntityModel> extends Abstr
             @Override
             public void onSuccess(List<TabDescriptor> result) {
                 tabsPanel = new KapuaTabPanel<M>();
+                tabsPanel.setTabScroll(true);
+
                 for (TabDescriptor tabDescriptor : result) {
                     if (tabDescriptor.isEnabled(currentSession)) {
                         tabsPanel.add(tabDescriptor.getTabViewInstance(AbstractEntityView.this, currentSession));

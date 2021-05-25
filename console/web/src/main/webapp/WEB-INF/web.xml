@@ -52,6 +52,7 @@
         <url-pattern>/device/*</url-pattern>
         <url-pattern>/deviceManagement/*</url-pattern>
         <url-pattern>/deviceManagementInventory/*</url-pattern>
+        <url-pattern>/deviceManagementKeystore/*</url-pattern>
         <url-pattern>/deviceManagementOperation/*</url-pattern>
         <url-pattern>/deviceConnection/*</url-pattern>
         <url-pattern>/deviceConnectionOption/*</url-pattern>
@@ -216,6 +217,15 @@
     <servlet-mapping>
         <servlet-name>deviceManagementInventoryServlet</servlet-name>
         <url-pattern>/deviceManagementInventory</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deviceManagementKeystoreServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.module.device.server.GwtDeviceKeystoreManagementServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deviceManagementKeystoreServlet</servlet-name>
+        <url-pattern>/deviceManagementKeystore</url-pattern>
     </servlet-mapping>
 
     <servlet>
