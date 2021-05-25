@@ -1,4 +1,4 @@
-#from kapua to kura
+# From Kapua to Kura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppAssetKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppBundleKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppCommandKapuaKura
@@ -8,8 +8,12 @@ org.eclipse.kapua.translator.kapua.kura.TranslatorAppPackageKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppRequestKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppSnapshotKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorDataKapuaKura
+org.eclipse.kapua.translator.kapua.kura.keystore.TranslatorAppKeystoreCertificateKapuaKura
+org.eclipse.kapua.translator.kapua.kura.keystore.TranslatorAppKeystoreCsrKapuaKura
+org.eclipse.kapua.translator.kapua.kura.keystore.TranslatorAppKeystoreKeypairKapuaKura
+org.eclipse.kapua.translator.kapua.kura.keystore.TranslatorAppKeystoreQueryKapuaKura
 
-#from kura to kapua
+# From Kura to Kapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppAssetKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppBundleKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppCommandKuraKapua
@@ -24,3 +28,8 @@ org.eclipse.kapua.translator.kura.kapua.TranslatorLifeBirthKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorLifeDisconnectKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorLifeMissingKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppNotifyKuraKapua
+org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreItemKuraKapua
+org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreItemsKuraKapua
+org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreNoContentKuraKapua
+org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreSignedCertificateKuraKapua
+org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoresKuraKapua

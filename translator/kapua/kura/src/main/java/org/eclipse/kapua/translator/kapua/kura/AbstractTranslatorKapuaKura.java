@@ -13,6 +13,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -40,6 +42,11 @@ import org.eclipse.kapua.translator.exception.TranslateException;
 public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, FROM_P extends KapuaPayload, FROM_M extends KapuaMessage<FROM_C, FROM_P>> extends Translator<FROM_M, KuraRequestMessage> {
 
     private static final String CONTROL_MESSAGE_CLASSIFIER = SystemSetting.getInstance().getMessageClassifier();
+
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -87,5 +94,17 @@ public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, F
     protected abstract KuraRequestChannel translateChannel(FROM_C kapuaChannel) throws InvalidChannelException;
 
     protected abstract KuraRequestPayload translatePayload(FROM_P kapuaPayload) throws InvalidPayloadException;
+
+    /**
+     * Returns the {@link ObjectMapper} instance.
+     * <p>
+     * This can be also used to change the {@link ObjectMapper}'s configuration.
+     *
+     * @return The {@link ObjectMapper} instance.
+     * @since 1.5.0
+     */
+    protected ObjectMapper getJsonMapper() {
+        return JSON_MAPPER;
+    }
 
 }

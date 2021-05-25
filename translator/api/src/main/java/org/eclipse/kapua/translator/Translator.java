@@ -49,7 +49,16 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
 
     private static final Logger LOG = LoggerFactory.getLogger(Translator.class);
 
-    private static final ServiceLoader<Translator> AVAILABLE_TRANSLATORS = ServiceLoader.load(Translator.class);
+    private static final ServiceLoader<Translator> AVAILABLE_TRANSLATORS;
+
+    static {
+        try {
+            AVAILABLE_TRANSLATORS = ServiceLoader.load(Translator.class);
+        } catch (Throwable e) {
+            LOG.error("Error while loading available translators!", e);
+            throw new ExceptionInInitializerError(e);
+        }
+    }
 
     /**
      * Return a {@link Translator} for the given {@link Message}s types.
@@ -62,7 +71,7 @@ public abstract class Translator<FROM_M extends Message, TO_M extends Message> {
      * @throws TranslatorNotFoundException if no {@link Translator} if found for the given {@link Message} types.
      * @since 1.0.0
      */
-    public static <FROM_M extends Message, TO_M extends Message, T extends Translator<FROM_M, TO_M>> T getTranslatorFor(@NotNull Class<? extends FROM_M> fromMessageClass, @NotNull Class<? extends TO_M> toMessageClass) {
+    public static <FROM_M extends Message<?, ?>, TO_M extends Message, T extends Translator<FROM_M, TO_M>> T getTranslatorFor(@NotNull Class<? extends FROM_M> fromMessageClass, @NotNull Class<? extends TO_M> toMessageClass) {
 
         T cachedTranslator = TranslatorCache.getCachedTranslator(fromMessageClass, toMessageClass);
 
