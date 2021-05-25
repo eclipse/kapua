@@ -80,6 +80,9 @@
         <api>org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService</api>
         <api>org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory</api>
 
+        <api>org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory</api>
+
         <api>org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService</api>
         <api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
 
