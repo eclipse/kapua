@@ -12,23 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.web.jaxb;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
-import javax.xml.bind.JAXBContext;
-
+import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalArgumentExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalNullArgumentExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
-import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
-import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobExecutionEnqueuedExceptionInfo;
@@ -40,11 +28,24 @@ import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
+import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreXmlRegistry;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.job.Job;
@@ -66,9 +67,16 @@ import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerXmlRegistry;
-
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
+
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
+import javax.xml.bind.JAXBContext;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Provide a customized JAXBContext that makes the concrete implementations
@@ -77,7 +85,7 @@ import org.eclipse.persistence.jaxb.MarshallerProperties;
  * @since 1.0.0
  */
 @Provider
-@Produces({ MediaType.APPLICATION_JSON })
+@Produces({MediaType.APPLICATION_JSON})
 public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
     private JAXBContext jaxbContext;
@@ -115,6 +123,18 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     // Authentication
                     AuthenticationXmlRegistry.class,
                     AccessToken.class,
+
+                    // Device Management Keystore
+                    DeviceKeystores.class,
+                    DeviceKeystore.class,
+                    DeviceKeystoreCertificate.class,
+                    DeviceKeystoreItems.class,
+                    DeviceKeystoreItem.class,
+                    DeviceKeystoreItemQuery.class,
+                    DeviceKeystoreKeypair.class,
+                    DeviceKeystoreCSR.class,
+                    DeviceKeystoreSignedCertificate.class,
+                    DeviceKeystoreXmlRegistry.class,
 
                     // Jobs
                     Job.class,
