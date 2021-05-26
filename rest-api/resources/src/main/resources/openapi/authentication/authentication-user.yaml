@@ -30,6 +30,9 @@ paths:
                 password:
                   allOf:
                     - $ref: './authentication.yaml#/components/schemas/password'
+                trustKey:
+                  allOf:
+                    - $ref: './authentication.yaml#/components/schemas/trustKey'
               required:
                 - username
                 - password

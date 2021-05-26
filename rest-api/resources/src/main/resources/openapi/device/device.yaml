@@ -35,10 +35,7 @@ components:
       schema:
         type: array
         items:
-          type: string
-          enum:
-            - connection
-            - lastEvent
+          $ref: '#/components/schemas/fetchAttribute'
     clientId:
       name: clientId
       in: query
@@ -329,3 +326,8 @@ components:
             action: CREATE
             responseCode: ACCEPTED
             eventMessage: 'acceptEncoding=gzip~~applicationFramework=Kura~~applicationFrameworkVersion=ESF_6.0.0~~applicationIdentifiers=heaterPROV-V2DEPLOY-V2VPNCLIENT-V2CONF-V1CERT-V1ASSET-V1CMD-V1~~availableProcessors=4~~bios=N/A~~biosVersion=N/A~~connectionInterface=lo (00:00:00:00:00:00)~~connectionIp=127.0.0.1~~containerFramework=Eclipse~~containerFrameworkVersion=1.8.0~~displayName=~~firmware=N/A~~firmwareVersion=N/A~~jvm=Java HotSpot(TM) 64-Bit Server VM~~jvmProfile=Java(TM) SE Runtime Environment 1.8.0_161-b12~~jvmVersion=25.161-b12 mixed mode~~modelId=ESF-Docker-RHEL~~modelName=ESF-Docker-RHEL~~os=Linux~~osArch=amd64~~osVersion=4.9.184-linuxkit #1 SMP Tue Jul 2 22:58:16 UTC 2019~~partNumber=ESF-Docker-RHEL~~serialNumber=ESF-Docker-RHEL~~totalMemory=1023488~~uptime=187894320'
+    fetchAttribute:
+        type: string
+        enum:
+          - connection
+          - lastEvent

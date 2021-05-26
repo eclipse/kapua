@@ -166,7 +166,7 @@ paths:
     $ref: './deviceConfiguration/deviceConfiguration-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1configurations'
   /{scopeId}/devices/{deviceId}/configurations/{componentId}:
     $ref: './deviceConfiguration/deviceConfiguration-scopeId-deviceId-componentId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1configurations~1{componentId}'
-  ### Device Bundle ###
+  ### Device Inventory ###
   /{scopeId}/devices/{deviceId}/inventory:
     $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory'
   /{scopeId}/devices/{deviceId}/inventory/bundles:
@@ -548,6 +548,7 @@ components:
               type: string
           required:
             - name
+    ### Other Base Entities ###
     kapuaError:
       description: The base object to represent an Error
       properties:
@@ -579,6 +580,305 @@ components:
         count:
           type: integer
           description: The total count of the Entities available in the Scope
+    ### AccessInfo Entities ###
+    accessInfo:
+      $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessInfo'
+    accessInfoCreator:
+      $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessInfoCreator'
+    accessInfoListResult:
+      $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessInfoListResult'
+    permission:
+      $ref: './accessInfo/accessInfo.yaml#/components/schemas/permission'
+    accessPermission:
+      $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessPermission'
+    accessPermissionCreator:
+      $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessPermissionCreator'
+    accessPermissionListResult:
+      $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessPermissionListResult'
+    accessRole:
+      $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessRole'
+    accessRoleCreator:
+      $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessRoleCreator'
+    accessRoleListResult:
+      $ref: './accessInfo/accessInfo.yaml#/components/schemas/accessRoleListResult'
+    ### Account Entities ###
+    account:
+      $ref: './account/account.yaml#/components/schemas/account'
+    accountCreator:
+      $ref: './account/account.yaml#/components/schemas/accountCreator'
+    accountListResult:
+      $ref: './account/account.yaml#/components/schemas/accountListResult'
+    ### Authentication Entities ###
+    accessToken:
+      $ref: './authentication/authentication.yaml#/components/schemas/accessToken'
+    loginInfo:
+      $ref: './authentication/authentication.yaml#/components/schemas/loginInfo'
+    ### Credential Entities ###
+    credential:
+      $ref: './credential/credential.yaml#/components/schemas/credential'
+    credentialCreator:
+      $ref: './credential/credential.yaml#/components/schemas/credentialCreator'
+    credentialListResult:
+      $ref: './credential/credential.yaml#/components/schemas/credentialListResult'
+    ### Data Channel Entities ###
+    channelInfo:
+      $ref: './dataChannel/dataChannel.yaml#/components/schemas/channelInfo'
+    channelInfoListResult:
+      $ref: './dataChannel/dataChannel.yaml#/components/schemas/channelInfoListResult'
+    ### Data Client Entities ###
+    clientInfo:
+      $ref: './dataClient/dataClient.yaml#/components/schemas/clientInfo'
+    clientInfoListResult:
+      $ref: './dataClient/dataClient.yaml#/components/schemas/clientInfoListResult'
+    ### Data Message Entities ###
+    metric:
+      $ref: './dataMessage/dataMessage.yaml#/components/schemas/metric'
+    position:
+      $ref: './dataMessage/dataMessage.yaml#/components/schemas/position'
+    dataMessage:
+      $ref: './dataMessage/dataMessage.yaml#/components/schemas/dataMessage'
+    dataMessageInsertResponse:
+      $ref: './dataMessage/dataMessage.yaml#/components/schemas/dataMessageInsertResponse'
+    dataMessageListResult:
+      $ref: './dataMessage/dataMessage.yaml#/components/schemas/dataMessageListResult'
+    ### Data Metric Entities ###
+    metricInfo:
+      $ref: './dataMetric/dataMetric.yaml#/components/schemas/metricInfo'
+    metricInfoListResult:
+      $ref: './dataMetric/dataMetric.yaml#/components/schemas/metricInfoListResult'
+    ### Device Entities ###
+    fetchAttribute:
+      $ref: './device/device.yaml#/components/schemas/fetchAttribute'
+    device:
+      $ref: './device/device.yaml#/components/schemas/device'
+    deviceCreator:
+      $ref: './device/device.yaml#/components/schemas/deviceCreator'
+    deviceListResult:
+      $ref: './device/device.yaml#/components/schemas/deviceListResult'
+    ### Device Asset Entities ###
+    deviceAssetDefinition:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetDefinition'
+    deviceAssetDefinitions:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetDefinitions'
+    deviceAssetValue:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetValue'
+    deviceAssetValues:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/deviceAssetValues'
+    channelDefinition:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/channelDefinition'
+    channelValue:
+      $ref: './deviceAsset/deviceAsset.yaml#/components/schemas/channelValue'
+    ### Device Bundle Entities ###
+    deviceBundle:
+      $ref: './deviceBundle/deviceBundle.yaml#/components/schemas/deviceBundle'
+    deviceBundles:
+      $ref: './deviceBundle/deviceBundle.yaml#/components/schemas/deviceBundles'
+    ### Device Command Entities ###
+    commandInput:
+      $ref: './deviceCommand/deviceCommand.yaml#/components/schemas/commandInput'
+    commandOutput:
+      $ref: './deviceCommand/deviceCommand.yaml#/components/schemas/commandOutput'
+    ### Device Configuration Entities ###
+    componentConfiguration:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/componentConfiguration'
+    componentConfigurationInput:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/componentConfigurationInput'
+    componentConfigurations:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/componentConfigurations'
+    componentConfigurationsInput:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/componentConfigurationsInput'
+    icon:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/icon'
+    propertyDefinition:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/propertyDefinition'
+    option:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/option'
+    attributeDefinition:
+      $ref: './deviceConfiguration/deviceConfiguration.yaml#/components/schemas/attributeDefinition'
+    ### Device Connection Entities ###
+    connection:
+      $ref: './deviceConnection/deviceConnection.yaml#/components/schemas/connection'
+    connectionListResult:
+      $ref: './deviceConnection/deviceConnection.yaml#/components/schemas/connectionListResult'
+    ### Device Event Entities ###
+    deviceEvent:
+      $ref: './deviceEvent/deviceEvent.yaml#/components/schemas/deviceEvent'
+    deviceEventListResult:
+      $ref: './deviceEvent/deviceEvent.yaml#/components/schemas/deviceEventListResult'
+    ### Device Inventory Entities ###
+    inventoryItem:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/inventoryItem'
+    deviceInventory:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventory'
+    deviceInventoryBundle:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryBundle'
+    deviceInventoryBundles:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryBundles'
+    deviceInventoryPackage:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventorySystemPackage'
+    deviceInventoryPackages:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventorySystemPackages'
+    deviceInventoryDeploymentPackage:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryDeploymentPackage'
+    deviceInventoryDeploymentPackages:
+      $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryDeploymentPackages'
+    ### Device Notification Entities ###
+    deviceNotification:
+      $ref: './deviceNotification/deviceNotification.yaml#/components/schemas/deviceNotification'
+    deviceNotificationListResult:
+      $ref: './deviceNotification/deviceNotification.yaml#/components/schemas/deviceNotificationListResult'
+    ### Device Operation Entities ###
+    operationProperty:
+      $ref: './deviceOperation/deviceOperation.yaml#/components/schemas/operationProperty'
+    deviceOperation:
+      $ref: './deviceOperation/deviceOperation.yaml#/components/schemas/deviceOperation'
+    deviceOperationListResult:
+      $ref: './deviceOperation/deviceOperation.yaml#/components/schemas/deviceOperationListResult'
+    ### Device Package Entities ###
+    bundleInfo:
+      $ref: './devicePackage/devicePackage.yaml#/components/schemas/bundleInfo'
+    devicePackage:
+      $ref: './devicePackage/devicePackage.yaml#/components/schemas/devicePackage'
+    devicePackages:
+      $ref: './devicePackage/devicePackage.yaml#/components/schemas/devicePackages'
+    devicePackageDownloadRequest:
+      $ref: './devicePackage/devicePackage.yaml#/components/schemas/devicePackageDownloadRequest'
+    ### Device Request Entities ###
+    requestInput:
+      $ref: './deviceRequest/deviceRequest.yaml#/components/schemas/requestInput'
+    requestOutput:
+      $ref: './deviceRequest/deviceRequest.yaml#/components/schemas/requestOutput'
+    ### Device Snapshot Entities ###
+    snapshot:
+      $ref: './deviceSnapshot/deviceSnapshot.yaml#/components/schemas/snapshot'
+    snapshots:
+      $ref: './deviceSnapshot/deviceSnapshot.yaml#/components/schemas/snapshots'
+    ### Domain Entities ###
+    domain:
+      $ref: './domain/domain.yaml#/components/schemas/domain'
+    domainListResult:
+      $ref: './domain/domain.yaml#/components/schemas/domainListResult'
+    ### Endpoint Info Entities ###
+    usage:
+      $ref: './endpointInfo/endpointInfo.yaml#/components/schemas/usage'
+    endpointInfo:
+      $ref: './endpointInfo/endpointInfo.yaml#/components/schemas/endpointInfo'
+    endpointInfoCreator:
+      $ref: './endpointInfo/endpointInfo.yaml#/components/schemas/endpointInfoCreator'
+    endpointInfoListResult:
+      $ref: './endpointInfo/endpointInfo.yaml#/components/schemas/endpointInfoListResult'
+    ### Group Entities ###
+    group:
+      $ref: './group/group.yaml#/components/schemas/group'
+    groupCreator:
+      $ref: './group/group.yaml#/components/schemas/groupCreator'
+    groupListResult:
+      $ref: './group/group.yaml#/components/schemas/groupListResult'
+    ### Job Entities ###
+    job:
+      $ref: './job/job.yaml#/components/schemas/job'
+    jobCreator:
+      $ref: './job/job.yaml#/components/schemas/jobCreator'
+    jobListResult:
+      $ref: './job/job.yaml#/components/schemas/jobListResult'
+    ### Job Engine Entities ###
+    isJobRunning:
+      $ref: './jobEngine/jobEngine.yaml#/components/schemas/isJobRunning'
+    jobStartOptions:
+      $ref: './jobEngine/jobEngine.yaml#/components/schemas/jobStartOptions'
+    ### Job Execution Entities ###
+    jobExecution:
+      $ref: './jobExecution/jobExecution.yaml#/components/schemas/jobExecution'
+    jobExecutionListResult:
+      $ref: './jobExecution/jobExecution.yaml#/components/schemas/jobExecutionListResult'
+    ### Job Step Entities ###
+    jobStep:
+      $ref: './jobStep/jobStep.yaml#/components/schemas/jobStep'
+    jobStepCreator:
+      $ref: './jobStep/jobStep.yaml#/components/schemas/jobStepCreator'
+    jobStepListResult:
+      $ref: './jobStep/jobStep.yaml#/components/schemas/jobStepListResult'
+    ### Job Step Definition Entities ###
+    jobStepDefinition:
+      $ref: './jobStepDefinition/jobStepDefinition.yaml#/components/schemas/jobStepDefinition'
+    jobStepDefinitionProperty:
+      $ref: './jobStepDefinition/jobStepDefinition.yaml#/components/schemas/jobStepDefinitionProperty'
+    jobStepDefinitionListResult:
+      $ref: './jobStepDefinition/jobStepDefinition.yaml#/components/schemas/jobStepDefinitionListResult'
+    ### Job Target Entities ###
+    jobTarget:
+      $ref: './jobTarget/jobTarget.yaml#/components/schemas/jobTarget'
+    jobTargetCreator:
+      $ref: './jobTarget/jobTarget.yaml#/components/schemas/jobTargetCreator'
+    jobTargetListResult:
+      $ref: './jobTarget/jobTarget.yaml#/components/schemas/jobTargetListResult'
+    ### Job Trigger Entities ###
+    jobTrigger:
+      $ref: './jobTrigger/jobTrigger.yaml#/components/schemas/jobTrigger'
+    jobTriggerCreator:
+      $ref: './jobTrigger/jobTrigger.yaml#/components/schemas/jobTriggerCreator'
+    jobTriggerListResult:
+      $ref: './jobTrigger/jobTrigger.yaml#/components/schemas/jobTriggerListResult'
+    ### Job Trigger Fired Entities ###
+    firedTrigger:
+      $ref: './jobTriggerFired/jobTriggerFired.yaml#/components/schemas/firedTrigger'
+    firedTriggerListResult:
+      $ref: './jobTriggerFired/jobTriggerFired.yaml#/components/schemas/firedTriggerListResult'
+    ### Role Entities ###
+    role:
+      $ref: './role/role.yaml#/components/schemas/role'
+    roleCreator:
+      $ref: './role/role.yaml#/components/schemas/roleCreator'
+    roleListResult:
+      $ref: './role/role.yaml#/components/schemas/roleListResult'
+    rolePermission:
+      $ref: './role/role.yaml#/components/schemas/rolePermission'
+    rolePermissionCreator:
+      $ref: './role/role.yaml#/components/schemas/rolePermissionCreator'
+    rolePermissionListResult:
+      $ref: './role/role.yaml#/components/schemas/rolePermissionListResult'
+    ### Service Configuration Entities ###
+    servicePropertyDefinition:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/propertyDefinition'
+    serviceIcon:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/icon'
+    serviceComponentConfiguration:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/componentConfiguration'
+    serviceComponentConfigurationInput:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/componentConfigurationInput'
+    serviceComponentConfigurations:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/componentConfigurations'
+    serviceComponentConfigurationsInput:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/componentConfigurationsInput'
+    serviceOption:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/option'
+    serviceAttributeDefinition:
+      $ref: './serviceConfiguration/serviceConfiguration.yaml#/components/schemas/attributeDefinition'
+    ### Tag Entities ###
+    tag:
+      $ref: './tag/tag.yaml#/components/schemas/tag'
+    tagCreator:
+      $ref: './tag/tag.yaml#/components/schemas/tagCreator'
+    tagListResult:
+      $ref: './tag/tag.yaml#/components/schemas/tagListResult'
+    ### Trigger Definition Entities ###
+    triggerDefinitionProperty:
+      $ref: './triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerDefinitionProperty'
+    triggerDefinition:
+      $ref: './triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerDefinition'
+    triggerDefinitionListResult:
+      $ref: './triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerDefinitionListResult'
+    ### User Entities ###
+    user:
+      $ref: './user/user.yaml#/components/schemas/user'
+    userCreator:
+      $ref: './user/user.yaml#/components/schemas/userCreator'
+    userListResult:
+      $ref: './user/user.yaml#/components/schemas/userListResult'
+    mfaOption:
+      $ref: './user/user.yaml#/components/schemas/mfaOption'
+    mfaOptionCreator:
+      $ref: './user/user.yaml#/components/schemas/mfaOptionCreator'
   requestBodies:
     kapuaQuery:
       description: An object to specify Query options

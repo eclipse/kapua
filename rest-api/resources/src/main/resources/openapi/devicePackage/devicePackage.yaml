@@ -29,12 +29,7 @@ components:
             bundleInfo:
               type: array
               items:
-                type: object
-                properties:
-                  name:
-                    type: string
-                  version:
-                    type: string
+                $ref: '#/components/schemas/bundleInfo'
         installDate:
           type: string
           format: 'date-time'
@@ -117,3 +112,10 @@ components:
           blockTimeout: 5000
           notifyBlockSize: 256
           installVerifyURI: https://download.eclipse.org/kura/releases/4.1.0/org.eclipse.kura.demo.heater_1.0.500.verifier.sh
+    bundleInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string

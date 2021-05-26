@@ -33,12 +33,7 @@ components:
         Option:
           type: array
           items:
-            type: object
-            properties:
-              label:
-                type: string
-              value:
-                type: string
+            $ref: '#/components/schemas/option'
         default:
           description: The default value for this field
           type: string
@@ -124,12 +119,7 @@ components:
             Icon:
               type: array
               items:
-                type: object
-                properties:
-                  resource:
-                    type: string
-                  size:
-                    type: integer
+                $ref: '#/components/schemas/icon'
             name:
               type: string
             description:
@@ -370,3 +360,18 @@ components:
                   type: Integer
                   value:
                     - '30'
+    option:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+    icon:
+      type: object
+      properties:
+        resource:
+          type: string
+        size:
+          type: integer
+
