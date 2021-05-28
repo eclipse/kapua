@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job;
 
+import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.service.job.step.JobStep;
 
@@ -23,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
- * {@link Job} {@link org.eclipse.kapua.model.KapuaEntity} definition.
+ * {@link Job} {@link KapuaEntity} definition.
  *
  * @since 1.0.0
  */
@@ -39,13 +40,45 @@ public interface Job extends KapuaNamedEntity {
         return TYPE;
     }
 
+    /**
+     * Gets the {@link List} of {@link JobStep}.
+     *
+     * @return The {@link List} of {@link JobStep}.
+     * @since 1.0.0
+     * @deprecated Since 1.1.0. The {@link JobStep} are no longer bound to the {@link Job}.
+     */
+    @Deprecated
     @XmlTransient
     List<JobStep> getJobSteps();
 
+    /**
+     * Sets the {@link List} of {@link JobStep}.
+     *
+     * @param jobSteps The {@link List} of {@link JobStep}.
+     * @since 1.0.0
+     * @deprecated Since 1.1.0. The {@link JobStep} are no longer bound to the {@link Job}.
+     */
+    @Deprecated
     void setJobSteps(List<JobStep> jobSteps);
 
+    /**
+     * Gets the jBatch Job xml definition.
+     *
+     * @return The jBatch Job xml definition.
+     * @since 1.0.0
+     * @deprecated Since 1.1.0. The definition is no longer generated.
+     */
+    @Deprecated
     String getJobXmlDefinition();
 
+    /**
+     * Sets the jBatch Job xml definition.
+     *
+     * @param jobXmlDefinition The jBatch Job xml definition.
+     * @since 1.0.0
+     * @deprecated Since 1.1.0. The definition is no longer generated.
+     */
+    @Deprecated
     void setJobXmlDefinition(String jobXmlDefinition);
 
 }

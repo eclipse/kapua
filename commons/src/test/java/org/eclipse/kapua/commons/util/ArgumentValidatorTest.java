@@ -668,22 +668,22 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void lengthRangeTest() throws KapuaIllegalArgumentException {
-        String [] valueForPositiveTest = new String[] {"londo","londonIsGoodIdea", "london", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIde"};
-        String [] valueForNegativeTest = new String[] {"", "lond", "is", "L", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"};
+        String[] valueForPositiveTest = new String[]{"londo", "londonIsGoodIdea", "london", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIde"};
+        String[] valueForNegativeTest = new String[]{"", "lond", "is", "L", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"};
 
         int minLength = 5;
         int maxLength = 255;
-        for (String element : valueForPositiveTest){
+        for (String element : valueForPositiveTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
-                fail("Value less than allowed min length. Min length is " + minLength);
+                fail("Value less than allowed min length. Min length is: " + minLength);
             }
         }
-        for(String element : valueForNegativeTest){
+        for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
-                fail("Value less than allowed min length. Min length is " + minLength);
+                fail("Value less than allowed min length. Min length is: " + minLength);
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -692,35 +692,35 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void minLengthOverThanMaxRangeTest() throws KapuaIllegalArgumentException {
-        String [] valueForTest = new String[] {"londonlondon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"};
+        String[] valueForTest = new String[]{"londonlondon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"};
 
         int minLength = 10;
         int maxLength = 5;
-        for(String element : valueForTest){
+        for (String element : valueForTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
-                fail("Value over than allowed max length. Max length is " + maxLength);
+                fail("Value over than allowed max length. Max length is: " + maxLength);
             } catch (KapuaIllegalArgumentException ex) {
-              //expected
+                //expected
             }
         }
     }
 
     @Test
     public void equalsMinAndMaxRangeTest() throws KapuaIllegalArgumentException {
-        String [] valueForPositiveTest = new String[] {"londonlond", "goodIdealo"};
-        String [] valueForNegativeTest = new String[] {"", "lond", "is", "L", "londonIsGoodIdea", "london", "good"};
+        String[] valueForPositiveTest = new String[]{"londonlond", "goodIdealo"};
+        String[] valueForNegativeTest = new String[]{"", "lond", "is", "L", "londonIsGoodIdea", "london", "good"};
 
         int minLength = 10;
         int maxLength = 10;
-        for(String element : valueForPositiveTest){
+        for (String element : valueForPositiveTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
-                fail("Value over than allowed max length. Max length is " + maxLength);
+                fail("Value over than allowed max length. Max length is: " + maxLength);
             }
         }
-        for(String element : valueForNegativeTest){
+        for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
                 fail("Exception expected.");
@@ -732,21 +732,21 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void nullMinLengthAndValidMaxLengthTest() throws KapuaIllegalArgumentException {
-        String [] valueForPositiveTest = new String[] {"londonlondon", "lo", "", "null", "0", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"};
-        String [] valueForNegativeTest = new String[] {"londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"};
+        String[] valueForPositiveTest = new String[]{"londonlondon", "lo", "", "null", "0", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"};
+        String[] valueForNegativeTest = new String[]{"londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"};
 
         int maxLength = 255;
-        for(String element : valueForPositiveTest){
+        for (String element : valueForPositiveTest) {
             try {
                 ArgumentValidator.lengthRange(element, null, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
-                fail("Value over than allowed max length. Max length is " + maxLength);
+                fail("Value over than allowed max length. Max length is: " + maxLength);
             }
         }
-        for(String element : valueForNegativeTest){
+        for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, null, maxLength, "londonIsGoodIdea");
-                fail("Value over than allowed max length. Max length is " + maxLength);
+                fail("Value over than allowed max length. Max length is: " + maxLength);
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -755,19 +755,19 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void nullMaxLengthAndValidMinLengthTest() throws KapuaIllegalArgumentException {
-        String [] valueForPositiveTest = new String[] {"londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"
+        String[] valueForPositiveTest = new String[]{"londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"
                 , "londonlondon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea", "lon"};
-        String [] valueForNegativeTest = new String[] {"", "lo", "is", "L"};
+        String[] valueForNegativeTest = new String[]{"", "lo", "is", "L"};
 
         int minLength = 3;
-        for(String element : valueForPositiveTest){
+        for (String element : valueForPositiveTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, null, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
                 fail("No exception expected");
             }
         }
-        for(String element : valueForNegativeTest){
+        for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, null, "londonIsGoodIdea");
                 fail("Exception expected.");
@@ -779,12 +779,12 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void nullMinAndMaxLengthTest() throws KapuaIllegalArgumentException {
-        String [] valueForTest = new String[] {"londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea",
+        String[] valueForTest = new String[]{"londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea",
                 "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea",
                 "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"
                 , "londonlondon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea", "lon"};
 
-        for(String element : valueForTest){
+        for (String element : valueForTest) {
             try {
                 ArgumentValidator.lengthRange(element, null, null, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
@@ -795,20 +795,20 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void zeroMinLengthAndValidMaxLengthTest() throws KapuaIllegalArgumentException {
-        String [] valueForPositiveTest = new String[] {"", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIde"
+        String[] valueForPositiveTest = new String[]{"", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIde"
                 , "londonlondon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea", "lon"};
-        String [] valueForNegativeTest = new String[] {};
+        String[] valueForNegativeTest = new String[]{};
 
         int maxLength = 255;
         int minLength = 0;
-        for(String element : valueForPositiveTest){
+        for (String element : valueForPositiveTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
                 fail("No exception expected");
             }
         }
-        for(String element : valueForNegativeTest){
+        for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, 255, "londonIsGoodIdea");
                 fail("Exception expected.");
@@ -820,12 +820,12 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void zeroMaxLengthAndValidMinLengthTest() throws KapuaIllegalArgumentException {
-        String [] valueForTest = new String[] {"lon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIde"
+        String[] valueForTest = new String[]{"lon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIde"
                 , "londonlondon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea", ""};
 
         int maxLength = 0;
         int minLength = 3;
-        for(String element : valueForTest){
+        for (String element : valueForTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
                 fail("Exception expected");
@@ -837,20 +837,20 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void zeroMinAndMaxLengthTest() throws KapuaIllegalArgumentException {
-        String [] valueForPositiveTest = new String[] {""};
-        String [] valueForNegativeTest = new String[] {"lon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIde"
+        String[] valueForPositiveTest = new String[]{""};
+        String[] valueForNegativeTest = new String[]{"lon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIde"
                 , "londonlondon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea",};
 
         int maxLength = 0;
         int minLength = 0;
-        for(String element : valueForPositiveTest){
+        for (String element : valueForPositiveTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
                 fail("Exception expected");
             }
         }
-        for(String element : valueForNegativeTest){
+        for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
                 fail("Exception expected.");
@@ -862,19 +862,19 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void minAndMaxIntegerValuesLengthTest() throws KapuaIllegalArgumentException {
-        String [] valueForPositiveTest = new String[] {"", "l", "lo", "lon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"};
-        String [] valueForNegativeTest = new String[] {};
+        String[] valueForPositiveTest = new String[]{"", "l", "lo", "lon", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdea"};
+        String[] valueForNegativeTest = new String[]{};
 
         int maxLength = 2147483647;
         int minLength = -2147483648;
-        for(String element : valueForPositiveTest){
+        for (String element : valueForPositiveTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
                 fail("No exception expected");
             }
         }
-        for(String element : valueForNegativeTest){
+        for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
                 fail("Exception expected.");
@@ -886,15 +886,15 @@ public class ArgumentValidatorTest extends Assert {
 
     @Test
     public void validateEntityNameTest() throws KapuaIllegalArgumentException {
-        String [] valueForPositiveTest = new String[] {"londonIsGoodIdea", "london", "123", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIde"};
-        String [] valueForNegativeTest = new String[] {"lo", "l", ""};
+        String[] valueForPositiveTest = new String[]{"londonIsGoodIdea", "london", "123", "londonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIdealondonIsGoodIde"};
+        String[] valueForNegativeTest = new String[]{"lo", "l", ""};
 
         String argName = "validateEntityNameTest";
         for (String value : valueForPositiveTest) {
             try {
                 ArgumentValidator.validateEntityName(value, argName);
             } catch (KapuaIllegalArgumentException ex) {
-                fail("Value less than allowed min length. Min length is 3");
+                fail("Value less than allowed min length. Min length is: 3");
             }
         }
         for (String value : valueForNegativeTest) {
@@ -987,7 +987,7 @@ public class ArgumentValidatorTest extends Assert {
     @Test
     public void extendedValidateEntityNameMinLengthIntTest() throws Exception {
         try {
-            ArgumentValidator.validateEntityName("validName", -2147483648 , 255, "validateEntityName2Test");
+            ArgumentValidator.validateEntityName("validName", -2147483648, 255, "validateEntityName2Test");
         } catch (KapuaIllegalArgumentException ex) {
             fail("No exception expected");
         }
@@ -996,7 +996,7 @@ public class ArgumentValidatorTest extends Assert {
     @Test
     public void extendedValidateEntityNameMaxLengthIntTest() throws Exception {
         try {
-            ArgumentValidator.validateEntityName("validName", 3 , 2147483647, "validateEntityName2Test");
+            ArgumentValidator.validateEntityName("validName", 3, 2147483647, "validateEntityName2Test");
         } catch (KapuaIllegalArgumentException ex) {
             fail("No exception expected");
         }
@@ -1005,7 +1005,7 @@ public class ArgumentValidatorTest extends Assert {
     @Test
     public void extendedValidateEntityNameMaxAndMinIntLengthTest() throws Exception {
         try {
-            ArgumentValidator.validateEntityName("validName", -2147483648 , 2147483647, "validateEntityName2Test");
+            ArgumentValidator.validateEntityName("validName", -2147483648, 2147483647, "validateEntityName2Test");
         } catch (KapuaIllegalArgumentException ex) {
             fail("No exception expected");
         }
@@ -1014,7 +1014,7 @@ public class ArgumentValidatorTest extends Assert {
     @Test
     public void extendedValidateEntityNameMinLengthNullTest() throws Exception {
         try {
-            ArgumentValidator.validateEntityName("validName", null , 255, "validateEntityName2Test");
+            ArgumentValidator.validateEntityName("validName", null, 255, "validateEntityName2Test");
         } catch (KapuaIllegalArgumentException ex) {
             fail("No exception expected");
         }
@@ -1023,7 +1023,7 @@ public class ArgumentValidatorTest extends Assert {
     @Test
     public void extendedValidateEntityNameMaxLengthNullTest() throws Exception {
         try {
-            ArgumentValidator.validateEntityName("validName", 3 , null, "validateEntityName2Test");
+            ArgumentValidator.validateEntityName("validName", 3, null, "validateEntityName2Test");
         } catch (KapuaIllegalArgumentException ex) {
             fail("No exception expected");
         }

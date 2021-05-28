@@ -17,28 +17,35 @@ import com.extjs.gxt.ui.client.widget.form.Validator;
 import com.google.gwt.core.client.GWT;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 
+import javax.validation.constraints.NotNull;
+
 public class RegexFieldValidator implements Validator {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
 
-    private GwtValidationRegex regex;
+    private String regex;
     private String validationMessage;
 
     public RegexFieldValidator(GwtValidationRegex regex) {
         this(regex, null);
     }
 
-    public RegexFieldValidator(GwtValidationRegex regex, String validationMessage) {
+    public RegexFieldValidator(String regex, String validationMessage) {
         this.regex = regex;
+        this.validationMessage = validationMessage;
+    }
+
+    public RegexFieldValidator(@NotNull GwtValidationRegex regex, @NotNull String validationMessage) {
+        this.regex = regex.getRegex();
         this.validationMessage = validationMessage;
     }
 
     @Override
     public String validate(Field<?> field, String value) {
-        if (!value.matches(regex.getRegex())) {
+        if (!value.matches(regex)) {
 
             String illegalChars = value;
-            illegalChars.replaceAll(regex.getRegex(), "");
+            illegalChars.replaceAll(regex, "");
 
             return (validationMessage != null && !validationMessage.isEmpty()) ? validationMessage : MSGS.regexValidatorErrorMessage(illegalChars);
         }

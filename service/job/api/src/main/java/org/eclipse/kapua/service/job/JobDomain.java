@@ -21,15 +21,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * {@link Job} domain.<br>
+ * {@link Job} {@link Domain}.<br>
  * Used to describe the {@link Job} {@link Domain} in the {@link JobService}.
  *
  * @since 1.0.0
  */
-public class JobDomain extends AbstractDomain {
+public class JobDomain extends AbstractDomain implements Domain {
 
-    private String name = "job";
-    private Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write, Actions.execute));
+    private final String name = "job";
+    private final Set<Actions> actions = new HashSet<>(Arrays.asList(Actions.read, Actions.delete, Actions.write, Actions.execute));
 
     @Override
     public String getName() {

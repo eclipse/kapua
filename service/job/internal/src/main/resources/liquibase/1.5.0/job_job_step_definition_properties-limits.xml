@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2019, 2021 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+-->
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+
+        logicalFilePath="KapuaDB/changelog-job-1.5.0.xml">
+
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
+
+    <changeSet id="changelog-job_step_definition_properties-1.5.0_addLimits" author="eurotech">
+        <addColumn tableName="job_job_step_definition_properties">
+            <column name="min_length" type="varchar(64)"/>
+            <column name="max_length" type="varchar(64)"/>
+            <column name="min_value" type="varchar(64)"/>
+            <column name="max_value" type="varchar(64)"/>
+            <column name="validation_regex" type="varchar(1024)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

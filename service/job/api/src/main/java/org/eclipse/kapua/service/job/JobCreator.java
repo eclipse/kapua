@@ -12,17 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job;
 
+import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 import org.eclipse.kapua.service.job.step.JobStep;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
- * {@link JobCreator} {@link org.eclipse.kapua.model.KapuaEntityCreator} definition.
+ * {@link Job} {@link KapuaEntityCreator} definition.
  *
  * @since 1.0.0
  */
@@ -31,12 +33,45 @@ import java.util.List;
 @XmlType(factoryClass = JobXmlRegistry.class, factoryMethod = "newJobCreator")
 public interface JobCreator extends KapuaNamedEntityCreator<Job> {
 
+    /**
+     * Gets the {@link List} of {@link JobStep}.
+     *
+     * @return The {@link List} of {@link JobStep}.
+     * @since 1.0.0
+     * @deprecated Since 1.1.0. The {@link JobStep} are no longer bound to the {@link Job}.
+     */
+    @Deprecated
+    @XmlTransient
     List<JobStep> getJobSteps();
 
+    /**
+     * Sets the {@link List} of {@link JobStep}.
+     *
+     * @param jobSteps The {@link List} of {@link JobStep}.
+     * @since 1.0.0
+     * @deprecated Since 1.1.0. The {@link JobStep} are no longer bound to the {@link Job}.
+     */
+    @Deprecated
     void setJobSteps(List<JobStep> jobSteps);
 
+    /**
+     * Gets the jBatch Job xml definition.
+     *
+     * @return The jBatch Job xml definition.
+     * @since 1.0.0
+     * @deprecated Since 1.1.0. The definition is no longer generated.
+     */
+    @Deprecated
     String getJobXmlDefinition();
 
+    /**
+     * Sets the jBatch Job xml definition.
+     *
+     * @param jobXmlDefinition The jBatch Job xml definition.
+     * @since 1.0.0
+     * @deprecated Since 1.1.0. The definition is no longer generated.
+     */
+    @Deprecated
     void setJobXmlDefinition(String jobXmlDefinition);
 
 }

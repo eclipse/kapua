@@ -12,16 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job;
 
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
 /**
- * {@link JobAttributes} attributes.
+ * {@link Job} {@link KapuaEntityAttributes}.
  *
- * @see org.eclipse.kapua.model.KapuaEntityAttributes
+ * @see KapuaEntityAttributes
  * @since 1.0.0
  */
 public class JobAttributes extends KapuaNamedEntityAttributes {
-
-    public static final String ENDED_ON = "endedOn";
-    public static final String STARTED_ON = "startedOn";
 }

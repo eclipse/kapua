@@ -69,7 +69,7 @@ Scenario: Init Security Context for all scenarios
   Exception should be raised
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Given I expect the exception "KapuaIllegalArgumentException" with the text "Value over than allowed max length. Max length is 64."
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "Value over than allowed max length. Max length is: 64."
     And I create endpoint with schema "aYUrdWClCWvg98SN11A1TuFEgjobJLtPxOwaNkdHAj1z7vs0GncKhNuSsJr9aAopl", domain "abc.com" and port 2221
     Then An exception was thrown
     And I logout

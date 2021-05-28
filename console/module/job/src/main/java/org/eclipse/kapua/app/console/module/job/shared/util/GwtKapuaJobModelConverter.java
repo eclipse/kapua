@@ -29,12 +29,12 @@ import org.eclipse.kapua.app.console.module.job.shared.model.GwtJobTargetQuery;
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerProperty;
 import org.eclipse.kapua.app.console.module.job.shared.model.scheduler.GwtTriggerQuery;
 import org.eclipse.kapua.commons.model.query.FieldSortCriteriaImpl;
-import org.eclipse.kapua.model.query.FieldSortCriteria;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.FieldSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
@@ -303,9 +303,9 @@ public class GwtKapuaJobModelConverter {
         query.setPredicate(query.attributePredicate(JobExecutionAttributes.JOB_ID, GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobExecutionQuery.getJobId())));
         String sortField = StringUtils.isEmpty(pagingLoadConfig.getSortField()) ? JobAttributes.NAME : pagingLoadConfig.getSortField();
         if (sortField.equals("startedOnFormatted")) {
-            sortField = JobAttributes.STARTED_ON;
+            sortField = JobExecutionAttributes.STARTED_ON;
         } else if (sortField.equals("endedOnFormatted")) {
-            sortField = JobAttributes.ENDED_ON;
+            sortField = JobExecutionAttributes.ENDED_ON;
         }
         SortOrder sortOrder = pagingLoadConfig.getSortDir().equals(SortDir.DESC) ? SortOrder.DESCENDING : SortOrder.ASCENDING;
         query.setSortCriteria(query.fieldSortCriteria(sortField, sortOrder));

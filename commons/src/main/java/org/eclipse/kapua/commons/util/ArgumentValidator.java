@@ -212,19 +212,39 @@ public class ArgumentValidator {
      * Throws a {@link KapuaIllegalArgumentException} if the {@link String} given has {@link String#length()} less than the #minLength given or greater than the #maxLength given.
      *
      * @param value        The {@link String} to check
-     * @param minLength    The minimun valid value. If {@code null} it means unbounded.
-     * @param maxLength    The maximum valid value. If {@code null} it means unbounded.
+     * @param minLength    The minimum valid length. If {@code null} it means unbounded.
+     * @param maxLength    The maximum valid length. If {@code null} it means unbounded.
      * @param argumentName The argument name with will be used in the exception
      * @throws KapuaIllegalArgumentException If the given {@link String} excedees the given length limits.
      */
     public static void lengthRange(@NotNull String value, @Nullable Integer minLength, @Nullable Integer maxLength, @NotNull String argumentName) throws KapuaIllegalArgumentException {
 
         if (minLength != null && value.length() < minLength) {
-            throw new KapuaIllegalArgumentException(argumentName, "Value less than allowed min length. Min length is " + minLength);
+            throw new KapuaIllegalArgumentException(argumentName, "Value less than allowed min length. Min length is: " + minLength);
         }
 
         if (maxLength != null && value.length() > maxLength) {
-            throw new KapuaIllegalArgumentException(argumentName, "Value over than allowed max length. Max length is " + maxLength);
+            throw new KapuaIllegalArgumentException(argumentName, "Value over than allowed max length. Max length is: " + maxLength);
+        }
+    }
+
+    /**
+     * Throws a {@link KapuaIllegalArgumentException} if the {@link Comparable} given has a value less than the min value given or greater than the max value given.
+     *
+     * @param value        The {@link String} to check
+     * @param minValue     The minimum valid value. If {@code null} it means unbounded.
+     * @param maxValue     The maximum valid value. If {@code null} it means unbounded.
+     * @param argumentName The argument name with will be used in the exception
+     * @throws KapuaIllegalArgumentException If the given {@link String} excedees the given length limits.
+     */
+    public static <V extends Comparable<V>> void valueRange(@NotNull V value, @Nullable V minValue, @Nullable V maxValue, @NotNull String argumentName) throws KapuaIllegalArgumentException {
+
+        if (minValue != null && value.compareTo(minValue) < 0) {
+            throw new KapuaIllegalArgumentException(argumentName, "Value less than allowed min value. Min value is: " + minValue);
+        }
+
+        if (maxValue != null && value.compareTo(maxValue) > 0) {
+            throw new KapuaIllegalArgumentException(argumentName, "Value over than allowed max value. Max value is: " + maxValue);
         }
     }
 

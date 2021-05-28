@@ -34,8 +34,28 @@ public class JobStepPropertyImpl implements JobStepProperty {
     private String propertyValue;
 
     @Basic
-    @Column(name = "example_value", nullable = false, updatable = false)
+    @Column(name = "example_value", nullable = true, updatable = true)
     private String propertyExampleValue;
+
+    @Basic
+    @Column(name = "min_length", nullable = true, updatable = true)
+    private Integer minLength;
+
+    @Basic
+    @Column(name = "max_length", nullable = true, updatable = true)
+    private Integer maxLength;
+
+    @Basic
+    @Column(name = "min_value", nullable = true, updatable = true)
+    private String minValue;
+
+    @Basic
+    @Column(name = "max_value", nullable = true, updatable = true)
+    private String maxValue;
+
+    @Basic
+    @Column(name = "validation_regex", nullable = true, updatable = true)
+    private String validationRegex;
 
     public JobStepPropertyImpl() {
     }
@@ -45,6 +65,10 @@ public class JobStepPropertyImpl implements JobStepProperty {
         setPropertyType(jobStepProperty.getPropertyType());
         setPropertyValue(jobStepProperty.getPropertyValue());
         setExampleValue(jobStepProperty.getExampleValue());
+        setMinLength(jobStepProperty.getMinLength());
+        setMaxLength(jobStepProperty.getMaxLength());
+        setMinValue(jobStepProperty.getMinValue());
+        setMaxValue(jobStepProperty.getMaxValue());
     }
 
     public JobStepPropertyImpl(String name, String propertyType, String propertyValue, String propertyExampleValue) {
@@ -92,6 +116,56 @@ public class JobStepPropertyImpl implements JobStepProperty {
     @Override
     public void setExampleValue(String exampleValue) {
         this.propertyExampleValue = exampleValue;
+    }
+
+    @Override
+    public Integer getMinLength() {
+        return minLength;
+    }
+
+    @Override
+    public void setMinLength(Integer minLength) {
+        this.minLength = minLength;
+    }
+
+    @Override
+    public Integer getMaxLength() {
+        return maxLength;
+    }
+
+    @Override
+    public void setMaxLength(Integer maxLength) {
+        this.maxLength = maxLength;
+    }
+
+    @Override
+    public String getMinValue() {
+        return minValue;
+    }
+
+    @Override
+    public void setMinValue(String minValue) {
+        this.minValue = minValue;
+    }
+
+    @Override
+    public String getMaxValue() {
+        return maxValue;
+    }
+
+    @Override
+    public void setMaxValue(String maxValue) {
+        this.maxValue = maxValue;
+    }
+
+    @Override
+    public String getValidationRegex() {
+        return validationRegex;
+    }
+
+    @Override
+    public void setValidationRegex(String validationRegex) {
+        this.validationRegex = validationRegex;
     }
 
     public static JobStepPropertyImpl parse(JobStepProperty jobStepProperty) {

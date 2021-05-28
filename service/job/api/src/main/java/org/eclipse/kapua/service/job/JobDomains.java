@@ -12,9 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job;
 
+import org.eclipse.kapua.model.domain.Domain;
+
+/**
+ * Available {@link Domain}s for {@code kapua-job-api} module.
+ *
+ * @since 1.0.0
+ */
 public class JobDomains {
 
-    private JobDomains() { }
+    private JobDomains() {
+    }
 
+    /**
+     * @see JobDomain
+     * @since 1.0.0
+     */
     public static final JobDomain JOB_DOMAIN = new JobDomain();
 }

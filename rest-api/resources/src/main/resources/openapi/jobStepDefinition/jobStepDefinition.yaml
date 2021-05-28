@@ -11,7 +11,7 @@ info:
     name: Eclipse Public License 2.0
     url: https://www.eclipse.org/legal/epl-2.0
 
-paths: {}
+paths: { }
 
 components:
   parameters:
@@ -33,6 +33,21 @@ components:
         propertyValue:
           type: string
         exampleValue:
+          type: string
+          readOnly: true
+        minLength:
+          type: integer
+          readOnly: true
+        maxLength:
+          type: integer
+          readOnly: true
+        minValue:
+          type: string
+          readOnly: true
+        maxValue:
+          type: string
+          readOnly: true
+        validationRegex:
           type: string
           readOnly: true
     jobStepDefinition:

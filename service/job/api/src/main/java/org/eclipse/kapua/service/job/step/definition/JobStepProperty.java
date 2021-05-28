@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition;
 
+import org.eclipse.kapua.service.job.step.JobStepXmlRegistry;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.service.job.step.JobStepXmlRegistry;
 
 @XmlRootElement(name = "jobStepProperty")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -40,4 +40,23 @@ public interface JobStepProperty {
 
     void setExampleValue(String exampleValue);
 
+    Integer getMinLength();
+
+    void setMinLength(Integer minLength);
+
+    Integer getMaxLength();
+
+    void setMaxLength(Integer maxLength);
+
+    String getMinValue();
+
+    void setMinValue(String minValue);
+
+    String getMaxValue();
+
+    void setMaxValue(String maxValue);
+
+    String getValidationRegex();
+
+    void setValidationRegex(String validationRegex);
 }
