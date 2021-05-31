@@ -162,51 +162,6 @@ Feature: JobEngineService restart job tests with online device - second part
     Then KuraMock is disconnected
     And I logout
 
-  Scenario: Restarting job with invalid Asset Write step two times
-  Create a new job and set a connected KuraMock device as the job target.
-  Add a new invalid Asset Write step to the created job. Restart the job two times.
-  After the executed job is finished, the executed target's step index should
-  be 0 and the status PROCESS_FAILED
-
-    Given I start the Kura Mock
-    When Device is connected
-    And I wait 1 second
-    Then Device status is "CONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock device
-    And Device assets are requested
-    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
-    And The type of the last event is "ASSET"
-    Given I create a job with the name "TestJob"
-    And I create a new job target item
-    And Search for step definition with the name "Asset Write"
-    And A regular step creator with the name "TestStep" and the following properties
-      | name    | type                                                           | value                                                                                                                                                                                                                                       |
-      | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><assetValue>java.lang.Integer</assetValue><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
-      | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                       |
-    When I create a new step entity from the existing creator
-    Then I restart a job
-    And I confirm job target has step index 0 and status "PROCESS_FAILED"
-    Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    Then I restart a job
-    And I confirm job target has step index 0 and status "PROCESS_FAILED"
-    Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
-    And Device assets are requested
-    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
-    Then KuraMock is disconnected
-    And I logout
-
     # *******************************************************
     # * Restarting a job with one Target and multiple Steps *
     # *******************************************************
@@ -308,58 +263,6 @@ Feature: JobEngineService restart job tests with online device - second part
     And Device assets are requested
     And Asset with name "asset1" and channel with name "channel1" and value 1233 are received
     And Packages are requested and 0 packages are received
-    Then KuraMock is disconnected
-    And I logout
-
-  Scenario: Restarting job with invalid Package Uninstall and Asset Write steps two times
-  Create a new job and set a connected KuraMock device as the job target.
-  Add new invalid Package Uninstall and invalid Asset Write steps to the created job.
-  Restart the job two times. After the executed job is finished, the executed target's step
-  index should be 0 and the status PROCESS_FAILED
-
-    Given I start the Kura Mock
-    When Device is connected
-    And I wait 1 second
-    Then Device status is "CONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock device
-    And Device assets are requested
-    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
-    And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
-    And The type of the last event is "DEPLOY"
-    Given I create a job with the name "TestJob"
-    And I create a new job target item
-    And I search for step definitions with the name
-      | Package Uninstall |
-      | Asset Write       |
-    And I create a regular step creator with the name "TestStep1" and properties
-      | name                    | type                                                                                               | value                                                                                                                                                                                                                                       |
-      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><packageName>org.eclipse.kura.example.beacon</packageName><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest>                        |
-      | assets                  | org.eclipse.kapua.service.device.management.asset.DeviceAssets                                     | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><assetValue>java.lang.Integer</assetValue><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
-      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                                       |
-    When I create a new step entities from the existing creator
-    And I search the database for created job steps and I find 2
-    Then No exception was thrown
-    Then I restart a job
-    And I confirm job target has step index 0 and status "PROCESS_FAILED"
-    Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    Then I restart a job
-    And I confirm job target has step index 0 and status "PROCESS_FAILED"
-    Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
-    And Device assets are requested
-    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
-    And Packages are requested and 1 package is received
     Then KuraMock is disconnected
     And I logout
 
@@ -489,49 +392,6 @@ Feature: JobEngineService restart job tests with online device - second part
     Then KuraMock is disconnected
     And I logout
 
-  Scenario: Restarting job With invalid Asset Write and multiple two times
-  Create a new job and set a connected KuraMock device as the job target.
-  Add a new invalid Asset Write step to the created job. Restart the job two times.
-  After the executed job is finished, the executed target's step index should
-  be 0 and the status PROCESS_FAILED
-
-    Given I add 2 devices to Kura Mock
-    When Devices are connected
-    And I wait 1 second
-    Then Devices status is "CONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock devices
-    And Device assets are requested
-    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
-    And I search events from devices in account "kapua-sys" and 2 events is found
-    And The type of the last event is "ASSET"
-    Given I create a job with the name "TestJob"
-    And I add targets to job
-    And Search for step definition with the name "Asset Write"
-    And A regular step creator with the name "TestStep" and the following properties
-      | name    | type                                                           | value                                                                                                                                                                                                                                       |
-      | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><assetValue>java.lang.Integer</assetValue><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
-      | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                       |
-    When I create a new step entity from the existing creator
-    Then I restart a job
-    And I confirm job target has step index 0 and status "PROCESS_FAILED"
-    Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    Then I restart a job
-    And I confirm job target has step index 0 and status "PROCESS_FAILED"
-    Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    And I search events from devices in account "kapua-sys" and 2 events is found
-    And Device assets are requested
-    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
-    Then KuraMock is disconnected
-    And I logout
-
     # *************************************************************
     # * Restarting a job with multiple Targets and multiple Steps *
     # *************************************************************
@@ -630,56 +490,6 @@ Feature: JobEngineService restart job tests with online device - second part
     And Device assets are requested
     And Asset with name "asset1" and channel with name "channel1" and value 1233 are received
     And Packages are requested and 0 packages are received
-    Then KuraMock is disconnected
-    And I logout
-
-  Scenario: Restarting job with invalid Package Uninstall and Asset Write steps and multiple devices two times
-  Create a new job and set a connected KuraMock devices as the job targets.
-  Add a new invalid Package Uninstall and invalid Asset Write steps to the created job.
-  Restart the job two times. After the executed job is finished, the executed target's step
-  index should be 0 and the status PROCESS_FAILED
-
-    Given I add 2 devices to Kura Mock
-    When Devices are connected
-    And I wait 1 second
-    Then Devices status is "CONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
-    And I select account "kapua-sys"
-    And I get the KuraMock devices
-    And Packages are requested and 1 package is received
-    And Device assets are requested
-    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
-    When I search events from devices in account "kapua-sys" and 3 events is found
-    And The type of the last event is "ASSET"
-    Given I create a job with the name "TestJob"
-    And I add targets to job
-    And I search for step definitions with the name
-      | Package Uninstall |
-      | Asset Write       |
-    And I create a regular step creator with the name "TestStep1" and properties
-      | name                    | type                                                                                               | value                                                                                                                                                                                                                                       |
-      | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><packageName>org.eclipse.kura.example.beacon</packageName><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest>                        |
-      | assets                  | org.eclipse.kapua.service.device.management.asset.DeviceAssets                                     | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><assetValue>java.lang.Integer</assetValue><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
-      | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                                       |
-    When I create a new step entities from the existing creator
-    And I search the database for created job steps and I find 2
-    Then No exception was thrown
-    Then I restart a job
-    And I confirm job target has step index 0 and status "PROCESS_FAILED"
-    Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    Then I restart a job
-    And I confirm job target has step index 0 and status "PROCESS_FAILED"
-    Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    When I search events from devices in account "kapua-sys" and 3 events is found
-    And Device assets are requested
-    And Asset with name "asset1" and channel with name "channel1" and value 123 are received
-    And Packages are requested and 1 package is received
     Then KuraMock is disconnected
     And I logout
 
