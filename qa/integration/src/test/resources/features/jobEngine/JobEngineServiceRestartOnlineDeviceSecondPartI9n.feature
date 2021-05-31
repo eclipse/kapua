@@ -58,13 +58,13 @@ Feature: JobEngineService restart job tests with online device - second part
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     When I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     And I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     When I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     And I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -102,13 +102,13 @@ Feature: JobEngineService restart job tests with online device - second part
     And I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Then I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1 or more
     And I confirm the executed job is finished
     When I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Then I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -146,13 +146,13 @@ Feature: JobEngineService restart job tests with online device - second part
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -200,13 +200,13 @@ Feature: JobEngineService restart job tests with online device - second part
     Then I restart a job
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -297,13 +297,13 @@ Feature: JobEngineService restart job tests with online device - second part
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     And I search events from devices in account "kapua-sys" and 3 or more events are found
@@ -377,13 +377,13 @@ Feature: JobEngineService restart job tests with online device - second part
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     And I search events from devices in account "kapua-sys" and 3 or more events is found
@@ -430,13 +430,13 @@ Feature: JobEngineService restart job tests with online device - second part
     Then I restart a job
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 1 second
+    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search events from devices in account "kapua-sys" and 3 or more events is found
