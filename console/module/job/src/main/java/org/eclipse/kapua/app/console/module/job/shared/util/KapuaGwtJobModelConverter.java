@@ -86,6 +86,11 @@ public class KapuaGwtJobModelConverter {
             gwtJobStepProperty.setPropertyType(jobStepProperty.getPropertyType());
             gwtJobStepProperty.setPropertyValue(jobStepProperty.getPropertyValue());
             gwtJobStepProperty.setExampleValue(jobStepProperty.getExampleValue());
+            gwtJobStepProperty.setMinLength(jobStepProperty.getMinLength());
+            gwtJobStepProperty.setMaxLength(jobStepProperty.getMaxLength());
+            gwtJobStepProperty.setMinValue(jobStepProperty.getMinValue());
+            gwtJobStepProperty.setMaxValue(jobStepProperty.getMaxValue());
+            gwtJobStepProperty.setValidationRegex(jobStepProperty.getValidationRegex());
             gwtJobStepPropertyList.add(gwtJobStepProperty);
         }
 

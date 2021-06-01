@@ -58,7 +58,7 @@ public class StepContextWrapper {
         return stepNextIndexString != null ? Integer.parseInt(stepNextIndexString) : null;
     }
 
-    public <T> T getStepProperty(String stepPropertyName, Class<T> type) throws KapuaIllegalArgumentException {
+    public <T, E extends Enum<E>> T getStepProperty(String stepPropertyName, Class<T> type) throws KapuaIllegalArgumentException {
         Properties jobContextProperties = stepContext.getProperties();
         String stepPropertyString = jobContextProperties.getProperty(stepPropertyName);
 
@@ -81,7 +81,7 @@ public class StepContextWrapper {
             } else if (type == KapuaId.class) {
                 stepProperty = (T) KapuaEid.parseCompactId(stepPropertyString);
             } else if (type.isEnum()) {
-                Class<? extends Enum> enumType = (Class<? extends Enum>) type;
+                Class<E> enumType = (Class<E>) type;
 
                 try {
                     stepProperty = (T) Enum.valueOf(enumType, stepPropertyString);

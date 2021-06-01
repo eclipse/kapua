@@ -73,7 +73,7 @@ Feature: Device Registry CRUD tests
         Create a single device with clientID that contains 256 characters.
         Kapua should return an error.
 
-        Given I expect the exception "KapuaIllegalArgumentException" with the text "Value over than allowed max length. Max length is 255."
+        Given I expect the exception "KapuaIllegalArgumentException" with the text "Value over than allowed max length. Max length is: 255."
         When I create a device with name "validDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDevicevalidDeviceval"
         Then An exception was thrown
 

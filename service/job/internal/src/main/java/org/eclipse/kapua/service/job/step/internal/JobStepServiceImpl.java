@@ -12,12 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.internal;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
@@ -45,10 +49,12 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * {@link JobStepService} implementation
@@ -56,8 +62,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 @KapuaProvider
-public class JobStepServiceImpl extends AbstractKapuaService
-        implements JobStepService {
+public class JobStepServiceImpl extends AbstractKapuaService implements JobStepService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -93,17 +98,7 @@ public class JobStepServiceImpl extends AbstractKapuaService
 
         //
         // Check job step definition
-        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(jobStepCreator.getScopeId(), jobStepCreator.getJobStepDefinitionId());
-        ArgumentValidator.notNull(jobStepDefinition, "jobStepCreator.jobStepDefinitionId");
-
-        for (JobStepProperty jsp : jobStepCreator.getStepProperties()) {
-            for (JobStepProperty jsdp : jobStepDefinition.getStepProperties()) {
-                if (jsp.getName().equals(jsdp.getName())) {
-                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "jobStepCreator.stepProperties{}." + jsp.getName());
-                    break;
-                }
-            }
-        }
+        validateJobStepProperties(jobStepCreator);
 
         //
         // Check duplicate name
@@ -189,17 +184,10 @@ public class JobStepServiceImpl extends AbstractKapuaService
 
         //
         // Check job step definition
-        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
-        ArgumentValidator.notNull(jobStepDefinition, "jobStepCreator.jobStepDefinitionId");
+        validateJobStepProperties(jobStep);
 
-        for (JobStepProperty jsp : jobStep.getStepProperties()) {
-            for (JobStepProperty jsdp : jobStepDefinition.getStepProperties()) {
-                if (jsp.getName().equals(jsdp.getName())) {
-                    ArgumentValidator.areEqual(jsp.getPropertyType(), jsdp.getPropertyType(), "jobStepCreator.stepProperties{}." + jsp.getName());
-                }
-            }
-        }
-
+        //
+        // Check duplicate name
         JobStepQuery query = new JobStepQueryImpl(jobStep.getScopeId());
         query.setPredicate(
                 query.andPredicate(
@@ -330,5 +318,99 @@ public class JobStepServiceImpl extends AbstractKapuaService
             }
             return deletedJobStep;
         });
+    }
+
+    //
+    // Private methods
+    private void validateJobStepProperties(JobStepCreator jobStepCreator) throws KapuaException {
+        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(jobStepCreator.getScopeId(), jobStepCreator.getJobStepDefinitionId());
+        ArgumentValidator.notNull(jobStepDefinition, "jobStepCreator.jobStepDefinitionId");
+
+        try {
+            validateJobStepProperties(jobStepCreator.getStepProperties(), jobStepDefinition);
+        } catch (KapuaIllegalArgumentException kiae) {
+            throw new KapuaIllegalArgumentException("jobStepCreator." + kiae.getArgumentName(), kiae.getArgumentValue());
+        }
+    }
+
+    private void validateJobStepProperties(JobStep jobStep) throws KapuaException {
+        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
+        ArgumentValidator.notNull(jobStepDefinition, "jobStep.jobStepDefinitionId");
+
+        try {
+            validateJobStepProperties(jobStep.getStepProperties(), jobStepDefinition);
+        } catch (KapuaIllegalArgumentException kiae) {
+            throw new KapuaIllegalArgumentException("jobStep." + kiae.getArgumentName(), kiae.getArgumentValue());
+        }
+    }
+
+    private void validateJobStepProperties(List<JobStepProperty> jobStepProperties, JobStepDefinition jobStepDefinition) throws KapuaIllegalArgumentException {
+
+        for (JobStepProperty jobStepProperty : jobStepProperties) {
+            for (JobStepProperty jobStepDefinitionProperty : jobStepDefinition.getStepProperties()) {
+                if (jobStepProperty.getName().equals(jobStepDefinitionProperty.getName())) {
+
+                    ArgumentValidator.areEqual(jobStepProperty.getPropertyType(), jobStepDefinitionProperty.getPropertyType(), "stepProperties[]." + jobStepProperty.getName());
+                    ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepDefinitionProperty.getMinLength(), jobStepDefinitionProperty.getMaxLength(), "stepProperties[]." + jobStepProperty.getName());
+
+                    validateJobStepPropertyValue(jobStepProperty, jobStepDefinitionProperty);
+                }
+            }
+        }
+    }
+
+    private <C extends Comparable<C>, E extends Enum<E>> void validateJobStepPropertyValue(JobStepProperty jobStepProperty, JobStepProperty jobStepDefinitionProperty) throws KapuaIllegalArgumentException {
+        try {
+            Class<?> jobStepDefinitionPropertyClass = Class.forName(jobStepDefinitionProperty.getPropertyType());
+
+            if (Comparable.class.isAssignableFrom(jobStepDefinitionPropertyClass)) {
+                Class<C> jobStepDefinitionPropertyClassComparable = (Class<C>) jobStepDefinitionPropertyClass;
+
+                C propertyValue = fromString(jobStepProperty.getPropertyValue(), jobStepDefinitionPropertyClassComparable);
+                C propertyMinValue = fromString(jobStepDefinitionProperty.getMinValue(), jobStepDefinitionPropertyClassComparable);
+                C propertyMaxValue = fromString(jobStepDefinitionProperty.getMaxValue(), jobStepDefinitionPropertyClassComparable);
+
+                ArgumentValidator.valueRange(propertyValue, propertyMinValue, propertyMaxValue, "stepProperties[]." + jobStepProperty.getName());
+
+                if (String.class.equals(jobStepDefinitionPropertyClass) && !Strings.isNullOrEmpty(jobStepDefinitionProperty.getValidationRegex())) {
+                    ArgumentValidator.match((String) propertyValue, () -> Pattern.compile(jobStepDefinitionProperty.getValidationRegex()), "stepProperties[]." + jobStepProperty.getName());
+                }
+            } else if (jobStepDefinitionPropertyClass.isEnum()) {
+                Class<E> jobStepDefinitionPropertyClassEnum = (Class<E>) jobStepDefinitionPropertyClass;
+                Enum.valueOf(jobStepDefinitionPropertyClassEnum, jobStepProperty.getPropertyValue());
+            } else {
+                XmlUtil.unmarshal(jobStepProperty.getPropertyValue(), jobStepDefinitionPropertyClass);
+            }
+
+        } catch (KapuaIllegalArgumentException kiae) {
+            throw kiae;
+        } catch (Exception e) {
+            throw new KapuaIllegalArgumentException("stepProperties[]." + jobStepProperty.getName(), jobStepProperty.getPropertyValue());
+        }
+    }
+
+    public <T, E extends Enum<E>> T fromString(String jobStepPropertyString, Class<T> type) throws Exception {
+        T stepProperty = null;
+        if (jobStepPropertyString != null) {
+            if (type == String.class) {
+                stepProperty = (T) jobStepPropertyString;
+            } else if (type == Integer.class) {
+                stepProperty = (T) Integer.valueOf(jobStepPropertyString);
+            } else if (type == Long.class) {
+                stepProperty = (T) Long.valueOf(jobStepPropertyString);
+            } else if (type == Float.class) {
+                stepProperty = (T) Float.valueOf(jobStepPropertyString);
+            } else if (type == Double.class) {
+                stepProperty = (T) Double.valueOf(jobStepPropertyString);
+            } else if (type == Boolean.class) {
+                stepProperty = (T) Boolean.valueOf(jobStepPropertyString);
+            } else if (type == byte[].class || type == Byte[].class) {
+                stepProperty = (T) DatatypeConverter.parseBase64Binary(jobStepPropertyString);
+            } else if (type == KapuaId.class) {
+                stepProperty = (T) KapuaEid.parseCompactId(jobStepPropertyString);
+            }
+        }
+
+        return stepProperty;
     }
 }

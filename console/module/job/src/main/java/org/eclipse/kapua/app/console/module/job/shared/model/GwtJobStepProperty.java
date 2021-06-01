@@ -48,6 +48,46 @@ public class GwtJobStepProperty extends KapuaBaseModel {
         set("exampleValue", exampleValue);
     }
 
+    public Integer getMinLength() {
+        return get("minLength");
+    }
+
+    public void setMinLength(Integer minLength) {
+        set("minLength", minLength);
+    }
+
+    public Integer getMaxLength() {
+        return get("maxLength");
+    }
+
+    public void setMaxLength(Integer maxLength) {
+        set("maxLength", maxLength);
+    }
+
+    public String getMinValue() {
+        return get("minValue");
+    }
+
+    public void setMinValue(String minValue) {
+        set("minValue", minValue);
+    }
+
+    public String getMaxValue() {
+        return get("maxValue");
+    }
+
+    public void setMaxValue(String maxValue) {
+        set("maxValue", maxValue);
+    }
+
+    public String getValidationRegex() {
+        return get("validationRegex");
+    }
+
+    public void setValidationRegex(String validationRegex) {
+        set("validationRegex", validationRegex);
+    }
+
     public boolean isEnum() {
         return get("isEnum");
     }
@@ -55,5 +95,6 @@ public class GwtJobStepProperty extends KapuaBaseModel {
     public void setEnum(boolean isEnum) {
         set("isEnum", isEnum);
     }
+
 
 }

@@ -342,7 +342,7 @@ Feature: Trigger service tests
     And A regular trigger creator with the name "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" is created
     And The trigger is set to start today at 10:00.
     And I set retry interval to 1
-    Then I expect the exception "KapuaIllegalArgumentException" with the text " Value over than allowed max length. Max length is 255."
+    Then I expect the exception "KapuaIllegalArgumentException" with the text " Value over than allowed max length. Max length is: 255."
     And I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
     And I logout

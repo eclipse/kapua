@@ -12,12 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.domain;
 
+import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.KapuaService;
+
 import java.util.Set;
 
 /**
- * The {@link org.eclipse.kapua.service.KapuaEntityService} {@link Domain}.
+ * The {@link KapuaEntityService} {@link Domain}.
  * <p>
- * A {@link org.eclipse.kapua.service.KapuaService} can be associated with a domain which it uses to validate access
+ * A {@link KapuaService} can be associated with a domain which it uses to validate access
+ *
+ * @since 1.0.0
  */
 public interface Domain {
 
