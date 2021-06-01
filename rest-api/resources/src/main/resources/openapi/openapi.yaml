@@ -175,6 +175,19 @@ paths:
     $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1system'
   /{scopeId}/devices/{deviceId}/inventory/packages:
     $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1packages'
+  ### Device Keystore ###
+  /{scopeId}/devices/{deviceId}/keystore:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore'
+  /{scopeId}/devices/{deviceId}/keystore/items:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items'
+  /{scopeId}/devices/{deviceId}/keystore/item:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1item'
+  /{scopeId}/devices/{deviceId}/keystore/items/certificate:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items~1certificate'
+  /{scopeId}/devices/{deviceId}/keystore/items/keypair:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items~1keypair'
+  /{scopeId}/devices/{deviceId}/keystore/items/csr:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items~1csr'
   ### Device Notification ###
   /{scopeId}/devices/{deviceId}/operations/{operationId}/notifications:
     $ref: './deviceNotification/deviceNotification-scopeId-deviceId-operationId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1operations~1{operationId}~1notifications'

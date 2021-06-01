@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
  *
  * @since 1.5.0
  */
-@XmlRootElement(name = "deviceKeystorePrivateKey")
+@XmlRootElement(name = "deviceKeystoreCSR")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlType(factoryClass = DeviceKeystoreXmlRegistry.class, factoryMethod = "newDeviceKeystoreCSR")
 public interface DeviceKeystoreCSR extends KapuaSerializable {
