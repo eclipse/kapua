@@ -735,6 +735,25 @@ components:
       $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryDeploymentPackage'
     deviceInventoryDeploymentPackages:
       $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryDeploymentPackages'
+    ### Device Keystore Entities ###
+    deviceKeystores:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystores'
+    deviceKeystore:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystore'
+    deviceKeystoreItems:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreItems'
+    deviceKeystoreItem:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreItem'
+    deviceKeystoreSubjectAN:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreSubjectAN'
+    deviceKeystoreCertificate:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreCertificate'
+    deviceKeystoreKeypair:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreKeypair'
+    deviceKeystoreCSR:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreCSR'
+    deviceKeystoreSignedCertificate:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreSignedCertificate'
     ### Device Notification Entities ###
     deviceNotification:
       $ref: './deviceNotification/deviceNotification.yaml#/components/schemas/deviceNotification'
