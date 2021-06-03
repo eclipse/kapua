@@ -35,6 +35,9 @@ paths:
               required:
                 - refreshToken
                 - tokenId
+            example:
+              refreshToken: 15395d03-ccad-4aed-a57a-cd0e289e822c
+              tokenId: eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJodHRwczovL3d3dy5lY2xpcHNlLm9yZy9rYXB1YSIsImlhdCI6MTYyMjQ3NDE1NCwiZXhwIjoxNjIyNDc0MTU0LCJzdWIiOiJBUSIsInNJZCI6IkFRIn0.cVHkdXKbAtiOPUj1tyUQi9mRiRV9e6CwQ9RMLmAoX1UCK-POZcusqgSvuaaDzDIe-WNUjsalYYqNquxync8bvOF8Bx84rS8BJlB3anxCIaXwi7_5E9ZjmOSgvNiwgDPFVQsRo9MaNTe07jb3TsT1BPR9zo-i9-OEada6o4nhyaBNrAw_vybA3aLp6hamUNP1vHLRhlq0tnHgtGtitCW1_VBt4Eh0b41Enfs7G7hWv0Sj2CfwVIwAQzJ55MV5tnTjuD-eOD5xxeQGlWTol4Yc40jmOKjo2kshJlEQRNkp6mFzJ3EJxE8nBWhbWO4hd36eI0rB8pHxSdsFDbVAcxyRM44K7YuLENCk2mdMRgv9d7CKUTujvPw5vCoa5IQY7E47rWszwKAF2xJBU8hYwI8BhQWbB6efAaB-lkzq4rCziBU5WzTDZlries4WqPqM9mgfIPjlHP4po2b-RAK-89E-FejOvNefNcXqvqt5QPiNwj9bdLmhXlO4ladZ-wKw-22AYbqVhhoffOYT2mdxqXGc9F9XsRnsNswzxUdejBF6war4XqqxsrcPoYoReLMGlR1piQ1dpcPQlY6p9qKlkpBGJFL3pnBLSSE0mj9_2-zDKmJ81stUr51yP17ky2GB3Ls5q4O8gD83CJjqZaW-6xNO5iJENr4UYK4AV7yzfWqLAI8
       responses:
         200:
           description: The new AccessToken
