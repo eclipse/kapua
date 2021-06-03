@@ -48,16 +48,16 @@ public class KapuaTokenAuthenticationFilterTest extends Assert {
 
     @Test
     public void onAccessDeniedTest() throws Exception {
-        assertFalse("False expected.", kapuaTokenAuthenticationFilter.onAccessDenied(request, response));
+        assertTrue("True expected.", kapuaTokenAuthenticationFilter.onAccessDenied(request, response));
     }
 
     @Test
     public void onAccessDeniedNullRequestTest() throws Exception {
-        assertFalse("False expected.", kapuaTokenAuthenticationFilter.onAccessDenied(null, response));
+        assertTrue("True expected.", kapuaTokenAuthenticationFilter.onAccessDenied(null, response));
     }
 
     @Test(expected = NullPointerException.class)
     public void onAccessDeniedNullResponseTest() throws Exception {
-        assertFalse("False expected.", kapuaTokenAuthenticationFilter.onAccessDenied(request, null));
+        assertTrue("True expected.", kapuaTokenAuthenticationFilter.onAccessDenied(request, null));
     }
 }
