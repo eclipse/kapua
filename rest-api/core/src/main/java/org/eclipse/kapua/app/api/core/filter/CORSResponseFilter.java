@@ -113,21 +113,24 @@ public class CORSResponseFilter implements Filter {
         // For the actual request it will be available and we will check the CORS according to the scope.
         KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
 
+        String msg = null;
         if (checkOrigin(origin, scopeId)) {
             // Origin matches at least one defined Endpoint
             httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
             httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
             httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
         } else {
-            String msg = scopeId != null ?
+            msg = scopeId != null ?
                     String.format("HTTP Origin not allowed: %s for scope: %s", origin, scopeId.toCompactId()) :
                     String.format("HTTP Origin not allowed: %s", origin);
-
             logger.error(msg);
-            httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, msg);
+        }
+        int errorCode = httpResponse.getStatus();
+        if (errorCode >= 400) {
+            // if there's an error code at this point, return it and stop the chain
+            httpResponse.sendError(errorCode, msg);
             return;
         }
-
         chain.doFilter(request, response);
     }
 
