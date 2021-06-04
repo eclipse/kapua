@@ -67,6 +67,7 @@ public class EndpointInfos extends AbstractKapuaResource {
     public EndpointInfoListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @QueryParam("usage") String usage,
+            @QueryParam("endpointType") @DefaultValue(EndpointInfo.ENDPOINT_TYPE_RESOURCE) String endpointType,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         EndpointInfoQuery query = endpointInfoFactory.newQuery(scopeId);
@@ -80,7 +81,7 @@ public class EndpointInfos extends AbstractKapuaResource {
         query.setOffset(offset);
         query.setLimit(limit);
 
-        return query(scopeId, query);
+        return query(scopeId, endpointType, query);
     }
 
     /**
@@ -99,10 +100,11 @@ public class EndpointInfos extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public EndpointInfoListResult query(
             @PathParam("scopeId") ScopeId scopeId,
+            @QueryParam("endpointType") @DefaultValue(EndpointInfo.ENDPOINT_TYPE_RESOURCE) String endpointType,
             EndpointInfoQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
-        return endpointInfoService.query(query);
+        return endpointInfoService.query(query, endpointType);
     }
 
     /**
@@ -121,10 +123,11 @@ public class EndpointInfos extends AbstractKapuaResource {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
+            @QueryParam("endpointType") @DefaultValue(EndpointInfo.ENDPOINT_TYPE_RESOURCE) String endpointType,
             EndpointInfoQuery query) throws KapuaException {
         query.setScopeId(scopeId);
 
-        return new CountResult(endpointInfoService.count(query));
+        return new CountResult(endpointInfoService.count(query, endpointType));
     }
 
     /**

@@ -20,6 +20,7 @@ paths:
       operationId: endpointInfoQuery
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: './endpointInfo.yaml#/components/parameters/endpointType'
       requestBody:
         $ref: '../openapi.yaml#/components/requestBodies/kapuaQuery'
       responses:

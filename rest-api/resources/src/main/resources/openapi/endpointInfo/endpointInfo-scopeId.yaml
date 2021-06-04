@@ -25,6 +25,7 @@ paths:
           description: The endpointInfo usage to filter results
           schema:
             type: string
+        - $ref: './endpointInfo.yaml#/components/parameters/endpointType'
         - $ref: '../openapi.yaml#/components/parameters/limit'
         - $ref: '../openapi.yaml#/components/parameters/offset'
       responses:
