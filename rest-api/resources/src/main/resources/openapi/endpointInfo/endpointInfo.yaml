@@ -22,6 +22,15 @@ components:
       schema:
         $ref: '../openapi.yaml#/components/schemas/kapuaId'
       required: true
+    endpointType:
+      name: endpointType
+      in: query
+      description: The type of the Endpoints to query for
+      schema:
+        allOf:
+          - $ref: '#/components/schemas/endpointType'
+          - default: resource
+      required: false
   schemas:
     endpointInfo:
       allOf:
@@ -44,6 +53,7 @@ components:
             usages:
               - name: MESSAGE_BROKER
               - name: PROVISION
+            endpointType: resource
     endpointInfoCreator:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntityCreator'
@@ -61,6 +71,8 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/usage'
+            endpointType:
+              $ref: '#/components/schemas/endpointType'
           example:
             schema: mqtt
             dns: 10.200.12.148
@@ -69,6 +81,7 @@ components:
             usages:
               - name: MESSAGE_BROKER
               - name: PROVISION
+            endpointType: resource
     endpointInfoListResult:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
@@ -98,8 +111,14 @@ components:
                 usages:
                   - name: MESSAGE_BROKER
                   - name: PROVISION
+                endpointType: resource
     usage:
       type: object
       properties:
         name:
           type: string
+    endpointType:
+      type: string
+      enum:
+        - resource
+        - cors
