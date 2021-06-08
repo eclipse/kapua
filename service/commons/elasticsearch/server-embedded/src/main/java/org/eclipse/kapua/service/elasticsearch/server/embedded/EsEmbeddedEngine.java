@@ -170,12 +170,7 @@ public class EsEmbeddedEngine implements Closeable {
     private static class PluggableNode extends Node {
 
         public PluggableNode(Settings settings, Collection<Class<? extends Plugin>> plugins) {
-            super(InternalSettingsPreparer.prepareEnvironment(settings, null), plugins, true);
-        }
-
-        @Override
-        protected void registerDerivedNodeNameWithLogger(String s) {
-            // Nothing to do since we don't use node name in logger
+            super(InternalSettingsPreparer.prepareEnvironment(settings, null, null, null), plugins, true);
         }
 
     }

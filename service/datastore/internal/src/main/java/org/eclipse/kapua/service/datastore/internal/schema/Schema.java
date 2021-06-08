@@ -253,12 +253,13 @@ public class Schema {
         Integer idxReplicaNumber = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.INDEX_REPLICA_NUMBER, 0);
 
         ObjectNode rootNode = MappingUtils.newObjectNode();
+        ObjectNode settingsNode = MappingUtils.newObjectNode();
         ObjectNode refreshIntervalNode = MappingUtils.newObjectNode(new KeyValueEntry[]{
                 new KeyValueEntry(SchemaKeys.KEY_REFRESH_INTERVAL, idxRefreshInterval),
                 new KeyValueEntry(SchemaKeys.KEY_SHARD_NUMBER, idxShardNumber),
                 new KeyValueEntry(SchemaKeys.KEY_REPLICA_NUMBER, idxReplicaNumber)});
-
-        rootNode.set(SchemaKeys.KEY_INDEX, refreshIntervalNode);
+        settingsNode.set(SchemaKeys.KEY_INDEX, refreshIntervalNode);
+        rootNode.set(SchemaKeys.KEY_SETTINGS, settingsNode);
         LOG.info("Creating index for '{}' - refresh: '{}' - shards: '{}' replicas: '{}': ", idxName, idxRefreshInterval, idxShardNumber, idxReplicaNumber);
         return rootNode;
     }
