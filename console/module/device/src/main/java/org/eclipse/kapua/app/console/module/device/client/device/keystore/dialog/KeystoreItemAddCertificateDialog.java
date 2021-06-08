@@ -27,7 +27,6 @@ import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.keystore.GwtDeviceKeystore;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.keystore.GwtDeviceKeystoreCertificate;
-import org.eclipse.kapua.app.console.module.device.shared.model.management.keystore.GwtDeviceKeystoreItem;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceKeystoreManagementService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceKeystoreManagementServiceAsync;
 
@@ -38,7 +37,6 @@ public class KeystoreItemAddCertificateDialog extends SimpleDialog {
     private static final GwtDeviceKeystoreManagementServiceAsync GWT_DEVICE_KEYSTORE_MANAGEMENT_SERVICE = GWT.create(GwtDeviceKeystoreManagementService.class);
 
     private GwtDevice gwtDevice;
-    private GwtDeviceKeystoreItem gwtKeystoreItem;
 
     private FormPanel formPanel;
 
@@ -47,15 +45,14 @@ public class KeystoreItemAddCertificateDialog extends SimpleDialog {
     private LabelField certificateLabel;
     private TextArea certificateTextArea;
 
-    public KeystoreItemAddCertificateDialog(GwtDevice gwtDevice, GwtDeviceKeystoreItem gwtKeystoreItem) {
+    public KeystoreItemAddCertificateDialog(GwtDevice gwtDevice) {
         this.gwtDevice = gwtDevice;
-        this.gwtKeystoreItem = gwtKeystoreItem;
-        DialogUtils.resizeDialog(this, 500, 570);
+        DialogUtils.resizeDialog(this, 500, 580);
     }
 
     @Override
     public String getInfoMessage() {
-        return "Provide the information of the certificate.";
+        return "Provide the information of the certificate. Adding a new certificate may affect other device applications that are using keystores.";
     }
 
     @Override

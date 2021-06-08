@@ -42,7 +42,7 @@ public class KeystoreItemDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public String getInfoMessage() {
-        return "Are you sure to delete keystore item?";
+        return "Are you sure to delete keystore item? Removing a keystore item may affect other device applications that are using them.";
     }
 
     @Override

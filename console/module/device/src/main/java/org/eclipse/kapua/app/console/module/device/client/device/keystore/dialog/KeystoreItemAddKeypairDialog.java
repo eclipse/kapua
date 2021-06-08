@@ -25,7 +25,6 @@ import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.keystore.GwtDeviceKeystore;
-import org.eclipse.kapua.app.console.module.device.shared.model.management.keystore.GwtDeviceKeystoreItem;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.keystore.GwtDeviceKeystoreKeypair;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceKeystoreManagementService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceKeystoreManagementServiceAsync;
@@ -37,7 +36,6 @@ public class KeystoreItemAddKeypairDialog extends SimpleDialog {
     private static final GwtDeviceKeystoreManagementServiceAsync GWT_DEVICE_KEYSTORE_MANAGEMENT_SERVICE = GWT.create(GwtDeviceKeystoreManagementService.class);
 
     private GwtDevice gwtDevice;
-    private GwtDeviceKeystoreItem gwtKeystoreItem;
 
     private FormPanel formPanel;
 
@@ -48,16 +46,15 @@ public class KeystoreItemAddKeypairDialog extends SimpleDialog {
     private KapuaTextField<String> signatureAlgorithmField;
     private KapuaTextField<String> attributesField;
 
-    public KeystoreItemAddKeypairDialog(GwtDevice gwtDevice, GwtDeviceKeystoreItem gwtKeystoreItem) {
+    public KeystoreItemAddKeypairDialog(GwtDevice gwtDevice) {
         this.gwtDevice = gwtDevice;
-        this.gwtKeystoreItem = gwtKeystoreItem;
 
         DialogUtils.resizeDialog(this, 500, 300);
     }
 
     @Override
     public String getInfoMessage() {
-        return "Provide the information of the keypair.";
+        return "Provide the information of the keypair. Adding a new keypair may affect other device applications that are using keystores.";
     }
 
     @Override

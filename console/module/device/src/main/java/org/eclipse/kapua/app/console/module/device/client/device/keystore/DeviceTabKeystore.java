@@ -172,7 +172,7 @@ public class DeviceTabKeystore extends KapuaTabItem<GwtDevice> {
         KapuaMenuItem addCertificateMenuItem = new KapuaMenuItem("Certificate", IconSet.CERTIFICATE, new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent menuEvent) {
-                KeystoreItemAddCertificateDialog addCertificateDialog = new KeystoreItemAddCertificateDialog(getSelectedEntity(), grid.getSelectionModel().getSelectedItem());
+                KeystoreItemAddCertificateDialog addCertificateDialog = new KeystoreItemAddCertificateDialog(getSelectedEntity());
 
                 addCertificateDialog.addListener(Events.Hide, new Listener<BaseEvent>() {
                     @Override
@@ -192,7 +192,7 @@ public class DeviceTabKeystore extends KapuaTabItem<GwtDevice> {
         KapuaMenuItem addKeypairMenuItem = new KapuaMenuItem("Keypair", IconSet.KEY, new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent menuEvent) {
-                KeystoreItemAddKeypairDialog addKeypairDialog = new KeystoreItemAddKeypairDialog(getSelectedEntity(), grid.getSelectionModel().getSelectedItem());
+                KeystoreItemAddKeypairDialog addKeypairDialog = new KeystoreItemAddKeypairDialog(getSelectedEntity());
 
                 addKeypairDialog.addListener(Events.Hide, new Listener<BaseEvent>() {
                     @Override
