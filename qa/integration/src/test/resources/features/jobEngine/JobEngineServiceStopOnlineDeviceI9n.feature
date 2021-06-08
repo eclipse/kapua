@@ -74,6 +74,7 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 2 and status is "PROCESS_AWAITING"
     And I start a job
+    And I wait 10 seconds
     And I confirm job target has step index 2 and status "PROCESS_OK"
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
@@ -126,6 +127,7 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 2 and status is "PROCESS_AWAITING"
     And I start a job
+    And I wait 10 seconds
     And I confirm job target has step index 2 and status "PROCESS_OK"
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
@@ -177,6 +179,7 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 2 and status is "PROCESS_AWAITING"
     And I start a job
+    And I wait 10 seconds
     And I confirm job target has step index 2 and status "PROCESS_OK"
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
@@ -227,6 +230,7 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 2 and status is "PROCESS_AWAITING"
     And I start a job
+    And I wait 10 seconds
     And I confirm job target has step index 2 and status "PROCESS_OK"
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
@@ -277,6 +281,7 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 2 and status is "PROCESS_AWAITING"
     And I start a job
+    And I wait 10 seconds
     And I confirm job target has step index 2 and status "PROCESS_OK"
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
@@ -329,6 +334,7 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_AWAITING"
     And I start a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
@@ -379,6 +385,7 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_AWAITING"
     And I start a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
@@ -428,6 +435,7 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_AWAITING"
     And I start a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
@@ -476,6 +484,7 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_AWAITING"
     And I start a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
@@ -526,6 +535,7 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 1 and status is "PROCESS_AWAITING"
     And I start a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
