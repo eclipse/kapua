@@ -42,11 +42,14 @@ import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaMenuItem;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.certificate.shared.service.GwtCertificateInfoService;
+import org.eclipse.kapua.app.console.module.certificate.shared.service.GwtCertificateInfoServiceAsync;
 import org.eclipse.kapua.app.console.module.device.client.device.DeviceView;
 import org.eclipse.kapua.app.console.module.device.client.device.keystore.button.KeystoreItemCsrButton;
 import org.eclipse.kapua.app.console.module.device.client.device.keystore.button.KeystoreItemDeleteButton;
 import org.eclipse.kapua.app.console.module.device.client.device.keystore.button.KeystoreItemDetailsButton;
-import org.eclipse.kapua.app.console.module.device.client.device.keystore.dialog.KeystoreItemAddCertificateDialog;
+import org.eclipse.kapua.app.console.module.device.client.device.keystore.dialog.KeystoreItemAddCertificateInfoDialog;
+import org.eclipse.kapua.app.console.module.device.client.device.keystore.dialog.KeystoreItemAddCertificateRawDialog;
 import org.eclipse.kapua.app.console.module.device.client.device.keystore.dialog.KeystoreItemAddCsrDialog;
 import org.eclipse.kapua.app.console.module.device.client.device.keystore.dialog.KeystoreItemAddKeypairDialog;
 import org.eclipse.kapua.app.console.module.device.client.device.keystore.dialog.KeystoreItemDeleteDialog;
@@ -67,6 +70,7 @@ public class DeviceTabKeystore extends KapuaTabItem<GwtDevice> {
     private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
     private static final GwtDeviceKeystoreManagementServiceAsync GWT_DEVICE_KEYSTORE_MANAGEMENT_SERVICE = GWT.create(GwtDeviceKeystoreManagementService.class);
+    private static final GwtCertificateInfoServiceAsync GWT_CERTIFICATE_INFO_SERVICE = GWT.create(GwtCertificateInfoService.class);
 
     private Grid<GwtDeviceKeystoreItem> grid;
 
@@ -168,13 +172,13 @@ public class DeviceTabKeystore extends KapuaTabItem<GwtDevice> {
         addItemButton.setMenu(addItemMenu);
 
         //
-        // Add Certificate Menu Item
-        KapuaMenuItem addCertificateMenuItem = new KapuaMenuItem("Certificate", IconSet.CERTIFICATE, new SelectionListener<MenuEvent>() {
+        // Add Certificate Raw Menu Item
+        KapuaMenuItem addCertificateRawMenuItem = new KapuaMenuItem("Certificate Raw", IconSet.EDIT, new SelectionListener<MenuEvent>() {
             @Override
             public void componentSelected(MenuEvent menuEvent) {
-                KeystoreItemAddCertificateDialog addCertificateDialog = new KeystoreItemAddCertificateDialog(getSelectedEntity());
+                KeystoreItemAddCertificateRawDialog addCertificateRawDialog = new KeystoreItemAddCertificateRawDialog(getSelectedEntity());
 
-                addCertificateDialog.addListener(Events.Hide, new Listener<BaseEvent>() {
+                addCertificateRawDialog.addListener(Events.Hide, new Listener<BaseEvent>() {
                     @Override
                     public void handleEvent(BaseEvent baseEvent) {
                         setDirty(true);
@@ -182,10 +186,42 @@ public class DeviceTabKeystore extends KapuaTabItem<GwtDevice> {
                     }
                 });
 
-                addCertificateDialog.show();
+                addCertificateRawDialog.show();
             }
         });
-        addItemMenu.add(addCertificateMenuItem);
+        addItemMenu.add(addCertificateRawMenuItem);
+
+        //
+        // Add Certificate Raw Menu Item
+        final KapuaMenuItem addCertificateInfoMenuItem = new KapuaMenuItem("Certificate", IconSet.CERTIFICATE, new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent menuEvent) {
+                KeystoreItemAddCertificateInfoDialog addCertificateInfoDialog = new KeystoreItemAddCertificateInfoDialog(getSelectedEntity());
+
+                addCertificateInfoDialog.addListener(Events.Hide, new Listener<BaseEvent>() {
+                    @Override
+                    public void handleEvent(BaseEvent baseEvent) {
+                        setDirty(true);
+                        refresh();
+                    }
+                });
+
+                addCertificateInfoDialog.show();
+            }
+        });
+        addItemMenu.add(addCertificateInfoMenuItem);
+
+        GWT_CERTIFICATE_INFO_SERVICE.isFindSupported(new AsyncCallback<Boolean>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                addCertificateInfoMenuItem.hide();
+            }
+
+            @Override
+            public void onSuccess(Boolean result) {
+                addCertificateInfoMenuItem.setVisible(result);
+            }
+        });
 
         //
         // Add Keypair Menu Item

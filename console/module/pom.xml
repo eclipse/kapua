@@ -29,6 +29,7 @@
         <module>account</module>
         <module>authentication</module>
         <module>authorization</module>
+        <module>certificate</module>
         <module>data</module>
         <module>device</module>
         <module>endpoint</module>

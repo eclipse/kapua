@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-    Copyright (c) 2017, 2021 Eurotech and/or its affiliates and others
+    Copyright (c) 2021 Eurotech and/or its affiliates and others
 
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -14,13 +14,9 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.4.0//EN"
         "https://raw.githubusercontent.com/gwtproject/gwt/2.4.0/distro-source/core/src/gwt-module.dtd">
 
-<module rename-to="adminModuleDevice">
+<module rename-to="adminModuleCertificate">
 
     <inherits name="org.eclipse.kapua.app.console.module.api.adminModuleApi"/>
-    <inherits name="org.eclipse.kapua.app.console.module.authorization.adminModuleAuthorization"/>
-    <inherits name="org.eclipse.kapua.app.console.module.certificate.adminModuleCertificate"/>
-    <inherits name="org.eclipse.kapua.app.console.module.tag.adminModuleTag"/>
-    <inherits name="org.eclipse.kapua.app.console.module.user.adminModuleUser"/>
 
     <!-- Specify the paths for translatable code                        -->
     <source path='shared'/>

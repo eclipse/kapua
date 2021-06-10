@@ -38,7 +38,9 @@ public interface GwtDeviceKeystoreManagementService extends RemoteService {
 
     GwtDeviceKeystoreItem getKeystoreItem(String scopeIdString, String deviceIdString, String keystoreId, String alias) throws GwtKapuaException;
 
-    void createKeystoreCertificate(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceKeystoreCertificate gwtKeystoreCertificate) throws GwtKapuaException;
+    void createKeystoreCertificateRaw(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceKeystoreCertificate gwtKeystoreCertificate) throws GwtKapuaException;
+
+    void createKeystoreCertificateInfo(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, String keystoreId, String alias, String certificateInfoIdString) throws GwtKapuaException;
 
     void createKeystoreKeypair(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceKeystoreKeypair gwtKeystoreKeypair) throws GwtKapuaException;
 

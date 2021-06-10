@@ -15,6 +15,7 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.model.device.management.keystore.DeviceKeystoreCertificateInfo;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
@@ -120,6 +121,37 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
     /**
      * Creates a {@link DeviceKeystoreCertificate} into the {@link Device}.
      *
+     * @param scopeId                 The {@link Device#getScopeId()}.
+     * @param deviceId                The {@link Device#getId()}.
+     * @param keystoreCertificateInfo The {@link DeviceKeystoreCertificateInfo} to create.
+     * @param timeout                 The timeout of the operation in milliseconds
+     * @return HTTP {@link Response#noContent()} code.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+    @POST
+    @Path("items/certificateInfo")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response createDeviceKeystoreCertificate(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @QueryParam("timeout") Long timeout,
+            DeviceKeystoreCertificateInfo keystoreCertificateInfo) throws KapuaException {
+
+        DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCertificate(
+                scopeId,
+                deviceId,
+                keystoreCertificateInfo.getKeystoreId(),
+                keystoreCertificateInfo.getAlias(),
+                keystoreCertificateInfo.getCertificateInfoId(),
+                timeout);
+
+        return returnNoContent();
+    }
+
+    /**
+     * Creates a {@link DeviceKeystoreCertificate} into the {@link Device}.
+     *
      * @param scopeId             The {@link Device#getScopeId()}.
      * @param deviceId            The {@link Device#getId()}.
      * @param keystoreCertificate The {@link DeviceKeystoreCertificate} to create.
@@ -129,7 +161,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
      * @since 1.5.0
      */
     @POST
-    @Path("items/certificate")
+    @Path("items/certificateRaw")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createDeviceKeystoreCertificate(
             @PathParam("scopeId") ScopeId scopeId,

@@ -45,6 +45,7 @@ import org.eclipse.kapua.app.api.core.model.data.JsonDatastoreMessage;
 import org.eclipse.kapua.app.api.core.model.data.JsonMessageQuery;
 import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericRequestMessage;
 import org.eclipse.kapua.app.api.core.model.device.management.JsonGenericResponseMessage;
+import org.eclipse.kapua.app.api.core.model.device.management.keystore.DeviceKeystoreCertificateInfo;
 import org.eclipse.kapua.app.api.core.model.job.IsJobRunningMultipleResponse;
 import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
 import org.eclipse.kapua.app.api.core.model.job.MultipleJobIdRequest;
@@ -490,6 +491,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     // Device Management Keystore
                     DeviceKeystores.class,
                     DeviceKeystore.class,
+                    DeviceKeystoreCertificateInfo.class,
                     DeviceKeystoreCertificate.class,
                     DeviceKeystoreItems.class,
                     DeviceKeystoreItem.class,

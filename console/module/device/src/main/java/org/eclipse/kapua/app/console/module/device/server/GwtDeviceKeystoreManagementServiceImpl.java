@@ -137,7 +137,7 @@ public class GwtDeviceKeystoreManagementServiceImpl extends KapuaRemoteServiceSe
     }
 
     @Override
-    public void createKeystoreCertificate(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceKeystoreCertificate gwtKeystoreCertificate) throws GwtKapuaException {
+    public void createKeystoreCertificateRaw(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceKeystoreCertificate gwtKeystoreCertificate) throws GwtKapuaException {
         try {
             checkXSRFToken(xsrfToken);
 
@@ -150,6 +150,21 @@ public class GwtDeviceKeystoreManagementServiceImpl extends KapuaRemoteServiceSe
             deviceKeystoreCertificate.setCertificate(gwtKeystoreCertificate.getCertificate());
 
             DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCertificate(scopeId, deviceId, deviceKeystoreCertificate, null);
+        } catch (Exception exception) {
+            throw KapuaExceptionHandler.buildExceptionFromError(exception);
+        }
+    }
+
+    @Override
+    public void createKeystoreCertificateInfo(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, String keystoreId, String alias, String certificateInfoIdString) throws GwtKapuaException {
+        try {
+            checkXSRFToken(xsrfToken);
+
+            KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
+            KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
+            KapuaId certificateInfoId = KapuaEid.parseCompactId(certificateInfoIdString);
+
+            DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCertificate(scopeId, deviceId, keystoreId, alias, certificateInfoId, null);
         } catch (Exception exception) {
             throw KapuaExceptionHandler.buildExceptionFromError(exception);
         }

@@ -14,6 +14,8 @@ package org.eclipse.kapua.service.device.management.keystore;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.certificate.info.CertificateInfo;
+import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
 import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
@@ -83,6 +85,21 @@ public interface DeviceKeystoreManagementService extends DeviceManagementService
      * @throws KapuaException
      */
     DeviceKeystoreItem getKeystoreItem(KapuaId scopeId, KapuaId deviceId, String keystoreId, String alias, Long timeout) throws KapuaException;
+
+    /**
+     * Creates a {@link CertificateInfo} as {@link DeviceKeystoreCertificate} into the {@link Device}.
+     * <p>
+     * It uses the {@link CertificateInfoService} to get the {@link CertificateInfo} to send.
+     *
+     * @param scopeId       The {@link Device#getScopeId()}.
+     * @param deviceId      The {@link Device#getId()}.
+     * @param keystoreId    The {@link DeviceKeystore#getId()}.
+     * @param alias         The {@link DeviceKeystoreItem#getAlias()}.
+     * @param certificateId The {@link CertificateInfo#getId()} to send.
+     * @param timeout       The timeout waiting for the device response.
+     * @throws KapuaException
+     */
+    void createKeystoreCertificate(KapuaId scopeId, KapuaId deviceId, String keystoreId, String alias, KapuaId certificateId, Long timeout) throws KapuaException;
 
     /**
      * Creates a {@link DeviceKeystoreCertificate} into the {@link Device}

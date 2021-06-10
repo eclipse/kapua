@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.keystore.dialog;
 
-import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -24,17 +24,20 @@ import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
+import org.eclipse.kapua.app.console.module.certificate.shared.model.GwtCertificateInfo;
+import org.eclipse.kapua.app.console.module.certificate.shared.service.GwtCertificateInfoService;
+import org.eclipse.kapua.app.console.module.certificate.shared.service.GwtCertificateInfoServiceAsync;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.keystore.GwtDeviceKeystore;
-import org.eclipse.kapua.app.console.module.device.shared.model.management.keystore.GwtDeviceKeystoreCertificate;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceKeystoreManagementService;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceKeystoreManagementServiceAsync;
 
 import java.util.List;
 
-public class KeystoreItemAddCertificateDialog extends SimpleDialog {
+public class KeystoreItemAddCertificateInfoDialog extends SimpleDialog {
 
     private static final GwtDeviceKeystoreManagementServiceAsync GWT_DEVICE_KEYSTORE_MANAGEMENT_SERVICE = GWT.create(GwtDeviceKeystoreManagementService.class);
+    private static final GwtCertificateInfoServiceAsync GWT_CERTIFICATE_INFO_SERVICE = GWT.create(GwtCertificateInfoService.class);
 
     private GwtDevice gwtDevice;
 
@@ -42,12 +45,12 @@ public class KeystoreItemAddCertificateDialog extends SimpleDialog {
 
     private SimpleComboBox<String> keystoreCombo;
     private KapuaTextField<String> aliasField;
-    private LabelField certificateLabel;
-    private TextArea certificateTextArea;
+    private ComboBox<GwtCertificateInfo> certificateInfoCombo;
 
-    public KeystoreItemAddCertificateDialog(GwtDevice gwtDevice) {
+    public KeystoreItemAddCertificateInfoDialog(GwtDevice gwtDevice) {
         this.gwtDevice = gwtDevice;
-        DialogUtils.resizeDialog(this, 500, 580);
+
+        DialogUtils.resizeDialog(this, 500, 300);
     }
 
     @Override
@@ -85,30 +88,24 @@ public class KeystoreItemAddCertificateDialog extends SimpleDialog {
         aliasField.setLabelSeparator(":");
         formPanel.add(aliasField, formData);
 
-        certificateLabel = new LabelField();
-        certificateLabel.setFieldLabel("* Certificate");
-        certificateLabel.setLabelSeparator(":");
-        formPanel.add(certificateLabel, formData);
+        certificateInfoCombo = new ComboBox<GwtCertificateInfo>();
+        certificateInfoCombo.setAllowBlank(false);
+        certificateInfoCombo.setTypeAhead(false);
+        certificateInfoCombo.setEditable(false);
+        certificateInfoCombo.setFieldLabel("* Certificate Info");
+        certificateInfoCombo.setLabelSeparator(":");
+        certificateInfoCombo.setEmptyText("Loading Certificate Infos...");
+        certificateInfoCombo.setValueField("id");
+        certificateInfoCombo.setDisplayField("name");
+        certificateInfoCombo.disable();
+        formPanel.add(certificateInfoCombo, formData);
 
-        certificateTextArea = new TextArea();
-        certificateTextArea.setAllowBlank(false);
-        certificateTextArea.setWidth(460);
-        certificateTextArea.setHeight(370);
-        certificateTextArea.setStyleAttribute("margin-left", "10px");
-        bodyPanel.add(certificateTextArea);
-
-        loadKeystores();
+        loadData();
     }
 
     @Override
     public void submit() {
-        GwtDeviceKeystoreCertificate gwtKeystoreCertificate = new GwtDeviceKeystoreCertificate();
-
-        gwtKeystoreCertificate.setKeystoreId(keystoreCombo.getSimpleValue());
-        gwtKeystoreCertificate.setAlias(aliasField.getValue());
-        gwtKeystoreCertificate.setCertificate(certificateTextArea.getValue());
-
-        GWT_DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCertificate(xsrfToken, gwtDevice.getScopeId(), gwtDevice.getId(), gwtKeystoreCertificate, new AsyncCallback<Void>() {
+        GWT_DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCertificateInfo(xsrfToken, gwtDevice.getScopeId(), gwtDevice.getId(), keystoreCombo.getSimpleValue(), aliasField.getValue(), certificateInfoCombo.getValue().getId(), new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable t) {
                 unmask();
@@ -138,7 +135,7 @@ public class KeystoreItemAddCertificateDialog extends SimpleDialog {
         return null;
     }
 
-    private void loadKeystores() {
+    private void loadData() {
         GWT_DEVICE_KEYSTORE_MANAGEMENT_SERVICE.getKeystores(gwtDevice.getScopeId(), gwtDevice.getId(), new AsyncCallback<List<GwtDeviceKeystore>>() {
             @Override
             public void onFailure(Throwable t) {
@@ -156,6 +153,26 @@ public class KeystoreItemAddCertificateDialog extends SimpleDialog {
                 for (GwtDeviceKeystore gwtKeystore : gwtKeystores) {
                     keystoreCombo.add(gwtKeystore.getId());
                 }
+            }
+        });
+
+        GWT_CERTIFICATE_INFO_SERVICE.findAllCertificates(gwtDevice.getScopeId(), new AsyncCallback<List<GwtCertificateInfo>>() {
+            @Override
+            public void onFailure(Throwable t) {
+                certificateInfoCombo.setEmptyText("Error while loading certificate info!");
+                certificateInfoCombo.enable();
+
+                ConsoleInfo.display("Error", "Error while loading certificate info details: " + t.getMessage());
+            }
+
+            @Override
+            public void onSuccess(List<GwtCertificateInfo> gwtCertificateInfos) {
+                certificateInfoCombo.setEmptyText("Choose a certificate info...");
+                certificateInfoCombo.enable();
+
+                ListStore<GwtCertificateInfo> listStore = new ListStore<GwtCertificateInfo>();
+                listStore.add(gwtCertificateInfos);
+                certificateInfoCombo.setStore(listStore);
             }
         });
     }

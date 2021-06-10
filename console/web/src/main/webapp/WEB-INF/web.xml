@@ -49,6 +49,7 @@
         <url-pattern>/about/*</url-pattern>
         <url-pattern>/account/*</url-pattern>
         <url-pattern>/auth/*</url-pattern>
+        <url-pattern>/certificateInfo/*</url-pattern>
         <url-pattern>/device/*</url-pattern>
         <url-pattern>/deviceManagement/*</url-pattern>
         <url-pattern>/deviceManagementInventory/*</url-pattern>
@@ -190,6 +191,15 @@
     <servlet-mapping>
         <servlet-name>authorizationServlet</servlet-name>
         <url-pattern>/auth</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>certificateInfoServlet</servlet-name>
+        <servlet-class>org.eclipse.kapua.app.console.module.certificate.server.GwtCertificateInfoServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>certificateInfoServlet</servlet-name>
+        <url-pattern>/certificateInfo</url-pattern>
     </servlet-mapping>
 
     <servlet>
