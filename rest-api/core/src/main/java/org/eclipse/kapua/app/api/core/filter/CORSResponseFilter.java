@@ -98,6 +98,13 @@ public class CORSResponseFilter implements Filter {
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         HttpServletRequest httpRequest = WebUtils.toHttp(request);
 
+        int errorCode = httpResponse.getStatus();
+        if (errorCode >= 400) {
+            // if there's an error code at this point, return it and stop the chain
+            httpResponse.sendError(errorCode, null);
+            return;
+        }
+
         String origin = httpRequest.getHeader(HttpHeaders.ORIGIN);
         if (StringUtils.isEmpty(origin)) {
             // Not a CORS request. Move along.
@@ -113,22 +120,17 @@ public class CORSResponseFilter implements Filter {
         // For the actual request it will be available and we will check the CORS according to the scope.
         KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
 
-        String msg = null;
         if (checkOrigin(origin, scopeId)) {
             // Origin matches at least one defined Endpoint
             httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
             httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
             httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
         } else {
-            msg = scopeId != null ?
+            String errorMessage = scopeId != null ?
                     String.format("HTTP Origin not allowed: %s for scope: %s", origin, scopeId.toCompactId()) :
                     String.format("HTTP Origin not allowed: %s", origin);
-            logger.error(msg);
-        }
-        int errorCode = httpResponse.getStatus();
-        if (errorCode >= 400) {
-            // if there's an error code at this point, return it and stop the chain
-            httpResponse.sendError(errorCode, msg);
+            logger.error(errorMessage);
+            httpResponse.sendError(errorCode, errorMessage);
             return;
         }
         chain.doFilter(request, response);
