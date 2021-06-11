@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
-import javax.xml.bind.JAXBContext;
-
 import org.eclipse.kapua.broker.core.router.EndChainEndPoint;
 import org.eclipse.kapua.broker.core.router.EndPointContainer;
 import org.eclipse.kapua.broker.core.router.ParentEndPoint;
@@ -51,6 +49,16 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreXmlRegistry;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
@@ -68,6 +76,8 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+
+import javax.xml.bind.JAXBContext;
 
 /**
  * JAXB context provided for proper (un)marshalling of interface annotated classes.
@@ -95,50 +105,80 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                         KapuaTdesignate.class,
                         KapuaTobject.class,
                         MetatypeXmlRegistry.class,
-                        // Device
-                        KuraDeviceComponentConfiguration.class,
-                        KuraDeviceConfiguration.class,
-                        KuraDeploymentPackage.class,
-                        KuraDeploymentPackages.class,
+
+                        // Device Management Asset
+                        DeviceAsset.class,
+                        DeviceAssets.class,
+
+                        // Device Management Bundle
+                        DeviceBundle.class,
+                        DeviceBundles.class,
                         KuraBundle.class,
                         KuraBundles.class,
                         KuraBundleInfo.class,
-                        DeviceAsset.class,
-                        DeviceAssets.class,
-                        DevicePackages.class,
-                        DeviceBundle.class,
-                        DeviceBundles.class,
+
+                        // Device Management Command
                         DeviceCommandInput.class,
+
+                        // Device Management Configuration
                         DeviceConfiguration.class,
                         DeviceComponentConfiguration.class,
+                        KuraDeviceComponentConfiguration.class,
+                        KuraDeviceConfiguration.class,
+
+                        // Device Management Keystore
+                        DeviceKeystores.class,
+                        DeviceKeystore.class,
+                        DeviceKeystoreCertificate.class,
+                        DeviceKeystoreItems.class,
+                        DeviceKeystoreItem.class,
+                        DeviceKeystoreItemQuery.class,
+                        DeviceKeystoreCertificate.class,
+                        DeviceKeystoreKeypair.class,
+                        DeviceKeystoreCSR.class,
+                        DeviceKeystoreSignedCertificate.class,
+                        DeviceKeystoreXmlRegistry.class,
+
+                        // Device Management Package
+                        DevicePackages.class,
                         DevicePackageInstallRequest.class,
                         DevicePackageUninstallRequest.class,
                         DevicePackageDownloadRequest.class,
-                        KuraSnapshotIds.class,
+                        KuraDeploymentPackage.class,
+                        KuraDeploymentPackages.class,
+
+                        // Device Management Snapshot
                         DeviceSnapshots.class,
+                        KuraSnapshotIds.class,
+
                         // Authorization
                         AccessToken.class,
+
                         // User
                         User.class,
                         UserCreator.class,
                         UserListResult.class,
                         UserQuery.class,
                         UserXmlRegistry.class,
+
                         // Account
                         Account.class,
                         AccountCreator.class,
                         AccountListResult.class,
                         Organization.class,
                         AccountXmlRegistry.class,
+
                         // Tag
                         Tag.class,
                         TagListResult.class,
                         TagXmlRegistry.class,
+
                         // Jobs
                         Job.class,
                         JobListResult.class,
                         JobXmlRegistry.class,
                         JobTargetSublist.class,
+
                         // Broker core
                         EndPointContainer.class,
                         SimpleEndPoint.class,

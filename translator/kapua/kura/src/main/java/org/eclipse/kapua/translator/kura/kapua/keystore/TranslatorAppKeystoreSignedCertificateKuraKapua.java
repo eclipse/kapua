@@ -44,6 +44,7 @@ public class TranslatorAppKeystoreSignedCertificateKuraKapua extends AbstractTra
             KeystoreResponsePayload keystoreResponsePayload = super.translatePayload(kuraResponsePayload);
 
             if (kuraResponsePayload.hasBody()) {
+                LoggerFactory.getLogger("Test").info("Device Payload: {}", new String(kuraResponsePayload.getBody()));
 
                 KuraKeystoreSignedCertificate kuraKeystoreSignedCertificate;
                 try {
@@ -62,8 +63,6 @@ public class TranslatorAppKeystoreSignedCertificateKuraKapua extends AbstractTra
                 }
 
                 keystoreResponsePayload.setSignedCertificate(translate(kuraKeystoreSignedCertificate));
-
-                return keystoreResponsePayload;
             }
 
             return keystoreResponsePayload;

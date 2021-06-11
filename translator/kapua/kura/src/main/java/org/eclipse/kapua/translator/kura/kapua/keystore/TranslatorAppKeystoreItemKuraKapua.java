@@ -42,9 +42,8 @@ public class TranslatorAppKeystoreItemKuraKapua extends AbstractTranslatorAppKey
 
             if (kuraResponsePayload.hasBody()) {
                 KuraKeystoreItem kuraKeystoreItem = readJsonBodyAs(kuraResponsePayload.getBody(), KuraKeystoreItem.class);
-                keystoreResponsePayload.setKeystoreItem(translate(kuraKeystoreItem));
 
-                return keystoreResponsePayload;
+                keystoreResponsePayload.setKeystoreItem(translate(kuraKeystoreItem));
             }
 
             return keystoreResponsePayload;

@@ -12,15 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.steps;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Date;
-import java.util.List;
-
+import com.google.protobuf.InvalidProtocolBufferException;
 import org.eclipse.kapua.qa.common.Suppressed;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kura.core.message.protobuf.KuraPayloadProto;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -32,38 +27,50 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.protobuf.InvalidProtocolBufferException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Date;
+import java.util.List;
 
 public class KuraDevice implements MqttCallback {
 
-    /**
-     * Logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(KuraDevice.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KuraDevice.class);
 
-    private static final String $EDC_KAPUA_SYS = "$EDC/kapua-sys/";
-    private static final String $EDC = "$EDC/";
-    private static final String DEPLOY_V2_REPLY = "/DEPLOY-V2/REPLY/";
-    private static final String DEPLOY_V2_NOTIFY = "/DEPLOY-V2/NOTIFY/";
     private static final String JOB_ID = "job.id";
     private static final String CLIENT_ID = "client.id";
+
+    private static final String $EDC = "$EDC/";
+    private static final String $EDC_KAPUA_SYS = "$EDC/kapua-sys/";
+    private static final String DEPLOY_V2_REPLY = "/DEPLOY-V2/REPLY/";
+    private static final String DEPLOY_V2_NOTIFY = "/DEPLOY-V2/NOTIFY/";
+    private static final String KEYS_V1_REPLY = "/KEYS-V1/REPLY/";
+
     private static final String COMPLETED = "COMPLETED";
 
-    /**
-     * Topics that Kura device is listening to.
-     */
-    private String deployPackages;
-    private String deployV2ExecDownloadPackage;
-    private String uninstallPackage;
-    private String deployBundles;
-    private String deployConf;
-    private String putConf;
-    private String cmdExec;
-    private String deployV2ExecStart34;
-    private String deployV2ExecStart95;
-    private String deployV2ExecStop77;
-    private String readAssets;
-    private String writeAsset;
+    //
+    // Topics that Kura device is listening to.
+    //
+    private String assetExecRead;
+    private String assetExecWrite;
+    private String cmdExecCommand;
+    private String confGetConfigurations;
+    private String confPutConfigurations;
+    private String deployGetPackages;
+    private String deployExecUninstall;
+    private String deployExecDownload;
+    private String deployGetBundles;
+    private String deployExecStart34;
+    private String deployExecStart95;
+    private String deployExecStop77;
+    private String keystoreGetKeystores;
+    private String keystoreGetKeystoresEntries;
+    private String keystoreGetKeystoresEntry;
+    private String keystorePostKeystoresEntriesCertificate;
+    private String keystorePostKeystoresEntriesKeypair;
+    private String keystorePostKeystoresEntriesCsr;
+    private String keystoreDelKeystoresEntries;
 
     /**
      * URI of mqtt broker.
@@ -127,21 +134,38 @@ public class KuraDevice implements MqttCallback {
     public boolean packageListChangedAfterUninstall;
     public boolean assetStateChanged;
 
+    public int keystoreInstalledCertificate;
+    public int keystoreInstalledKeypair;
+
     public KuraDevice() {
-        deployPackages = "$EDC/kapua-sys/rpione3/DEPLOY-V2/GET/packages";
-        deployV2ExecDownloadPackage = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/download";
-        uninstallPackage = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/uninstall";
-        deployBundles = "$EDC/kapua-sys/rpione3/DEPLOY-V2/GET/bundles";
-        deployConf = "$EDC/kapua-sys/rpione3/CONF-V1/GET/configurations";
-        putConf = "$EDC/kapua-sys/rpione3/CONF-V1/PUT/configurations";
-        cmdExec = "$EDC/kapua-sys/rpione3/CMD-V1/EXEC/command";
-        deployV2ExecStart34 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/start/34";
-        deployV2ExecStart95 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/start/95";
-        deployV2ExecStop77 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/stop/77";
+        // ASSET-V1
+        assetExecRead = "$EDC/kapua-sys/rpione3/ASSET-V1/EXEC/read";
+        assetExecWrite = "$EDC/kapua-sys/rpione3/ASSET-V1/EXEC/write";
 
-        readAssets = "$EDC/kapua-sys/rpione3/ASSET-V1/EXEC/read";
+        // CMD-V1
+        cmdExecCommand = "$EDC/kapua-sys/rpione3/CMD-V1/EXEC/command";
 
-        writeAsset = "$EDC/kapua-sys/rpione3/ASSET-V1/EXEC/write";
+        // CONF-V1
+        confGetConfigurations = "$EDC/kapua-sys/rpione3/CONF-V1/GET/configurations";
+        confPutConfigurations = "$EDC/kapua-sys/rpione3/CONF-V1/PUT/configurations";
+
+        // DEPLOY-V2
+        deployGetPackages = "$EDC/kapua-sys/rpione3/DEPLOY-V2/GET/packages";
+        deployExecDownload = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/download";
+        deployExecUninstall = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/uninstall";
+        deployGetBundles = "$EDC/kapua-sys/rpione3/DEPLOY-V2/GET/bundles";
+        deployExecStart34 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/start/34";
+        deployExecStart95 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/start/95";
+        deployExecStop77 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/stop/77";
+
+        // KEYS-V1
+        keystoreGetKeystores = "$EDC/kapua-sys/rpione3/KEYS-V1/GET/keystores";
+        keystoreGetKeystoresEntries = "$EDC/kapua-sys/rpione3/KEYS-V1/GET/keystores/entries";
+        keystoreGetKeystoresEntry = "$EDC/kapua-sys/rpione3/KEYS-V1/GET/keystores/entries/entry";
+        keystorePostKeystoresEntriesCertificate = "$EDC/kapua-sys/rpione3/KEYS-V1/POST/keystores/entries/certificate";
+        keystorePostKeystoresEntriesKeypair = "$EDC/kapua-sys/rpione3/KEYS-V1/POST/keystores/entries/keypair";
+        keystorePostKeystoresEntriesCsr = "$EDC/kapua-sys/rpione3/KEYS-V1/POST/keystores/entries/csr";
+        keystoreDelKeystoresEntries = "$EDC/kapua-sys/rpione3/KEYS-V1/DEL/keystores/entries";
 
         clientId = CLIENT_ID_RPIONE3;
 
@@ -152,7 +176,7 @@ public class KuraDevice implements MqttCallback {
         return this.clientId;
     }
 
-    public void addMoreThanOneDeviceToKuraMock(String name){
+    public void addMoreThanOneDeviceToKuraMock(String name) {
         clientId = name;
         mqttClientSetupForMoreDevices();
     }
@@ -163,14 +187,14 @@ public class KuraDevice implements MqttCallback {
      */
     public void mqttClientDisconnect() {
         try {
-            try (final Suppressed<Exception> s = Suppressed.withException()) {
+            try (Suppressed<Exception> s = Suppressed.withException()) {
                 s.run(mqttClient::disconnect);
                 s.run(subscribedClient::disconnect);
                 s.run(mqttClient::close);
                 s.run(subscribedClient::close);
             }
-        } catch (final Exception e) {
-            logger.warn("Failed during cleanup of Paho resources", e);
+        } catch (Exception e) {
+            LOG.warn("Failed during cleanup of Paho resources!", e);
         }
     }
 
@@ -178,69 +202,65 @@ public class KuraDevice implements MqttCallback {
      * Connect both listening and sending mqtt client of Mocked Kura device.
      */
     public void mqttClientConnect() {
-
         MqttConnectOptions clientOpts = new MqttConnectOptions();
         clientOpts.setUserName(CLIENT_USER);
         clientOpts.setPassword(CLIENT_PASSWORD.toCharArray());
+
         MqttConnectOptions serverOpts = new MqttConnectOptions();
         serverOpts.setUserName(SERVER_USER);
         serverOpts.setPassword(SERVER_PASSWORD.toCharArray());
+
         try {
             mqttClient.connect(clientOpts);
             subscribedClient.connect(serverOpts);
             subscribedClient.subscribe(TOPIC_FILTER, QOS);
-        } catch (MqttException e) {
-            e.printStackTrace();
+        } catch (MqttException me) {
+            LOG.error("Error while connecting KuraDevice!", me);
         }
     }
 
     /**
      * Prepare client and server part of mocked mqtt.
+     * <p>
+     * MqttClient is meant to simulate Kura device for sending messages,
+     * while subscribedClient is meant to receive messages from Kura device side.
      */
     public void mqttClientSetup() {
-        /*
-         * mqttClient is meant to simulate Kura device for sending messages,
-         * while subscribedClient is meant to receive messages from Kura device side.
-         */
         try {
-            mqttClient = new MqttClient(BROKER_URI, CLIENT_ID_RPIONE3,
-                    new MemoryPersistence());
-            subscribedClient = new MqttClient(BROKER_URI, MqttClient.generateClientId(),
-                    new MemoryPersistence());
-        } catch (MqttException e) {
-            e.printStackTrace();
+            mqttClient = new MqttClient(BROKER_URI, CLIENT_ID_RPIONE3, new MemoryPersistence());
+            subscribedClient = new MqttClient(BROKER_URI, MqttClient.generateClientId(), new MemoryPersistence());
+        } catch (MqttException me) {
+            LOG.error("Error while setting up KuraDevice!", me);
         }
 
         subscribedClient.setCallback(this);
     }
 
+    /**
+     * MqttClient is meant to simulate Kura device for sending messages,
+     * while subscribedClient is meant to receive messages from Kura device side.
+     */
     private void mqttClientSetupForMoreDevices() {
-        /*
-         * mqttClient is meant to simulate Kura device for sending messages,
-         * while subscribedClient is meant to receive messages from Kura device side.
-         */
         try {
-            deployPackages = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/GET/packages";
-            deployV2ExecDownloadPackage = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/download";
-            uninstallPackage = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/uninstall";
-            deployBundles = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/GET/bundles";
-            deployConf = $EDC_KAPUA_SYS + clientId + "/CONF-V1/GET/configurations";
-            putConf = $EDC_KAPUA_SYS + clientId + "/CONF-V1/PUT/configurations";
-            cmdExec = $EDC_KAPUA_SYS + clientId + "/CMD-V1/EXEC/command";
-            deployV2ExecStart34 = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/start/34";
-            deployV2ExecStart95 = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/start/95";
-            deployV2ExecStop77 = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/stop/77";
+            deployGetPackages = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/GET/packages";
+            deployExecDownload = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/download";
+            deployExecUninstall = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/uninstall";
+            deployGetBundles = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/GET/bundles";
+            confGetConfigurations = $EDC_KAPUA_SYS + clientId + "/CONF-V1/GET/configurations";
+            confPutConfigurations = $EDC_KAPUA_SYS + clientId + "/CONF-V1/PUT/configurations";
+            cmdExecCommand = $EDC_KAPUA_SYS + clientId + "/CMD-V1/EXEC/command";
+            deployExecStart34 = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/start/34";
+            deployExecStart95 = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/start/95";
+            deployExecStop77 = $EDC_KAPUA_SYS + clientId + "/DEPLOY-V2/EXEC/stop/77";
 
-            readAssets = $EDC_KAPUA_SYS + clientId + "/ASSET-V1/EXEC/read";
+            assetExecRead = $EDC_KAPUA_SYS + clientId + "/ASSET-V1/EXEC/read";
 
-            writeAsset = $EDC_KAPUA_SYS + clientId + "/ASSET-V1/EXEC/write";
+            assetExecWrite = $EDC_KAPUA_SYS + clientId + "/ASSET-V1/EXEC/write";
 
-            mqttClient = new MqttClient(BROKER_URI, clientId,
-                    new MemoryPersistence());
-            subscribedClient = new MqttClient(BROKER_URI, MqttClient.generateClientId(),
-                    new MemoryPersistence());
-        } catch (MqttException e) {
-            e.printStackTrace();
+            mqttClient = new MqttClient(BROKER_URI, clientId, new MemoryPersistence());
+            subscribedClient = new MqttClient(BROKER_URI, MqttClient.generateClientId(), new MemoryPersistence());
+        } catch (MqttException me) {
+            LOG.error("Error while setting up KuraDevice!", me);
         }
         subscribedClient.setCallback(this);
     }
@@ -248,14 +268,10 @@ public class KuraDevice implements MqttCallback {
     /**
      * Sending data to mqtt broker. Data is read form file containing pre-recorded response.
      *
-     * @param topic
-     *            mqtt broker topic
-     * @param qos
-     *            mqtt QOS
-     * @param retained
-     *            is message retained (mqtt specific)
-     * @param fileName
-     *            name of file and path with pre-recorded response
+     * @param topic    mqtt broker topic
+     * @param qos      mqtt QOS
+     * @param retained is message retained (mqtt specific)
+     * @param fileName name of file and path with pre-recorded response
      * @throws MqttException
      * @throws IOException
      */
@@ -268,10 +284,8 @@ public class KuraDevice implements MqttCallback {
     /**
      * Extraction of metrics form Kapua message payload.
      *
-     * @param payload
-     *            payload received from Kapua
-     * @param metricKey
-     *            string representing key of metric
+     * @param payload   payload received from Kapua
+     * @param metricKey string representing key of metric
      * @return string representation of metric value
      */
     private String getMetric(byte[] payload, String metricKey) {
@@ -283,6 +297,7 @@ public class KuraDevice implements MqttCallback {
         } catch (InvalidProtocolBufferException e) {
             value = null;
         }
+
         if (kuraPayload == null) {
             return value;
         }
@@ -301,8 +316,7 @@ public class KuraDevice implements MqttCallback {
     /**
      * Ectraction of callback parameters form Kapua generated message stored as Metrics.
      *
-     * @param payload
-     *            Kapua message
+     * @param payload Kapua message
      * @return tuple with client and request id
      */
     private CallbackParam extractCallback(byte[] payload) {
@@ -318,172 +332,386 @@ public class KuraDevice implements MqttCallback {
 
     @Override
     public void connectionLost(Throwable throwable) {
-        logger.info("Kapua Mock Device connection to broker lost.");
+        LOG.info("Kapua Mock Device connection to broker lost.");
     }
 
     @Override
     public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-        logger.info("Message arrived in Kapua Mock Device with topic: " + topic);
+        LOG.info("Message arrived in Kapua Mock Device with topic: " + topic);
 
-        CallbackParam callbackParam = null;
-        String responseTopic = null;
-        byte[] responsePayload = null;
-        byte[] payload = mqttMessage.getPayload();
+        CallbackParam callbackParam;
+        String responseTopic;
+        byte[] responsePayload;
+        byte[] requestPayload = mqttMessage.getPayload();
 
-        if (topic.equals(deployPackages)) {
-            callbackParam = extractCallback(payload);
+        try {
+            // ASSET-V1
+            if (topic.equals(assetExecRead)) {
+                callbackParam = extractCallback(requestPayload);
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(packageListChanged == true ? "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_updated_list.mqtt" : (packageListChangedAfterUninstall == true ? "/mqtt/KapuaPoolClient-id_DEPLOY_V2_REPLY_package_list_after_uninstall.mqtt" : "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_initial_list.mqtt")).toURI()));
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/ASSET-V1/REPLY/" + callbackParam.getRequestId();
+                responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(assetStateChanged ? "/mqtt/KapuaPool-client-id_ASSET-V1_READ_req-id_assets_updated_assets.mqtt" : "/mqtt/KapuaPool-client-id_ASSET-V1_READ_req-id_assets.mqtt").toURI()));
 
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-        } else if (topic.equals(deployV2ExecDownloadPackage)) {
-            callbackParam = extractCallback(payload);
-            KuraPayload kuraPayloadInitial = new KuraPayload();
-            kuraPayloadInitial.readFromByteArray(payload);
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            } else if (topic.equals(assetExecWrite)) {
+                callbackParam = extractCallback(requestPayload);
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
-            KuraPayload customKuraPayload1 = new KuraPayload();
-            customKuraPayload1.setTimestamp(new Date());
-            customKuraPayload1.getMetrics().put("response.code", 200);
-            responsePayload = customKuraPayload1.toByteArray();
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-            Thread.sleep(100);
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/ASSET-V1/REPLY/" + callbackParam.getRequestId();
+                responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_ASSET-V1_WRITE_req-id_assets.mqtt").toURI()));
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/download";
-            KuraPayload customKuraPayload2 = new KuraPayload();
-            customKuraPayload2.setTimestamp(new Date());
-            customKuraPayload2.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
-            customKuraPayload2.getMetrics().put(CLIENT_ID, clientId);
-            customKuraPayload2.getMetrics().put("dp.download.progress", 50);
-            customKuraPayload2.getMetrics().put("dp.download.size", 20409);
-            customKuraPayload2.getMetrics().put("dp.download.status", "IN_PROGRESS");
-            customKuraPayload2.getMetrics().put("dp.download.index", 0);
-            responsePayload = customKuraPayload2.toByteArray();
-            mqttClient.publish(responseTopic, responsePayload , 0, false);
-            Thread.sleep(100);
+                assetStateChanged = true;
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            }
+            // CMD-V1
+            else if (topic.equals(cmdExecCommand)) {
+                callbackParam = extractCallback(requestPayload);
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/download";
-            KuraPayload customKuraPayload3 = new KuraPayload();
-            customKuraPayload3.setTimestamp(new Date());
-            customKuraPayload3.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
-            customKuraPayload3.getMetrics().put(CLIENT_ID, clientId);
-            customKuraPayload3.getMetrics().put("dp.download.progress", 100);
-            customKuraPayload3.getMetrics().put("dp.download.size", 20409);
-            customKuraPayload3.getMetrics().put("dp.download.status", COMPLETED);
-            customKuraPayload3.getMetrics().put("dp.download.index", 0);
-            responsePayload = customKuraPayload3.toByteArray();
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-            Thread.sleep(100);
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CMD-V1/REPLY/" + callbackParam.getRequestId();
+                responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_CMD-V1_REPLY_req-id_command.mqtt").toURI()));
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/install";
-            KuraPayload customKuraPayload4 = new KuraPayload();
-            customKuraPayload4.setTimestamp(new Date());
-            customKuraPayload4.getMetrics().put("dp.name", "Example Publisher-1.0.300.dp");
-            customKuraPayload4.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
-            customKuraPayload4.getMetrics().put("dp.install.progress", 100);
-            customKuraPayload4.getMetrics().put("dp.install.status", COMPLETED);
-            customKuraPayload4.getMetrics().put(CLIENT_ID, clientId);
-            responsePayload = customKuraPayload4.toByteArray();
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            }
+            // CONF-V1
+            else if (topic.equals(confGetConfigurations)) {
+                callbackParam = extractCallback(requestPayload);
 
-            packageListChanged = true;
-        } else if (topic.equals(uninstallPackage)) {
-            callbackParam = extractCallback(payload);
-            KuraPayload kuraPayloadInitial = new KuraPayload();
-            kuraPayloadInitial.readFromByteArray(payload);
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
+                responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(configurationChanged ? "/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_updated_configurations.mqtt" : "/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_inital_configurations.mqtt").toURI()));
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
-            KuraPayload customKuraPayload = new KuraPayload();
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            } else if (topic.equals(confPutConfigurations)) {
+                callbackParam = extractCallback(requestPayload);
 
-            customKuraPayload.setTimestamp(new Date());
-            customKuraPayload.getMetrics().put("response.code", 200);
-            responsePayload = customKuraPayload.toByteArray();
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-            Thread.sleep(5000);
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
+                responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_CONF-V1_PUT_configurations.mqtt").toURI()));
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/uninstall";
-            KuraPayload customKuraPayload2 = new KuraPayload();
+                configurationChanged = true;
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            }
+            // DEPLOY-V2
+            else if (topic.equals(deployGetPackages)) {
+                callbackParam = extractCallback(requestPayload);
 
-            customKuraPayload2.setTimestamp(new Date());
-            customKuraPayload2.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
-            customKuraPayload2.getMetrics().put("dp.name", "org.eclipse.kura.example.beacon");
-            customKuraPayload2.getMetrics().put("dp.uninstall.progress", 100);
-            customKuraPayload2.getMetrics().put("dp.uninstall.status", COMPLETED);
-            customKuraPayload2.getMetrics().put(CLIENT_ID, clientId);
-            responsePayload = customKuraPayload2.toByteArray();
-            mqttClient.publish(responseTopic, responsePayload , 0, false);
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
+                responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(packageListChanged ? "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_updated_list.mqtt" : (packageListChangedAfterUninstall == true ? "/mqtt/KapuaPoolClient-id_DEPLOY_V2_REPLY_package_list_after_uninstall.mqtt" : "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_packages_initial_list.mqtt")).toURI()));
 
-            packageListChangedAfterUninstall = true;
-        } else if (topic.equals(deployBundles)) {
-            callbackParam = extractCallback(payload);
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            } else if (topic.equals(deployExecDownload)) {
+                callbackParam = extractCallback(requestPayload);
+                KuraPayload kuraPayloadInitial = new KuraPayload();
+                kuraPayloadInitial.readFromByteArray(requestPayload);
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(bundleStateChanged == true ? "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles_updated_state.mqtt" : "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles_inital_state.mqtt").toURI()));
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
+                KuraPayload customKuraPayload1 = new KuraPayload();
+                customKuraPayload1.setTimestamp(new Date());
+                customKuraPayload1.getMetrics().put("response.code", 200);
+                responsePayload = customKuraPayload1.toByteArray();
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+                Thread.sleep(100);
 
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-        } else if (topic.equals(deployConf)) {
-            callbackParam = extractCallback(payload);
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/download";
+                KuraPayload customKuraPayload2 = new KuraPayload();
+                customKuraPayload2.setTimestamp(new Date());
+                customKuraPayload2.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
+                customKuraPayload2.getMetrics().put(CLIENT_ID, clientId);
+                customKuraPayload2.getMetrics().put("dp.download.progress", 50);
+                customKuraPayload2.getMetrics().put("dp.download.size", 20409);
+                customKuraPayload2.getMetrics().put("dp.download.status", "IN_PROGRESS");
+                customKuraPayload2.getMetrics().put("dp.download.index", 0);
+                responsePayload = customKuraPayload2.toByteArray();
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+                Thread.sleep(100);
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource( configurationChanged == true ? "/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_updated_configurations.mqtt" : "/mqtt/KapuaPool-client-id_CONF-V1_REPLY_req-id_inital_configurations.mqtt").toURI()));
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/download";
+                KuraPayload customKuraPayload3 = new KuraPayload();
+                customKuraPayload3.setTimestamp(new Date());
+                customKuraPayload3.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
+                customKuraPayload3.getMetrics().put(CLIENT_ID, clientId);
+                customKuraPayload3.getMetrics().put("dp.download.progress", 100);
+                customKuraPayload3.getMetrics().put("dp.download.size", 20409);
+                customKuraPayload3.getMetrics().put("dp.download.status", COMPLETED);
+                customKuraPayload3.getMetrics().put("dp.download.index", 0);
+                responsePayload = customKuraPayload3.toByteArray();
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+                Thread.sleep(100);
 
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-        }
-        else if (topic.equals(putConf)) {
-            callbackParam = extractCallback(payload);
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/install";
+                KuraPayload customKuraPayload4 = new KuraPayload();
+                customKuraPayload4.setTimestamp(new Date());
+                customKuraPayload4.getMetrics().put("dp.name", "Example Publisher-1.0.300.dp");
+                customKuraPayload4.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
+                customKuraPayload4.getMetrics().put("dp.install.progress", 100);
+                customKuraPayload4.getMetrics().put("dp.install.status", COMPLETED);
+                customKuraPayload4.getMetrics().put(CLIENT_ID, clientId);
+                responsePayload = customKuraPayload4.toByteArray();
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CONF-V1/REPLY/" + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_CONF-V1_PUT_configurations.mqtt").toURI()));
+                packageListChanged = true;
+            } else if (topic.equals(deployExecUninstall)) {
+                callbackParam = extractCallback(requestPayload);
+                KuraPayload kuraPayloadInitial = new KuraPayload();
+                kuraPayloadInitial.readFromByteArray(requestPayload);
 
-            configurationChanged = true;
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-        } else if (topic.equals(cmdExec)) {
-            callbackParam = extractCallback(payload);
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
+                KuraPayload customKuraPayload = new KuraPayload();
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/CMD-V1/REPLY/" + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_CMD-V1_REPLY_req-id_command.mqtt").toURI()));
+                customKuraPayload.setTimestamp(new Date());
+                customKuraPayload.getMetrics().put("response.code", 200);
+                responsePayload = customKuraPayload.toByteArray();
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+                Thread.sleep(5000);
 
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-        } else if (topic.equals(deployV2ExecStart34) || topic.equals(deployV2ExecStart95)) {
-            callbackParam = extractCallback(payload);
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_NOTIFY + clientId + "/uninstall";
+                KuraPayload customKuraPayload2 = new KuraPayload();
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_DEPLOY-V2_EXEC_START_bundle_id.mqtt").toURI()));
+                customKuraPayload2.setTimestamp(new Date());
+                customKuraPayload2.getMetrics().put(JOB_ID, kuraPayloadInitial.getMetrics().get(JOB_ID));
+                customKuraPayload2.getMetrics().put("dp.name", "org.eclipse.kura.example.beacon");
+                customKuraPayload2.getMetrics().put("dp.uninstall.progress", 100);
+                customKuraPayload2.getMetrics().put("dp.uninstall.status", COMPLETED);
+                customKuraPayload2.getMetrics().put(CLIENT_ID, clientId);
+                responsePayload = customKuraPayload2.toByteArray();
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
 
-            bundleStateChanged = true;
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-        } else if (topic.equals(deployV2ExecStop77)) {
-            callbackParam = extractCallback(payload);
+                packageListChangedAfterUninstall = true;
+            } else if (topic.equals(deployGetBundles)) {
+                callbackParam = extractCallback(requestPayload);
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_DEPLOY-V2_EXEC_STOP_bundle_id.mqtt").toURI()));
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
+                responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(bundleStateChanged ? "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles_updated_state.mqtt" : "/mqtt/KapuaPool-client-id_DEPLOY-V2_REPLY_req-id_bundles_inital_state.mqtt").toURI()));
 
-            bundleStateChanged = true;
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-        } else if (topic.equals(readAssets)) {
-            callbackParam = extractCallback(payload);
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            } else if (topic.equals(deployExecStart34) || topic.equals(deployExecStart95)) {
+                callbackParam = extractCallback(requestPayload);
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/ASSET-V1/REPLY/" + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource(assetStateChanged == true ? "/mqtt/KapuaPool-client-id_ASSET-V1_READ_req-id_assets_updated_assets.mqtt" : "/mqtt/KapuaPool-client-id_ASSET-V1_READ_req-id_assets.mqtt").toURI()));
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
+                responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_DEPLOY-V2_EXEC_START_bundle_id.mqtt").toURI()));
 
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-        } else if (topic.equals(writeAsset)) {
-            callbackParam = extractCallback(payload);
+                bundleStateChanged = true;
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            } else if (topic.equals(deployExecStop77)) {
+                callbackParam = extractCallback(requestPayload);
 
-            responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + "/ASSET-V1/REPLY/" + callbackParam.getRequestId();
-            responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_ASSET-V1_WRITE_req-id_assets.mqtt").toURI()));
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + DEPLOY_V2_REPLY + callbackParam.getRequestId();
+                responsePayload = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KapuaPool-client-id_DEPLOY-V2_EXEC_STOP_bundle_id.mqtt").toURI()));
 
-            assetStateChanged = true;
-            mqttClient.publish(responseTopic, responsePayload, 0, false);
-        } else {
-            logger.error("Kapua Mock Device unhandled topic: " + topic);
+                bundleStateChanged = true;
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            }
+            // KEYS-V1
+            else if (topic.equals(keystoreGetKeystores)) {
+                callbackParam = extractCallback(requestPayload);
+
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+
+                byte[] responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_reply.json").toURI()));
+
+                KuraPayload kuraResponsePayload = new KuraPayload();
+                kuraResponsePayload.setBody(responseBody);
+                kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                responsePayload = kuraResponsePayload.toByteArray();
+
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            } else if (topic.equals(keystoreGetKeystoresEntries)) {
+                callbackParam = extractCallback(requestPayload);
+
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+
+                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                kuraRequestPayload.readFromByteArray(requestPayload);
+
+                byte[] responseBody = null;
+                if (kuraRequestPayload.hasBody()) {
+                    String queryJsonString = new String(kuraRequestPayload.getBody());
+
+                    if (queryJsonString.contains("alias")) {
+                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_alias_reply.json").toURI()));
+                    } else if (queryJsonString.contains("keystoreServicePid")) {
+                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_keystore_reply.json").toURI()));
+                    }
+                } else {
+
+                    if (keystoreInstalledCertificate == 0 && keystoreInstalledKeypair == 0) {
+                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_default_reply.json").toURI()));
+                    } else if (keystoreInstalledCertificate == 1 && keystoreInstalledKeypair == 0) {
+                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_cert_installed_reply.json").toURI()));
+                    } else if (keystoreInstalledCertificate == 1 && keystoreInstalledKeypair == 1) {
+                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_cert_key_installed_reply.json").toURI()));
+                    } else if (keystoreInstalledCertificate == 0 && keystoreInstalledKeypair == 1) {
+                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_key_installed_reply.json").toURI()));
+                    }
+                }
+
+                KuraPayload kuraResponsePayload = new KuraPayload();
+                kuraResponsePayload.setBody(responseBody);
+                kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                responsePayload = kuraResponsePayload.toByteArray();
+
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            } else if (topic.equals(keystoreGetKeystoresEntry)) {
+                callbackParam = extractCallback(requestPayload);
+
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+
+                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                kuraRequestPayload.readFromByteArray(requestPayload);
+
+                byte[] responseBody = null;
+                if (kuraRequestPayload.hasBody()) {
+                    String queryJsonString = new String(kuraRequestPayload.getBody());
+
+                    if (queryJsonString.contains("\"alias\":\"localhost\"") &&
+                            queryJsonString.contains("\"keystoreServicePid\":\"HttpsKeystore\"")) {
+                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entry_reply.json").toURI()));
+                    }
+                }
+
+                KuraPayload kuraResponsePayload = new KuraPayload();
+                kuraResponsePayload.setBody(responseBody);
+                kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                responsePayload = kuraResponsePayload.toByteArray();
+
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            } else if (topic.equals(keystorePostKeystoresEntriesCertificate)) {
+                callbackParam = extractCallback(requestPayload);
+
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+
+                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                kuraRequestPayload.readFromByteArray(requestPayload);
+
+                int responseCode;
+                if (kuraRequestPayload.hasBody()) {
+                    String queryJsonString = new String(kuraRequestPayload.getBody());
+
+                    if (queryJsonString.contains("-----BEGIN CERTIFICATE-----") &&
+                            queryJsonString.contains("-----END CERTIFICATE-----")) {
+                        keystoreInstalledCertificate++;
+                        responseCode = 200;
+                    } else {
+                        responseCode = 500;
+                    }
+                } else {
+                    responseCode = 400;
+                }
+
+                KuraPayload kuraResponsePayload = new KuraPayload();
+                kuraResponsePayload.getMetrics().put("response.code", responseCode);
+                responsePayload = kuraResponsePayload.toByteArray();
+
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            } else if (topic.equals(keystorePostKeystoresEntriesKeypair)) {
+                callbackParam = extractCallback(requestPayload);
+
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+
+                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                kuraRequestPayload.readFromByteArray(requestPayload);
+
+                int responseCode;
+                if (kuraRequestPayload.hasBody()) {
+                    String queryJsonString = new String(kuraRequestPayload.getBody());
+
+                    if (queryJsonString.contains("SHA256withRSA") &&
+                            queryJsonString.contains("CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US")) {
+                        keystoreInstalledKeypair++;
+                        responseCode = 200;
+                    } else {
+                        responseCode = 500;
+                    }
+                } else {
+                    responseCode = 400;
+                }
+
+                KuraPayload kuraResponsePayload = new KuraPayload();
+                kuraResponsePayload.getMetrics().put("response.code", responseCode);
+                responsePayload = kuraResponsePayload.toByteArray();
+
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            } else if (topic.equals(keystorePostKeystoresEntriesCsr)) {
+                callbackParam = extractCallback(requestPayload);
+
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+
+                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                kuraRequestPayload.readFromByteArray(requestPayload);
+
+                byte[] resposnseBody = null;
+                int responseCode;
+                if (kuraRequestPayload.hasBody()) {
+                    String queryJsonString = new String(kuraRequestPayload.getBody());
+
+                    if (queryJsonString.contains("\"signatureAlgorithm\":\"SHA256withRSA\"") &&
+                            queryJsonString.contains("\"attributes\":\"CN=Kura, OU=IoT, O=Eclipse, C=US\"")) {
+
+                        if (queryJsonString.contains("\"alias\":\"localhostFixed\"")) {
+                            resposnseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_POST_keystores_entries_csr_fixed_reply.json").toURI()));
+                            responseCode = 200;
+                        } else if (queryJsonString.contains("\"alias\":\"localhostKuraBugged\"")) {
+                            resposnseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_POST_keystores_entries_csr_kurabugged_reply.txt").toURI()));
+                            responseCode = 200;
+                        } else {
+                            responseCode = 500;
+                        }
+                    } else {
+                        responseCode = 500;
+                    }
+                } else {
+                    responseCode = 400;
+                }
+
+                KuraPayload kuraResponsePayload = new KuraPayload();
+                kuraResponsePayload.getMetrics().put("response.code", responseCode);
+                kuraResponsePayload.setBody(resposnseBody);
+                responsePayload = kuraResponsePayload.toByteArray();
+
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            } else if (topic.equals(keystoreDelKeystoresEntries)) {
+                callbackParam = extractCallback(requestPayload);
+
+                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+
+                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                kuraRequestPayload.readFromByteArray(requestPayload);
+
+                int responseCode;
+                if (kuraRequestPayload.hasBody()) {
+                    String queryJsonString = new String(kuraRequestPayload.getBody());
+
+                    if (queryJsonString.contains("SSLKeystore") && queryJsonString.contains("qaCertificate")) {
+                        keystoreInstalledCertificate--;
+                        responseCode = 200;
+                    } else if (queryJsonString.contains("SSLKeystore") && queryJsonString.contains("qaKeypair")) {
+                        keystoreInstalledKeypair--;
+                        responseCode = 200;
+                    } else {
+                        responseCode = 500;
+                    }
+                } else {
+                    responseCode = 400;
+                }
+
+                KuraPayload kuraResponsePayload = new KuraPayload();
+                kuraResponsePayload.getMetrics().put("response.code", responseCode);
+                responsePayload = kuraResponsePayload.toByteArray();
+
+                mqttClient.publish(responseTopic, responsePayload, 0, false);
+            }
+            // Fail
+            else {
+                LOG.error("Kapua Mock Device unhandled topic: {}", topic);
+            }
+        } catch (Exception e) {
+            LOG.error("Error while handling the request on topic: {}", topic, e);
         }
     }
 
     @Override
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-        logger.info("Kapua Mock Device message delivery complete.");
+        LOG.info("Kapua Mock Device message delivery complete.");
     }
 
     /**

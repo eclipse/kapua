@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -45,8 +46,8 @@ public abstract class AbstractTranslatorKapuaKura<FROM_C extends KapuaChannel, F
 
     private static final ObjectMapper JSON_MAPPER = new ObjectMapper()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS);
+            .enable(DeserializationFeature.FAIL_ON_TRAILING_TOKENS)
+            .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
