@@ -97,39 +97,34 @@ public class CORSResponseFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletResponse httpResponse = WebUtils.toHttp(response);
         HttpServletRequest httpRequest = WebUtils.toHttp(request);
+        String errorMessage = null;
 
+        String origin = httpRequest.getHeader(HttpHeaders.ORIGIN);
+        if (StringUtils.isNotEmpty(origin)) {
+            // Origin header present, so it's a CORS request. Apply all the required logics
+            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
+            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
+
+            // Depending on the type of the request the KapuaSession might not yet be present.
+            // For preflight request or session not yet established the KapuaSession will be null.
+            // For the actual request it will be available and we will check the CORS according to the scope.
+            KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
+
+            if (checkOrigin(origin, scopeId)) {
+                // Origin matches at least one defined Endpoint
+                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+                httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
+                httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
+            } else {
+                errorMessage = scopeId != null ?
+                        String.format("HTTP Origin not allowed: %s for scope: %s", origin, scopeId.toCompactId()) :
+                        String.format("HTTP Origin not allowed: %s", origin);
+                logger.error(errorMessage);
+            }
+        }
         int errorCode = httpResponse.getStatus();
         if (errorCode >= 400) {
             // if there's an error code at this point, return it and stop the chain
-            httpResponse.sendError(errorCode, null);
-            return;
-        }
-
-        String origin = httpRequest.getHeader(HttpHeaders.ORIGIN);
-        if (StringUtils.isEmpty(origin)) {
-            // Not a CORS request. Move along.
-            chain.doFilter(request, response);
-            return;
-        }
-
-        httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "GET, POST, DELETE, PUT");
-        httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-Requested-With, Content-Type, Authorization");
-
-        // Depending on the type of the request the KapuaSession might not yet be present.
-        // For preflight request or session not yet established the KapuaSession will be null.
-        // For the actual request it will be available and we will check the CORS according to the scope.
-        KapuaId scopeId = KapuaSecurityUtils.getSession() != null ? KapuaSecurityUtils.getSession().getScopeId() : null;
-
-        if (checkOrigin(origin, scopeId)) {
-            // Origin matches at least one defined Endpoint
-            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
-            httpResponse.addHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, origin);
-            httpResponse.addHeader("Vary", HttpHeaders.ORIGIN);
-        } else {
-            String errorMessage = scopeId != null ?
-                    String.format("HTTP Origin not allowed: %s for scope: %s", origin, scopeId.toCompactId()) :
-                    String.format("HTTP Origin not allowed: %s", origin);
-            logger.error(errorMessage);
             httpResponse.sendError(errorCode, errorMessage);
             return;
         }
@@ -161,7 +156,7 @@ public class CORSResponseFilter implements Filter {
         }
 
         if (scopeId == null) {
-            // No scopeId, so the call is no authenticated. Return true only if origin
+            // No scopeId, so the call is not authenticated. Return true only if origin
             // is enabled in any account or system settings
             return allowedOrigins.containsKey(explicitOrigin);
         } else {
