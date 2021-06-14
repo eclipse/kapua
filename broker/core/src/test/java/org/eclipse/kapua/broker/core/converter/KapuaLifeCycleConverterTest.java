@@ -40,7 +40,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
-
 import java.util.Base64;
 import java.util.Date;
 
@@ -113,11 +112,6 @@ public class KapuaLifeCycleConverterTest extends Assert {
         Mockito.when(translator1.translate(messageKapua)).thenReturn(kapuaMessage);
         Mockito.when(kapuaMessage.getClientId()).thenReturn("id");
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToApps(exchange, byteArray);
         } catch (Exception e) {
@@ -128,18 +122,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToAppsObjectValueTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToApps(exchange, value);
             fail("KapuaException expected.");
@@ -151,18 +139,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToAppsNullExchangeTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToApps(null, byteArray);
             fail("NullPointerException expected.");
@@ -174,18 +156,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToAppsNullValueTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToApps(exchange, null);
             fail("KapuaException expected.");
@@ -197,7 +173,6 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
@@ -219,11 +194,6 @@ public class KapuaLifeCycleConverterTest extends Assert {
         Mockito.when(translator1.translate(messageKapua)).thenReturn(kapuaMessage);
         Mockito.when(kapuaMessage.getClientId()).thenReturn("id");
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToBirth(exchange, byteArray);
         } catch (Exception e) {
@@ -234,18 +204,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToBirthObjectValueTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToBirth(exchange, value);
             fail("KapuaException expected.");
@@ -257,18 +221,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToBirthNullExchangeTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToBirth(null, byteArray);
             fail("NullPointerException expected.");
@@ -280,18 +238,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToBirthNullValueTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToBirth(exchange, null);
             fail("KapuaException expected.");
@@ -303,7 +255,6 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
@@ -325,11 +276,6 @@ public class KapuaLifeCycleConverterTest extends Assert {
         Mockito.when(translator1.translate(messageKapua)).thenReturn(kapuaMessage);
         Mockito.when(kapuaMessage.getClientId()).thenReturn("id");
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToDisconnect(exchange, byteArray);
         } catch (Exception e) {
@@ -340,18 +286,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 1L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToDisconnectObjectValueTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToDisconnect(exchange, value);
             fail("KapuaException expected.");
@@ -363,18 +303,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 1L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToDisconnectNullExchangeTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToDisconnect(null, byteArray);
             fail("NullPointerException expected.");
@@ -386,18 +320,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 1L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToDisconnectNullValueTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToDisconnect(exchange, null);
             fail("KapuaException expected.");
@@ -409,7 +337,6 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 1L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
@@ -431,11 +358,6 @@ public class KapuaLifeCycleConverterTest extends Assert {
         Mockito.when(translator1.translate(messageKapua)).thenReturn(kapuaMessage);
         Mockito.when(kapuaMessage.getClientId()).thenReturn("id");
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToMissing(exchange, byteArray);
         } catch (Exception e) {
@@ -446,18 +368,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 1L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToMissingObjectValueTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToMissing(exchange, value);
             fail("KapuaException expected.");
@@ -469,18 +385,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 1L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToMissingNullExchangeTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToMissing(null, byteArray);
             fail("NullPointerException expected.");
@@ -492,18 +402,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 1L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToMissingNullValueTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToMissing(exchange, null);
             fail("KapuaException expected.");
@@ -515,7 +419,6 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 1L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
-
     }
 
     @Test
@@ -537,11 +440,6 @@ public class KapuaLifeCycleConverterTest extends Assert {
         Mockito.when(translator1.translate(messageKapua)).thenReturn(kapuaMessage);
         Mockito.when(kapuaMessage.getClientId()).thenReturn("id");
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToNotify(exchange, byteArray);
         } catch (Exception e) {
@@ -552,18 +450,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 1L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToNotifyObjectValueTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToNotify(exchange, value);
             fail("KapuaException expected.");
@@ -582,11 +474,6 @@ public class KapuaLifeCycleConverterTest extends Assert {
     public void convertToNotifyNullExchangeTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToNotify(null, byteArray);
             fail("NullPointerException expected.");
@@ -598,18 +485,12 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 1L, converterNotifyMessage.getCount());
-
     }
 
     @Test
     public void convertToNotifyNullValueTest() {
         Mockito.when(exchange.getIn()).thenReturn(message);
 
-        assertEquals("Expected and actual values should be the same.", 0L, converterAppMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterBirthMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
-        assertEquals("Expected and actual values should be the same.", 0L, converterNotifyMessage.getCount());
         try {
             kapuaLifeCycleConverter.convertToNotify(exchange, null);
             fail("KapuaException expected.");
@@ -621,6 +502,5 @@ public class KapuaLifeCycleConverterTest extends Assert {
         assertEquals("Expected and actual values should be the same.", 0L, converterDcMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 0L, converterMissingMessage.getCount());
         assertEquals("Expected and actual values should be the same.", 1L, converterNotifyMessage.getCount());
-
     }
 }

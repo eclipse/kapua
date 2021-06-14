@@ -1,4 +1,4 @@
-name: kapua-continuous-integration
+name: Kapua Build, Unit & Integration Tests
 on: [push, pull_request] # Triggers the workflow on push or pull request events
 
 env:
@@ -24,7 +24,6 @@ jobs:
             ${{ runner.os }}-maven-
       - run: mvn -v
       - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
-      - run: bash <(curl -s https://codecov.io/bash)
   test-brokerAcl:
     needs: build-kapua
     runs-on: ubuntu-latest
