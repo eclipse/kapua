@@ -31,7 +31,7 @@ Feature: Device Management Keystore Service Tests
     Given Start Broker
 
   #
-  # Setup
+  # Tests
   #
 
   Scenario: Request Keystores to a Device
