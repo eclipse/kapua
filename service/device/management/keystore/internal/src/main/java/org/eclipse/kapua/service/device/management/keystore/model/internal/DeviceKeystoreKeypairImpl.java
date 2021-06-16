@@ -14,6 +14,11 @@ package org.eclipse.kapua.service.device.management.keystore.model.internal;
 
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
 
+/**
+ * {@link DeviceKeystoreKeypair} implementation.
+ *
+ * @since 1.5.0
+ */
 public class DeviceKeystoreKeypairImpl implements DeviceKeystoreKeypair {
 
     private String keystoreId;
@@ -23,6 +28,11 @@ public class DeviceKeystoreKeypairImpl implements DeviceKeystoreKeypair {
     private Integer size;
     private String attributes;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public DeviceKeystoreKeypairImpl() {
     }
 

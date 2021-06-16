@@ -14,10 +14,20 @@ package org.eclipse.kapua.service.device.management.keystore.model.internal;
 
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 
+/**
+ * {@link DeviceKeystoreSignedCertificate} implementation.
+ *
+ * @since 1.5.0
+ */
 public class DeviceKeystoreSignedCertificateImpl implements DeviceKeystoreSignedCertificate {
 
     private String certificate;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public DeviceKeystoreSignedCertificateImpl() {
     }
 

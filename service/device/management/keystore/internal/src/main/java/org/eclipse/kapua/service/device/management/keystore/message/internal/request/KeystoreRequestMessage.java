@@ -17,7 +17,7 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 
 /**
- * {@link DeviceKeystore} {@link KapuaRequestMessage} implementation.
+ * {@link DeviceKeystore} {@code abstract} {@link KapuaRequestMessage} implementation.
  *
  * @since 1.5.0
  */
@@ -28,6 +28,12 @@ public abstract class KeystoreRequestMessage<M extends KeystoreRequestMessage> e
 
     private final Class<M> requestClass;
 
+    /**
+     * Constructor.
+     *
+     * @param requestClass The {@link KeystoreRequestMessage} sub-type
+     * @since 1.5.0
+     */
     protected KeystoreRequestMessage(Class<M> requestClass) {
         this.requestClass = requestClass;
     }

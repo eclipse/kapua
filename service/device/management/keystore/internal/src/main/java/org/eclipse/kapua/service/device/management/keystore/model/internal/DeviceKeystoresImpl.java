@@ -18,12 +18,22 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * {@link DeviceKeystores} implementation.
+ *
+ * @since 1.5.0
+ */
 public class DeviceKeystoresImpl implements DeviceKeystores {
 
     private static final long serialVersionUID = 1318691706440015345L;
 
     private List<DeviceKeystore> keystores;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public DeviceKeystoresImpl() {
     }
 

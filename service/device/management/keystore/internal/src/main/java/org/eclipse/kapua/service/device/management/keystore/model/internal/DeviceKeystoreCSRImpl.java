@@ -14,6 +14,11 @@ package org.eclipse.kapua.service.device.management.keystore.model.internal;
 
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
 
+/**
+ * {@link DeviceKeystoreCSR} implementation.
+ *
+ * @since 1.5.0
+ */
 public class DeviceKeystoreCSRImpl implements DeviceKeystoreCSR {
 
     private String keystoreId;
@@ -21,6 +26,11 @@ public class DeviceKeystoreCSRImpl implements DeviceKeystoreCSR {
     private String signatureAlgorithm;
     private String attributes;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public DeviceKeystoreCSRImpl() {
     }
 

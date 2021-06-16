@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.keystore.message.internal.response;
 
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 
 /**
- * {@link DeviceKeystoreItem} {@link KapuaResponseMessage} implementation.
+ * {@link DeviceKeystore} {@link KapuaResponseMessage} implementation.
  *
  * @since 1.5.0
  */

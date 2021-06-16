@@ -15,11 +15,21 @@ package org.eclipse.kapua.service.device.management.keystore.model.internal;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 
+/**
+ * {@link DeviceKeystoreItemQuery} implementation.
+ *
+ * @since 1.5.0
+ */
 public class DeviceKeystoreItemQueryImpl implements DeviceKeystoreItemQuery {
 
     private String keystoreId;
     private String alias;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public DeviceKeystoreItemQueryImpl() {
     }
 

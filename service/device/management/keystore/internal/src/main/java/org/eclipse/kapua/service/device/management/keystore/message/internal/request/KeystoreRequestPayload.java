@@ -38,6 +38,13 @@ public class KeystoreRequestPayload extends KapuaPayloadImpl implements KapuaReq
 
     private static final DeviceKeystoreManagementFactory DEVICE_KEYSTORE_MANAGEMENT_FACTORY = KapuaLocator.getInstance().getFactory(DeviceKeystoreManagementFactory.class);
 
+    /**
+     * Gets the {@link DeviceKeystoreItemQuery} from the {@link KapuaRequestPayload#getBody()}
+     *
+     * @return The {@link DeviceKeystoreItemQuery}.
+     * @throws Exception if {@link KapuaRequestPayload#getBody()} is not a {@link DeviceKeystoreItemQuery}.
+     * @since 1.5.0
+     */
     public DeviceKeystoreItemQuery getItemQuery() throws Exception {
         if (!hasBody()) {
             return DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreItemQuery();
@@ -47,11 +54,25 @@ public class KeystoreRequestPayload extends KapuaPayloadImpl implements KapuaReq
         return XmlUtil.unmarshal(bodyString, DeviceKeystoreItemQuery.class);
     }
 
+    /**
+     * Sets the {@link DeviceKeystoreItemQuery} into the {@link KapuaRequestPayload#getBody()}
+     *
+     * @param itemQuery The {@link DeviceKeystoreItemQuery}
+     * @throws Exception if the given {@link DeviceKeystoreItemQuery} is not serializable into the {@link KapuaRequestPayload#getBody()}
+     * @since 1.5.0
+     */
     public void setItemQuery(DeviceKeystoreItemQuery itemQuery) throws Exception {
         String bodyString = XmlUtil.marshal(itemQuery);
         setBody(bodyString.getBytes(CHAR_ENCODING));
     }
 
+    /**
+     * Gets the {@link DeviceKeystoreCertificate} from the {@link KapuaRequestPayload#getBody()}
+     *
+     * @return The {@link DeviceKeystoreCertificate}.
+     * @throws Exception if {@link KapuaRequestPayload#getBody()} is not a {@link DeviceKeystoreCertificate}.
+     * @since 1.5.0
+     */
     public DeviceKeystoreCertificate getCertificate() throws Exception {
         if (!hasBody()) {
             return DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreCertificate();
@@ -61,11 +82,25 @@ public class KeystoreRequestPayload extends KapuaPayloadImpl implements KapuaReq
         return XmlUtil.unmarshal(bodyString, DeviceKeystoreCertificate.class);
     }
 
+    /**
+     * Sets the {@link DeviceKeystoreCertificate} into the {@link KapuaRequestPayload#getBody()}
+     *
+     * @param certificate The {@link DeviceKeystoreCertificate}
+     * @throws Exception if the given {@link DeviceKeystoreCertificate} is not serializable into the {@link KapuaRequestPayload#getBody()}
+     * @since 1.5.0
+     */
     public void setCertificate(DeviceKeystoreCertificate certificate) throws Exception {
         String bodyString = XmlUtil.marshal(certificate);
         setBody(bodyString.getBytes(CHAR_ENCODING));
     }
 
+    /**
+     * Gets the {@link DeviceKeystoreKeypair} from the {@link KapuaRequestPayload#getBody()}
+     *
+     * @return The {@link DeviceKeystoreKeypair}.
+     * @throws Exception if {@link KapuaRequestPayload#getBody()} is not a {@link DeviceKeystoreKeypair}.
+     * @since 1.5.0
+     */
     public DeviceKeystoreKeypair getKeypair() throws Exception {
         if (!hasBody()) {
             return DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreKeypair();
@@ -75,11 +110,25 @@ public class KeystoreRequestPayload extends KapuaPayloadImpl implements KapuaReq
         return XmlUtil.unmarshal(bodyString, DeviceKeystoreKeypair.class);
     }
 
+    /**
+     * Sets the {@link DeviceKeystoreKeypair} into the {@link KapuaRequestPayload#getBody()}
+     *
+     * @param keypair The {@link DeviceKeystoreKeypair}
+     * @throws Exception if the given {@link DeviceKeystoreKeypair} is not serializable into the {@link KapuaRequestPayload#getBody()}
+     * @since 1.5.0
+     */
     public void setKeypair(DeviceKeystoreKeypair keypair) throws Exception {
         String bodyString = XmlUtil.marshal(keypair);
         setBody(bodyString.getBytes(CHAR_ENCODING));
     }
 
+    /**
+     * Gets the {@link DeviceKeystoreCSR} from the {@link KapuaRequestPayload#getBody()}
+     *
+     * @return The {@link DeviceKeystoreCSR}.
+     * @throws Exception if {@link KapuaRequestPayload#getBody()} is not a {@link DeviceKeystoreCSR}.
+     * @since 1.5.0
+     */
     public DeviceKeystoreCSR getCSR() throws Exception {
         if (!hasBody()) {
             return DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreCSR();
@@ -89,6 +138,13 @@ public class KeystoreRequestPayload extends KapuaPayloadImpl implements KapuaReq
         return XmlUtil.unmarshal(bodyString, DeviceKeystoreCSR.class);
     }
 
+    /**
+     * Sets the {@link DeviceKeystoreCSR} into the {@link KapuaRequestPayload#getBody()}
+     *
+     * @param csr The {@link DeviceKeystoreCSR}
+     * @throws Exception if the given {@link DeviceKeystoreCSR} is not serializable into the {@link KapuaRequestPayload#getBody()}
+     * @since 1.5.0
+     */
     public void setCsr(DeviceKeystoreCSR csr) throws Exception {
         String bodyString = XmlUtil.marshal(csr);
         setBody(bodyString.getBytes(CHAR_ENCODING));

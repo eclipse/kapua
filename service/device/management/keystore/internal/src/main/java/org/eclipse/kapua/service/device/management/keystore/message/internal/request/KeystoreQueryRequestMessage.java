@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.keystore.message.internal.request;
 
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 
 /**
- * {@link DeviceKeystore} {@link KapuaRequestMessage} implementation.
+ * {@link DeviceKeystoreItemQuery} {@link KapuaRequestMessage} implementation.
  *
  * @since 1.5.0
  */
@@ -24,6 +24,11 @@ public abstract class KeystoreQueryRequestMessage extends KeystoreRequestMessage
 
     private static final long serialVersionUID = 3593350285989405174L;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public KeystoreQueryRequestMessage() {
         super(KeystoreQueryRequestMessage.class);
     }

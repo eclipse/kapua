@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -21,15 +21,17 @@ import org.junit.runner.RunWith;
         features = {
                 "classpath:features/jobEngine/JobEngineServiceKeystoreStepDefinitionsI9n.feature"
         },
-        glue = {"org.eclipse.kapua.service.job.steps",
-                "org.eclipse.kapua.service.user.steps",
+        glue = {
                 "org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.service.job.steps",
+                "org.eclipse.kapua.service.user.steps",
+
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.device.registry.steps",
         },
         plugin = {"pretty",
-                "html:target/cucumber/JobEngineOnlineDeviceI9n",
-                "json:target/JobEngineOnlineDeviceI9n_cucumber.json"},
+                "html:target/cucumber/JobEngineServiceKeystoreStepDefinitionsI9n",
+                "json:target/JobEngineServiceKeystoreStepDefinitionsI9n_cucumber.json"},
         strict = true,
         monochrome = true)
 public class RunJobEngineServiceKeystoreStepDefinitionsI9nTest {

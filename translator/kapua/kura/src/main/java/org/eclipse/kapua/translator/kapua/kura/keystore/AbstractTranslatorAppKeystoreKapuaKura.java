@@ -18,12 +18,13 @@ import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraReques
 import org.eclipse.kapua.service.device.management.keystore.message.internal.request.KeystoreRequestChannel;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.request.KeystoreRequestMessage;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.request.KeystoreRequestPayload;
+import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.kapua.kura.AbstractTranslatorKapuaKura;
 import org.eclipse.kapua.translator.kapua.kura.TranslatorKapuaKuraUtils;
 
 /**
- * {@link org.eclipse.kapua.translator.Translator} {@code abstract} implementation from {@link KeystoreRequestMessage} to {@link KuraRequestMessage}
+ * {@link Translator} {@code abstract} implementation from {@link KeystoreRequestMessage} to {@link KuraRequestMessage}
  *
  * @since 1.5.0
  */

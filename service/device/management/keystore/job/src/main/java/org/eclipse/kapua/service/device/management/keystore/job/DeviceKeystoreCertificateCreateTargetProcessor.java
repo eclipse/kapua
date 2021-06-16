@@ -20,7 +20,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
-import org.eclipse.kapua.service.device.management.keystore.job.definition.DeviceCertficateCreatePropertyKeys;
+import org.eclipse.kapua.service.device.management.keystore.job.definition.DeviceCertificateCreatePropertyKeys;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
@@ -54,10 +54,10 @@ public class DeviceKeystoreCertificateCreateTargetProcessor extends AbstractTarg
     @Override
     public void processTarget(JobTarget jobTarget) throws KapuaException {
 
-        String keystoreId = stepContextWrapper.getStepProperty(DeviceCertficateCreatePropertyKeys.KEYSTORE_ID, String.class);
-        String alias = stepContextWrapper.getStepProperty(DeviceCertficateCreatePropertyKeys.ALIAS, String.class);
-        String certificate = stepContextWrapper.getStepProperty(DeviceCertficateCreatePropertyKeys.CERTIFICATE, String.class);
-        Long timeout = stepContextWrapper.getStepProperty(DeviceCertficateCreatePropertyKeys.TIMEOUT, Long.class);
+        String keystoreId = stepContextWrapper.getStepProperty(DeviceCertificateCreatePropertyKeys.KEYSTORE_ID, String.class);
+        String alias = stepContextWrapper.getStepProperty(DeviceCertificateCreatePropertyKeys.ALIAS, String.class);
+        String certificate = stepContextWrapper.getStepProperty(DeviceCertificateCreatePropertyKeys.CERTIFICATE, String.class);
+        Long timeout = stepContextWrapper.getStepProperty(DeviceCertificateCreatePropertyKeys.TIMEOUT, Long.class);
 
         DeviceKeystoreCertificate deviceKeystoreCertificate = KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreCertificate();
 

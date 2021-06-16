@@ -20,10 +20,11 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.keystore.message.internal.request.KeystoreCertificateRequestMessage;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.request.KeystoreRequestPayload;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
+import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
 /**
- * {@link org.eclipse.kapua.translator.Translator} implementation from {@link KeystoreCertificateRequestMessage} to {@link KuraRequestMessage}
+ * {@link Translator} implementation from {@link KeystoreCertificateRequestMessage} to {@link KuraRequestMessage}
  *
  * @since 1.5.0
  */

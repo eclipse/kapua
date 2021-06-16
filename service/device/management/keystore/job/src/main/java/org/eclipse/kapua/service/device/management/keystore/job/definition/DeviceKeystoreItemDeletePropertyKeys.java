@@ -12,14 +12,36 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.keystore.job.definition;
 
+import org.eclipse.kapua.service.device.management.keystore.job.DeviceKeystoreCertificateCreateTargetProcessor;
 import org.eclipse.kapua.service.job.step.definition.JobPropertyKey;
 
+/**
+ * {@link DeviceKeystoreCertificateCreateTargetProcessor} {@link JobPropertyKey} implementation.
+ *
+ * @since 1.5.0
+ */
 public class DeviceKeystoreItemDeletePropertyKeys implements JobPropertyKey {
 
+    /**
+     * @since 1.5.0
+     */
     public static final String KEYSTORE_ID = "keystoreId";
+
+    /**
+     * @since 1.5.0
+     */
     public static final String ALIAS = "alias";
+
+    /**
+     * @since 1.5.0
+     */
     public static final String TIMEOUT = "timeout";
 
+    /**
+     * Costructor.
+     *
+     * @since 1.5.0
+     */
     private DeviceKeystoreItemDeletePropertyKeys() {
     }
 }

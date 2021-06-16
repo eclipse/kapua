@@ -19,7 +19,7 @@ import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
-import org.eclipse.kapua.service.device.management.keystore.job.definition.DeviceKeypairCreatePropertyKeys;
+import org.eclipse.kapua.service.device.management.keystore.job.definition.DeviceKeystoreItemDeletePropertyKeys;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
@@ -52,9 +52,9 @@ public class DeviceKeystoreItemDeleteTargetProcessor extends AbstractTargetProce
     @Override
     public void processTarget(JobTarget jobTarget) throws KapuaException {
 
-        String keystoreId = stepContextWrapper.getStepProperty(DeviceKeypairCreatePropertyKeys.KEYSTORE_ID, String.class);
-        String alias = stepContextWrapper.getStepProperty(DeviceKeypairCreatePropertyKeys.ALIAS, String.class);
-        Long timeout = stepContextWrapper.getStepProperty(DeviceKeypairCreatePropertyKeys.TIMEOUT, Long.class);
+        String keystoreId = stepContextWrapper.getStepProperty(DeviceKeystoreItemDeletePropertyKeys.KEYSTORE_ID, String.class);
+        String alias = stepContextWrapper.getStepProperty(DeviceKeystoreItemDeletePropertyKeys.ALIAS, String.class);
+        Long timeout = stepContextWrapper.getStepProperty(DeviceKeystoreItemDeletePropertyKeys.TIMEOUT, Long.class);
 
         KapuaSecurityUtils.doPrivileged(() -> KEYSTORE_MANAGEMENT_SERVICE.deleteKeystoreItem(jobTarget.getScopeId(), jobTarget.getJobTargetId(), keystoreId, alias, timeout));
     }

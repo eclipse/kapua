@@ -24,6 +24,11 @@ public abstract class KeystoreKeypairRequestMessage extends KeystoreRequestMessa
 
     private static final long serialVersionUID = 3593350285989405174L;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public KeystoreKeypairRequestMessage() {
         super(KeystoreKeypairRequestMessage.class);
     }

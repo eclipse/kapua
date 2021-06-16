@@ -16,12 +16,13 @@ import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreSig
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreResponsePayload;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreSignedCertificateResponseMessage;
+import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * {@link org.eclipse.kapua.translator.Translator} implementation from {@link KeystoreSignedCertificateResponseMessage} to {@link KeystoreSignedCertificateResponseMessage}
+ * {@link Translator} implementation from {@link KeystoreSignedCertificateResponseMessage} to {@link KeystoreSignedCertificateResponseMessage}
  *
  * @since 1.5.0
  */
@@ -44,22 +45,11 @@ public class TranslatorAppKeystoreSignedCertificateKuraKapua extends AbstractTra
             KeystoreResponsePayload keystoreResponsePayload = super.translatePayload(kuraResponsePayload);
 
             if (kuraResponsePayload.hasBody()) {
-                LoggerFactory.getLogger("Test").info("Device Payload: {}", new String(kuraResponsePayload.getBody()));
-
                 KuraKeystoreSignedCertificate kuraKeystoreSignedCertificate;
                 try {
                     kuraKeystoreSignedCertificate = readJsonBodyAs(kuraResponsePayload.getBody(), KuraKeystoreSignedCertificate.class);
                 } catch (Exception e) {
-                    LOG.warn("KEYS-V1/POST/keystore/entries/csr returned not a JSON body... Trying reading body as a String...");
-
-                    String kuraSignedCertificate = new String(kuraResponsePayload.getBody());
-                    kuraSignedCertificate = kuraSignedCertificate.replace("\"", "");
-                    kuraSignedCertificate = kuraSignedCertificate.replace("\\n", "\n");
-
-                    kuraKeystoreSignedCertificate = new KuraKeystoreSignedCertificate();
-                    kuraKeystoreSignedCertificate.setSignedCertificate(kuraSignedCertificate);
-
-                    LOG.warn("KEYS-V1/POST/keystore/entries/csr returned not a JSON body... Trying reading body as a String... DONE!");
+                    kuraKeystoreSignedCertificate = patchForKuraKeystoreSignedCertificate(kuraResponsePayload);
                 }
 
                 keystoreResponsePayload.setSignedCertificate(translate(kuraKeystoreSignedCertificate));
@@ -69,5 +59,29 @@ public class TranslatorAppKeystoreSignedCertificateKuraKapua extends AbstractTra
         } catch (Exception e) {
             throw new InvalidPayloadException(e, kuraResponsePayload);
         }
+    }
+
+    /**
+     * This method fixes the issue with the {@link KuraKeystoreSignedCertificate}.
+     * <p>
+     * See https://github.com/eclipse/kura/issues/3387 for more info.
+     *
+     * @param kuraResponsePayload The {@link KuraKeystoreSignedCertificate} that cannot be {@link #readJsonBodyAs(byte[], Class)} {@link KuraKeystoreSignedCertificate}.
+     * @return The {@link KuraKeystoreSignedCertificate} parsed with the alternative format.
+     * @since 1.5.0
+     */
+    private KuraKeystoreSignedCertificate patchForKuraKeystoreSignedCertificate(KuraResponsePayload kuraResponsePayload) {
+        KuraKeystoreSignedCertificate kuraKeystoreSignedCertificate;
+        LOG.warn("KEYS-V1/POST/keystore/entries/csr returned not a JSON body... Trying reading body as a String...");
+
+        String kuraSignedCertificate = new String(kuraResponsePayload.getBody());
+        kuraSignedCertificate = kuraSignedCertificate.replace("\"", "");
+        kuraSignedCertificate = kuraSignedCertificate.replace("\\n", "\n");
+
+        kuraKeystoreSignedCertificate = new KuraKeystoreSignedCertificate();
+        kuraKeystoreSignedCertificate.setSignedCertificate(kuraSignedCertificate);
+
+        LOG.warn("KEYS-V1/POST/keystore/entries/csr returned not a JSON body... Trying reading body as a String... DONE!");
+        return kuraKeystoreSignedCertificate;
     }
 }

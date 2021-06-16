@@ -14,16 +14,49 @@ package org.eclipse.kapua.service.device.management.keystore.job.definition;
 
 import org.eclipse.kapua.service.job.step.definition.JobPropertyKey;
 
+
 public class DeviceKeypairCreatePropertyKeys implements JobPropertyKey {
 
+    /**
+     * @since 1.5.0
+     */
     public static final String KEYSTORE_ID = "keystoreId";
+
+    /**
+     * @since 1.5.0
+     */
     public static final String ALIAS = "alias";
+
+    /**
+     * @since 1.5.0
+     */
     public static final String SIZE = "size";
+
+    /**
+     * @since 1.5.0
+     */
     public static final String ALGORITHM = "algorithm";
+
+    /**
+     * @since 1.5.0
+     */
     public static final String SIGNATURE_ALGORITHM = "signatureAlgorithm";
+
+    /**
+     * @since 1.5.0
+     */
     public static final String ATTRIBUTES = "attributes";
+
+    /**
+     * @since 1.5.0
+     */
     public static final String TIMEOUT = "timeout";
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     private DeviceKeypairCreatePropertyKeys() {
     }
 }

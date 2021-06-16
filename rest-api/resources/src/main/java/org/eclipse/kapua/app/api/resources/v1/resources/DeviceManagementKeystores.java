@@ -15,8 +15,8 @@ package org.eclipse.kapua.app.api.resources.v1.resources;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.app.api.core.model.device.management.keystore.DeviceKeystoreCertificateInfo;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.keystore.DeviceKeystoreCertificateInfo;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
@@ -41,6 +41,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+/**
+ * {@link DeviceKeystoreManagementService} {@link AbstractKapuaResource}
+ *
+ * @since 1.5.0
+ */
 @Path("{scopeId}/devices/{deviceId}/keystore")
 public class DeviceManagementKeystores extends AbstractKapuaResource {
 

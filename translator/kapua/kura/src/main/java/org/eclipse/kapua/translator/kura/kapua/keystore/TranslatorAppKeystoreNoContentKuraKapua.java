@@ -16,10 +16,11 @@ import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraRespo
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreNoContentResponseMessage;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreResponsePayload;
+import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
 /**
- * {@link org.eclipse.kapua.translator.Translator} implementation from {@link KuraResponseMessage} to {@link KeystoreNoContentResponseMessage}
+ * {@link Translator} implementation from {@link KuraResponseMessage} to {@link KeystoreNoContentResponseMessage}
  *
  * @since 1.5.0
  */

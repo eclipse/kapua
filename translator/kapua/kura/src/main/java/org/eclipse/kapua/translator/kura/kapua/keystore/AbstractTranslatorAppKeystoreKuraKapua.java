@@ -29,6 +29,7 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSubjectAN;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
+import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.kura.kapua.AbstractSimpleTranslatorResponseKuraKapua;
 import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
@@ -40,7 +41,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 /**
- * {@link org.eclipse.kapua.translator.Translator} {@code abstract} implementation from {@link KuraResponseMessage} to {@link KeystoreResponseMessage}
+ * {@link Translator} {@code abstract} implementation from {@link KuraResponseMessage} to {@link KeystoreResponseMessage}
  *
  * @since 1.5.0
  */

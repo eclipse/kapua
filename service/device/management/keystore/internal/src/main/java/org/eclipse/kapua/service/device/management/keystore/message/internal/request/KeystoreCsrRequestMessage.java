@@ -24,6 +24,11 @@ public abstract class KeystoreCsrRequestMessage extends KeystoreRequestMessage<K
 
     private static final long serialVersionUID = 3593350285989405174L;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public KeystoreCsrRequestMessage() {
         super(KeystoreCsrRequestMessage.class);
     }

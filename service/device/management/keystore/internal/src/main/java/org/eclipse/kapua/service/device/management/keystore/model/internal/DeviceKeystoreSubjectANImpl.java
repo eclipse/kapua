@@ -14,6 +14,11 @@ package org.eclipse.kapua.service.device.management.keystore.model.internal;
 
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSubjectAN;
 
+/**
+ * {@link DeviceKeystoreSubjectAN} implementation.
+ *
+ * @since 1.5.0
+ */
 public class DeviceKeystoreSubjectANImpl implements DeviceKeystoreSubjectAN {
 
     private String anType;
@@ -22,6 +27,11 @@ public class DeviceKeystoreSubjectANImpl implements DeviceKeystoreSubjectAN {
     public DeviceKeystoreSubjectANImpl() {
     }
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public DeviceKeystoreSubjectANImpl(String anType, String anValue) {
         setANType(anType);
         setValue(anValue);

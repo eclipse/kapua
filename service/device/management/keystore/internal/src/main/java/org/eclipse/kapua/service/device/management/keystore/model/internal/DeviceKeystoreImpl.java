@@ -14,12 +14,22 @@ package org.eclipse.kapua.service.device.management.keystore.model.internal;
 
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 
+/**
+ * {@link DeviceKeystore} implementation.
+ *
+ * @since 1.5.0
+ */
 public class DeviceKeystoreImpl implements DeviceKeystore {
 
     private String id;
     private String keystoreType;
     private Integer size;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public DeviceKeystoreImpl() {
     }
 

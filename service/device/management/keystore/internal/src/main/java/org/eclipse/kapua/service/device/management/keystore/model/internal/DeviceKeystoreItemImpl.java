@@ -19,6 +19,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * {@link DeviceKeystoreItem} implementation.
+ *
+ * @since 1.5.0
+ */
 public class DeviceKeystoreItemImpl implements DeviceKeystoreItem {
 
     private String keystoreId;
@@ -34,6 +39,11 @@ public class DeviceKeystoreItemImpl implements DeviceKeystoreItem {
     private String certificate;
     private List<String> certificateChain;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public DeviceKeystoreItemImpl() {
     }
 
