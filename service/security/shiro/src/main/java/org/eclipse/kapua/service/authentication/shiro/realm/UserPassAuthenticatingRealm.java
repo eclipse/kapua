@@ -28,6 +28,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
@@ -36,6 +37,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccountException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.TemporaryLockedAccountException;
@@ -211,6 +213,20 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
             throws AuthenticationException {
         LoginAuthenticationInfo kapuaInfo = (LoginAuthenticationInfo) info;
         CredentialService credentialService = LOCATOR.getService(CredentialService.class);
+        MfaOptionService mfaOptionService = LOCATOR.getService(MfaOptionService.class);
+        KapuaId userId = kapuaInfo.getUser().getId();
+        KapuaId scopeId = kapuaInfo.getUser().getScopeId();
+        boolean hasMfa = false;
+        boolean userAndPasswordMatch = ((UserPassCredentialsMatcher) getCredentialsMatcher()).doUsernameAndPasswordMatch(authcToken, info);
+        try {
+            if (KapuaSecurityUtils.doPrivileged(() -> mfaOptionService.findByUserId(userId, scopeId) != null)) {
+                hasMfa = true;
+            }
+        } catch (KapuaException e) {
+            e.printStackTrace();
+        }
+
+        final boolean hasMfaAndUserPasswordMatch = hasMfa && userAndPasswordMatch;
         try {
             super.assertCredentialsMatch(authcToken, info);
         } catch (AuthenticationException authenticationEx) {
@@ -223,7 +239,7 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
                         Date now = new Date();
                         int resetAfterSeconds = (int)credentialServiceConfig.get("lockoutPolicy.resetAfter");
                         Date firstLoginFailure;
-                        boolean resetAttempts = failedCredential.getFirstLoginFailure() == null || now.after(failedCredential.getLoginFailuresReset());
+                        boolean resetAttempts = failedCredential.getFirstLoginFailure() == null || now.after(failedCredential.getLoginFailuresReset()) || hasMfaAndUserPasswordMatch;
                         if (resetAttempts) {
                             firstLoginFailure = now;
                             failedCredential.setLoginFailures(1);
@@ -261,8 +277,8 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
         }
         Subject currentSubject = SecurityUtils.getSubject();
         Session session = currentSubject.getSession();
-        session.setAttribute("scopeId", kapuaInfo.getUser().getScopeId());
-        session.setAttribute("userId", kapuaInfo.getUser().getId());
+        session.setAttribute("scopeId", userId);
+        session.setAttribute("userId", scopeId);
     }
 
     @Override
