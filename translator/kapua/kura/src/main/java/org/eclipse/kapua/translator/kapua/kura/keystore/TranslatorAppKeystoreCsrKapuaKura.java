@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.kapua.kura.keystore;
 
-import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreCSR;
+import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreCSRInfo;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.request.KeystoreCsrRequestMessage;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.request.KeystoreRequestPayload;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSRInfo;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
@@ -38,15 +38,15 @@ public class TranslatorAppKeystoreCsrKapuaKura extends AbstractTranslatorAppKeys
             KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
             if (keystoreRequestPayload.hasBody()) {
-                DeviceKeystoreCSR deviceKeystoreCSR = keystoreRequestPayload.getCSR();
+                DeviceKeystoreCSRInfo deviceKeystoreCSRInfo = keystoreRequestPayload.getCSRInfo();
 
-                KuraKeystoreCSR kuraKeystoreCSR = new KuraKeystoreCSR();
-                kuraKeystoreCSR.setKeystoreServicePid(deviceKeystoreCSR.getKeystoreId());
-                kuraKeystoreCSR.setAlias(deviceKeystoreCSR.getAlias());
-                kuraKeystoreCSR.setSignatureAlgorithm(deviceKeystoreCSR.getSignatureAlgorithm());
-                kuraKeystoreCSR.setAttributes(deviceKeystoreCSR.getAttributes());
+                KuraKeystoreCSRInfo kuraKeystoreCSRInfo = new KuraKeystoreCSRInfo();
+                kuraKeystoreCSRInfo.setKeystoreServicePid(deviceKeystoreCSRInfo.getKeystoreId());
+                kuraKeystoreCSRInfo.setAlias(deviceKeystoreCSRInfo.getAlias());
+                kuraKeystoreCSRInfo.setSignatureAlgorithm(deviceKeystoreCSRInfo.getSignatureAlgorithm());
+                kuraKeystoreCSRInfo.setAttributes(deviceKeystoreCSRInfo.getAttributes());
 
-                kuraRequestPayload.setBody(getJsonMapper().writeValueAsString(kuraKeystoreCSR).getBytes(CHAR_ENCODING));
+                kuraRequestPayload.setBody(getJsonMapper().writeValueAsString(kuraKeystoreCSRInfo).getBytes(CHAR_ENCODING));
             }
 
             return kuraRequestPayload;

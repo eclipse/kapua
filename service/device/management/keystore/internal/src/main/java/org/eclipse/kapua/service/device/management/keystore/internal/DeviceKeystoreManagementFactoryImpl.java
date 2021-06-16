@@ -16,22 +16,22 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSRInfo;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSubjectAN;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreCSRImpl;
+import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreCSRInfoImpl;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreCertificateImpl;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreImpl;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreItemImpl;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreItemQueryImpl;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreItemsImpl;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreKeypairImpl;
-import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreSignedCertificateImpl;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreSubjectANImpl;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoresImpl;
 
@@ -84,12 +84,12 @@ public class DeviceKeystoreManagementFactoryImpl implements DeviceKeystoreManage
     }
 
     @Override
-    public DeviceKeystoreCSR newDeviceKeystoreCSR() {
-        return new DeviceKeystoreCSRImpl();
+    public DeviceKeystoreCSRInfo newDeviceKeystoreCSRInfo() {
+        return new DeviceKeystoreCSRInfoImpl();
     }
 
     @Override
-    public DeviceKeystoreSignedCertificate newDeviceKeystoreSignedCertificate() {
-        return new DeviceKeystoreSignedCertificateImpl();
+    public DeviceKeystoreCSR newDeviceKeystoreCSR() {
+        return new DeviceKeystoreCSRImpl();
     }
 }

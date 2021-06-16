@@ -518,16 +518,6 @@ public class GwtDevice extends GwtUpdatableEntityModel implements Serializable {
         return "CONNECTED".equals(getGwtDeviceConnectionStatus());
     }
 
-    // CertificateID
-
-    public Long getSignedCertificateId() {
-        return get("signedCertificateId");
-    }
-
-    public void setSignedCertificateId(Long accountId) {
-        set("signedCertificateId", accountId);
-    }
-
     //
     // Utility methods
     //

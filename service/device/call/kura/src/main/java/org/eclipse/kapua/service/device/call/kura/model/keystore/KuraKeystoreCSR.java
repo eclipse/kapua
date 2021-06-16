@@ -21,13 +21,10 @@ import com.fasterxml.jackson.annotation.JsonRootName;
  * @since 1.5.0
  */
 @JsonRootName("keystoreCSR")
-public class KuraKeystoreCSR extends AbstractKuraKeystoreItem {
+public class KuraKeystoreCSR {
 
-    @JsonProperty("signatureAlgorithm")
-    private String signatureAlgorithm;
-
-    @JsonProperty("attributes")
-    private String attributes;
+    @JsonProperty("signingRequest")
+    private String signingRequest;
 
     /**
      * Constructor.
@@ -38,42 +35,22 @@ public class KuraKeystoreCSR extends AbstractKuraKeystoreItem {
     }
 
     /**
-     * Gets the signature algorithm.
+     * Gets the signing request.
      *
-     * @return The signature algorithm.
+     * @return The signing request.
      * @since 1.5.0
      */
-    public String getSignatureAlgorithm() {
-        return signatureAlgorithm;
+    public String getSigningRequest() {
+        return signingRequest;
     }
 
     /**
-     * Sets the signature algorithm.
+     * Sets the signing request.
      *
-     * @param signatureAlgorithm The signature algorithm.
+     * @param signingRequest The signing request.
      * @since 1.5.0
      */
-    public void setSignatureAlgorithm(String signatureAlgorithm) {
-        this.signatureAlgorithm = signatureAlgorithm;
-    }
-
-    /**
-     * Gets the attributes.
-     *
-     * @return The attributes.
-     * @since 1.5.0
-     */
-    public String getAttributes() {
-        return attributes;
-    }
-
-    /**
-     * Sets the attributes.
-     *
-     * @param attributes The attributes.
-     * @since 1.5.0
-     */
-    public void setAttributes(String attributes) {
-        this.attributes = attributes;
+    public void setSigningRequest(String signingRequest) {
+        this.signingRequest = signingRequest;
     }
 }

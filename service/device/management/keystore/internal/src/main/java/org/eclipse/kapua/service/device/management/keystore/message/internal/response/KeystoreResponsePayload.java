@@ -19,9 +19,9 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
@@ -125,30 +125,30 @@ public class KeystoreResponsePayload extends KapuaResponsePayloadImpl implements
     }
 
     /**
-     * Gets the {@link DeviceKeystoreSignedCertificate} from the {@link #getBody()}.
+     * Gets the {@link DeviceKeystoreCSR} from the {@link #getBody()}.
      *
-     * @return The {@link DeviceKeystoreSignedCertificate} from the {@link #getBody()}.
+     * @return The {@link DeviceKeystoreCSR} from the {@link #getBody()}.
      * @throws Exception if reading {@link #getBody()} errors.
      * @since 1.5.0
      */
-    public DeviceKeystoreSignedCertificate getSignedCertificate() throws Exception {
+    public DeviceKeystoreCSR getCSR() throws Exception {
         if (!hasBody()) {
-            return DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreSignedCertificate();
+            return DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreCSR();
         }
 
         String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DeviceKeystoreSignedCertificate.class);
+        return XmlUtil.unmarshal(bodyString, DeviceKeystoreCSR.class);
     }
 
     /**
-     * Sets the {@link DeviceKeystoreSignedCertificate} in the {@link #getBody()}.
+     * Sets the {@link DeviceKeystoreCSR} in the {@link #getBody()}.
      *
-     * @param signedCertificate The {@link DeviceKeystoreSignedCertificate} in the {@link #getBody()}.
+     * @param deviceCSR The {@link DeviceKeystoreCSR} in the {@link #getBody()}.
      * @throws Exception if writing errors.
      * @since 1.5.0
      */
-    public void setSignedCertificate(@NotNull DeviceKeystoreSignedCertificate signedCertificate) throws Exception {
-        String bodyString = XmlUtil.marshal(signedCertificate);
+    public void setCSR(@NotNull DeviceKeystoreCSR deviceCSR) throws Exception {
+        String bodyString = XmlUtil.marshal(deviceCSR);
         setBody(bodyString.getBytes(CHAR_ENCODING));
     }
 }

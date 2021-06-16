@@ -15,8 +15,8 @@ package org.eclipse.kapua.translator.kura.kapua.keystore;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.keystore.KeystoreMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystore;
+import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreCSR;
 import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreItem;
-import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
@@ -24,9 +24,9 @@ import org.eclipse.kapua.service.device.management.keystore.message.internal.res
 import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreResponseMessage;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreResponsePayload;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSubjectAN;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.translator.Translator;
@@ -167,17 +167,17 @@ public abstract class AbstractTranslatorAppKeystoreKuraKapua<M extends KeystoreR
     }
 
     /**
-     * Translates a {@link KuraKeystoreSignedCertificate} to {@link DeviceKeystoreSignedCertificate}.
+     * Translates a {@link KuraKeystoreCSR} to {@link DeviceKeystoreCSR}.
      *
-     * @param kuraKeystoreSignedCertificate The {@link KuraKeystoreSignedCertificate} to translate.
-     * @return The translated {@link DeviceKeystoreSignedCertificate}.
+     * @param kuraKeystoreCSR The {@link KuraKeystoreCSR} to translate.
+     * @return The translated {@link DeviceKeystoreCSR}.
      * @since 1.5.0
      */
-    protected DeviceKeystoreSignedCertificate translate(KuraKeystoreSignedCertificate kuraKeystoreSignedCertificate) {
-        DeviceKeystoreSignedCertificate deviceKeystoreSignedCertificate = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreSignedCertificate();
+    protected DeviceKeystoreCSR translate(KuraKeystoreCSR kuraKeystoreCSR) {
+        DeviceKeystoreCSR deviceKeystoreCSR = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreCSR();
 
-        deviceKeystoreSignedCertificate.setSignedCertificate(kuraKeystoreSignedCertificate.getSignedCertificate());
+        deviceKeystoreCSR.setSigningRequest(kuraKeystoreCSR.getSigningRequest());
 
-        return deviceKeystoreSignedCertificate;
+        return deviceKeystoreCSR;
     }
 }

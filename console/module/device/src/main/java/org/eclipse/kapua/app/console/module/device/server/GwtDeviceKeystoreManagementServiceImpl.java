@@ -30,12 +30,12 @@ import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManage
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSRInfo;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 
 import java.util.ArrayList;
@@ -200,18 +200,18 @@ public class GwtDeviceKeystoreManagementServiceImpl extends KapuaRemoteServiceSe
             KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
             KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
 
-            DeviceKeystoreCSR deviceKeystoreCsr = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreCSR();
-            deviceKeystoreCsr.setKeystoreId(gwtKeystoreCsr.getKeystoreId());
-            deviceKeystoreCsr.setAlias(gwtKeystoreCsr.getAlias());
-            deviceKeystoreCsr.setSignatureAlgorithm(gwtKeystoreCsr.getSignatureAlgorithm());
-            deviceKeystoreCsr.setAttributes(gwtKeystoreCsr.getAttributes());
+            DeviceKeystoreCSRInfo deviceKeystoreCsrInfo = DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreCSRInfo();
+            deviceKeystoreCsrInfo.setKeystoreId(gwtKeystoreCsr.getKeystoreId());
+            deviceKeystoreCsrInfo.setAlias(gwtKeystoreCsr.getAlias());
+            deviceKeystoreCsrInfo.setSignatureAlgorithm(gwtKeystoreCsr.getSignatureAlgorithm());
+            deviceKeystoreCsrInfo.setAttributes(gwtKeystoreCsr.getAttributes());
 
-            DeviceKeystoreSignedCertificate deviceKeystoreSignedCertificate = DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCSR(scopeId, deviceId, deviceKeystoreCsr, null);
+            DeviceKeystoreCSR deviceKeystoreCSR = DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCSR(scopeId, deviceId, deviceKeystoreCsrInfo, null);
 
             GwtDeviceKeystoreCertificate gwtKeystoreCertificate = new GwtDeviceKeystoreCertificate();
             gwtKeystoreCertificate.setKeystoreId(gwtKeystoreCsr.getKeystoreId());
             gwtKeystoreCertificate.setAlias(gwtKeystoreCsr.getAlias());
-            gwtKeystoreCertificate.setCertificate(deviceKeystoreSignedCertificate.getSignedCertificate());
+            gwtKeystoreCertificate.setCertificate(deviceKeystoreCSR.getSigningRequest());
 
             return gwtKeystoreCertificate;
         } catch (Exception exception) {

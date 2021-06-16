@@ -182,8 +182,10 @@ paths:
     $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items'
   /{scopeId}/devices/{deviceId}/keystore/item:
     $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1item'
-  /{scopeId}/devices/{deviceId}/keystore/items/certificate:
-    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items~1certificate'
+  /{scopeId}/devices/{deviceId}/keystore/items/certificateInfo:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items~1certificateInfo'
+  /{scopeId}/devices/{deviceId}/keystore/items/certificateRaw:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items~1certificateRaw'
   /{scopeId}/devices/{deviceId}/keystore/items/keypair:
     $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items~1keypair'
   /{scopeId}/devices/{deviceId}/keystore/items/csr:
@@ -750,10 +752,10 @@ components:
       $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreCertificate'
     deviceKeystoreKeypair:
       $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreKeypair'
+    deviceKeystoreCSRInfo:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreCSRInfo'
     deviceKeystoreCSR:
       $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreCSR'
-    deviceKeystoreSignedCertificate:
-      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreSignedCertificate'
     ### Device Notification Entities ###
     deviceNotification:
       $ref: './deviceNotification/deviceNotification.yaml#/components/schemas/deviceNotification'

@@ -22,12 +22,12 @@ import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSRInfo;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.registry.Device;
 
@@ -194,7 +194,7 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
     @POST
     @Path("items/keypair")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createDeviceKeystoreCertificate(
+    public Response createDeviceKeystoreKeypair(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
@@ -206,26 +206,26 @@ public class DeviceManagementKeystores extends AbstractKapuaResource {
     }
 
     /**
-     * Sends a {@link DeviceKeystoreCSR} into the {@link Device}.
+     * Sends a {@link DeviceKeystoreCSRInfo} into the {@link Device}.
      *
-     * @param scopeId           The {@link Device#getScopeId()}.
-     * @param deviceId          The {@link Device#getId()}.
-     * @param deviceKeystoreCSR The {@link DeviceKeystoreCSR} to create.
-     * @param timeout           The timeout of the operation in milliseconds
-     * @return The {@link DeviceKeystoreSignedCertificate}.
+     * @param scopeId               The {@link Device#getScopeId()}.
+     * @param deviceId              The {@link Device#getId()}.
+     * @param deviceKeystoreCSRInfo The {@link DeviceKeystoreCSRInfo} to create.
+     * @param timeout               The timeout of the operation in milliseconds
+     * @return The {@link DeviceKeystoreCSR}.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
     @POST
     @Path("items/csr")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public DeviceKeystoreSignedCertificate createDeviceKeystoreCertificate(
+    public DeviceKeystoreCSR createDeviceKeystoreCSR(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
-            DeviceKeystoreCSR deviceKeystoreCSR) throws KapuaException {
+            DeviceKeystoreCSRInfo deviceKeystoreCSRInfo) throws KapuaException {
 
-        return DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCSR(scopeId, deviceId, deviceKeystoreCSR, timeout);
+        return DEVICE_KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCSR(scopeId, deviceId, deviceKeystoreCSRInfo, timeout);
     }
 
     /**

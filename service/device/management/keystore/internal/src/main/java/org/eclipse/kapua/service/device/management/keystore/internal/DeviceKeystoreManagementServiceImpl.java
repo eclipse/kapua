@@ -35,19 +35,19 @@ import org.eclipse.kapua.service.device.management.keystore.message.internal.req
 import org.eclipse.kapua.service.device.management.keystore.message.internal.request.KeystoreQueryRequestMessage;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.request.KeystoreRequestChannel;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.request.KeystoreRequestPayload;
+import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreCsrResponseMessage;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreItemResponseMessage;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreItemsResponseMessage;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreNoContentResponseMessage;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreResponseMessage;
-import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreSignedCertificateResponseMessage;
 import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoresResponseMessage;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSRInfo;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreCertificateImpl;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreItemQueryImpl;
@@ -391,12 +391,12 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
     }
 
     @Override
-    public DeviceKeystoreSignedCertificate createKeystoreCSR(KapuaId scopeId, KapuaId deviceId, DeviceKeystoreCSR keystoreCSR, Long timeout) throws KapuaException {
+    public DeviceKeystoreCSR createKeystoreCSR(KapuaId scopeId, KapuaId deviceId, DeviceKeystoreCSRInfo keystoreCSRInfo, Long timeout) throws KapuaException {
         //
         // Argument Validation
         ArgumentValidator.notNull(scopeId, SCOPE_ID);
         ArgumentValidator.notNull(deviceId, DEVICE_ID);
-        ArgumentValidator.notNull(keystoreCSR, "keystoreCSR");
+        ArgumentValidator.notNull(keystoreCSRInfo, "keystoreCSRInfo");
 
         //
         // Check Access
@@ -412,15 +412,15 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         KeystoreRequestPayload keystoreRequestPayload = new KeystoreRequestPayload();
         try {
-            keystoreRequestPayload.setCsr(keystoreCSR);
+            keystoreRequestPayload.setCsrInfo(keystoreCSRInfo);
         } catch (Exception e) {
-            throw new DeviceManagementRequestContentException(e, keystoreCSR);
+            throw new DeviceManagementRequestContentException(e, keystoreCSRInfo);
         }
 
         KeystoreCsrRequestMessage keystoreRequestMessage = new KeystoreCsrRequestMessage() {
             @Override
-            public Class<KeystoreSignedCertificateResponseMessage> getResponseClass() {
-                return KeystoreSignedCertificateResponseMessage.class;
+            public Class<KeystoreCsrResponseMessage> getResponseClass() {
+                return KeystoreCsrResponseMessage.class;
             }
         };
 
@@ -441,7 +441,7 @@ public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagemen
 
         //
         // Check response
-        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getSignedCertificate());
+        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getCSR());
     }
 
     @Override

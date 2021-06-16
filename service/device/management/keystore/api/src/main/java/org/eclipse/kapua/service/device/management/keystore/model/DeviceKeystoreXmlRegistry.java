@@ -106,6 +106,16 @@ public class DeviceKeystoreXmlRegistry {
     }
 
     /**
+     * Instantiates a new {@link DeviceKeystoreCSRInfo}.
+     *
+     * @return The newly instantiated {@link DeviceKeystoreCSRInfo}
+     * @since 1.5.0
+     */
+    DeviceKeystoreCSRInfo newDeviceKeystoreCSRInfo() {
+        return factory.newDeviceKeystoreCSRInfo();
+    }
+
+    /**
      * Instantiates a new {@link DeviceKeystoreCSR}.
      *
      * @return The newly instantiated {@link DeviceKeystoreCSR}
@@ -113,15 +123,5 @@ public class DeviceKeystoreXmlRegistry {
      */
     DeviceKeystoreCSR newDeviceKeystoreCSR() {
         return factory.newDeviceKeystoreCSR();
-    }
-
-    /**
-     * Instantiates a new {@link DeviceKeystoreSignedCertificate}.
-     *
-     * @return The newly instantiated {@link DeviceKeystoreSignedCertificate}
-     * @since 1.5.0
-     */
-    DeviceKeystoreSignedCertificate newDeviceKeystoreSignedCertificate() {
-        return factory.newDeviceKeystoreSignedCertificate();
     }
 }

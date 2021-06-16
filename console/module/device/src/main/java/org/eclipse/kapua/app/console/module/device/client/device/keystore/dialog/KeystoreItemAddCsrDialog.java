@@ -52,12 +52,12 @@ public class KeystoreItemAddCsrDialog extends SimpleDialog {
 
     @Override
     public String getInfoMessage() {
-        return "Provide the information of the certificate signing request.";
+        return "Provide the information for the certificate signing request.";
     }
 
     @Override
     public String getHeaderMessage() {
-        return "Add new certificate signing request";
+        return "Create certificate signing request";
     }
 
     @Override

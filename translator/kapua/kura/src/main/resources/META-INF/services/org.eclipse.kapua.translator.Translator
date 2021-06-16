@@ -31,5 +31,5 @@ org.eclipse.kapua.translator.kura.kapua.TranslatorAppNotifyKuraKapua
 org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreItemKuraKapua
 org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreItemsKuraKapua
 org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreNoContentKuraKapua
-org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreSignedCertificateKuraKapua
+org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreCsrKuraKapua
 org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoresKuraKapua

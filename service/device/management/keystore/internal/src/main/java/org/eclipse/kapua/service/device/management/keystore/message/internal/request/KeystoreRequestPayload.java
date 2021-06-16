@@ -19,7 +19,7 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSRInfo;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
@@ -123,30 +123,30 @@ public class KeystoreRequestPayload extends KapuaPayloadImpl implements KapuaReq
     }
 
     /**
-     * Gets the {@link DeviceKeystoreCSR} from the {@link KapuaRequestPayload#getBody()}
+     * Gets the {@link DeviceKeystoreCSRInfo} from the {@link KapuaRequestPayload#getBody()}
      *
-     * @return The {@link DeviceKeystoreCSR}.
-     * @throws Exception if {@link KapuaRequestPayload#getBody()} is not a {@link DeviceKeystoreCSR}.
+     * @return The {@link DeviceKeystoreCSRInfo}.
+     * @throws Exception if {@link KapuaRequestPayload#getBody()} is not a {@link DeviceKeystoreCSRInfo}.
      * @since 1.5.0
      */
-    public DeviceKeystoreCSR getCSR() throws Exception {
+    public DeviceKeystoreCSRInfo getCSRInfo() throws Exception {
         if (!hasBody()) {
-            return DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreCSR();
+            return DEVICE_KEYSTORE_MANAGEMENT_FACTORY.newDeviceKeystoreCSRInfo();
         }
 
         String bodyString = new String(getBody(), CHAR_ENCODING);
-        return XmlUtil.unmarshal(bodyString, DeviceKeystoreCSR.class);
+        return XmlUtil.unmarshal(bodyString, DeviceKeystoreCSRInfo.class);
     }
 
     /**
-     * Sets the {@link DeviceKeystoreCSR} into the {@link KapuaRequestPayload#getBody()}
+     * Sets the {@link DeviceKeystoreCSRInfo} into the {@link KapuaRequestPayload#getBody()}
      *
-     * @param csr The {@link DeviceKeystoreCSR}
-     * @throws Exception if the given {@link DeviceKeystoreCSR} is not serializable into the {@link KapuaRequestPayload#getBody()}
+     * @param csrInfo The {@link DeviceKeystoreCSRInfo}
+     * @throws Exception if the given {@link DeviceKeystoreCSRInfo} is not serializable into the {@link KapuaRequestPayload#getBody()}
      * @since 1.5.0
      */
-    public void setCsr(DeviceKeystoreCSR csr) throws Exception {
-        String bodyString = XmlUtil.marshal(csr);
+    public void setCsrInfo(DeviceKeystoreCSRInfo csrInfo) throws Exception {
+        String bodyString = XmlUtil.marshal(csrInfo);
         setBody(bodyString.getBytes(CHAR_ENCODING));
     }
 }

@@ -38,12 +38,12 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSRInfo;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreXmlRegistry;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
@@ -132,8 +132,8 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceKeystoreItem.class,
                     DeviceKeystoreItemQuery.class,
                     DeviceKeystoreKeypair.class,
+                    DeviceKeystoreCSRInfo.class,
                     DeviceKeystoreCSR.class,
-                    DeviceKeystoreSignedCertificate.class,
                     DeviceKeystoreXmlRegistry.class,
 
                     // Jobs

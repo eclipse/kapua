@@ -19,12 +19,12 @@ import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
 import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSRInfo;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.registry.Device;
 
@@ -124,16 +124,16 @@ public interface DeviceKeystoreManagementService extends DeviceManagementService
     void createKeystoreKeypair(KapuaId scopeId, KapuaId deviceId, DeviceKeystoreKeypair keystoreKeypair, Long timeout) throws KapuaException;
 
     /**
-     * Sends a {@link DeviceKeystoreCSR} into the {@link Device}
+     * Sends a {@link DeviceKeystoreCSRInfo} into the {@link Device}
      *
-     * @param scopeId     The {@link Device#getScopeId()}.
-     * @param deviceId    The {@link Device#getId()}.
-     * @param keystoreCSR The {@link DeviceKeystoreCSR} to send.
-     * @param timeout     The timeout waiting for the device response.
-     * @return The {@link DeviceKeystoreSignedCertificate} returned from the {@link Device}
+     * @param scopeId         The {@link Device#getScopeId()}.
+     * @param deviceId        The {@link Device#getId()}.
+     * @param keystoreCSRInfo The {@link DeviceKeystoreCSRInfo} to send.
+     * @param timeout         The timeout waiting for the device response.
+     * @return The {@link DeviceKeystoreCSR} returned from the {@link Device}
      * @throws KapuaException
      */
-    DeviceKeystoreSignedCertificate createKeystoreCSR(KapuaId scopeId, KapuaId deviceId, DeviceKeystoreCSR keystoreCSR, Long timeout) throws KapuaException;
+    DeviceKeystoreCSR createKeystoreCSR(KapuaId scopeId, KapuaId deviceId, DeviceKeystoreCSRInfo keystoreCSRInfo, Long timeout) throws KapuaException;
 
     /**
      * Deletes a {@link DeviceKeystoreItem} present on the {@link Device}.

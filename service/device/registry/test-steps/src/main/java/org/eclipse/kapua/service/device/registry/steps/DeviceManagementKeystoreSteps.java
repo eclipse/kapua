@@ -32,12 +32,12 @@ import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManage
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSRInfo;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
@@ -52,7 +52,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
     private static final String KEYSTORES_ITEMS = "keystoreItems";
     private static final String KEYSTORES_ITEM = "keystoreItem";
     private static final String DEVICE_KEYSTORE_KEYPAIR = "deviceKeystoreKeypair";
-    private static final String DEVICE_KEYSTORE_SIGNED_CERTIFICATE = "deviceKeystoreSignedCertificate";
+    private static final String DEVICE_KEYSTORE_CSR = "deviceKeystoreCSR";
 
     private DeviceRegistryService deviceRegistryService;
 
@@ -403,30 +403,30 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
-                DeviceKeystoreCSR deviceKeystoreCSR = deviceKeystoreManagementFactory.newDeviceKeystoreCSR();
-                deviceKeystoreCSR.setKeystoreId(keystoreId);
-                deviceKeystoreCSR.setAlias(alias);
-                deviceKeystoreCSR.setSignatureAlgorithm("SHA256withRSA");
-                deviceKeystoreCSR.setAttributes("CN=Kura, OU=IoT, O=Eclipse, C=US");
+                DeviceKeystoreCSRInfo deviceKeystoreCSRInfo = deviceKeystoreManagementFactory.newDeviceKeystoreCSRInfo();
+                deviceKeystoreCSRInfo.setKeystoreId(keystoreId);
+                deviceKeystoreCSRInfo.setAlias(alias);
+                deviceKeystoreCSRInfo.setSignatureAlgorithm("SHA256withRSA");
+                deviceKeystoreCSRInfo.setAttributes("CN=Kura, OU=IoT, O=Eclipse, C=US");
 
-                DeviceKeystoreSignedCertificate signedCertificate = deviceKeystoreManagementService.createKeystoreCSR(device.getScopeId(), device.getId(), deviceKeystoreCSR, null);
-                stepData.put(DEVICE_KEYSTORE_SIGNED_CERTIFICATE, signedCertificate);
+                DeviceKeystoreCSR deviceKeystoreCSR = deviceKeystoreManagementService.createKeystoreCSR(device.getScopeId(), device.getId(), deviceKeystoreCSRInfo, null);
+                stepData.put(DEVICE_KEYSTORE_CSR, deviceKeystoreCSR);
             }
         }
     }
 
     @Then("^The Certificate Signing Request is received$")
-    public void keystoreSignedCertificateIsReceived() {
-        DeviceKeystoreSignedCertificate deviceKeystoreSignedCertificate = (DeviceKeystoreSignedCertificate) stepData.get(DEVICE_KEYSTORE_SIGNED_CERTIFICATE);
+    public void keystoreCertificateSigningRequestIsReceived() {
+        DeviceKeystoreCSR deviceKeystoreCSR = (DeviceKeystoreCSR) stepData.get(DEVICE_KEYSTORE_CSR);
 
-        assertNotNull(deviceKeystoreSignedCertificate);
+        assertNotNull(deviceKeystoreCSR);
     }
 
     @Then("^The Certificate Signing Request matches expected")
-    public void keystoreSignedCertificateMatchesExpected() {
-        DeviceKeystoreSignedCertificate deviceKeystoreSignedCertificate = (DeviceKeystoreSignedCertificate) stepData.get(DEVICE_KEYSTORE_SIGNED_CERTIFICATE);
+    public void keystoreCertificateSigningRequestMatchesExpected() {
+        DeviceKeystoreCSR deviceKeystoreCSR = (DeviceKeystoreCSR) stepData.get(DEVICE_KEYSTORE_CSR);
 
-        assertNotNull(deviceKeystoreSignedCertificate);
+        assertNotNull(deviceKeystoreCSR);
         assertEquals("-----BEGIN CERTIFICATE REQUEST-----\n" +
                 "MIICgTCCAWkCAQAwPDELMAkGA1UEBhMCVVMxEDAOBgNVBAoTB0VjbGlwc2UxDDAK\n" +
                 "BgNVBAsTA0lvVDENMAsGA1UEAxMES3VyYTCCASIwDQYJKoZIhvcNAQEBBQADggEP\n" +
@@ -442,6 +442,6 @@ public class DeviceManagementKeystoreSteps extends TestBase {
                 "84uuNDaILuCuYqTMtfoPSrfcILrKMfmPRvNE5DNDbk/BsR33zyBXCjnd+/P61sKo\n" +
                 "VSn6maFDBHcZP2jkBOBr8QmW8jt3oR9qWX5LXBpEHkmki8cy6FEhUOGZIuPAd8Rj\n" +
                 "PfZ8kKHpraMQuOeg0ZsZcZzlZsa8\n" +
-                "-----END CERTIFICATE REQUEST-----\n", deviceKeystoreSignedCertificate.getSignedCertificate());
+                "-----END CERTIFICATE REQUEST-----\n", deviceKeystoreCSR.getSigningRequest());
     }
 }

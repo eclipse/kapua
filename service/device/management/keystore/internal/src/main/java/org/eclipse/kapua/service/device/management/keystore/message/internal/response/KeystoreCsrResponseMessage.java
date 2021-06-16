@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.keystore.message.internal.response;
 
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 
 /**
- * {@link DeviceKeystoreSignedCertificate} {@link KapuaResponseMessage} implementation.
+ * {@link DeviceKeystoreCSR} {@link KapuaResponseMessage} implementation.
  *
  * @since 1.5.0
  */
-public class KeystoreSignedCertificateResponseMessage extends KeystoreResponseMessage {
+public class KeystoreCsrResponseMessage extends KeystoreResponseMessage {
 }

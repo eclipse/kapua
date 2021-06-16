@@ -21,10 +21,7 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
  */
 public class DeviceKeystoreCSRImpl implements DeviceKeystoreCSR {
 
-    private String keystoreId;
-    private String alias;
-    private String signatureAlgorithm;
-    private String attributes;
+    private String signingRequest;
 
     /**
      * Constructor.
@@ -35,42 +32,12 @@ public class DeviceKeystoreCSRImpl implements DeviceKeystoreCSR {
     }
 
     @Override
-    public String getKeystoreId() {
-        return keystoreId;
+    public String getSigningRequest() {
+        return signingRequest;
     }
 
     @Override
-    public void setKeystoreId(String keystoreId) {
-        this.keystoreId = keystoreId;
-    }
-
-    @Override
-    public String getAlias() {
-        return alias;
-    }
-
-    @Override
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    @Override
-    public String getSignatureAlgorithm() {
-        return signatureAlgorithm;
-    }
-
-    @Override
-    public void setSignatureAlgorithm(String signatureAlgorithm) {
-        this.signatureAlgorithm = signatureAlgorithm;
-    }
-
-    @Override
-    public String getAttributes() {
-        return attributes;
-    }
-
-    @Override
-    public void setAttributes(String attributes) {
-        this.attributes = attributes;
+    public void setSigningRequest(String signingRequest) {
+        this.signingRequest = signingRequest;
     }
 }

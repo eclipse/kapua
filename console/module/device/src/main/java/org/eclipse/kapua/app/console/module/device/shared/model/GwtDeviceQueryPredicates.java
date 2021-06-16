@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.shared.model;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.module.api.shared.model.KapuaBaseModel;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializable {
 
@@ -78,7 +78,6 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("deviceStatusEnum".equals(property)) {
             return (X) (GwtDeviceStatus.valueOf(getDeviceStatus()));
@@ -251,14 +250,6 @@ public class GwtDeviceQueryPredicates extends KapuaBaseModel implements Serializ
 
     public void setGroupDevice(String groupDevice) {
         set("groupDevice", groupDevice);
-    }
-
-    public Long getSignedCertificateId() {
-        return (Long) get("signedCertificateId");
-    }
-
-    public void setSignedCertificateId(Long signedCertificateId) {
-        set("signedCertificateId", signedCertificateId);
     }
 
     public String getSortOrder() {

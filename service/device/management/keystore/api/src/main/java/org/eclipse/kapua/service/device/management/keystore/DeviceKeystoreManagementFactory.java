@@ -15,12 +15,12 @@ package org.eclipse.kapua.service.device.management.keystore;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSRInfo;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSignedCertificate;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreSubjectAN;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 
@@ -97,18 +97,18 @@ public interface DeviceKeystoreManagementFactory extends KapuaObjectFactory {
     DeviceKeystoreKeypair newDeviceKeystoreKeypair();
 
     /**
+     * Instantiates a new {@link DeviceKeystoreCSRInfo}.
+     *
+     * @return The newly instantiated {@link DeviceKeystoreCSRInfo}.
+     * @since 1.5.0
+     */
+    DeviceKeystoreCSRInfo newDeviceKeystoreCSRInfo();
+
+    /**
      * Instantiates a new {@link DeviceKeystoreCSR}.
      *
      * @return The newly instantiated {@link DeviceKeystoreCSR}.
      * @since 1.5.0
      */
     DeviceKeystoreCSR newDeviceKeystoreCSR();
-
-    /**
-     * Instantiates a new {@link DeviceKeystoreSignedCertificate}.
-     *
-     * @return The newly instantiated {@link DeviceKeystoreSignedCertificate}.
-     * @since 1.5.0
-     */
-    DeviceKeystoreSignedCertificate newDeviceKeystoreSignedCertificate();
 }

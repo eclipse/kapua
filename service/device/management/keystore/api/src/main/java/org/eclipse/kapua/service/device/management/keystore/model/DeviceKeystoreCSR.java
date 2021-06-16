@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * {@link DeviceKeystoreCSR} definition.
  * <p>
- * Represent a certificate signing request to be sent to the {@link Device}
+ * Contains the result of the {@link DeviceKeystoreCSRInfo}.
  *
  * @since 1.5.0
  */
@@ -34,70 +34,19 @@ import javax.xml.bind.annotation.XmlType;
 public interface DeviceKeystoreCSR extends KapuaSerializable {
 
     /**
-     * Gets the {@link DeviceKeystoreItem#getKeystoreId()} target to be used for signing.
+     * Gets the certificate signing request from the {@link Device#getId()}.
      *
-     * @return The {@link DeviceKeystoreItem#getKeystoreId()} target to be used for signing.
+     * @return The certificate signing request from the {@link Device#getId()}.
      * @since 1.5.0
      */
-    @XmlElement(name = "keystoreId")
-    String getKeystoreId();
+    @XmlElement(name = "signingRequest")
+    String getSigningRequest();
 
     /**
-     * Sets the {@link DeviceKeystoreItem#getKeystoreId()} target to be used for signing.
+     * Sets the certificate signing request from the {@link Device#getId()}.
      *
-     * @param keystoreId The {@link DeviceKeystoreItem#getKeystoreId()} target to be used for signing.
+     * @param signingRequest The signing request from the {@link Device#getId()}.
      * @since 1.5.0
      */
-    void setKeystoreId(String keystoreId);
-
-    /**
-     * Gets the {@link DeviceKeystoreItem#getAlias()} target to be used for signing.
-     *
-     * @return The {@link DeviceKeystoreItem#getAlias()} target to be used for signing.
-     * @since 1.5.0
-     */
-    @XmlElement(name = "alias")
-    String getAlias();
-
-    /**
-     * Sets the {@link DeviceKeystoreItem#getAlias()} target to be used for signing.
-     *
-     * @param alias The {@link DeviceKeystoreItem#getAlias()} target to be used for signing.
-     * @since 1.5.0
-     */
-    void setAlias(String alias);
-
-    /**
-     * Gets the signature algorithm.
-     *
-     * @return The signature algorithm.
-     * @since 1.5.0
-     */
-    @XmlElement(name = "signatureAlgorithm")
-    String getSignatureAlgorithm();
-
-    /**
-     * Sets the signature algorithm.
-     *
-     * @param signatureAlgorithm The signature algorithm.
-     * @since 1.5.0
-     */
-    void setSignatureAlgorithm(String signatureAlgorithm);
-
-    /**
-     * Gets the attributes to sign.
-     *
-     * @return The attributes to sign.
-     * @since 1.5.0
-     */
-    @XmlElement(name = "attributes")
-    String getAttributes();
-
-    /**
-     * Sets the attributes to sign.
-     *
-     * @param attributes The attributes to sign.
-     * @since 1.5.0
-     */
-    void setAttributes(String attributes);
+    void setSigningRequest(String signingRequest);
 }

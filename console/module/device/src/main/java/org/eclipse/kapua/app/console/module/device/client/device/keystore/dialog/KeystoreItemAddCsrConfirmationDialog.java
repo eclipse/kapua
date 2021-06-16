@@ -45,12 +45,12 @@ public class KeystoreItemAddCsrConfirmationDialog extends SimpleDialog {
 
     @Override
     public String getInfoMessage() {
-        return "Certificate signed from the device";
+        return "Certificate signing request from the device";
     }
 
     @Override
     public String getHeaderMessage() {
-        return "Device Signed Certificate";
+        return "Device Certificate Signing Request";
     }
 
     @Override
@@ -84,7 +84,7 @@ public class KeystoreItemAddCsrConfirmationDialog extends SimpleDialog {
         certificateTextArea.setStyleAttribute("margin-left", "10px");
         bodyPanel.add(certificateTextArea);
 
-        populateWithSignedCertificate();
+        populateWithSigningRequestCertificate();
     }
 
     @Override
@@ -102,7 +102,7 @@ public class KeystoreItemAddCsrConfirmationDialog extends SimpleDialog {
         return null;
     }
 
-    private void populateWithSignedCertificate() {
+    private void populateWithSigningRequestCertificate() {
         keystoreIdLabel.setValue(gwtKeystoreCertificate.getKeystoreId());
         aliasLabel.setValue(gwtKeystoreCertificate.getAlias());
         certificateTextArea.setValue(gwtKeystoreCertificate.getCertificate());
