@@ -64,6 +64,7 @@ public class GwtJobServiceImpl extends KapuaRemoteServiceServlet implements GwtJ
 
     @Override
     public PagingLoadResult<GwtJob> query(PagingLoadConfig loadConfig, GwtJobQuery gwtJobQuery) throws GwtKapuaException {
+
         //
         // Do query
         int totalLength = 0;

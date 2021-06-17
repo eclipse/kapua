@@ -112,7 +112,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         jobStepPropertiesPanel = new FormPanel(FORM_LABEL_WIDTH);
         propertiesButtonPanel = new HorizontalPanel();
 
-        DialogUtils.resizeDialog(this, 600, 400);
+        DialogUtils.resizeDialog(this, 600, 500);
     }
 
     protected String getExampleButtonText() {

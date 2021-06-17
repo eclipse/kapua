@@ -25,7 +25,6 @@
     <artifactId>kapua-translator-kapua-kura</artifactId>
 
     <dependencies>
-
         <dependency>
             <!-- AccountService classes-->
             <groupId>org.eclipse.kapua</groupId>

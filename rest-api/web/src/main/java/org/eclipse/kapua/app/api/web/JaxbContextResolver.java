@@ -49,6 +49,7 @@ import org.eclipse.kapua.app.api.core.model.job.IsJobRunningMultipleResponse;
 import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
 import org.eclipse.kapua.app.api.core.model.job.MultipleJobIdRequest;
 import org.eclipse.kapua.app.api.core.model.message.JsonKapuaPayload;
+import org.eclipse.kapua.app.api.resources.v1.resources.model.device.management.keystore.DeviceKeystoreCertificateInfo;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
@@ -181,6 +182,16 @@ import org.eclipse.kapua.service.device.management.inventory.model.inventory.pac
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackage;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSRInfo;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreKeypair;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreXmlRegistry;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
@@ -476,6 +487,20 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KuraInventorySystemPackages.class,
                     KuraInventorySystemPackage.class,
                     DeviceInventoryXmlRegistry.class,
+
+                    // Device Management Keystore
+                    DeviceKeystores.class,
+                    DeviceKeystore.class,
+                    DeviceKeystoreCertificateInfo.class,
+                    DeviceKeystoreCertificate.class,
+                    DeviceKeystoreItems.class,
+                    DeviceKeystoreItem.class,
+                    DeviceKeystoreItemQuery.class,
+                    DeviceKeystoreCertificate.class,
+                    DeviceKeystoreKeypair.class,
+                    DeviceKeystoreCSRInfo.class,
+                    DeviceKeystoreCSR.class,
+                    DeviceKeystoreXmlRegistry.class,
 
                     // Device Management Snapshots
                     KuraSnapshotIds.class,

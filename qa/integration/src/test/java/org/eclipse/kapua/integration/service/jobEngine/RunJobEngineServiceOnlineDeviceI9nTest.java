@@ -22,17 +22,17 @@ import org.junit.runner.RunWith;
                 "classpath:features/jobEngine/JobEngineServiceStartOnlineDeviceI9n.feature",
                 "classpath:features/jobEngine/JobEngineServiceRestartOnlineDeviceI9n.feature",
                 "classpath:features/jobEngine/JobEngineServiceRestartOnlineDeviceSecondPartI9n.feature",
-                "classpath:features/jobEngine/JobEngineServiceStopOnlineDeviceI9n.feature"
+                "classpath:features/jobEngine/JobEngineServiceStopOnlineDeviceI9n.feature",
         },
-        glue = { "org.eclipse.kapua.service.job.steps",
+        glue = {"org.eclipse.kapua.service.job.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.device.registry.steps",
         },
-        plugin = { "pretty",
+        plugin = {"pretty",
                 "html:target/cucumber/JobEngineOnlineDeviceI9n",
-                "json:target/JobEngineOnlineDeviceI9n_cucumber.json" },
+                "json:target/JobEngineOnlineDeviceI9n_cucumber.json"},
         strict = true,
         monochrome = true)
 public class RunJobEngineServiceOnlineDeviceI9nTest {

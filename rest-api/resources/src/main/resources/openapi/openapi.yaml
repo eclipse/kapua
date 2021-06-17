@@ -175,6 +175,21 @@ paths:
     $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1system'
   /{scopeId}/devices/{deviceId}/inventory/packages:
     $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1packages'
+  ### Device Keystore ###
+  /{scopeId}/devices/{deviceId}/keystore:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore'
+  /{scopeId}/devices/{deviceId}/keystore/items:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items'
+  /{scopeId}/devices/{deviceId}/keystore/item:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1item'
+  /{scopeId}/devices/{deviceId}/keystore/items/certificateInfo:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items~1certificateInfo'
+  /{scopeId}/devices/{deviceId}/keystore/items/certificateRaw:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items~1certificateRaw'
+  /{scopeId}/devices/{deviceId}/keystore/items/keypair:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items~1keypair'
+  /{scopeId}/devices/{deviceId}/keystore/items/csr:
+    $ref: './deviceKeystore/deviceKeystore-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1keystore~1items~1csr'
   ### Device Notification ###
   /{scopeId}/devices/{deviceId}/operations/{operationId}/notifications:
     $ref: './deviceNotification/deviceNotification-scopeId-deviceId-operationId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1operations~1{operationId}~1notifications'
@@ -722,6 +737,25 @@ components:
       $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryDeploymentPackage'
     deviceInventoryDeploymentPackages:
       $ref: './deviceInventory/deviceInventory.yaml#/components/schemas/deviceInventoryDeploymentPackages'
+    ### Device Keystore Entities ###
+    deviceKeystores:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystores'
+    deviceKeystore:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystore'
+    deviceKeystoreItems:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreItems'
+    deviceKeystoreItem:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreItem'
+    deviceKeystoreSubjectAN:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreSubjectAN'
+    deviceKeystoreCertificate:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreCertificate'
+    deviceKeystoreKeypair:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreKeypair'
+    deviceKeystoreCSRInfo:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreCSRInfo'
+    deviceKeystoreCSR:
+      $ref: './deviceKeystore/deviceKeystore.yaml#/components/schemas/deviceKeystoreCSR'
     ### Device Notification Entities ###
     deviceNotification:
       $ref: './deviceNotification/deviceNotification.yaml#/components/schemas/deviceNotification'

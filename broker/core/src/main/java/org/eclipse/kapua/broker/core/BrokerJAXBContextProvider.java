@@ -12,12 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
@@ -58,6 +52,11 @@ import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import java.util.HashMap;
+import java.util.Map;
+
 public class BrokerJAXBContextProvider implements JAXBContextProvider {
 
     private static Logger logger = LoggerFactory.getLogger(BrokerJAXBContextProvider.class);
@@ -70,7 +69,7 @@ public class BrokerJAXBContextProvider implements JAXBContextProvider {
             Map<String, Object> properties = new HashMap<>(1);
             properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
 
-            Class<?>[] classes = new Class<?>[] {
+            Class<?>[] classes = new Class<?>[]{
                     KapuaTmetadata.class,
                     KapuaTocd.class,
                     KapuaTad.class,
@@ -112,7 +111,6 @@ public class BrokerJAXBContextProvider implements JAXBContextProvider {
                     JobRunningExceptionInfo.class,
                     JobStartingExceptionInfo.class,
                     JobStoppingExceptionInfo.class
-
             };
             try {
                 context = JAXBContextFactory.createContext(classes, properties);

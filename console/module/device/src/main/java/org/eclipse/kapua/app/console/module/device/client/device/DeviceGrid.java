@@ -26,7 +26,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
@@ -247,11 +246,6 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         column.setHidden(true);
         columnConfigs.add(column);
 
-        // signedCertificateId
-        column = new ColumnConfig("signedCertificateId", DEVICE_MSGS.deviceTableCertificate(), 100);
-        column.setSortable(false);
-        column.setHidden(true);
-
         columnConfigs.add(column);
 
         return columnConfigs;
@@ -292,7 +286,7 @@ public class DeviceGrid extends EntityGrid<GwtDevice> {
         @Override
         public void loaderLoad(LoadEvent le) {
             super.loaderLoad(le);
-            toolbar.setExportEnabled(((BasePagingLoadResult)le.getData()).getTotalLength() != 0);
+            toolbar.setExportEnabled(((BasePagingLoadResult) le.getData()).getTotalLength() != 0);
         }
     }
 }

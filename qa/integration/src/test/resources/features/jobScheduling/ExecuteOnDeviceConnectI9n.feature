@@ -60,7 +60,7 @@ Feature: JobEngineService execute job on device connect
     And I restart the Kura Mock
     And I wait 2 seconds
     When Device is connected
-    And I wait 15 seconds
+    And I wait 10 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -160,7 +160,7 @@ Feature: JobEngineService execute job on device connect
     And I restart the Kura Mock
     And I wait 2 seconds
     When Device is connected
-    And I wait 15 seconds
+    And I wait 10 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -205,14 +205,13 @@ Feature: JobEngineService execute job on device connect
     Then No exception was thrown
     And I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule4" is created
-    And The trigger is set to start today at 6:00.
-    And The trigger is set to end in 15 seconds.
+    And The trigger is set to start today at 0:00.
+    And The trigger is set to end in 10 seconds.
     Then I create a new trigger from the existing creator with previously defined date properties
-    And I wait 15 seconds
+    And I wait 11 seconds
     And I restart the Kura Mock
     And I wait 2 seconds
     When Device is connected
-    And I wait 10 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 0
@@ -269,7 +268,7 @@ Feature: JobEngineService execute job on device connect
     And I wait 2 seconds
     When I restart the Kura Mock
     Then Device is connected
-    And I wait 15 seconds
+    And I wait 10 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1

@@ -33,6 +33,7 @@
         <module>command</module>
         <module>configuration</module>
         <module>inventory</module>
+        <module>keystore</module>
         <module>packages</module>
         <module>request</module>
 

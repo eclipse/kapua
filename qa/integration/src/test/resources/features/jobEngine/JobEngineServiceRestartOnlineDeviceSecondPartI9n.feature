@@ -56,15 +56,15 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
     Then I create a new step entity from the existing creator
     And I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     When I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     And I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     When I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     And I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -100,15 +100,15 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout                | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
     When I create a new step entity from the existing creator
     And I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Then I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 1 or more
     And I confirm the executed job is finished
     When I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Then I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 2 or more
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -144,15 +144,15 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                     |
     When I create a new step entity from the existing creator
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -198,15 +198,15 @@ Feature: JobEngineService restart job tests with online device - second part
     When I create a new step entities from the existing creator
     And I search the database for created job steps and I find 2
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -249,11 +249,13 @@ Feature: JobEngineService restart job tests with online device - second part
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1 or more
     And I confirm the executed job is finished
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 2 or more
@@ -295,15 +297,15 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
     When I create a new step entity from the existing creator
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     And I search events from devices in account "kapua-sys" and 3 or more events are found
@@ -335,11 +337,13 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout                | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
     When I create a new step entity from the existing creator
     And I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Then I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1 or more
     And I confirm the executed job is finished
     When I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Then I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 2 or more
@@ -375,15 +379,15 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                     |
     When I create a new step entity from the existing creator
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
     And I search events from devices in account "kapua-sys" and 3 or more events is found
@@ -428,17 +432,17 @@ Feature: JobEngineService restart job tests with online device - second part
     When I create a new step entities from the existing creator
     And I search the database for created job steps and I find 2
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
     Then I restart a job
-    And I confirm job target has step index 1 and status "PROCESS_OK"
+    And I wait 10 seconds
     Given I query for the job with the name "TestJob" and I find it
-    And I wait 2 second
     When I query for the execution items for the current job and I count 2
     And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK"
     When I search events from devices in account "kapua-sys" and 3 or more events is found
     Then Configuration is requested
     And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 10
@@ -477,11 +481,13 @@ Feature: JobEngineService restart job tests with online device - second part
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1 or more
     And I confirm the executed job is finished
     Then I restart a job
+    And I wait 10 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 2 or more

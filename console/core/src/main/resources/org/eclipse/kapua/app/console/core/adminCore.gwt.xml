@@ -31,6 +31,7 @@
     <inherits name="org.eclipse.kapua.app.console.module.account.adminModuleAccount"/>
     <inherits name="org.eclipse.kapua.app.console.module.authentication.adminModuleAuthentication"/>
     <inherits name="org.eclipse.kapua.app.console.module.authorization.adminModuleAuthorization"/>
+    <inherits name="org.eclipse.kapua.app.console.module.certificate.adminModuleCertificate"/>
     <inherits name="org.eclipse.kapua.app.console.module.device.adminModuleDevice"/>
     <inherits name="org.eclipse.kapua.app.console.module.job.adminModuleJob"/>
     <inherits name="org.eclipse.kapua.app.console.module.data.adminModuleData"/>

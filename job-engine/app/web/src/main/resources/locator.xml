@@ -80,6 +80,9 @@
 
         <api>org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService</api>
 
+        <api>org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService</api>
+        <api>org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory</api>
+
         <api>org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService</api>
         <api>org.eclipse.kapua.service.device.management.packages.DevicePackageFactory</api>
 
@@ -93,19 +96,7 @@
         <api>org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory</api>
 
         <api>org.eclipse.kapua.service.device.management.request.DeviceRequestManagementService</api>
-        <!--
-                        <api>org.eclipse.kapua.service.datastore.ClientInfoRegistryService</api>
-                        <api>org.eclipse.kapua.service.datastore.ClientInfoFactory</api>
-                        <api>org.eclipse.kapua.service.datastore.ChannelInfoRegistryService</api>
-                        <api>org.eclipse.kapua.service.datastore.ChannelInfoFactory</api>
-                        <api>org.eclipse.kapua.service.datastore.MessageStoreService</api>
-                        <api>org.eclipse.kapua.service.datastore.MessageStoreFactory</api>
-                        <api>org.eclipse.kapua.service.datastore.MetricInfoRegistryService</api>
-                        <api>org.eclipse.kapua.service.datastore.MetricInfoFactory</api>
 
-                        <api>org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory</api>
-
-        -->
         <api>org.eclipse.kapua.service.endpoint.EndpointInfoFactory</api>
         <api>org.eclipse.kapua.service.endpoint.EndpointInfoService</api>
 
