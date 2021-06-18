@@ -76,14 +76,17 @@ public class GwtMfaCredentialOptionsServiceImpl extends KapuaRemoteServiceServle
 
                     @Override
                     public MfaOption call() throws Exception {
-                        return MFA_OPTION_SERVICE.find(scopeId, mfaCredentialOptionsId);
+                        return setSecretKeyNullIfObjExists(MFA_OPTION_SERVICE.find(scopeId, mfaCredentialOptionsId));
                     }
 
                 });
             } else {
                 mfaCredentialOption = MFA_OPTION_SERVICE.find(scopeId, mfaCredentialOptionsId);
             }
-            return mfaCredentialOption != null ? KapuaGwtAuthenticationModelConverter.convertMfaCredentialOptions(mfaCredentialOption) : null;
+
+            return mfaCredentialOption != null ?
+                    KapuaGwtAuthenticationModelConverter.convertMfaCredentialOptions(setSecretKeyNullIfObjExists(mfaCredentialOption)) :
+                    null;
         } catch (Exception ex) {
             KapuaExceptionHandler.handle(ex);
             return null;
@@ -101,14 +104,18 @@ public class GwtMfaCredentialOptionsServiceImpl extends KapuaRemoteServiceServle
 
                     @Override
                     public MfaOption call() throws Exception {
-                        return MFA_OPTION_SERVICE.findByUserId(scopeId, userId);
+                        return setSecretKeyNullIfObjExists(MFA_OPTION_SERVICE.findByUserId(scopeId, userId));
                     }
 
                 });
             } else {
                 mfaCredentialOption = MFA_OPTION_SERVICE.findByUserId(scopeId, userId);
             }
-            return mfaCredentialOption != null ? KapuaGwtAuthenticationModelConverter.convertMfaCredentialOptions(mfaCredentialOption) : null;
+
+            return mfaCredentialOption != null ?
+                    KapuaGwtAuthenticationModelConverter.convertMfaCredentialOptions(setSecretKeyNullIfObjExists(mfaCredentialOption)) :
+                    null;
+
         } catch (Exception ex) {
             KapuaExceptionHandler.handle(ex);
             return null;
@@ -141,7 +148,9 @@ public class GwtMfaCredentialOptionsServiceImpl extends KapuaRemoteServiceServle
             } else {
                 mfaCredentialOptions = MFA_OPTION_SERVICE.create(mfaCredentialOptionCreator);
             }
-            gwtMfaCredentialOptions = KapuaGwtAuthenticationModelConverter.convertMfaCredentialOptions(mfaCredentialOptions);
+
+            mfaCredentialOptions.setMfaSecretKey(null);
+            gwtMfaCredentialOptions = KapuaGwtAuthenticationModelConverter.convertMfaCredentialOptions(setSecretKeyNullIfObjExists(mfaCredentialOptions));
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
@@ -174,6 +183,18 @@ public class GwtMfaCredentialOptionsServiceImpl extends KapuaRemoteServiceServle
         } catch (Exception ex) {
             KapuaExceptionHandler.handle(ex);
         }
+    }
+
+    /**
+     * Useful in order to improve security. When the secret key is not needed to be send,
+     * then it's better to apply this function. If not applied, a user who is sniffing the
+     * data send by/to the console can view the secret key.
+     */
+    private MfaOption setSecretKeyNullIfObjExists(MfaOption mfaCredentialOption) {
+        if (mfaCredentialOption != null) {
+            mfaCredentialOption.setMfaSecretKey(null);
+        }
+        return mfaCredentialOption;
     }
 
 }
