@@ -28,7 +28,7 @@ Scenario: Init Security Context for all scenarios
   User should be locked
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure credential service
       | type    | name                       | value  |
       | boolean | lockoutPolicy.enabled      | true   |
@@ -64,7 +64,7 @@ Scenario: Init Security Context for all scenarios
   There should be no problems as  lockoutPolicy is disabled
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure credential service
       | type    | name                       | value  |
       | boolean | lockoutPolicy.enabled      | false  |
@@ -100,7 +100,7 @@ Scenario: Init Security Context for all scenarios
   Exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure credential service
       | type    | name                       | value  |
       | boolean | lockoutPolicy.enabled      | true   |
@@ -134,7 +134,7 @@ Scenario: Init Security Context for all scenarios
   Exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure credential service
       | type    | name                       | value  |
       | boolean | lockoutPolicy.enabled      | true   |
@@ -166,7 +166,7 @@ Scenario: Init Security Context for all scenarios
   Exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     Given I expect the exception "KapuaConfigurationException" with the text "*"
     And I configure credential service
       | type    | name                       | value  |
@@ -185,7 +185,7 @@ Scenario: Init Security Context for all scenarios
   Exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure credential service
       | type    | name                       | value  |
       | boolean | lockoutPolicy.enabled      | true   |
@@ -221,7 +221,7 @@ Scenario: Init Security Context for all scenarios
   User should not be locked and no exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure credential service
       | type    | name                       | value  |
       | boolean | lockoutPolicy.enabled      | true   |
@@ -258,7 +258,7 @@ Scenario: Init Security Context for all scenarios
   User should not be locked
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure credential service
       | type    | name                       | value  |
       | boolean | lockoutPolicy.enabled      | true   |
@@ -294,7 +294,7 @@ Scenario: Init Security Context for all scenarios
   User should not be locked
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     Given I expect the exception "KapuaConfigurationException" with the text "*"
     And I configure credential service
       | type    | name                       | value  |
@@ -314,7 +314,7 @@ Scenario: Init Security Context for all scenarios
   Login again with correct password, no exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure credential service
       | type    | name                       | value |
       | boolean | lockoutPolicy.enabled      | true  |
@@ -351,7 +351,7 @@ Scenario: Init Security Context for all scenarios
   Login again with correct password, no exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure credential service
       | type    | name                       | value |
       | boolean | lockoutPolicy.enabled      | true  |
@@ -383,7 +383,7 @@ Scenario: Init Security Context for all scenarios
   Exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     Given I expect the exception "KapuaConfigurationException" with the text "*"
     When I configure credential service
       | type    | name                       | value |

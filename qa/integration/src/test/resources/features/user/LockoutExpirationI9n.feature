@@ -340,7 +340,7 @@ Scenario: Init Security Context for all scenarios
     User service is configured for user to have 3 failed attempts before it is locked
     out. Lockout policy on user service has to be enabled.
     User tries to login two times with wrong password and is not yet locked out. Then
-    it logins with correct password and is loged in.
+    it logins with correct password and is logged in.
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I configure user service
       | type    | name                       | value |
@@ -377,7 +377,7 @@ Scenario: Init Security Context for all scenarios
     User service is configured for user to have 1 failed attempt before it is locked
     out. Lockout policy on user service has to be enabled.
     User tries to login with wrong password and is locked out. Then it waits for lockout
-    time of 1 second to pass and then it logins with correct password and is loged in.
+    time of 1 second to pass and then it logins with correct password and is logged in.
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I configure user service
       | type    | name                       | value |
@@ -420,7 +420,7 @@ Scenario: Init Security Context for all scenarios
   out. Lockout policy on user service has to be enabled.
   User tries to login with wrong password and is locked out. Then it waits for lockout
   time of 1 second to pass. This wait is not enough, it should wait 5 seconds.
-  After wait it logins with correct password and but it is not loged in.
+  After wait it logins with correct password and but it is not logged in.
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I configure user service
       | type    | name                       | value |
@@ -463,7 +463,7 @@ Scenario: Init Security Context for all scenarios
   out. Lockout policy on user service has to be enabled.
   User tries to login with wrong password but it waits one second between logins. Failed
   logins are reset every second, so user does not get locked out.
-  After two failed attempts it logins with correct password and is loged in.
+  After two failed attempts it logins with correct password and is logged in.
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I configure user service
       | type    | name                       | value |

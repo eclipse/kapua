@@ -27,7 +27,7 @@ Scenario: Init Security Context for all scenarios
   No exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure the tag service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
@@ -46,7 +46,7 @@ Scenario: Init Security Context for all scenarios
   Only 3 Tags should be created, creating more will throw an Exception
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure the tag service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |
@@ -67,7 +67,7 @@ Scenario: Init Security Context for all scenarios
   Exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure the tag service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |
@@ -86,7 +86,7 @@ Scenario: Init Security Context for all scenarios
   Exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure the tag service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
@@ -110,7 +110,7 @@ Scenario: Init Security Context for all scenarios
   No exception should be thrown
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
-    Then I create an account with name "acc1", organization name "acc1" and email adress "acc1@org.com"
+    Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
     And I configure the tag service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |

@@ -933,8 +933,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create an account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email adress \"([^\"]*)\"$")
-    public void iCreateAAccountWithNameOrganizationNameAndEmailAdress(String accountName, String organizationName, String email) throws Exception {
+    @And("^I create an account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email address \"([^\"]*)\"$")
+    public void iCreateAAccountWithNameOrganizationNameAndEmailaddress(String accountName, String organizationName, String email) throws Exception {
         AccountCreator accountCreator = accountFactory.newCreator(getCurrentScopeId());
         accountCreator.setName(accountName);
         accountCreator.setOrganizationName(organizationName);
@@ -978,8 +978,8 @@ public class AccountServiceSteps extends TestBase {
         assertNotNull(stepData.get(LAST_ACCOUNT));
     }
 
-    @And("^I create an account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email adress \"([^\"]*)\" and child account$")
-    public void iCreateAccountWithNameOrganizationNameAndEmailAdressAndChildAccount(String accountName, String organizationName, String email) throws Exception {
+    @And("^I create an account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email address \"([^\"]*)\" and child account$")
+    public void iCreateAccountWithNameOrganizationNameAndEmailaddressAndChildAccount(String accountName, String organizationName, String email) throws Exception {
         Account lastAccount = (Account) stepData.get(LAST_ACCOUNT);
 
         AccountCreator accountCreator = accountFactory.newCreator(lastAccount.getId());
