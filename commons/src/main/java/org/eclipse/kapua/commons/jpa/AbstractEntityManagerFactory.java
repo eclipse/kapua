@@ -13,8 +13,6 @@
 package org.eclipse.kapua.commons.jpa;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,8 +43,6 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
      * @param uniqueConstraints
      */
     protected AbstractEntityManagerFactory(String persistenceUnitName, String datasourceName, Map<String, String> uniqueConstraints) {
-        SystemSetting config = SystemSetting.getInstance();
-
         //
         // Initialize the EntityManagerFactory
         try {
@@ -55,13 +51,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
             Map<String, Object> configOverrides = new HashMap<>();
 
             configOverrides.put("eclipselink.cache.shared.default", "false"); // This has to be set to false in order to disable the local object cache of EclipseLink.
-
-            configOverrides.put("eclipselink.connection-pool.default.dataSourceName", datasourceName);
-            configOverrides.put("eclipselink.connection-pool.default.wait", config.getString(SystemSettingKey.DB_POOL_BORROW_TIMEOUT));
-            configOverrides.put("eclipselink.session.customizer", "org.eclipse.kapua.commons.jpa.JpaSessionCustomizer");
-
-            configOverrides.put("eclipselink.logging.level", "FINE");
-            configOverrides.put("eclipselink.logging.parameters", "true");
+            configOverrides.put("javax.persistence.nonJtaDataSource", DataSource.getDataSource());
 
             // Standalone JPA
             entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName, configOverrides);
