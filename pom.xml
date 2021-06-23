@@ -34,6 +34,7 @@
         <artemis.version>2.2.0</artemis.version>
         <assertj.version>3.2.0</assertj.version>
         <camel.version>2.16.3</camel.version>
+        <checker-framework.version>3.15.0</checker-framework.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-codec.version>1.15</commons-codec.version>
@@ -49,7 +50,6 @@
         <eclipselink.version>2.7.7</eclipselink.version>
         <dropwizard-metrics.version>3.2.2</dropwizard-metrics.version>
         <elasticsearch.version>6.8.7</elasticsearch.version>
-        <findbugs.version>2.0.1</findbugs.version>
         <googleauth.version>1.5.0</googleauth.version>
         <gson.version>2.7</gson.version>
         <guava.version>30.1-jre</guava.version>
@@ -1530,9 +1530,9 @@
                 <version>${javassist.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.google.code.findbugs</groupId>
-                <artifactId>annotations</artifactId>
-                <version>${findbugs.version}</version>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>${checker-framework.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.dropwizard.metrics</groupId>

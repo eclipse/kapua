@@ -14,7 +14,7 @@ package org.eclipse.kapua.transport.exception;
 
 import org.eclipse.kapua.KapuaException;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**

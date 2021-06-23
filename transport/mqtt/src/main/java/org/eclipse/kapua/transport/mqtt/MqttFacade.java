@@ -23,7 +23,7 @@ import org.eclipse.kapua.transport.mqtt.exception.MqttClientCallbackSetException
 import org.eclipse.kapua.transport.mqtt.exception.MqttClientSubscribeException;
 import org.eclipse.kapua.transport.mqtt.pooling.MqttClientPool;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;

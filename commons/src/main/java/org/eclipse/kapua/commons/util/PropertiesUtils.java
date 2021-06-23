@@ -13,8 +13,8 @@
 package org.eclipse.kapua.commons.util;
 
 import com.google.common.base.Strings;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
