@@ -10,18 +10,20 @@
 
     Contributors:
         Eurotech - initial API and implementation
- -->
+-->
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+                            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
+
         logicalFilePath="KapuaDB/changelog-job-1.5.0.xml">
 
-    <include relativeToChangelogFile="true" file="./job-name_indexes.xml"/>
-    <include relativeToChangelogFile="true" file="./job_job_step_properties-limits.xml"/>
-    <include relativeToChangelogFile="true" file="./job_job_step_properties-required.xml"/>
-    <include relativeToChangelogFile="true" file="./job_job_step_definition_properties-limits.xml"/>
-    <include relativeToChangelogFile="true" file="./job_job_step_definition_properties-required.xml"/>
+    <include relativeToChangelogFile="true" file="../common-properties.xml"/>
 
+    <changeSet id="changelog-job_step_definition_properties-1.5.0_addRequired" author="eurotech">
+        <addColumn tableName="job_job_step_definition_properties">
+            <column name="required" type="boolean"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

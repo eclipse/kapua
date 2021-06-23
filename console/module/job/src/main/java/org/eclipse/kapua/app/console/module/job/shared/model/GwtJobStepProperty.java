@@ -40,6 +40,14 @@ public class GwtJobStepProperty extends KapuaBaseModel {
         set("propertyValue", propertyValue, false);
     }
 
+    public Boolean getRequired() {
+        return get("required");
+    }
+
+    public void setRequired(Boolean required) {
+        set("required", required);
+    }
+
     public String getExampleValue() {
         return get("exampleValue");
     }
