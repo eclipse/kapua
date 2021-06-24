@@ -126,17 +126,17 @@ public class DatastoreUtilsIndexCalculatorTest extends Assert {
 
     @Test
     public void channelIndexNameByScopeId() {
-        assertEquals(".1-channel", DatastoreUtils.getChannelIndexName(KapuaId.ONE));
+        assertEquals("1-channel", DatastoreUtils.getChannelIndexName(KapuaId.ONE));
     }
 
     @Test
     public void clientIndexNameByScopeId() {
-        assertEquals(".1-client", DatastoreUtils.getClientIndexName(KapuaId.ONE));
+        assertEquals("1-client", DatastoreUtils.getClientIndexName(KapuaId.ONE));
     }
 
     @Test
     public void metricIndexNameByScopeId() {
-        assertEquals(".1-metric", DatastoreUtils.getMetricIndexName(KapuaId.ONE));
+        assertEquals("1-metric", DatastoreUtils.getMetricIndexName(KapuaId.ONE));
     }
 
     private void performTest(Date startDate, Date endDate, String[] expectedIndexes) throws DatastoreException {

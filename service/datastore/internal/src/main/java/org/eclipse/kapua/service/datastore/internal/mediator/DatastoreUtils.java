@@ -319,7 +319,7 @@ public class DatastoreUtils {
             sb.append(prefix).append("-");
         }
         String indexName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
-        sb.append(".").append(indexName);
+        sb.append(indexName);
         sb.append("-").append(indexType.name().toLowerCase());
         return sb.toString();
     }
