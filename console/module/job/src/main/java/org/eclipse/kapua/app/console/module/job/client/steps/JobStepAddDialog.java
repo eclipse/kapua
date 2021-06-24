@@ -251,10 +251,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
         for (GwtJobStepProperty property : gwtJobStepDefinition.getStepProperties()) {
             String propertyType = property.getPropertyType();
-            String fieldLabel = camelCaseToNormalCase(property.getPropertyName());
-            if (property.getPropertyValue() == null) {
-                fieldLabel = "* " + fieldLabel;
-            }
+
             if (
                     (propertyType.equals(String.class.getName()) &&
                             (
@@ -266,19 +263,8 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                             KAPUA_ID_CLASS_NAME.equals(propertyType)
             ) {
                 KapuaTextField<String> textField = new KapuaTextField<String>();
-                if (property.getPropertyValue() == null) {
-                    textField.setAllowBlank(false);
-                }
-                textField.setFieldLabel(fieldLabel);
-                if (property.getMinLength() != null) {
-                    textField.setMinLength(property.getMinLength());
-                }
-                if (property.getMaxLength() != null) {
-                    textField.setMaxLength(property.getMaxLength());
-                }
-                if (property.getValidationRegex() != null) {
-                    textField.setValidator(new RegexFieldValidator(property.getValidationRegex(), "The value provided does not match regex: " + property.getValidationRegex()));
-                }
+
+                applyFieldLimits(property, textField);
 
                 textField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
                 textField.setData(PROPERTY_TYPE, property.getPropertyType());
@@ -290,16 +276,9 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                             propertyType.equals(Float.class.getName()) ||
                             propertyType.equals(Double.class.getName())) {
                 KapuaNumberField numberField = new KapuaNumberField();
-                if (property.getPropertyValue() == null) {
-                    numberField.setAllowBlank(false);
-                }
-                numberField.setFieldLabel(fieldLabel);
-                if (property.getMinLength() != null) {
-                    numberField.setMinLength(property.getMinLength());
-                }
-                if (property.getMaxLength() != null) {
-                    numberField.setMaxLength(property.getMaxLength());
-                }
+
+                applyFieldLimits(property, numberField);
+
                 numberField.setEmptyText(KapuaSafeHtmlUtils.htmlUnescape(property.getPropertyValue()));
                 numberField.setData(PROPERTY_TYPE, property.getPropertyType());
                 numberField.setData(PROPERTY_NAME, property.getPropertyName());
@@ -320,27 +299,18 @@ public class JobStepAddDialog extends EntityAddEditDialog {
                 }
                 jobStepPropertiesPanel.add(numberField);
             } else if (propertyType.equals(Boolean.class.getName())) {
+                String fieldLabel = camelCaseToNormalCase(property.getPropertyName());
+
                 CheckBox checkBox = new CheckBox();
-                checkBox.setFieldLabel(fieldLabel);
+                checkBox.setFieldLabel(property.getRequired() ? "* " + fieldLabel : fieldLabel);
                 checkBox.setValue(Boolean.valueOf(property.getPropertyValue()));
                 checkBox.setData(PROPERTY_TYPE, property.getPropertyType());
                 checkBox.setData(PROPERTY_NAME, property.getPropertyName());
                 jobStepPropertiesPanel.add(checkBox);
             } else {
                 final KapuaTextArea textArea = new KapuaTextArea();
-                if (property.getPropertyValue() == null) {
-                    textArea.setAllowBlank(false);
-                }
-                textArea.setFieldLabel(fieldLabel);
-                if (property.getMinLength() != null) {
-                    textArea.setMinLength(property.getMinLength());
-                }
-                if (property.getMaxLength() != null) {
-                    textArea.setMaxLength(property.getMaxLength());
-                }
-                if (property.getValidationRegex() != null) {
-                    textArea.setValidator(new RegexFieldValidator(property.getValidationRegex(), "The value provided does not match regex: " + property.getValidationRegex()));
-                }
+
+                applyFieldLimits(property, textArea);
 
                 textArea.setData(PROPERTY_TYPE, property.getPropertyType());
                 textArea.setData(PROPERTY_NAME, property.getPropertyName());
@@ -366,6 +336,23 @@ public class JobStepAddDialog extends EntityAddEditDialog {
             jobStepPropertiesPanel.layout(true);
         }
         jobStepPropertiesPanel.layout(true);
+    }
+
+    private void applyFieldLimits(GwtJobStepProperty property, TextField<?> textField) {
+        String fieldLabel = camelCaseToNormalCase(property.getPropertyName());
+
+        textField.setAllowBlank(!property.getRequired());
+        textField.setFieldLabel(property.getRequired() ? "* " + fieldLabel : fieldLabel);
+
+        if (property.getMinLength() != null) {
+            textField.setMinLength(property.getMinLength());
+        }
+        if (property.getMaxLength() != null) {
+            textField.setMaxLength(property.getMaxLength());
+        }
+        if (property.getValidationRegex() != null) {
+            textField.setValidator(new RegexFieldValidator(property.getValidationRegex(), "The value provided does not match regex: " + property.getValidationRegex()));
+        }
     }
 
     protected List<GwtJobStepProperty> readStepProperties() {

@@ -144,18 +144,18 @@ public class JobDefinitionBuildUtils {
 
         Map<String, Property> customStepProperties = new HashMap<>();
 
-        //
-        // Add default properties
-        for (JobStepProperty jobStepProperty : jobStepDefinition.getStepProperties()) {
-            Property jslStepProperty = new Property();
-            jslStepProperty.setName(jobStepProperty.getName());
-            jslStepProperty.setValue(jobStepProperty.getPropertyValue());
-            customStepProperties.put(jobStepProperty.getName(), jslStepProperty);
-        }
+        // Add properties from Job Step Definition
+        addPropertiesToCustomStepProperties(customStepProperties, jobStepDefinition.getStepProperties());
 
-        //
-        // Add custom values
-        for (JobStepProperty jobStepProperty : jobStep.getStepProperties()) {
+        // Add properties from Job Step
+        addPropertiesToCustomStepProperties(customStepProperties, jobStep.getStepProperties());
+
+        // Return only values
+        return customStepProperties.values();
+    }
+
+    private static void addPropertiesToCustomStepProperties(Map<String, Property> customStepProperties, List<JobStepProperty> stepProperties) {
+        for (JobStepProperty jobStepProperty : stepProperties) {
             if (jobStepProperty.getPropertyValue() != null) {
                 Property jslStepProperty = new Property();
                 jslStepProperty.setName(jobStepProperty.getName());
@@ -163,8 +163,6 @@ public class JobDefinitionBuildUtils {
                 customStepProperties.put(jobStepProperty.getName(), jslStepProperty);
             }
         }
-
-        return customStepProperties.values();
     }
 
     public static Batchlet buildGenericStep(@NotNull JobStepDefinition jobStepDefinition) {

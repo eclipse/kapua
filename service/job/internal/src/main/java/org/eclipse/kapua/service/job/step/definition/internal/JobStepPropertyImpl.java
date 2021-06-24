@@ -34,6 +34,10 @@ public class JobStepPropertyImpl implements JobStepProperty {
     private String propertyValue;
 
     @Basic
+    @Column(name = "required", nullable = true, updatable = true)
+    private Boolean required;
+
+    @Basic
     @Column(name = "example_value", nullable = true, updatable = true)
     private String propertyExampleValue;
 
@@ -64,6 +68,7 @@ public class JobStepPropertyImpl implements JobStepProperty {
         setName(jobStepProperty.getName());
         setPropertyType(jobStepProperty.getPropertyType());
         setPropertyValue(jobStepProperty.getPropertyValue());
+        setRequired(jobStepProperty.getRequired());
         setExampleValue(jobStepProperty.getExampleValue());
         setMinLength(jobStepProperty.getMinLength());
         setMaxLength(jobStepProperty.getMaxLength());
@@ -106,6 +111,16 @@ public class JobStepPropertyImpl implements JobStepProperty {
     @Override
     public void setPropertyValue(String propertyValue) {
         this.propertyValue = propertyValue;
+    }
+
+    @Override
+    public Boolean getRequired() {
+        return required != null ? required : (propertyValue == null);
+    }
+
+    @Override
+    public void setRequired(Boolean required) {
+        this.required = required;
     }
 
     @Override

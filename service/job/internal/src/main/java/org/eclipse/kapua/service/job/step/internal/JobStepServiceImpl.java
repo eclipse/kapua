@@ -350,6 +350,10 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
             for (JobStepProperty jobStepDefinitionProperty : jobStepDefinition.getStepProperties()) {
                 if (jobStepProperty.getName().equals(jobStepDefinitionProperty.getName())) {
 
+                    if (jobStepDefinitionProperty.getRequired()) {
+                        ArgumentValidator.notNull(jobStepProperty.getPropertyValue(), "stepProperties[]." + jobStepProperty.getName());
+                    }
+
                     ArgumentValidator.areEqual(jobStepProperty.getPropertyType(), jobStepDefinitionProperty.getPropertyType(), "stepProperties[]." + jobStepProperty.getName());
                     ArgumentValidator.lengthRange(jobStepProperty.getPropertyValue(), jobStepDefinitionProperty.getMinLength(), jobStepDefinitionProperty.getMaxLength(), "stepProperties[]." + jobStepProperty.getName());
 
@@ -375,6 +379,9 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
                 if (String.class.equals(jobStepDefinitionPropertyClass) && !Strings.isNullOrEmpty(jobStepDefinitionProperty.getValidationRegex())) {
                     ArgumentValidator.match((String) propertyValue, () -> Pattern.compile(jobStepDefinitionProperty.getValidationRegex()), "stepProperties[]." + jobStepProperty.getName());
                 }
+            } else if (KapuaId.class.isAssignableFrom(jobStepDefinitionPropertyClass) ||
+                    (jobStepDefinitionPropertyClass == byte[].class || jobStepDefinitionPropertyClass == Byte[].class)) {
+                fromString(jobStepProperty.getPropertyValue(), jobStepDefinitionPropertyClass);
             } else if (jobStepDefinitionPropertyClass.isEnum()) {
                 Class<E> jobStepDefinitionPropertyClassEnum = (Class<E>) jobStepDefinitionPropertyClass;
                 Enum.valueOf(jobStepDefinitionPropertyClassEnum, jobStepProperty.getPropertyValue());
