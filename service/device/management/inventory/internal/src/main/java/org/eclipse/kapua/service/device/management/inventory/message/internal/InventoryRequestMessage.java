@@ -10,9 +10,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.bundle.message.internal;
+package org.eclipse.kapua.service.device.management.inventory.message.internal;
 
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
+import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestChannel;
+import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestPayload;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 
@@ -21,19 +23,27 @@ import org.eclipse.kapua.service.device.management.message.request.KapuaRequestM
  *
  * @since 1.5.0
  */
-public class InventoryRequestMessage extends KapuaMessageImpl<InventoryRequestChannel, InventoryRequestPayload>
+public abstract class InventoryRequestMessage<M extends InventoryRequestMessage> extends KapuaMessageImpl<InventoryRequestChannel, InventoryRequestPayload>
         implements KapuaRequestMessage<InventoryRequestChannel, InventoryRequestPayload> {
 
     private static final long serialVersionUID = 3593350285989405174L;
 
-    @Override
-    public Class<InventoryRequestMessage> getRequestClass() {
-        return InventoryRequestMessage.class;
+    private final Class<M> requestClass;
+
+    /**
+     * Constructor.
+     *
+     * @param requestClass The {@link InventoryRequestMessage} sub-type
+     * @since 1.5.0
+     */
+    protected InventoryRequestMessage(Class<M> requestClass) {
+        this.requestClass = requestClass;
     }
 
+
     @Override
-    public Class<InventoryResponseMessage> getResponseClass() {
-        return InventoryResponseMessage.class;
+    public Class<M> getRequestClass() {
+        return requestClass;
     }
 
 }

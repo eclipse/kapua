@@ -10,25 +10,26 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.translator.kapua.kura;
+package org.eclipse.kapua.translator.kapua.kura.inventory;
 
 import org.eclipse.kapua.service.device.call.kura.model.inventory.InventoryMetrics;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.BundleRequestMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestChannel;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestMessage;
 import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestPayload;
+import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryEmptyRequestMessage;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.kapua.kura.AbstractTranslatorKapuaKura;
+import org.eclipse.kapua.translator.kapua.kura.TranslatorKapuaKuraUtils;
 
 /**
- * {@link org.eclipse.kapua.translator.Translator} implementation from {@link BundleRequestMessage} to {@link KuraRequestMessage}
+ * {@link org.eclipse.kapua.translator.Translator} implementation from {@link InventoryEmptyRequestMessage} to {@link KuraRequestMessage}
  *
  * @since 1.5.0
  */
-public class TranslatorAppInventoryKapuaKura extends AbstractTranslatorKapuaKura<InventoryRequestChannel, InventoryRequestPayload, InventoryRequestMessage> {
+public class TranslatorAppInventoryEmptyKapuaKura extends AbstractTranslatorKapuaKura<InventoryRequestChannel, InventoryRequestPayload, InventoryEmptyRequestMessage> {
 
     @Override
     protected KuraRequestChannel translateChannel(InventoryRequestChannel kapuaChannel) throws InvalidChannelException {
@@ -60,8 +61,8 @@ public class TranslatorAppInventoryKapuaKura extends AbstractTranslatorKapuaKura
     }
 
     @Override
-    public Class<InventoryRequestMessage> getClassFrom() {
-        return InventoryRequestMessage.class;
+    public Class<InventoryEmptyRequestMessage> getClassFrom() {
+        return InventoryEmptyRequestMessage.class;
     }
 
     @Override
