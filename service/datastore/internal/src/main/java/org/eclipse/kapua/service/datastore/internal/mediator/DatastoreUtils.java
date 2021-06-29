@@ -159,7 +159,7 @@ public class DatastoreUtils {
      * It escapes the '$' and '.'
      *
      * @param name
-     * @return
+     * @return The normalized metric name
      * @since 1.0.0
      */
     public static String normalizeMetricName(String name) {
@@ -176,7 +176,7 @@ public class DatastoreUtils {
      * Restore the metric name, so switch back to the 'not escaped' values for '$' and '.'
      *
      * @param normalizedName
-     * @return
+     * @return The restored metric name
      * @since 1.0.0
      */
     public static String restoreMetricName(String normalizedName) {
@@ -234,7 +234,7 @@ public class DatastoreUtils {
      * Normalize the index alias name and replace the '-' with '_'
      *
      * @param alias
-     * @return
+     * @return The normalized index alias
      * @since 1.0.0
      */
     public static String normalizeIndexAliasName(String alias) {
@@ -308,7 +308,7 @@ public class DatastoreUtils {
      * Get the Kapua index name for the specified base name
      *
      * @param scopeId
-     * @return
+     * @return The Kapua index name
      * @since 1.0.0
      */
     private static String getRegistryIndexName(KapuaId scopeId, IndexType indexType) {
@@ -341,7 +341,7 @@ public class DatastoreUtils {
      * @param indexes
      * @param windowStart
      * @param windowEnd
-     * @return
+     * @return The list of the data indexes between start and end
      * @throws DatastoreException
      */
     public static String[] convertToDataIndexes(@NotNull String[] indexes, Instant windowStart, Instant windowEnd) throws DatastoreException {
@@ -434,7 +434,7 @@ public class DatastoreUtils {
      * Get the client metric type from the metric value type
      *
      * @param clazz
-     * @return
+     * @return The client metric type
      * @since 1.0.0
      */
     public static String getClientMetricFromType(Class<?> clazz) {
@@ -468,7 +468,7 @@ public class DatastoreUtils {
      * Get the client metric type acronym for the given client metric type full name
      *
      * @param acronym
-     * @return
+     * @return The client metric type acronym
      * @since 1.0.0
      */
     public static String getClientMetricFromAcronym(String acronym) {
@@ -513,7 +513,7 @@ public class DatastoreUtils {
      * Convert the metric value class type (Kapua side) to the proper string type description (client side)
      *
      * @param aClass
-     * @return
+     * @return The metric value type converted to string
      * @since 1.0.0
      */
     public static <T> String convertToClientMetricType(Class<T> aClass) {
@@ -548,7 +548,7 @@ public class DatastoreUtils {
      * Convert the client metric type to the corresponding Kapua type
      *
      * @param clientType
-     * @return
+     * @return The concrete metric value type
      * @since 1.0.0
      */
     public static Class<?> convertToKapuaType(String clientType) {
@@ -580,7 +580,7 @@ public class DatastoreUtils {
      *
      * @param acronymType
      * @param value
-     * @return
+     * @return The concrete metric value type
      * @since 1.0.0
      */
     public static Object convertToCorrectType(String acronymType, Object value) {
