@@ -51,7 +51,7 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all indices
     When REST GET call at "/_cat/indices/"
-    Then REST response containing text "1-2018-01"
+    Then REST response containing text "1-data-message-2018-01"
     And I delete all indices
 
   Scenario: Simple positive scenario for creating daily index
@@ -70,7 +70,7 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all indices
     When REST GET call at "/_cat/indices/"
-    And REST response containing text "1-2018-01-02"
+    And REST response containing text "1-data-message-2018-01-02"
     And I delete all indices
 
   Scenario: Simple positive scenario for creating hourly index
@@ -89,7 +89,7 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all indices
     When REST GET call at "/_cat/indices/"
-    And REST response containing text "1-2018-01-02-10"
+    And REST response containing text "1-data-message-2018-01-02-10"
     And I delete all indices
 
   Scenario: Creating two indexes with weekly index
@@ -109,8 +109,8 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all indices
     When REST GET call at "/_cat/indices/"
-    And REST response containing text "1-2018-01"
-    And REST response containing text "1-2018-02"
+    And REST response containing text "1-data-message-2018-01"
+    And REST response containing text "1-data-message-2018-02"
     And I delete all indices
 
   Scenario: Creating two indexes with daily index
@@ -130,8 +130,8 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all indices
     When REST GET call at "/_cat/indices/"
-    And REST response containing text "1-2018-01-02"
-    And REST response containing text "1-2018-01-03"
+    And REST response containing text "1-data-message-2018-01-02"
+    And REST response containing text "1-data-message-2018-01-03"
     And I delete all indices
 
   Scenario: Creating two indexes with hourly index
@@ -151,8 +151,8 @@ Feature: Datastore tests
     And I store the message "RandomDataMessage" and remember its ID as "RandomDataMessageId"
     And I refresh all indices
     When REST GET call at "/_cat/indices/"
-    And REST response containing text "1-2018-01-02-10"
-    And REST response containing text "1-2018-01-02-15"
+    And REST response containing text "1-data-message-2018-01-02-10"
+    And REST response containing text "1-data-message-2018-01-02-15"
     And I delete all indices
 
   Scenario: Creating index with regular user

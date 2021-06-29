@@ -38,7 +38,6 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -257,7 +256,7 @@ public class DatastoreUtils {
             sb.append(prefix).append("-");
         }
         String indexName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
-        sb.append(indexName).append("-*");
+        sb.append(indexName).append("-").append("data-message").append("-*");
         return sb.toString();
     }
 
@@ -275,7 +274,7 @@ public class DatastoreUtils {
             sb.append(prefix).append("-");
         }
         final String actualName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
-        sb.append(actualName).append('-');
+        sb.append(actualName).append('-').append("data-message").append('-');
         DateTimeFormatter formatter;
         switch (indexingWindowOption) {
             default:
@@ -320,7 +319,7 @@ public class DatastoreUtils {
         }
         String indexName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
         sb.append(indexName);
-        sb.append("-").append(indexType.name().toLowerCase());
+        sb.append("-data-").append(indexType.name().toLowerCase());
         return sb.toString();
     }
 
@@ -415,9 +414,7 @@ public class DatastoreUtils {
     }
 
     private static String stripPrefixAndAccount(@NotNull String index) {
-        String[] fragments = index.split("-");
-        int start = index.matches("^[A-Za-z].*$") ? 2 : 1;
-        return StringUtils.join(Arrays.copyOfRange(fragments, start, fragments.length), '-');
+        return StringUtils.substringAfter(index, "-data-message-");
     }
 
     /**

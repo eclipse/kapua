@@ -2425,7 +2425,7 @@ public class DatastoreSteps extends TestBase {
     }
 
     private String[] getDataIndexesByAccount(KapuaId scopeId) throws ClientException {
-        return elasticsearchClient.findIndexes(new IndexRequest(scopeId.toStringId() + "-*")).getIndexes();
+        return elasticsearchClient.findIndexes(new IndexRequest(scopeId.toStringId() + "-data-message-*")).getIndexes();
     }
 
     private void setDatastoreIndexingWindowOption(String windowOption) {
