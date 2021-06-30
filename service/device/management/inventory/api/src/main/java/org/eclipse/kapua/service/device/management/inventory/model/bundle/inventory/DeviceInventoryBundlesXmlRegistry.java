@@ -44,4 +44,5 @@ public class DeviceInventoryBundlesXmlRegistry {
     public DeviceInventoryBundle newDeviceInventoryBundle() {
         return factory.newDeviceInventoryBundle();
     }
+
 }

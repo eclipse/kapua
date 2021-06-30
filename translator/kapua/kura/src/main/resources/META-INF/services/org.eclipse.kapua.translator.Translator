@@ -7,6 +7,7 @@ org.eclipse.kapua.translator.kapua.kura.TranslatorAppPackageKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppRequestKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorAppSnapshotKapuaKura
 org.eclipse.kapua.translator.kapua.kura.TranslatorDataKapuaKura
+org.eclipse.kapua.translator.kapua.kura.inventory.TranslatorAppInventoryBundleExecKapuaKura
 org.eclipse.kapua.translator.kapua.kura.inventory.TranslatorAppInventoryEmptyKapuaKura
 org.eclipse.kapua.translator.kapua.kura.keystore.TranslatorAppKeystoreCertificateKapuaKura
 org.eclipse.kapua.translator.kapua.kura.keystore.TranslatorAppKeystoreCsrKapuaKura
@@ -29,6 +30,7 @@ org.eclipse.kapua.translator.kura.kapua.TranslatorLifeMissingKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppNotifyKuraKapua
 org.eclipse.kapua.translator.kura.kapua.inventory.TranslatorAppInventoryBundlesKuraKapua
 org.eclipse.kapua.translator.kura.kapua.inventory.TranslatorAppInventoryListKuraKapua
+org.eclipse.kapua.translator.kura.kapua.inventory.TranslatorAppInventoryNoContentKuraKapua
 org.eclipse.kapua.translator.kura.kapua.inventory.TranslatorAppInventoryPackagesKuraKapua
 org.eclipse.kapua.translator.kura.kapua.inventory.TranslatorAppInventorySystemPackagesKuraKapua
 org.eclipse.kapua.translator.kura.kapua.keystore.TranslatorAppKeystoreItemKuraKapua

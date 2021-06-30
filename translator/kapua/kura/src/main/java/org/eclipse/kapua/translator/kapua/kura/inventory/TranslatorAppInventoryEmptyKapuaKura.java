@@ -16,8 +16,8 @@ import org.eclipse.kapua.service.device.call.kura.model.inventory.InventoryMetri
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestChannel;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestPayload;
+import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryRequestChannel;
+import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryRequestPayload;
 import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryEmptyRequestMessage;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;

@@ -10,25 +10,25 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.translator.kura.kapua.keystore;
+package org.eclipse.kapua.translator.kura.kapua.inventory;
 
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
-import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreNoContentResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryNoContentResponseMessage;
 import org.eclipse.kapua.translator.Translator;
 
 /**
- * {@link Translator} implementation from {@link KuraResponseMessage} to {@link KeystoreNoContentResponseMessage}
+ * {@link Translator} implementation from {@link KuraResponseMessage} to {@link InventoryNoContentResponseMessage}
  *
  * @since 1.5.0
  */
-public class TranslatorAppKeystoreNoContentKuraKapua extends AbstractTranslatorAppKeystoreKuraKapua<KeystoreNoContentResponseMessage> {
+public class TranslatorAppInventoryNoContentKuraKapua extends AbstractTranslatorAppInventoryKuraKapua<InventoryNoContentResponseMessage> {
 
     /**
      * Constructor.
      *
      * @since 1.5.0
      */
-    public TranslatorAppKeystoreNoContentKuraKapua() {
-        super(KeystoreNoContentResponseMessage.class);
+    public TranslatorAppInventoryNoContentKuraKapua() {
+        super(InventoryNoContentResponseMessage.class);
     }
 }

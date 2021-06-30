@@ -20,10 +20,10 @@ import org.eclipse.kapua.service.device.call.kura.model.inventory.packages.KuraI
 import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInventorySystemPackages;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryResponseChannel;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryResponsePayload;
+import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryResponseChannel;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryResponsePayload;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;

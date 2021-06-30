@@ -15,7 +15,7 @@ package org.eclipse.kapua.translator.kura.kapua.inventory;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInventorySystemPackages;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryResponsePayload;
+import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryResponsePayload;
 import org.eclipse.kapua.service.device.management.inventory.message.internal.InventorySystemPackagesResponseMessage;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;

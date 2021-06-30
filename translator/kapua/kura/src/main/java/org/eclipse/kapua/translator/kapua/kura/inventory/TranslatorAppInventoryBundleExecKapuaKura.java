@@ -1,0 +1,96 @@
+/*******************************************************************************
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Eurotech - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.kapua.translator.kapua.kura.inventory;
+
+import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.InventoryMetrics;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundle;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
+import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
+import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
+import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryBundleExecRequestMessage;
+import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryEmptyRequestMessage;
+import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryRequestChannel;
+import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryRequestPayload;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
+import org.eclipse.kapua.translator.exception.InvalidChannelException;
+import org.eclipse.kapua.translator.exception.InvalidPayloadException;
+import org.eclipse.kapua.translator.kapua.kura.AbstractTranslatorKapuaKura;
+import org.eclipse.kapua.translator.kapua.kura.TranslatorKapuaKuraUtils;
+
+/**
+ * {@link org.eclipse.kapua.translator.Translator} implementation from {@link InventoryEmptyRequestMessage} to {@link KuraRequestMessage}
+ *
+ * @since 1.5.0
+ */
+public class TranslatorAppInventoryBundleExecKapuaKura extends AbstractTranslatorKapuaKura<InventoryRequestChannel, InventoryRequestPayload, InventoryBundleExecRequestMessage> {
+
+    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
+
+    @Override
+    protected KuraRequestChannel translateChannel(InventoryRequestChannel inventoryRequestChannel) throws InvalidChannelException {
+        try {
+            KuraRequestChannel kuraRequestChannel = TranslatorKapuaKuraUtils.buildBaseRequestChannel(InventoryMetrics.APP_ID, InventoryMetrics.APP_VERSION, inventoryRequestChannel.getMethod());
+
+            switch (inventoryRequestChannel.getBundleAction()) {
+                case START:
+                    kuraRequestChannel.setResources(new String[]{inventoryRequestChannel.getResource(), "_start"});
+                    break;
+                case STOP:
+                    kuraRequestChannel.setResources(new String[]{inventoryRequestChannel.getResource(), "_stop"});
+                    break;
+                default:
+                    throw new KapuaIllegalArgumentException("inventoryRequestChannel.bundleAction", inventoryRequestChannel.getBundleAction().name());
+            }
+
+            // Return Kura Channel
+            return kuraRequestChannel;
+        } catch (Exception e) {
+            throw new InvalidChannelException(e, inventoryRequestChannel);
+        }
+    }
+
+    @Override
+    protected KuraRequestPayload translatePayload(InventoryRequestPayload inventoryRequestPayload) throws InvalidPayloadException {
+        try {
+            KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+
+            if (inventoryRequestPayload.hasBody()) {
+                DeviceInventoryBundle deviceInventoryBundle = inventoryRequestPayload.getDeviceInventoryBundle();
+
+                KuraInventoryBundle kuraInventoryBundle = new KuraInventoryBundle();
+                kuraInventoryBundle.setName(deviceInventoryBundle.getName());
+                kuraInventoryBundle.setVersion(deviceInventoryBundle.getVersion());
+
+                kuraRequestPayload.setBody(getJsonMapper().writeValueAsString(kuraInventoryBundle).getBytes(CHAR_ENCODING));
+            }
+
+            return kuraRequestPayload;
+        } catch (Exception e) {
+            throw new InvalidPayloadException(e, inventoryRequestPayload);
+        }
+    }
+
+    @Override
+    public Class<InventoryBundleExecRequestMessage> getClassFrom() {
+        return InventoryBundleExecRequestMessage.class;
+    }
+
+    @Override
+    public Class<KuraRequestMessage> getClassTo() {
+        return KuraRequestMessage.class;
+    }
+
+}

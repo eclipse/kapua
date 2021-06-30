@@ -16,6 +16,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.DeviceManagementService;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundleAction;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
@@ -54,6 +56,19 @@ public interface DeviceInventoryManagementService extends DeviceManagementServic
      * @since 1.5.0
      */
     DeviceInventoryBundles getBundles(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
+
+    /**
+     * Executes an action on a {@link DeviceInventoryBundle}.
+     *
+     * @param scopeId                     The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId                    The {@link Device#getId()}
+     * @param deviceInventoryBundle       The {@link DeviceInventoryBundle} to execute the action on.
+     * @param deviceInventoryBundleAction The {@link DeviceInventoryBundleAction} deviceInventoryBundleAction.
+     * @param timeout                     The timeout waiting for the device response
+     * @throws KapuaException
+     * @since 1.5.0
+     */
+    void execBundle(KapuaId scopeId, KapuaId deviceId, DeviceInventoryBundle deviceInventoryBundle, DeviceInventoryBundleAction deviceInventoryBundleAction, Long timeout) throws KapuaException;
 
     /**
      * Gets the {@link DeviceInventorySystemPackages}
