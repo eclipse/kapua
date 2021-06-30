@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.device.management.inventory.model.inventory.sys
 import org.eclipse.kapua.service.device.registry.Device;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -91,7 +92,7 @@ public class DeviceManagementInventory extends AbstractKapuaResource {
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
-    @GET
+    @POST
     @Path("bundles/_start")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response startInventoryBundles(
@@ -116,7 +117,7 @@ public class DeviceManagementInventory extends AbstractKapuaResource {
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
-    @GET
+    @POST
     @Path("bundles/_stop")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response stopInventoryBundles(
