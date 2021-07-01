@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.api.core.model;
 
 import org.eclipse.kapua.model.xml.BinaryXmlAdapter;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.Base64;
 
 /**

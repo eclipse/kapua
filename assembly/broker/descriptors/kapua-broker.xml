@@ -158,7 +158,6 @@
                 <include>com.carrotsearch:hppc</include>
                 <include>com.fasterxml.jackson.core:*</include>
                 <include>com.fasterxml.jackson.dataformat:*</include>
-                <include>com.google.code.findbugs:annotations</include>
                 <include>com.google.guava:guava</include>
                 <include>com.google.guava:failureaccess</include>
                 <include>com.google.guava:listenablefuture</include>
@@ -198,6 +197,7 @@
                 <include>org.apache.qpid:qpid-jms-client</include>
                 <include>org.apache.shiro:shiro-core</include>
                 <include>org.bitbucket.b_c:jose4j</include>
+                <include>org.checkerframework:checker-qual</include>
                 <include>org.eclipse.paho:org.eclipse.paho.client.mqttv3</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.jpa</include>
                 <include>org.eclipse.persistence:org.eclipse.persistence.jpa.jpql</include>

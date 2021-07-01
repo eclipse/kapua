@@ -17,11 +17,12 @@ import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Utility class to validate arguments passed in a parameters in service methods.

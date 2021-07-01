@@ -42,7 +42,7 @@ import org.eclipse.kapua.transport.exception.TransportClientGetException;
 import org.eclipse.kapua.transport.exception.TransportTimeoutException;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.HashMap;

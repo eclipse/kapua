@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**

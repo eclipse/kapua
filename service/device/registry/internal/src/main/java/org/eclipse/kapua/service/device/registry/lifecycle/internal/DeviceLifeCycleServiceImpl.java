@@ -49,7 +49,7 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleServic
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;

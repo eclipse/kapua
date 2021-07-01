@@ -26,13 +26,14 @@ import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerStatus;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 

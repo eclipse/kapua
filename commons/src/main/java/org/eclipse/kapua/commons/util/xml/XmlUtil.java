@@ -16,6 +16,8 @@ package org.eclipse.kapua.commons.util.xml;
 import com.google.common.base.Strings;
 import org.apache.commons.lang.SystemUtils;
 import org.eclipse.kapua.KapuaException;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
@@ -25,7 +27,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
