@@ -198,7 +198,7 @@ Scenario: Init Security Context for all scenarios
       | integer | lockoutPolicy.resetAfter   | 300   |
       | integer | lockoutPolicy.lockDuration | 3     |
     And I create user with name "TestUser"
-    And I create an account with name "SubAccount", organization name "TestOrganization" and email adress "test@gmail.com"
+    And I create an account with name "SubAccount", organization name "TestOrganization" and email address "test@gmail.com"
     And The account with name "kapua-sys" has 1 subaccount
     And I find account with name "SubAccount"
     And I configure account service
