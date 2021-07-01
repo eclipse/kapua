@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.keystore.message.internal.response;
+package org.eclipse.kapua.service.device.management.keystore.internal.message.response;
 
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;

@@ -20,9 +20,9 @@ import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreIte
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
-import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreResponseChannel;
-import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreResponseMessage;
-import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreResponsePayload;
+import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreResponseChannel;
+import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreResponseMessage;
+import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreResponsePayload;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;

@@ -15,8 +15,8 @@ package org.eclipse.kapua.translator.kura.kapua.keystore;
 import org.eclipse.kapua.service.device.call.kura.model.keystore.KuraKeystoreItem;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
-import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreItemsResponseMessage;
-import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreResponsePayload;
+import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreItemsResponseMessage;
+import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreResponsePayload;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 

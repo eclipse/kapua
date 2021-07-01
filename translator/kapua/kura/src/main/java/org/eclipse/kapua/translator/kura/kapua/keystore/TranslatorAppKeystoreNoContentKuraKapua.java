@@ -13,7 +13,7 @@
 package org.eclipse.kapua.translator.kura.kapua.keystore;
 
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
-import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreNoContentResponseMessage;
+import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreNoContentResponseMessage;
 import org.eclipse.kapua.translator.Translator;
 
 /**

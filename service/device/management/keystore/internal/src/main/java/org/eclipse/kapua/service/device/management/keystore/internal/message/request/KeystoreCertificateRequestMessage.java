@@ -10,17 +10,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.keystore.message.internal.request;
+package org.eclipse.kapua.service.device.management.keystore.internal.message.request;
 
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItemQuery;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 
 /**
- * {@link DeviceKeystoreItemQuery} {@link KapuaRequestMessage} implementation.
+ * {@link DeviceKeystoreCertificate} {@link KapuaRequestMessage} implementation.
  *
  * @since 1.5.0
  */
-public abstract class KeystoreQueryRequestMessage extends KeystoreRequestMessage<KeystoreQueryRequestMessage> {
+public abstract class KeystoreCertificateRequestMessage extends KeystoreRequestMessage<KeystoreCertificateRequestMessage> {
 
     private static final long serialVersionUID = 3593350285989405174L;
 
@@ -29,7 +29,7 @@ public abstract class KeystoreQueryRequestMessage extends KeystoreRequestMessage
      *
      * @since 1.5.0
      */
-    public KeystoreQueryRequestMessage() {
-        super(KeystoreQueryRequestMessage.class);
+    public KeystoreCertificateRequestMessage() {
+        super(KeystoreCertificateRequestMessage.class);
     }
 }

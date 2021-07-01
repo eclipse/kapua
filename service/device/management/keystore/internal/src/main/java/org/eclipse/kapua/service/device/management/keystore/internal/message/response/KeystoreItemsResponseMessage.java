@@ -10,15 +10,17 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.keystore.message.internal.response;
+package org.eclipse.kapua.service.device.management.keystore.internal.message.response;
 
-import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItem;
+import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreItems;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 
 /**
- * {@link DeviceKeystoreItem} {@link KapuaResponseMessage} implementation.
+ * {@link DeviceKeystoreItems} {@link KapuaResponseMessage} implementation.
  *
  * @since 1.5.0
  */
-public class KeystoreItemResponseMessage extends KeystoreResponseMessage {
+public class KeystoreItemsResponseMessage extends KeystoreResponseMessage {
+
+    private static final long serialVersionUID = -3015601811729045206L;
 }
