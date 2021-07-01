@@ -12,9 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.extras.esmigrator.migrations;
 
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
+@Category(JUnitTests.class)
 public class Es7MigrationTests {
 
     private final Es7Migration es7Migration = new Es7Migration(null, null, null);
