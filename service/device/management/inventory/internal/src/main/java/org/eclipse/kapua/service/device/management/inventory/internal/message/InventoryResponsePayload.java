@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.message.internal;
+package org.eclipse.kapua.service.device.management.inventory.internal.message;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -18,10 +18,10 @@ import org.eclipse.kapua.service.device.management.commons.message.response.Kapu
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
 
 import javax.validation.constraints.NotNull;

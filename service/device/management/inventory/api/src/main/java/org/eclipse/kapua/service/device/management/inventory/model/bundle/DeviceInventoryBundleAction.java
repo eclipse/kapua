@@ -10,25 +10,29 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.message.internal;
+package org.eclipse.kapua.service.device.management.inventory.model.bundle;
 
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
 
 /**
- * {@link DeviceInventoryBundle} {@link InventoryRequestMessage} implementation.
+ * {@link DeviceInventoryManagementService#execBundle(KapuaId, KapuaId, DeviceInventoryBundle, DeviceInventoryBundleAction, Long)} action.
  *
  * @since 1.5.0
  */
-public abstract class InventoryBundleExecRequestMessage extends InventoryRequestMessage<InventoryBundleExecRequestMessage> {
-
-    private static final long serialVersionUID = 3593350285989405174L;
+public enum DeviceInventoryBundleAction {
 
     /**
-     * Constructor.
+     * Action to start a {@link DeviceInventoryBundle}.
      *
      * @since 1.5.0
      */
-    public InventoryBundleExecRequestMessage() {
-        super(InventoryBundleExecRequestMessage.class);
-    }
+    START,
+
+    /**
+     * Action to stop a {@link DeviceInventoryBundle}.
+     *
+     * @since 1.5.0
+     */
+    STOP
 }

@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.message.internal;
+package org.eclipse.kapua.service.device.management.inventory.internal.message;
 
 import org.eclipse.kapua.message.internal.KapuaMessageImpl;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;

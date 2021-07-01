@@ -19,12 +19,12 @@ import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundleAction;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundleAction;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.registry.Device;
 
 import javax.ws.rs.GET;

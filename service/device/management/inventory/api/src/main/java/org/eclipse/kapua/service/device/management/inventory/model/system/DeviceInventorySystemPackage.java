@@ -10,28 +10,25 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.model.inventory.packages;
-
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
+package org.eclipse.kapua.service.device.management.inventory.model.system;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import java.util.List;
 
 /**
- * {@link DeviceInventoryPackage} definition.
+ * {@link DeviceInventorySystemPackage} definition.
  * <p>
  * It represents a system package present on a device.
  *
  * @since 1.5.0
  */
-@XmlRootElement(name = "deviceInventoryDeploymentPackage")
+@XmlRootElement(name = "deviceInventorySystemPackage")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = DeviceInventoryPackagesXmlRegistry.class, factoryMethod = "newDeviceInventoryPackage")
-public interface DeviceInventoryPackage {
+@XmlType(factoryClass = DeviceInventorySystemPackagesXmlRegistry.class, factoryMethod = "newDeviceInventorySystemPackage")
+public interface DeviceInventorySystemPackage {
 
     /**
      * Gets the name.
@@ -68,26 +65,19 @@ public interface DeviceInventoryPackage {
     void setVersion(String version);
 
     /**
-     * Gets the {@link List} of {@link DeviceInventoryBundle}s.
+     * Gets the type.
      *
-     * @return The {@link List} of {@link DeviceInventoryBundle}s.
+     * @return The type.
      * @since 1.5.0
      */
-    List<DeviceInventoryBundle> getPackageBundles();
+    @XmlElement(name = "packageType")
+    String getPackageType();
 
     /**
-     * Adds a {@link DeviceInventoryBundle} to the {@link List}.
+     * Sets the type.
      *
-     * @param inventoryBundle The {@link DeviceInventoryBundle} to add.
+     * @param packageType The type.
      * @since 1.5.0
      */
-    void addPackageBundle(DeviceInventoryBundle inventoryBundle);
-
-    /**
-     * Sets the {@link List} of {@link DeviceInventoryBundle}s.
-     *
-     * @param inventoryBundles The {@link List} of {@link DeviceInventoryBundle}s.
-     * @since 1.5.0
-     */
-    void setPackageBundles(List<DeviceInventoryBundle> inventoryBundles);
+    void setPackageType(String packageType);
 }

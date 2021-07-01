@@ -20,11 +20,11 @@ import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraReques
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryBundleExecRequestMessage;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryEmptyRequestMessage;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryRequestChannel;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryRequestPayload;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryBundleExecRequestMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryEmptyRequestMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryRequestChannel;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryRequestPayload;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 import org.eclipse.kapua.translator.kapua.kura.AbstractTranslatorKapuaKura;

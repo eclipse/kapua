@@ -17,9 +17,7 @@ import java.io.Serializable;
 /**
  * Kapua {@link Serializable} entity. (Marker interface).
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface KapuaSerializable extends Serializable {
-
 }

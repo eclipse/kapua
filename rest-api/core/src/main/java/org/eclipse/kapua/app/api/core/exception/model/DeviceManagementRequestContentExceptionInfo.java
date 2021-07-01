@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 
 import javax.ws.rs.core.Response;
@@ -26,8 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DeviceManagementRequestContentExceptionInfo extends ExceptionInfo {
 
     @XmlElement(name = "requestContent")
-    private KapuaSerializable requestContent;
-
+    private Object requestContent;
 
     protected DeviceManagementRequestContentExceptionInfo() {
         // Required by JAXB
@@ -39,7 +37,13 @@ public class DeviceManagementRequestContentExceptionInfo extends ExceptionInfo {
         this.requestContent = deviceManagementRequestContentException.getRequestContent();
     }
 
-    public KapuaSerializable getRequestPayload() {
+    /**
+     * Gets the request payload which was not serializable.
+     *
+     * @return The request payload which was not serializable.
+     * @since 1.5.0
+     */
+    public Object getRequestPayload() {
         return requestContent;
     }
 }

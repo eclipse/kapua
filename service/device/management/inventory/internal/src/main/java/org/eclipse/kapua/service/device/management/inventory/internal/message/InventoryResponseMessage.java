@@ -10,15 +10,19 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.message.internal;
+package org.eclipse.kapua.service.device.management.inventory.internal.message;
 
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
+import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponseMessageImpl;
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 
 /**
- * {@link DeviceInventorySystemPackages} {@link KapuaResponseMessage} implementation.
+ * {@link DeviceInventory} {@link KapuaResponseMessage} implementation.
  *
  * @since 1.5.0
  */
-public class InventoryNoContentResponseMessage extends InventoryResponseMessage {
+public class InventoryResponseMessage extends KapuaResponseMessageImpl<InventoryResponseChannel, InventoryResponsePayload>
+        implements KapuaResponseMessage<InventoryResponseChannel, InventoryResponsePayload> {
+
+    private static final long serialVersionUID = -1398713049819248123L;
 }

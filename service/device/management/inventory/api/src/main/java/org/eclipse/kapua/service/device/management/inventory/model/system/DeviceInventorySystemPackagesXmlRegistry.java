@@ -10,39 +10,38 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory;
+package org.eclipse.kapua.service.device.management.inventory.model.system;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 
 /**
- * {@link DeviceInventoryBundles} XmlFactory definition.
+ * {@link DeviceInventorySystemPackages} XmlFactory definition.
  *
  * @since 1.5.0
  */
-public class DeviceInventoryBundlesXmlRegistry {
+public class DeviceInventorySystemPackagesXmlRegistry {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DeviceInventoryManagementFactory factory = locator.getFactory(DeviceInventoryManagementFactory.class);
 
     /**
-     * Instantiates a new {@link DeviceInventoryBundles}.
+     * Instantiates a new {@link DeviceInventorySystemPackages}.
      *
-     * @return The newly instantiated {@link DeviceInventoryBundles}
+     * @return The newly instantiated {@link DeviceInventorySystemPackages}
      * @since 1.5.0
      */
-    public DeviceInventoryBundles newDeviceInventoryBundles() {
-        return factory.newDeviceInventoryBundles();
+    public DeviceInventorySystemPackages newDeviceInventorySystemPackages() {
+        return factory.newDeviceInventorySystemPackages();
     }
 
     /**
-     * Instantiates a new {@link DeviceInventoryBundle}.
+     * Instantiates a new {@link DeviceInventorySystemPackage}.
      *
-     * @return The newly instantiated {@link DeviceInventoryBundle}
+     * @return The newly instantiated {@link DeviceInventorySystemPackage}
      * @since 1.5.0
      */
-    public DeviceInventoryBundle newDeviceInventoryBundle() {
-        return factory.newDeviceInventoryBundle();
+    public DeviceInventorySystemPackage newDeviceInventorySystemPackage() {
+        return factory.newDeviceInventorySystemPackage();
     }
-
 }

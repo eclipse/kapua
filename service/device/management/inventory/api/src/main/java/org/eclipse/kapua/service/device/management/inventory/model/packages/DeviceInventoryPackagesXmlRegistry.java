@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.model.inventory.packages;
+package org.eclipse.kapua.service.device.management.inventory.model.packages;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;

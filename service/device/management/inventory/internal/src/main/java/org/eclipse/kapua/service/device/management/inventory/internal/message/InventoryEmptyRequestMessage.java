@@ -10,15 +10,23 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.message.internal;
-
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
-import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
+package org.eclipse.kapua.service.device.management.inventory.internal.message;
 
 /**
- * {@link DeviceInventorySystemPackages} {@link KapuaResponseMessage} implementation.
+ * Emptry {@link InventoryRequestMessage} implementation.
  *
  * @since 1.5.0
  */
-public class InventorySystemPackagesResponseMessage extends InventoryResponseMessage {
+public abstract class InventoryEmptyRequestMessage extends InventoryRequestMessage<InventoryEmptyRequestMessage> {
+
+    private static final long serialVersionUID = 3593350285989405174L;
+
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
+    public InventoryEmptyRequestMessage() {
+        super(InventoryEmptyRequestMessage.class);
+    }
 }

@@ -22,21 +22,21 @@ import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagem
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryBundleExecRequestMessage;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryBundlesResponseMessage;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryEmptyRequestMessage;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryListResponseMessage;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryNoContentResponseMessage;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryPackagesResponseMessage;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryRequestChannel;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventoryRequestPayload;
-import org.eclipse.kapua.service.device.management.inventory.message.internal.InventorySystemPackagesResponseMessage;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundleAction;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryBundleExecRequestMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryBundlesResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryEmptyRequestMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryListResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryNoContentResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryPackagesResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryRequestChannel;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryRequestPayload;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventorySystemPackagesResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundleAction;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
 import java.util.Date;
@@ -177,7 +177,7 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         try {
             inventoryRequestPayload.setDeviceInventoryBundle(deviceInventoryBundle);
         } catch (Exception e) {
-            throw new DeviceManagementRequestContentException(e, null);
+            throw new DeviceManagementRequestContentException(e, deviceInventoryBundle);
         }
 
         InventoryBundleExecRequestMessage inventoryRequestMessage = new InventoryBundleExecRequestMessage() {

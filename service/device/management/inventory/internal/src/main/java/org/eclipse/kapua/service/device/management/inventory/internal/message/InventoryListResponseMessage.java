@@ -10,26 +10,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory;
+package org.eclipse.kapua.service.device.management.inventory.internal.message;
+
+import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
+import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
 
 /**
- * {@link DeviceInventoryBundleExec} action.
+ * {@link DeviceInventory} {@link KapuaResponseMessage} implementation.
  *
  * @since 1.5.0
  */
-public enum DeviceInventoryBundleAction {
-
-    /**
-     * Action to start a {@link DeviceInventoryBundle}.
-     *
-     * @since 1.5.0
-     */
-    START,
-
-    /**
-     * Action to stop a {@link DeviceInventoryBundle}.
-     *
-     * @since 1.5.0
-     */
-    STOP
+public class InventoryListResponseMessage extends InventoryResponseMessage {
 }

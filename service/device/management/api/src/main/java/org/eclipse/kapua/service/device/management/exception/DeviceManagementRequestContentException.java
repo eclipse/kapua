@@ -25,7 +25,7 @@ public class DeviceManagementRequestContentException extends DeviceManagementReq
 
     private static final long serialVersionUID = 6369408505280888324L;
 
-    private final KapuaSerializable requestContent;
+    private final Object requestContent;
 
     /**
      * Constructor.
@@ -34,7 +34,7 @@ public class DeviceManagementRequestContentException extends DeviceManagementReq
      * @param requestContent The content that cannot be serialized.
      * @since 1.1.0
      */
-    public DeviceManagementRequestContentException(@NotNull Throwable cause, @NotNull KapuaSerializable requestContent) {
+    public DeviceManagementRequestContentException(@NotNull Throwable cause, @NotNull Object requestContent) {
         super(DeviceManagementErrorCodes.REQUEST_CONTENT, cause, requestContent);
 
         this.requestContent = requestContent;
@@ -46,7 +46,7 @@ public class DeviceManagementRequestContentException extends DeviceManagementReq
      * @return The {@link KapuaSerializable}
      * @since 1.1.0
      */
-    public KapuaSerializable getRequestContent() {
+    public Object getRequestContent() {
         return requestContent;
     }
 

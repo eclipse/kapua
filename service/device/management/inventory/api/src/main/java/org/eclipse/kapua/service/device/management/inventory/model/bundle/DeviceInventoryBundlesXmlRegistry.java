@@ -10,38 +10,39 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory.model.inventory.system;
+package org.eclipse.kapua.service.device.management.inventory.model.bundle;
 
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 
 /**
- * {@link DeviceInventorySystemPackages} XmlFactory definition.
+ * {@link DeviceInventoryBundles} XmlFactory definition.
  *
  * @since 1.5.0
  */
-public class DeviceInventorySystemPackagesXmlRegistry {
+public class DeviceInventoryBundlesXmlRegistry {
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DeviceInventoryManagementFactory factory = locator.getFactory(DeviceInventoryManagementFactory.class);
 
     /**
-     * Instantiates a new {@link DeviceInventorySystemPackages}.
+     * Instantiates a new {@link DeviceInventoryBundles}.
      *
-     * @return The newly instantiated {@link DeviceInventorySystemPackages}
+     * @return The newly instantiated {@link DeviceInventoryBundles}
      * @since 1.5.0
      */
-    public DeviceInventorySystemPackages newDeviceInventorySystemPackages() {
-        return factory.newDeviceInventorySystemPackages();
+    public DeviceInventoryBundles newDeviceInventoryBundles() {
+        return factory.newDeviceInventoryBundles();
     }
 
     /**
-     * Instantiates a new {@link DeviceInventorySystemPackage}.
+     * Instantiates a new {@link DeviceInventoryBundle}.
      *
-     * @return The newly instantiated {@link DeviceInventorySystemPackage}
+     * @return The newly instantiated {@link DeviceInventoryBundle}
      * @since 1.5.0
      */
-    public DeviceInventorySystemPackage newDeviceInventorySystemPackage() {
-        return factory.newDeviceInventorySystemPackage();
+    public DeviceInventoryBundle newDeviceInventoryBundle() {
+        return factory.newDeviceInventoryBundle();
     }
+
 }
