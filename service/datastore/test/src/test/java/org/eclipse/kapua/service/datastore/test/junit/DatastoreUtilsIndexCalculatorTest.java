@@ -195,7 +195,7 @@ public class DatastoreUtilsIndexCalculatorTest extends Assert {
                 endWeekForCurrentYear = weekCountByYear[endYear - i];
             }
             for (int j = startWeekForCurrentYear; j <= endWeekForCurrentYear; j++) {
-                result.add(String.format("%s-%s-%s", scopeId, i, (j < 10 ? "0" + j : j)));
+                result.add(String.format("%s-data-message-%s-%s", scopeId, i, (j < 10 ? "0" + j : j)));
             }
         }
         return result.toArray(new String[0]);
