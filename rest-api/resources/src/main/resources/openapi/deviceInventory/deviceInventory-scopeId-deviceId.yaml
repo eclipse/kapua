@@ -62,6 +62,50 @@ paths:
           $ref: '../openapi.yaml#/components/responses/entityNotFound'
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /{scopeId}/devices/{deviceId}/inventory/bundles/_start:
+    get:
+      tags:
+        - Device Management - Inventory
+      summary: Starts the bundle inventory in a Device
+      operationId: deviceInventoryBundleStart
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryBundle'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      responses:
+        204:
+          description: The inventory bundle has been started
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /{scopeId}/devices/{deviceId}/inventory/bundles/_stop:
+    get:
+      tags:
+        - Device Management - Inventory
+      summary: Stops the bundle inventory in a Device
+      operationId: deviceInventoryBundleStop
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryBundle'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      responses:
+        204:
+          description: The inventory bundle has been stopped
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
   /{scopeId}/devices/{deviceId}/inventory/system:
     get:
       tags:

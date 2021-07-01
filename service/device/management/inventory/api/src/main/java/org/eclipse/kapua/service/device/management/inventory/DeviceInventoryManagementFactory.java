@@ -13,14 +13,14 @@
 package org.eclipse.kapua.service.device.management.inventory;
 
 import org.eclipse.kapua.model.KapuaObjectFactory;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackage;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackage;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 
 /**
  * {@link DeviceInventoryItem} {@link KapuaObjectFactory} definition.

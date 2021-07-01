@@ -18,17 +18,25 @@ import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestChannel;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestMessage;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryRequestPayload;
-import org.eclipse.kapua.service.device.management.bundle.message.internal.InventoryResponseMessage;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryBundleExecRequestMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryBundlesResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryEmptyRequestMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryListResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryNoContentResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryPackagesResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryRequestChannel;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryRequestPayload;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventorySystemPackagesResponseMessage;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundleAction;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
 import java.util.Date;
@@ -66,7 +74,13 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         InventoryRequestPayload inventoryRequestPayload = new InventoryRequestPayload();
 
-        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        InventoryEmptyRequestMessage inventoryRequestMessage = new InventoryEmptyRequestMessage() {
+            @Override
+            public Class<InventoryListResponseMessage> getResponseClass() {
+                return InventoryListResponseMessage.class;
+            }
+        };
+
         inventoryRequestMessage.setScopeId(scopeId);
         inventoryRequestMessage.setDeviceId(deviceId);
         inventoryRequestMessage.setCapturedOn(new Date());
@@ -75,8 +89,8 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryResponseMessage responseMessage = deviceApplicationCall.send();
+        DeviceCallExecutor<?, ?, ?, InventoryListResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
+        InventoryListResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
         // Create event
@@ -109,7 +123,13 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         InventoryRequestPayload inventoryRequestPayload = new InventoryRequestPayload();
 
-        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        InventoryEmptyRequestMessage inventoryRequestMessage = new InventoryEmptyRequestMessage() {
+            @Override
+            public Class<InventoryBundlesResponseMessage> getResponseClass() {
+                return InventoryBundlesResponseMessage.class;
+            }
+        };
+
         inventoryRequestMessage.setScopeId(scopeId);
         inventoryRequestMessage.setDeviceId(deviceId);
         inventoryRequestMessage.setCapturedOn(new Date());
@@ -118,8 +138,8 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryResponseMessage responseMessage = deviceApplicationCall.send();
+        DeviceCallExecutor<?, ?, ?, InventoryBundlesResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
+        InventoryBundlesResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
         // Create event
@@ -128,6 +148,63 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
         //
         // Check response
         return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceInventoryBundles());
+    }
+
+    @Override
+    public void execBundle(KapuaId scopeId, KapuaId deviceId, DeviceInventoryBundle deviceInventoryBundle, DeviceInventoryBundleAction deviceInventoryBundleAction, Long timeout) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(scopeId, SCOPE_ID);
+        ArgumentValidator.notNull(deviceId, DEVICE_ID);
+        ArgumentValidator.notNull(deviceInventoryBundle, "deviceInventoryBundle");
+        ArgumentValidator.notNull(deviceInventoryBundle.getName(), "deviceInventoryBundle.name");
+        ArgumentValidator.notNull(deviceInventoryBundleAction, "deviceInventoryBundleAction");
+
+        //
+        // Check Access
+        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DeviceManagementDomains.DEVICE_MANAGEMENT_DOMAIN, Actions.write, scopeId));
+
+        //
+        // Prepare the request
+        InventoryRequestChannel inventoryRequestChannel = new InventoryRequestChannel();
+        inventoryRequestChannel.setAppName(DeviceInventoryAppProperties.APP_NAME);
+        inventoryRequestChannel.setVersion(DeviceInventoryAppProperties.APP_VERSION);
+        inventoryRequestChannel.setMethod(KapuaMethod.EXECUTE);
+        inventoryRequestChannel.setResource("bundles");
+        inventoryRequestChannel.setBundleAction(deviceInventoryBundleAction);
+
+        InventoryRequestPayload inventoryRequestPayload = new InventoryRequestPayload();
+        try {
+            inventoryRequestPayload.setDeviceInventoryBundle(deviceInventoryBundle);
+        } catch (Exception e) {
+            throw new DeviceManagementRequestContentException(e, deviceInventoryBundle);
+        }
+
+        InventoryBundleExecRequestMessage inventoryRequestMessage = new InventoryBundleExecRequestMessage() {
+            @Override
+            public Class<InventoryNoContentResponseMessage> getResponseClass() {
+                return InventoryNoContentResponseMessage.class;
+            }
+        };
+
+        inventoryRequestMessage.setScopeId(scopeId);
+        inventoryRequestMessage.setDeviceId(deviceId);
+        inventoryRequestMessage.setCapturedOn(new Date());
+        inventoryRequestMessage.setPayload(inventoryRequestPayload);
+        inventoryRequestMessage.setChannel(inventoryRequestChannel);
+
+        //
+        // Do exec
+        DeviceCallExecutor<?, ?, ?, InventoryNoContentResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
+        InventoryNoContentResponseMessage responseMessage = deviceApplicationCall.send();
+
+        //
+        // Create event
+        createDeviceEvent(scopeId, deviceId, inventoryRequestMessage, responseMessage);
+
+        //
+        // Check response
+        checkResponseAcceptedOrThrowError(responseMessage);
     }
 
     @Override
@@ -152,7 +229,13 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         InventoryRequestPayload inventoryRequestPayload = new InventoryRequestPayload();
 
-        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        InventoryEmptyRequestMessage inventoryRequestMessage = new InventoryEmptyRequestMessage() {
+            @Override
+            public Class<InventorySystemPackagesResponseMessage> getResponseClass() {
+                return InventorySystemPackagesResponseMessage.class;
+            }
+        };
+
         inventoryRequestMessage.setScopeId(scopeId);
         inventoryRequestMessage.setDeviceId(deviceId);
         inventoryRequestMessage.setCapturedOn(new Date());
@@ -161,8 +244,8 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryResponseMessage responseMessage = deviceApplicationCall.send();
+        DeviceCallExecutor<?, ?, ?, InventorySystemPackagesResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
+        InventorySystemPackagesResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
         // Create event
@@ -195,7 +278,13 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         InventoryRequestPayload inventoryRequestPayload = new InventoryRequestPayload();
 
-        InventoryRequestMessage inventoryRequestMessage = new InventoryRequestMessage();
+        InventoryEmptyRequestMessage inventoryRequestMessage = new InventoryEmptyRequestMessage() {
+            @Override
+            public Class<InventoryPackagesResponseMessage> getResponseClass() {
+                return InventoryPackagesResponseMessage.class;
+            }
+        };
+
         inventoryRequestMessage.setScopeId(scopeId);
         inventoryRequestMessage.setDeviceId(deviceId);
         inventoryRequestMessage.setCapturedOn(new Date());
@@ -204,8 +293,8 @@ public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManageme
 
         //
         // Do get
-        DeviceCallExecutor<?, ?, ?, InventoryResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
-        InventoryResponseMessage responseMessage = deviceApplicationCall.send();
+        DeviceCallExecutor<?, ?, ?, InventoryPackagesResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(inventoryRequestMessage, timeout);
+        InventoryPackagesResponseMessage responseMessage = deviceApplicationCall.send();
 
         //
         // Create event

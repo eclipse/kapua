@@ -16,6 +16,7 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryBundle;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryItem;
@@ -34,6 +35,10 @@ public interface GwtDeviceInventoryManagementService extends RemoteService {
 
     ListLoadResult<GwtInventoryBundle> findDeviceBundles(String scopeIdString, String deviceIdString)
             throws GwtKapuaException;
+
+    void execDeviceBundle(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtInventoryBundle gwtInventoryBundle, boolean startOrStop)
+            throws GwtKapuaException;
+
 
     ListLoadResult<GwtInventorySystemPackage> findDeviceSystemPackages(String scopeIdString, String deviceIdString)
             throws GwtKapuaException;

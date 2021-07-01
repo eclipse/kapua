@@ -18,6 +18,7 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryBundle;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryItem;
@@ -28,14 +29,15 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundleAction;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackage;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackage;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackage;
+import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,9 +61,9 @@ public class GwtDeviceInventoryManagementServiceImpl extends KapuaRemoteServiceS
             throws GwtKapuaException {
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
-            KapuaId id = KapuaEid.parseCompactId(deviceIdString);
+            KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
 
-            DeviceInventory deviceInventory = DEVICE_INVENTORY_MANAGEMENT_SERVICE.getInventory(scopeId, id, null);
+            DeviceInventory deviceInventory = DEVICE_INVENTORY_MANAGEMENT_SERVICE.getInventory(scopeId, deviceId, null);
 
             List<GwtInventoryItem> gwtInventoryItems = new ArrayList<GwtInventoryItem>();
             for (DeviceInventoryItem inventoryItem : deviceInventory.getInventoryItems()) {
@@ -84,9 +86,9 @@ public class GwtDeviceInventoryManagementServiceImpl extends KapuaRemoteServiceS
             throws GwtKapuaException {
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
-            KapuaId id = KapuaEid.parseCompactId(deviceIdString);
+            KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
 
-            DeviceInventoryBundles inventoryBundles = DEVICE_INVENTORY_MANAGEMENT_SERVICE.getBundles(scopeId, id, null);
+            DeviceInventoryBundles inventoryBundles = DEVICE_INVENTORY_MANAGEMENT_SERVICE.getBundles(scopeId, deviceId, null);
 
             List<GwtInventoryBundle> gwtInventoryBundles = new ArrayList<GwtInventoryBundle>();
             for (DeviceInventoryBundle inventoryBundle : inventoryBundles.getInventoryBundles()) {
@@ -106,13 +108,37 @@ public class GwtDeviceInventoryManagementServiceImpl extends KapuaRemoteServiceS
     }
 
     @Override
+    public void execDeviceBundle(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtInventoryBundle gwtInventoryBundle, boolean startOrStop) throws GwtKapuaException {
+        checkXSRFToken(xsrfToken);
+
+        try {
+            KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
+            KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
+
+            DeviceInventoryBundle deviceInventoryBundle = DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventoryBundle();
+            deviceInventoryBundle.setName(gwtInventoryBundle.getName());
+            deviceInventoryBundle.setVersion(gwtInventoryBundle.getVersion());
+
+            DEVICE_INVENTORY_MANAGEMENT_SERVICE.execBundle(
+                    scopeId,
+                    deviceId,
+                    deviceInventoryBundle,
+                    startOrStop ? DeviceInventoryBundleAction.START : DeviceInventoryBundleAction.STOP,
+                    null);
+
+        } catch (Exception exception) {
+            throw KapuaExceptionHandler.buildExceptionFromError(exception);
+        }
+    }
+
+    @Override
     public ListLoadResult<GwtInventorySystemPackage> findDeviceSystemPackages(String scopeIdString, String deviceIdString)
             throws GwtKapuaException {
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
-            KapuaId id = KapuaEid.parseCompactId(deviceIdString);
+            KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
 
-            DeviceInventorySystemPackages systemPackages = DEVICE_INVENTORY_MANAGEMENT_SERVICE.getSystemPackages(scopeId, id, null);
+            DeviceInventorySystemPackages systemPackages = DEVICE_INVENTORY_MANAGEMENT_SERVICE.getSystemPackages(scopeId, deviceId, null);
 
             List<GwtInventorySystemPackage> gwtInventorySystemPackages = new ArrayList<GwtInventorySystemPackage>();
             for (DeviceInventorySystemPackage inventorySystemPackage : systemPackages.getSystemPackages()) {

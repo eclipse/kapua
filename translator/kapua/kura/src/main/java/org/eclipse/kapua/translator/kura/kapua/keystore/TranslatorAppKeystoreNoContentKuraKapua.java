@@ -13,11 +13,8 @@
 package org.eclipse.kapua.translator.kura.kapua.keystore;
 
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
-import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
-import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreNoContentResponseMessage;
-import org.eclipse.kapua.service.device.management.keystore.message.internal.response.KeystoreResponsePayload;
+import org.eclipse.kapua.service.device.management.keystore.internal.message.response.KeystoreNoContentResponseMessage;
 import org.eclipse.kapua.translator.Translator;
-import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
 /**
  * {@link Translator} implementation from {@link KuraResponseMessage} to {@link KeystoreNoContentResponseMessage}
@@ -33,20 +30,5 @@ public class TranslatorAppKeystoreNoContentKuraKapua extends AbstractTranslatorA
      */
     public TranslatorAppKeystoreNoContentKuraKapua() {
         super(KeystoreNoContentResponseMessage.class);
-    }
-
-    @Override
-    protected KeystoreResponsePayload translatePayload(KuraResponsePayload kuraResponsePayload) throws InvalidPayloadException {
-        try {
-            KeystoreResponsePayload keystoreResponsePayload = super.translatePayload(kuraResponsePayload);
-
-            if (kuraResponsePayload.hasBody()) {
-                keystoreResponsePayload.setBody(kuraResponsePayload.getBody());
-            }
-
-            return keystoreResponsePayload;
-        } catch (Exception e) {
-            throw new InvalidPayloadException(e, kuraResponsePayload);
-        }
     }
 }

@@ -19,18 +19,22 @@ import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundleAction;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.packages.DeviceInventoryPackages;
-import org.eclipse.kapua.service.device.management.inventory.model.inventory.system.DeviceInventorySystemPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackages;
+import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.registry.Device;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("{scopeId}/devices/{deviceId}/inventory")
 public class DeviceManagementInventory extends AbstractKapuaResource {
@@ -75,6 +79,56 @@ public class DeviceManagementInventory extends AbstractKapuaResource {
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout) throws KapuaException {
         return DEVICE_INVENTORY_MANAGEMENT_SERVICE.getBundles(scopeId, deviceId, timeout);
+    }
+
+    /**
+     * Starts a  {@link DeviceInventoryBundle} present on the {@link Device}.
+     *
+     * @param scopeId               The {@link Device#getScopeId()}.
+     * @param deviceId              The {@link Device#getId()}.
+     * @param deviceInventoryBundle The {@link DeviceInventoryBundle} to start.
+     * @param timeout               The timeout of the operation in milliseconds
+     * @return The {@link DeviceInventoryBundles}.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+    @POST
+    @Path("bundles/_start")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response startInventoryBundles(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @QueryParam("timeout") Long timeout,
+            DeviceInventoryBundle deviceInventoryBundle) throws KapuaException {
+
+        DEVICE_INVENTORY_MANAGEMENT_SERVICE.execBundle(scopeId, deviceId, deviceInventoryBundle, DeviceInventoryBundleAction.START, timeout);
+
+        return returnNoContent();
+    }
+
+    /**
+     * Starts a  {@link DeviceInventoryBundle} present on the {@link Device}.
+     *
+     * @param scopeId               The {@link Device#getScopeId()}.
+     * @param deviceId              The {@link Device#getId()}.
+     * @param deviceInventoryBundle The {@link DeviceInventoryBundle} to start.
+     * @param timeout               The timeout of the operation in milliseconds
+     * @return The {@link DeviceInventoryBundles}.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 1.5.0
+     */
+    @POST
+    @Path("bundles/_stop")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response stopInventoryBundles(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @QueryParam("timeout") Long timeout,
+            DeviceInventoryBundle deviceInventoryBundle) throws KapuaException {
+
+        DEVICE_INVENTORY_MANAGEMENT_SERVICE.execBundle(scopeId, deviceId, deviceInventoryBundle, DeviceInventoryBundleAction.STOP, timeout);
+
+        return returnNoContent();
     }
 
     /**

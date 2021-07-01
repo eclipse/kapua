@@ -59,5 +59,4 @@ public abstract class KapuaAppChannelImpl implements KapuaAppChannel {
     public void setVersion(KapuaAppProperties appVersion) {
         this.appVersion = appVersion;
     }
-
 }

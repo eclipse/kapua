@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.inventory.model.bundle.internal;
 
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundle;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.inventory.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 
 import java.util.ArrayList;
 import java.util.List;

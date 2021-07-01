@@ -17,7 +17,12 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoader;
 import com.extjs.gxt.ui.client.data.LoadEvent;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -37,6 +42,9 @@ import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
+import org.eclipse.kapua.app.console.module.device.client.device.bundles.BundleStartButton;
+import org.eclipse.kapua.app.console.module.device.client.device.bundles.BundleStopButton;
+import org.eclipse.kapua.app.console.module.device.client.device.inventory.dialog.InventoryBundleStartStopDialog;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryBundle;
@@ -58,6 +66,10 @@ public class DeviceTabInventoryTabBundles extends TabItem {
     private DeviceTabInventory parentTabPanel;
     private Grid<GwtInventoryBundle> grid;
     private ListLoader<ListLoadResult<GwtInventoryBundle>> storeLoader;
+
+    Button startButton;
+    Button stopButton;
+    Button refreshButton;
 
     public DeviceTabInventoryTabBundles(DeviceTabInventory parentTabPanel) {
         super("Bundles", new KapuaIcon(IconSet.TH));
@@ -133,7 +145,51 @@ public class DeviceTabInventoryTabBundles extends TabItem {
         grid.getView().setAutoFill(true);
         grid.getView().setEmptyText("No bundles found...");
 
-        Button refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
+        grid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GwtInventoryBundle>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<GwtInventoryBundle> selectionChangedEvent) {
+                checkButtonEnablement();
+            }
+        });
+
+        // Start Button
+        startButton = new BundleStartButton(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                InventoryBundleStartStopDialog startStopDialog = new InventoryBundleStartStopDialog(getSelectedDevice(), grid.getSelectionModel().getSelectedItem(), true);
+
+                startStopDialog.addListener(Events.Hide, new Listener<BaseEvent>() {
+                    @Override
+                    public void handleEvent(BaseEvent baseEvent) {
+                        setDirty(true);
+                        refresh();
+                    }
+                });
+
+                startStopDialog.show();
+            }
+        });
+
+        // Stop Button
+        stopButton = new BundleStopButton(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                InventoryBundleStartStopDialog startStopDialog = new InventoryBundleStartStopDialog(getSelectedDevice(), grid.getSelectionModel().getSelectedItem(), false);
+
+                startStopDialog.addListener(Events.Hide, new Listener<BaseEvent>() {
+                    @Override
+                    public void handleEvent(BaseEvent baseEvent) {
+                        setDirty(true);
+                        refresh();
+                    }
+                });
+
+                startStopDialog.show();
+            }
+        });
+
+        // Refresh Button
+        refreshButton = new RefreshButton(new SelectionListener<ButtonEvent>() {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -148,8 +204,11 @@ public class DeviceTabInventoryTabBundles extends TabItem {
 
         ToolBar toolBar = new ToolBar();
         toolBar.setBorders(true);
+        toolBar.add(startButton);
+        toolBar.add(stopButton);
         toolBar.add(refreshButton);
-        toolBar.setEnabled(getSelectedDevice() != null);
+
+        checkButtonEnablement();
 
         ContentPanel rootContentPanel = new ContentPanel();
         rootContentPanel.setLayout(new FitLayout());
@@ -162,6 +221,14 @@ public class DeviceTabInventoryTabBundles extends TabItem {
         add(rootContentPanel);
 
         componentInitialized = true;
+    }
+
+    private void checkButtonEnablement() {
+        GwtInventoryBundle selectedBundle = grid.getSelectionModel().getSelectedItem();
+
+        startButton.setEnabled(getSelectedDevice() != null && getSelectedDevice().isOnline() && selectedBundle != null && !"ACTIVE".equals(selectedBundle.getStatus()));
+        stopButton.setEnabled(getSelectedDevice() != null && getSelectedDevice().isOnline() && selectedBundle != null && "ACTIVE".equals(selectedBundle.getStatus()));
+        refreshButton.setEnabled(getSelectedDevice() != null && getSelectedDevice().isOnline());
     }
 
     public void refresh() {
