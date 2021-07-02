@@ -65,7 +65,7 @@ public class EsClientWrapper implements AutoCloseable {
 
     private final EsClusterDescriptor esClusterDescriptor;
 
-    public EsClientWrapper(EsClusterDescriptor esClusterDescriptor, int esSocketTimeout, int batchSize, int taskPollingInterval) {
+    public EsClientWrapper(EsClusterDescriptor esClusterDescriptor, int esSocketTimeout, int batchSize, int taskPollingInterval, boolean esIgnoreSslCertificate) {
         this.esClusterDescriptor = esClusterDescriptor;
         String scheme = esClusterDescriptor.isEsClusterSsl() ? "https://" : "http://";
         RestClientBuilder restClientBuilder = RestClient
@@ -83,6 +83,9 @@ public class EsClientWrapper implements AutoCloseable {
                         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(esClusterDescriptor.getUsername(),
                                                                                                           esClusterDescriptor.getPassword()));
                         builder.disableAuthCaching().setDefaultCredentialsProvider(credentialsProvider);
+                    }
+                    if (esIgnoreSslCertificate) {
+                        builder.setSSLHostnameVerifier((hostname, session) -> true);
                     }
                     return builder;
                 })

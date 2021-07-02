@@ -50,6 +50,7 @@ public class Migrator {
     private final String jdbcUsername;
     private final String jdbcPassword;
     private final int esSocketTimeout;
+    private final boolean esIgnoreSslCertificate;
     private final int batchSize;
     private final int taskPollingInterval;
     private final Map<String, String> migrationReport = new TreeMap<>();
@@ -64,6 +65,7 @@ public class Migrator {
         esSocketTimeout = esMigratorSetting.getInt(EsMigratorSettingKey.ELASTICSEARCH_SOCKET_TIMEOUT, DEFAULT_ELASTICSEARCH_SOCKET_TIMEOUT);
         batchSize = esMigratorSetting.getInt(EsMigratorSettingKey.ELASTICSEARCH_BATCH_SIZE, DEFAULT_ELASTICSEARCH_BATCH_SIZE);
         taskPollingInterval = esMigratorSetting.getInt(EsMigratorSettingKey.ELASTICSEARCH_TASK_POLLING_INTERVAL, DEFAULT_ELASTICSEARCH_TASK_POLLING_INTERVAL);
+        esIgnoreSslCertificate = esMigratorSetting.getBoolean(EsMigratorSettingKey.ELASTICSEARCH_CLUSTER_SSL_IGNORE_CERTIFICATE, false);
     }
 
     void doMigrate() {
@@ -72,7 +74,7 @@ public class Migrator {
             LOGGER.error("Unable to gather Account IDs from the DB. Migration failed.");
             return;
         }
-        try (EsClientWrapper client = new EsClientWrapper(esClusterDescriptor, esSocketTimeout, batchSize, taskPollingInterval)) {
+        try (EsClientWrapper client = new EsClientWrapper(esClusterDescriptor, esSocketTimeout, batchSize, taskPollingInterval, esIgnoreSslCertificate)) {
             // Determine ES Version
             MainResponse mainResponse = client.info();
             LOGGER.debug("Elasticsearch Version {}", mainResponse.getVersion());

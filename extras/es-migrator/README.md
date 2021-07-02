@@ -73,7 +73,8 @@ The following settings are available as system properties when running the migra
 |Name|Description|Default Value|
 |----|-----------|-------------|
 |elasticsearch.cluster.nodes|The address of the ES cluster|`localhost:9200`|
-|elasticsearch.cluster.ssl|Whether to use HTTPS when reaching Elasticsearch|`false`|
+|elasticsearch.cluster.ssl|Use HTTPS when reaching Elasticsearch|`false`|
+|elasticsearch.cluster.ssl.ignore-certificate|Skip validation on the HTTPS certificate when reaching Elasticsearch|`false`|
 |elasticsearch.username|The Elasticsearch Username|*empty value*|
 |elasticsearch.password|The Elasticsearch Password|*empty value*|
 |elasticsearch.socket-timeout|The Socket Timeout for the Elasticsearch client. See [docs](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/7.8/_timeouts.html)|`30000`|

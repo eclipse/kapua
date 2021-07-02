@@ -25,6 +25,10 @@ public enum EsMigratorSettingKey implements SettingKey {
      */
     ELASTICSEARCH_CLUSTER_SSL("elasticsearch.cluster.ssl"),
     /**
+     * Skip SSL Certificate Validation when interacting with Elasticsearch
+     */
+    ELASTICSEARCH_CLUSTER_SSL_IGNORE_CERTIFICATE("elasticsearch.cluster.ssl.ignore-certificate"),
+    /**
      * Elasticsearch User
      */
     ELASTICSEARCH_USERNAME("elasticsearch.username"),
