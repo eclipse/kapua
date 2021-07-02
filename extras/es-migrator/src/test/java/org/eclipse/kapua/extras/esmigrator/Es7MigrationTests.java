@@ -10,8 +10,9 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.extras.esmigrator.migrations;
+package org.eclipse.kapua.extras.esmigrator;
 
+import org.eclipse.kapua.extras.esmigrator.Es7Migration;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 
 import org.junit.Assert;

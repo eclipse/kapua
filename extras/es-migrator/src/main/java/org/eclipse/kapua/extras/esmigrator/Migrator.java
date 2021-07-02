@@ -25,14 +25,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.eclipse.kapua.extras.esmigrator.migrations.Es6Migration;
-import org.eclipse.kapua.extras.esmigrator.migrations.Es7Migration;
-import org.eclipse.kapua.extras.esmigrator.migrations.EsMigration;
 import org.eclipse.kapua.extras.esmigrator.settings.EsMigratorSetting;
 import org.eclipse.kapua.extras.esmigrator.settings.EsMigratorSettingKey;
 
 import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.main.MainResponse;
+import org.elasticsearch.client.core.MainResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,20 +73,20 @@ public class Migrator {
             return;
         }
         try (EsClientWrapper client = new EsClientWrapper(esClusterDescriptor, esSocketTimeout, batchSize, taskPollingInterval)) {
-            EsMigration migration;
             // Determine ES Version
             MainResponse mainResponse = client.info();
             LOGGER.debug("Elasticsearch Version {}", mainResponse.getVersion());
-            if (mainResponse.getVersion().major == 6) {
-                migration = new Es6Migration(client, esClusterDescriptor, migrationReport);
+            String version = mainResponse.getVersion().getNumber();
+            if (!version.startsWith("7")) {
+                LOGGER.error("This version of the Migration Tool MUST run against an Elasticsearch 7 cluster. Version found: {}", version);
             } else {
-                migration = new Es7Migration(client, esClusterDescriptor, migrationReport);
-            }
-            for (String accountId : accountIds) {
-                try {
-                    migration.migrateAccountIndices(accountId);
-                } catch (IOException | ElasticsearchException exception) {
-                    LOGGER.error("Unmanaged Elasticsearch exception in migration steps: {}", MigratorUtils.getExceptionMessageOrName(exception));
+                Es7Migration migration = new Es7Migration(client, esClusterDescriptor, migrationReport);
+                for (String accountId : accountIds) {
+                    try {
+                        migration.migrateAccountIndices(accountId);
+                    } catch (IOException | ElasticsearchException exception) {
+                        LOGGER.error("Unmanaged Elasticsearch exception in migration steps: {}", MigratorUtils.getExceptionMessageOrName(exception));
+                    }
                 }
             }
         } catch (IOException | ElasticsearchException exception) {
@@ -100,6 +97,7 @@ public class Migrator {
             writeReportToFile();
         }
     }
+
 
     private Set<String> gatherAccountIds() {
         Set<String> accountIds = new HashSet<>();

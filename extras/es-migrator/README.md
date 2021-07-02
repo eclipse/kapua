@@ -45,9 +45,10 @@ new one.
 
 According to the Elasticsearch version found at the specified endpoints, it will perform the needed operations in order
 to have a working Kapua deployment without losing any data when updating to a new version. Please note that if you need
-to upgrade from Kapua 1.3.x to Kapua 1.5.0, you CANNOT do a direct upgrade but you MUST upgrade to an intermediate Kapua
+to upgrade from Kapua 1.3.x to Kapua 1.5.x, you CANNOT do a direct upgrade but you MUST upgrade to an intermediate Kapua
 1.4.x and run the Migration tool once per every Kapua upgrade (so once you upgrade to Kapua 1.4.x, and again when
-upgrading to Kapua 1.5.0).
+upgrading to Kapua 1.5.0). The Migration Tool implementation is different between Kapua 1.4.x and Kapua 1.5.x, so make
+sure to use the correct version of the tool according to the currently deployed Kapua (and Elasticsearch) version.
 
 When running in a Kapua 1.4.x (Elasticsearch 6) deployment, the application will first gather all Account IDs connecting
 directly to the SQL database, and then scan all indices in a given Elasticsearch cluster and, for every registry index,

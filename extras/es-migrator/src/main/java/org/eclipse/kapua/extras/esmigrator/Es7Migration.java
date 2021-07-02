@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.extras.esmigrator.migrations;
+package org.eclipse.kapua.extras.esmigrator;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,18 +18,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.eclipse.kapua.extras.esmigrator.EsClientWrapper;
-import org.eclipse.kapua.extras.esmigrator.EsClusterDescriptor;
-import org.eclipse.kapua.extras.esmigrator.MigratorUtils;
-import org.eclipse.kapua.extras.esmigrator.ReindexTaskResult;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.ElasticsearchException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Es7Migration implements EsMigration {
+public class Es7Migration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Es7Migration.class.getName());
 
@@ -49,7 +44,6 @@ public class Es7Migration implements EsMigration {
         this.migrationReport = migrationReport;
     }
 
-    @Override
     public void migrateAccountIndices(String accountId) throws IOException, ElasticsearchException {
         String indicesPrefix = esClusterDescriptor.getIndicesPrefix();
         LOGGER.debug("Migrating indices for account id {}", accountId);
