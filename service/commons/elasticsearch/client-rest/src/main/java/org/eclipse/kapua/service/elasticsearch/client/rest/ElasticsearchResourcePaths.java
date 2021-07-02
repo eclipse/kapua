@@ -72,7 +72,7 @@ public class ElasticsearchResourcePaths {
      */
     public static String insertType(@NotNull InsertRequest request) {
         if (request.getId() != null) {
-            return String.format("%s?id=%s&version=1&version_type=external", type(request.getTypeDescriptor()), request.getId());
+            return String.format("%s/%s", type(request.getTypeDescriptor()), request.getId());
         } else {
             return type(request.getTypeDescriptor());
         }
@@ -82,7 +82,7 @@ public class ElasticsearchResourcePaths {
      * @since 1.0.0
      */
     public static String mapping(@NotNull TypeDescriptor typeDescriptor) {
-        return String.format("/%s/_mapping?include_type_name=false", typeDescriptor.getIndex());
+        return String.format("/%s/_mapping", typeDescriptor.getIndex());
     }
 
     /**
@@ -110,7 +110,7 @@ public class ElasticsearchResourcePaths {
      * @since 1.0.0
      */
     public static String upsert(@NotNull TypeDescriptor typeDescriptor, @NotNull String id) {
-        return String.format("/%s/_doc/%s/_update", typeDescriptor.getIndex(), id);
+        return String.format("/%s/_update/%s", typeDescriptor.getIndex(), id);
     }
 
 }

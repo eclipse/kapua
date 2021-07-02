@@ -47,8 +47,8 @@ import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
 import org.eclipse.kapua.service.elasticsearch.client.rest.exception.RequestEntityWriteError;
 import org.eclipse.kapua.service.elasticsearch.client.rest.exception.ResponseEntityReadError;
-import org.eclipse.kapua.service.elasticsearch.client.rest.utils.ApplicationJsonEntityBuilder;
-import org.eclipse.kapua.service.elasticsearch.client.rest.utils.ContentTypeApplicationJsonHeader;
+
+import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.ResponseException;
 import org.elasticsearch.client.RestClient;
@@ -57,7 +57,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -128,18 +127,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         LOG.debug("Insert - converted object: '{}'", insertRequestStorableMap);
 
         String json = writeRequestFromMap(insertRequestStorableMap);
-
-        Response insertResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_POST,
-                                        ElasticsearchResourcePaths.insertType(insertRequest),
-                                        Collections.emptyMap(),
-                                        ApplicationJsonEntityBuilder.buildFrom(json),
-                                        new ContentTypeApplicationJsonHeader()
-                                ),
-                insertRequest.getTypeDescriptor().getIndex(),
-                "INSERT");
+        Request request = new Request(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.insertType(insertRequest));
+        request.setJsonEntity(json);
+        Response insertResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), insertRequest.getTypeDescriptor().getIndex(),"INSERT");
 
         if (isRequestSuccessful(insertResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(insertResponse);
@@ -163,17 +153,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         LOG.debug("Upsert - converted object: '{}'", updateRequestMap);
 
         String json = writeRequestFromMap(updateRequestMap);
-
-        Response updateResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_POST,
-                                        ElasticsearchResourcePaths.upsert(updateRequest.getTypeDescriptor(), updateRequest.getId()),
-                                        Collections.emptyMap(),
-                                        ApplicationJsonEntityBuilder.buildFrom(json),
-                                        new ContentTypeApplicationJsonHeader()),
-                updateRequest.getTypeDescriptor().getIndex(),
-                "UPSERT");
+        Request request = new Request(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.upsert(updateRequest.getTypeDescriptor(), updateRequest.getId()));
+        request.setJsonEntity(json);
+        Response updateResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), updateRequest.getTypeDescriptor().getIndex(), "UPSERT");
 
         if (isRequestSuccessful(updateResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(updateResponse);
@@ -196,8 +178,6 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
             bulkOperation.append("{ \"update\": {\"_id\": \"")
                     .append(upsertRequest.getId())
-                    .append("\", \"_type\": \"")
-                    .append("_doc")
                     .append("\", \"_index\": \"")
                     .append(upsertRequest.getTypeDescriptor().getIndex())
                     .append("\"}\n");
@@ -206,17 +186,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
             bulkOperation.append(writeRequestFromMap(storableMap));
             bulkOperation.append(", \"doc_as_upsert\": true }\n");
         }
-
-        Response updateResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_POST,
-                                        ElasticsearchResourcePaths.getBulkPath(),
-                                        Collections.emptyMap(),
-                                        ApplicationJsonEntityBuilder.buildFrom(bulkOperation.toString()),
-                                        new ContentTypeApplicationJsonHeader()),
-                "multi-index",
-                "UPSERT BULK");
+        Request request = new Request(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.getBulkPath());
+        request.setJsonEntity(bulkOperation.toString());
+        Response updateResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), "multi-index", "UPSERT BULK");
 
         if (isRequestSuccessful(updateResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(updateResponse);
@@ -277,21 +249,15 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
         long totalCount = 0;
         ArrayNode resultsNode = null;
-        Response queryResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_GET,
-                                        ElasticsearchResourcePaths.search(typeDescriptor),
-                                        Collections.emptyMap(),
-                                        ApplicationJsonEntityBuilder.buildFrom(json),
-                                        new ContentTypeApplicationJsonHeader()),
-                typeDescriptor.getIndex(), "QUERY");
+        Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.search(typeDescriptor));
+        request.setJsonEntity(json);
+        Response queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "QUERY");
 
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(queryResponse);
 
-            JsonNode hitsNode = responseNode.get(ElasticsearchKeywords.KEY_HITS);
-            totalCount = hitsNode.get(ElasticsearchKeywords.KEY_TOTAL).asLong();
+            JsonNode hitsNode = responseNode.path(ElasticsearchKeywords.KEY_HITS);
+            totalCount = hitsNode.path(ElasticsearchKeywords.KEY_TOTAL).path(ElasticsearchKeywords.KEY_VALUE).asLong();
             if (totalCount > Integer.MAX_VALUE) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEEDED);
             }
@@ -328,23 +294,15 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         LOG.debug(COUNT_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);
-
-        Response queryResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_GET,
-                                        ElasticsearchResourcePaths.search(typeDescriptor),
-                                        Collections.emptyMap(),
-                                        ApplicationJsonEntityBuilder.buildFrom(json),
-                                        new ContentTypeApplicationJsonHeader()),
-                typeDescriptor.getIndex(), "COUNT");
+        Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.search(typeDescriptor));
+        request.setJsonEntity(json);
+        Response queryResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "COUNT");
 
         long totalCount = 0;
         if (isRequestSuccessful(queryResponse)) {
             JsonNode responseNode = readResponseAsJsonNode(queryResponse);
 
-            JsonNode hitsNode = responseNode.get(ElasticsearchKeywords.KEY_HITS);
-            totalCount = hitsNode.get(ElasticsearchKeywords.KEY_TOTAL).asLong();
+            totalCount = responseNode.path(ElasticsearchKeywords.KEY_HITS).path(ElasticsearchKeywords.KEY_TOTAL).path(ElasticsearchKeywords.KEY_VALUE).asLong();
             if (totalCount > Integer.MAX_VALUE) {
                 throw new ClientException(ClientErrorCodes.ACTION_ERROR, CLIENT_HITS_MAX_VALUE_EXCEEDED);
             }
@@ -359,15 +317,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public void delete(TypeDescriptor typeDescriptor, String id) throws ClientException {
         LOG.debug("Delete - id: '{}'", id);
-        Response deleteResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_DELETE,
-                                        ElasticsearchResourcePaths.id(typeDescriptor, id),
-                                        Collections.emptyMap()
-                                ),
-                typeDescriptor.getIndex(),
-                ElasticsearchKeywords.ACTION_DELETE);
+        Request request = new Request(ElasticsearchKeywords.ACTION_DELETE, ElasticsearchResourcePaths.id(typeDescriptor, id));
+        Response deleteResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), ElasticsearchKeywords.ACTION_DELETE);
 
         if (!isRequestSuccessful(deleteResponse) &&
                 !isRequestNotFound(deleteResponse)) {
@@ -382,17 +333,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         LOG.debug(QUERY_CONVERTED_QUERY, queryJsonNode);
 
         String json = writeRequestFromJsonNode(queryJsonNode);
-
-        Response deleteResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_POST,
-                                        ElasticsearchResourcePaths.deleteByQuery(typeDescriptor),
-                                        Collections.emptyMap(),
-                                        ApplicationJsonEntityBuilder.buildFrom(json),
-                                        new ContentTypeApplicationJsonHeader()),
-                typeDescriptor.getIndex(),
-                "DELETE BY QUERY");
+        Request request = new Request(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.deleteByQuery(typeDescriptor));
+        request.setJsonEntity(json);
+        Response deleteResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "DELETE BY QUERY");
 
         if (!isRequestSuccessful(deleteResponse) &&
                 !isRequestNotFound(deleteResponse) &&
@@ -404,15 +347,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public IndexResponse isIndexExists(IndexRequest indexRequest) throws ClientException {
         LOG.debug("Index exists - index name: '{}'", indexRequest.getIndex());
-        Response isIndexExistsResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_HEAD,
-                                        ElasticsearchResourcePaths.index(indexRequest.getIndex()),
-                                        Collections.emptyMap()
-                                ),
-                indexRequest.getIndex(),
-                "INDEX EXIST");
+        Request request = new Request(ElasticsearchKeywords.ACTION_HEAD, ElasticsearchResourcePaths.index(indexRequest.getIndex()));
+        Response isIndexExistsResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), indexRequest.getIndex(), "INDEX EXIST");
 
         if (isRequestSuccessful(isIndexExistsResponse)) {
             return new IndexResponse(true);
@@ -426,15 +362,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public IndexResponse findIndexes(IndexRequest indexRequest) throws ClientException {
         LOG.debug("Find indexes - index prefix: '{}'", indexRequest.getIndex());
-        Response findIndexResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_GET,
-                                        ElasticsearchResourcePaths.findIndex(indexRequest.getIndex()),
-                                        Collections.singletonMap("pretty", "true")
-                                ),
-                indexRequest.getIndex(),
-                "INDEX EXIST");
+        Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.findIndex(indexRequest.getIndex()));
+        request.addParameter("pretty", "true");
+        Response findIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), indexRequest.getIndex(),"INDEX EXIST");
 
         if (isRequestSuccessful(findIndexResponse)) {
             try {
@@ -454,17 +384,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         LOG.debug("Create index - object: '{}'", indexSettings);
 
         String json = writeRequestFromJsonNode(indexSettings);
-
-        Response createIndexResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_PUT,
-                                        ElasticsearchResourcePaths.index(indexName) + "?include_type_name=false",
-                                        Collections.emptyMap(),
-                                        ApplicationJsonEntityBuilder.buildFrom(json),
-                                        new ContentTypeApplicationJsonHeader()),
-                indexName,
-                "CREATE INDEX");
+        Request request = new Request(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.index(indexName));
+        request.setJsonEntity(json);
+        Response createIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), indexName, "CREATE INDEX");
 
         if (!isRequestSuccessful(createIndexResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Create index", createIndexResponse);
@@ -474,15 +396,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public boolean isMappingExists(TypeDescriptor typeDescriptor) throws ClientException {
         LOG.debug("Mapping exists - mapping name: '{} - {}'", typeDescriptor.getIndex(), typeDescriptor.getType());
-        Response isMappingExistsResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_GET,
-                                        ElasticsearchResourcePaths.mapping(typeDescriptor),
-                                        Collections.emptyMap()
-                                ),
-                typeDescriptor.getIndex(),
-                "MAPPING EXIST");
+        Request request = new Request(ElasticsearchKeywords.ACTION_GET, ElasticsearchResourcePaths.mapping(typeDescriptor));
+        Response isMappingExistsResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "MAPPING EXIST");
 
         if (isRequestSuccessful(isMappingExistsResponse)) {
             return true;
@@ -498,17 +413,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         LOG.debug("Create mapping - object: '{}, index: {}, type: {}'", mapping, typeDescriptor.getIndex(), typeDescriptor.getType());
 
         String json = writeRequestFromJsonNode(mapping);
-
-        Response createMappingResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_PUT,
-                                        ElasticsearchResourcePaths.mapping(typeDescriptor),
-                                        Collections.emptyMap(),
-                                        ApplicationJsonEntityBuilder.buildFrom(json),
-                                        new ContentTypeApplicationJsonHeader()),
-                typeDescriptor.getIndex(),
-                "PUT MAPPING");
+        Request request = new Request(ElasticsearchKeywords.ACTION_PUT, ElasticsearchResourcePaths.mapping(typeDescriptor));
+        request.setJsonEntity(json);
+        Response createMappingResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), typeDescriptor.getIndex(), "PUT MAPPING");
 
         if (!isRequestSuccessful(createMappingResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Create mapping", createMappingResponse);
@@ -518,15 +425,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public void refreshAllIndexes() throws ClientException {
         LOG.debug("Refresh all indexes");
-        Response refreshIndexResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_POST,
-                                        ElasticsearchResourcePaths.refreshAllIndexes(),
-                                        Collections.emptyMap()
-                                ),
-                ElasticsearchKeywords.INDEX_ALL,
-                "REFRESH INDEX");
+        Request request = new Request(ElasticsearchKeywords.ACTION_POST, ElasticsearchResourcePaths.refreshAllIndexes());
+        Response refreshIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), ElasticsearchKeywords.INDEX_ALL, "REFRESH INDEX");
 
         if (!isRequestSuccessful(refreshIndexResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Refresh all indexes", refreshIndexResponse);
@@ -536,15 +436,8 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
     @Override
     public void deleteAllIndexes() throws ClientException {
         LOG.debug("Delete all indexes");
-        Response deleteIndexResponse = restCallTimeoutHandler(() ->
-                        getClient()
-                                .performRequest(
-                                        ElasticsearchKeywords.ACTION_DELETE,
-                                        ElasticsearchResourcePaths.index("_all"),
-                                        Collections.emptyMap()
-                                ),
-                ElasticsearchKeywords.INDEX_ALL,
-                "DELETE INDEX");
+        Request request = new Request(ElasticsearchKeywords.ACTION_DELETE, ElasticsearchResourcePaths.index("_all"));
+        Response deleteIndexResponse = restCallTimeoutHandler(() -> getClient().performRequest(request), ElasticsearchKeywords.INDEX_ALL, "DELETE INDEX");
 
         if (!isRequestSuccessful(deleteIndexResponse)) {
             throw buildExceptionFromUnsuccessfulResponse("Delete all indexes", deleteIndexResponse);
@@ -556,15 +449,10 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         LOG.debug("Delete indexes");
         for (String index : indexes) {
             LOG.debug("Delete index: {}", index);
+            Request request = new Request(ElasticsearchKeywords.ACTION_DELETE, ElasticsearchResourcePaths.index(index));
             Response deleteIndexResponse = restCallTimeoutHandler(() -> {
                 LOG.debug("Deleting index: {}", index);
-
-                return getClient()
-                        .performRequest(
-                                ElasticsearchKeywords.ACTION_DELETE,
-                                ElasticsearchResourcePaths.index(index),
-                                Collections.emptyMap()
-                        );
+                return getClient().performRequest(request);
             }, index, "DELETE INDEX");
 
             // for that call the deleteIndexResponse=null case could be considered as good response since if an index doesn't exist (404) the delete could be considered successful.

@@ -78,11 +78,17 @@ public class SchemaKeys {
      */
     public static final String KEY_FORMAT = "format";
     /**
-     * Index ky
+     * Index key
      *
      * @since 1.0.0
      */
     public static final String KEY_INDEX = "index";
+    /**
+     * Settings key
+     *
+     * @since 1.5.0
+     */
+    public static final String KEY_SETTINGS = "settings";
     /**
      * Source key
      *

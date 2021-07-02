@@ -13,6 +13,8 @@
 package org.eclipse.kapua.service.elasticsearch.server.embedded;
 
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
+
+import org.apache.commons.lang3.RandomStringUtils;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.common.UUIDs;
 import org.elasticsearch.common.settings.Settings;
@@ -31,6 +33,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Elasticsearch embedded node engine.
@@ -108,7 +111,6 @@ public class EsEmbeddedEngine implements Closeable {
                             .put("transport.tcp.port", transportTcpPort)
                             .put("http.host", restTcpHost)
                             .put("http.port", restTcpPort)
-                            .put("http.enabled", "true")
                             .put("http.type", "netty4")
                             .put("path.data", defaultDataDirectory)
                             .put("path.home", ".").build();
@@ -170,12 +172,7 @@ public class EsEmbeddedEngine implements Closeable {
     private static class PluggableNode extends Node {
 
         public PluggableNode(Settings settings, Collection<Class<? extends Plugin>> plugins) {
-            super(InternalSettingsPreparer.prepareEnvironment(settings, null), plugins, true);
-        }
-
-        @Override
-        protected void registerDerivedNodeNameWithLogger(String s) {
-            // Nothing to do since we don't use node name in logger
+            super(InternalSettingsPreparer.prepareEnvironment(settings, Collections.emptyMap(), null, () -> RandomStringUtils.randomAlphanumeric(10)), plugins, true);
         }
 
     }

@@ -162,8 +162,8 @@ public class RestClientSteps extends Assert {
 
         String restResponse = (String) stepData.get(REST_RESPONSE);
         Account account = (Account) stepData.get(var);
-        assertTrue(String.format("Response %s doesn't include %s.", restResponse, account.getId() + checkStr),
-                restResponse.contains(account.getId() + checkStr));
+        assertTrue(String.format("Response %s doesn't include %s.", restResponse, account.getId() + "-data-message" + checkStr),
+                restResponse.contains(account.getId() + "-data-message" + checkStr));
     }
 
     @Then("^REST response containing AccessToken$")

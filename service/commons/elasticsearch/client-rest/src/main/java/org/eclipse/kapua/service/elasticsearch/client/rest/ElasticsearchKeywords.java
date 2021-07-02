@@ -37,4 +37,5 @@ public class ElasticsearchKeywords {
     static final String KEY_UPDATE = "update";
     static final String KEY_HITS = "hits";
     static final String KEY_TOTAL = "total";
+    static final String KEY_VALUE = "value";
 }

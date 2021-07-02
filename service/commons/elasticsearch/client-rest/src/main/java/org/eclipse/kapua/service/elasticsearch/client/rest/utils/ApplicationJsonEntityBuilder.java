@@ -22,7 +22,9 @@ import org.apache.http.entity.ContentType;
  * Hence the name, what a surprise!
  *
  * @since 1.3.0
+ * @deprecated 1.5.0
  */
+@Deprecated
 public class ApplicationJsonEntityBuilder {
 
     private ApplicationJsonEntityBuilder() {

@@ -19,15 +19,35 @@ public enum EsMigratorSettingKey implements SettingKey {
     /**
      * Address of the Elasticsearch Cluster
      */
-    ELASTICSEARCH_CLUSTER_ADDRESS("elasticsearch.cluster.address"),
+    ELASTICSEARCH_CLUSTER_NODES("elasticsearch.cluster.nodes"),
     /**
-     * Port of the Elasticsearch Cluster
+     * Use HTTPS to interact with Elasticsearch
      */
-    ELASTICSEARCH_CLUSTER_PORT("elasticsearch.cluster.port"),
+    ELASTICSEARCH_CLUSTER_SSL("elasticsearch.cluster.ssl"),
     /**
-     * Scheme of the Elasticsearch Cluster. Allowed values: http, https
+     * Skip SSL Certificate Validation when interacting with Elasticsearch
      */
-    ELASTICSEARCH_CLUSTER_SCHEME("elasticsearch.cluster.scheme"),
+    ELASTICSEARCH_CLUSTER_SSL_IGNORE_CERTIFICATE("elasticsearch.cluster.ssl.ignore-certificate"),
+    /**
+     * Elasticsearch User
+     */
+    ELASTICSEARCH_USERNAME("elasticsearch.username"),
+    /**
+     * Elasticsearch Password
+     */
+    ELASTICSEARCH_PASSWORD("elasticsearch.password"),
+    /**
+     * Elasticsearch Socket Timeout
+     */
+    ELASTICSEARCH_SOCKET_TIMEOUT("elasticsearch.socket-timeout"),
+    /**
+     * Elasticsearch Batch Size
+     */
+    ELASTICSEARCH_BATCH_SIZE("elasticsearch.batch-size"),
+    /**
+     * Elasticsearch Task Pollint Interval
+     */
+    ELASTICSEARCH_TASK_POLLING_INTERVAL("elasticsearch.task-polling-interval"),
 
     /**
      * The refresh interval for new indexes
@@ -44,9 +64,31 @@ public enum EsMigratorSettingKey implements SettingKey {
     /**
      * The prefix of all index names to operate on
      */
-    DATASTORE_INDEX_PREFIX("datastore.index.prefix");
+    DATASTORE_INDEX_PREFIX("datastore.index.prefix"),
+    /**
+     * Action performed on a migrated index (ES5 to ES6 only). Allowed values: delete, close, none
+     */
+    DATASTORE_INDEX_MIGRATION_COMPLETE_ACTION("datastore.index.migration-complete.action"),
 
-    private String key;
+    /**
+     * Report results to file
+     */
+    MIGRATOR_REPORT_TO_FILE("migrator.report-to-file"),
+    /**
+     * JDBC Connection String
+     */
+    MIGRATOR_JDBC_CONNECTION_STRING("migrator.jdbc.connection-string"),
+    /**
+     * JDBC Username
+     */
+    MIGRATOR_JDBC_USERNAME("migrator.jdbc.username"),
+    /**
+     * JDBC Password
+     */
+    MIGRATOR_JDBC_PASSWORD("migrator.jdbc.password");
+
+
+    private final String key;
 
     private EsMigratorSettingKey(String key) {
         this.key = key;

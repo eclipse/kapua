@@ -44,13 +44,13 @@ public class DatastoreUtilsIndexNameTest extends Assert {
         final Instant instant = ZonedDateTime.of(2017, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC).toInstant();
         try {
             // Index by Week
-            Assert.assertEquals("1-2017-01", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK));
+            Assert.assertEquals("1-data-message-2017-01", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK));
 
             // Index by Day
-            Assert.assertEquals("1-2017-01-01", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_DAY));
+            Assert.assertEquals("1-data-message-2017-01-01", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_DAY));
 
             // Index by Hour
-            Assert.assertEquals("1-2017-01-01-00", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR));
+            Assert.assertEquals("1-data-message-2017-01-01-00", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR));
         } catch (KapuaException kaex) {
             Assert.fail("Error while generating index name");
         }
@@ -61,13 +61,13 @@ public class DatastoreUtilsIndexNameTest extends Assert {
         final Instant instant = ZonedDateTime.of(2017, 1, 8, 0, 0, 0, 0, ZoneOffset.UTC).toInstant();
         try {
             // Index by Week
-            Assert.assertEquals("1-2017-02", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK));
+            Assert.assertEquals("1-data-message-2017-02", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK));
 
             // Index by Day
-            Assert.assertEquals("1-2017-02-01", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_DAY));
+            Assert.assertEquals("1-data-message-2017-02-01", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_DAY));
 
             // Index by Hour
-            Assert.assertEquals("1-2017-02-01-00", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR));
+            Assert.assertEquals("1-data-message-2017-02-01-00", DatastoreUtils.getDataIndexName(ONE, instant.toEpochMilli(), DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR));
         } catch (KapuaException kaex) {
             Assert.fail("Error while generating index name");
         }
