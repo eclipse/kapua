@@ -19,6 +19,7 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.ExpiredCredentialsException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
@@ -45,6 +46,9 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Date;
 import java.util.Map;
 
@@ -55,6 +59,7 @@ import java.util.Map;
  */
 public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserPassAuthenticatingRealm.class);
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     /**
      * Realm name
@@ -217,21 +222,34 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
         KapuaId userId = kapuaInfo.getUser().getId();
         KapuaId scopeId = kapuaInfo.getUser().getScopeId();
         boolean hasMfa = false;
-        boolean userAndPasswordMatch = ((UserPassCredentialsMatcher) getCredentialsMatcher()).doUsernameAndPasswordMatch(authcToken, info);
+        boolean checkedUsernameAndPasswordMatch = false;
+        boolean userPasswordMatch = true;
         try {
             if (KapuaSecurityUtils.doPrivileged(() -> mfaOptionService.findByUserId(userId, scopeId) != null)) {
                 hasMfa = true;
             }
         } catch (KapuaException e) {
-            e.printStackTrace();
+            logger.warn(e.toString());
+            throw new ShiroException("Error while find user!", e);
         }
 
-        final boolean hasMfaAndUserPasswordMatch = hasMfa && userAndPasswordMatch;
         try {
-            super.assertCredentialsMatch(authcToken, info);
+            if (hasMfa) {
+                super.assertCredentialsMatch(authcToken, info);
+            } else {
+                userPasswordMatch = ((UserPassCredentialsMatcher) getCredentialsMatcher()).doUsernameAndPasswordMatch(authcToken, info);
+                checkedUsernameAndPasswordMatch = true;
+                if (!userPasswordMatch) {
+                    String msg = "Submitted credentials for token [" + authcToken + "] did not match the expected credentials.";
+                    throw new IncorrectCredentialsException(msg);
+                }
+            }
         } catch (AuthenticationException authenticationEx) {
             try {
                 Credential failedCredential = (Credential) kapuaInfo.getCredentials();
+                userPasswordMatch = checkedUsernameAndPasswordMatch ?
+                        userPasswordMatch : ((UserPassCredentialsMatcher) getCredentialsMatcher()).doUsernameAndPasswordMatch(authcToken, info);
+                final boolean hasMfaAndUserPasswordMatch = hasMfa && userPasswordMatch;
                 KapuaSecurityUtils.doPrivileged(() -> {
                     Map<String, Object> credentialServiceConfig = kapuaInfo.getCredentialServiceConfig();
                     boolean lockoutPolicyEnabled = (boolean) credentialServiceConfig.get("lockoutPolicy.enabled");
@@ -239,7 +257,9 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
                         Date now = new Date();
                         int resetAfterSeconds = (int)credentialServiceConfig.get("lockoutPolicy.resetAfter");
                         Date firstLoginFailure;
-                        boolean resetAttempts = failedCredential.getFirstLoginFailure() == null || now.after(failedCredential.getLoginFailuresReset()) || hasMfaAndUserPasswordMatch;
+                        boolean resetAttempts = failedCredential.getFirstLoginFailure() == null ||
+                                now.after(failedCredential.getLoginFailuresReset()) ||
+                                hasMfaAndUserPasswordMatch;
                         if (resetAttempts) {
                             firstLoginFailure = now;
                             failedCredential.setLoginFailures(1);
