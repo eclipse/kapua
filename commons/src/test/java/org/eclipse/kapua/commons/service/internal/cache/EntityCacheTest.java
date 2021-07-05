@@ -17,7 +17,7 @@ import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.model.query.KapuaListResultImpl;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdStatic;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
@@ -59,8 +59,8 @@ public class EntityCacheTest extends Assert {
     public void getTest() {
         String idCacheName = "idCacheName";
         EntityCache entityCache = new EntityCache(idCacheName);
-        KapuaId scopeId = new KapuaIdStatic(BigInteger.ONE);
-        KapuaId kapuaId = new KapuaIdStatic(BigInteger.TEN);
+        KapuaId scopeId = new KapuaIdImpl(BigInteger.ONE);
+        KapuaId kapuaId = new KapuaIdImpl(BigInteger.TEN);
 
         //COMMENT: Entity is always null (see Cache.get() method)
         // Due to that reason the following part of code could not be tested in EntityCache.java:
@@ -81,8 +81,8 @@ public class EntityCacheTest extends Assert {
     public void getListTest() {
         String idCacheName = "idCacheName";
         EntityCache entityCache = new EntityCache(idCacheName);
-        KapuaId scopeId = new KapuaIdStatic(BigInteger.ONE);
-        KapuaId scopeId1 = new KapuaIdStatic(BigInteger.TEN);
+        KapuaId scopeId = new KapuaIdImpl(BigInteger.ONE);
+        KapuaId scopeId1 = new KapuaIdImpl(BigInteger.TEN);
         Serializable key = new ComposedKey(scopeId1, null);
         Serializable id = new ComposedKey(scopeId1, key);
 
@@ -100,8 +100,8 @@ public class EntityCacheTest extends Assert {
     public void putTest() {
         EntityCache entityCache1 = new EntityCache("IdCacheName");
         EntityCache entityCache2 = new EntityCache("Id Cache Name");
-        KapuaId scopeId = new KapuaIdStatic(BigInteger.ONE);
-        KapuaId kapuaId = new KapuaIdStatic(BigInteger.TEN);
+        KapuaId scopeId = new KapuaIdImpl(BigInteger.ONE);
+        KapuaId kapuaId = new KapuaIdImpl(BigInteger.TEN);
         KapuaEntity kapuaEntity = entityCache2.get(scopeId, kapuaId);
 
         //COMMENT: kapuaEntity is always null (see Cache.get() method)
@@ -120,8 +120,8 @@ public class EntityCacheTest extends Assert {
     public void putListTest() {
         String idCacheName = "IdCacheName";
         EntityCache entityCache = new EntityCache(idCacheName);
-        KapuaId[] scopeIds = {null, new KapuaIdStatic(BigInteger.ONE)};
-        KapuaId scopeId1 = new KapuaIdStatic(BigInteger.ONE);
+        KapuaId[] scopeIds = {null, new KapuaIdImpl(BigInteger.ONE)};
+        KapuaId scopeId1 = new KapuaIdImpl(BigInteger.ONE);
         Serializable key = new ComposedKey(scopeId1, null);
         Serializable[] ids = {null, new ComposedKey(scopeId1, key)};
         KapuaListResult<KapuaEntity> list = new KapuaListResultImpl<>();
@@ -142,10 +142,10 @@ public class EntityCacheTest extends Assert {
     @Test
     public void removeWithKapuaEntityTest() {
         EntityCache entityCache = new EntityCache("IdCacheName");
-        KapuaId scopeId = new KapuaIdStatic(BigInteger.ONE);
+        KapuaId scopeId = new KapuaIdImpl(BigInteger.ONE);
         EntityCache entityCache2 = new EntityCache("Id Cache Name");
-        KapuaId scopeId1 = new KapuaIdStatic(BigInteger.ONE);
-        KapuaId kapuaId1 = new KapuaIdStatic(BigInteger.TEN);
+        KapuaId scopeId1 = new KapuaIdImpl(BigInteger.ONE);
+        KapuaId kapuaId1 = new KapuaIdImpl(BigInteger.TEN);
         KapuaEntity kapuaEntity = entityCache2.get(scopeId1, kapuaId1);
         NullPointerException nullPointerException = new NullPointerException();
 
@@ -168,8 +168,8 @@ public class EntityCacheTest extends Assert {
     @Test
     public void removeTest() {
         EntityCache entityCache = new EntityCache("IdCacheName");
-        KapuaId scopeId = new KapuaIdStatic(BigInteger.ONE);
-        KapuaId kapuaId = new KapuaIdStatic(BigInteger.TEN);
+        KapuaId scopeId = new KapuaIdImpl(BigInteger.ONE);
+        KapuaId kapuaId = new KapuaIdImpl(BigInteger.TEN);
         KapuaId nullKapuaId = null;
 
         //COMMENT: Entity is always null (see Cache.get() method)
@@ -192,8 +192,8 @@ public class EntityCacheTest extends Assert {
     @Test
     public void removeListTest() {
         EntityCache entityCache = new EntityCache("IdCacheName");
-        KapuaId scopeId = new KapuaIdStatic(BigInteger.ONE);
-        KapuaId scopeId1 = new KapuaIdStatic(BigInteger.ONE);
+        KapuaId scopeId = new KapuaIdImpl(BigInteger.ONE);
+        KapuaId scopeId1 = new KapuaIdImpl(BigInteger.ONE);
         Serializable key = new ComposedKey(scopeId1, null);
         Serializable id = new ComposedKey(scopeId1, key);
 
@@ -216,9 +216,9 @@ public class EntityCacheTest extends Assert {
     @Test
     public void checkResultTest() {
         EntityCache entityCache1 = new EntityCache("idCacheName");
-        KapuaId scopeId = new KapuaIdStatic(BigInteger.ONE);
+        KapuaId scopeId = new KapuaIdImpl(BigInteger.ONE);
         EntityCache entityCache2 = new EntityCache("idCacheName2");
-        KapuaId kapuaId = new KapuaIdStatic(BigInteger.TEN);
+        KapuaId kapuaId = new KapuaIdImpl(BigInteger.TEN);
         KapuaEntity kapuaEntity = entityCache2.get(scopeId, kapuaId);
         KapuaEntity kapuaNullEntity = null;
 
@@ -248,11 +248,11 @@ public class EntityCacheTest extends Assert {
     public void checkResultListTest() {
         KapuaListResult kapuaNullListResult = null;
         EntityCache entityCache = new EntityCache("idCacheName");
-        KapuaListResult<KapuaEntity> kapuaListResult = new KapuaListResultImpl<KapuaEntity>();
-        KapuaId scopeId = new KapuaIdStatic(BigInteger.ONE);
+        KapuaListResult<KapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+        KapuaId scopeId = new KapuaIdImpl(BigInteger.ONE);
         EntityCache entityCache2 = new EntityCache("idCacheName2");
-        KapuaId scopeId1 = new KapuaIdStatic(BigInteger.ONE);
-        KapuaId kapuaId = new KapuaIdStatic(BigInteger.TEN);
+        KapuaId scopeId1 = new KapuaIdImpl(BigInteger.ONE);
+        KapuaId kapuaId = new KapuaIdImpl(BigInteger.TEN);
         KapuaEntity kapuaEntity = entityCache2.get(scopeId1, kapuaId);
         NullPointerException nullPointerException = new NullPointerException();
 

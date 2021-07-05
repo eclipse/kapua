@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.device.management.commons.message.notification
 import org.eclipse.kapua.message.internal.KapuaPayloadImpl;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.message.notification.KapuaNotifyPayload;
-import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
 
 /**
  * {@link KapuaNotifyPayload} implementation.
@@ -26,7 +26,7 @@ public class KapuaNotifyPayloadImpl extends KapuaPayloadImpl implements KapuaNot
 
     private KapuaId operationId;
     private String resource;
-    private OperationStatus status;
+    private NotifyStatus status;
     private Integer progress;
     private String message;
 
@@ -51,12 +51,12 @@ public class KapuaNotifyPayloadImpl extends KapuaPayloadImpl implements KapuaNot
     }
 
     @Override
-    public OperationStatus getStatus() {
+    public NotifyStatus getStatus() {
         return status;
     }
 
     @Override
-    public void setStatus(OperationStatus status) {
+    public void setStatus(NotifyStatus status) {
         this.status = status;
     }
 

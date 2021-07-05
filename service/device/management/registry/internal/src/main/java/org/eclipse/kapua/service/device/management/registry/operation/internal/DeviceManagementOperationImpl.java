@@ -18,7 +18,7 @@ import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
-import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
 
@@ -78,7 +78,7 @@ public class DeviceManagementOperationImpl extends AbstractKapuaUpdatableEntity 
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, updatable = true)
-    private OperationStatus status;
+    private NotifyStatus status;
 
     @ElementCollection
     @CollectionTable(name = "dvcm_device_management_operation_input_property", joinColumns = @JoinColumn(name = "operation_id", referencedColumnName = "id"))
@@ -199,12 +199,12 @@ public class DeviceManagementOperationImpl extends AbstractKapuaUpdatableEntity 
     }
 
     @Override
-    public OperationStatus getStatus() {
+    public NotifyStatus getStatus() {
         return status;
     }
 
     @Override
-    public void setStatus(OperationStatus status) {
+    public void setStatus(NotifyStatus status) {
         this.status = status;
     }
 

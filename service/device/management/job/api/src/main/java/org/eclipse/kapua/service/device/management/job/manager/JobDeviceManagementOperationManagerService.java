@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.device.management.job.manager;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.job.targets.JobTarget;
@@ -32,7 +32,7 @@ public interface JobDeviceManagementOperationManagerService extends KapuaService
 
 
     /**
-     * When a {@link ManagementOperationNotification} with {@link OperationStatus#COMPLETED} or {@link OperationStatus#FAILED} tries to look if this {@link DeviceManagementOperation}
+     * When a {@link ManagementOperationNotification} with {@link NotifyStatus#COMPLETED} or {@link NotifyStatus#FAILED} tries to look if this {@link DeviceManagementOperation}
      * is associated with a {@link org.eclipse.kapua.service.job.Job}.
      * <p>
      * If the associaton is found, the related {@link JobTarget#getStatus()} is updated with the result and eventually starts the {@link org.eclipse.kapua.service.job.Job} to continue
@@ -46,5 +46,5 @@ public interface JobDeviceManagementOperationManagerService extends KapuaService
      * @throws KapuaException If something goes bad.
      * @since 1.1.0
      */
-    void processJobTargetOnNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource, OperationStatus status) throws KapuaException;
+    void processJobTargetOnNotification(KapuaId scopeId, KapuaId operationId, Date updateOn, String resource, NotifyStatus status) throws KapuaException;
 }

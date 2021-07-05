@@ -33,7 +33,7 @@ import javax.validation.constraints.NotNull;
 public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends DeviceResponseMessage<?, ?>> {
 
     /**
-     * Executes a 'read' request.
+     * Performs a 'read' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.
@@ -45,7 +45,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
     RS read(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes a 'create' request.
+     * Performs a 'create' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.
@@ -57,7 +57,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
     RS create(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes a 'write' request.
+     * Performs a 'write' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.
@@ -69,7 +69,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
     RS write(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes a 'delete' request.
+     * Performs a 'delete' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.
@@ -81,7 +81,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
     RS delete(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes an 'execute' request.
+     * Performs an 'execute' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.
@@ -93,7 +93,7 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
     RS execute(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
-     * Executes an 'options' request.
+     * Performs an 'options' request.
      *
      * @param requestMessage The {@link DeviceRequestMessage} to send.
      * @param timeout        The timeout of the request.
@@ -103,6 +103,32 @@ public interface DeviceCall<RQ extends DeviceRequestMessage<?, ?>, RS extends De
      * @since 1.0.0
      */
     RS options(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+
+    /**
+     * Performs a SUBMIT request.
+     * <p>
+     * It does not expect a {@link DeviceResponseMessage}.
+     *
+     * @param requestMessage The {@link DeviceRequestMessage} to send.
+     * @param timeout        The timeout of the request.
+     * @throws DeviceCallTimeoutException if waiting of the response goes on timeout.
+     * @throws DeviceCallSendException    if sending the request produces any error.
+     * @since 1.3.0
+     */
+    RS submit(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
+
+    /**
+     * Performs a CANCEL request.
+     * <p>
+     * It does not expect a {@link DeviceResponseMessage}.
+     *
+     * @param requestMessage The {@link DeviceRequestMessage} to send.
+     * @param timeout        The timeout of the request.
+     * @throws DeviceCallTimeoutException if waiting of the response goes on timeout.
+     * @throws DeviceCallSendException    if sending the request produces any error.
+     * @since 1.3.0
+     */
+    RS cancel(@NotNull RQ requestMessage, @Nullable Long timeout) throws DeviceCallTimeoutException, DeviceCallSendException;
 
     /**
      * Get the {@link DeviceMessage} type.

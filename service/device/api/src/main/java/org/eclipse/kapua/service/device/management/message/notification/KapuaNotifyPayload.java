@@ -59,20 +59,20 @@ public interface KapuaNotifyPayload extends KapuaPayload {
     void setResource(String resource);
 
     /**
-     * Gets the {@link OperationStatus}.
+     * Gets the {@link NotifyStatus}.
      *
-     * @return The {@link OperationStatus}.
+     * @return The {@link NotifyStatus}.
      * @since 1.0.0
      */
-    OperationStatus getStatus();
+    NotifyStatus getStatus();
 
     /**
-     * Sets the {@link OperationStatus}.
+     * Sets the {@link NotifyStatus}.
      *
-     * @param status The {@link OperationStatus}.
+     * @param status The {@link NotifyStatus}.
      * @since 1.0.0
      */
-    void setStatus(OperationStatus status);
+    void setStatus(NotifyStatus status);
 
     /**
      * Gets the operation progress.

@@ -20,53 +20,67 @@ import java.math.BigInteger;
 import java.util.Base64;
 
 /**
- * Kapua identifier reference implementation.
+ * {@link KapuaId} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @Embeddable
 public class KapuaEid implements KapuaId, Serializable {
 
     private static final long serialVersionUID = 8998805462408705432L;
 
-    protected BigInteger eid;
+    protected final BigInteger eid;
 
     /**
-     * Constructor
+     * Constructor.
+     * <p>
+     * Note: this make any sense? A {@link KapuaId} whose {@link KapuaId#getId()} is {@code null}?
+     *
+     * @since 1.0.0
      */
     public KapuaEid() {
         super();
+
+        eid = null;
     }
 
     /**
      * Constructor
      *
-     * @param id
+     * @param id The id in {@link BigInteger} form.
+     * @since 1.0.0
      */
     public KapuaEid(BigInteger id) {
-        this();
-        setId(id);
+        eid = id;
     }
 
     /**
      * Constructor
      *
-     * @param id
+     * @param id The id in {@link KapuaId} form.
+     * @since 1.0.0
      */
     public KapuaEid(KapuaId id) {
-        this();
-        setId(id.getId());
+        eid = id.getId();
     }
 
+    /**
+     * Parses the given {@link KapuaId} to a {@link KapuaEid} form.
+     *
+     * @param kapuaId The {@link KapuaId} to parse.
+     * @return The parsed {@link KapuaId} as {@link KapuaEid}.
+     * @since 1.0.0
+     */
     public static KapuaEid parseKapuaId(KapuaId kapuaId) {
         return kapuaId != null ? (kapuaId instanceof KapuaEid ? (KapuaEid) kapuaId : new KapuaEid(kapuaId)) : null;
     }
 
     /**
-     * Creates a {@link KapuaEid} instance parsing the short identifier provided
+     * Parses the given {@link KapuaId} in short form.
      *
-     * @param shortId
-     * @return
+     * @param shortId The {@link KapuaId} in short form to parse.
+     * @return The parsed {@link KapuaId}.
+     * @since 1.0.0
      */
     public static KapuaEid parseCompactId(String shortId) {
         byte[] bytes = Base64.getUrlDecoder().decode(shortId);
@@ -78,18 +92,9 @@ public class KapuaEid implements KapuaId, Serializable {
         return eid;
     }
 
-    /**
-     * Set the identifier
-     *
-     * @param eid
-     */
-    protected void setId(BigInteger eid) {
-        this.eid = eid;
-    }
-
     @Override
     public String toString() {
-        return eid.toString();
+        return toStringId();
     }
 
     @Override

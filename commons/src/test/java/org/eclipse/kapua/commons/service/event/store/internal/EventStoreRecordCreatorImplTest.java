@@ -13,7 +13,7 @@
 package org.eclipse.kapua.commons.service.event.store.internal;
 
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdStatic;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import java.math.BigInteger;
 public class EventStoreRecordCreatorImplTest extends Assert {
     @Test
     public void eventStoreRecordCreatorImplTest() {
-        KapuaId[] scopeIdList = {null, new KapuaIdStatic(BigInteger.ONE)};
+        KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordCreatorImpl eventStoreRecordCreatorImpl = new EventStoreRecordCreatorImpl(scopeId);

@@ -16,8 +16,9 @@ import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
-import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationStatus;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -81,21 +82,21 @@ public interface ManagementOperationNotification extends KapuaEntity {
     void setSentOn(Date sentOn);
 
     /**
-     * Gets the {@link OperationStatus}
+     * Gets the {@link NotifyStatus}
      *
-     * @return The {@link OperationStatus}
+     * @return The {@link NotifyStatus}
      * @since 1.0.0
      */
     @XmlElement(name = "status")
-    OperationStatus getStatus();
+    DeviceManagementOperationStatus getStatus();
 
     /**
-     * Sets the {@link OperationStatus}
+     * Sets the {@link NotifyStatus}
      *
-     * @param status The {@link OperationStatus}
+     * @param status The {@link NotifyStatus}
      * @since 1.0.0
      */
-    void setStatus(OperationStatus status);
+    void setStatus(DeviceManagementOperationStatus status);
 
     /**
      * Gets the {@link DeviceManagementOperation#getResource()}
@@ -132,17 +133,17 @@ public interface ManagementOperationNotification extends KapuaEntity {
     void setProgress(Integer progress);
 
     /**
-     * Gets the detailed message related to the {@link OperationStatus}
+     * Gets the detailed message related to the {@link NotifyStatus}
      *
-     * @return The detailed message related to the {@link OperationStatus}
+     * @return The detailed message related to the {@link NotifyStatus}
      * @since 1.2.0
      */
     String getMessage();
 
     /**
-     * Sets the detailed message related to the {@link OperationStatus}
+     * Sets the detailed message related to the {@link NotifyStatus}
      *
-     * @param message The detailed message related to the {@link OperationStatus}
+     * @param message The detailed message related to the {@link NotifyStatus}
      * @since 1.2.0
      */
     void setMessage(String message);

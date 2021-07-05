@@ -29,7 +29,7 @@ import org.eclipse.kapua.service.device.management.exception.DeviceManagementRes
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseInternalErrorException;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseNotFoundException;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseUnknownCodeException;
-import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
+import org.eclipse.kapua.service.device.management.message.notification.NotifyStatus;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessage;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseCode;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponseMessage;
@@ -88,14 +88,14 @@ public abstract class AbstractDeviceManagementServiceImpl {
                 DEVICE_EVENT_FACTORY.newCreator(
                         scopeId,
                         deviceId,
-                        responseMessage.getReceivedOn(),
+                        responseMessage != null ? responseMessage.getReceivedOn() : requestMessage.getSentOn(),
                         requestMessage.getChannel().getAppName().getValue());
 
-        deviceEventCreator.setPosition(responseMessage.getPosition());
-        deviceEventCreator.setSentOn(responseMessage.getSentOn());
+        deviceEventCreator.setPosition(responseMessage != null ? responseMessage.getPosition() : null);
+        deviceEventCreator.setSentOn(responseMessage != null ? responseMessage.getSentOn() : requestMessage.getSentOn());
         deviceEventCreator.setAction(requestMessage.getChannel().getMethod());
-        deviceEventCreator.setResponseCode(responseMessage.getResponseCode());
-        deviceEventCreator.setEventMessage(responseMessage.getPayload().toDisplayString());
+        deviceEventCreator.setResponseCode(responseMessage != null ? responseMessage.getResponseCode() : KapuaResponseCode.SENT);
+        deviceEventCreator.setEventMessage(responseMessage != null ? responseMessage.getPayload().toDisplayString() : requestMessage.getPayload().toDisplayString());
 
         KapuaSecurityUtils.doPrivileged(() -> DEVICE_EVENT_SERVICE.create(deviceEventCreator));
     }
@@ -109,7 +109,7 @@ public abstract class AbstractDeviceManagementServiceImpl {
         deviceManagementOperationCreator.setAppId(requestMessage.getChannel().getAppName().getValue());
         deviceManagementOperationCreator.setAction(requestMessage.getChannel().getMethod());
         deviceManagementOperationCreator.setResource(!requestMessage.getChannel().getSemanticParts().isEmpty() ? requestMessage.getChannel().getSemanticParts().get(0) : null);
-        deviceManagementOperationCreator.setStatus(OperationStatus.RUNNING);
+        deviceManagementOperationCreator.setStatus(NotifyStatus.RUNNING);
         deviceManagementOperationCreator.setInputProperties(extractInputProperties(requestMessage));
 
         DeviceManagementOperation deviceManagementOperation = KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.create(deviceManagementOperationCreator));
@@ -129,10 +129,10 @@ public abstract class AbstractDeviceManagementServiceImpl {
         }
 
         if (responseMessageMessage != null) {
-            deviceManagementOperation.setStatus(responseMessageMessage.getResponseCode().isAccepted() ? OperationStatus.COMPLETED : OperationStatus.FAILED);
+            deviceManagementOperation.setStatus(responseMessageMessage.getResponseCode().isAccepted() ? NotifyStatus.COMPLETED : NotifyStatus.FAILED);
             deviceManagementOperation.setEndedOn(responseMessageMessage.getReceivedOn());
         } else {
-            deviceManagementOperation.setStatus(OperationStatus.FAILED);
+            deviceManagementOperation.setStatus(NotifyStatus.FAILED);
             deviceManagementOperation.setEndedOn(new Date());
         }
 

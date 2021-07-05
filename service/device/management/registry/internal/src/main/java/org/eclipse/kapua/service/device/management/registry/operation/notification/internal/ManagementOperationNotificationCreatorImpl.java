@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.device.management.registry.operation.notificat
 
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.device.management.message.notification.OperationStatus;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationStatus;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotification;
 import org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationCreator;
 
@@ -24,7 +24,7 @@ public class ManagementOperationNotificationCreatorImpl extends AbstractKapuaEnt
 
     private KapuaId operationId;
     private Date sentOn;
-    private OperationStatus status;
+    private DeviceManagementOperationStatus status;
     private String resource;
     private Integer progress;
     private String message;
@@ -54,12 +54,12 @@ public class ManagementOperationNotificationCreatorImpl extends AbstractKapuaEnt
     }
 
     @Override
-    public OperationStatus getStatus() {
+    public DeviceManagementOperationStatus getStatus() {
         return status;
     }
 
     @Override
-    public void setStatus(OperationStatus status) {
+    public void setStatus(DeviceManagementOperationStatus status) {
         this.status = status;
     }
 

@@ -30,10 +30,10 @@ import java.util.Base64;
 public interface KapuaId extends KapuaSerializable {
 
     @XmlTransient
-    KapuaId ANY = new KapuaIdStatic(BigInteger.ONE.negate());
+    KapuaId ANY = new KapuaIdImpl(BigInteger.ONE.negate());
 
     @XmlTransient
-    KapuaId ONE = new KapuaIdStatic(BigInteger.ONE);
+    KapuaId ONE = new KapuaIdImpl(BigInteger.ONE);
 
     /**
      * Get the identifier

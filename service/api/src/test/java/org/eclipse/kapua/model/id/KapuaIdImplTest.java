@@ -20,17 +20,17 @@ import org.junit.experimental.categories.Category;
 import java.math.BigInteger;
 
 @Category(JUnitTests.class)
-public class KapuaIdStaticTest extends Assert {
+public class KapuaIdImplTest extends Assert {
 
     @Test
-    public void kapuaIdStaticTest() {
-        KapuaIdStatic kapuaIdStatic = new KapuaIdStatic(BigInteger.ONE);
-        assertEquals("Expected and actual values should be the same.", BigInteger.ONE, kapuaIdStatic.getId());
+    public void kapuaIdImplTest() {
+        KapuaIdImpl kapuaIdImpl = new KapuaIdImpl(BigInteger.ONE);
+        assertEquals("Expected and actual values should be the same.", BigInteger.ONE, kapuaIdImpl.getId());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void kapuaIdStaticNullParameterTest() {
-        KapuaIdStatic kapuaIdStatic = new KapuaIdStatic(null);
+    public void kapuaIdImplNullParameterTest() {
+        KapuaIdImpl kapuaIdImpl = new KapuaIdImpl(null);
     }
 
     @Test
@@ -39,24 +39,24 @@ public class KapuaIdStaticTest extends Assert {
         int[] expectedResult = {31, 32, 41};
 
         for (int i = 0; i < bigInteger.length; i++) {
-            KapuaIdStatic kapuaIdStatic = new KapuaIdStatic(bigInteger[i]);
-            assertEquals("Expected and actual values should be the same.", expectedResult[i], kapuaIdStatic.hashCode());
+            KapuaIdImpl kapuaIdImpl = new KapuaIdImpl(bigInteger[i]);
+            assertEquals("Expected and actual values should be the same.", expectedResult[i], kapuaIdImpl.hashCode());
         }
     }
 
     @Test
     public void equalsTest() {
-        KapuaIdStatic kapuaIdStatic1 = new KapuaIdStatic(BigInteger.ONE);
-        KapuaIdStatic kapuaIdStatic2 = new KapuaIdStatic(BigInteger.TEN);
-        KapuaIdStatic kapuaIdStatic3 = new KapuaIdStatic(BigInteger.ONE);
+        KapuaIdImpl kapuaIdImpl1 = new KapuaIdImpl(BigInteger.ONE);
+        KapuaIdImpl kapuaIdImpl2 = new KapuaIdImpl(BigInteger.TEN);
+        KapuaIdImpl kapuaIdImpl3 = new KapuaIdImpl(BigInteger.ONE);
         Object[] objects = {0, 10, 100000, "String", 'c', -10, -1000000000, -100000000000L, 10L, 10.0f, null, 10.10d, true, false};
 
-        assertTrue("True expected.", kapuaIdStatic1.equals(kapuaIdStatic1));
-        assertFalse("False expected", kapuaIdStatic1.equals(null));
+        assertEquals("True expected.", kapuaIdImpl1, kapuaIdImpl1);
+        assertNotEquals("False expected", null, kapuaIdImpl1);
         for (Object object : objects) {
-            assertFalse("False expected", kapuaIdStatic1.equals(object));
+            assertNotEquals("False expected", kapuaIdImpl1, object);
         }
-        assertFalse("False expected", kapuaIdStatic1.equals(kapuaIdStatic2));
-        assertTrue("True expected", kapuaIdStatic1.equals(kapuaIdStatic3));
+        assertNotEquals("False expected", kapuaIdImpl1, kapuaIdImpl2);
+        assertEquals("True expected", kapuaIdImpl1, kapuaIdImpl3);
     }
 }

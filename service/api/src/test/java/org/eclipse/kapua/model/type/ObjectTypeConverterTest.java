@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.type;
 
-import org.eclipse.kapua.model.id.KapuaIdStatic;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,8 +36,8 @@ public class ObjectTypeConverterTest extends Assert {
 
     @Test
     public void toStringTest() {
-        Class[] classes = {String.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class, Date.class, byte[].class, Byte[].class, KapuaIdStatic.class};
-        String[] expectedString = {"string", "integer", "long", "float", "double", "boolean", "date", "binary", "binary", "org.eclipse.kapua.model.id.KapuaIdStatic"};
+        Class[] classes = {String.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class, Date.class, byte[].class, Byte[].class, KapuaIdImpl.class};
+        String[] expectedString = {"string", "integer", "long", "float", "double", "boolean", "date", "binary", "binary", "org.eclipse.kapua.model.id.KapuaIdImpl"};
         for (int i = 0; i < classes.length; i++) {
             assertEquals("Expected and actual values should be the same.", expectedString[i], ObjectTypeConverter.toString(classes[i]));
         }
@@ -50,8 +50,8 @@ public class ObjectTypeConverterTest extends Assert {
 
     @Test
     public void fromStringTest() throws ClassNotFoundException {
-        String[] stringValue = {"string", "integer", "int", "long", "float", "double", "boolean", "date", "binary", "org.eclipse.kapua.model.id.KapuaIdStatic"};
-        Class[] expectedClasses = {String.class, Integer.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class, Date.class, byte[].class, KapuaIdStatic.class};
+        String[] stringValue = {"string", "integer", "int", "long", "float", "double", "boolean", "date", "binary", "org.eclipse.kapua.model.id.KapuaIdImpl"};
+        Class[] expectedClasses = {String.class, Integer.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class, Date.class, byte[].class, KapuaIdImpl.class};
         for (int i = 0; i < stringValue.length; i++) {
             assertEquals("Expected and actual values should be the same.", expectedClasses[i].toString(), ObjectTypeConverter.fromString(stringValue[i]).toString());
         }

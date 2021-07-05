@@ -15,9 +15,10 @@ package org.eclipse.kapua.job.engine.commons.wrappers;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdFactory;
 import org.xml.sax.SAXException;
 
 import javax.batch.runtime.BatchStatus;
@@ -34,6 +35,8 @@ import java.util.Properties;
  * @since 1.0.0
  */
 public class StepContextWrapper {
+
+    private static final KapuaIdFactory KAPUA_ID_FACTORY = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
 
     private StepContext stepContext;
 
@@ -78,8 +81,8 @@ public class StepContextWrapper {
                 stepProperty = (T) Boolean.valueOf(stepPropertyString);
             } else if (type == byte[].class || type == Byte[].class) {
                 stepProperty = (T) DatatypeConverter.parseBase64Binary(stepPropertyString);
-            } else if (type == KapuaId.class) {
-                stepProperty = (T) KapuaEid.parseCompactId(stepPropertyString);
+            } else if (type == KapuaId.class || KapuaId.class.isAssignableFrom(type)) {
+                stepProperty = (T) KAPUA_ID_FACTORY.newKapuaId(stepPropertyString);
             } else if (type.isEnum()) {
                 Class<E> enumType = (Class<E>) type;
 
