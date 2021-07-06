@@ -21,6 +21,7 @@ import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.Account;
@@ -56,6 +57,8 @@ public class Accounts extends AbstractKapuaResource {
      * @param scopeId       The {@link ScopeId} in which to search results.
      * @param name          The {@link Account} name in which to search results.
      * @param recursive     The {@link Account} name in which to search results.
+     * @param sortParam     The name of the parameter that will be used as a sorting key
+     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
      * @param offset        The result set offset.
      * @param limit         The result set limit.
      * @return              The {@link AccountListResult} of all the accounts associated to the current selected scope.
@@ -67,6 +70,8 @@ public class Accounts extends AbstractKapuaResource {
     public AccountListResult simpleQuery(@PathParam("scopeId") ScopeId scopeId, //
                                          @QueryParam("name") String name, //
                                          @QueryParam("recursive") boolean recursive, //
+                                         @QueryParam("sortParam") String sortParam,
+                                         @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
                                          @QueryParam("offset") @DefaultValue("0") int offset, //
                                          @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
@@ -79,6 +84,9 @@ public class Accounts extends AbstractKapuaResource {
         AndPredicate andPredicate = query.andPredicate();
         if (!Strings.isNullOrEmpty(name)) {
             andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name));
+        }
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
         }
         query.setPredicate(andPredicate);
 
