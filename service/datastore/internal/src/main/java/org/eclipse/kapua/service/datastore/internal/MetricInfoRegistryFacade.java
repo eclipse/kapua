@@ -30,7 +30,6 @@ import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.BulkUpdateResponse;
-import org.eclipse.kapua.service.elasticsearch.client.model.ResultList;
 import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateRequest;
 import org.eclipse.kapua.service.elasticsearch.client.model.UpdateResponse;
@@ -258,8 +257,9 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
 
         String indexNme = SchemaUtil.getMetricIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexNme, MetricInfoSchema.METRIC_TYPE_NAME);
-        ResultList<MetricInfo> result = getElasticsearchClient().query(typeDescriptor, query, MetricInfo.class);
-        return new MetricInfoListResultImpl(result);
+        MetricInfoListResult result = new MetricInfoListResultImpl(getElasticsearchClient().query(typeDescriptor, query, MetricInfo.class));
+        setLimitExceed(query, result);
+        return result;
     }
 
     /**
