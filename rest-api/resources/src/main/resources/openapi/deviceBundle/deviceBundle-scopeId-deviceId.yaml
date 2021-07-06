@@ -21,6 +21,8 @@ paths:
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../openapi.yaml#/components/parameters/sortParam'
+        - $ref: '../openapi.yaml#/components/parameters/sortDir'
         - $ref: '../device/device.yaml#/components/parameters/timeout'
       responses:
         200:
