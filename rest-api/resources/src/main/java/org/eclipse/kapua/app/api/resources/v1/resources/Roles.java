@@ -35,6 +35,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -240,10 +241,12 @@ public class Roles extends AbstractKapuaResource {
     /**
      * Gets all the {@link User}s for a given {@link Role}
      *
-     * @param scopeId The ScopeId of the requested {@link Role}.
-     * @param roleId The id of the Role to be deleted.
-     * @param offset  The result set offset.
-     * @param limit   The result set limit.
+     * @param scopeId       The ScopeId of the requested {@link Role}.
+     * @param roleId        The id of the Role to be deleted.
+     * @param offset        The result set offset.
+     * @param limit         The result set limit.
+     * @param sortParam     The name of the parameter that will be used as a sorting key for the users
+     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
      * @return An {@link UserListResult} containing the {@link User}s for the given {@link Role}
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.2.0
@@ -253,6 +256,8 @@ public class Roles extends AbstractKapuaResource {
     public UserListResult usersForRole(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("roleId") EntityId roleId,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(scopeId);
@@ -271,6 +276,9 @@ public class Roles extends AbstractKapuaResource {
         userQuery.setPredicate(userQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, accessInfoListResult.getItems().stream().map(AccessInfo::getUserId).toArray(KapuaId[]::new)));
         userQuery.setLimit(limit);
         userQuery.setOffset(offset);
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            userQuery.setSortCriteria(userQuery.fieldSortCriteria(sortParam, sortDir));
+        }
         return userService.query(userQuery);
     }
 
