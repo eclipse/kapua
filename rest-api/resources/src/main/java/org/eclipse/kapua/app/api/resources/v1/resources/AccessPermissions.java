@@ -20,6 +20,7 @@ import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
@@ -43,6 +44,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.google.common.base.Strings;
+
 /**
  * {@link AccessPermission} REST API resource.
  *
@@ -62,6 +65,8 @@ public class AccessPermissions extends AbstractKapuaResource {
      * @param accessInfoId The optional {@link AccessInfo} id to filter results.
      * @param offset       The result set offset.
      * @param limit        The result set limit.
+     * @param sortParam    The name of the parameter that will be used as a sorting key
+     * @param sortDir      The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
      * @return The {@link AccessPermissionListResult} of all the {@link AccessPermission}s associated to the current selected scope.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
@@ -71,11 +76,16 @@ public class AccessPermissions extends AbstractKapuaResource {
     public AccessPermissionListResult simpleQuery(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("accessInfoId") EntityId accessInfoId,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         AccessPermissionQuery query = accessPermissionFactory.newQuery(scopeId);
 
         query.setPredicate(query.attributePredicate(AccessPermissionAttributes.ACCESS_INFO_ID, accessInfoId));
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
+        }
 
         query.setOffset(offset);
         query.setLimit(limit);

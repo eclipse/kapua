@@ -32,6 +32,8 @@ paths:
             Setting this to `true` and also using the `name` parameter will result in this last one beign ignored.
           schema:
             type: boolean
+        - $ref: '../openapi.yaml#/components/parameters/sortParam'
+        - $ref: '../openapi.yaml#/components/parameters/sortDir'
         - $ref: '../openapi.yaml#/components/parameters/limit'
         - $ref: '../openapi.yaml#/components/parameters/offset'
       responses:

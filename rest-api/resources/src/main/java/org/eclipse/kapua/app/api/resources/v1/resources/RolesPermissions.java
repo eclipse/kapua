@@ -22,6 +22,7 @@ import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.role.Role;
@@ -55,12 +56,14 @@ public class RolesPermissions extends AbstractKapuaResource {
     /**
      * Gets the {@link RolePermission} list in the scope.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param roleId  The id of the {@link Role} in which to search results.
-     * @param domain  The domain name to filter results.
-     * @param action  The action to filter results.
-     * @param offset  The result set offset.
-     * @param limit   The result set limit.
+     * @param scopeId   The {@link ScopeId} in which to search results.
+     * @param roleId    The id of the {@link Role} in which to search results.
+     * @param domain    The domain name to filter results.
+     * @param action    The action to filter results.
+     * @param sortParam The name of the parameter that will be used as a sorting key
+     * @param sortDir   The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
+     * @param offset    The result set offset.
+     * @param limit     The result set limit.
      * @return The {@link RolePermissionListResult} of all the rolePermissions associated to the current selected scope.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
@@ -72,6 +75,8 @@ public class RolesPermissions extends AbstractKapuaResource {
             @PathParam("roleId") EntityId roleId,
             @QueryParam("name") String domain,
             @QueryParam("action") Actions action,
+            @QueryParam("sortParam") String sortParam,
+            @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         RolePermissionQuery query = rolePermissionFactory.newQuery(scopeId);
@@ -83,6 +88,9 @@ public class RolesPermissions extends AbstractKapuaResource {
         }
         if (action != null) {
             andPredicate.and(query.attributePredicate(RolePermissionAttributes.PERMISSION_ACTION, action));
+        }
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
         }
         query.setPredicate(andPredicate);
 
