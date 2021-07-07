@@ -38,6 +38,8 @@ paths:
           schema:
             type: string
             format: 'date-time'
+        - $ref: '../openapi.yaml#/components/parameters/sortParam'
+        - $ref: '../openapi.yaml#/components/parameters/sortDir'
         - $ref: '../openapi.yaml#/components/parameters/limit'
         - $ref: '../openapi.yaml#/components/parameters/offset'
       responses:
