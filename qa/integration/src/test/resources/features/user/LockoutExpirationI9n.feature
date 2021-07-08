@@ -503,7 +503,7 @@ Scenario: Init Security Context for all scenarios
     Then No exception was thrown
     And I logout
 
-  Scenario: User is just created and its credentials are not used to login.
+  Scenario: User is just created and its credentials are not used to login
   Its lockout error counter is equals to 0.
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I configure user service
@@ -530,7 +530,7 @@ Scenario: Init Security Context for all scenarios
     And I logout
     Then The lockout error counter for user "kapua-a" is 0
 
-  Scenario: User tying to login one time with wrong password.
+  Scenario: User tying to login one time with wrong password
   The user cannot login in, and the lockout error counter is equals to 1.
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I configure user service
@@ -622,6 +622,7 @@ Scenario: Init Security Context for all scenarios
     Then I have mfa enable
     And I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
+    Then No exception was thrown
     Then The lockout error counter for user "kapua-a" is 0
 
   Scenario: User login with wrong username and password, after that it login with correct username and password
@@ -657,6 +658,7 @@ Scenario: Init Security Context for all scenarios
     Then An exception was thrown
     Then The lockout error counter for user "kapua-a" is 1
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
+    Then No exception was thrown
     Then The lockout error counter for user "kapua-a" is 0
 
   Scenario: Reset Security Context for all scenarios
