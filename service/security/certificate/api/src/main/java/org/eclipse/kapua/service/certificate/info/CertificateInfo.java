@@ -62,6 +62,15 @@ public interface CertificateInfo extends KapuaNamedEntity {
 
     void setSerial(String serial);
 
+    /**
+     * Gets the {@link #getSerial()} in hexadecimal format.
+     *
+     * @return The {@link #getSerial()} in hexadecimal format.
+     * @since 1.5.0
+     */
+    @XmlElement(name = "serialHex")
+    String getSerialHex();
+
     @XmlElement(name = "algorithm")
     String getAlgorithm();
 
