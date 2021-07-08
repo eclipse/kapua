@@ -297,8 +297,8 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
         }
         Subject currentSubject = SecurityUtils.getSubject();
         Session session = currentSubject.getSession();
-        session.setAttribute("scopeId", userId);
-        session.setAttribute("userId", scopeId);
+        session.setAttribute("scopeId", scopeId);
+        session.setAttribute("userId", userId);
     }
 
     @Override
