@@ -75,6 +75,11 @@ public class CertificateInfoImpl extends AbstractKapuaNamedEntity implements Cer
     }
 
     @Override
+    public String getSerialHex() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String getAlgorithm() {
         throw new UnsupportedOperationException();
     }
