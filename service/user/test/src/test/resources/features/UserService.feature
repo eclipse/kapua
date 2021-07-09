@@ -105,11 +105,34 @@ Scenario: Update user
     And I search for user with name "kapua-u1"
     And I change user to
         | name     | displayName        | email              | phoneNumber     | status  |
-        | kapua-u1-mod |    Kapua User 1 mod    | kapua_u1_mod@kapua.com | +386 31 323 444 | DISABLED |
-    And I search for user with name "kapua-u1-mod"
+        | kapua-u1 |    Kapua User 1 mod    | kapua_u1_mod@kapua.com | +386 31 323 444 | DISABLED |
+    And I search for user with name "kapua-u1"
     Then I find user
         | name     | displayName        | email              | phoneNumber     | status  |
+        | kapua-u1 |    Kapua User 1 mod    | kapua_u1_mod@kapua.com | +386 31 323 444 | DISABLED |
+
+Scenario: Try to change User name
+    First create user with all User entity fields set. Then persist this user in database.
+    After that find that same user and modify all the fields by appending modified.
+    Persist changes to database. At the end check that changes ware persisted
+
+    When I configure the user service for the account with the id 42
+        | type    | name                       | value |
+        | boolean | infiniteChildEntities      | true  |
+        | integer | maxNumberChildEntities     | 5     |
+        | boolean | lockoutPolicy.enabled      | false |
+        | integer | lockoutPolicy.maxFailures  | 3     |
+        | integer | lockoutPolicy.resetAfter   | 300   |
+        | integer | lockoutPolicy.lockDuration | 3     |
+    Given I have the following user
+        | name     | displayName        | email              | phoneNumber     | status  |
+        | kapua-u1 |    Kapua User 1    | kapua_u1@kapua.com | +386 31 323 555 | ENABLED |
+    And I expect the exception "KapuaIllegalArgumentException"
+    When I search for user with name "kapua-u1"
+    And I change user to
+        | name     | displayName        | email              | phoneNumber     | status  |
         | kapua-u1-mod |    Kapua User 1 mod    | kapua_u1_mod@kapua.com | +386 31 323 444 | DISABLED |
+    Then An exception was thrown
 
 Scenario: Delete user
     Create user with name kapua-user. Then delete this user and check it is

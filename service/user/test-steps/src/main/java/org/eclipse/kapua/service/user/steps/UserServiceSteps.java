@@ -249,15 +249,19 @@ public class UserServiceSteps extends TestBase {
     @When("^I change user to$")
     public void changeUserTo(List<CucUser> userList) throws Exception {
         User user = (User) stepData.get("User");
-        for (CucUser userItem : userList) {
-            user.setName(userItem.getName());
-            user.setDisplayName(userItem.getDisplayName());
-            user.setEmail(userItem.getEmail());
-            user.setPhoneNumber(userItem.getPhoneNumber());
-            user.setStatus(userItem.getStatus());
-            user = userService.update(user);
+        try {
+            for (CucUser userItem : userList) {
+                user.setName(userItem.getName());
+                user.setDisplayName(userItem.getDisplayName());
+                user.setEmail(userItem.getEmail());
+                user.setPhoneNumber(userItem.getPhoneNumber());
+                user.setStatus(userItem.getStatus());
+                user = userService.update(user);
+            }
+            stepData.put("User", user);
+        } catch (KapuaException kapuaException) {
+            verifyException(kapuaException);
         }
-        stepData.put("User", user);
     }
 
     @When("^I delete user$")
