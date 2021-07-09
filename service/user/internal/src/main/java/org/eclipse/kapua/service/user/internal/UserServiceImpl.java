@@ -172,6 +172,10 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         if (!Objects.equals(currentUser.getExternalId(), user.getExternalId())) {
             throw new KapuaIllegalArgumentException("externalId", user.getExternalId());
         }
+        // Prevent username change
+        if (!Objects.equals(currentUser.getName(), user.getName())) {
+            throw new KapuaIllegalArgumentException("name", user.getName());
+        }
 
         //
         // Do update
