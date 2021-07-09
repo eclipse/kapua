@@ -62,5 +62,7 @@ paths:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
           $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        409:
+          $ref: '../openapi.yaml#/components/responses/entityUniqueness'
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
