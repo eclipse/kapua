@@ -30,6 +30,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementErrorCodes;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.slf4j.Logger;
@@ -195,20 +196,37 @@ public class KapuaExceptionHandler {
             } else {
                 return new GwtKapuaException(GwtKapuaErrorCode.ILLEGAL_ARGUMENT, throwable, ((KapuaIllegalArgumentException) throwable).getArgumentName(), ((KapuaIllegalArgumentException) throwable).getArgumentValue());
             }
+        }
+        //
+        // Device Management
+        else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR.name())) {
+            return new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_START_ERROR, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR.name())) {
             return new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_START_ERROR, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.BUNDLE_STOP_ERROR.name())) {
             return new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_STOP_ERROR, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(KapuaErrorCodes.PACKAGE_URI_SYNTAX_ERROR)) {
             return new GwtKapuaException(GwtKapuaErrorCode.PACKAGE_URI_SYNTAX_ERROR, throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaMaxNumberOfItemsReachedException) {
-            return new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, throwable, ((KapuaMaxNumberOfItemsReachedException) throwable).getArgValue());
+        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(DeviceManagementErrorCodes.RESPONSE_NOT_FOUND)) {
+            return new GwtKapuaException(GwtKapuaErrorCode.RESPONSE_NOT_FOUND, throwable, throwable.getLocalizedMessage());
+        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(DeviceManagementErrorCodes.TIMEOUT)) {
+            return new GwtKapuaException(GwtKapuaErrorCode.DEVICE_MANAGEMENT_TIMEOUT, throwable, throwable.getLocalizedMessage());
         } else if (throwable instanceof DeviceManagementException) {
             return new GwtKapuaException(GwtKapuaErrorCode.valueOf(((DeviceManagementException) throwable).getCode().name()), throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED.name())) {
+        }
+        //
+        // Service Limits
+        else if (throwable instanceof KapuaMaxNumberOfItemsReachedException) {
+            return new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, throwable, ((KapuaMaxNumberOfItemsReachedException) throwable).getArgValue());
+        }
+        //
+        // Permissions
+        else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED.name())) {
             return new GwtKapuaException(GwtKapuaErrorCode.PERMISSION_DELETE_NOT_ALLOWED, throwable, throwable.getLocalizedMessage());
-        } else {
-            // all others => log and return internal error code
+        }
+        //
+        // Default exception
+        else {
             return GwtKapuaException.internalError(throwable, throwable.getLocalizedMessage());
         }
     }
