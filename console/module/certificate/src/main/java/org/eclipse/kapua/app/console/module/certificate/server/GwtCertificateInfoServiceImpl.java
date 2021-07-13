@@ -42,13 +42,15 @@ public class GwtCertificateInfoServiceImpl extends KapuaRemoteServiceServlet imp
     private static final CertificateInfoFactory CERTIFICATE_INFO_FACTORY = LOCATOR.getFactory(CertificateInfoFactory.class);
 
     @Override
-    public List<GwtCertificateInfo> findAllCertificates(String scopeIdString) throws GwtKapuaException {
+    public List<GwtCertificateInfo> findAll(String scopeIdString) throws GwtKapuaException {
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
 
             List<GwtCertificateInfo> gwtCertificateInfos = new ArrayList<GwtCertificateInfo>();
 
             CertificateInfoQuery query = CERTIFICATE_INFO_FACTORY.newQuery(scopeId);
+            query.setIncludeInherited(true);
+
             CertificateInfoListResult certificateInfos = CERTIFICATE_INFO_SERVICE.query(query);
 
             for (CertificateInfo certificateInfo : certificateInfos.getItems()) {
