@@ -74,15 +74,15 @@ Feature: User Permission tests
     And I find user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-b | Kapua User b | kapua_b@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And I change name to "updated-kapua-a"
+    And I change user to
+      | name    | displayName          | email                 | phoneNumber     | status   | userType |
+      | kapua-b | Kapua User b updated | kapua_b_new@kapua.com | +386 31 321 456 | DISABLED | INTERNAL |
     Then I search for user with name "kapua-b"
-    And I find no user
-    Then I search for user with name "updated-kapua-a"
     And I find user
-      | name            | displayName  | email             | phoneNumber     | status  | userType |
-      | updated-kapua-a | Kapua User b | kapua_b@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And I try to delete user "updated-kapua-a"
-    Then I search for user with name "updated-kapua-a"
+      | name    | displayName          | email                 | phoneNumber     | status   | userType |
+      | kapua-b | Kapua User b updated | kapua_b_new@kapua.com | +386 31 321 456 | DISABLED | INTERNAL |
+    And I try to delete user "kapua-b"
+    Then I search for user with name "kapua-b"
     And I find no user
     And I logout
 
@@ -291,13 +291,13 @@ Feature: User Permission tests
       And I find user
         | name    | displayName  | email             | phoneNumber     | status  | userType |
         | kapua-b | Kapua User b | kapua_b@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-      And I change name to "kapua-ab"
+      And I change user to
+        | name    | displayName          | email                 | phoneNumber     | status   | userType |
+        | kapua-b | Kapua User b updated | kapua_b_new@kapua.com | +386 31 321 456 | DISABLED | INTERNAL |
       Then I search for user with name "kapua-b"
-      And I find no user
-      Then I search for user with name "kapua-ab"
       And I find user
-        | name     | displayName  | email             | phoneNumber     | status  | userType |
-        | kapua-ab | Kapua User b | kapua_b@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
+        | name    | displayName          | email                 | phoneNumber     | status   | userType |
+        | kapua-b | Kapua User b updated | kapua_b_new@kapua.com | +386 31 321 456 | DISABLED | INTERNAL |
       And I try to delete user "kapua-ab"
       Then I search for user with name "kapua-ab"
       And I find no user
