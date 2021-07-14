@@ -25,7 +25,7 @@ import java.util.List;
 @RemoteServiceRelativePath("certificateInfo")
 public interface GwtCertificateInfoService extends RemoteService {
 
-    List<GwtCertificateInfo> findAllCertificates(String scopeIdString) throws GwtKapuaException;
+    List<GwtCertificateInfo> findAll(String scopeIdString) throws GwtKapuaException;
 
     boolean isFindSupported();
 }

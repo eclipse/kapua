@@ -156,7 +156,7 @@ public class KeystoreItemAddCertificateInfoDialog extends SimpleDialog {
             }
         });
 
-        GWT_CERTIFICATE_INFO_SERVICE.findAllCertificates(gwtDevice.getScopeId(), new AsyncCallback<List<GwtCertificateInfo>>() {
+        GWT_CERTIFICATE_INFO_SERVICE.findAll(gwtDevice.getScopeId(), new AsyncCallback<List<GwtCertificateInfo>>() {
             @Override
             public void onFailure(Throwable t) {
                 certificateInfoCombo.setEmptyText("Error while loading certificate info!");
