@@ -207,6 +207,27 @@ public class RestClientSteps extends Assert {
         Assert.assertEquals("Wrong response code.", expeted, restResponseCode);
     }
 
+    @Then("^REST response contains limitExceed field with value (true|false)$")
+    public void restResponseContainsLimitExceedValueWithValue(String value) throws Exception {
+        String restResponse = (String) stepData.get(REST_RESPONSE);
+        UserListResult userList = XmlUtil.unmarshalJson(restResponse, UserListResult.class, null);
+        Assert.assertEquals(Boolean.parseBoolean(value), userList.isLimitExceeded());
+    }
+
+    @Given("^An authenticated user$")
+    public void anAuthenticationToken() throws Exception {
+        restPostCallWithJson("/v1/authentication/user",
+                "{\"password\": \"kapua-password\", \"username\": \"kapua-sys\"}");
+        restResponseContainingAccessToken();
+    }
+
+    @Given("^(\\d+) new users? created$")
+    public void newUsersCreated(int howManyUser) throws Exception {
+        for (int i = 0; i < howManyUser; ++i) {
+            restPostCallWithJson("/_/users", String.format("{\"name\": \"new-user-%d\"}", i));
+        }
+    }
+
     /**
      * Take input parameter and replace its $var$ with value of var that is stored
      * in step data.

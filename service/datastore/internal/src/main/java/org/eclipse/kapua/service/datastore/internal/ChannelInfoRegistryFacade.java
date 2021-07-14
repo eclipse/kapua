@@ -193,7 +193,9 @@ public class ChannelInfoRegistryFacade extends AbstractRegistryFacade {
 
         String indexName = SchemaUtil.getChannelIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ChannelInfoSchema.CHANNEL_TYPE_NAME);
-        return new ChannelInfoListResultImpl(getElasticsearchClient().query(typeDescriptor, query, ChannelInfo.class));
+        ChannelInfoListResult result = new ChannelInfoListResultImpl(getElasticsearchClient().query(typeDescriptor, query, ChannelInfo.class));
+        setLimitExceed(query, result);
+        return result;
     }
 
     /**

@@ -293,8 +293,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
         String dataIndexName = SchemaUtil.getDataIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(dataIndexName, MessageSchema.MESSAGE_TYPE_NAME);
         MessageListResult result = new MessageListResultImpl(getElasticsearchClient().query(typeDescriptor, query, DatastoreMessage.class));
-        Integer offset = query.getOffset();
-        result.setLimitExceeded((offset == null ? 0 : offset) + result.getSize() < result.getTotalCount());
+        setLimitExceed(query, result);
         return result;
     }
 

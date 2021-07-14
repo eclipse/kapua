@@ -959,6 +959,74 @@ public class DatastoreSteps extends TestBase {
         }
     }
 
+    @Then("^The channel list \"(.+)\" have limitExceed value (true|false)$")
+    public void theChannelListHaveLimitExceedValue(String lstKey, String limitExceedVal) {
+
+        theListHaveLimitExceedValue(ChannelInfoListResult.class, lstKey, limitExceedVal);
+    }
+
+    @Then("^The metric list \"(.+)\" have limitExceed value (true|false)$")
+    public void theMetricListHaveLimitExceedValue(String lstKey, String limitExceedVal) {
+
+        theListHaveLimitExceedValue(MetricInfoListResult.class, lstKey, limitExceedVal);
+    }
+
+    @Then("^The message list \"(.+)\" have limitExceed value (true|false)$")
+    public void theMessageListHaveLimitExceedValue(String lstKey, String limitExceedVal) {
+
+        theListHaveLimitExceedValue(MessageListResult.class, lstKey, limitExceedVal);
+    }
+
+    @Then("^The client list \"(.+)\" have limitExceed value (true|false)$")
+    public void theClientListHaveLimitExceedValue(String lstKey, String limitExceedVal) {
+
+        theListHaveLimitExceedValue(ClientInfoListResult.class, lstKey, limitExceedVal);
+    }
+
+    @When("^I query for the current account channels with limit (\\d+) and offset (\\d+) and store them as \"(.+)\"$")
+    public void queryChannelWithOffsetAndLimit(int limit, int offset, String lstKey) throws KapuaException {
+
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
+        ChannelInfoQuery tmpQuery = createBaseChannelInfoQuery(account.getId(), limit);
+        tmpQuery.setOffset(offset);
+        tmpQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
+        ChannelInfoListResult tmpList = channelInfoRegistryService.query(tmpQuery);
+        stepData.put(lstKey, tmpList);
+    }
+
+    @When("^I query for the current account metrics with limit (\\d+) and offset (\\d+) and store them as \"(.+)\"$")
+    public void queryMetricWithOffsetAndLimit(int limit, int offset, String lstKey) throws KapuaException {
+
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
+        MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), limit);
+        tmpQuery.setOffset(offset);
+        tmpQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
+        MetricInfoListResult tmpList = metricInfoRegistryService.query(tmpQuery);
+        stepData.put(lstKey, tmpList);
+    }
+
+    @When("^I query for the current account messages with limit (\\d+) and offset (\\d+) and store them as \"(.+)\"$")
+    public void queryMessageWithOffsetAndLimit(int limit, int offset, String lstKey) throws KapuaException {
+
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
+        MessageQuery tmpQuery = createBaseMessageQuery(account.getId(), limit);
+        tmpQuery.setOffset(offset);
+        tmpQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
+        MessageListResult tmpList = messageStoreService.query(tmpQuery);
+        stepData.put(lstKey, tmpList);
+    }
+
+    @When("^I query for the current account clients with limit (\\d+) and offset (\\d+) and store them as \"(.+)\"$")
+    public void queryClientWithOffsetAndLimit(int limit, int offset, String lstKey) throws KapuaException {
+
+        Account account = (Account) stepData.get(LAST_ACCOUNT);
+        ClientInfoQuery tmpQuery = createBaseClientInfoQuery(account.getId(), limit);
+        tmpQuery.setOffset(offset);
+        tmpQuery.addFetchAttributes(ChannelInfoField.TIMESTAMP.field());
+        ClientInfoListResult tmpList = clientInfoRegistryService.query(tmpQuery);
+        stepData.put(lstKey, tmpList);
+    }
+
     @When("^I count the current account channels and store the count as \"(.*)\"$")
     public void countAccountChannels(String countKey) throws KapuaException {
 
@@ -2430,6 +2498,11 @@ public class DatastoreSteps extends TestBase {
 
     private void setDatastoreIndexingWindowOption(String windowOption) {
         System.setProperty(DatastoreSettingsKey.INDEXING_WINDOW_OPTION.key(), windowOption.trim().toLowerCase());
+    }
+
+    private <T extends StorableListResult> void theListHaveLimitExceedValue(Class<T> bar, String lstKey, String limitExceedVal) {
+        T tmpList = (T) stepData.get(lstKey);
+        assertEquals(tmpList.isLimitExceeded(), Boolean.parseBoolean(limitExceedVal));
     }
 
     /**

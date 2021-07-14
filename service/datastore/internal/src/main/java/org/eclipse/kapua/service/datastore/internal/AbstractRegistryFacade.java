@@ -18,6 +18,9 @@ import org.eclipse.kapua.service.datastore.internal.mediator.ConfigurationExcept
 import org.eclipse.kapua.service.datastore.internal.mediator.MessageStoreConfiguration;
 import org.eclipse.kapua.service.elasticsearch.client.ElasticsearchClient;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientUnavailableException;
+import org.eclipse.kapua.service.storable.model.Storable;
+import org.eclipse.kapua.service.storable.model.StorableListResult;
+import org.eclipse.kapua.service.storable.model.query.StorableQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,5 +47,12 @@ public abstract class AbstractRegistryFacade {
 
     protected ElasticsearchClient<?> getElasticsearchClient() throws ClientUnavailableException {
         return DatastoreClientFactory.getElasticsearchClient();
+    }
+
+    protected <T extends Storable> void setLimitExceed(StorableQuery query, StorableListResult<T> list) {
+        int offset = query.getOffset() != null ? query.getOffset() : 0;
+        if (query.getLimit() != null && list.getTotalCount() > offset + query.getLimit()) {
+            list.setLimitExceeded(true);
+        }
     }
 }

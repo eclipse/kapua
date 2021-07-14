@@ -132,6 +132,76 @@ Feature: REST API tests for User
     And REST GET call at "/v1/$accountBCompactId$/users/$lastUserCompactId$"
     Then REST response code is 404
 
+  Scenario: Retrieve all users and check if limitExceed value is true
+    Login with sys user and call GET on users to retrieve list of all users. Specify a limit of 0 entries,
+    then the limitExceed value must be true.
+
+    Given Server with host "127.0.0.1" on port "8081"
+    Given An authenticated user
+    When REST GET call at "/v1/_/users?offset=0&limit=0"
+    Then REST response contains limitExceed field with value true
+
+  Scenario: Retrieve all users and check if limitExceed value is false
+  Login with sys user and call GET on users to retrieve list of all users. Specify a limit of 50 entries,
+  then the limitExceed value must be false.
+
+    Given Server with host "127.0.0.1" on port "8081"
+    Given An authenticated user
+    When REST GET call at "/v1/_/users?offset=0&limit=50"
+    Then REST response contains limitExceed field with value false
+
+  Scenario: Create a new user, then retrieve all users and check if limitExceed value is false
+  Login with sys user and call GET on users to retrieve list of all users. Specify a limit of 2 entries,
+  then the limitExceed value must be false.
+
+    Given Server with host "127.0.0.1" on port "8081"
+    Given An authenticated user
+    Given 1 new user created
+    When REST GET call at "/v1/_/users?offset=0&limit=2"
+    Then REST response contains limitExceed field with value false
+
+  Scenario: Create two new users, then retrieve all users and check if limitExceed value is true
+  Login with sys user and call GET on users to retrieve list of all users. Specify a limit of 3 entries
+  then the limitExceed value must be true.
+
+    Given Server with host "127.0.0.1" on port "8081"
+    Given An authenticated user
+    Given 2 new users created
+    When REST GET call at "/v1/_/users?offset=0&limit=3"
+    Then REST response contains limitExceed field with value false
+
+  Scenario: Create two new users, then retrieve all users specifying a offset of 2, then check if
+  limitExceed value is false.
+  Login with sys user and call GET on users to retrieve list of all users. Specify a offset of 2
+  then the limitExceed value must be false.
+
+    Given Server with host "127.0.0.1" on port "8081"
+    Given An authenticated user
+    Given 2 new users created
+    When REST GET call at "/v1/_/users?offset=2"
+    Then REST response contains limitExceed field with value false
+
+  Scenario: Create three new users, then retrieve all users specifying a offset of 2 and a limit of 1,
+  then check if limitExceed value is true.
+  Login with sys user and call GET on users to retrieve list of all users. Specify a offset of 2
+  and a limit of 1, then the limitExceed value must be false.
+
+    Given Server with host "127.0.0.1" on port "8081"
+    Given An authenticated user
+    Given 3 new users created
+    When REST GET call at "/v1/_/users?offset=2&limit=1"
+    Then REST response contains limitExceed field with value false
+
+  Scenario: Create 119 new users, then retrieve all users specifying a offset of 100 and limit of 50,
+  then check if limitExceed value is false. Login with sys user and call GET on users to retrieve list
+  of all users. Specify a offset of 100 and a limit of 50 entries then the limitExceed value must be false.
+
+    Given Server with host "127.0.0.1" on port "8081"
+    Given An authenticated user
+    Given 119 new users created
+    When REST GET call at "/v1/_/users?limit=50&offset=100"
+    Then REST response contains limitExceed field with value false
+
   Scenario: Stop Jetty server for all scenarios
 
     Given Stop Jetty Server
