@@ -991,6 +991,8 @@ components:
                     type: string
     unauthenticated:
       description: The provided AccessToken could not be found, or no AccessToken has been provided
+    entityUniqueness:
+      description: An Entity with the same unique fields is already present in the system
   securitySchemes:
     kapuaToken:
       description: The default AccessToken Security Scheme. A [JWT](https://jwt.io) is used to represent the claims of a user
