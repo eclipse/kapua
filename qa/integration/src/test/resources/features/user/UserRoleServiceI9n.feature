@@ -766,8 +766,10 @@ Scenario: Init Security Context for all scenarios
     And I login as user with name "TestUser" and password "User@10031995"
     And I create user with name "TestUser1"
     And I find user with name "TestUser1"
-    And I try to edit user to name "TestUser2"
-    And I try to delete user "TestUser2"
+    And I change user to
+      | name      | displayName       | email                  | phoneNumber     | status   | userType |
+      | TestUser1 | Kapua Test User 1 | kapua_test_1@kapua.com | +386 31 321 456 | DISABLED | INTERNAL |
+    And I try to delete user "TestUser1"
     Then No exception was thrown
     And I logout
 
@@ -792,8 +794,10 @@ Scenario: Init Security Context for all scenarios
     And I login as user with name "TestUser" and password "User@10031995"
     And I create user with name "user"
     And I find user with name "user"
-    And I try to edit user to name "user1"
-    And I try to delete user "user1"
+    And I change user to
+      | name | displayName       | email                  | phoneNumber     | status   | userType |
+      | user | Kapua Test User 1 | kapua_test_1@kapua.com | +386 31 321 456 | DISABLED | INTERNAL |
+    And I try to delete user "user"
     And I create a device with name "TestDevice"
     And I find device with clientId "TestDevice"
     And I try to edit device to clientId "TestDevice1"
