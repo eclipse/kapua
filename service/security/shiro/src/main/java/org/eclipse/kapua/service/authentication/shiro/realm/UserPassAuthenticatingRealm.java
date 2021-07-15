@@ -229,8 +229,8 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
                 hasMfa = true;
             }
         } catch (KapuaException e) {
-            logger.warn(e.toString());
-            throw new ShiroException("Error while find user!", e);
+            logger.warn("Error while finding User. Error: {}", e.getMessage());
+            throw new ShiroException("Error while finding user!", e);
         }
 
         try {
