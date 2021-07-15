@@ -503,6 +503,164 @@ Scenario: Init Security Context for all scenarios
     Then No exception was thrown
     And I logout
 
+  Scenario: User is just created and its credentials are not used to login
+  Its lockout error counter is equals to 0.
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    Given Account
+      | name      | scopeId |
+      | account-a | 1       |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities |  5    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    And User A
+      | name    | displayName  | email             | phoneNumber     | status  | userType | expirationDate |
+      | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL | tomorrow       |
+    And I add credentials
+      | name    | password          | enabled |
+      | kapua-a | ToManySecrets123# | true    |
+    And I logout
+    Then The lockout error counter for user "kapua-a" is 0
+
+  Scenario: User tying to login one time with wrong password
+  The user cannot login in, and the lockout error counter is equals to 1.
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    Given Account
+      | name      | scopeId |
+      | account-a | 1       |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities |  5    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    And User A
+      | name    | displayName  | email             | phoneNumber     | status  | userType | expirationDate |
+      | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL | tomorrow       |
+    And I add credentials
+      | name    | password          | enabled |
+      | kapua-a | ToManySecrets123# | true    |
+    And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    When I login as user with name "kapua-a" and password "WrongPassword123#"
+    Then An exception was thrown
+    Then The lockout error counter for user "kapua-a" is 1
+
+  Scenario: User login with wrong password and it doesn't provide any otp code
+  even if the mfa is activated.
+  The user cannot login in, and the lockout error counter is equals to 1.
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    Given Account
+      | name      | scopeId |
+      | account-a | 1       |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities |  5    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    And User A
+      | name    | displayName  | email             | phoneNumber     | status  | userType | expirationDate |
+      | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL | tomorrow       |
+    And I add credentials
+      | name    | password          | enabled |
+      | kapua-a | ToManySecrets123# | true    |
+    And I enable mfa
+    Then I have mfa enable
+    And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    When I login as user with name "kapua-a" and password "WrongPassword123#"
+    Then An exception was thrown
+    Then The lockout error counter for user "kapua-a" is 1
+
+  Scenario: User login with correct username and password, but it doesn't provide any otp code
+  even if the mfa is activated.
+  The user cannot login in, but the lockout error counter is not increased.
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    Given Account
+      | name      | scopeId |
+      | account-a | 1       |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities |  5    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    And User A
+      | name    | displayName  | email             | phoneNumber     | status  | userType | expirationDate |
+      | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL | tomorrow       |
+    And I add credentials
+      | name    | password          | enabled |
+      | kapua-a | ToManySecrets123# | true    |
+    And I enable mfa
+    Then I have mfa enable
+    And I logout
+    When I login as user with name "kapua-a" and password "ToManySecrets123#"
+    Then No exception was thrown
+    Then The lockout error counter for user "kapua-a" is 0
+
+  Scenario: User login with wrong username and password, after that it login with correct username and password
+  but it doesn't provide any otp code even if the mfa is activated.
+  The user cannot login in. The lockout error counter is first set to 1, then set to 0.
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    Given Account
+      | name      | scopeId |
+      | account-a | 1       |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities |  5    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    And User A
+      | name    | displayName  | email             | phoneNumber     | status  | userType | expirationDate |
+      | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL | tomorrow       |
+    And I add credentials
+      | name    | password          | enabled |
+      | kapua-a | ToManySecrets123# | true    |
+    And I enable mfa
+    Then I have mfa enable
+    And I logout
+    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    When I login as user with name "kapua-a" and password "WrongPassword123#"
+    Then An exception was thrown
+    Then The lockout error counter for user "kapua-a" is 1
+    When I login as user with name "kapua-a" and password "ToManySecrets123#"
+    Then No exception was thrown
+    Then The lockout error counter for user "kapua-a" is 0
+
   Scenario: Reset Security Context for all scenarios
 
     Given Reset Security Context
