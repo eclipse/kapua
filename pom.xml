@@ -57,6 +57,7 @@
         <guava-listenablefuture.version>9999.0-empty-to-avoid-conflict-with-guava</guava-listenablefuture.version>
         <guice.version>4.1.0</guice.version>
         <h2.version>1.4.199</h2.version>
+        <hikaricp.version>4.0.3</hikaricp.version>
         <hk2-api.version>2.5.0-b05</hk2-api.version>
         <httpcomponents.version>4.5.13</httpcomponents.version>
         <jackson.version>2.12.2</jackson.version>
@@ -1347,6 +1348,11 @@
                 <version>${eclipselink.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikaricp.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.glassfish</groupId>
                 <artifactId>javax.json</artifactId>
                 <version>${javax-json.version}</version>
@@ -1399,16 +1405,6 @@
                 <artifactId>quartz</artifactId>
                 <version>${quartz-scheduler.version}</version>
                 <exclusions>
-                    <exclusion>
-                        <!-- This is not required. We are using EclipseLink connection pooling. -->
-                        <groupId>com.mchange</groupId>
-                        <artifactId>c3p0</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <!-- This is not required. We are using EclipseLink connection pooling. -->
-                        <groupId>com.mchange</groupId>
-                        <artifactId>mchange-commons-java</artifactId>
-                    </exclusion>
                     <exclusion>
                         <!-- This is not required. We are using EclipseLink connection pooling. -->
                         <groupId>com.zaxxer</groupId>

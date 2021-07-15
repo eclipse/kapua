@@ -138,23 +138,6 @@ public enum SystemSettingKey implements SettingKey {
      * Database character encoding
      */
     DB_CHAR_ENCODING("commons.db.characterEncoding"),
-
-    /**
-     * Database pool initial pool size
-     */
-    DB_POOL_SIZE_INITIAL("commons.db.pool.size.initial"),
-    /**
-     * Database pool minimum pool size
-     */
-    DB_POOL_SIZE_MIN("commons.db.pool.size.min"),
-    /**
-     * Database pool maximum pool size
-     */
-    DB_POOL_SIZE_MAX("commons.db.pool.size.max"),
-    /**
-     * Database pool connection borrow timeout
-     */
-    DB_POOL_BORROW_TIMEOUT("commons.db.pool.borrow.timeout"),
     /**
      * Character used in DB query to escape other special characters
      */
@@ -167,6 +150,27 @@ public enum SystemSettingKey implements SettingKey {
      * Character used in DB query to use as single character wildcard
      */
     DB_CHARACTER_WILDCARD_SINGLE("commons.db.character.wildcard.single"),
+
+    /**
+     * Database pool minimum pool size
+     */
+    DB_POOL_SIZE_MIN("commons.db.pool.size.min"),
+    /**
+     * Database pool maximum pool size
+     */
+    DB_POOL_SIZE_MAX("commons.db.pool.size.max"),
+    /**
+     * Database pool maximum time before evicting an idle connection
+     */
+    DB_POOL_IDLE_TIMEOUT("commons.db.pool.idle.timeout"),
+    /**
+     * Database pool keepalive query interval for idle connections
+     */
+    DB_POOL_KEEPALIVE_TIME("commons.db.pool.keepalive.timeout"),
+    /**
+     * Database pool test query used for connection liveness tests and keepalive
+     */
+    DB_POOL_TEST_QUERY("commons.db.pool.test.query"),
 
     /**
      * Broker schema (e.g. mqtt, mqtts, ..)
