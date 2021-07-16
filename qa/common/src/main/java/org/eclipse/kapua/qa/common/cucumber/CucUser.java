@@ -46,6 +46,8 @@ public class CucUser {
 
     private String expirationDate;
 
+    private String externalId;
+
     public String getName() {
         return name;
     }
@@ -108,6 +110,14 @@ public class CucUser {
 
     public void setScopeId(BigInteger scopeId) {
         this.scopeId = scopeId;
+    }
+
+    public String getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(String externalId) {
+        this.externalId = externalId;
     }
 
     public Date getExpirationDate() {

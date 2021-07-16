@@ -234,7 +234,10 @@
             <artifactId>kapua-translator-kura-jms</artifactId>
             <scope>provided</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-openid-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-api</artifactId>
