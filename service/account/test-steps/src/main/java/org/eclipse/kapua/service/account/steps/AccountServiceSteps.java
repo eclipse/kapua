@@ -39,6 +39,7 @@ import org.junit.Assert;
 
 import com.google.inject.Singleton;
 
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
@@ -524,14 +525,14 @@ public class AccountServiceSteps extends TestBase {
     }
 
     @When("^I set the following parameters$")
-    public void setAccountParameters(List<StringTuple> paramList)
+    public void setAccountParameters(DataTable dataTable)
             throws Exception {
-
+        Assert.assertEquals("Wrong test setup. Bad parameters size!", 2, dataTable.width());
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Properties accProps = account.getEntityProperties();
 
-        for (StringTuple param : paramList) {
-            accProps.setProperty(param.getName(), param.getValue());
+        for (List<String> row : dataTable.asLists()) {
+            accProps.setProperty(row.get(0), row.get(1));
         }
         account.setEntityProperties(accProps);
 
@@ -714,14 +715,14 @@ public class AccountServiceSteps extends TestBase {
     }
 
     @Then("^The account has the following parameters$")
-    public void checkAccountParameters(List<StringTuple> paramList)
+    public void checkAccountParameters(DataTable dataTable)
             throws KapuaException {
-
+        Assert.assertEquals("Wrong test setup. Bad parameters size!", 2, dataTable.width());
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Properties accProps = account.getEntityProperties();
 
-        for (StringTuple param : paramList) {
-            Assert.assertEquals(param.getValue(), accProps.getProperty(param.getName()));
+        for (List<String> row : dataTable.asLists()) {
+            Assert.assertEquals(row.get(1), accProps.getProperty(row.get(0)));
         }
     }
 
