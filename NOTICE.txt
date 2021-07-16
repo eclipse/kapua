@@ -1,0 +1,1629 @@
+# Notices for Eclipse Kapua
+
+This content is produced and maintained by the Eclipse Kapua project.
+
+* Project home: https://projects.eclipse.org/projects/iot.kapua
+
+## Trademarks
+
+Eclipse Kapua, and Kapua are trademarks of the Eclipse Foundation.
+
+## Copyright
+
+All content is the property of the respective authors or their employers. For
+more information regarding authorship of content, please consult the listed
+source code repository logs.
+
+## Declared Project Licenses
+
+This program and the accompanying materials are made available under the terms
+of the Eclipse Public License v. 2.0 which is available at
+https://www.eclipse.org/legal/epl-2.0.
+
+SPDX-License-Identifier: EPL-2.0
+
+## Source Code
+
+The project maintains the following source code repositories:
+
+* https://github.com/eclipse/kapua
+
+## Third-party Content
+
+This project leverages the following third party content.
+
+ActiveMQ (5.14.5)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+activemq-broker (5.14.0)
+
+* License: Apache License, 2.0
+* Project: http://activemq.apache.org/
+* Source: https://github.com/apache/activemq
+
+activemq-jaas (5.11.0)
+
+* License: Apache License, 2.0
+* Project: http://activemq.apache.org/
+* Source: https://github.com/apache/activemq
+
+aopalliance (1.0)
+
+* License: Public Domain
+
+Apache ActiveMQ ( Camel, Client, Console, HTTP, JMS-Pool, Kahadb_Store, MQTT,
+Openwire_Legacy, Spring) (5.14.5)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+Apache Camel Core (2.15.1)
+
+* License: Apache License, 2.0
+
+Apache Camel Core (2.16.3)
+
+* License: Apache License, 2.0
+
+Apache Camel JMS (2.15.1)
+
+* License: Apache License, 2.0
+* Project: http://camel.apache.org/
+* Source: https://github.com/apache/camel/
+
+Apache Camel JMS (2.16.3)
+
+* License: Apache License, 2.0
+* Project: http://camel.apache.org/
+* Source: https://github.com/apache/camel/
+
+Apache Commons BeanUtils (1.9.2)
+
+* License: Apache License, 2.0
+
+Apache Commons BeanUtils (1.9.3)
+
+* License: Apache-2.0
+
+Apache Commons codec (1.9)
+
+* License: Apache License, 2.0
+
+Apache Commons Command Line Interface CLI (1.4)
+
+* License: Apache-2.0
+
+Apache Commons Configuration (1.9)
+
+* License: Apache License, 2.0
+
+Apache Commons FileUpload (1.2.2)
+
+* License: Apache License, 2.0
+
+Apache Commons Fileupload - commons-fileupload - (1.4)
+
+* License: Apache-2.0
+
+Apache Commons Lang (2.4)
+
+* License: Apache License, 2.0
+
+Apache Commons Lang (2.6)
+
+* License: Apache License, 2.0
+
+Apache Commons Net (3.5)
+
+* License: Apache-2.0
+* Project: http://commons.apache.org/net/
+* Source: http://svn.apache.org/viewvc/commons/proper/net/tags/NET_3_5/
+
+Apache Commons XML (1.0)
+
+* License: Public Domain, W3C
+
+Apache commons-cli (1.3.1)
+
+* License: Apache License, 2.0
+* Project: http://commons.apache.org/proper/commons-cli/
+* Source: http://svn.apache.org/viewvc/commons/proper/cli/tags/cli-1.3.1/
+
+Apache commons-lang3 (3.4)
+
+* License: Apache License, 2.0
+
+Apache commons-logging (1.1.3)
+
+* License: Apache License, 2.0
+
+Apache Geronimo JMS 1.1 Spec (1.1.1)
+
+* License: Apache License, 2.0
+
+Apache geronimo-jms_2.0_spec (1.0)
+
+* License: Apache-2.0
+
+Apache HttpClient (4.5.2)
+
+* License: Apache License, 2.0
+
+Apache HttpComponents AsyncClient (4.1.2)
+
+* License: Apache-2.0
+* Project: https://hc.apache.org/
+* Source:
+   https://svn.apache.org/repos/asf/httpcomponents/httpasyncclient/tags/4.1.2/
+
+Apache HttpComponents HttpCore (4.4.4)
+
+* License: Apache License, 2.0
+
+Apache HttpComponents HttpCore (4.4.5)
+
+* License: Apache-2.0
+* Project: https://hc.apache.org/
+* Source: https://svn.apache.org/repos/asf/httpcomponents/httpcore/tags/4.4.5/
+
+Apache HttpComponents HttpCore NIO (4.4.5)
+
+* License: Apache License, 2.0
+* Project: https://hc.apache.org/
+* Source:
+   https://svn.apache.org/repos/asf/httpcomponents/httpcore/tags/4.4.5/httpcore-nio/
+
+Apache Log4j (1.2.17)
+
+* License: Apache License, 2.0
+
+Apache POI (3.7)
+
+* License: Apache License, 2.0
+
+Apache POI (3.9)
+
+* License: Apache License, 2.0
+
+Apache POI (3.11)
+
+* License: Apache-2.0
+* Project: http://poi.apache.org/
+* Source: https://github.com/apache/poi
+
+Apache poi-ooxml (3.7)
+
+* License: Apache License, 2.0
+
+Apache poi-ooxml (3.9)
+
+* License: Apache License, 2.0
+
+Apache poi-ooxml-schemas (3.9)
+
+* License: Apache License, 2.0
+
+Apache Qpid Proton-j (0.16.0)
+
+* License: Apache License, 2.0
+
+Apache Qpid Proton-j (0.20.0)
+
+* License: Apache-2.0
+* Project: http://qpid.apache.org/proton
+* Source: https://github.com/apache/qpid-proton-j
+
+Apache Qpid Proton-j (0.25.0)
+
+* License: Apache-2.0
+
+Apache qpid-jms-client (0.24.0)
+
+* License: Apache-2.0 AND MIT
+* Project: https://qpid.apache.org/components/jms/
+* Source:
+   https://git-wip-us.apache.org/repos/asf?p=qpid-jms.git;a=tree;hb=refs/tags/0.24.0
+
+Apache shiro-core (1.2.3)
+
+* License: Apache License, 2.0
+* Project: http://shiro.apache.org/index.html
+* Source: https://github.com/apache/shiro
+
+Apache shiro-web (1.2.3)
+
+* License: Apache License, 2.0
+* Project: http://shiro.apache.org/index.html
+* Source: https://github.com/apache/shiro
+
+Apache Tomcat (8.0.38)
+
+* License: Apache License, 2.0, Common Development and Distribution License
+
+Apache XMLBeans (2.3)
+
+* License: Apache License, 2.0
+
+Apache XMLBeans (2.6.0)
+
+* License: Apache License, 2.0
+
+atinject (Package javax.inject) (1.0)
+
+* License: Apache License, 2.0
+
+Backbone.js (1.1.2)
+
+* License: MIT License
+
+Bean Validation API (1.0.0)
+
+* License: Apache License, 2.0
+
+Bean Validation API (1.1.0)
+
+* License: Apache License, 2.0
+
+com.beust:jcommander:1.78 (1.78)
+
+* License: Apache-2.0
+
+com.fasterxml.jackson.dataformat:jackson-dataformat-smile:2.12.2 (2.12.2)
+
+* License: Apache-2.0
+
+com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.2 (2.12.2)
+
+* License: Apache-2.0
+
+com.github.jai-imageio:jai-imageio-core:1.4.0 (1.4.0)
+
+* License: BSD-3-Clause
+
+com.google.zxing:core:3.4.1 (3.4.1)
+
+* License: Apache-2.0
+
+com.google.zxing:javase:3.4.1 (3.4.1)
+
+* License: Apache-2.0
+
+com.h2database:h2 (1.4.192)
+
+* License: Eclipse Public License 1.0
+
+com.ibm.jbatch.container (1.0.2)
+
+* License: Apache-2.0
+* Project: https://github.com/WASdev/standards.jsr352.batch-spec/wiki
+* Source: https://github.com/WASdev/standards.jsr352.jbatch/
+
+com.ibm.jbatch.spi (1.0.2)
+
+* License: Apache-2.0
+* Project: https://github.com/WASdev/standards.jsr352.batch-spec/wiki
+* Source: https://github.com/WASdev/standards.jsr352.jbatch/
+
+com.twitter:jsr166e:1.1.0 (1.1.0)
+
+* License: "LicenseRef-Public-Domain"
+* Project: https://github.com/twitter/jsr166e
+* Source: https://github.com/twitter/jsr166e
+
+com.warrenstrange:googleauth:1.5.0 (1.5.0)
+
+* License: BSD-3-Clause
+
+commons-collections (3.2.1)
+
+* License: Apache License 2.0
+
+commons-collections (3.2.2)
+
+* License: Apache License, 2.0
+
+commons-fileupload (1.3.2)
+
+* License: Apache License, 2.0
+
+commons-io:commons-io (2.4)
+
+* License: Apache Software License 1.1
+
+commons-logging-1.2 (1.2)
+
+* License: Apache License, 2.0
+
+commons-logging-1.2 (1.2)
+
+* License: Apache-2.0
+
+commons-pool2 (2.3)
+
+* License: Apache License, 2.0, Public Domain (One File)
+
+compress-lzf (1.0.3)
+
+* License: Apache License, 2.0
+
+Console V2 Server Node JS (n/a)
+
+* License: MIT AND BSD-3-Clause AND Apache-2.0 AND BSD-3-Clause AND ISC AND
+   UNLICENSE AND MPL-2.0 AND (BSD-3-Clause OR AFL-2.1) AND
+   LicenseRef-Public-Domain
+
+Console V2 UI Node JS (n/a)
+
+* License: MIT AND Apache-2.0 AND (MIT OR GPL-2.0) AND BSD-3-Clause AND OFL-1.1
+   AND (BSD-3-Clause OR MIT)
+
+elasticsearch (2.3.4)
+
+* License: Apache License, 2.0, Public Domain
+* Project: https://www.elastic.co/products/elasticsearch
+* Source: https://github.com/elastic/elasticsearch
+
+elasticsearch (5.3.0)
+
+* License: Apache-2.0
+* Project: https://www.elastic.co/products/elasticsearch
+* Source: https://github.com/elastic/elasticsearch
+
+Elasticsearch Client Rest (5.3.0)
+
+* License: Apache-2.0
+* Project: https://www.elastic.co/products/elasticsearch
+* Source: https://github.com/elastic/elasticsearch
+
+Elasticsearch Client Transport (5.3.0)
+
+* License: Apache-2.0
+* Project: https://www.elastic.co/products/elasticsearch
+* Source: https://github.com/elastic/elasticsearch
+
+Elasticsearch Lang Mustache (5.3.0)
+
+* License: Apache-2.0
+* Project: https://www.elastic.co/products/elasticsearch
+* Source: https://github.com/elastic/elasticsearch
+
+Elasticsearch Plugin Percolator (5.3.0)
+
+* License: Apache-2.0
+* Project: https://www.elastic.co/products/elasticsearch
+* Source: https://github.com/elastic/elasticsearch
+
+Elasticsearch Plugin Transport Netty3 (5.3.0)
+
+* License: Apache-2.0
+* Project: https://www.elastic.co/products/elasticsearch
+* Source: https://github.com/elastic/elasticsearch
+
+Elasticsearch reindex-client (5.3.0)
+
+* License: Apache-2.0
+* Project: https://www.elastic.co/products/elasticsearch
+* Source: https://github.com/elastic/elasticsearch
+
+Elasticsearch Transport Netty4 (5.3.0)
+
+* License: Apache-2.0
+* Project: https://www.elastic.co/products/elasticsearch
+* Source: https://github.com/elastic/elasticsearch
+
+encoder - OWASP Encoder - (1.2.3)
+
+* License: BSD-3-Clause
+
+Font Awesome (4.5.0)
+
+* License: OFL-1.1 AND MIT
+
+geronimo-j2ee-management_1.0_spec-1.1 (1.0)
+
+* License: Apache-2.0
+* Project: http://geronimo.apache.org/
+* Source:
+   https://svn.apache.org/repos/asf/geronimo/specs/tags/geronimo-j2ee-management_1.0_spec-1.1
+
+geronimo-j2ee-management_1.1_spec (1.0.1)
+
+* License: Apache-2.0
+* Project: http://geronimo.apache.org/index.html
+* Source:
+   http://svn.apache.org/viewvc/geronimo/specs/tags/geronimo-j2ee-management_1.1_spec-1.0.1/
+
+Google Gson (2.7)
+
+* License: Apache License, 2.0
+
+Google Guava (18.0)
+
+* License: Apache License, 2.0
+
+Google Guava (19.0)
+
+* License: Apache License, 2.0
+
+Google Web Toolkit GWT Servlet Library 2.4.0 (2.4.0)
+
+* License: Apache License, 2.0
+* Project: http://www.gwtproject.org/
+* Source: https://gwt.googlesource.com/gwt.git
+
+Google Web Toolkit GWT User Library (2.4.0)
+
+* License: Apache License, 2.0, W3C, CDDL, Apache License 1.1
+
+guava (27.1)
+
+* License: Apache-2.0 AND LicenseRef-Public-Domain
+
+Guice (4.1.0)
+
+* License: Apache License, 2.0
+
+guice-assistedinject (4.1.0)
+
+* License: Apache License, 2.0
+
+guice-multibindings (4.1.0)
+
+* License: Apache-2.0
+
+GWT Log (3.1.8)
+
+* License: Apache License, 2.0
+
+H2 (1.4.199)
+
+* License: (EPL-1.0 OR MPL-2.0) AND (EPL-1.0 OR MPL-2.0 OR LGPL-3.0-or-later)
+   AND BSD-3-Clause AND LicenseRef-Public-Domain
+* Project: http://h2database.com/
+* Source: https://github.com/h2database/h2database/tree/version-1.4.199
+
+h2 database (1.4.192)
+
+* License: Eclipse Public License
+
+Handlebars (2.0.0)
+
+* License: MIT License
+
+HdrHistogram (2.1.6)
+
+* License: (BSD-2-Clause OR Public-Domain)
+* Project: http://hdrhistogram.github.io/HdrHistogram/
+* Source: http://github.com/HdrHistogram/HdrHistogram.git
+
+highlight.js (7.3)
+
+* License: New BSD license
+
+HK2 aopalliance-repackaged (2.5.0)
+
+* License: public-domain
+* Project: https://hk2.java.net/2.5.0-b05/
+* Source:
+   https://java.net/projects/hk2/sources/git/content/external/aopalliance
+
+HK2 hk2-api (2.5.0)
+
+* License: CDDL-1.1 OR GPL-2.0
+* Project: https://hk2.java.net/2.5.0-b05/
+* Source: https://java.net/projects/hk2/sources/git/show/hk2-api
+
+HK2 hk2-locator (2.5.0)
+
+* License: CDDL-1.1 OR GPL-2.0
+* Project: https://hk2.java.net/2.5.0-b05/
+* Source: https://java.net/projects/hk2/sources/git/show/hk2-locator
+
+HK2 hk2-utils (2.5.0)
+
+* License: (CDDL-1.1 OR GPL-2.0 WITH Classpath-exception-2.0)
+* Project: https://hk2.java.net/2.5.0-b05/
+* Source: https://java.net/projects/hk2/sources/git/show/hk2-utils
+
+HK2 javax.inject (2.5.0)
+
+* License: Apache-2.0
+* Project: https://hk2.java.net/2.5.0-b05/
+* Source: https://java.net/projects/hk2/sources/git/content/external/jsr330
+
+HK2 OSGi Resource Locator (1.0.1)
+
+* License: Common Development and Distribution License
+
+hppc (0.7.1)
+
+* License: Apache-2.0
+* Project: http://labs.carrotsearch.com/hppc.html
+* Source: https://github.com/carrotsearch/hppc
+
+io.vertx : vertx-auth-common (3.5.1)
+
+* License: EPL-1.0 AND Apache-2.0
+
+io.vertx : vertx-bridge-common (3.5.1)
+
+* License: Apache-2.0 AND (Apache-2.0 OR EPL-1.0)
+
+io.vertx : vertx-dropwizard-metrics (3.5.1)
+
+* License: EPL-1.0 AND Apache-2.0
+
+io.vertx : vertx-health-check (3.5.1)
+
+* License: Apache-2.0
+
+io.vertx : vertx-proton (3.5.1)
+
+* License: Apache-2.0
+
+io.vertx : vertx-web (3.5.1)
+
+* License: EPL-1.0 AND Apache-2.0
+
+Jackson annotations (2.9.9)
+
+* License: Apache-2.0
+
+Jackson Annotations (2.10.1)
+
+* License: Apache-2.0
+
+Jackson core (2.9.9)
+
+* License: Apache-2.0
+
+Jackson databind (2.9.9)
+
+* License: Apache-2.0
+
+jackson-annotations (2.6.3)
+
+* License: Apache-2.0
+* Project: https://github.com/FasterXML/jackson
+* Source: https://github.com/FasterXML/jackson-annotations
+
+jackson-annotations (2.8.0)
+
+* License: Apache License, 2.0
+
+jackson-core (2.8.6)
+
+* License: Apache-2.0
+* Project: https://github.com/FasterXML/jackson-core
+* Source: https://github.com/FasterXML/jackson-core
+
+jackson-core (2.10.1)
+
+* License: Apache-2.0
+
+jackson-databind (2.8.6)
+
+* Project: https://github.com/FasterXML/jackson-databind/wiki
+* Source: https://github.com/FasterXML/jackson-databind
+
+jackson-databind (2.9.9.1)
+
+* License: Apache-2.0
+
+jackson-databind (2.10.1)
+
+* License: Apache-2.0
+
+jackson-dataformat-cbor (2.8.6)
+
+* License: Apache-2.0
+
+jackson-dataformat-properties (2.8.6)
+
+* License: Apache-2.0
+* Project: https://github.com/FasterXML/jackson
+* Source: https://github.com/FasterXML/jackson-dataformat-properties
+
+jackson-dataformat-smile (2.8.6)
+
+* License: Apache-2.0
+* Project: https://github.com/FasterXML/jackson
+* Source: https://github.com/FasterXML/jackson-dataformats-binary
+
+jackson-dataformat-yaml (2.8.6)
+
+* License: Apache-2.0
+* Project: https://github.com/FasterXML/jackson
+* Source: https://github.com/FasterXML/jackson
+
+Java Servlet API (3.1)
+
+* License: CDDL, Apache 2.0
+
+Javassist (3.19.0)
+
+* License: Mozilla Public License 1.1 (MPL), Apache 2.0
+
+javax-cache:cache-api (1.1.1)
+
+* License: Apache-2.0 AND LicenseRef-Public-Domain
+
+Javax.annotation (1.2)
+
+* License: Common Development and Distribution License
+
+javax.batch-api (1.0.1)
+
+* License: Apache-2.0
+* Project: https://github.com/WASdev/standards.jsr352.batch-spec/wiki
+* Source: https://github.com/WASdev/standards.jsr352.jbatch/
+
+javax.json (1.0.4)
+
+* License: Common Development and Distribution License
+
+javax.mail-api (1.5.6)
+
+* License: CDDL-1.0 OR GPL-2.0
+* Project: https://javaee.github.io/javamail/
+* Source: https://github.com/javaee/javamail
+
+javax.ws.rs (2.0.1)
+
+* License: Common Development and Distribution License, + 1 file partial ASL
+
+JAXB CORE (2.2.11)
+
+* License: CDDL-1.1
+* Project: https://jaxb.java.net/
+* Source: http://central.maven.org/maven2/com/sun/xml/bind/jaxb-core/2.2.11/
+
+JAXB IMPL (2.2.11)
+
+* License: Common Development and Distribution License
+
+jaxb-impl-2.2.5 Version: jar (2.2.5)
+
+* License: Common Development and Distribution License
+
+jcl-over-slf4j (1.7.25)
+
+* License: Apache-2.0
+
+Jersey JAX-RS all-in-one bundle (1.12)
+
+* License: CDDL, Apache 2.0
+
+jersey-client (2.23.2)
+
+* License: CDDL-1.1 OR GPL-2.0
+* Project: https://jersey.java.net/
+* Source: https://github.com/jersey/jersey/
+
+jersey-common (2.23.2)
+
+* License: CDDL-1.1 OR GPL-2.0
+* Project: https://jersey.java.net/
+* Source: https://github.com/jersey/jersey/
+
+jersey-container-servlet-core (2.23.2)
+
+* License: Common Development and Distribution License 1.1
+* Project: https://jersey.java.net
+* Source: https://github.com/jersey/jersey/
+
+jersey-entity-filtering (2.23.2)
+
+* License: CDDL-1.1 OR GPL-2.0
+* Project: https://jersey.java.net/
+* Source: https://github.com/jersey/jersey/
+
+jersey-guava (2.23.2)
+
+* License: Apache-2.0 AND Public-Domain
+* Project: https://jersey.java.net/
+* Source: https://github.com/jersey/jersey/
+
+jersey-media-jaxb (2.23.2)
+
+* License: CDDL-1.1 OR GPL-2.0
+* Project: https://jersey.java.net/
+* Source: https://github.com/jersey/jersey/
+
+jersey-media-moxy (2.23.2)
+
+* License: Common Development and Distribution License 1.1
+* Project: https://jersey.java.net
+* Source: https://github.com/jersey/jersey/
+
+jersey-media-multipart (2.1)
+
+* License: CDDL-1.1 OR GPL-2.0
+* Project: https://jersey.java.net/
+* Source: https://github.com/jersey/jersey/
+
+jersey-server (2.23.2)
+
+* License: (CDDL-1.1 OR GPL-2.0) AND Apache-2.0
+* Project: https://jersey.java.net/
+* Source: https://github.com/jersey/jersey/
+
+jetty-util (6.1.26)
+
+* License: Apache License, 2.0
+
+jna-4.1.0.jar (4.1.0)
+
+* License: Apache License, 2.0
+
+jna-4.2.2.jar (4.2.2)
+
+* License: Apache-2.0
+* Project: https://github.com/java-native-access/jna
+* Source: https://github.com/java-native-access/jna
+
+joda-convert (1.2)
+
+* License: Apache License, 2.0
+
+joda-time (2.9.4)
+
+* License: Apache License, 2.0
+* Project: http://www.joda.org/joda-time/
+* Source: https://github.com/JodaOrg/joda-time
+
+joda-time elasticsearch (2.3.4)
+
+* License: Apache License, 2.0
+* Project: https://www.elastic.co/products/elasticsearch
+* Source: https://github.com/elastic/elasticsearch
+
+jopt-simple (5.0.2)
+
+* License: MIT
+* Project: http://pholser.github.io/jopt-simple/
+* Source: https://github.com/jopt-simple/jopt-simple
+
+Jose4J JWT - jose4j - (0.7.0)
+
+* License: Apache-2.0
+
+JQuery (1.8.1)
+
+* License: MIT License
+
+Jquery Wiggle Version: 91f42019b7d42c623ca87f4f275f1436e6b7fbe7 (n/a)
+
+* License: MIT
+
+jQuery-slideto Version: 3113a453f79e4268d1cf0b635ee5dada7696d885 (n/a)
+
+* License: MIT
+
+jquery.ba-bbq (1.2.1)
+
+* License: MIT License
+
+JSON editor (0.7.22)
+
+* License: MIT License
+
+jul-to-slf4j (1.7.25)
+
+* License: MIT
+
+JUnit (4.11)
+
+* License: Common Public License 1.0
+
+Liquibase Core - liquibase-core - (3.6.3)
+
+* License: Apache-2.0 AND MIT
+* Project: https://www.liquibase.org/
+* Source: https://github.com/liquibase/liquibase
+
+log4j-api (2.8.2)
+
+* License: Apache-2.0
+* Project: http://logging.apache.org/log4j/2.x/
+* Source: https://github.com/apache/logging-log4j2
+
+log4j-api - Log4j API - (2.14.0)
+
+* License: Apache-2.0
+
+log4j-over-slf4j (1.7.24)
+
+* License: Apache License, 2.0
+
+log4j-over-slf4j (1.7.25)
+
+* License: Apache-2.0
+
+log4j-to-slf4j (2.8.2)
+
+* License: Apache-2.0
+* Project: https://logging.apache.org/log4j/2.0/log4j-to-slf4j/index.html
+* Source: https://github.com/apache/logging-log4j2
+
+log4j-to-slf4j - Log4j to slf4j - (2.14.0)
+
+* License: Apache-2.0
+
+Logback Classic (1.2.3)
+
+* License: EPL-1.0
+
+Logback Core (1.1.8)
+
+* License: Eclipse Public License 1.0
+
+Logback Core (1.2.3)
+
+* License: EPL-1.0
+
+logback-classic (1.1.8)
+
+* License: Eclipse Public License 1.0
+
+logback-classic (1.2.1)
+
+* License: Eclipse Public License 1.0
+* Project: https://logback.qos.ch/
+* Source: https://github.com/qos-ch/logback
+
+logback-classic (1.2.3)
+
+* License: EPL-1.0 OR LGPL-2.1
+
+logback-core (1.2.1)
+
+* License: Eclipse Public License 1.0
+* Project: https://logback.qos.ch/
+* Source: https://github.com/qos-ch/logback
+
+lucene-analyzers-common (6.4.1)
+
+* License: Apache-2.0 AND BSD-3-Clause AND W3C
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-backward-codecs (5.5.0)
+
+* License: Apache License, 2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-backward-codecs (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-core (5.5.0)
+
+* License: Apache License, 2.0, BSD Style, MIT License
+* Project: http://lucene.apache.org
+* Source: https://github.com/apache/lucene-solr
+
+lucene-core (6.4.1)
+
+* License: Apache-2.0 AND BSD-3-Clause AND MIT AND UNICODE
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-grouping (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-highlighter (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-join (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-memory (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-misc (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-queries (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-queryparser (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-sandbox (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-spatial (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-spatial-extras (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-spatial3d (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+lucene-suggest (6.4.1)
+
+* License: Apache-2.0
+* Project: http://lucene.apache.org/core/
+* Source: https://github.com/apache/lucene-solr
+
+marked (0.3.2)
+
+* License: MIT License
+
+maven-artifact (3.3.3)
+
+* License: Apache License, 2.0
+
+Metrics-core (3.1.2)
+
+* License: Apache License, 2.0
+
+metrics-core (3.2.2)
+
+* License: Apache-2.0
+
+Mustache Java Compiler (0.9.3)
+
+* License: Apache-2.0
+* Project: https://github.com/spullara/mustache.java
+* Source: https://github.com/spullara/mustache.java
+
+Netty (3.10.6)
+
+* License: Apache-2.0 AND MIT AND BSD-3-Clause AND Public-Domain
+* Project: http://netty.io/
+* Source: https://github.com/netty/netty
+
+Netty (4.1.15)
+
+* License: Apache-2.0, Public Domain, New BSD License, MIT
+
+Netty (4.1.34)
+
+* License: Apache-2.0 AND BSD-3-Clause AND MIT
+
+Netty Buffer (4.1.7)
+
+* License: Apache-2.0
+* Project: http://netty.io/
+* Source: https://github.com/netty/netty
+
+Netty Codec (4.1.7)
+
+* License: Apache-2.0
+* Project: http://netty.io/
+* Source: https://github.com/netty/netty
+
+Netty Codec Http (4.1.7)
+
+* License: (Apache-2.0 AND MIT AND BSD-3-Clause)
+* Project: http://netty.io/
+* Source: https://github.com/netty/netty
+
+Netty Common (4.1.7)
+
+* License: Apache-2.0 AND MIT
+* Project: http://netty.io/
+* Source: https://github.com/netty/netty
+
+Netty Handler (4.1.7)
+
+* License: Apache-2.0
+* Project: http://netty.io/
+* Source: https://github.com/netty/netty
+
+Netty Resolver (4.1.7)
+
+* License: Apache-2.0
+* Project: http://netty.io/
+* Source: https://github.com/netty/netty
+
+Netty Transport (4.1.7)
+
+* License: Apache-2.0
+* Project: http://netty.io/
+* Source: https://github.com/netty/netty
+
+opencsv (3.7)
+
+* License: Apache License, 2.0
+
+org.apache.activemq.protobuf:activemq-protobuf:1.1 (1.1)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+org.apache.activemq:activemq-amqp (5.14.5)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+org.apache.activemq:activemq-broker:5.14.4 (5.14.4)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+org.apache.activemq:activemq-camel:5.14.4 (5.14.4)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+org.apache.activemq:activemq-console:5.14.4 (5.14.4)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+org.apache.activemq:activemq-http:5.14.4 (5.14.4)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+org.apache.activemq:activemq-jms-pool:5.14.4 (5.14.4)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+org.apache.activemq:activemq-kahadb-store:5.14.4 (5.14.4)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+org.apache.activemq:activemq-mqtt:5.14.4 (5.14.4)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+org.apache.activemq:activemq-openwire-legacy:5.14.4 (5.14.4)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+org.apache.activemq:activemq-spring:5.14.4 (5.14.4)
+
+* License: Apache-2.0
+* Project: http://activemq.apache.org/
+* Source: http://activemq.apache.org/source.html
+
+org.apache.camel:camel-spring:2.16.3 (2.16.3)
+
+* License: Apache License, 2.0
+* Project: https://camel.apache.org/
+* Source: https://git-wip-us.apache.org/repos/asf/camel.git
+
+org.apache.commons.collections (3.2.1)
+
+* License: Apache-2.0
+
+org.apache.lucene:lucene-backward-codecs:7.7.2 (7.7.2)
+
+* License: Apache-2.0
+
+org.apache.lucene:lucene-grouping:7.7.2 (7.7.2)
+
+* License: Apache-2.0
+
+org.apache.lucene:lucene-misc:7.7.2 (7.7.2)
+
+* License: Apache-2.0
+
+org.apache.lucene:lucene-spatial:7.7.2 (7.7.2)
+
+* License: Apache-2.0
+
+org.apache.lucene:lucene-suggest:7.7.2 (7.7.2)
+
+* License: Apache-2.0
+
+org.apache.shiro:shiro-config:1.5.3 (1.5.3)
+
+* License: Apache-2.0
+
+org.apache.shiro:shiro-core (1.3.2)
+
+* License: Apache License, 2.0
+* Project: http://shiro.apache.org/
+* Source: https://github.com/apache/shiro
+
+org.apache.shiro:shiro-event:1.5.3 (1.5.3)
+
+* License: Apache-2.0
+
+org.apache.shiro:shiro-web:1.3.2 (1.3.2)
+
+* License: Apache License, 2.0
+* Project: http://shiro.apache.org/
+* Source: https://github.com/apache/shiro
+
+org.apache.xbean:xbean-spring:3.18 (3.18)
+
+* License: Apache License, 2.0
+* Project: http://geronimo.apache.org/maven/xbean/
+* Source: http://svn.apache.org/viewvc/geronimo/xbean/tags/xbean-3.18
+
+org.apache.xbean:xbean-spring:4.2 (4.2)
+
+* License: Apache-2.0
+* Project: http://geronimo.apache.org/xbean/
+* Source: http://svn.apache.org/viewvc/geronimo/xbean/tags/xbean-4.2
+
+org.bitbucket.b_c:jose4j:0.5.4 (0.5.4)
+
+* License: Apache-2.0
+* Project: https://bitbucket.org/b_c/jose4j/
+* Source: https://bitbucket.org/b_c/jose4j/src
+
+org.elasticsearch:jna:4.5.1 (4.5.1)
+
+* License: Apache-2.0 OR LGPL-2.1-or-later
+
+org.elasticsearch:securesm (1.1)
+
+* License: Apache-2.0
+* Project: https://www.elastic.co/products/elasticsearch
+* Source: https://github.com/elastic/elasticsearch
+
+org.elasticsearch:securesm:1.0 (1.0)
+
+* License: Apache-2.0
+* Project: https://github.com/elastic/securesm
+* Source: https://github.com/elastic/securesm/tree/v1.0
+
+org.fusesource.hawtbuf:hawtbuf:1.11 (1.11)
+
+* License: Apache-2.0
+* Project: http://hawtbuf.fusesource.org
+* Source: http://fusesource.com/forge/gitweb?p=hawtbuf.git
+
+org.fusesource.hawtdispatch:hawtdispatch-transport:1.22 (1.22)
+
+* License: Apache-2.0
+
+org.fusesource.hawtdispatch:hawtdispatch:1.22 (1.22)
+
+* License: Apache-2.0
+* Project: http://github.com/fusesource/hawtdispatch/tree/master
+* Source: http://github.com/fusesource/hawtdispatch/tree/master
+
+org.fusesource.mqtt-client:mqtt-client:1.13 (1.13)
+
+* License: Apache-2.0
+* Project: http://mqtt-client.fusesource.org/
+* Source: http://github.com/fusesource/mqtt-client
+
+org.fusesource.mqtt-client:mqtt-client:1.14 (1.14)
+
+* License: Apache-2.0
+* Project: http://mqtt-client.fusesource.org/
+* Source: http://github.com/fusesource/mqtt-client
+
+org.jolokia:jolokia-jvm:1.3.5 (1.3.5)
+
+* License: Apache-2.0
+* Project: http://www.jolokia.org
+* Source: https://github.com/rhuss/jolokia
+
+org.jvnet.mimepull (1.8)
+
+* License: CDDL-1.1 OR GPL-2.0
+* Project: https://mimepull.java.net/
+* Source: https://java.net/projects/mimepull/sources/svn/show/tags/mimepull-1.8
+
+org.liquibase:liquibase-core (3.0.5)
+
+* License: Apache-2.0
+
+org.quartz (2.2.3)
+
+* License: Apache-2.0
+
+org.quartz-scheduler:quartz:2.3.2 (2.3.2)
+
+* License: Apache-2.0
+
+org.reflections:reflections (0.9.10)
+
+* License: MIT License
+
+org.yaml:snakeyaml (1.12)
+
+* License: Apache License, 2.0
+
+org.yaml:snakeyaml:1.28 (1.28)
+
+* License: Apache-2.0 AND (EPL-1.0 OR LGPL-2.1-or-later OR GPL-2.0-or-later OR
+   Apache-2.0 OR BSD-2-Clause)
+
+OSGi Service Platform Core Companion Code (6.0)
+
+* License: Apache License, 2.0
+
+Passay - passay - (1.6.0)
+
+* License: Apache-2.0
+
+protobuf-java (3.8.0)
+
+* License: BSD-3-Clause
+* Project: https://developers.google.com/protocol-buffers/
+* Source: https://github.com/protocolbuffers/protobuf/tree/v3.8.0/java
+
+Protocol Buffers (2.6.1)
+
+* License: New BSD license
+
+proton-j (0.31.0)
+
+* License: Apache-2.0
+
+qpid-jms-client (0.40.0)
+
+* License: Apache-2.0
+
+sanselan (0.97)
+
+* License: Apache License, 2.0
+* Project: https://commons.apache.org/proper/commons-imaging/index.html
+* Source: http://svn.apache.org/viewvc/commons/proper/imaging/trunk
+
+shiro-cache - Shiro Cache - (1.5.3)
+
+* License: Apache-2.0
+
+shiro-config-ogdl - Shiro Configuration OGDL (n/a)
+
+* License: Apache-2.0
+
+shiro-core - Shiro Core - (1.5.3)
+
+* License: Apache-2.0
+
+shiro-lang - Shiro Lang - (1.5.3)
+
+* License: Apache-2.0 AND Beerware
+
+shiro-web - Apache Shiro Web - (1.5.3)
+
+* License: Apache-2.0
+
+SLF4J API (1.6.4)
+
+* License: MIT License
+
+SLF4J API (1.7.2)
+
+* License: MIT License
+
+SLF4J API (1.7.2)
+
+* License: MIT License
+
+SLF4J API (1.7.21)
+
+* License: MIT License
+
+SLF4J API Module (slf4j-api-1.7.13) (1.7.13)
+
+* License: MIT License
+
+SLF4J jcl-over-slf4j (1.7.21)
+
+* License: Apache License, 2.0
+
+SLF4J jcl-over-slf4j (1.7.24)
+
+* License: Apache License, 2.0
+
+SLF4J jul-to-slf4j (1.7.24)
+
+* License: MIT License
+
+slf4j log4j12 (1.7.2)
+
+* License: MIT License
+
+slf4j log4j12 (1.7.2)
+
+* License: MIT License
+
+slf4j-api (1.7.24)
+
+* License: MIT License
+
+slf4j-api (1.7.25)
+
+* License: MIT
+
+slf4j-api (1.7.25)
+
+* License: MIT
+
+slf4j-api (1.7.25)
+
+* License: MIT
+
+slf4j-log4j12 (1.7.21)
+
+* License: MIT License
+
+snakeyaml (1.15)
+
+* License: Apache-2.0
+* Project: http://www.snakeyaml.org
+* Source: http://code.google.com/p/snakeyaml/source/browse/
+
+snakeyaml (1.23)
+
+* License: Apache-2.0 AND (Apache-2.0 OR EPL-1.0 OR LGPL-2.1-or-later OR
+   GPL-2.0-or-later OR BSD-2-Clause)
+
+spring-aop (4.3.2)
+
+* License: Apache License, 2.0
+
+spring-aop (5.1.2)
+
+* License: Apache-2.0
+
+spring-aop : (4.1.9)
+
+* License: Apache-2.0
+* Project: https://projects.spring.io/spring-framework/
+* Source:
+   https://github.com/spring-projects/spring-framework/tree/v4.1.9.RELEASE
+
+spring-beans (4.1.9)
+
+* License: Apache-2.0
+* Project: https://projects.spring.io/spring-framework/
+* Source:
+   https://github.com/spring-projects/spring-framework/tree/v4.1.9.RELEASE
+
+spring-beans (4.3.2)
+
+* License: Apache License, 2.0
+
+spring-beans (5.1.2)
+
+* License: Apache-2.0
+
+spring-boot (2.1.0)
+
+* License: Apache-2.0
+
+spring-boot-autoconfigure (2.1.0)
+
+* License: Apache-2.0
+
+spring-boot-starter (2.1.0)
+
+* License: Apache-2.0
+
+spring-context (4.1.9)
+
+* Project: https://projects.spring.io/spring-framework/
+* Source:
+   https://github.com/spring-projects/spring-framework/tree/v4.1.9.RELEASE
+
+spring-context (4.3.2)
+
+* License: Apache License, 2.0
+
+spring-context (5.1.2)
+
+* License: Apache-2.0
+
+spring-core (4.3.2)
+
+* License: Apache License, 2.0, New BSD License
+
+spring-core (5.1.2)
+
+* License: Apache-2.0 AND BSD-3-Clause
+
+spring-expression (4.3.2)
+
+* License: Apache License, 2.0
+
+spring-expression (5.1.2)
+
+
+spring-jcl (5.1.2)
+
+* License: Apache-2.0
+
+spring-jms (4.1.9)
+
+* License: Apache-2.0
+* Project: https://projects.spring.io/spring-framework/
+* Source:
+   https://github.com/spring-projects/spring-framework/tree/v4.1.9.RELEASE
+
+spring-messaging (4.1.9)
+
+* License: Apache License, 2.0
+* Project: https://projects.spring.io/spring-framework/
+* Source:
+   https://github.com/spring-projects/spring-framework/tree/v4.1.9.RELEASE
+
+spring-security-core (4.1.3)
+
+* License: Apache License, 2.0, MIT License (One File), Public Domain (One
+   File)
+
+spring-tx (4.1.9)
+
+* License: Apache-2.0
+* Project: https://projects.spring.io/spring-framework/
+* Source:
+   https://github.com/spring-projects/spring-framework/tree/v4.1.9.RELEASE
+
+stax-api (1.0.1)
+
+* License: Apache License, 2.0
+
+stax2-api (3.1.4)
+
+* License: BSD-2-Clause
+* Project: https://github.com/FasterXML/stax2-api
+* Source: http://repo1.maven.org/maven2/org/codehaus/woodstox/stax2-api/
+
+swagger-annotations (1.5.12)
+
+* License: Apache-2.0
+* Project: http://swagger.io/
+* Source: https://github.com/swagger-api/swagger-core
+
+swagger-core (1.5.12)
+
+* License: Apache-2.0
+* Project: http://swagger.io/
+* Source: https://github.com/swagger-api/swagger-core/tree/v1.5.12
+
+swagger-jaxrs (1.5.12)
+
+* License: Apache-2.0
+* Project: http://swagger.io/
+* Source:
+   https://github.com/swagger-api/swagger-core/tree/v1.5.12/modules/swagger-jaxrs
+
+swagger-jersey2-jaxrs (1.5.10)
+
+* License: Apache License, 2.0
+* Project: http://swagger.io/
+* Source: https://github.com/swagger-api/swagger-core
+
+swagger-jersey2-jaxrs (1.5.12)
+
+* License: Apache-2.0
+* Project: http://swagger.io/
+* Source:
+   https://github.com/swagger-api/swagger-core/tree/v1.5.12/modules/swagger-jersey2-jaxrs
+
+swagger-models (1.5.12)
+
+* License: Apache-2.0
+* Project: http://swagger.io/
+* Source:
+   https://github.com/swagger-api/swagger-core/tree/v1.5.12/modules/swagger-models
+
+swagger-ui (2.1.4)
+
+* License: Apache License, 2.0, MIT License, Public Domain
+
+swagger-ui (3.23.0)
+
+* License: Apache-2.0 AND MIT AND BSD-3-Clause AND Unlicense AND (Apache-2.0 OR
+   MPL-2.0) AND ISC AND CC0-1.0
+
+t-digest (3.0)
+
+* License: Apache-2.0
+
+underscore JS Version (1.8.3)
+
+* License: MIT License
+
+Velocity (1.7)
+
+* License: Apache License, 2.0
+
+vertx-auth-common (3.7.0)
+
+* License: EPL-1.0 AND Apache-2.0
+
+vertx-bridge-common (3.7.0)
+
+* License: Apache-2.0 AND (Apache-2.0 OR EPL-1.0)
+
+vertx-dropwizard-metrics (3.7.0)
+
+* License: Pending
+
+vertx-health-check (3.7.0)
+
+* License: Apache-2.0
+
+vertx-proton (3.7.0)
+
+* License: Apache-2.0
+
+vertx-web (3.7.0)
+
+* License: EPL-1.0 AND Apache-2.0
+
+vertx-web-common (3.7.0)
+
+* License: EPL-1.0 AND Apache-2.0
+
+ZXing Core (3.1.0)
+
+* License: Apache License, 2.0
+* Project: https://github.com/zxing/zxing
+* Source: https://github.com/zxing/zxing
+
+ZXing JavaSE (3.1.0)
+
+* License: Apache License, 2.0
+* Project: https://github.com/zxing/zxing
+* Source: https://github.com/zxing/zxing
+
+## Cryptography
+
+Content may contain encryption software. The country in which you are currently
+may have restrictions on the import, possession, and use, and/or re-export to
+another country, of encryption software. BEFORE using any encryption software,
+please check the country's laws, regulations and policies concerning the import,
+possession, or use, and re-export of encryption software, to see if this is
+permitted.
