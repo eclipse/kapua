@@ -13,20 +13,19 @@
 package org.eclipse.kapua.service.device.registry.steps;
 
 import com.google.common.collect.Lists;
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
-import org.apache.shiro.SecurityUtils;
+import com.google.inject.Singleton;
+
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPosition;
@@ -47,11 +46,9 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestDomain;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.cucumber.CucConnection;
 import org.eclipse.kapua.qa.common.cucumber.CucDevice;
@@ -107,8 +104,6 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
@@ -129,10 +124,8 @@ import java.util.Vector;
  * services that the Device Registry services dependent on. Dependent services are: -
  * Authorization Service -
  */
-@ScenarioScoped
+@Singleton
 public class DeviceRegistrySteps extends TestBase {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DeviceRegistrySteps.class);
 
     private static final String TEST_DEVICE_NAME = "test_name";
     private static final String TEST_BIOS_VERSION_1 = "bios_version_1";
@@ -206,10 +199,8 @@ public class DeviceRegistrySteps extends TestBase {
 
     // Default constructor
     @Inject
-    public DeviceRegistrySteps(StepData stepData, DBHelper dbHelper) {
-
-        this.stepData = stepData;
-        this.database = dbHelper;
+    public DeviceRegistrySteps(StepData stepData) {
+        super(stepData);
     }
 
     // ************************************************************************************
@@ -222,14 +213,14 @@ public class DeviceRegistrySteps extends TestBase {
     // * Setup and tear-down steps                                                        *
     // ************************************************************************************
 
-    @Before
-    public void beforeScenario(Scenario scenario) {
+    @Before(value="@env_docker or @env_embedded_minimal or @env_none", order=10)
+    public void beforeScenarioNone(Scenario scenario) {
+        updateScenario(scenario);
+    }
 
-        this.scenario = scenario;
-        database.setup();
-        stepData.clear();
-
-        locator = KapuaLocator.getInstance();
+    @After(value="@setup")
+    public void setServices() {
+        KapuaLocator locator = KapuaLocator.getInstance();
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceFactory = locator.getFactory(DeviceFactory.class);
 
@@ -257,36 +248,6 @@ public class DeviceRegistrySteps extends TestBase {
         groupFactory = locator.getFactory(GroupFactory.class);
 
         aclCreator = new AclCreator();
-
-        if (isUnitTest()) {
-            // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
-            // All operations on database are performed using system user.
-            // Only for unit tests. Integration tests assume that a real logon is performed.
-            KapuaSession kapuaSession = new KapuaSession(null, SYS_SCOPE_ID, SYS_USER_ID);
-            KapuaSecurityUtils.setSession(kapuaSession);
-        }
-
-        // Setup JAXB context
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
-    }
-
-    @After
-    public void afterScenario() {
-
-        // Clean up the database
-        try {
-            LOGGER.info("Logging out in cleanup");
-            if (isIntegrationTest()) {
-                database.deleteAll();
-                SecurityUtils.getSubject().logout();
-            } else {
-                database.dropAll();
-                database.close();
-            }
-            KapuaSecurityUtils.clearSession();
-        } catch (Exception e) {
-            LOGGER.error("Failed to log out in @After", e);
-        }
     }
 
     // ************************************************************************************
@@ -615,7 +576,7 @@ public class DeviceRegistrySteps extends TestBase {
     @When("^I find searched device$")
     public void findDevice() throws Exception {
 
-        assertNotNull(stepData.get("Device"));
+         Assert.assertNotNull(stepData.get("Device"));
 
     }
 
@@ -723,7 +684,7 @@ public class DeviceRegistrySteps extends TestBase {
         DeviceListResult deviceList = (DeviceListResult) stepData.get(DEVICE_LIST);
 
         // A device should have been found
-        assertNotEquals(0, deviceList.getSize());
+        Assert.assertNotEquals(0, deviceList.getSize());
         stepData.put(DEVICE, deviceList.getFirstItem());
     }
 
@@ -874,9 +835,9 @@ public class DeviceRegistrySteps extends TestBase {
         DeviceCreator deviceCreator = (DeviceCreator) stepData.get(DEVICE_CREATOR);
         Device device = (Device) stepData.get(DEVICE);
 
-        assertNotNull(device.getId());
-        assertEquals(deviceCreator.getScopeId(), device.getScopeId());
-        assertEquals(deviceCreator.getClientId(), device.getClientId());
+        Assert.assertNotNull(device.getId());
+        Assert.assertEquals(deviceCreator.getScopeId(), device.getScopeId());
+        Assert.assertEquals(deviceCreator.getClientId(), device.getClientId());
     }
 
     @Then("^It is possible to find the device based on its registry ID$")
@@ -888,7 +849,7 @@ public class DeviceRegistrySteps extends TestBase {
         primeException();
         try {
             Device tmpDev = deviceRegistryService.find(getCurrentScopeId(), device.getId());
-            assertEquals(device.getClientId(), tmpDev.getClientId());
+            Assert.assertEquals(device.getClientId(), tmpDev.getClientId());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -903,7 +864,7 @@ public class DeviceRegistrySteps extends TestBase {
         primeException();
         try {
             Device tmpDev = deviceRegistryService.findByClientId(getCurrentScopeId(), clientID);
-            assertEquals(device.getId(), tmpDev.getId());
+            Assert.assertEquals(device.getId(), tmpDev.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -917,9 +878,9 @@ public class DeviceRegistrySteps extends TestBase {
 
         primeException();
         try {
-            assertNull(deviceRegistryService.findByClientId(getCurrentScopeId(), deviceCreator.getClientId().toLowerCase()));
-            assertNull(deviceRegistryService.findByClientId(getCurrentScopeId(), deviceCreator.getClientId().toUpperCase()));
-            assertNotNull(deviceRegistryService.findByClientId(getCurrentScopeId(), deviceCreator.getClientId()));
+            Assert.assertNull(deviceRegistryService.findByClientId(getCurrentScopeId(), deviceCreator.getClientId().toLowerCase()));
+            Assert.assertNull(deviceRegistryService.findByClientId(getCurrentScopeId(), deviceCreator.getClientId().toUpperCase()));
+            Assert.assertNotNull(deviceRegistryService.findByClientId(getCurrentScopeId(), deviceCreator.getClientId()));
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -931,32 +892,32 @@ public class DeviceRegistrySteps extends TestBase {
         DeviceCreator deviceCreator = (DeviceCreator) stepData.get(DEVICE_CREATOR);
         Device device = (Device) stepData.get(DEVICE);
 
-        assertNotNull(device.getId());
-        assertEquals(deviceCreator.getScopeId(), device.getScopeId());
-        assertEquals(deviceCreator.getClientId().length(), device.getClientId().length());
-        assertEquals(deviceCreator.getClientId(), device.getClientId());
-        assertEquals(deviceCreator.getConnectionId(), device.getConnectionId());
-        assertEquals(deviceCreator.getDisplayName(), device.getDisplayName());
-        assertEquals(deviceCreator.getSerialNumber(), device.getSerialNumber());
-        assertEquals(deviceCreator.getModelId(), device.getModelId());
-        assertEquals(deviceCreator.getModelName(), device.getModelName());
-        assertEquals(deviceCreator.getImei(), device.getImei());
-        assertEquals(deviceCreator.getImsi(), device.getImsi());
-        assertEquals(deviceCreator.getIccid(), device.getIccid());
-        assertEquals(deviceCreator.getBiosVersion(), device.getBiosVersion());
-        assertEquals(deviceCreator.getFirmwareVersion(), device.getFirmwareVersion());
-        assertEquals(deviceCreator.getOsVersion(), device.getOsVersion());
-        assertEquals(deviceCreator.getJvmVersion(), device.getJvmVersion());
-        assertEquals(deviceCreator.getOsgiFrameworkVersion(), device.getOsgiFrameworkVersion());
-        assertEquals(deviceCreator.getApplicationFrameworkVersion(), device.getApplicationFrameworkVersion());
-        assertEquals(deviceCreator.getApplicationIdentifiers(), device.getApplicationIdentifiers());
-        assertEquals(deviceCreator.getAcceptEncoding(), device.getAcceptEncoding());
-        assertEquals(deviceCreator.getCustomAttribute1(), device.getCustomAttribute1());
-        assertEquals(deviceCreator.getCustomAttribute2(), device.getCustomAttribute2());
-        assertEquals(deviceCreator.getCustomAttribute3(), device.getCustomAttribute3());
-        assertEquals(deviceCreator.getCustomAttribute4(), device.getCustomAttribute4());
-        assertEquals(deviceCreator.getCustomAttribute5(), device.getCustomAttribute5());
-        assertEquals(deviceCreator.getStatus(), device.getStatus());
+        Assert.assertNotNull(device.getId());
+        Assert.assertEquals(deviceCreator.getScopeId(), device.getScopeId());
+        Assert.assertEquals(deviceCreator.getClientId().length(), device.getClientId().length());
+        Assert.assertEquals(deviceCreator.getClientId(), device.getClientId());
+        Assert.assertEquals(deviceCreator.getConnectionId(), device.getConnectionId());
+        Assert.assertEquals(deviceCreator.getDisplayName(), device.getDisplayName());
+        Assert.assertEquals(deviceCreator.getSerialNumber(), device.getSerialNumber());
+        Assert.assertEquals(deviceCreator.getModelId(), device.getModelId());
+        Assert.assertEquals(deviceCreator.getModelName(), device.getModelName());
+        Assert.assertEquals(deviceCreator.getImei(), device.getImei());
+        Assert.assertEquals(deviceCreator.getImsi(), device.getImsi());
+        Assert.assertEquals(deviceCreator.getIccid(), device.getIccid());
+        Assert.assertEquals(deviceCreator.getBiosVersion(), device.getBiosVersion());
+        Assert.assertEquals(deviceCreator.getFirmwareVersion(), device.getFirmwareVersion());
+        Assert.assertEquals(deviceCreator.getOsVersion(), device.getOsVersion());
+        Assert.assertEquals(deviceCreator.getJvmVersion(), device.getJvmVersion());
+        Assert.assertEquals(deviceCreator.getOsgiFrameworkVersion(), device.getOsgiFrameworkVersion());
+        Assert.assertEquals(deviceCreator.getApplicationFrameworkVersion(), device.getApplicationFrameworkVersion());
+        Assert.assertEquals(deviceCreator.getApplicationIdentifiers(), device.getApplicationIdentifiers());
+        Assert.assertEquals(deviceCreator.getAcceptEncoding(), device.getAcceptEncoding());
+        Assert.assertEquals(deviceCreator.getCustomAttribute1(), device.getCustomAttribute1());
+        Assert.assertEquals(deviceCreator.getCustomAttribute2(), device.getCustomAttribute2());
+        Assert.assertEquals(deviceCreator.getCustomAttribute3(), device.getCustomAttribute3());
+        Assert.assertEquals(deviceCreator.getCustomAttribute4(), device.getCustomAttribute4());
+        Assert.assertEquals(deviceCreator.getCustomAttribute5(), device.getCustomAttribute5());
+        Assert.assertEquals(deviceCreator.getStatus(), device.getStatus());
     }
 
     @Then("^The device was correctly updated$")
@@ -969,31 +930,31 @@ public class DeviceRegistrySteps extends TestBase {
         primeException();
         try {
             tmpDevice = deviceRegistryService.find(device.getScopeId(), device.getId());
-            assertEquals(tmpDevice.getScopeId(), device.getScopeId());
-            assertEquals(tmpDevice.getClientId().length(), device.getClientId().length());
-            assertEquals(tmpDevice.getClientId(), device.getClientId());
-            assertEquals(tmpDevice.getConnectionId(), device.getConnectionId());
-            assertEquals(tmpDevice.getDisplayName(), device.getDisplayName());
-            assertEquals(tmpDevice.getSerialNumber(), device.getSerialNumber());
-            assertEquals(tmpDevice.getModelId(), device.getModelId());
-            assertEquals(tmpDevice.getModelName(), device.getModelName());
-            assertEquals(tmpDevice.getImei(), device.getImei());
-            assertEquals(tmpDevice.getImsi(), device.getImsi());
-            assertEquals(tmpDevice.getIccid(), device.getIccid());
-            assertEquals(tmpDevice.getBiosVersion(), device.getBiosVersion());
-            assertEquals(tmpDevice.getFirmwareVersion(), device.getFirmwareVersion());
-            assertEquals(tmpDevice.getOsVersion(), device.getOsVersion());
-            assertEquals(tmpDevice.getJvmVersion(), device.getJvmVersion());
-            assertEquals(tmpDevice.getOsgiFrameworkVersion(), device.getOsgiFrameworkVersion());
-            assertEquals(tmpDevice.getApplicationFrameworkVersion(), device.getApplicationFrameworkVersion());
-            assertEquals(tmpDevice.getApplicationIdentifiers(), device.getApplicationIdentifiers());
-            assertEquals(tmpDevice.getAcceptEncoding(), device.getAcceptEncoding());
-            assertEquals(tmpDevice.getCustomAttribute1(), device.getCustomAttribute1());
-            assertEquals(tmpDevice.getCustomAttribute2(), device.getCustomAttribute2());
-            assertEquals(tmpDevice.getCustomAttribute3(), device.getCustomAttribute3());
-            assertEquals(tmpDevice.getCustomAttribute4(), device.getCustomAttribute4());
-            assertEquals(tmpDevice.getCustomAttribute5(), device.getCustomAttribute5());
-            assertEquals(tmpDevice.getStatus(), device.getStatus());
+            Assert.assertEquals(tmpDevice.getScopeId(), device.getScopeId());
+            Assert.assertEquals(tmpDevice.getClientId().length(), device.getClientId().length());
+            Assert.assertEquals(tmpDevice.getClientId(), device.getClientId());
+            Assert.assertEquals(tmpDevice.getConnectionId(), device.getConnectionId());
+            Assert.assertEquals(tmpDevice.getDisplayName(), device.getDisplayName());
+            Assert.assertEquals(tmpDevice.getSerialNumber(), device.getSerialNumber());
+            Assert.assertEquals(tmpDevice.getModelId(), device.getModelId());
+            Assert.assertEquals(tmpDevice.getModelName(), device.getModelName());
+            Assert.assertEquals(tmpDevice.getImei(), device.getImei());
+            Assert.assertEquals(tmpDevice.getImsi(), device.getImsi());
+            Assert.assertEquals(tmpDevice.getIccid(), device.getIccid());
+            Assert.assertEquals(tmpDevice.getBiosVersion(), device.getBiosVersion());
+            Assert.assertEquals(tmpDevice.getFirmwareVersion(), device.getFirmwareVersion());
+            Assert.assertEquals(tmpDevice.getOsVersion(), device.getOsVersion());
+            Assert.assertEquals(tmpDevice.getJvmVersion(), device.getJvmVersion());
+            Assert.assertEquals(tmpDevice.getOsgiFrameworkVersion(), device.getOsgiFrameworkVersion());
+            Assert.assertEquals(tmpDevice.getApplicationFrameworkVersion(), device.getApplicationFrameworkVersion());
+            Assert.assertEquals(tmpDevice.getApplicationIdentifiers(), device.getApplicationIdentifiers());
+            Assert.assertEquals(tmpDevice.getAcceptEncoding(), device.getAcceptEncoding());
+            Assert.assertEquals(tmpDevice.getCustomAttribute1(), device.getCustomAttribute1());
+            Assert.assertEquals(tmpDevice.getCustomAttribute2(), device.getCustomAttribute2());
+            Assert.assertEquals(tmpDevice.getCustomAttribute3(), device.getCustomAttribute3());
+            Assert.assertEquals(tmpDevice.getCustomAttribute4(), device.getCustomAttribute4());
+            Assert.assertEquals(tmpDevice.getCustomAttribute5(), device.getCustomAttribute5());
+            Assert.assertEquals(tmpDevice.getStatus(), device.getStatus());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1003,14 +964,14 @@ public class DeviceRegistrySteps extends TestBase {
     public void checkDeviceClientName(String name) {
 
         Device device = (Device) stepData.get(DEVICE);
-        assertEquals(name, device.getClientId());
+        Assert.assertEquals(name, device.getClientId());
     }
 
     @Then("^I find (\\d+) devices?$")
     public void checkListForNumberOfItems(int number) {
 
         DeviceListResult deviceList = (DeviceListResult) stepData.get(DEVICE_LIST);
-        assertEquals(number, deviceList.getSize());
+        Assert.assertEquals(number, deviceList.getSize());
     }
 
     @Then("^I find device \"([^\"]*)\"$")
@@ -1033,8 +994,8 @@ public class DeviceRegistrySteps extends TestBase {
         primeException();
         try {
             Device tmpDevice = deviceRegistryService.find(getCurrentScopeId(), device.getId());
-            assertNotEquals(device.getClientId(), tmpDevice.getClientId());
-            assertEquals(stringValue, tmpDevice.getClientId());
+            Assert.assertNotEquals(device.getClientId(), tmpDevice.getClientId());
+            Assert.assertEquals(stringValue, tmpDevice.getClientId());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1044,19 +1005,19 @@ public class DeviceRegistrySteps extends TestBase {
     public void checkWhetherNamedDeviceStillExists(String clientId)
             throws KapuaException {
         Device tmpDevice = deviceRegistryService.findByClientId(getCurrentScopeId(), clientId);
-        assertNull(tmpDevice);
+        Assert.assertNull(tmpDevice);
     }
 
     @Then("^There is no such device$")
     public void noSuchDevice() {
 
-        assertNull(stepData.get(DEVICE));
+        Assert.assertNull(stepData.get(DEVICE));
     }
 
     @Then("^I find the device$")
     public void deviceIsNotNull() {
 
-        assertNotNull(stepData.get(DEVICE));
+        Assert.assertNotNull(stepData.get(DEVICE));
     }
 
     @Then("^All device factory functions must return non null values$")
@@ -1071,10 +1032,10 @@ public class DeviceRegistrySteps extends TestBase {
         tmpQuery = deviceFactory.newQuery(SYS_SCOPE_ID);
         tmpListRes = deviceFactory.newListResult();
 
-        assertNotNull(tmpDevice);
-        assertNotNull(tmpCreator);
-        assertNotNull(tmpQuery);
-        assertNotNull(tmpListRes);
+        Assert.assertNotNull(tmpDevice);
+        Assert.assertNotNull(tmpCreator);
+        Assert.assertNotNull(tmpQuery);
+        Assert.assertNotNull(tmpListRes);
     }
 
     // ************************************************************************************
@@ -1175,8 +1136,8 @@ public class DeviceRegistrySteps extends TestBase {
             throws Exception {
 
         // Only a single connection must be specified for this test!
-        assertNotNull(connections);
-        assertEquals(1, connections.size());
+        Assert.assertNotNull(connections);
+        Assert.assertEquals(1, connections.size());
 
         DeviceConnection connection = (DeviceConnection) stepData.get(DEVICE_CONNECTION);
         DeviceConnectionCreator connectionCreator = (DeviceConnectionCreator) stepData.get(DEVICE_CONNECTION_CREATOR);
@@ -1270,8 +1231,8 @@ public class DeviceRegistrySteps extends TestBase {
     public void checkConnectionObject() {
 
         DeviceConnection connection = (DeviceConnection) stepData.get(DEVICE_CONNECTION);
-        assertNotNull(connection);
-        assertNotNull(connection.getId());
+        Assert.assertNotNull(connection);
+        Assert.assertNotNull(connection.getId());
     }
 
     @Then("^The connection object matches the creator$")
@@ -1280,17 +1241,17 @@ public class DeviceRegistrySteps extends TestBase {
         DeviceConnection connection = (DeviceConnection) stepData.get(DEVICE_CONNECTION);
         DeviceConnectionCreator connectionCreator = (DeviceConnectionCreator) stepData.get(DEVICE_CONNECTION_CREATOR);
 
-        assertNotNull(connection);
-        assertNotNull(connectionCreator);
-        assertEquals(connectionCreator.getScopeId(), connection.getScopeId());
-        assertEquals(connectionCreator.getClientId(), connection.getClientId());
-        assertEquals(connectionCreator.getUserId(), connection.getUserId());
-        assertEquals(connectionCreator.getUserCouplingMode(), connection.getUserCouplingMode());
-        assertEquals(connectionCreator.getReservedUserId(), connection.getReservedUserId());
-        assertEquals(connectionCreator.getAllowUserChange(), connection.getAllowUserChange());
-        assertEquals(connectionCreator.getClientIp(), connection.getClientIp());
-        assertEquals(connectionCreator.getServerIp(), connection.getServerIp());
-        assertEquals(connectionCreator.getProtocol(), connection.getProtocol());
+        Assert.assertNotNull(connection);
+        Assert.assertNotNull(connectionCreator);
+        Assert.assertEquals(connectionCreator.getScopeId(), connection.getScopeId());
+        Assert.assertEquals(connectionCreator.getClientId(), connection.getClientId());
+        Assert.assertEquals(connectionCreator.getUserId(), connection.getUserId());
+        Assert.assertEquals(connectionCreator.getUserCouplingMode(), connection.getUserCouplingMode());
+        Assert.assertEquals(connectionCreator.getReservedUserId(), connection.getReservedUserId());
+        Assert.assertEquals(connectionCreator.getAllowUserChange(), connection.getAllowUserChange());
+        Assert.assertEquals(connectionCreator.getClientIp(), connection.getClientIp());
+        Assert.assertEquals(connectionCreator.getServerIp(), connection.getServerIp());
+        Assert.assertEquals(connectionCreator.getProtocol(), connection.getProtocol());
     }
 
     @Then("^The connection status is \"(.+)\"$")
@@ -1315,7 +1276,7 @@ public class DeviceRegistrySteps extends TestBase {
         primeException();
         try {
             long tmpCount = deviceConnectionService.count(query);
-            assertEquals(target, tmpCount);
+            Assert.assertEquals(target, tmpCount);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1405,7 +1366,7 @@ public class DeviceRegistrySteps extends TestBase {
         try {
             stepData.remove(DEVICE_CONNECTION_LIST);
             DeviceConnectionListResult connectionList = deviceConnectionService.query(query);
-            assertNotNull(connectionList);
+            Assert.assertNotNull(connectionList);
             stepData.put(DEVICE_CONNECTION_LIST, connectionList);
         } catch (KapuaException ex) {
             verifyException(ex);
@@ -1416,8 +1377,8 @@ public class DeviceRegistrySteps extends TestBase {
     public void checkResultListLength(int num) {
 
         DeviceConnectionListResult connectionList = (DeviceConnectionListResult) stepData.get(DEVICE_CONNECTION_LIST);
-        assertNotNull(connectionList);
-        assertEquals(num, connectionList.getSize());
+        Assert.assertNotNull(connectionList);
+        Assert.assertEquals(num, connectionList.getSize());
     }
 
     @Then("^The connection details match$")
@@ -1425,21 +1386,21 @@ public class DeviceRegistrySteps extends TestBase {
 
         DeviceConnection connection = (DeviceConnection) stepData.get(DEVICE_CONNECTION);
         // Only a single connection must be specified for this test!
-        assertNotNull(connections);
-        assertEquals(1, connections.size());
+        Assert.assertNotNull(connections);
+        Assert.assertEquals(1, connections.size());
         // Slight workaround for cucumber limitations: The connection settings are
         // remembered via the global connection variable
         if (connections.get(0).getClientId() != null) {
-            assertEquals(connections.get(0).getClientId(), connection.getClientId());
+            Assert.assertEquals(connections.get(0).getClientId(), connection.getClientId());
         }
         if (connections.get(0).getClientIp() != null) {
-            assertEquals(connections.get(0).getClientIp(), connection.getClientIp());
+            Assert.assertEquals(connections.get(0).getClientIp(), connection.getClientIp());
         }
         if (connections.get(0).getServerIp() != null) {
-            assertEquals(connections.get(0).getServerIp(), connection.getServerIp());
+            Assert.assertEquals(connections.get(0).getServerIp(), connection.getServerIp());
         }
         if (connections.get(0).getProtocol() != null) {
-            assertEquals(connections.get(0).getProtocol(), connection.getProtocol());
+            Assert.assertEquals(connections.get(0).getProtocol(), connection.getProtocol());
         }
     }
 
@@ -1449,13 +1410,13 @@ public class DeviceRegistrySteps extends TestBase {
         DeviceConnection connection = (DeviceConnection) stepData.get(DEVICE_CONNECTION);
         String text = (String) stepData.get("Text");
 
-        assertEquals(text, connection.getClientId());
+        Assert.assertEquals(text, connection.getClientId());
     }
 
     @Then("^No connection was found$")
     public void checkThatConnectionIsNull() {
 
-        assertNull(stepData.get(DEVICE_CONNECTION));
+        Assert.assertNull(stepData.get(DEVICE_CONNECTION));
     }
 
     @Then("^All connection factory functions must return non null values$")
@@ -1466,19 +1427,19 @@ public class DeviceRegistrySteps extends TestBase {
         tmpCreator = deviceConnectionFactory.newCreator(SYS_SCOPE_ID);
         tmpQuery = deviceConnectionFactory.newQuery(SYS_SCOPE_ID);
 
-        assertNotNull(tmpCreator);
-        assertNotNull(tmpQuery);
+        Assert.assertNotNull(tmpCreator);
+        Assert.assertNotNull(tmpQuery);
     }
 
     @Then("^The device connection domain defaults are correctly initialized$")
     public void checkConnectionDomainInitialization() {
         DeviceConnectionDomain tmpDomain = new DeviceConnectionDomain();
 
-        assertEquals("device_connection", tmpDomain.getName());
-        assertEquals(3, tmpDomain.getActions().size());
-        assertTrue(tmpDomain.getActions().contains(Actions.read));
-        assertTrue(tmpDomain.getActions().contains(Actions.write));
-        assertTrue(tmpDomain.getActions().contains(Actions.delete));
+        Assert.assertEquals("device_connection", tmpDomain.getName());
+        Assert.assertEquals(3, tmpDomain.getActions().size());
+        Assert.assertTrue(tmpDomain.getActions().contains(Actions.read));
+        Assert.assertTrue(tmpDomain.getActions().contains(Actions.write));
+        Assert.assertTrue(tmpDomain.getActions().contains(Actions.delete));
     }
 
     @Then("^The device connection domain data can be updated$")
@@ -1488,10 +1449,10 @@ public class DeviceRegistrySteps extends TestBase {
         tmpDomain.setName(TEST_DEVICE_NAME);
         tmpDomain.setActions(new HashSet<>(Lists.newArrayList(Actions.connect, Actions.execute)));
 
-        assertEquals(TEST_DEVICE_NAME, tmpDomain.getName());
-        assertEquals(2, tmpDomain.getActions().size());
-        assertTrue(tmpDomain.getActions().contains(Actions.connect));
-        assertTrue(tmpDomain.getActions().contains(Actions.execute));
+        Assert.assertEquals(TEST_DEVICE_NAME, tmpDomain.getName());
+        Assert.assertEquals(2, tmpDomain.getActions().size());
+        Assert.assertTrue(tmpDomain.getActions().contains(Actions.connect));
+        Assert.assertTrue(tmpDomain.getActions().contains(Actions.execute));
     }
 
     // ************************************************************************************
@@ -1543,10 +1504,10 @@ public class DeviceRegistrySteps extends TestBase {
 
             for (int i = 0; i < num; i++) {
                 tmpCreator = prepareRegularDeviceEventCreator(currScopeId, tmpDevId);
-                assertNotNull(tmpCreator);
+                Assert.assertNotNull(tmpCreator);
                 tmpCreator.setAction(tmpMeth);
                 tmpEvent = eventService.create(tmpCreator);
-                assertNotNull(tmpEvent);
+                Assert.assertNotNull(tmpEvent);
             }
         } catch (KapuaException ex) {
             verifyException(ex);
@@ -1649,9 +1610,9 @@ public class DeviceRegistrySteps extends TestBase {
             throws Exception {
 
         DeviceEventQuery tmpQuery = eventFactory.newQuery(getCurrentScopeId());
-        assertNotNull(tmpQuery);
+        Assert.assertNotNull(tmpQuery);
         KapuaMethod tmpMeth = getMethodFromString(eventType);
-        assertNotNull(tmpMeth);
+        Assert.assertNotNull(tmpMeth);
         tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceEventAttributes.ACTION, tmpMeth, AttributePredicate.Operator.EQUAL));
 
         primeException();
@@ -1722,16 +1683,16 @@ public class DeviceRegistrySteps extends TestBase {
         DeviceEventCreator eventCreator = (DeviceEventCreator) stepData.get(DEVICE_EVENT_CREATOR);
         DeviceEvent event = (DeviceEvent) stepData.get(DEVICE_EVENT);
 
-        assertNotNull(event.getId());
-        assertEquals(eventCreator.getScopeId(), event.getScopeId());
-        assertEquals(eventCreator.getDeviceId(), event.getDeviceId());
-        assertEquals(eventCreator.getSentOn(), event.getSentOn());
-        assertEquals(eventCreator.getReceivedOn(), event.getReceivedOn());
-        assertEquals(eventCreator.getResource(), event.getResource());
-        assertEquals(eventCreator.getResponseCode(), event.getResponseCode());
-        assertEquals(eventCreator.getEventMessage(), event.getEventMessage());
-        assertEquals(eventCreator.getAction(), event.getAction());
-        assertEquals(eventCreator.getPosition().toDisplayString(),
+        Assert.assertNotNull(event.getId());
+        Assert.assertEquals(eventCreator.getScopeId(), event.getScopeId());
+        Assert.assertEquals(eventCreator.getDeviceId(), event.getDeviceId());
+        Assert.assertEquals(eventCreator.getSentOn(), event.getSentOn());
+        Assert.assertEquals(eventCreator.getReceivedOn(), event.getReceivedOn());
+        Assert.assertEquals(eventCreator.getResource(), event.getResource());
+        Assert.assertEquals(eventCreator.getResponseCode(), event.getResponseCode());
+        Assert.assertEquals(eventCreator.getEventMessage(), event.getEventMessage());
+        Assert.assertEquals(eventCreator.getAction(), event.getAction());
+        Assert.assertEquals(eventCreator.getPosition().toDisplayString(),
                 event.getPosition().toDisplayString());
     }
 
@@ -1750,20 +1711,20 @@ public class DeviceRegistrySteps extends TestBase {
     public void checkEventListForNumberOfItems(int numberOfEvents) {
 
         DeviceEventListResult eventList = (DeviceEventListResult) stepData.get(DEVICE_EVENT_LIST);
-        assertEquals(numberOfEvents, eventList.getSize());
+        Assert.assertEquals(numberOfEvents, eventList.getSize());
     }
 
     @Then("^I find (\\d+) or more device event(?:|s)?$")
     public void checkEventList(int number) {
 
         DeviceEventListResult eventList = (DeviceEventListResult) stepData.get(DEVICE_EVENT_LIST);
-        assertTrue(eventList.getSize() >= number);
+        Assert.assertTrue(eventList.getSize() >= number);
     }
 
     @Then("^There is no such event$")
     public void eventIsNull() {
 
-        assertNull(stepData.get(DEVICE_EVENT));
+        Assert.assertNull(stepData.get(DEVICE_EVENT));
     }
 
     @Then("^All device event factory functions must return non null objects$")
@@ -1778,10 +1739,10 @@ public class DeviceRegistrySteps extends TestBase {
         tmpQuery = eventFactory.newQuery(SYS_SCOPE_ID);
         tmpList = eventFactory.newListResult();
 
-        assertNotNull(tmpEvent);
-        assertNotNull(tmpCreator);
-        assertNotNull(tmpQuery);
-        assertNotNull(tmpList);
+        Assert.assertNotNull(tmpEvent);
+        Assert.assertNotNull(tmpCreator);
+        Assert.assertNotNull(tmpQuery);
+        Assert.assertNotNull(tmpList);
     }
 
     @Then("^The device event domain data can be updated$")
@@ -1791,10 +1752,10 @@ public class DeviceRegistrySteps extends TestBase {
         tmpDomain.setName(TEST_DEVICE_NAME);
         tmpDomain.setActions(new HashSet<>(Lists.newArrayList(Actions.connect, Actions.execute)));
 
-        assertEquals(TEST_DEVICE_NAME, tmpDomain.getName());
-        assertEquals(2, tmpDomain.getActions().size());
-        assertTrue(tmpDomain.getActions().contains(Actions.connect));
-        assertTrue(tmpDomain.getActions().contains(Actions.execute));
+        Assert.assertEquals(TEST_DEVICE_NAME, tmpDomain.getName());
+        Assert.assertEquals(2, tmpDomain.getActions().size());
+        Assert.assertTrue(tmpDomain.getActions().contains(Actions.connect));
+        Assert.assertTrue(tmpDomain.getActions().contains(Actions.execute));
     }
 
     // ************************************************************************************
@@ -2367,7 +2328,7 @@ public class DeviceRegistrySteps extends TestBase {
                 tmpMeth = KapuaMethod.EXECUTE;
                 break;
         }
-        assertNotNull(tmpMeth);
+        Assert.assertNotNull(tmpMeth);
 
         return tmpMeth;
     }
@@ -2628,7 +2589,7 @@ public class DeviceRegistrySteps extends TestBase {
     public void iFindDeviceWithClientId(String clientId) throws KapuaException {
         Device device = (Device) stepData.get(DEVICE);
         Device tmpDevice = deviceRegistryService.findByClientId(getCurrentScopeId(), clientId);
-        assertNotNull(tmpDevice);
+        Assert.assertNotNull(tmpDevice);
     }
 
     @When("^I search events from devices in account \"([^\"]*)\" and (\\d+) (?:event(?:|s)?|or more event(?:|s)?) (?:is|are) found$")
@@ -2657,15 +2618,15 @@ public class DeviceRegistrySteps extends TestBase {
                 Assert.assertNotNull(tmpList);
                 stepData.put(DEVICE_EVENT_LIST, tmpList);
 
-                assertTrue(tmpList.getSize() >= eventsNum);
+                Assert.assertTrue(tmpList.getSize() >= eventsNum);
             }
         } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
 
-    @And("^I asign tag to device$")
-    public void iAsignTagToDevice() throws Exception {
+    @And("^I assign tag to device$")
+    public void iAssignTagToDevice() throws Exception {
         Tag tag = (Tag) stepData.get("tag");
         Device device = (Device) stepData.get("Device");
         try {
@@ -2751,7 +2712,7 @@ public class DeviceRegistrySteps extends TestBase {
             Tag tag = tagList.getFirstItem();
 
             Set<KapuaId> tagIds = device.getTagIds();
-            assertTrue(tagIds.contains(tag.getId()));
+            Assert.assertTrue(tagIds.contains(tag.getId()));
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2791,7 +2752,7 @@ public class DeviceRegistrySteps extends TestBase {
     @And("^I create (\\d+) devices and add them to group \"([^\"]*)\"$")
     public void iCreateDevicesAndAddThemToGroup(int numberOfDevices, String groupName) throws Exception {
         Group group = (Group) stepData.get("Group");
-        assertEquals(group.getName(), groupName);
+        Assert.assertEquals(group.getName(), groupName);
 
         try {
             for(int i = 0; i < numberOfDevices; i++) {
@@ -2839,7 +2800,7 @@ public class DeviceRegistrySteps extends TestBase {
             Device device = deviceRegistryService.query(tmpQuery).getFirstItem();
 
             KapuaId expectedGroupId = foundGroup.getId();
-            assertEquals(device.getGroupId(), expectedGroupId);
+            Assert.assertEquals(device.getGroupId(), expectedGroupId);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2848,7 +2809,7 @@ public class DeviceRegistrySteps extends TestBase {
     @And("^The devices display name is \"([^\"]*)\"$")
     public void theDevicesDisplayNameIs(String displayName) throws Throwable {
         Device device = (Device) stepData.get("Device");
-        assertEquals(device.getDisplayName(), displayName);
+        Assert.assertEquals(device.getDisplayName(), displayName);
     }
 
     @And("^I change device status to \"([^\"]*)\"$")
@@ -2869,7 +2830,7 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @Given("^Tag \"([^\"]*)\" is not assigned to device \"([^\"]*)\"$")
-    public void tagWithNameIsNotAsignedToDevice(String tagName, String deviceName) throws Throwable {
+    public void tagWithNameIsNotAssignedToDevice(String tagName, String deviceName) throws Throwable {
         try {
             DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
             tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, deviceName, AttributePredicate.Operator.EQUAL));
@@ -2882,7 +2843,7 @@ public class DeviceRegistrySteps extends TestBase {
             Tag tag = tagList.getFirstItem();
 
             Set<KapuaId> tagIds = device.getTagIds();
-            assertFalse(tagIds.contains(tag.getId()));
+            Assert.assertFalse(tagIds.contains(tag.getId()));
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2901,7 +2862,7 @@ public class DeviceRegistrySteps extends TestBase {
             Device device = deviceRegistryService.query(tmpQuery).getFirstItem();
 
             KapuaId expectedGroupId = foundGroup.getId();
-            assertNotEquals(device.getGroupId(), expectedGroupId);
+            Assert.assertNotEquals(device.getGroupId(), expectedGroupId);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -3059,7 +3020,7 @@ public class DeviceRegistrySteps extends TestBase {
     @When("^I update the device clientID from \"([^\"]*)\" to \"([^\"]*)\"$")
     public void iUpdateTheDeviceClientIDToNewClientId(String oldClientId, String newClientId) throws Exception {
         Device device = (Device) stepData.get("Device");
-        assertEquals(oldClientId, device.getClientId());
+        Assert.assertEquals(oldClientId, device.getClientId());
         stepData.put("Text", device.getClientId());
         device.setClientId(newClientId);
 

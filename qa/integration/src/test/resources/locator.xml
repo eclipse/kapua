@@ -64,8 +64,6 @@
         <api>org.eclipse.kapua.service.datastore.MetricInfoFactory</api>
         <api>org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory</api>
 
-        <api>org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory</api>
-
         <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
         <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
         <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>

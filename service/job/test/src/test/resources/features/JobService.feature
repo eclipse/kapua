@@ -10,13 +10,20 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@unit
 @jobs
 @jobService
+@env_none
+
 Feature: Job service CRUD tests
   The Job service is responsible for maintaining jobs.
 
-  Scenario: Create a valid job entry
+@setup
+@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
+
+Scenario: Create a valid job entry
   Creating a role entry with specified name only. Once created, search for it - it should have been created.
   Kapua should not return any error.
 
@@ -365,3 +372,7 @@ Feature: Job service CRUD tests
 #  When I search for the job in the database
 #  Then I find a job with description "Ddescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondedescription"
 #  And No exception was thrown
+
+@teardown
+Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

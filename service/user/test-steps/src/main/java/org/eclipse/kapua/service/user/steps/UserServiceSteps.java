@@ -12,20 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.steps;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
-import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
@@ -33,10 +22,8 @@ import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.cucumber.CucCredentials;
 import org.eclipse.kapua.qa.common.cucumber.CucPermission;
@@ -59,12 +46,10 @@ import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionQueryImpl;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
-import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -77,8 +62,16 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
 import org.eclipse.kapua.service.user.UserAttributes;
 import org.junit.Assert;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.google.inject.Singleton;
+
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
@@ -97,13 +90,10 @@ import java.util.Set;
 /**
  * Implementation of Gherkin steps used in user test scenarios.
  * <p>
- * MockedLocator is used for Location Service.
  * Mockito is used to mock other services that UserService is dependent on.
  */
-@ScenarioScoped
+@Singleton
 public class UserServiceSteps extends TestBase {
-
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceSteps.class);
 
     private static final String USER_CREATOR = "UserCreator";
     private static final String USER_LIST = "UserList";
@@ -137,29 +127,20 @@ public class UserServiceSteps extends TestBase {
     private CredentialFactory credentialFactory;
     private CredentialsFactory credentialsFactory;
     private AccessPermissionService accessPermissionService;
-    private AccessPermissionFactory accessPermissionFactory;
     private DomainRegistryService domainRegistryService;
-    private DomainFactory domainFactory;
 
     @Inject
-    public UserServiceSteps(StepData stepData, DBHelper dbHelper) {
-
-        this.stepData = stepData;
-        this.database = dbHelper;
+    public UserServiceSteps(StepData stepData) {
+        super(stepData);
     }
 
     // *************************************
     // Definition of Cucumber scenario steps
     // *************************************
 
-    @Before
-    public void beforeScenario(Scenario scenario) {
-
-        this.scenario = scenario;
-        database.setup();
-        stepData.clear();
-
-        locator = KapuaLocator.getInstance();
+    @After(value="@setup")
+    public void setServices() {
+        KapuaLocator locator = KapuaLocator.getInstance();
         userService = locator.getService(UserService.class);
         userFactory = locator.getFactory(UserFactory.class);
         authenticationService = locator.getService(AuthenticationService.class);
@@ -170,39 +151,12 @@ public class UserServiceSteps extends TestBase {
         credentialFactory = locator.getFactory(CredentialFactory.class);
         credentialsFactory = locator.getFactory(CredentialsFactory.class);
         accessPermissionService = locator.getService(AccessPermissionService.class);
-        accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
         domainRegistryService = locator.getService(DomainRegistryService.class);
-        domainFactory = locator.getFactory(DomainFactory.class);
-
-        if (isUnitTest()) {
-            // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
-            // All operations on database are performed using system user.
-            // Only for unit tests. Integration tests assume that a real logon is performed.
-            KapuaSession kapuaSession = new KapuaSession(null, SYS_SCOPE_ID, SYS_USER_ID);
-            KapuaSecurityUtils.setSession(kapuaSession);
-        }
-
-        // Setup JAXB context
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
     }
 
-    @After
-    public void afterScenario() {
-
-        // Clean up the database
-        try {
-            logger.info("Logging out in cleanup");
-            if (isIntegrationTest()) {
-                database.deleteAll();
-                SecurityUtils.getSubject().logout();
-            } else {
-                database.dropAll();
-                database.close();
-            }
-            KapuaSecurityUtils.clearSession();
-        } catch (Exception e) {
-            logger.error("Failed to log out in @After", e);
-        }
+    @Before
+    public void beforeScenario(Scenario scenario) {
+        updateScenario(scenario);
     }
 
     @Given("^User with name \"(.*)\" in scope with id (\\d+)$")
@@ -220,7 +174,7 @@ public class UserServiceSteps extends TestBase {
 
         stepData.put(USER_CREATOR, uc);
 
-        scenario.write("User " + userName + " created.");
+        scenario.log("User " + userName + " created.");
     }
 
     @When("^I create user$")
@@ -309,25 +263,25 @@ public class UserServiceSteps extends TestBase {
         UserCreator userCreator = (UserCreator) stepData.get(USER_CREATOR);
         User user = (User) stepData.get("User");
 
-        assertNotNull(user.getId());
-        assertNotNull(user.getId().getId());
-        assertTrue(user.getOptlock() >= 0);
-        assertNotNull(user.getScopeId());
-        assertEquals(userName, user.getName());
-        assertNotNull(user.getCreatedOn());
-        assertNotNull(user.getCreatedBy());
-        assertNotNull(user.getModifiedOn());
-        assertNotNull(user.getModifiedBy());
-        assertEquals(userCreator.getDisplayName(), user.getDisplayName());
-        assertEquals(userCreator.getEmail(), user.getEmail());
-        assertEquals(userCreator.getPhoneNumber(), user.getPhoneNumber());
-        assertEquals(UserStatus.ENABLED, user.getStatus());
+        Assert.assertNotNull(user.getId());
+        Assert.assertNotNull(user.getId().getId());
+        Assert.assertTrue(user.getOptlock() >= 0);
+        Assert.assertNotNull(user.getScopeId());
+        Assert.assertEquals(userName, user.getName());
+        Assert.assertNotNull(user.getCreatedOn());
+        Assert.assertNotNull(user.getCreatedBy());
+        Assert.assertNotNull(user.getModifiedOn());
+        Assert.assertNotNull(user.getModifiedBy());
+        Assert.assertEquals(userCreator.getDisplayName(), user.getDisplayName());
+        Assert.assertEquals(userCreator.getEmail(), user.getEmail());
+        Assert.assertEquals(userCreator.getPhoneNumber(), user.getPhoneNumber());
+        Assert.assertEquals(UserStatus.ENABLED, user.getStatus());
     }
 
     @Then("^I don't find user with name \"(.*)\"$")
     public void dontFindUserWithName(String userName) throws Exception {
         User user = userService.findByName(userName);
-        assertNull(user);
+        Assert.assertNull(user);
     }
 
     @Then("^I find user$")
@@ -355,7 +309,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getName()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getName()));
             }
         }
     }
@@ -363,7 +317,7 @@ public class UserServiceSteps extends TestBase {
     @Then("^I find no user$")
     public void noUserFound() {
 
-        assertNull(stepData.get("User"));
+        Assert.assertNull(stepData.get("User"));
     }
 
     @When("^I search for user with id (\\d+) in scope with id (\\d+)$")
@@ -411,13 +365,13 @@ public class UserServiceSteps extends TestBase {
 
     @Then("^I count (\\d+) (?:user|users)$")
     public void countUserCount(Long cnt) {
-        assertEquals(cnt, stepData.get(COUNT));
+        Assert.assertEquals(cnt, stepData.get(COUNT));
     }
 
     @Then("^I count (\\d+) (?:user|users) as query result list$")
     public void countUserQuery(long cnt) {
         Set<ComparableUser> userLst = (Set<ComparableUser>) stepData.get(USER_LIST);
-        assertEquals(cnt, userLst.size());
+        Assert.assertEquals(cnt, userLst.size());
     }
 
     @Then("^I create same user$")
@@ -512,7 +466,7 @@ public class UserServiceSteps extends TestBase {
     @Then("^I have metadata$")
     public void haveMetadata() {
         KapuaTocd metadata = (KapuaTocd) stepData.get(METADATA);
-        assertNotNull("Metadata should be retrieved.", metadata);
+        Assert.assertNotNull("Metadata should be retrieved.", metadata);
     }
 
     @Given("^I add credentials$")
@@ -540,7 +494,7 @@ public class UserServiceSteps extends TestBase {
     @Given("^I find (\\d+) credentials$")
     public void checkCredentialsNumber(int expectedCount) throws Exception {
         int count = (int) stepData.get("CredentialsCount");
-        assertEquals(expectedCount, count);
+        Assert.assertEquals(expectedCount, count);
     }
 
     @Given("^I delete the last created user's credential$")
@@ -593,7 +547,7 @@ public class UserServiceSteps extends TestBase {
     @Given("I find the last permission added to the new user$")
     public void checkForNullLastAddedPermission() {
         AccessPermission accessPermission = (AccessPermission) stepData.get(LAST_FOUND_ACCESS_PERMISSION);
-        assertNotNull(accessPermission);
+        Assert.assertNotNull(accessPermission);
     }
 
     @Given("^User A$")
@@ -641,7 +595,6 @@ public class UserServiceSteps extends TestBase {
 
     @When("^I login as user with name \"(.*)\" and password \"(.*)\"$")
     public void loginUser(String userName, String password) throws Exception {
-
         LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(userName, password);
         authenticationService.logout();
 
@@ -991,26 +944,26 @@ public class UserServiceSteps extends TestBase {
     }
 
     private boolean matchUserData(User user, CucUser cucUser) {
-        assertNotNull(user.getId());
-        assertNotNull(user.getScopeId());
+        Assert.assertNotNull(user.getId());
+        Assert.assertNotNull(user.getScopeId());
         if ((cucUser.getName() != null) && (cucUser.getName().length() > 0)) {
-            assertEquals(cucUser.getName(), user.getName());
+            Assert.assertEquals(cucUser.getName(), user.getName());
         }
-        assertNotNull(user.getCreatedOn());
-        assertNotNull(user.getCreatedBy());
-        assertNotNull(user.getModifiedOn());
-        assertNotNull(user.getModifiedBy());
+        Assert.assertNotNull(user.getCreatedOn());
+        Assert.assertNotNull(user.getCreatedBy());
+        Assert.assertNotNull(user.getModifiedOn());
+        Assert. assertNotNull(user.getModifiedBy());
         if ((cucUser.getDisplayName() != null) && (cucUser.getDisplayName().length() > 0)) {
-            assertEquals(cucUser.getDisplayName(), user.getDisplayName());
+            Assert.assertEquals(cucUser.getDisplayName(), user.getDisplayName());
         }
         if ((cucUser.getEmail() != null) && (cucUser.getEmail().length() > 0)) {
-            assertEquals(cucUser.getEmail(), user.getEmail());
+            Assert.assertEquals(cucUser.getEmail(), user.getEmail());
         }
         if ((cucUser.getPhoneNumber() != null) && (cucUser.getPhoneNumber().length() > 0)) {
-            assertEquals(cucUser.getPhoneNumber(), user.getPhoneNumber());
+            Assert.assertEquals(cucUser.getPhoneNumber(), user.getPhoneNumber());
         }
         if (cucUser.getStatus() != null) {
-            assertEquals(cucUser.getStatus(), user.getStatus());
+            Assert.assertEquals(cucUser.getStatus(), user.getStatus());
         }
         return true;
     }
@@ -1050,7 +1003,7 @@ public class UserServiceSteps extends TestBase {
     @And("^I create user with name \"([^\"]*)\" in account \"([^\"]*)\"$")
     public void iCreateUserWithNameInSubaccount(String name, String accountName) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        assertEquals(accountName, account.getName());
+        Assert.assertEquals(accountName, account.getName());
 
         UserCreator userCreator = userFactory.newCreator(account.getId());
         userCreator.setName(name);
@@ -1137,7 +1090,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
             }
         }
     }
@@ -1181,7 +1134,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
             }
         }
     }
@@ -1223,7 +1176,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getExpirationDate()));
             }
         }
     }
@@ -1233,7 +1186,7 @@ public class UserServiceSteps extends TestBase {
 
             UserListResult users = (UserListResult) stepData.get(FOUND_USERS);
             for (User user : users.getItems()){
-               assertEquals(user.getPhoneNumber(),(phoneNumber));
+                Assert.assertEquals(user.getPhoneNumber(),(phoneNumber));
             }
             stepData.put(USER_LIST, users);
 
@@ -1254,7 +1207,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getEmail()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getEmail()));
             }
         }
     }
@@ -1274,7 +1227,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getName()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getName()));
             }
         }
     }
@@ -1294,7 +1247,7 @@ public class UserServiceSteps extends TestBase {
                 }
             }
             if (!userChecks) {
-                fail(String.format(USER_NOT_FOUND, userItem.getName()));
+                Assert.fail(String.format(USER_NOT_FOUND, userItem.getName()));
             }
         }
     }
@@ -1319,7 +1272,7 @@ public class UserServiceSteps extends TestBase {
     public void iFindUsersWithEmail(String email) {
        UserListResult users = (UserListResult) stepData.get(FOUND_USERS);
        for (User user : users.getItems()){
-           assertEquals(user.getEmail(), (email));
+           Assert.assertEquals(user.getEmail(), (email));
        }
        stepData.put(USER_LIST, users);
     }

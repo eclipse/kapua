@@ -12,7 +12,7 @@
 ###############################################################################
 @deviceManagement
 @deviceManagementKeystore
-@integration
+@env_docker
 
 Feature: Device Management Keystore Service Tests
 
@@ -20,15 +20,11 @@ Feature: Device Management Keystore Service Tests
   # Setup
   #
 
-  Scenario: Set environment variables
-    Given System property "broker.ip" with value "localhost"
-    And System property "commons.db.connection.host" with value "localhost"
-
-  Scenario: Start event broker for all scenarios
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-    Given Start Broker
+@setup
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
   #
   # Tests
@@ -36,13 +32,13 @@ Feature: Device Management Keystore Service Tests
 
   Scenario: Request Keystores to a Device
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Keystores are requested
     And Keystores are received
     And Keystores are 2
@@ -57,13 +53,13 @@ Feature: Device Management Keystore Service Tests
 
   Scenario: Request All Keystore Items to a Device
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And All Keystore Items are requested
     And Keystore Items are received
     And Keystore Items are 2
@@ -76,13 +72,13 @@ Feature: Device Management Keystore Service Tests
 
   Scenario: Request All Keystore Items to a Device filtered by alias
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Keystore Items with alias "localhost" are requested
     And Keystore Items are received
     And Keystore Items are 1
@@ -94,13 +90,13 @@ Feature: Device Management Keystore Service Tests
 
   Scenario: Request All Keystore Items to a Device filtered by keystore
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Keystore Items with keystore id "SSLKeystore" are requested
     And Keystore Items are received
     And Keystore Items are 1
@@ -112,13 +108,13 @@ Feature: Device Management Keystore Service Tests
 
   Scenario: Request a Keystore Item to a Device
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Keystore Item with keystore id "HttpsKeystore" and alias "localhost" is requested
     And Keystore Item is received
     And Keystore Item matches expected
@@ -127,13 +123,13 @@ Feature: Device Management Keystore Service Tests
 
   Scenario: Install a Keystore Device Certificate on a Device
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And All Keystore Items are requested
     And Keystore Items are received
     And Keystore Items are 2
@@ -152,13 +148,13 @@ Feature: Device Management Keystore Service Tests
 
   Scenario: Install a Keystore Device Keypair on a Device
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And All Keystore Items are requested
     And Keystore Items are received
     And Keystore Items are 2
@@ -180,13 +176,13 @@ Feature: Device Management Keystore Service Tests
   This different format is due to https://github.com/eclipse/kura/issues/3387
   Kapua code is capable to handle both formats.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When I send a Certificate Signing Request for Keystore Item with keystore "HttpsKeystore" and alias "localhostFixed"
     Then The Certificate Signing Request is received
     And The Certificate Signing Request matches expected
@@ -198,13 +194,13 @@ Feature: Device Management Keystore Service Tests
 
   Scenario: Install and delete a Keystore Items on a Device
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And All Keystore Items are requested
     And Keystore Items are received
     And Keystore Items are 2
@@ -241,12 +237,6 @@ Feature: Device Management Keystore Service Tests
     Then KuraMock is disconnected
     And I logout
 
-  #
-  # Teardown
-  #
-
-  Scenario: Stop broker after all scenarios
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-    Given Stop Event Broker
+@teardown
+  Scenario: Stop full docker environment
+    Given Stop full docker environment

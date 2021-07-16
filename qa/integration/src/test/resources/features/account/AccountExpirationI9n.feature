@@ -12,15 +12,16 @@
 ###############################################################################
 @account
 @accountExpiration
-@integration
+@env_none
 
 Feature: Account expiration features
     Accounts have an expiration date. From this date onward the accounts are considered disabled
     and cannot be logged into anymore.
 
-Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
+@setup
+Scenario: Initialize test environment
+    GivenInit Jaxb Context
+    And Init Security Context
 
   Scenario: Account with future expiration date
     Set the expiration date of an account in the future. It must be possible to log into such
@@ -515,6 +516,6 @@ Scenario: Init Security Context for all scenarios
     Then An exception was thrown
     And I logout
 
-  Scenario: Reset Security Context for all scenarios
-
-    Given Reset Security Context
+@teardown
+Scenario: Reset Security Context for all scenarios
+  Given Reset Security Context

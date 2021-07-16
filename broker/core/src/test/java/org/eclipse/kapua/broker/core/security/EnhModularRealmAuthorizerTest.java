@@ -32,7 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Category(JUnitTests.class)
-public class EnhModularRealmAuthorizerTest extends Assert {
+public class EnhModularRealmAuthorizerTest {
 
     EnhModularRealmAuthorizer enhModularRealmAuthorizer1, enhModularRealmAuthorizer2;
     Collection<Realm> realms;
@@ -71,13 +71,13 @@ public class EnhModularRealmAuthorizerTest extends Assert {
 
     @Test
     public void enhModularRealmAuthorizerWithoutParameterTest() {
-        assertNull("Null expected.", enhModularRealmAuthorizer1.getRealms());
+        Assert.assertNull("Null expected.", enhModularRealmAuthorizer1.getRealms());
     }
 
     @Test
     public void enhModularRealmAuthorizerWithEmptyRealmsTest() {
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
-        assertTrue("True expected.", enhModularRealmAuthorizer2.getRealms().isEmpty());
+        Assert.assertTrue("True expected.", enhModularRealmAuthorizer2.getRealms().isEmpty());
     }
 
     @Test
@@ -87,22 +87,22 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         realms.add(realm3);
 
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
-        assertEquals("Expected and actual values should be the same.", realms, enhModularRealmAuthorizer2.getRealms());
+        Assert.assertEquals("Expected and actual values should be the same.", realms, enhModularRealmAuthorizer2.getRealms());
     }
 
     @Test
     public void enhModularRealmAuthorizerWithNullParameterTest() {
         EnhModularRealmAuthorizer enhModularRealmAuthorizer = new EnhModularRealmAuthorizer(null);
-        assertNull("Null expected.", enhModularRealmAuthorizer.getRealms());
+        Assert.assertNull("Null expected.", enhModularRealmAuthorizer.getRealms());
     }
 
     @Test
     public void isPermittedAuthorizerWithoutParameterTest() {
         try {
             enhModularRealmAuthorizer1.isPermitted(principals, permissions);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception e) {
-            assertEquals("Expected and actual values should be the same.", new IllegalStateException("Configuration error:  No realms have been configured!  One or more realms must be present to execute an authorization operation.").toString(), e.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new IllegalStateException("Configuration error:  No realms have been configured!  One or more realms must be present to execute an authorization operation.").toString(), e.toString());
         }
     }
 
@@ -111,9 +111,9 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(null);
         try {
             enhModularRealmAuthorizer2.isPermitted(principals, permissions);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception e) {
-            assertEquals("Expected and actual values should be the same.", new IllegalStateException("Configuration error:  No realms have been configured!  One or more realms must be present to execute an authorization operation.").toString(), e.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new IllegalStateException("Configuration error:  No realms have been configured!  One or more realms must be present to execute an authorization operation.").toString(), e.toString());
         }
     }
 
@@ -121,9 +121,9 @@ public class EnhModularRealmAuthorizerTest extends Assert {
     public void isPermittedAuthorizerWithEmptyRealmsTest() {
         try {
             enhModularRealmAuthorizer2.isPermitted(principals, permissions);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception e) {
-            assertEquals("Expected and actual values should be the same.", new IllegalStateException("Configuration error:  No realms have been configured!  One or more realms must be present to execute an authorization operation.").toString(), e.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new IllegalStateException("Configuration error:  No realms have been configured!  One or more realms must be present to execute an authorization operation.").toString(), e.toString());
         }
     }
 
@@ -134,8 +134,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         realms.add(realm3);
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 0, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
     }
 
     @Test
@@ -144,8 +144,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         permissions.add(permission1);
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 1, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 1, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
     }
 
     @Test
@@ -156,8 +156,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         permissions.add(permission1);
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 1, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 1, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
     }
 
     @Test
@@ -168,8 +168,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
         Mockito.when(authorizingRealm1.isPermitted(principals, permissions)).thenReturn(booleanArray1);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 3, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 3, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
     }
 
     @Test
@@ -184,8 +184,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         Mockito.when(authorizingRealm2.isPermitted(principals, permissions)).thenReturn(booleanArray1);
         Mockito.when(authorizingRealm3.isPermitted(principals, permissions)).thenReturn(booleanArray1);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 1, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 1, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
     }
 
     @Test
@@ -200,8 +200,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         Mockito.when(authorizingRealm1.isPermitted(principals, permissions)).thenReturn(booleanArray1);
         Mockito.when(authorizingRealm2.isPermitted(principals, permissions)).thenReturn(booleanArray2);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 2, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 2, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
     }
 
     @Test
@@ -222,8 +222,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         Mockito.when(authorizingRealm2.isPermitted(principals, permissions)).thenReturn(booleanArray1);
         Mockito.when(authorizingRealm3.isPermitted(principals, permissions)).thenReturn(booleanArray1);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 3, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, permissions), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 3, enhModularRealmAuthorizer2.isPermitted(principals, permissions).length);
     }
 
     @Test
@@ -232,9 +232,9 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
         try {
             enhModularRealmAuthorizer2.isPermitted(principals, (List) null);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -245,8 +245,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         realms.add(realm3);
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(null, permissions), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 0, enhModularRealmAuthorizer2.isPermitted(null, permissions).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(null, permissions), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, enhModularRealmAuthorizer2.isPermitted(null, permissions).length);
     }
 
     @Test
@@ -255,9 +255,9 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
         try {
             enhModularRealmAuthorizer2.isPermitted(null, (List) null);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -267,8 +267,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
         enhModularRealmAuthorizer2.setPermissionResolver(permissionResolver);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, stringPermissionResolver1, stringPermissionResolver2, stringPermissionResolver3), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 3, enhModularRealmAuthorizer2.isPermitted(principals, stringPermissionResolver1, stringPermissionResolver2, stringPermissionResolver3).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, stringPermissionResolver1, stringPermissionResolver2, stringPermissionResolver3), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 3, enhModularRealmAuthorizer2.isPermitted(principals, stringPermissionResolver1, stringPermissionResolver2, stringPermissionResolver3).length);
     }
 
     @Test
@@ -277,8 +277,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
         enhModularRealmAuthorizer2.setPermissionResolver(permissionResolver);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(null, stringPermissionResolver1, stringPermissionResolver2, stringPermissionResolver3), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 3, enhModularRealmAuthorizer2.isPermitted(null, stringPermissionResolver1, stringPermissionResolver2, stringPermissionResolver3).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(null, stringPermissionResolver1, stringPermissionResolver2, stringPermissionResolver3), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 3, enhModularRealmAuthorizer2.isPermitted(null, stringPermissionResolver1, stringPermissionResolver2, stringPermissionResolver3).length);
     }
 
     @Test
@@ -287,8 +287,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
         enhModularRealmAuthorizer2.setPermissionResolver(permissionResolver);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, null, stringPermissionResolver1), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 2, enhModularRealmAuthorizer2.isPermitted(principals, null, stringPermissionResolver1).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, null, stringPermissionResolver1), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 2, enhModularRealmAuthorizer2.isPermitted(principals, null, stringPermissionResolver1).length);
     }
 
     @Test
@@ -297,8 +297,8 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
         enhModularRealmAuthorizer2.setPermissionResolver(permissionResolver);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, null, null), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 2, enhModularRealmAuthorizer2.isPermitted(principals, null, null).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(principals, null, null), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 2, enhModularRealmAuthorizer2.isPermitted(principals, null, null).length);
     }
 
     @Test
@@ -307,7 +307,7 @@ public class EnhModularRealmAuthorizerTest extends Assert {
         enhModularRealmAuthorizer2 = new EnhModularRealmAuthorizer(realms);
         enhModularRealmAuthorizer2.setPermissionResolver(permissionResolver);
 
-        assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(null, null, null), IsInstanceOf.instanceOf(boolean[].class));
-        assertEquals("Expected and actual values should be the same.", 2, enhModularRealmAuthorizer2.isPermitted(null, null, null).length);
+        Assert.assertThat("Instance of boolean[] expected.", enhModularRealmAuthorizer2.isPermitted(null, null, null), IsInstanceOf.instanceOf(boolean[].class));
+        Assert.assertEquals("Expected and actual values should be the same.", 2, enhModularRealmAuthorizer2.isPermitted(null, null, null).length);
     }
 }

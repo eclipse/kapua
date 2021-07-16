@@ -51,10 +51,6 @@ public class DefaultConfigurableJdbcConnectionUrlResolver implements JdbcConnect
             dbConnectionString.append("schema=")
                     .append(schema)
                     .append(";");
-
-            // This deletes the trailing '?' or '&'
-            dbConnectionString.deleteCharAt(dbConnectionString.length() - 1);
-
         }
         String additionalOptions = config.getString(SystemSettingKey.DB_CONNECTION_ADDITIONAL_OPTIONS);
         if (StringUtils.isNotBlank(additionalOptions)) {

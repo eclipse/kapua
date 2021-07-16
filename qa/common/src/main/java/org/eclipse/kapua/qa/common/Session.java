@@ -13,10 +13,9 @@
 package org.eclipse.kapua.qa.common;
 
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
-import org.eclipse.kapua.qa.common.With;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
 
-import cucumber.runtime.java.guice.ScenarioScoped;
+import io.cucumber.guice.ScenarioScoped;
 
 @ScenarioScoped
 public class Session {

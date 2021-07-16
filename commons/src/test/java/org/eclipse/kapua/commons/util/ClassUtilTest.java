@@ -34,7 +34,7 @@ public class ClassUtilTest extends Assert {
         classUtilConstructor.newInstance();
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = KapuaException.class)
     public void newInstanceNullTest() throws KapuaException {
         assertNull("The class does not exist.", ClassUtil.newInstance(null, null));
     }
@@ -105,7 +105,7 @@ public class ClassUtilTest extends Assert {
         assertNull("PARAMETER_ERROR_MSG", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, new Class<?>[]{String.class, String.class, String.class}, new Object[]{serviceName, address}));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = KapuaException.class)
     public void extendedNewInstanceAllNullTest() throws KapuaException {
         assertNull("The class does not exist.", ClassUtil.newInstance(null, null, null, null));
     }

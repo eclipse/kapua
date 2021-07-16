@@ -12,11 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.docker;
 
-import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = "classpath:features/docker/broker.feature",
         glue = {"org.eclipse.kapua.qa.common",

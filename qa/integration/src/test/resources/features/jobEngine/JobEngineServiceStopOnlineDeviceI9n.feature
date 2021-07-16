@@ -11,21 +11,17 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @jobEngineServiceStop
-@integration
+@env_docker
 
 Feature: JobEngineService stop job tests with online device
   Job Engine Service test scenarios for stopping job. This feature file contains scenarios for stopping job with one target and one step,
   one target and multiple steps, multiple targets and one step and multiple targets and multiple steps.
 
-  Scenario: Set environment variables
-    Given System property "broker.ip" with value "localhost"
-    And System property "commons.db.connection.host" with value "localhost"
-
-  Scenario: Start event broker for all scenarios
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-    Given Start Broker
+@setup
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
     # *****************************************************
     # * Stopping a job with one Target and multiple Steps *
@@ -38,13 +34,13 @@ Feature: JobEngineService stop job tests with online device
   step index should be different than 1 and the status PROCESS_AWAITING. Start the job again.
   If job is finished step index should be 1, and the status PROCESS_OK.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And Packages are requested and 1 package is received
@@ -91,13 +87,13 @@ Feature: JobEngineService stop job tests with online device
   step index should be different than 2 and the status PROCESS_AWAITING. Start the job again.
   If job is finished step index should be 2, and job target status PROCESS_OK.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     And Packages are requested and 1 package is received
@@ -144,13 +140,13 @@ Feature: JobEngineService stop job tests with online device
   step index should be different than 1 and the status PROCESS_AWAITING. Start the job again.
   If job is finished step index should be 1, and job target status PROCESS_OK.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Command pwd is executed
     And Packages are requested and 1 package is received
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -194,13 +190,13 @@ Feature: JobEngineService stop job tests with online device
   step index should be different than 1 and the status PROCESS_AWAITING. Start the job again.
   If job is finished step index should be 1, and job target status PROCESS_OK.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Configuration is requested
     Then A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
     And Packages are requested and 1 packages is received
@@ -245,13 +241,13 @@ Feature: JobEngineService stop job tests with online device
   step index should be different than 1 and the status PROCESS_AWAITING. Start the job again.
   If job is finished step index should be 1, and job target status PROCESS_OK.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When Device assets are requested
     Then Asset with name "asset1" and channel with name "channel1" and value 123 are received
     And Packages are requested and 1 package is received
@@ -302,13 +298,13 @@ Feature: JobEngineService stop job tests with online device
   step index should be different than 0 and the status PROCESS_AWAITING. Start the job again.
   If job is finished step index should be 0, and job target status PROCESS_OK.
 
-    Given I add 2 devices to Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I add 2 devices to Kura Mock
     And Devices are connected
     And I wait 1 second
     And Devices status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock devices
+    And I get the KuraMock devices after 5 seconds
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And Packages are requested and 1 package is received
@@ -351,13 +347,13 @@ Feature: JobEngineService stop job tests with online device
   step index should be different than 0 and the status PROCESS_AWAITING. Start the job again.
   If job is finished step index should be 0, and job target status PROCESS_OK.
 
-    Given I add 2 devices to Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I add 2 devices to Kura Mock
     And Devices are connected
     And I wait 1 second
     And Devices status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock devices
+    And I get the KuraMock devices after 5 seconds
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     And Packages are requested and 1 package is received
@@ -402,13 +398,13 @@ Feature: JobEngineService stop job tests with online device
   step index should be different than 0 and the status PROCESS_AWAITING. Start the job again.
   If job is finished step index should be 0, and job target status PROCESS_OK.
 
-    Given I add 2 devices to Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I add 2 devices to Kura Mock
     And Devices are connected
     And I wait 1 second
     And Devices status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock devices
+    And I get the KuraMock devices after 5 seconds
     And Command pwd is executed
     And Packages are requested and 1 package is received
     When I search for events from device "device0" in account "kapua-sys"
@@ -450,13 +446,13 @@ Feature: JobEngineService stop job tests with online device
   step index should be different than 0 and the status PROCESS_AWAITING. Start the job again.
   If job is finished step index should be 0, and job target status PROCESS_OK.
 
-    Given I add 2 devices to Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I add 2 devices to Kura Mock
     And Devices are connected
     And I wait 1 second
     And Devices status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock devices
+    And I get the KuraMock devices after 5 seconds
     And Configuration is requested
     Then A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
     And Packages are requested and 1 packages is received
@@ -501,13 +497,13 @@ Feature: JobEngineService stop job tests with online device
   step index should be different than 1 and the status PROCESS_AWAITING. Start the job again.
   If job is finished step index should be 1, and job target status PROCESS_OK.
 
-    Given I add 2 devices to Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I add 2 devices to Kura Mock
     And Devices are connected
     And I wait 1 second
     And Devices status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock devices
+    And I get the KuraMock devices after 5 seconds
     When Device assets are requested
     Then Asset with name "asset1" and channel with name "channel1" and value 123 are received
     And Packages are requested and 1 package is received
@@ -545,8 +541,6 @@ Feature: JobEngineService stop job tests with online device
     Then KuraMock is disconnected
     And I logout
 
-  Scenario: Stop broker after all scenarios
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-    Given Stop Event Broker
+@teardown
+  Scenario: Stop full docker environment
+    Given Stop full docker environment

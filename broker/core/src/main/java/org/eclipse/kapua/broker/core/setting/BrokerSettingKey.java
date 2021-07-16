@@ -12,26 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.setting;
 
-import org.eclipse.kapua.broker.core.plugin.ConnectorDescriptor;
-import org.eclipse.kapua.broker.core.router.CamelKapuaDefaultRouter;
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
  * Broker settings
  */
 public enum BrokerSettingKey implements SettingKey {
-    /**
-     * Allow disabling the default connector descriptor
-     */
-    DISABLE_DEFAULT_CONNECTOR_DESCRIPTOR("broker.connector.descriptor.default.disable"),
-    /**
-     * A URI to a configuration file for providing additional {@link ConnectorDescriptor} configurations
-     */
-    CONFIGURATION_URI("broker.connector.descriptor.configuration.uri"),
-    /**
-     * Broker jaxb context provider class name
-     */
-    BROKER_JAXB_CONTEXT_CLASS_NAME("broker.jaxb_context_class_name"),
     /**
      * Broker IP resolver implementation (if not evaluated, the default resolver will be used).
      */
@@ -73,30 +59,13 @@ public enum BrokerSettingKey implements SettingKey {
      */
     STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME("broker.stealing_link.initialization_max_wait_time"),
     /**
-     * No destination broker internal use client pool - maximun total size
-     */
-    BROKER_CLIENT_POOL_NO_DEST_TOTAL_MAX_SIZE("broker.client_pool.no_dest_total_max_size"),
-    /**
-     * No destination broker internal use client pool - maximun size
-     */
-    BROKER_CLIENT_POOL_NO_DEST_MAX_SIZE("broker.client_pool.no_dest_max_size"),
-    /**
-     * No destination broker internal use client pool - minimum size
-     */
-    BROKER_CLIENT_POOL_NO_DEST_MIN_SIZE("broker.client_pool.no_dest_min_size"),
-    /**
-     * Broker name (used also for the vm connector name)
-     */
-    BROKER_NAME("broker.name"),
-    /**
      * Publish message info if the message size is over the specified threshold
      */
     PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD("broker.security.published.message_size.log_threshold"),
     /**
-     * Camel default route configuration file name. (please specify just the name. The file path will be discovered by the class loader)
-     * Used by the {@link CamelKapuaDefaultRouter} to load the routing configuration.
+     * Jaxb context provider class name
      */
-    CAMEL_DEFAULT_ROUTE_CONFIGURATION_FILE_NAME("camel.default_route.configuration_file_name");
+    JAXB_CONTEXT_CLASS_NAME("broker.jaxb_context_class_name");
 
     private String key;
 

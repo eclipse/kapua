@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-qa</artifactId>
-        <version>1.6.0-SNAPSHOT</version>
+        <version>1.6.0-CAMEL-SNAPSHOT</version>
     </parent>
 
     <artifactId>kapua-qa-integration</artifactId>
@@ -107,6 +107,10 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-packages-job</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-packages-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -267,6 +271,15 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-consumer-lifecycle</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-consumer-telemetry</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-qa-markers</artifactId>
             <scope>compile</scope>
         </dependency>
@@ -287,33 +300,33 @@
 
         <!-- Test dependencies -->
         <dependency>
+            <groupId>javax.batch</groupId>
+            <artifactId>javax.batch-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>info.cukes</groupId>
+            <groupId>io.cucumber</groupId>
             <artifactId>cucumber-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>info.cukes</groupId>
+            <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>info.cukes</groupId>
+            <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>info.cukes</groupId>
+            <groupId>io.cucumber</groupId>
             <artifactId>cucumber-guice</artifactId>
             <scope>test</scope>
         </dependency>

@@ -10,12 +10,19 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@unit
 @deviceRegistry
 @deviceRegistryValidation
+@env_none
+
 Feature: Device Registry Validation Tests
     The Device Registry Validation helper is responsible for validating parameters
     and permissions before any operation is performed on the database.
+
+@setup
+@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
 Scenario: Validate a regular creator
     Create a regular device creator. The validator should OK it.
@@ -186,3 +193,7 @@ Scenario: Validate a null device count
     And I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I count the devices based on the remembered query
     Then An exception was thrown
+
+@teardown
+Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

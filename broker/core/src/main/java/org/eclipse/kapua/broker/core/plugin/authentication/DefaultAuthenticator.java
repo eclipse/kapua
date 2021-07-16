@@ -15,23 +15,26 @@ package org.eclipse.kapua.broker.core.plugin.authentication;
 import com.codahale.metrics.Timer.Context;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.core.message.system.DefaultSystemMessageCreator;
-import org.eclipse.kapua.broker.core.message.system.SystemMessageCreator;
-import org.eclipse.kapua.broker.core.message.system.SystemMessageCreator.SystemMessageType;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
 import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
-import org.eclipse.kapua.broker.core.pool.JmsAssistantProducerPool;
-import org.eclipse.kapua.broker.core.pool.JmsAssistantProducerPool.DESTINATIONS;
-import org.eclipse.kapua.broker.core.pool.JmsAssistantProducerWrapper;
+import org.eclipse.kapua.broker.client.message.MessageConstants;
+import org.eclipse.kapua.broker.client.pool.JmsAssistantProducerPool;
+import org.eclipse.kapua.broker.client.pool.JmsAssistantProducerPool.DESTINATIONS;
+import org.eclipse.kapua.broker.client.pool.JmsAssistantProducerWrapper;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ClassUtil;
+import org.eclipse.kapua.consumer.commons.message.system.DefaultSystemMessageCreator;
+import org.eclipse.kapua.consumer.commons.message.system.SystemMessageCreator;
+import org.eclipse.kapua.consumer.commons.message.system.SystemMessageCreator.Fields;
+import org.eclipse.kapua.consumer.commons.message.system.SystemMessageCreator.SystemMessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -134,14 +137,14 @@ public class DefaultAuthenticator implements Authenticator {
     private void sendMessage(KapuaSecurityContext kapuaSecurityContext, String messageAddressPattern, SystemMessageType systemMessageType) {
         if (systemMessageType != null) {
             Context loginSendLogingUpdateMsgTimeContex = loginMetric.getSendLoginUpdateMsgTime().time();
-            String message = systemMessageCreator.createMessage(systemMessageType, kapuaSecurityContext);
+            String message = systemMessageCreator.createMessage(systemMessageType, buildMessageParametersFromSecurityContext(kapuaSecurityContext));
             JmsAssistantProducerWrapper producerWrapper = null;
             try {
                 producerWrapper = JmsAssistantProducerPool.getIOnstance(DESTINATIONS.NO_DESTINATION).borrowObject();
                 producerWrapper.send(String.format((String) options.get(messageAddressPattern),
                         SystemSetting.getInstance().getMessageClassifier(), kapuaSecurityContext.getAccountName(), kapuaSecurityContext.getClientId()),
                         message,
-                        kapuaSecurityContext);
+                        buildContextParametersFromSecurityContext(kapuaSecurityContext));
             } catch (Exception e) {
                 logger.error("Exception sending the {} message: {}", systemMessageType.name().toLowerCase(), e.getMessage(), e);
             } finally {
@@ -160,4 +163,18 @@ public class DefaultAuthenticator implements Authenticator {
         return kapuaSecurityContext.getUserName().equals(ADMIN_USERNAME);
     }
 
+    protected Map<Fields, String> buildMessageParametersFromSecurityContext(KapuaSecurityContext kapuaSecurityContext) {
+        Map<Fields, String> parameters = new HashMap<>();
+        parameters.put(Fields.clientId, kapuaSecurityContext.getClientId());
+        parameters.put(Fields.username, kapuaSecurityContext.getUserName());
+        return parameters;
+    }
+
+    protected Map<String, String> buildContextParametersFromSecurityContext(KapuaSecurityContext kapuaSecurityContext) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(MessageConstants.PROPERTY_BROKER_ID, kapuaSecurityContext.getBrokerId());
+        parameters.put(MessageConstants.PROPERTY_CLIENT_ID, kapuaSecurityContext.getClientId());
+        parameters.put(MessageConstants.PROPERTY_SCOPE_ID, String.valueOf(kapuaSecurityContext.getScopeIdAsLong()));
+        return parameters;
+    }
 }

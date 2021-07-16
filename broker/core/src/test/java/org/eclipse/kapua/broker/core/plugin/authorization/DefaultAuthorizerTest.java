@@ -27,7 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Category(JUnitTests.class)
-public class DefaultAuthorizerTest extends Assert {
+public class DefaultAuthorizerTest {
 
     DefaultAuthorizer defaultAuthorizer;
     KapuaSecurityContext kapuaSecurityContext;
@@ -52,7 +52,7 @@ public class DefaultAuthorizerTest extends Assert {
             Mockito.when(authorizationMap.getReadACLs(destination)).thenReturn(allowedACLs);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(false);
 
-            assertFalse("False expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.READ, kapuaSecurityContext, destination));
+            Assert.assertFalse("False expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.READ, kapuaSecurityContext, destination));
         }
     }
 
@@ -62,7 +62,7 @@ public class DefaultAuthorizerTest extends Assert {
             Mockito.when(authorizationMap.getReadACLs(destination)).thenReturn(null);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(false);
 
-            assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.READ, kapuaSecurityContext, destination));
+            Assert.assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.READ, kapuaSecurityContext, destination));
         }
     }
 
@@ -72,7 +72,7 @@ public class DefaultAuthorizerTest extends Assert {
             Mockito.when(authorizationMap.getReadACLs(destination)).thenReturn(allowedACLs);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(true);
 
-            assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.READ, kapuaSecurityContext, destination));
+            Assert.assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.READ, kapuaSecurityContext, destination));
         }
     }
 
@@ -82,7 +82,7 @@ public class DefaultAuthorizerTest extends Assert {
             Mockito.when(authorizationMap.getReadACLs(destination)).thenReturn(null);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(true);
 
-            assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.READ, kapuaSecurityContext, destination));
+            Assert.assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.READ, kapuaSecurityContext, destination));
         }
     }
 
@@ -91,7 +91,7 @@ public class DefaultAuthorizerTest extends Assert {
         for (ActiveMQDestination destination : destinations) {
             Mockito.when(authorizationMap.getWriteACLs(destination)).thenReturn(allowedACLs);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(false);
-            assertFalse("False expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.WRITE, kapuaSecurityContext, destination));
+            Assert.assertFalse("False expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.WRITE, kapuaSecurityContext, destination));
         }
     }
 
@@ -101,7 +101,7 @@ public class DefaultAuthorizerTest extends Assert {
             Mockito.when(authorizationMap.getWriteACLs(destination)).thenReturn(null);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(false);
 
-            assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.WRITE, kapuaSecurityContext, destination));
+            Assert.assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.WRITE, kapuaSecurityContext, destination));
         }
     }
 
@@ -111,7 +111,7 @@ public class DefaultAuthorizerTest extends Assert {
             Mockito.when(authorizationMap.getWriteACLs(destination)).thenReturn(allowedACLs);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(true);
 
-            assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.WRITE, kapuaSecurityContext, destination));
+            Assert.assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.WRITE, kapuaSecurityContext, destination));
         }
     }
 
@@ -121,7 +121,7 @@ public class DefaultAuthorizerTest extends Assert {
             Mockito.when(authorizationMap.getWriteACLs(destination)).thenReturn(null);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(true);
 
-            assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.WRITE, kapuaSecurityContext, destination));
+            Assert.assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.WRITE, kapuaSecurityContext, destination));
         }
     }
 
@@ -131,7 +131,7 @@ public class DefaultAuthorizerTest extends Assert {
             Mockito.when(authorizationMap.getAdminACLs(destination)).thenReturn(allowedACLs);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(false);
 
-            assertFalse("False expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.ADMIN, kapuaSecurityContext, destination));
+            Assert.assertFalse("False expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.ADMIN, kapuaSecurityContext, destination));
         }
     }
 
@@ -141,7 +141,7 @@ public class DefaultAuthorizerTest extends Assert {
             Mockito.when(authorizationMap.getAdminACLs(destination)).thenReturn(null);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(false);
 
-            assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.ADMIN, kapuaSecurityContext, destination));
+            Assert.assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.ADMIN, kapuaSecurityContext, destination));
         }
     }
 
@@ -151,7 +151,7 @@ public class DefaultAuthorizerTest extends Assert {
             Mockito.when(authorizationMap.getAdminACLs(destination)).thenReturn(allowedACLs);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(true);
 
-            assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.ADMIN, kapuaSecurityContext, destination));
+            Assert.assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.ADMIN, kapuaSecurityContext, destination));
         }
     }
 
@@ -161,7 +161,7 @@ public class DefaultAuthorizerTest extends Assert {
             Mockito.when(authorizationMap.getAdminACLs(destination)).thenReturn(null);
             Mockito.when(kapuaSecurityContext.isInOneOf(allowedACLs)).thenReturn(true);
 
-            assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.ADMIN, kapuaSecurityContext, destination));
+            Assert.assertTrue("True expected.", defaultAuthorizer.isAllowed(Authorizer.ActionType.ADMIN, kapuaSecurityContext, destination));
         }
     }
 

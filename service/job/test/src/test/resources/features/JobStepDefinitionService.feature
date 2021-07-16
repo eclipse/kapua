@@ -10,13 +10,20 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@unit
 @jobs
 @jobStepDefinition
+@env_none
+
 Feature: Job step definition service CRUD tests
     The Job Step Definition service is responsible for maintaining job step definitions.
     During regular runtime the step definitions are automatically extracted from the various
     service implementations.
+
+@setup
+@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
 Scenario: Regular step definition creation
 
@@ -154,3 +161,7 @@ Scenario: Query for step definitions
 Scenario: Step definition factory sanity checks
 
     Given I test the sanity of the step definition factory
+
+@teardown
+Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

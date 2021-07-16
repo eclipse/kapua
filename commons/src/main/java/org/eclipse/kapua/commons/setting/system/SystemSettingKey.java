@@ -183,7 +183,11 @@ public enum SystemSettingKey implements SettingKey {
     /**
      * Broker internal connector name
      */
-    BROKER_INTERNAL_CONNECTOR_NAME("broker.connector.internal.name"),
+    BROKER_INTERNAL_CONNECTOR_MQTT_NAME("broker.connector.internal.mqtt.name"),
+    /**
+     * Broker AMQP internal connector name
+     */
+    BROKER_INTERNAL_CONNECTOR_AMQP_NAME("broker.connector.internal.amqp.name"),
     /**
      * Internal connector username
      */

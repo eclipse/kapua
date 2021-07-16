@@ -171,6 +171,11 @@ public class EsEmbeddedEngine implements Closeable {
 
     private static class PluggableNode extends Node {
 
+        // added to fix problems between Elasticsearch and SpringBoot
+        static {
+            System.setProperty("es.set.netty.runtime.available.processors", "false");
+        }
+
         public PluggableNode(Settings settings, Collection<Class<? extends Plugin>> plugins) {
             super(InternalSettingsPreparer.prepareEnvironment(settings, Collections.emptyMap(), null, () -> RandomStringUtils.randomAlphanumeric(10)), plugins, true);
         }

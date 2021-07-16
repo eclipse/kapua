@@ -12,29 +12,18 @@
 ###############################################################################
 @broker
 @deviceBroker
-@integration
+@env_docker
 
 Feature: Device Broker Integration
   Device Service integration scenarios with running broker service.
   Each Scenario starts with BIRTH of device and then the communication over MQTT
   between device and Kapua.
 
-  Scenario: Set environment variables
-
-    Given System property "broker.ip" with value "localhost"
-    And System property "commons.db.connection.host" with value "localhost"
-
-  Scenario: Start datastore for all scenarios
-
-    Given Start Datastore
-
-  Scenario: Start event broker for all scenarios
-
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-
-    Given Start Broker
+@setup
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
   Scenario: Send BIRTH message and then DC message
     Effectively this is connect and disconnect of Kura device.
@@ -55,14 +44,6 @@ Feature: Device Broker Integration
     And I logout
     And Device death message is sent
 
-  Scenario: Stop broker after all scenarios
-
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-
-    Given Stop Event Broker
-
-  Scenario: Stop datastore after all scenarios
-
-    Given Stop Datastore
+@teardown
+  Scenario: Stop full docker environment
+    Given Stop full docker environment

@@ -32,8 +32,8 @@ public class SystemSetting extends AbstractKapuaSetting<SystemSettingKey> {
      */
     private static final String CONFIG_RESOURCE_NAME = "kapua-environment-setting.properties";
 
-    private static final SystemSetting INSTANCE = new SystemSetting();
     private static final String COMMONS_CONTROL_MESSAGE_CLASSIFIER = "commons.control_message.classifier";
+    private static SystemSetting instance;
 
     private static final Pattern PATTERN = Pattern.compile("([#>./+*‌​])");
     // Constructors
@@ -59,7 +59,28 @@ public class SystemSetting extends AbstractKapuaSetting<SystemSettingKey> {
      * @return singleton system setting instance
      */
     public static SystemSetting getInstance() {
-        return INSTANCE;
+        synchronized (SystemSetting.class) {
+            if (instance == null) {
+                instance = new SystemSetting();
+            }
+            return instance;
+        }
     }
 
+    /**
+     * Allow re-setting the global instance
+     * <p>
+     * This method clears out the internal global instance in order to let the next call
+     * to {@link #getInstance()} return a fresh instance.
+     * </p>
+     * <p>
+     * This may be helpful for unit tests which need to change system properties for testing
+     * different behaviors.
+     * </p>
+     */
+    public static void resetInstance() {
+        synchronized (SystemSetting.class) {
+            instance = null;
+        }
+    }
 }

@@ -12,13 +12,14 @@
 ###############################################################################
 @security
 @groupService
-@integration
+@env_none
 
 Feature: Group Service tests
 
-Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
+@setup
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
   Scenario: Count groups in a blank database
   The default group table must be empty.
@@ -880,7 +881,7 @@ Scenario: Init Security Context for all scenarios
   Scenario: Adding Regular Group Without Description to Device
   Login as kapua-sys, go to groups, create a group.
   Go to devices, create a device and add created group to it.
-  Check if created device is in Asigned Devices of the group.
+  Check if created device is in Assigned Devices of the group.
   Kapua should not throw any errors
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
@@ -902,7 +903,7 @@ Scenario: Init Security Context for all scenarios
   Scenario: Adding Same Regular Group Without Description to Device
   Login as kapua-sys, go to groups, create a group.
   Go to devices, create a device ("Device1") and add created group to it.
-  Check if created device is in Asigned Devices of the group.
+  Check if created device is in Assigned Devices of the group.
   Create another group and add it to "Device1"
   Check both groups Assigned Devices ("Device1" should only be in second group)
   Kapua should throw Exception.
@@ -1051,6 +1052,6 @@ Scenario: Init Security Context for all scenarios
     And No exception was thrown
     And I logout
 
-  Scenario: Reset Security Context for all scenarios
-
-    Given Reset Security Context
+@teardown
+Scenario: Reset Security Context for all scenarios
+  Given Reset Security Context

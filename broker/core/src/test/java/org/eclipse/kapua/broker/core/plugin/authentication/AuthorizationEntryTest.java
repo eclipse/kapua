@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
-public class AuthorizationEntryTest extends Assert {
+public class AuthorizationEntryTest {
 
     @Test
     public void authorizationEntryTest() {
@@ -29,8 +29,8 @@ public class AuthorizationEntryTest extends Assert {
         for (String address : addresses) {
             for (Acl acl : aclArray) {
                 AuthorizationEntry authorizationEntry = new AuthorizationEntry(address, acl);
-                assertEquals("Expected and actual values should be the same.", address, authorizationEntry.getAddress());
-                assertEquals("Expected and actual values should be the same.", acl, authorizationEntry.getAcl());
+                Assert.assertEquals("Expected and actual values should be the same.", address, authorizationEntry.getAddress());
+                Assert.assertEquals("Expected and actual values should be the same.", acl, authorizationEntry.getAcl());
             }
         }
     }

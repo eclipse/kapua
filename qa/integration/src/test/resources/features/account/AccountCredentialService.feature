@@ -12,13 +12,14 @@
 ###############################################################################
 @account
 @credential
-@integration
+@env_none
 
 Feature: Account Credential Service Integration Tests
 
-Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
+@setup
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
   Scenario: Uncorrect Login While Lockout Policy Is Enabled
   Login as kapua-sys, create an account, create a user under that account (user1)
@@ -394,6 +395,6 @@ Scenario: Init Security Context for all scenarios
     Then An exception was thrown
     And I logout
 
-  Scenario: Reset Security Context for all scenarios
-
-    Given Reset Security Context
+@teardown
+Scenario: Reset Security Context for all scenarios
+  Given Reset Security Context

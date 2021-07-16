@@ -68,4 +68,5 @@ public class TestDomain extends AbstractKapuaEntity implements Domain, org.eclip
     public void setGroupable(boolean groupable) {
         this.groupable = groupable;
     }
+
 }

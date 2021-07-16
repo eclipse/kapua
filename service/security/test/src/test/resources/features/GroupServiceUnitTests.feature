@@ -11,9 +11,15 @@
 #     Eurotech
 ###############################################################################
 @group
-@unit
+@env_none
+
 Feature: Access Groups
   This feature file contains Unit tests for Access Groups (CRUD tests).
+
+@setup
+@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+  Scenario: Initialize test environment
+    Given Init Jaxb Context
 
   Scenario: Creating a valid Access Group with unique name
   Create an Access Group with valid name. Once created, search for it - it should have been created.
@@ -145,7 +151,7 @@ Feature: Access Groups
   Create an Access Group with unique name and with special symbols in description. Once created, search for it - it should have been created.
   Kapua should not return any errors.
     Given I try to create the group with special characters "!#$%&'()=»Ç>:;<.,⁄@‹›€*ı–°·‚±Œ„‰?“‘”’ÉØ∏{}|ÆæÒÔÓÌÏÎÍÅ«" in description
-    Then I find the group with name "groupName53"
+    Then I find the group with name "GroupName53"
     And No exception was thrown
 
   Scenario: Creating an Access Group without name and with description

@@ -10,25 +10,17 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@deviceManagementKeystore
-@integration
 @jobEngineStepDefinitions
+@deviceManagementKeystore
+@env_docker
 
 Feature: Job Engine Service - Keystore Step Definitions
 
-  #
-  # Setup
-  #
-
-  Scenario: Set environment variables
-    Given System property "broker.ip" with value "localhost"
-    And System property "commons.db.connection.host" with value "localhost"
-
-  Scenario: Start event broker for all scenarios
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-    Given Start Broker
+@setup
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
   #
   # Tests
@@ -36,13 +28,13 @@ Feature: Job Engine Service - Keystore Step Definitions
 
   Scenario: Running a Job with Keystore Certificate Create Step Definition
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     When Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 1 device event
     And The type of the last event is "BIRTH"
@@ -70,13 +62,13 @@ Feature: Job Engine Service - Keystore Step Definitions
 
   Scenario: Running a Job with Keystore Keypair Create Step Definition
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     When Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 1 device event
     And The type of the last event is "BIRTH"
@@ -109,13 +101,13 @@ Feature: Job Engine Service - Keystore Step Definitions
   Multi-step job with a Keystore Certificate Install and Ketstore Keypair Create and then
   the deletion of those two new added Keystore Items
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     When Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 1 device event
     And The type of the last event is "BIRTH"
@@ -169,12 +161,6 @@ Feature: Job Engine Service - Keystore Step Definitions
     And KuraMock is disconnected
     And I logout
 
-  #
-  # Teardown
-  #
-
-  Scenario: Stop broker after all scenarios
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-    Given Stop Event Broker
+@teardown
+  Scenario: Stop full docker environment
+    Given Stop full docker environment

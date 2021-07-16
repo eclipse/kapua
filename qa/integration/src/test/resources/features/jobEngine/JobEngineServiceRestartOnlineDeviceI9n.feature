@@ -11,19 +11,15 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @jobEngineRestartOnlineDevice
-@integration
+@env_docker
 
 Feature: JobEngineService restart job tests with online device
 
-  Scenario: Set environment variables
-    Given System property "broker.ip" with value "localhost"
-    And System property "commons.db.connection.host" with value "localhost"
-
-  Scenario: Start event broker for all scenarios
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-    Given Start Broker
+@setup
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
     # *************************************************
     # * Restarting a job with one Target and one Step *
@@ -35,13 +31,13 @@ Feature: JobEngineService restart job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     When Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 1 device event
     And The type of the last event is "BIRTH"
@@ -76,13 +72,13 @@ Feature: JobEngineService restart job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -122,13 +118,13 @@ Feature: JobEngineService restart job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -168,13 +164,13 @@ Feature: JobEngineService restart job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     Then Packages are requested and 1 package is received
     And I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device events
@@ -215,13 +211,13 @@ Feature: JobEngineService restart job tests with online device
   Restart the job two times. After the executed job is finished, the executed target's
   step index should be 1 and the status PROCESS_OK
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     When Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Command pwd is executed
     And Packages are requested and 1 package is received
     When I search for events from device "rpione3" in account "kapua-sys"
@@ -263,13 +259,13 @@ Feature: JobEngineService restart job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_OK
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     And Device is connected
     And I wait 1 second
     And Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -322,13 +318,13 @@ Feature: JobEngineService restart job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I add 2 devices to Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I add 2 devices to Kura Mock
     When Devices are connected
     And I wait 1 second
     Then Devices status is "CONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock devices
+    And I get the KuraMock devices after 5 seconds
     And Command pwd is executed
     When I search events from devices in account "kapua-sys" and 2 events are found
     And The type of the last event is "COMMAND"
@@ -362,13 +358,13 @@ Feature: JobEngineService restart job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I add 2 devices to Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I add 2 devices to Kura Mock
     And Devices are connected
     And I wait 1 second
     Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock devices
+    And I get the KuraMock devices after 5 seconds
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     When I search events from devices in account "kapua-sys" and 2 events are found
@@ -406,13 +402,13 @@ Feature: JobEngineService restart job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I add 2 devices to Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I add 2 devices to Kura Mock
     And Devices are connected
     And I wait 1 second
     Then Device status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock devices
+    And I get the KuraMock devices after 5 seconds
     And Bundles are requested
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
     When I search events from devices in account "kapua-sys" and 2 events are found
@@ -450,13 +446,13 @@ Feature: JobEngineService restart job tests with online device
   After the executed job is finished, the executed target's step index should
   be 0 and the status PROCESS_OK
 
-    Given I add 2 devices to Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I add 2 devices to Kura Mock
     And Devices are connected
     And I wait 1 second
     Then Devices status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     Then Packages are requested and 1 package is received
     And I search events from devices in account "kapua-sys" and 2 events are found
     And The type of the last event is "DEPLOY"
@@ -495,13 +491,13 @@ Feature: JobEngineService restart job tests with online device
   Restart the job two times. After the executed job is finished, the executed target's
   step index should be 1 and the status PROCESS_OK
 
-    Given I add 2 devices to Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I add 2 devices to Kura Mock
     When Devices are connected
     And I wait 1 second
     Then Devices status is "CONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock devices
+    And I get the KuraMock devices after 5 seconds
     And Command pwd is executed
     And Packages are requested and 1 package is received
     When I search events from devices in account "kapua-sys" and 3 events are found
@@ -542,13 +538,13 @@ Feature: JobEngineService restart job tests with online device
   After the executed job is finished, the executed target's step index should
   be 1 and the status PROCESS_OK
 
-    Given I add 2 devices to Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I add 2 devices to Kura Mock
     And Devices are connected
     And I wait 1 second
     Then Devices status is "CONNECTED"
-    And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock devices
+    And I get the KuraMock devices after 5 seconds
     And Bundles are requested
     Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
     And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
@@ -589,9 +585,6 @@ Feature: JobEngineService restart job tests with online device
     And KuraMock is disconnected
     And I logout
 
-  Scenario: Stop broker after all scenarios
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-
-    Given Stop Event Broker
+    @teardown
+      Scenario: Stop full docker environment
+        Given Stop full docker environment

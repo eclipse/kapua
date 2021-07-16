@@ -11,10 +11,16 @@
 #     Eurotech
 ###############################################################################
 @role
-@unit
+@env_none
+
 Feature: Role Service
   Role Service is responsible for CRUD operations on Roles. This service is currently
   used to attach roles to Users.
+
+  @setup
+  @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+     Scenario: Initialize test environment
+       Given Init Jaxb Context
 
   Scenario: Creating a valid role
   Create a role entry with specified name and description. Once created, search for it - it should have been created.

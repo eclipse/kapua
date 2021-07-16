@@ -15,9 +15,8 @@ package org.eclipse.kapua.broker.core.router;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.eclipse.kapua.broker.core.message.MessageConstants;
-
 import org.apache.camel.Exchange;
+import org.eclipse.kapua.broker.client.message.MessageConstants;
 
 public class EndpointsUtil {
 

@@ -12,24 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.test.steps;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
-import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.device.call.message.kura.KuraPayload;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
@@ -47,8 +32,16 @@ import org.eclipse.kapua.transport.message.jms.JmsTopic;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
 import org.eclipse.kapua.transport.message.mqtt.MqttPayload;
 import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.Assert;
+
+import com.google.inject.Singleton;
+
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 import javax.inject.Inject;
 import java.util.Date;
@@ -57,13 +50,9 @@ import java.util.List;
 /**
  * Implementation of Gherkin steps used in TranslatorUnitTests.feature scenarios.
  */
-@ScenarioScoped
+@Singleton
 public class TranslatorSteps extends TestBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(TranslatorSteps.class);
-
-
-    private DBHelper database;
     private ExampleTranslator exampleTranslator;
     private TranslatorDataMqttKura translatorDataMqttKura;
     private TranslatorResponseMqttKura translatorResponseMqttKura;
@@ -72,10 +61,14 @@ public class TranslatorSteps extends TestBase {
     private TranslatorDataKuraJms translatorDataKuraJms;
 
     @Inject
-    public TranslatorSteps(StepData stepData, DBHelper dbHelper) {
-
-        this.stepData = stepData;
-        this.database = dbHelper;
+    public TranslatorSteps(StepData stepData) {
+        super(stepData);
+        exampleTranslator = new ExampleTranslator();
+        translatorDataMqttKura = new TranslatorDataMqttKura();
+        translatorResponseMqttKura = new TranslatorResponseMqttKura();
+        translatorDataKuraMqtt = new TranslatorDataKuraMqtt();
+        translatorDataJmsKura = new TranslatorDataJmsKura();
+        translatorDataKuraJms = new TranslatorDataKuraJms();
     }
 
     // *************************************
@@ -83,50 +76,8 @@ public class TranslatorSteps extends TestBase {
     // *************************************
 
     @Before
-    public void beforeScenario(Scenario scenario) {
-
-        this.scenario = scenario;
-        database.setup();
-        stepData.clear();
-
-        locator = KapuaLocator.getInstance();
-        exampleTranslator = new ExampleTranslator();
-
-        translatorDataMqttKura = new TranslatorDataMqttKura();
-        translatorResponseMqttKura = new TranslatorResponseMqttKura();
-        translatorDataKuraMqtt = new TranslatorDataKuraMqtt();
-        translatorDataJmsKura = new TranslatorDataJmsKura();
-        translatorDataKuraJms = new TranslatorDataKuraJms();
-
-        if (isUnitTest()) {
-            // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
-            // All operations on database are performed using system user.
-            // Only for unit tests. Integration tests assume that a real logon is performed.
-            KapuaSession kapuaSession = new KapuaSession(null, SYS_SCOPE_ID, SYS_USER_ID);
-            KapuaSecurityUtils.setSession(kapuaSession);
-        }
-
-        // Setup JAXB context
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
-    }
-
-    @After
-    public void afterScenario() {
-
-        // Clean up the database
-        try {
-            logger.info("Logging out in cleanup");
-            if (isIntegrationTest()) {
-                database.deleteAll();
-                SecurityUtils.getSubject().logout();
-            } else {
-                database.dropAll();
-                database.close();
-            }
-            KapuaSecurityUtils.clearSession();
-        } catch (Exception e) {
-            logger.error("Failed to log out in @After", e);
-        }
+    public void beforeScenarioDockerFull(Scenario scenario) {
+        updateScenario(scenario);
     }
 
     @Given("^I try to translate from \"([^\"]*)\" to \"([^\"]*)\"$")
@@ -151,7 +102,7 @@ public class TranslatorSteps extends TestBase {
     @Then("^Translator \"([^\"]*)\" is found$")
     public void translatorIsFound(String translatorName) {
         Translator translator = (Translator) stepData.get("Translator");
-        assertEquals(translatorName, translator.getClass().getSimpleName());
+        Assert.assertEquals(translatorName, translator.getClass().getSimpleName());
     }
 
     @Given("^I create mqtt message with (?:valid|invalid|empty) payload \"([^\"]*)\" and (?:valid|invalid) topic \"([^\"]*)\"$")
@@ -192,14 +143,14 @@ public class TranslatorSteps extends TestBase {
     public void kuraResponseMessageWithPayloadBody(String payloadType) {
         KuraResponseMessage kuraResponseMessage = (KuraResponseMessage) stepData.get("KuraResponseMessage");
 
-        assertTrue(kuraResponseMessage.getPayload().getBody().getClass().getSimpleName().equals(payloadType));
+        Assert.assertTrue(kuraResponseMessage.getPayload().getBody().getClass().getSimpleName().equals(payloadType));
     }
 
     @Then("^I got kura response message with proper payload metrics$")
     public void kuraResponseMessageWithPayloadAndChannelAndData() {
         KuraResponseMessage kuraResponseMessage = (KuraResponseMessage) stepData.get("KuraResponseMessage");
 
-        assertTrue(kuraResponseMessage.getPayload().getMetrics() != null);
+        Assert.assertTrue(kuraResponseMessage.getPayload().getMetrics() != null);
     }
 
     @Given("^I create kura data message with channel with scope \"([^\"]*)\", client id \"([^\"]*)\" and payload without body and metrics$")
@@ -232,12 +183,12 @@ public class TranslatorSteps extends TestBase {
         MqttMessage mqttMessage = (MqttMessage) stepData.get("MqttMessage");
 
         String requestTopic = scope.concat("/" + clientId);
-        assertEquals(requestTopic, mqttMessage.getRequestTopic().getTopic());
+        Assert.assertEquals(requestTopic, mqttMessage.getRequestTopic().getTopic());
 
         if (mqttMessage.getPayload().getBody().length == 0) {
-            assertTrue(mqttMessage.getPayload().getBody().length == 0);
+            Assert.assertTrue(mqttMessage.getPayload().getBody().length == 0);
         } else {
-            assertTrue(mqttMessage.getPayload().getBody().length != 0);
+            Assert.assertTrue(mqttMessage.getPayload().getBody().length != 0);
         }
     }
 
@@ -245,12 +196,12 @@ public class TranslatorSteps extends TestBase {
     public void kuraResponseMessageWithChannelAndData(String replyPart, String requestId, String appId, String messageClassification, String scope, String clientId) {
         KuraResponseMessage kuraResponseMessage = (KuraResponseMessage) stepData.get("KuraResponseMessage");
 
-        assertTrue(kuraResponseMessage.getChannel().getReplyPart().equals(replyPart));
-        assertTrue(kuraResponseMessage.getChannel().getRequestId().equals(requestId));
-        assertTrue(kuraResponseMessage.getChannel().getAppId().equals(appId));
-        assertTrue(kuraResponseMessage.getChannel().getMessageClassification().equals(messageClassification));
-        assertTrue(kuraResponseMessage.getChannel().getScope().equals(scope));
-        assertTrue(kuraResponseMessage.getChannel().getClientId().equals(clientId));
+        Assert.assertTrue(kuraResponseMessage.getChannel().getReplyPart().equals(replyPart));
+        Assert.assertTrue(kuraResponseMessage.getChannel().getRequestId().equals(requestId));
+        Assert.assertTrue(kuraResponseMessage.getChannel().getAppId().equals(appId));
+        Assert.assertTrue(kuraResponseMessage.getChannel().getMessageClassification().equals(messageClassification));
+        Assert.assertTrue(kuraResponseMessage.getChannel().getScope().equals(scope));
+        Assert.assertTrue(kuraResponseMessage.getChannel().getClientId().equals(clientId));
     }
 
     @Given("^I create kura data message with channel with scope \"([^\"]*)\", client id \"([^\"]*)\", valid payload and metrics but without body$")
@@ -297,29 +248,29 @@ public class TranslatorSteps extends TestBase {
     public void iGotKuraDataMessageWithPayloadBody(String payloadType) throws Throwable {
         KuraDataMessage kuraDataMessage = (KuraDataMessage) stepData.get("KuraDataMessage");
 
-        assertTrue(kuraDataMessage.getPayload().getBody().getClass().getSimpleName().equals(payloadType));
+        Assert.assertTrue(kuraDataMessage.getPayload().getBody().getClass().getSimpleName().equals(payloadType));
     }
 
     @And("^I got kura data message channel with \"(.+)\" and \"(.+)\" data$")
     public void iGotKuraDataMessageChannelWithAndData(String scope, String clientId) {
         KuraDataMessage kuraDataMessage = (KuraDataMessage) stepData.get("KuraDataMessage");
 
-        assertTrue(kuraDataMessage.getChannel().getScope().equals(scope));
-        assertTrue(kuraDataMessage.getChannel().getClientId().equals(clientId));
+        Assert.assertTrue(kuraDataMessage.getChannel().getScope().equals(scope));
+        Assert.assertTrue(kuraDataMessage.getChannel().getClientId().equals(clientId));
     }
 
     @Then("^I got kura data message with proper payload metrics response code (\\d+)$")
     public void iGotKuraDataMessageWithProperPayloadMetrics(int responseCode) {
         KuraDataMessage kuraDataMessage = (KuraDataMessage) stepData.get("KuraDataMessage");
 
-        assertEquals(kuraDataMessage.getPayload().getMetrics().get("response.code"), responseCode);
+        Assert.assertEquals(kuraDataMessage.getPayload().getMetrics().get("response.code"), responseCode);
     }
 
     @Then("^I got kura data message with empty payload$")
     public void iGotKuraDataMessageWithEmptyPayload() {
         KuraDataMessage kuraDataMessage = (KuraDataMessage) stepData.get("KuraDataMessage");
 
-        assertEquals(null, kuraDataMessage.getPayload().getBody());
+        Assert.assertEquals(null, kuraDataMessage.getPayload().getBody());
     }
 
     @Given("^I create jms message with (?:valid|invalid|empty) payload \"([^\"]*)\" and (?:valid|invalid) topic \"([^\"]*)\"$")
@@ -372,23 +323,23 @@ public class TranslatorSteps extends TestBase {
 
         KuraDataMessage kuraDataMessage = (KuraDataMessage) stepData.get("KuraDataMessage");
 
-        assertEquals(scope, kuraDataMessage.getChannel().getScope());
-        assertEquals(clientId, kuraDataMessage.getChannel().getClientId());
+        Assert.assertEquals(scope, kuraDataMessage.getChannel().getScope());
+        Assert.assertEquals(clientId, kuraDataMessage.getChannel().getClientId());
 
         for (String semanticPart : semanticParts) {
-            assertTrue(kuraDataMessage.getChannel().getSemanticParts().contains(semanticPart));
+            Assert.assertTrue(kuraDataMessage.getChannel().getSemanticParts().contains(semanticPart));
         }
     }
 
     @Then("^I got jms message with topic \"([^\"]*)\" and (?:empty body|non empty body)$")
     public void iGotJmsMessageWithTopicAndEmptyPayload(JmsTopic topic) {
         JmsMessage jmsMessage = (JmsMessage) stepData.get("JmsMessage");
-        assertEquals(topic.getTopic(), jmsMessage.getTopic().getTopic());
+        Assert.assertEquals(topic.getTopic(), jmsMessage.getTopic().getTopic());
 
         if (jmsMessage.getPayload().getBody().length == 0) {
-            assertTrue(jmsMessage.getPayload().getBody().length == 0);
+            Assert.assertTrue(jmsMessage.getPayload().getBody().length == 0);
         } else {
-            assertTrue(jmsMessage.getPayload().getBody().length != 0);
+            Assert.assertTrue(jmsMessage.getPayload().getBody().length != 0);
         }
     }
 

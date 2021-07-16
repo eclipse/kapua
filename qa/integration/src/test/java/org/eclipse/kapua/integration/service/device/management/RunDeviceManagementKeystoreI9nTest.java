@@ -12,17 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.device.management;
 
-import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = {
                 "classpath:features/deviceManagement/DeviceManagementKeystoreI9n.feature",
         },
         glue = {
                 "org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.device.registry.steps",
                 "org.eclipse.kapua.service.user.steps",

@@ -10,17 +10,17 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@jobs
-@triggerService
-@integration
+@jobsIntegration
+@triggerServiceIntegration
+@env_docker
 
 Feature: JobEngineService execute job on device connect
 
-  Scenario: Start event broker for all scenarios
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-    Given Start Broker
+@setup
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
   Scenario: Executing Job When Device Connected After The Specified Start Date And Time
   Login as the kapua-sys user and create a new job with a Command Execution job step.
@@ -31,16 +31,17 @@ Feature: JobEngineService execute job on device connect
   The execution of the job should be confirmed, the job targets step index should be
   0 and status PROCESS_OK.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     When Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
+    And I wait 5 second
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device event
     And The type of the last event is "DEATH"
@@ -81,16 +82,16 @@ Feature: JobEngineService execute job on device connect
   No executions of the job should be found, the job targets step index should be
   0 and status PROCESS_AWAITING.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     When Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device event
     And The type of the last event is "DEATH"
@@ -130,16 +131,16 @@ Feature: JobEngineService execute job on device connect
   The execution of the job should be confirmed, the job targets step index should be
   0 and status PROCESS_OK.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     When Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device event
     And The type of the last event is "DEATH"
@@ -181,16 +182,16 @@ Feature: JobEngineService execute job on device connect
   No executions of the job should be found, the job targets step index should be
   0 and status PROCESS_AWAITING.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     When Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device event
     And The type of the last event is "DEATH"
@@ -232,16 +233,16 @@ Feature: JobEngineService execute job on device connect
   The previous execution of the job should be confirmed, and the job targets step
   index should be 0 and status PROCESS_OK.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     When Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device event
     And The type of the last event is "DEATH"
@@ -289,16 +290,16 @@ Feature: JobEngineService execute job on device connect
   there are no job steps defined.
   The job targets step index should be 0 and the status PROCESS_AWAITING.
 
-    Given I start the Kura Mock
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I start the Kura Mock
     When Device is connected
     And I wait 1 second
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
-    When I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
-    And I get the KuraMock device
+    And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device event
     And The type of the last event is "DEATH"
@@ -329,8 +330,6 @@ Feature: JobEngineService execute job on device connect
     And The type of the last event is "BIRTH"
     And I logout
 
-  Scenario: Stop broker after all scenarios
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-    Given Stop Event Broker
+@teardown
+  Scenario: Stop full docker environment
+    Given Stop full docker environment

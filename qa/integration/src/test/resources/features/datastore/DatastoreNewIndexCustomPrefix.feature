@@ -13,36 +13,22 @@
 ###############################################################################
 @datastore
 @datastoreNewIndexCustomPrefix
-@integration
+@env_docker
 
 Feature: Datastore tests
 
-  Scenario: Set environment variables
-
-    Given System property "commons.settings.hotswap" with value "true"
-    And System property "datastore.index.prefix" with value "custom-prefix"
-    And System property "kapua.config.url" with value "null"
-    And System property "broker.ip" with value "192.168.33.10"
-    And System property "datastore.elasticsearch.provider" with value "org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider"
-
-  Scenario: Start datastore for all scenarios
-
-    Given Start Datastore
-
-  Scenario: Start event broker for all scenarios
-
-    Given Start Event Broker
-
-  Scenario: Start broker for all scenarios
-
-    Given Start Broker
-
+@setup
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
   Scenario: Create index with specific prefix
   Create elasticsearch index with specific prefix set by system property.
   Index gets created when user publishes data.
 
     Given Server with host "127.0.0.1" on port "9200"
+    And I wait for 3 seconds
     When I delete all indices
     And I login as user with name "kapua-sys" and password "kapua-password"
     And I select account "kapua-sys"
@@ -55,14 +41,6 @@ Feature: Datastore tests
 #    And REST response containing text "custom-prefix-1-2018-01"
     And I delete all indices
 
-  Scenario: Stop broker after all scenarios
-
-    Given Stop Broker
-
-  Scenario: Stop event broker for all scenarios
-
-    Given Stop Event Broker
-
-  Scenario: Stop datastore after all scenarios
-
-    Given Stop Datastore
+@teardown
+  Scenario: Stop full docker environment
+    Given Stop full docker environment

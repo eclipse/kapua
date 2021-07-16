@@ -10,12 +10,19 @@
 # Contributors:
 #     Eurotech
 ###############################################################################
-@unit
 @scheduler
+@env_none
+
 Feature: Scheduler Service
 
   Scenario: Create scheduler with valid schedule name
   Creating scheduler with valid schedule name property.
+
+@setup
+@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+  Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
     Given I create a job with the name "job1"
     Then I find scheduler properties with name "Device Connect"
@@ -239,3 +246,7 @@ Feature: Scheduler Service
     And I expect the exception "NullPointerException" with the text "*"
     And I try to delete last created trigger
     Then An exception was thrown
+
+@teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

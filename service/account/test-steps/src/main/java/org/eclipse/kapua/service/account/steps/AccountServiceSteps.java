@@ -13,34 +13,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.steps;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
-import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.commons.model.id.IdGenerator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.qa.common.cucumber.CucAccount;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.service.account.AccountService;
@@ -48,11 +35,22 @@ import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.Organization;
+import org.junit.Assert;
+
+import com.google.inject.Singleton;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountAttributes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
@@ -72,10 +70,10 @@ import java.util.Properties;
  * services that the Account services dependent on. Dependent services are:
  * - Authorization Service
  */
-@ScenarioScoped
+@Singleton
 public class AccountServiceSteps extends TestBase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AccountServiceSteps.class);
+    protected KapuaLocator locator;
 
     private static final String ACCOUNT_CREATOR = "AccountCreator";
     private static final String LAST_ACCOUNT = "LastAccount";
@@ -90,10 +88,15 @@ public class AccountServiceSteps extends TestBase {
 
     // Default constructor
     @Inject
-    public AccountServiceSteps(StepData stepData, DBHelper dbHelper) {
+    public AccountServiceSteps(StepData stepData) {
+        super(stepData);
+    }
 
-        this.stepData = stepData;
-        this.database = dbHelper;
+    @After(value="@setup")
+    public void setServices() {
+        locator = KapuaLocator.getInstance();
+        accountFactory = locator.getFactory(AccountFactory.class);
+        accountService = locator.getService(AccountService.class);
     }
 
     // *************************************
@@ -102,45 +105,9 @@ public class AccountServiceSteps extends TestBase {
 
     // Setup and tear-down steps
 
-    @Before
-    public void beforeScenario(Scenario scenario) {
-
-        this.scenario = scenario;
-        database.setup();
-        stepData.clear();
-
-        locator = KapuaLocator.getInstance();
-        accountFactory = locator.getFactory(AccountFactory.class);
-        accountService = locator.getService(AccountService.class);
-
-        if (isUnitTest()) {
-            // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
-            // All operations on database are performed using system user.
-            // Only for unit tests. Integration tests assume that a real logon is performed.
-            KapuaSession kapuaSession = new KapuaSession(null, SYS_SCOPE_ID, SYS_USER_ID);
-            KapuaSecurityUtils.setSession(kapuaSession);
-        }
-
-        XmlUtil.setContextProvider(new TestJAXBContextProvider());
-    }
-
-    @After
-    public void afterScenario() {
-
-        // Clean up the database
-        try {
-            LOGGER.info("Logging out in cleanup");
-            if (isIntegrationTest()) {
-                database.deleteAll();
-                SecurityUtils.getSubject().logout();
-            } else {
-                database.dropAll();
-                database.close();
-            }
-            KapuaSecurityUtils.clearSession();
-        } catch (Exception e) {
-            LOGGER.error("Failed to log out in @After", e);
-        }
+    @Before(value="@env_docker or @env_embedded_minimal or @env_none", order=10)
+    public void beforeScenarioNone(Scenario scenario) {
+        updateScenario(scenario);
     }
 
     // The Cucumber test steps
@@ -476,8 +443,8 @@ public class AccountServiceSteps extends TestBase {
         String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
         Account tmpAcc = accountService.findByName(adminUserName);
 
-        assertNotNull(tmpAcc);
-        assertNotNull(tmpAcc.getId());
+        Assert.assertNotNull(tmpAcc);
+        Assert.assertNotNull(tmpAcc.getId());
 
         try {
             primeException();
@@ -558,14 +525,14 @@ public class AccountServiceSteps extends TestBase {
     }
 
     @When("^I set the following parameters$")
-    public void setAccountParameters(List<StringTuple> paramList)
+    public void setAccountParameters(DataTable dataTable)
             throws Exception {
-
+        Assert.assertEquals("Wrong test setup. Bad parameters size!", 2, dataTable.width());
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Properties accProps = account.getEntityProperties();
 
-        for (StringTuple param : paramList) {
-            accProps.setProperty(param.getName(), param.getValue());
+        for (List<String> row : dataTable.asLists()) {
+            accProps.setProperty(row.get(0), row.get(1));
         }
         account.setEntityProperties(accProps);
 
@@ -659,26 +626,26 @@ public class AccountServiceSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         AccountCreator accountCreator = (AccountCreator) stepData.get(ACCOUNT_CREATOR);
 
-        assertNotNull(account);
-        assertNotNull(account.getId());
-        assertNotNull(account.getId().getId());
-        assertTrue(account.getOptlock() >= 0);
-        assertEquals(SYS_SCOPE_ID, account.getScopeId());
-        assertNotNull(account.getCreatedOn());
-        assertNotNull(account.getCreatedBy());
-        assertNotNull(account.getModifiedOn());
-        assertNotNull(account.getModifiedBy());
-        assertNotNull(account.getOrganization());
-        assertEquals(accountCreator.getOrganizationName(), account.getOrganization().getName());
-        assertEquals(accountCreator.getOrganizationPersonName(), account.getOrganization().getPersonName());
-        assertEquals(accountCreator.getOrganizationCountry(), account.getOrganization().getCountry());
-        assertEquals(accountCreator.getOrganizationStateProvinceCounty(), account.getOrganization().getStateProvinceCounty());
-        assertEquals(accountCreator.getOrganizationCity(), account.getOrganization().getCity());
-        assertEquals(accountCreator.getOrganizationAddressLine1(), account.getOrganization().getAddressLine1());
-        assertEquals(accountCreator.getOrganizationAddressLine2(), account.getOrganization().getAddressLine2());
-        assertEquals(accountCreator.getOrganizationEmail(), account.getOrganization().getEmail());
-        assertEquals(accountCreator.getOrganizationZipPostCode(), account.getOrganization().getZipPostCode());
-        assertEquals(accountCreator.getOrganizationPhoneNumber(), account.getOrganization().getPhoneNumber());
+        Assert.assertNotNull(account);
+        Assert.assertNotNull(account.getId());
+        Assert.assertNotNull(account.getId().getId());
+        Assert.assertTrue(account.getOptlock() >= 0);
+        Assert.assertEquals(SYS_SCOPE_ID, account.getScopeId());
+        Assert.assertNotNull(account.getCreatedOn());
+        Assert.assertNotNull(account.getCreatedBy());
+        Assert.assertNotNull(account.getModifiedOn());
+        Assert.assertNotNull(account.getModifiedBy());
+        Assert.assertNotNull(account.getOrganization());
+        Assert.assertEquals(accountCreator.getOrganizationName(), account.getOrganization().getName());
+        Assert.assertEquals(accountCreator.getOrganizationPersonName(), account.getOrganization().getPersonName());
+        Assert.assertEquals(accountCreator.getOrganizationCountry(), account.getOrganization().getCountry());
+        Assert.assertEquals(accountCreator.getOrganizationStateProvinceCounty(), account.getOrganization().getStateProvinceCounty());
+        Assert.assertEquals(accountCreator.getOrganizationCity(), account.getOrganization().getCity());
+        Assert.assertEquals(accountCreator.getOrganizationAddressLine1(), account.getOrganization().getAddressLine1());
+        Assert.assertEquals(accountCreator.getOrganizationAddressLine2(), account.getOrganization().getAddressLine2());
+        Assert.assertEquals(accountCreator.getOrganizationEmail(), account.getOrganization().getEmail());
+        Assert.assertEquals(accountCreator.getOrganizationZipPostCode(), account.getOrganization().getZipPostCode());
+        Assert.assertEquals(accountCreator.getOrganizationPhoneNumber(), account.getOrganization().getPhoneNumber());
     }
 
     @Then("^Account \"(.*)\" exists$")
@@ -687,7 +654,7 @@ public class AccountServiceSteps extends TestBase {
 
         Account tmpAcc = accountService.findByName(name);
 
-        assertNotNull(tmpAcc);
+        Assert.assertNotNull(tmpAcc);
     }
 
     @Then("^Account \"(.*)\" is correctly modified$")
@@ -697,8 +664,8 @@ public class AccountServiceSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Account tmpAcc = accountService.findByName(name);
 
-        assertEquals(account.getOrganization().getName(), tmpAcc.getOrganization().getName());
-        assertEquals(account.getOrganization().getCity(), tmpAcc.getOrganization().getCity());
+        Assert.assertEquals(account.getOrganization().getName(), tmpAcc.getOrganization().getName());
+        Assert.assertEquals(account.getOrganization().getCity(), tmpAcc.getOrganization().getCity());
     }
 
     @Then("^The account with name \"([^\"]*)\" has (\\d+) subaccount(?:|s)$")
@@ -707,10 +674,10 @@ public class AccountServiceSteps extends TestBase {
 
         KapuaQuery query = accountFactory.newQuery(getCurrentScopeId());
         Account account = accountService.find(getCurrentScopeId());
-        assertEquals(accountName, account.getName());
+        Assert.assertEquals(accountName, account.getName());
 
         long accountCnt = accountService.count(query);
-        assertEquals(num, accountCnt);
+        Assert.assertEquals(num, accountCnt);
     }
 
     @Then("^Account \"(.*)\" has (\\d+) children$")
@@ -723,7 +690,7 @@ public class AccountServiceSteps extends TestBase {
             KapuaQuery query = accountFactory.newQuery(tmpAcc.getId());
             long accountCnt = accountService.count(query);
 
-            assertEquals(num, accountCnt);
+            Assert.assertEquals(num, accountCnt);
         } catch (KapuaException ke) {
             verifyException(ke);
         }
@@ -734,7 +701,7 @@ public class AccountServiceSteps extends TestBase {
 
         Account account = (Account) stepData.get(LAST_ACCOUNT);
 
-        assertNull(account);
+        Assert.assertNull(account);
     }
 
     @Then("^The System account exists$")
@@ -744,18 +711,18 @@ public class AccountServiceSteps extends TestBase {
         String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
         Account tmpAcc = accountService.findByName(adminUserName);
 
-        assertNotNull(tmpAcc);
+        Assert.assertNotNull(tmpAcc);
     }
 
     @Then("^The account has the following parameters$")
-    public void checkAccountParameters(List<StringTuple> paramList)
+    public void checkAccountParameters(DataTable dataTable)
             throws KapuaException {
-
+        Assert.assertEquals("Wrong test setup. Bad parameters size!", 2, dataTable.width());
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Properties accProps = account.getEntityProperties();
 
-        for (StringTuple param : paramList) {
-            assertEquals(param.getValue(), accProps.getProperty(param.getName()));
+        for (List<String> row : dataTable.asLists()) {
+            Assert.assertEquals(row.get(1), accProps.getProperty(row.get(0)));
         }
     }
 
@@ -766,7 +733,7 @@ public class AccountServiceSteps extends TestBase {
         KapuaId accountId = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         KapuaTocd metaData = accountService.getConfigMetadata(accountId);
 
-        assertNotNull(metaData);
+        Assert.assertNotNull(metaData);
     }
 
     @Then("^The default configuration for the account is set$")
@@ -776,8 +743,8 @@ public class AccountServiceSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Map<String, Object> valuesRead = accountService.getConfigValues(account.getId());
 
-        assertTrue(valuesRead.containsKey("maxNumberChildEntities"));
-        assertEquals(0, valuesRead.get("maxNumberChildEntities"));
+        Assert.assertTrue(valuesRead.containsKey("maxNumberChildEntities"));
+        Assert.assertEquals(0, valuesRead.get("maxNumberChildEntities"));
     }
 
     @Then("^The config item \"(.*)\" is set to \"(.*)\"$")
@@ -787,8 +754,8 @@ public class AccountServiceSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Map<String, Object> valuesRead = accountService.getConfigValues(account.getId());
 
-        assertTrue(valuesRead.containsKey(name));
-        assertEquals(value, valuesRead.get(name).toString());
+        Assert.assertTrue(valuesRead.containsKey(name));
+        Assert.assertEquals(value, valuesRead.get(name).toString());
     }
 
     @Then("^The config item \"(.*)\" is missing$")
@@ -798,7 +765,7 @@ public class AccountServiceSteps extends TestBase {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Map<String, Object> valuesRead = accountService.getConfigValues(account.getId());
 
-        assertFalse(valuesRead.containsKey(name));
+        Assert.assertFalse(valuesRead.containsKey(name));
     }
 
     @Then("^The returned value is (\\d+)$")
@@ -806,7 +773,7 @@ public class AccountServiceSteps extends TestBase {
 
         int intVal = (int) stepData.get(INT_VALUE);
 
-        assertEquals(val, intVal);
+        Assert.assertEquals(val, intVal);
     }
 
     @When("^I configure account service$")
@@ -917,7 +884,7 @@ public class AccountServiceSteps extends TestBase {
         AccountQuery accountQuery = accountFactory.newQuery(getCurrentScopeId());
         accountQuery.setPredicate(accountQuery.attributePredicate(AccountAttributes.NAME, accountName, AttributePredicate.Operator.EQUAL));
         AccountListResult accountListResult = accountService.query(accountQuery);
-        assertTrue(accountListResult.getSize() > 0);
+        Assert.assertTrue(accountListResult.getSize() > 0);
     }
 
     @And("^I try to edit description to \"([^\"]*)\"$")
@@ -975,7 +942,7 @@ public class AccountServiceSteps extends TestBase {
 
     @Then("^I am able to read my account info")
     public void verifySelfAccount() throws Exception {
-        assertNotNull(stepData.get(LAST_ACCOUNT));
+        Assert.assertNotNull(stepData.get(LAST_ACCOUNT));
     }
 
     @And("^I create an account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email address \"([^\"]*)\" and child account$")
@@ -1013,7 +980,7 @@ public class AccountServiceSteps extends TestBase {
     @When("^I find (\\d+) accounts?$")
     public void iFindAccounts(int numberOfAccounts) {
         int foundAccounts = (int) stepData.get("NumberOfFoundAccounts");
-        assertEquals(foundAccounts, numberOfAccounts);
+        Assert.assertEquals(foundAccounts, numberOfAccounts);
     }
 
 

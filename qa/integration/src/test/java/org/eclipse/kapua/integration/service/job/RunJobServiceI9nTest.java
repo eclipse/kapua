@@ -12,11 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.job;
 
-import cucumber.api.CucumberOptions;
-import org.eclipse.kapua.qa.common.cucumber.CucumberWithProperties;
 import org.junit.runner.RunWith;
 
-@RunWith(CucumberWithProperties.class)
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+
+@RunWith(Cucumber.class)
 @CucumberOptions(
         features = { "classpath:features/job/JobServiceI9n.feature",
                      "classpath:features/job/JobStepServiceI9n.feature",

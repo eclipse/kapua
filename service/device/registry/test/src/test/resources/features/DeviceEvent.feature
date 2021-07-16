@@ -10,12 +10,20 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@unit
 @deviceRegistry
 @deviceEvents
+@env_none
+
+
 Feature: Device Event CRUD tests
     The Device Event service is responsible for handling the incoming device
     events.
+
+@setup
+@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
 Scenario: Create a regular event
     Create a regular event. The event should not be null and should
@@ -111,3 +119,7 @@ Scenario: Event factory sanity checks
 
 Scenario: Event service domain check
     Then The device event domain data can be updated
+
+@teardown
+Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

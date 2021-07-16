@@ -40,7 +40,10 @@ import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.broker.core.message.MessageConstants;
+import org.eclipse.kapua.broker.client.message.MessageConstants;
+import org.eclipse.kapua.broker.client.pool.JmsConsumerWrapper;
+import org.eclipse.kapua.broker.client.setting.BrokerClientSetting;
+import org.eclipse.kapua.broker.client.setting.BrokerClientSettingKey;
 import org.eclipse.kapua.broker.core.plugin.authentication.Authenticator;
 import org.eclipse.kapua.broker.core.plugin.authentication.DefaultAuthenticator;
 import org.eclipse.kapua.broker.core.plugin.authorization.Authorizer;
@@ -49,7 +52,6 @@ import org.eclipse.kapua.broker.core.plugin.authorization.DefaultAuthorizer;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.PublishMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.SubscribeMetric;
-import org.eclipse.kapua.broker.core.pool.JmsConsumerWrapper;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.broker.core.setting.BrokerSettingKey;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -107,7 +109,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     // full client id, with account prepended
     protected static final String MULTI_ACCOUNT_CLIENT_ID = "{0}:{1}";
-    public static final String VT_TOPIC_PREFIX = "VirtualTopic.";
 
     private static final String CONNECT_MESSAGE_TOPIC_PATTERN = "VirtualTopic.%s.%s.%s.MQTT.CONNECT";
     private static final String DISCONNECT_MESSAGE_TOPIC_PATTERN = "VirtualTopic.%s.%s.%s.MQTT.DISCONNECT";
@@ -122,8 +123,9 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private static boolean stealingLinkEnabled;
     private Future<?> stealingLinkManagerFuture;
 
-    private static final String CONNECTOR_NAME_VM = String.format("vm://%s", BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_NAME));
-    private static final String CONNECTOR_NAME_INTERNAL;
+    private static final String CONNECTOR_NAME_VM = String.format("vm://%s", BrokerClientSetting.getInstance().getString(BrokerClientSettingKey.BROKER_NAME));
+    private static final String CONNECTOR_MQTT_NAME_INTERNAL;
+    private static final String CONNECTOR_AMQP_NAME_INTERNAL;
 
     private static final String ERROR = "@@ error";
 
@@ -138,7 +140,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         BROKER_ID_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME);
         AUTHENTICATOR_CLASS_NAME = config.getString(BrokerSettingKey.AUTHENTICATOR_CLASS_NAME);
         AUTHORIZER_CLASS_NAME = config.getString(BrokerSettingKey.AUTHORIZER_CLASS_NAME);
-        CONNECTOR_NAME_INTERNAL = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_NAME);
+        CONNECTOR_MQTT_NAME_INTERNAL = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_MQTT_NAME);
+        CONNECTOR_AMQP_NAME_INTERNAL = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_AMQP_NAME);
         STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME = config.getLong(BrokerSettingKey.STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME);
         stealingLinkEnabled = config.getBoolean(BrokerSettingKey.BROKER_STEALING_LINK_ENABLED);
         publishInfoMessageSizeLimit = BrokerSetting.getInstance().getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
@@ -167,7 +170,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         super(next);
         options = new HashMap<>();
         options.put(Authenticator.ADDRESS_ADVISORY_PREFIX_KEY, "ActiveMQ.Advisory.>");
-        options.put(Authenticator.ADDRESS_PREFIX_KEY, VT_TOPIC_PREFIX);
+        options.put(Authenticator.ADDRESS_PREFIX_KEY, MessageConstants.VT_TOPIC_PREFIX);
         options.put(Authenticator.ADDRESS_CLASSIFIER_KEY, SystemSetting.getInstance().getMessageClassifier());
         options.put(Authenticator.ADDRESS_CONNECT_PATTERN_KEY, CONNECT_MESSAGE_TOPIC_PATTERN);
         options.put(Authenticator.ADDRESS_DISCONNECT_PATTERN_KEY, DISCONNECT_MESSAGE_TOPIC_PATTERN);
@@ -349,7 +352,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         if (context != null) {
             if (context.getConnector() == null ||
                     CONNECTOR_NAME_VM.equals(((TransportConnector) context.getConnector()).getName()) ||
-                    CONNECTOR_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName())) {
+                    CONNECTOR_MQTT_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName()) ||
+                    CONNECTOR_AMQP_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName())) {
                 return true;
             }
 
@@ -364,7 +368,9 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
 
     private boolean isInternalConnector(ConnectionContext context) {
         if (context != null &&
-                (context.getConnector() == null || CONNECTOR_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName()))) {
+                (context.getConnector() == null ||
+                CONNECTOR_MQTT_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName()) ||
+                CONNECTOR_AMQP_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName()))) {
                 return true;
         }
         return false;
@@ -596,7 +602,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         ActiveMQDestination destination = messageSend.getDestination();
         if (destination instanceof ActiveMQTopic) {
             ActiveMQTopic destinationTopic = (ActiveMQTopic) destination;
-            originalTopic = destinationTopic.getTopicName().substring(VT_TOPIC_PREFIX.length());
+            originalTopic = destinationTopic.getTopicName().substring(MessageConstants.VT_TOPIC_PREFIX.length());
         }
         int messageSize = messageSend.getSize();
         messageSend.setProperty(MessageConstants.HEADER_KAPUA_RECEIVED_TIMESTAMP, KapuaDateUtils.getKapuaSysDate().toEpochMilli());

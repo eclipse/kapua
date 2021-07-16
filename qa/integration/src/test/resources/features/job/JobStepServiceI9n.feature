@@ -12,14 +12,15 @@
 ###############################################################################
 @jobs
 @jobStepService
-@integration
+@env_none
 
 Feature: Job step service CRUD tests
   The Job Step service is responsible for maintaining job steps.
 
-  Scenario: Init Security Context for all scenarios
-
-    Given Init Security Context
+@setup
+Scenario: Init Security Context for all scenarios
+  Given Init Jaxb Context
+  And Init Security Context
 
   Scenario: Regular step creation
 
@@ -165,10 +166,9 @@ Feature: Job step service CRUD tests
     Then An exception was thrown
     Then I logout
 
-  Scenario: Step factory sanity checks
-
+Scenario: Step factory sanity checks
     Given I test the sanity of the step factory
 
-  Scenario: Reset Security Context for all scenarios
-
+@teardown
+Scenario: Reset Security Context for all scenarios
     Given Reset Security Context

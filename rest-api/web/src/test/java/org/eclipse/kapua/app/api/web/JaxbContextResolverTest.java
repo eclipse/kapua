@@ -36,7 +36,7 @@ import org.junit.experimental.categories.Category;
 import javax.xml.bind.JAXBContext;
 
 @Category(JUnitTests.class)
-public class JaxbContextResolverTest extends Assert {
+public class JaxbContextResolverTest {
 
     JaxbContextResolver jaxbContextResolver;
 
@@ -51,12 +51,12 @@ public class JaxbContextResolverTest extends Assert {
                 KuraDeploymentPackages.class, KapuaRequestMessage.class, KapuaResponseMessage.class, DeviceManagementOperation.class, AccessToken.class, Role.class, Group.class, User.class};
 
         for (Class clazz : classes) {
-            assertTrue("True expected.", jaxbContextResolver.getContext(clazz) instanceof JAXBContext);
+            Assert.assertTrue("True expected.", jaxbContextResolver.getContext(clazz) instanceof JAXBContext);
         }
     }
 
     @Test
     public void getContextNullTest() {
-        assertTrue("True expected.", jaxbContextResolver.getContext(null) instanceof JAXBContext);
+        Assert.assertTrue("True expected.", jaxbContextResolver.getContext(null) instanceof JAXBContext);
     }
 }

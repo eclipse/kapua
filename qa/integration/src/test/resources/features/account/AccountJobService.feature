@@ -12,13 +12,14 @@
 ###############################################################################
 @account
 @job
-@integration
+@env_none
 
 Feature: Account Job Service Integration Tests
 
-Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
+@setup
+Scenario: Initialize test environment
+    Given Init Jaxb Context
+    And Init Security Context
 
   Scenario: Creating Jobs Under Account That Allows Infinite Child Devices
   Login as kapua-sys, create an account
@@ -127,6 +128,6 @@ Scenario: Init Security Context for all scenarios
     Then No exception was thrown
     And I logout
 
-  Scenario: Reset Security Context for all scenarios
-
-    Given Reset Security Context
+@teardown
+Scenario: Reset Security Context for all scenarios
+  Given Reset Security Context
