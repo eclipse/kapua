@@ -12,12 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.steps;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Then;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.TestBase;
@@ -32,6 +26,12 @@ import org.eclipse.kapua.service.user.User;
 import org.junit.Assert;
 
 import com.google.inject.Singleton;
+
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
 
 import javax.inject.Inject;
 import java.util.ArrayList;

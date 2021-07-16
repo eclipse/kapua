@@ -14,8 +14,6 @@ package org.eclipse.kapua.qa.common.utils;
 
 import java.time.Duration;
 
-import cucumber.api.java.en.Given;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +27,8 @@ import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreMediator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cucumber.runtime.java.guice.ScenarioScoped;
+import io.cucumber.guice.ScenarioScoped;
+import io.cucumber.java.en.Given;
 
 @ScenarioScoped
 public class EmbeddedBroker {

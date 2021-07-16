@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.integration.steps;
 
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.common.StepData;
@@ -28,6 +24,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+
+import io.cucumber.guice.ScenarioScoped;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

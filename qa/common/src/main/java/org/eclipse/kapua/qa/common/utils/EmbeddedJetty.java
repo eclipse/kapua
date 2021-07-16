@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common.utils;
 
-import cucumber.api.java.en.Given;
 import org.eclipse.jetty.jmx.MBeanContainer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AllowSymLinkAliasChecker;
@@ -21,6 +20,8 @@ import org.eclipse.jetty.webapp.WebAppContext;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.cucumber.java.en.Given;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;

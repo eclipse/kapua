@@ -13,11 +13,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common.utils;
 
-import cucumber.api.java.en.Given;
-import cucumber.runtime.java.guice.ScenarioScoped;
 import org.eclipse.kapua.service.elasticsearch.server.embedded.EsEmbeddedEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.cucumber.guice.ScenarioScoped;
+import io.cucumber.java.en.Given;
 
 import java.io.IOException;
 import java.time.Duration;

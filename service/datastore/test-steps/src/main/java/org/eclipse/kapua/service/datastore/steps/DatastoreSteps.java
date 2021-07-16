@@ -12,14 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.steps;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -106,6 +98,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
+
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
