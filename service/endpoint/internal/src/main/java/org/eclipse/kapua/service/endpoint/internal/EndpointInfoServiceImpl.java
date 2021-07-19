@@ -95,7 +95,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, null));
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, endpointInfoCreator.getScopeId())
+        );
 
         //
         // Check duplicate endpoint
@@ -129,7 +131,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, null));
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, endpointInfo.getScopeId())
+        );
 
         //
         // Check duplicate endpoint
@@ -152,7 +156,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.delete, null));
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.delete, scopeId)
+        );
 
         //
         // Do delete
@@ -167,7 +173,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeId));
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeId)
+        );
 
         //
         // Do find
@@ -186,7 +194,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId())
+        );
         addSectionToPredicate(query, section);
 
         //
@@ -239,7 +249,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId())
+        );
 
         //
         // Do count
