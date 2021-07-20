@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.jobEngine.stepDefinitions;
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
-
 import org.junit.runner.RunWith;
+
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
@@ -33,7 +33,6 @@ import org.junit.runner.RunWith;
         plugin = {"pretty",
                 "html:target/cucumber/JobEngineServiceKeystoreStepDefinitionsI9n",
                 "json:target/JobEngineServiceKeystoreStepDefinitionsI9n_cucumber.json"},
-        strict = true,
         monochrome = true)
 public class RunJobEngineServiceKeystoreStepDefinitionsI9nTest {
 }

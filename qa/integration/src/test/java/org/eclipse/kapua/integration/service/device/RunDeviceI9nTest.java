@@ -14,8 +14,8 @@ package org.eclipse.kapua.integration.service.device;
 
 import org.junit.runner.RunWith;
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
@@ -32,6 +32,5 @@ import cucumber.api.junit.Cucumber;
                   "html:target/cucumber/DeviceI9n",
                   "json:target/DeviceI9n_cucumber.json"
                  },
-        strict = true,
         monochrome = true )
 public class RunDeviceI9nTest {}

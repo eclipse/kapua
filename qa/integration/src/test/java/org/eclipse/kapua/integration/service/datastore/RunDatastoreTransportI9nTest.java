@@ -14,8 +14,8 @@ package org.eclipse.kapua.integration.service.datastore;
 
 import org.junit.runner.RunWith;
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
@@ -31,7 +31,6 @@ import cucumber.api.junit.Cucumber;
                   "json:target/DockerBroker_cucumber.json",
                   "html:target/cucumber/DatastoreTransportI9n",
                   "json:target/DatastoreTransportI9n_cucumber.json"},
-        strict = true,
         monochrome = true)
 public class RunDatastoreTransportI9nTest {
 }

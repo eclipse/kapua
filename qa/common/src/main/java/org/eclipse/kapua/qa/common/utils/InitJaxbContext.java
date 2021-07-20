@@ -18,8 +18,8 @@ import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import cucumber.api.java.en.Given;
-import cucumber.runtime.java.guice.ScenarioScoped;
+import io.cucumber.guice.ScenarioScoped;
+import io.cucumber.java.en.Given;
 
 @ScenarioScoped
 public class InitJaxbContext {

@@ -14,8 +14,8 @@ package org.eclipse.kapua.integration.service.connection;
 
 import org.junit.runner.RunWith;
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
@@ -32,7 +32,6 @@ import cucumber.api.junit.Cucumber;
                 "html:target/cucumber/ConnectionI9n",
                 "json:target/ConnectionI9n_cucumber.json"
         },
-        strict = true,
         monochrome = true )
 public class RunConnectionI9nTest {}
 

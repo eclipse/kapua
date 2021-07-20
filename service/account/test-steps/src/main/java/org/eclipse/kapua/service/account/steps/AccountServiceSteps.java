@@ -13,14 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.steps;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
@@ -46,6 +38,15 @@ import org.eclipse.kapua.service.account.Organization;
 import org.junit.Assert;
 
 import com.google.inject.Singleton;
+
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountListResult;
@@ -524,14 +525,14 @@ public class AccountServiceSteps extends TestBase {
     }
 
     @When("^I set the following parameters$")
-    public void setAccountParameters(List<StringTuple> paramList)
+    public void setAccountParameters(DataTable dataTable)
             throws Exception {
-
+        Assert.assertEquals("Wrong test setup. Bad parameters size!", 2, dataTable.width());
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Properties accProps = account.getEntityProperties();
 
-        for (StringTuple param : paramList) {
-            accProps.setProperty(param.getName(), param.getValue());
+        for (List<String> row : dataTable.asLists()) {
+            accProps.setProperty(row.get(0), row.get(1));
         }
         account.setEntityProperties(accProps);
 
@@ -714,14 +715,14 @@ public class AccountServiceSteps extends TestBase {
     }
 
     @Then("^The account has the following parameters$")
-    public void checkAccountParameters(List<StringTuple> paramList)
+    public void checkAccountParameters(DataTable dataTable)
             throws KapuaException {
-
+        Assert.assertEquals("Wrong test setup. Bad parameters size!", 2, dataTable.width());
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Properties accProps = account.getEntityProperties();
 
-        for (StringTuple param : paramList) {
-            Assert.assertEquals(param.getValue(), accProps.getProperty(param.getName()));
+        for (List<String> row : dataTable.asLists()) {
+            Assert.assertEquals(row.get(1), accProps.getProperty(row.get(0)));
         }
     }
 

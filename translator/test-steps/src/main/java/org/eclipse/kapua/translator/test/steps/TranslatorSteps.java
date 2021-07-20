@@ -12,13 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.translator.test.steps;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
@@ -42,6 +35,13 @@ import org.eclipse.kapua.transport.message.mqtt.MqttTopic;
 import org.junit.Assert;
 
 import com.google.inject.Singleton;
+
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 import javax.inject.Inject;
 import java.util.Date;
