@@ -13,8 +13,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.user;
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
 
 import org.junit.runner.RunWith;
 
@@ -29,6 +29,5 @@ import org.junit.runner.RunWith;
                   "html:target/cucumber/LockoutExpirationI9n",
                   "json:target/LockoutExpirationI9n_cucumber.json"
                  },
-        strict = true,
         monochrome = true)
 public class RunLockoutExpirationI9nTest {}

@@ -24,6 +24,8 @@ Feature: Scheduler Service
     Given Init Jaxb Context
     And Init Security Context
 
+  Scenario: Create scheduler with valid schedule name
+  Creating scheduler with valid schedule name property.
     Given I create a job with the name "job1"
     Then I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "triggerExample" is created

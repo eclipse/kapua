@@ -15,7 +15,7 @@ package org.eclipse.kapua.qa.common;
 import java.util.HashMap;
 import java.util.Map;
 
-import cucumber.runtime.java.guice.ScenarioScoped;
+import io.cucumber.guice.ScenarioScoped;
 
 @ScenarioScoped
 public class SimulatedDevice {

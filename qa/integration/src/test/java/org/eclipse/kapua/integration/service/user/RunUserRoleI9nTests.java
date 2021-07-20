@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.user;
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
 
 import org.junit.runner.RunWith;
 
@@ -37,7 +37,6 @@ import org.junit.runner.RunWith;
                 "html:target/cucumber/UserRoleServiceI9n",
                 "json:target/UserRoleServiceI9n_cucumber.json"
         },
-        strict = true,
         monochrome = true)
 public class RunUserRoleI9nTests {
 }

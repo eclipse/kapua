@@ -15,8 +15,8 @@ package org.eclipse.kapua.integration.service.authorization;
 
 import org.junit.runner.RunWith;
 
-import cucumber.api.CucumberOptions;
-import cucumber.api.junit.Cucumber;
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
@@ -36,6 +36,5 @@ import cucumber.api.junit.Cucumber;
                   "html:target/cucumber/AuthorizationServiceI9n",
                   "json:target/AuthorizationServiceI9n_cucumber.json"
                  },
-        strict = true,
         monochrome = true)
 public class RunAuthorizationServiceI9nTest {}

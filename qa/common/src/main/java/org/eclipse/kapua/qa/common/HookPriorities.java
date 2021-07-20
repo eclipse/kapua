@@ -12,9 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-
 /**
  * Priorities for the {@link Before} and {@link After} hook annotations
  */

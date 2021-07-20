@@ -45,6 +45,18 @@ public class CucConnection {
     private static UserService userService = KapuaLocator.getInstance().getService(UserService.class);
     private static AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
 
+    public CucConnection(String clientId, String clientIp, String serverIp, String protocol, String allowUserChange) {
+        this(clientIp, serverIp, protocol, allowUserChange);
+        this.clientId = clientId;
+    }
+
+    public CucConnection(String clientIp, String serverIp, String protocol, String allowUserChange) {
+        this.clientIp = clientIp;
+        this.serverIp = serverIp;
+        this.protocol = protocol;
+        this.allowUserChange = allowUserChange;
+    }
+
     public String getScope() {
         return scope;
     }
@@ -101,21 +113,7 @@ public class CucConnection {
     }
 
     public boolean getAllowUserChange() {
-        boolean allowChng = false;
-        if (allowUserChange == null) {
-            return false;
-        }
-        switch (allowUserChange.trim().toLowerCase()) {
-        case "true":
-            allowChng = true;
-            break;
-        case "false":
-            allowChng = false;
-            break;
-        default:
-            allowChng = false;
-        }
-        return allowChng;
+        return Boolean.valueOf(allowUserChange);
     }
 
     public void setAllowUserChange(String allowUserChange) {

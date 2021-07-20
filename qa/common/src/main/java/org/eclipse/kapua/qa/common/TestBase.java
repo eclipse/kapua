@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
-import cucumber.api.Scenario;
-
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
+
+import io.cucumber.java.Scenario;
 
 import java.math.BigInteger;
 import java.text.DateFormat;
@@ -125,11 +125,11 @@ public class TestBase {
         if (!exceptionExpected ||
                 (!exceptionName.isEmpty() && !ex.getClass().toGenericString().contains(exceptionName)) ||
                 (!exceptionMessage.isEmpty() && !exceptionMessage.trim().contentEquals("*") && !ex.getMessage().contains(exceptionMessage))) {
-            scenario.write("An unexpected exception was raised!");
+            scenario.log("An unexpected exception was raised!");
             throw (ex);
         }
 
-        scenario.write("Exception raised as expected: " + ex.getClass().getCanonicalName() + ", " + ex.getMessage());
+        scenario.log("Exception raised as expected: " + ex.getClass().getCanonicalName() + ", " + ex.getMessage());
         stepData.put("ExceptionCaught", true);
         stepData.put("Exception", ex);
     }
@@ -144,11 +144,11 @@ public class TestBase {
         if (!assertErrorExpected ||
                 (!assertErrorName.isEmpty() && !assetError.getClass().toGenericString().contains(assertErrorName)) ||
                 (!assertErrorMessage.isEmpty() && !assertErrorMessage.trim().contentEquals("*") && !assetError.getMessage().contains(assertErrorMessage))) {
-            scenario.write("An unexpected assert error was raised!");
+            scenario.log("An unexpected assert error was raised!");
             throw (assetError);
         }
 
-        scenario.write("Assert error raised as expected: " + assetError.getClass().getCanonicalName() + ", " + assetError.getMessage());
+        scenario.log("Assert error raised as expected: " + assetError.getClass().getCanonicalName() + ", " + assetError.getMessage());
         stepData.put("AssertErrorCaught", true);
         stepData.put("AssertError", assetError);
     }

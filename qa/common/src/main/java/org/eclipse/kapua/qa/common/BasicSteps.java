@@ -13,14 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
-import cucumber.api.Scenario;
-import cucumber.api.java.After;
-import cucumber.api.java.Before;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
-
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -28,6 +20,8 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.qa.common.cucumber.CucConnection;
+import org.eclipse.kapua.qa.common.cucumber.CucJobStepProperty;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettings;
 import org.eclipse.kapua.service.datastore.internal.setting.DatastoreElasticsearchClientSettingsKey;
 import org.junit.Assert;
@@ -36,9 +30,19 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 import javax.inject.Inject;
 import java.time.Duration;
 import java.util.Date;
+import java.util.Map;
 
 @Singleton
 public class BasicSteps extends TestBase {
@@ -79,6 +83,24 @@ public class BasicSteps extends TestBase {
         setProperties(scenario, "kapuadb", "true", "", "", "H2", "org.h2.Driver", "jdbc:h2:mem:",
             "certificates/jwt/test.key", "certificates/jwt/test.cert", "localhost", null);
         logger.info("=====> Init parameters for embedded environment... DONE");
+    }
+
+    @DataTableType
+    public CucConnection cucConnectionEntry(Map<String, String> entry) {
+        return new CucConnection(
+            entry.get("clientId"),
+            entry.get("clientIp"),
+            entry.get("serverIp"),
+            entry.get("protocol"),
+            entry.get("allowUserChange"));
+    }
+
+    @DataTableType
+    public CucJobStepProperty cucJobStepProperty(Map<String, String> entry) {
+        return new CucJobStepProperty(
+            entry.get("name"),
+            entry.get("type"),
+            entry.get("value"));
     }
 
     private void setProperties(Scenario scenario, String schema, String updateSchema,
