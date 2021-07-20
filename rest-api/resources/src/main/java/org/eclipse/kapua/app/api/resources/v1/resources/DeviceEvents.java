@@ -13,6 +13,7 @@
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
 import com.google.common.base.Strings;
+
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
@@ -103,6 +104,9 @@ public class DeviceEvents extends AbstractKapuaResource {
 
         query.setPredicate(andPredicate);
 
+        if (!Strings.isNullOrEmpty(sortParam)) {
+            query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
+        }
         query.setOffset(offset);
         query.setLimit(limit);
 
