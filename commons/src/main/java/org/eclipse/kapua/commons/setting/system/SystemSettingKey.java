@@ -168,9 +168,17 @@ public enum SystemSettingKey implements SettingKey {
      */
     DB_POOL_KEEPALIVE_TIME("commons.db.pool.keepalive.timeout"),
     /**
-     * Database pool test query used for connection liveness tests and keepalive
+     * Database pool maximum lifetime of a connection
+     */
+    DB_POOL_MAX_LIFETIME("commons.db.pool.max.lifetime"),
+    /**
+     * Test query used for connection liveness tests and keepalive
      */
     DB_POOL_TEST_QUERY("commons.db.pool.test.query"),
+    /**
+     * Amount of time that a connection can be out of the pool before a message is logged
+     */
+    DB_POOL_LEAKDETECTION_THRESHOLD("commons.db.pool.leakdetection.threshold"),
 
     /**
      * Broker schema (e.g. mqtt, mqtts, ..)

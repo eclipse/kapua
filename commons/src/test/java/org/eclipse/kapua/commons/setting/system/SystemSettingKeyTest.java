@@ -59,7 +59,9 @@ public class SystemSettingKeyTest extends Assert {
         systemSettings.put(SystemSettingKey.DB_POOL_SIZE_MAX, "commons.db.pool.size.max");
         systemSettings.put(SystemSettingKey.DB_POOL_IDLE_TIMEOUT, "commons.db.pool.idle.timeout");
         systemSettings.put(SystemSettingKey.DB_POOL_KEEPALIVE_TIME, "commons.db.pool.keepalive.timeout");
+        systemSettings.put(SystemSettingKey.DB_POOL_MAX_LIFETIME, "commons.db.pool.max.lifetime");
         systemSettings.put(SystemSettingKey.DB_POOL_TEST_QUERY, "commons.db.pool.test.query");
+        systemSettings.put(SystemSettingKey.DB_POOL_LEAKDETECTION_THRESHOLD, "commons.db.pool.leakdetection.threshold");
         systemSettings.put(SystemSettingKey.DB_CHARACTER_ESCAPE, "commons.db.character.escape");
         systemSettings.put(SystemSettingKey.DB_CHARACTER_WILDCARD_ANY, "commons.db.character.wildcard.any");
         systemSettings.put(SystemSettingKey.DB_CHARACTER_WILDCARD_SINGLE, "commons.db.character.wildcard.single");
