@@ -22,6 +22,7 @@ import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.model.StorableEntityId;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.datastore.ChannelInfoFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
@@ -62,7 +63,7 @@ public class DataChannels extends AbstractKapuaResource {
      * @param clientId      The client id to filter results.
      * @param name          The channel name to filter results. It allows '#' wildcard in last channel level
      * @param sortParam     The name of the parameter that will be used as a sorting key
-     * @param sortDir       The sort direction. Can be DESC (default), ASC. Case-insensitive.
+     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
      * @param offset        The result set offset.
      * @param limit         The result set limit.
      * @return              The {@link ChannelInfoListResult} of all the channelInfos associated to the current selected scope.
@@ -75,7 +76,7 @@ public class DataChannels extends AbstractKapuaResource {
                                              @QueryParam("clientId") String clientId,
                                              @QueryParam("name") String name,
                                              @QueryParam("sortParam") String sortParam,
-                                             @QueryParam("sortDir") @DefaultValue("DESC") SortDirection sortDir,
+                                             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
                                              @QueryParam("offset") @DefaultValue("0") int offset,
                                              @QueryParam("limit") @DefaultValue("50") int limit)
             throws KapuaException {
@@ -95,7 +96,8 @@ public class DataChannels extends AbstractKapuaResource {
         query.setOffset(offset);
         query.setLimit(limit);
         if (!Strings.isNullOrEmpty(sortParam)) {
-            query.setSortFields(Collections.singletonList(SortField.of(sortParam, sortDir)));
+            SortDirection storableSortDirection = sortDir == SortOrder.DESCENDING ? SortDirection.DESC : SortDirection.ASC;
+            query.setSortFields(Collections.singletonList(SortField.of(sortParam, storableSortDirection)));
         }
         return query(scopeId, query);
     }
