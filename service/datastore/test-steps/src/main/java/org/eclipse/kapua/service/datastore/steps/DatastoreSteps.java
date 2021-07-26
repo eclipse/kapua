@@ -589,7 +589,7 @@ public class DatastoreSteps extends TestBase {
             long stepSeconds = (endDate.getTime() - startDate.getTime()) / (1000L * (tmpMessage.getCount().longValue() - 1));
 
             tmpCal.setTime(startDate);
-            for (int cnt = 0; cnt <= tmpMessage.getCount(); cnt++) {
+            for (int cnt = 0; cnt < tmpMessage.getCount(); cnt++) {
                 tmpMsg = createTestMessage(
                         ((Account) stepData.get(LAST_ACCOUNT)).getId(),
                         ((Device) stepData.get(LAST_DEVICE)).getId(),
