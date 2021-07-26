@@ -1245,7 +1245,7 @@ Feature: Datastore tests
     And I set the database to device timestamp indexing
     When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
       | clientId      | topic               | count | startDate                | endDate                  |
-      | test-client-1 | delete/by/date/test | 3    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+      | test-client-1 | delete/by/date/test | 4     | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account messages with limit 1 and offset 0 and store them as "MessageInfo"
@@ -1261,7 +1261,7 @@ Feature: Datastore tests
     And I set the database to device timestamp indexing
     When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
       | clientId      | topic               | count | startDate                | endDate                  |
-      | test-client-1 | delete/by/date/test | 3    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+      | test-client-1 | delete/by/date/test | 4    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account messages with limit 4 and offset 0 and store them as "MessageInfo"
@@ -1277,7 +1277,7 @@ Feature: Datastore tests
     And I set the database to device timestamp indexing
     When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
       | clientId      | topic               | count | startDate                | endDate                  |
-      | test-client-1 | delete/by/date/test | 3    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+      | test-client-1 | delete/by/date/test | 4    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account messages with limit 1 and offset 2 and store them as "MessageInfo"
@@ -1293,7 +1293,7 @@ Feature: Datastore tests
     And I set the database to device timestamp indexing
     When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
       | clientId      | topic               | count | startDate                | endDate                  |
-      | test-client-1 | delete/by/date/test | 3    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+      | test-client-1 | delete/by/date/test | 4    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
     Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
     And I refresh all indices
     When I query for the current account messages with limit 1 and offset 3 and store them as "MessageInfo"
