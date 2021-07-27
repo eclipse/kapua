@@ -63,7 +63,7 @@ paths:
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
   /{scopeId}/devices/{deviceId}/inventory/bundles/_start:
-    get:
+    post:
       tags:
         - Device Management - Inventory
       summary: Starts the bundle inventory in a Device
@@ -71,7 +71,6 @@ paths:
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
-        - $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryBundle'
         - $ref: '../device/device.yaml#/components/parameters/timeout'
       responses:
         204:
@@ -85,7 +84,7 @@ paths:
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
   /{scopeId}/devices/{deviceId}/inventory/bundles/_stop:
-    get:
+    post:
       tags:
         - Device Management - Inventory
       summary: Stops the bundle inventory in a Device
@@ -93,8 +92,12 @@ paths:
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
-        - $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryBundle'
         - $ref: '../device/device.yaml#/components/parameters/timeout'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryBundle'
       responses:
         204:
           description: The inventory bundle has been stopped
