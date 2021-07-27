@@ -95,8 +95,10 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
+        KapuaId scopeIdPermission = endpointInfoCreator.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ?
+                endpointInfoCreator.getScopeId() : null;
         AUTHORIZATION_SERVICE.checkPermission(
-                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, endpointInfoCreator.getScopeId())
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, scopeIdPermission)
         );
 
         //
@@ -131,8 +133,10 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
+        KapuaId scopeIdPermission = endpointInfo.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ?
+                endpointInfo.getScopeId() : null;
         AUTHORIZATION_SERVICE.checkPermission(
-                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, endpointInfo.getScopeId())
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, scopeIdPermission)
         );
 
         //
@@ -156,8 +160,11 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
+        KapuaId scopeIdPermission = entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId))
+                .getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ? scopeId : null;
+
         AUTHORIZATION_SERVICE.checkPermission(
-                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.delete, scopeId)
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.delete, scopeIdPermission)
         );
 
         //
@@ -173,8 +180,10 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
+        KapuaId scopeIdPermission = entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId))
+                .getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ? scopeId : null;
         AUTHORIZATION_SERVICE.checkPermission(
-                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeId)
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeIdPermission)
         );
 
         //
