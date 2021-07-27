@@ -62,6 +62,7 @@ Scenario: Init Security Context for all scenarios
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create endpoint with schema "YUrdWClCWvg98SN11A1TuFEgjobJLtPxOwaNkdHAj1z7vs0GncKhNuSsJr9aAopl", domain "abc.com" and port 2221
     Then No exception was thrown
+    Then I delete endpoint with schema "YUrdWClCWvg98SN11A1TuFEgjobJLtPxOwaNkdHAj1z7vs0GncKhNuSsJr9aAopl", domain "abc.com" and port 2221
     And I logout
 
   Scenario: Creating Endpoint With Too Long "Schema"
@@ -173,6 +174,7 @@ Scenario: Init Security Context for all scenarios
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create endpoint with schema "Schema1", domain "IApYdQLo4WGsvQ9gSPOIIFFOmkQeIYiGlCEU9zK7e3a9qmMyVSADuM5cJ68H1uEZj4JAML0FbYBXwO32o9AAoqSTsRs3n8tqp4E6YLJUhOnLsGMxrPZ1Rmha4DbNOqweNuvziFkmwTaAc9rIJlUr0VpJEi567JYNvVHSVtK1SdMKAfuLiTQTLOKoGZZIVdp7jwXyhgAEFJxUl3swT1uNz8MOiJHT4ToKCKZ5rwWcN6kYi55XnkMESrjdRKTcSDZmzt8wut7USdPNouIYIMGIzsw1bKDwA2fNx8b9ISsEcDAbX1EWER8GeWkqUAnKBNvNacjYHNEHceeacx72Wchd8uD8Y17w55vdAi98mmA8x7F8fFNZmC4b446Jy8HEgtE42TTOglcgeb0nGCGeUicWqxSeH0DaHf1QFvd7f05NZNli5PYPmeN5WqlVQT6b5bLEala1UD94t5PqWC01o59hHCSAJyD7Zj01gWbyuDy5LmkuARZybDdxige6CzDVWvKBYxLthaLqqE3E7cWQA6wsDPqtyEsfoCycYXuPYGx81M7f1JVvh0I5oj2Eg0VHvYcvGnfUUBXUY3abYzCyvEBf2kZ6pQUkwgJHBaA2p7UBYTqpqt5zfc5w3qn1n6uD1QzyQukvqBvuaVPlXqVobmyz7VTgGBT45cMGevJhs5Td4UrtjifSmzEDbuzBZbQub3cbutLLmJqH2pctG4gtBPz2GNNRCC2Lsx2PsYynkUr5c9aBeENFXmR41BDRLlyEzpKRtzJ6QLEVrZKAvNahm8wvlmzI6JkLB9YZpEm7diq54bmm4EaolSBvs2X9e5EEGPosoIjyQfNsbasognvYY4fGCiNuTchmxnHnPlMyfRcGPas8SWYH7fvQFDWLquEXqX3kHGAn4KsShiyAvbj9OeJ4ao2QmJSHOtP0212nx4iooHGPpMOM8difFRt0i4AYdb68q51cs8OtHaW41IZSlJai6FttoiMl3ln7uAIHp6FrPXNBmwoMxAvUgdn60mXPs1XK" and port 2221
     Then No exception was thrown
+    Then I delete endpoint with schema "Schema1", domain "IApYdQLo4WGsvQ9gSPOIIFFOmkQeIYiGlCEU9zK7e3a9qmMyVSADuM5cJ68H1uEZj4JAML0FbYBXwO32o9AAoqSTsRs3n8tqp4E6YLJUhOnLsGMxrPZ1Rmha4DbNOqweNuvziFkmwTaAc9rIJlUr0VpJEi567JYNvVHSVtK1SdMKAfuLiTQTLOKoGZZIVdp7jwXyhgAEFJxUl3swT1uNz8MOiJHT4ToKCKZ5rwWcN6kYi55XnkMESrjdRKTcSDZmzt8wut7USdPNouIYIMGIzsw1bKDwA2fNx8b9ISsEcDAbX1EWER8GeWkqUAnKBNvNacjYHNEHceeacx72Wchd8uD8Y17w55vdAi98mmA8x7F8fFNZmC4b446Jy8HEgtE42TTOglcgeb0nGCGeUicWqxSeH0DaHf1QFvd7f05NZNli5PYPmeN5WqlVQT6b5bLEala1UD94t5PqWC01o59hHCSAJyD7Zj01gWbyuDy5LmkuARZybDdxige6CzDVWvKBYxLthaLqqE3E7cWQA6wsDPqtyEsfoCycYXuPYGx81M7f1JVvh0I5oj2Eg0VHvYcvGnfUUBXUY3abYzCyvEBf2kZ6pQUkwgJHBaA2p7UBYTqpqt5zfc5w3qn1n6uD1QzyQukvqBvuaVPlXqVobmyz7VTgGBT45cMGevJhs5Td4UrtjifSmzEDbuzBZbQub3cbutLLmJqH2pctG4gtBPz2GNNRCC2Lsx2PsYynkUr5c9aBeENFXmR41BDRLlyEzpKRtzJ6QLEVrZKAvNahm8wvlmzI6JkLB9YZpEm7diq54bmm4EaolSBvs2X9e5EEGPosoIjyQfNsbasognvYY4fGCiNuTchmxnHnPlMyfRcGPas8SWYH7fvQFDWLquEXqX3kHGAn4KsShiyAvbj9OeJ4ao2QmJSHOtP0212nx4iooHGPpMOM8difFRt0i4AYdb68q51cs8OtHaW41IZSlJai6FttoiMl3ln7uAIHp6FrPXNBmwoMxAvUgdn60mXPs1XK" and port 2221
     And I logout
 
   Scenario: Creating Endpoint With Too Long "Domain Name"
@@ -262,6 +264,7 @@ Scenario: Init Security Context for all scenarios
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I create endpoint with schema "Schema1", domain "abc.com" and port 65535
     Then No exception was thrown
+    Then I delete endpoint with schema "Schema1", domain "abc.com" and port 65535
     And I logout
 
   Scenario: Creating Endpoint With Small Number "Port"
