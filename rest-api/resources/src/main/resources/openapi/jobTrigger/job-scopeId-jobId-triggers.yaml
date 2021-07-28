@@ -51,6 +51,7 @@ paths:
       operationId: jobTriggerCreate
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../job/job.yaml#/components/parameters/jobId'
       requestBody:
         description: An object containing the properties for the new Job Trigger to be created
         content:
