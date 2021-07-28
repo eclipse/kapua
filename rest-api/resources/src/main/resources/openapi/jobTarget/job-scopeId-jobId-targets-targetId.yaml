@@ -37,3 +37,23 @@ paths:
           $ref: '../openapi.yaml#/components/responses/entityNotFound'
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
+    delete:
+      tags:
+        - Job - Target
+      summary: Delete a single Job Target
+      operationId: jobTargetDelete
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../job/job.yaml#/components/parameters/jobId'
+        - $ref: './jobTarget.yaml#/components/parameters/targetId'
+      responses:
+        204:
+          description: The Job Target has been deleted
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
