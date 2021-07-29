@@ -65,6 +65,7 @@ public class DockerSteps {
     private static final String NETWORK_PREFIX = "kapua-net";
     private static final String KAPUA_VERSION = "1.6.0-SNAPSHOT";
     private static final String ES_IMAGE = "elasticsearch:7.8.1";
+    private static final List<String> DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME;
     private static final List<String> DEFAULT_DEPLOYMENT_CONTAINERS_NAME;
     private static final int WAIT_COUNT = 120;//total wait time = 240 secs (120 * 2000ms)
     private static final long WAIT_STEP = 2000;
@@ -87,16 +88,18 @@ public class DockerSteps {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     static {
+        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME = new ArrayList<>();
+        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add("telemetry-consumer");
+        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add("lifecycle-consumer");
+        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add("message-broker");
+        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add("job-engine");
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME = new ArrayList<>();
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("telemetry-consumer");
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("lifecycle-consumer");
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("message-broker");
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("job-engine");
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("events-broker");
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("es");
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("db");
     }
 
+    private boolean printContainerLogOnContainerExit = true;
     private NetworkConfig networkConfig;
     private String networkId;
     private boolean debug;
@@ -317,7 +320,9 @@ public class DockerSteps {
 
     @Given("^Stop full docker environment$")
     public void stopFullDockerEnvironment() throws DockerException, InterruptedException {
-        removeContainer(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
+        printContainersLog(DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME);
+        removeContainers(DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME);
+        removeContainers(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
     }
 
     @Given("^Create network$")
@@ -463,47 +468,78 @@ public class DockerSteps {
     }
 
     @Then("^Remove container with name \"(.*)\"$")
-    public void removeContainer(List<String> names) throws DockerException, InterruptedException {
+    public void removeContainers(List<String> names) throws DockerException, InterruptedException {
         for (String name : names) {
-            logger.info("Removing container {}...", name);
-            List<Container> containers = DockerUtil.getDockerClient().listContainers(ListContainersParam.filter("name", name));
-            if (containers.isEmpty()) {
-                logger.info("No docker images found. Cannot remove container {}. (Container not found!)", name);
+            removeContainer(name);
+        }
+    }
+
+    private void removeContainer(String name) {
+        logger.info("Removing container {}...", name);
+        List<Container> containers = null;
+        try {
+            containers = DockerUtil.getDockerClient().listContainers(ListContainersParam.filter("name", name));
+            if (containers == null || containers.isEmpty()) {
+                logger.info("Cannot remove container '{}'. (Container not found!)", name);
             } else {
                 containers.forEach(container -> {
                     try {
                         DockerUtil.getDockerClient().removeContainer(container.id(), new RemoveContainerParam("force", "true"));
                     } catch (DockerException | InterruptedException e) {
-                        //test fails since the environment is no cleaned up
+                        //test fails since the environment is not cleaned up
                         Assert.fail("Cannot remove container!");
                     }
                     containerMap.remove(name);
                     logger.info("Container {} removed. (Container id: {})", name, container.id());
                 });
             }
+        } catch (DockerException | InterruptedException e) {
+            logger.warn("Cannot remove container for name '{}' (cannot filter running container list)", name, e);
         }
     }
 
     @Given("^Print log for container with name \"(.*)\"$")
-    public void printContainerLog(String name) {
-        LogStream logStream;
-        String containerId = containerMap.get(name);
-        try {
-            logStream = DockerUtil.getDockerClient().logs(containerId, LogsParam.stdout(), LogsParam.stderr());
-            Logger brokerLogger = LoggerFactory.getLogger(name);
-            brokerLogger.info("\n===================================================\n" + name + ": {}\n===================================================", name);
-            StringBuilder builder = new StringBuilder();
-            int i=0;
-            while (logStream.hasNext()) {
-                builder.append(StandardCharsets.UTF_8.decode(logStream.next().content()).toString());
-                if (++i%100 == 0) {
-                    brokerLogger.info(builder.toString());
-                    builder = new StringBuilder();
-                }
+    public void printContainersLog(List<String> names) {
+        if (printContainerLogOnContainerExit) {
+            for (String name : names) {
+                printContainerLog(name);
             }
-            brokerLogger.info(builder.toString());
-        } catch (Exception e) {
-            logger.warn("Cannot print container log for broker/id '{}'/'{}'", name, containerId);
+        }
+        else {
+            logger.info("Print containers log in exit disabled.");
+        }
+    }
+
+    private void printContainerLog(String name) {
+        List<Container> containers = null;
+        try {
+            containers = DockerUtil.getDockerClient().listContainers(ListContainersParam.filter("name", name));
+            if (containers == null || containers.isEmpty()) {
+                logger.info("Cannot print container '{}' log. (Container not found!)", name);
+            } else {
+                containers.forEach(container -> {
+                    try {
+                        LogStream logStream = DockerUtil.getDockerClient().logs(container.id(), LogsParam.stdout(), LogsParam.stderr());
+                        Logger brokerLogger = LoggerFactory.getLogger(name);
+                        brokerLogger.info("\n===================================================\n START LOG FOR CONTAINER: {} (id: {})\n===================================================", name, container.id());
+                        StringBuilder builder = new StringBuilder();
+                        int i=0;
+                        while (logStream.hasNext()) {
+                            builder.append(StandardCharsets.UTF_8.decode(logStream.next().content()).toString());
+                            if (++i%100 == 0) {
+                                brokerLogger.info(builder.toString());
+                                builder = new StringBuilder();
+                            }
+                        }
+                        brokerLogger.info(builder.toString());
+                        brokerLogger.info("\n---------------------------------------------------\n END LOG FOR CONTAINER: {} (id: {})\n---------------------------------------------------", name, container.id());
+                    } catch (Exception e1) {
+                        logger.warn("Cannot print container log for name/id '{}'/'{}'", name, container.id());
+                    }
+                });
+            }
+        } catch (DockerException | InterruptedException e) {
+            logger.warn("Cannot print container log for name '{}' (cannot filter running container list)", name, e);
         }
     }
 
