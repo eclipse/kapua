@@ -185,7 +185,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
         try {
             mediator.onUpdatedMappings(message.getScopeId(), indexedOn, metrics);
         } catch (KapuaException e) {
-            e.printStackTrace();
+            LOG.warn("Update mappings error", e);
         }
 
         InsertResponse insertResponse = getElasticsearchClient().insert(insertRequest);
@@ -227,7 +227,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
             try {
                 schemaMetadata = mediator.getMetadata(scopeId, messageToBeDeleted.getTimestamp().getTime());
             } catch (KapuaException e) {
-                e.printStackTrace();
+                LOG.warn("Retrieving metadata error", e);
             }
             String indexName = schemaMetadata.getDataIndexName();
             TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, MessageSchema.MESSAGE_TYPE_NAME);

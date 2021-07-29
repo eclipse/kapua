@@ -27,8 +27,8 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.service.account.steps"
         },
         plugin = { "pretty",
-                "html:target/cucumber",
-                "json:target/cucumber.json" },
+                "html:target/cucumber/EndpointServiceI9n",
+                "json:target/EndpointServiceI9n_cucumber.json" },
         monochrome = true)
 public class RunEndpointServiceI9nTest {
 }

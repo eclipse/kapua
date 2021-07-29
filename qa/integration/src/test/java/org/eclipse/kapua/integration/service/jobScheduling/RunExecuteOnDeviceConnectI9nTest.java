@@ -31,8 +31,8 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.service.scheduler.steps"
         },
         plugin = { "pretty",
-                "html:target/cucumber",
-                "json:target/cucumber.json" },
+                "html:target/cucumber/ExecuteOnDeviceConnectI9n",
+                "json:target/ExecuteOnDeviceConnectI9n_cucumber.json" },
         monochrome = true)
 public class RunExecuteOnDeviceConnectI9nTest {
 }

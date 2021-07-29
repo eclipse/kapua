@@ -29,9 +29,8 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.qa.common"
                },
         plugin = { "pretty",
-                   "html:target/cucumber",
-                   "json:target/cucumber.json" },
-        strict = true,
+                   "html:target/cucumber/DeviceRegistry",
+                   "json:target/DeviceRegistry_cucumber.json" },
         monochrome = true)
 public class RunDeviceRegistryUnitTest {
 }

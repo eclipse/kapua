@@ -24,6 +24,12 @@ public class CucDomain {
     private String actions;
     private Set<Actions> actionSet;
 
+    public CucDomain(String name, String serviceName, String actions) {
+        this.name = name;
+        this.serviceName = serviceName;
+        this.actions = actions;
+    }
+
     public void doParse() {
         if (this.actions != null) {
             String[] tmpList = this.actions.split(",");

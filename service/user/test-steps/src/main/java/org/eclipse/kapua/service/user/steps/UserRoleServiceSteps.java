@@ -61,7 +61,7 @@ public class UserRoleServiceSteps extends TestBase {
         updateScenario(scenario);
     }
 
-    @And("^I add access role \"([^\"]*)\" to user \"([^\"]*)\"$")
+    @And("I add access role {string} to user {string}")
     public void addRoleToUser(String roleName, String userName) throws Exception {
         AccessInfo accessInfo = (AccessInfo) stepData.get("AccessInfo");
         Role role = (Role) stepData.get("Role");
@@ -70,10 +70,8 @@ public class UserRoleServiceSteps extends TestBase {
             accessRoleCreator.setAccessInfoId(accessInfo.getId());
             accessRoleCreator.setRoleId(role.getId());
             stepData.put("AccessRoleCreator", accessRoleCreator);
-
             Assert.assertEquals(roleName, role.getName());
             Assert.assertEquals(userName, user.getName());
-
             try {
                 primeException();
                 stepData.remove(ACCESS_ROLE);
@@ -85,10 +83,9 @@ public class UserRoleServiceSteps extends TestBase {
             }
     }
 
-    @Then("^Access role is not found$")
+    @Then("Access role is not found")
     public void accessRoleIsNotFound() throws Exception{
         AccessRole accessRole = (AccessRole) stepData.get(ACCESS_ROLE);
-
         try {
             Assert.assertEquals(null, accessRoleService.find(getCurrentScopeId(), accessRole.getId()));
         } catch (KapuaException ex) {
@@ -96,9 +93,8 @@ public class UserRoleServiceSteps extends TestBase {
         }
     }
 
-    @And("^I add access role \"([^\"]*)\" to created users$")
+    @And("I add access role {string} to created users")
     public void iAddAccessRoleToUsers(String roleName) throws Exception {
-
         ArrayList<AccessInfo> accessInfoList = (ArrayList<AccessInfo>) stepData.get("AccessInfoList");
         ArrayList<AccessRole> accessRoleList = new ArrayList<>();
         Role role = (Role) stepData.get("Role");
@@ -106,7 +102,6 @@ public class UserRoleServiceSteps extends TestBase {
         accessRoleCreator.setRoleId(role.getId());
         stepData.put("AccessRoleCreator", accessRoleCreator);
         Assert.assertEquals(roleName, role.getName());
-
         for (AccessInfo accessInfo : accessInfoList) {
             accessRoleCreator.setAccessInfoId(accessInfo.getId());
             try {

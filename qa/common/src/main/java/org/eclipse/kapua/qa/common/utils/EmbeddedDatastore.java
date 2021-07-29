@@ -46,7 +46,12 @@ public class EmbeddedDatastore {
             try {
                 Thread.sleep(Duration.ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Wait interrupted!", e);
+                }
+                else {
+                    LOG.warn("Wait interrupted!");
+                }
             }
         }
 
@@ -61,7 +66,12 @@ public class EmbeddedDatastore {
             try {
                 Thread.sleep(Duration.ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Wait interrupted!", e);
+                }
+                else {
+                    LOG.warn("Wait interrupted!");
+                }
             }
         }
 

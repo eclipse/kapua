@@ -24,6 +24,14 @@ public class CucMessageRange {
 
     private Integer count;
 
+    public CucMessageRange(String topic, String clientId, String startDate, String endDate, Integer count) {
+        this.topic = topic;
+        this.clientId = clientId;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.count = count;
+    }
+
     public String getTopic() {
         return topic;
     }

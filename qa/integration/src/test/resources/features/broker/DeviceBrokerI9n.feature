@@ -39,7 +39,7 @@ Feature: Device Broker Integration
     Then Bundles are received
     And Configuration is requested
     Then Configuration is received
-    And Command (ls) is executed
+    And Command "ls" is executed
     Then Exit code 0 is received
     And I logout
     And Device death message is sent

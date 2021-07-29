@@ -86,10 +86,8 @@ public class AuthenticationServiceSteps extends TestBase {
         stepData.put("User", user);
     }
 
-    @When("^I configure the credential service$")
-    public void setConfigurationValue(List<CucConfig> cucConfigs)
-            throws Exception {
-
+    @When("I configure the credential service")
+    public void setConfigurationValue(List<CucConfig> cucConfigs) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaId scopeId;
         KapuaId parentScopeId;
@@ -120,10 +118,8 @@ public class AuthenticationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I read credential service configuration$")
-    public void getConfigurationValue()
-            throws Exception {
-
+    @When("I read credential service configuration")
+    public void getConfigurationValue() throws Exception {
         KapuaId scopeId;
         Account tmpAccount = (Account) stepData.get(LAST_ACCOUNT);
 
@@ -142,24 +138,22 @@ public class AuthenticationServiceSteps extends TestBase {
         }
     }
 
-    @When("I check that service configuration \"(.*)\" matches value \"(.*)\"")
+    @When("I check that service configuration {string} matches value {string}")
     public void checkConfigValue(String key, String value) {
         Map<String, Object> configValues = (Map<String, Object>)stepData.get("configValues");
         Object configValue = configValues.get(key);
         Assert.assertEquals(value, configValue);
     }
 
-    @When("I check that service configuration \"(.*)\" has no value")
+    @When("I check that service configuration {string} has no value")
     public void checkNullConfigValue(String key) {
         Map<String, Object> configValues = (Map<String, Object>)stepData.get("configValues");
         Object configValue = configValues.get(key);
         Assert.assertEquals(configValue, null);
     }
 
-    @When("^I configure the credential service for the account with the id (\\d+)$")
-    public void setCredentialServiceConfig(int accountId, List<CucConfig> cucConfigs)
-            throws Exception {
-
+    @When("I configure the credential service for the account with the id {int}")
+    public void setCredentialServiceConfig(int accountId, List<CucConfig> cucConfigs) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaId accId = getKapuaId(accountId);
 
@@ -175,9 +169,8 @@ public class AuthenticationServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I create a new PASSWORD credential for the default user with password \"(.+)\"$")
-    public void createPasswordCredential(String password)
-            throws Exception {
+    @Given("I create a new PASSWORD credential for the default user with password {string}")
+    public void createPasswordCredential(String password) throws Exception {
         primeException();
 
         User user = (User) stepData.get("User");

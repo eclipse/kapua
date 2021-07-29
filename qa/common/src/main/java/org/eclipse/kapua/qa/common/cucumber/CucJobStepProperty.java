@@ -24,10 +24,11 @@ public class CucJobStepProperty {
     private String value;
     private String exampleValue;
 
-    public CucJobStepProperty(String name, String type, String value) {
+    public CucJobStepProperty(String name, String type, String value, String exampleValue) {
         this.name = name;
         this.type = type;
         this.value = value;
+        this.exampleValue = exampleValue;
     }
 
     public String getName() {

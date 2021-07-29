@@ -189,15 +189,12 @@ public class AuthorizationServiceSteps extends TestBase {
         updateScenario(scenario);
     }
 
-    @When("^I configure the role service$")
-    public void setConfigurationValue(List<CucConfig> cucConfigs)
-            throws Exception {
-
+    @When("I configure the role service")
+    public void setConfigurationValue(List<CucConfig> cucConfigs) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaId scopeId;
         KapuaId parentScopeId;
         Account tmpAccount = (Account) stepData.get(LAST_ACCOUNT);
-
         if (tmpAccount != null) {
             scopeId = tmpAccount.getId();
             parentScopeId = tmpAccount.getScopeId();
@@ -205,7 +202,6 @@ public class AuthorizationServiceSteps extends TestBase {
             scopeId = SYS_SCOPE_ID;
             parentScopeId = SYS_SCOPE_ID;
         }
-
         for (CucConfig config : cucConfigs) {
             config.addConfigToMap(valueMap);
             if (config.getScopeId() != null) {
@@ -223,17 +219,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I configure the role service for the account with the id (\\d+)$")
-    public void setRoleServiceConfig(int accountId, List<CucConfig> cucConfigs)
-            throws Exception {
-
+    @When("I configure the role service for the account with the id {int}")
+    public void setRoleServiceConfig(int accountId, List<CucConfig> cucConfigs) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaId accId = getKapuaId(accountId);
-
         for (CucConfig config : cucConfigs) {
             config.addConfigToMap(valueMap);
         }
-
         primeException();
         try {
             roleService.setConfigValues(accId, SYS_SCOPE_ID, valueMap);
@@ -242,19 +234,15 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I create the following role(?:|s)$")
-    public void createAListOfRoles(List<CucRole> roles)
-            throws Exception {
-
+    @Given("I create the following role(s)")
+    public void createAListOfRoles(List<CucRole> roles) throws Exception {
         Domain domain = (Domain) stepData.get(DOMAIN);
         RoleCreator roleCreator = null;
         Set<Permission> permissions;
         Role role = null;
-
         stepData.remove(PERMISSIONS);
         stepData.remove(ROLE_CREATOR);
         stepData.remove("Role");
-
         primeException();
         for (CucRole tmpRole : roles) {
             tmpRole.doParse();
@@ -278,29 +266,22 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I create the following role permission(?:|s)$")
-    public void createAListOfRolePermissions(List<CucRolePermission> perms)
-            throws Exception {
-
+    @Given("I create the following role permission(s)")
+    public void createAListOfRolePermissions(List<CucRolePermission> perms) throws Exception {
         Role role = (Role) stepData.get("Role");
         Domain domain = (Domain) stepData.get(DOMAIN);
         RolePermission rolePermission = null;
         ArrayList<RolePermission> rolePermissions = new ArrayList<>();
-
         stepData.remove(ROLE_PERMISSION);
-
         primeException();
         for (CucRolePermission tmpCPerm : perms) {
             tmpCPerm.doParse();
             Assert.assertNotNull(tmpCPerm.getScopeId());
             Assert.assertNotNull(tmpCPerm.getAction());
-
             domain.setScopeId(tmpCPerm.getScopeId());
-
             RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(tmpCPerm.getScopeId());
             rolePermissionCreator.setRoleId(role.getId());
             rolePermissionCreator.setPermission(permissionFactory.newPermission(domain.getDomain(), tmpCPerm.getAction(), tmpCPerm.getTargetScopeId()));
-
             try {
                 stepData.remove(ROLE_PERMISSIONS);
                 rolePermission = rolePermissionService.create(rolePermissionCreator);
@@ -310,18 +291,14 @@ public class AuthorizationServiceSteps extends TestBase {
                 verifyException(ex);
             }
         }
-
         stepData.put(ROLE_PERMISSION, rolePermission);
     }
 
-    @When("^I update the last created role name to \"(.+)\"$")
-    public void updateRoleNameTo(String name)
-            throws Exception {
-
+    @When("I update the last created role name to {string}")
+    public void updateRoleNameTo(String name) throws Exception {
         Role role = roleFactory.clone((Role) stepData.get("Role"));
         role.setName(name);
         Thread.sleep(200);
-
         try {
             primeException();
             roleService.update(role);
@@ -330,14 +307,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I examine the permissions for the last role$")
-    public void findPermissionsForTheLastCreatedRole()
-            throws Exception {
-
+    @When("I examine the permissions for the last role")
+    public void findPermissionsForTheLastCreatedRole() throws Exception {
         Role role = (Role) stepData.get("Role");
-
         stepData.remove(PERMISSION_LIST);
-
         primeException();
         try {
             RolePermissionListResult permissionList = rolePermissionService.findByRoleId(
@@ -348,15 +321,11 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the role with name \"(.*)\"$")
-    public void findRoleWithName(String roleName)
-            throws Exception {
-
+    @When("I search for the role with name {string}")
+    public void findRoleWithName(String roleName) throws Exception {
         Role role = (Role) stepData.get("Role");
         Assert.assertEquals(roleName, role.getName());
-
         stepData.remove(ROLE_FOUND);
-
         primeException();
         try {
             Role roleFound = roleService.find(role.getScopeId(), role.getId());
@@ -366,13 +335,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the last created role permission$")
-    public void findLastCreatedRolePermission()
-            throws Exception {
-
+    @When("I search for the last created role permission")
+    public void findLastCreatedRolePermission() throws Exception {
         RolePermission rolePermission = (RolePermission) stepData.get(ROLE_PERMISSION);
         stepData.remove(ROLE_PERMISSION_FOUND);
-
         primeException();
         try {
             RolePermission rolePermissionFound = rolePermissionService.find(
@@ -383,10 +349,8 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for a random role ID$")
-    public void searchForRandomId()
-            throws Exception {
-
+    @When("I search for a random role ID")
+    public void searchForRandomId() throws Exception {
         primeException();
         try {
             Role roleFound = roleService.find(SYS_SCOPE_ID, getKapuaId());
@@ -396,12 +360,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete the role with name \"([^\"]*)\"$")
-    public void deleteRoleWithName(String roleName)
-            throws Exception {
-
+    @When("I delete the role with name {string}")
+    public void deleteRoleWithName(String roleName) throws Exception {
         Role role = (Role) stepData.get("Role");
-
         primeException();
         try {
             Assert.assertEquals(roleName, role.getName());
@@ -412,12 +373,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete the last created role permission$")
-    public void deleteLastCreatedRolePermission()
-            throws Exception {
-
+    @When("I delete the last created role permission")
+    public void deleteLastCreatedRolePermission() throws Exception {
         RolePermission rolePermission = (RolePermission) stepData.get(ROLE_PERMISSION);
-
         primeException();
         try {
             rolePermissionService.delete(rolePermission.getScopeId(), rolePermission.getId());
@@ -426,15 +384,11 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I count the roles in scope (\\d+)$")
-    public void countRolesInScope(int scope)
-            throws Exception {
-
+    @When("I count the roles in scope {int}")
+    public void countRolesInScope(int scope) throws Exception {
         KapuaId tmpId = getKapuaId(scope);
         RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
-
         stepData.remove(COUNT);
-
         primeException();
         try {
             Long count = roleService.count(tmpQuery);
@@ -444,15 +398,11 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I count the role permissions in scope (\\d+)$")
-    public void countRolePermissionsInScope(Integer scope)
-            throws Exception {
-
+    @When("I count the role permissions in scope {int}")
+    public void countRolePermissionsInScope(Integer scope) throws Exception {
         KapuaId tmpId = getKapuaId(scope);
         RolePermissionQuery tmpQuery = rolePermissionFactory.newQuery(tmpId);
-
         stepData.remove(COUNT);
-
         primeException();
         try {
             Long count = rolePermissionService.count(tmpQuery);
@@ -462,18 +412,14 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I query for the role \"(.+)\" in scope (\\d+)$")
-    public void queryForRoleInScope(String name, Integer scope)
-            throws Exception {
-
+    @When("I query for the role {string} in scope {int}")
+    public void queryForRoleInScope(String name, Integer scope) throws Exception {
         KapuaId tmpId = getKapuaId(scope);
         RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
         tmpQuery.setPredicate(tmpQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
-
         stepData.remove(ROLE_LIST);
         stepData.remove(ROLE_FOUND);
         stepData.remove(COUNT);
-
         primeException();
         try {
             RoleListResult roleList = roleService.query(tmpQuery);
@@ -485,27 +431,25 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^The role was found$")
+    @Then("The role was found")
     public void chackThatSomethingWasFound() {
         Assert.assertNotNull(stepData.get(ROLE_FOUND));
     }
 
-    @Then("^I find no roles$")
+    @Then("I find no roles")
     public void chackThatNothingWasFound() {
         Assert.assertNull(stepData.get(ROLE_FOUND));
     }
 
-    @Then("^I find no permissions$")
+    @Then("I find no permissions")
     public void checkThatNoPermissionWasFound() {
         Assert.assertNull(stepData.get(ROLE_PERMISSION_FOUND));
     }
 
-    @Then("^The role matches the creator$")
+    @Then("The role matches the creator")
     public void checkLastRoleAgainstCreator() {
-
         Role role = (Role) stepData.get("Role");
         RoleCreator roleCreator = (RoleCreator) stepData.get(ROLE_CREATOR);
-
         Assert.assertNotNull(role);
         Assert.assertNotNull(roleCreator);
         Assert.assertEquals(roleCreator.getScopeId(), role.getScopeId());
@@ -516,12 +460,10 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertNotNull(role.getModifiedOn());
     }
 
-    @Then("^The permissions match$")
+    @Then("The permissions match")
     public void checkPermissionsAgainstRole() {
-
         Set<Permission> permissions = (Set<Permission>) stepData.get(PERMISSIONS);
         RolePermissionListResult permissionList = (RolePermissionListResult) stepData.get(PERMISSION_LIST);
-
         boolean found;
         Assert.assertNotNull(permissions);
         Assert.assertNotNull(permissionList);
@@ -540,11 +482,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I find the following actions$")
+    @Then("I find the following actions")
     public void checkPermissionsAgainstList(List<CucRole> roles) {
-
         RolePermissionListResult permissionList = (RolePermissionListResult) stepData.get(PERMISSION_LIST);
-
         Assert.assertNotNull(roles);
         Assert.assertEquals(1, roles.size());
         CucRole tmpRole = roles.get(0);
@@ -560,12 +500,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^The correct role entry was found$")
+    @Then("The correct role entry was found")
     public void verifyThatRolesMatch() {
-
         Role role = (Role) stepData.get("Role");
         Role roleFound = (Role) stepData.get(ROLE_FOUND);
-
         Assert.assertNotNull(role);
         Assert.assertNotNull(roleFound);
         Assert.assertEquals(role.getId(), roleFound.getId());
@@ -577,12 +515,10 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertEquals(role.getModifiedOn(), roleFound.getModifiedOn());
     }
 
-    @Then("^The correct role permission entry was found$")
+    @Then("The correct role permission entry was found")
     public void verifyThatRolePermissionsMatch() {
-
         RolePermission rolePermission = (RolePermission) stepData.get(ROLE_PERMISSION);
         RolePermission rolePermissionFound = (RolePermission) stepData.get(ROLE_PERMISSION_FOUND);
-
         Assert.assertNotNull(rolePermission);
         Assert.assertNotNull(rolePermissionFound);
         Assert.assertEquals(rolePermission.getId(), rolePermissionFound.getId());
@@ -591,12 +527,10 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertEquals(rolePermission.getCreatedOn(), rolePermissionFound.getCreatedOn());
     }
 
-    @Then("^The role was successfully updated$")
+    @Then("The role was successfully updated")
     public void checkRoleForUpdates() {
-
         Role role = (Role) stepData.get("Role");
         Role roleFound = (Role) stepData.get(ROLE_FOUND);
-
         Assert.assertNotNull(role);
         Assert.assertNotNull(roleFound);
         Assert.assertEquals(role.getId(), roleFound.getId());
@@ -608,9 +542,8 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertNotEquals(role.getModifiedOn(), roleFound.getModifiedOn());
     }
 
-    @Then("^The role factory returns sane results$")
+    @Then("The role factory returns sane results")
     public void performRoleFactorySanityChecks() {
-
         Assert.assertNotNull(roleFactory.newEntity(SYS_SCOPE_ID));
         Assert.assertNotNull(roleFactory.newCreator(SYS_SCOPE_ID));
         Assert.assertNotNull(roleFactory.newQuery(SYS_SCOPE_ID));
@@ -618,26 +551,22 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertNotNull(roleFactory.newRolePermission());
     }
 
-    @Then("^The role permission factory returns sane results$")
+    @Then("The role permission factory returns sane results")
     public void performRolePermissionFactorySanityChecks() {
-
         Assert.assertNotNull(rolePermissionFactory.newEntity(SYS_SCOPE_ID));
         Assert.assertNotNull(rolePermissionFactory.newCreator(SYS_SCOPE_ID));
         Assert.assertNotNull(rolePermissionFactory.newQuery(SYS_SCOPE_ID));
         Assert.assertNotNull(rolePermissionFactory.newListResult());
     }
 
-    @Then("^The role comparator does its job$")
+    @Then("The role comparator does its job")
     public void checkRoleEqualityMethod() {
-
         Role role1 = roleFactory.newEntity(SYS_SCOPE_ID);
         Role role2 = roleFactory.newEntity(SYS_SCOPE_ID);
         Integer miscObj = 10;
-
         Assert.assertNotNull(role1);
         Assert.assertNotNull(role2);
         Assert.assertNotNull(miscObj);
-
         Assert.assertTrue(role1.equals(role1));
         Assert.assertFalse(role1.equals(null));
         Assert.assertFalse(role1.equals(miscObj));
@@ -650,7 +579,7 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertTrue(role1.equals(role2));
     }
 
-    @Then("^The role permission comparator does its job$")
+    @Then("The role permission comparator does its job")
     public void checkRolePermissionEqualityMethod() {
         RolePermission perm1 = rolePermissionFactory.newEntity(SYS_SCOPE_ID);
         RolePermission perm2 = rolePermissionFactory.newEntity(SYS_SCOPE_ID);
@@ -659,23 +588,18 @@ public class AuthorizationServiceSteps extends TestBase {
         Permission tmpPermission2 = permissionFactory.newPermission(TEST_DOMAIN, Actions.write, SYS_SCOPE_ID);
         KapuaId tmpRoleId1 = getKapuaId();
         KapuaId tmpRoleId2 = getKapuaId();
-
         Assert.assertNotNull(perm1);
         Assert.assertNotNull(perm2);
         Assert.assertTrue(perm1.equals(perm1));
         Assert.assertFalse(perm1.equals(null));
         Assert.assertFalse(perm1.equals(miscObj));
         Assert.assertTrue(perm1.equals(perm2));
-
         perm2.setPermission(tmpPermission2);
         Assert.assertFalse(perm1.equals(perm2));
-
         perm1.setPermission(tmpPermission1);
         Assert.assertFalse(perm1.equals(perm2));
-
         perm2.setPermission(tmpPermission1);
         Assert.assertTrue(perm1.equals(perm2));
-
         perm2.setRoleId(tmpRoleId1);
         Assert.assertFalse(perm1.equals(perm2));
         perm1.setRoleId(tmpRoleId1);
@@ -684,47 +608,33 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertFalse(perm1.equals(perm2));
     }
 
-    @Then("^The role permission object constructors are sane$")
+    @Then("The role permission object constructors are sane")
     public void checkRolePermissionConstructors() {
-
         Permission tmpPermission = permissionFactory.newPermission(TEST_DOMAIN, Actions.read, SYS_SCOPE_ID);
         KapuaId tmpRoleId = getKapuaId();
-
         RolePermission perm1 = rolePermissionFactory.newEntity(SYS_SCOPE_ID);
         Assert.assertNotNull(perm1);
-//        RolePermission perm2 = new RolePermissionImpl(perm1);
-//        assertNotNull(perm2);
-//        assertTrue(perm1.equals(perm2));
-//        RolePermission perm3 = new RolePermissionImpl(SYS_SCOPE_ID, tmpPermission);
-//        assertNotNull(perm3);
-//        assertEquals(perm3.getPermission(), tmpPermission);
         perm1.setRoleId(tmpRoleId);
         Assert.assertEquals(tmpRoleId, perm1.getRoleId());
         perm1.setPermission(tmpPermission);
         Assert.assertEquals(perm1.getPermission(), tmpPermission);
     }
 
-    @Given("^I create the domain(?:|s)$")
-    public void createAListOfDomains(List<CucDomain> domains)
-            throws Exception {
-
+    @Given("I create the domain(s)")
+    public void createAListOfDomains(List<CucDomain> domains) throws Exception {
         DomainCreator domainCreator = null;
         Domain domain = null;
-
         stepData.remove(DOMAIN_CREATOR);
         stepData.remove(DOMAIN);
         stepData.remove(DOMAIN_ID);
-
         primeException();
         for (CucDomain tmpDom : domains) {
             tmpDom.doParse();
-
             domainCreator = domainFactory.newCreator(tmpDom.getName());
             if (tmpDom.getActionSet() != null) {
                 domainCreator.setActions(tmpDom.getActionSet());
             }
             stepData.put(DOMAIN_CREATOR, domainCreator);
-
             try {
                 domain = domainRegistryService.create(domainCreator);
                 stepData.put(DOMAIN, domain);
@@ -737,13 +647,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I select the domain \"(.+)\"$")
-    public void selectExistingDomain(String name)
-            throws Exception {
-
+    @Given("I select the domain {string}")
+    public void selectExistingDomain(String name) throws Exception {
         DomainQuery query = domainFactory.newQuery(KapuaId.ANY);
         query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
-
         try {
             primeException();
             DomainListResult domains = domainRegistryService.query(query);
@@ -753,13 +660,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the last created domain$")
-    public void findDomainByRememberedId()
-            throws Exception {
-
+    @When("I search for the last created domain")
+    public void findDomainByRememberedId() throws Exception {
         KapuaId domainId = (KapuaId) stepData.get(DOMAIN_ID);
         stepData.remove(DOMAIN);
-
         try {
             primeException();
             Domain domain = domainRegistryService.find(null, domainId);
@@ -769,12 +673,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete the last created domain$")
-    public void deleteLastCreatedDomain()
-            throws Exception {
-
+    @When("I delete the last created domain")
+    public void deleteLastCreatedDomain() throws Exception {
         KapuaId domainId = (KapuaId) stepData.get(DOMAIN_ID);
-
         try {
             primeException();
             domainRegistryService.delete(null, domainId);
@@ -783,10 +684,8 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I try to delete domain with a random ID$")
-    public void deleteRandomDomainId()
-            throws Exception {
-
+    @When("I try to delete domain with a random ID")
+    public void deleteRandomDomainId() throws Exception {
         try {
             primeException();
             domainRegistryService.delete(null, getKapuaId());
@@ -795,12 +694,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I count the domain entries in the database$")
-    public void countDomainEntries()
-            throws Exception {
-
+    @When("I count the domain entries in the database")
+    public void countDomainEntries() throws Exception {
         stepData.remove(COUNT);
-
         try {
             primeException();
             DomainQuery query = domainFactory.newQuery(null);
@@ -811,16 +707,12 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I query for domains with the name \"(.+)\"$")
-    public void queryForNamedDomain(String name)
-            throws Exception {
-
+    @When("I query for domains with the name {string}")
+    public void queryForNamedDomain(String name) throws Exception {
         DomainQuery query = domainFactory.newQuery(null);
         query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
-
         stepData.remove("DomainList");
         stepData.remove(COUNT);
-
         try {
             primeException();
             DomainListResult domainList = domainRegistryService.query(query);
@@ -831,23 +723,20 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^This is the initial count$")
+    @Then("This is the initial count")
     public void setInitialCount() {
-
         Long startCount = (Long) stepData.get(COUNT);
         stepData.put("InitialCount", startCount);
     }
 
-    @Then("^A domain was created$")
+    @Then("A domain was created")
     public void checkDomainNotNull() {
-
         Domain domain = (Domain) stepData.get(DOMAIN);
         Assert.assertNotNull(domain);
     }
 
-    @Then("^There is no domain$")
+    @Then("There is no domain")
     public void checkDomainIsNull() {
-
         Domain domain = (Domain) stepData.get(DOMAIN);
         Assert.assertNull(domain);
     }
@@ -861,10 +750,8 @@ public class AuthorizationServiceSteps extends TestBase {
     // values for all 3 members, but the Domain service create method will reject any domain
     // creator with a null value for any member variable.
     // As such this step is of limited usefulness and should be taken with a grain of salt.
-    @Then("^I can compare domain objects$")
-    public void checkDomainComparison()
-            throws KapuaException {
-
+    @Then("I can compare domain objects")
+    public void checkDomainComparison() throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {
             DomainCreator tmpCreator = domainFactory.newCreator("name_1");
             HashSet<Actions> tmpAct = new HashSet<>();
@@ -873,25 +760,20 @@ public class AuthorizationServiceSteps extends TestBase {
             tmpCreator.setActions(tmpAct);
             Domain tmpDom1 = domainRegistryService.create(tmpCreator);
             Assert.assertNotNull(tmpDom1);
-
             Assert.assertTrue(tmpDom1.equals(tmpDom1));
             Assert.assertFalse(tmpDom1.equals(null));
             Assert.assertFalse(tmpDom1.equals(String.valueOf("")));
-
             Domain tmpDom2 = null;
             tmpDom2 = domainRegistryService.find(null, tmpDom1.getId());
             Assert.assertNotNull(tmpDom2);
-
             tmpCreator.setName("name_2");
             Domain tmpDom3 = domainRegistryService.create(tmpCreator);
             Assert.assertNotNull(tmpDom3);
-
             tmpCreator.setName("name_3");
             tmpAct.remove(Actions.write);
             tmpCreator.setActions(tmpAct);
             Domain tmpDom4 = domainRegistryService.create(tmpCreator);
             Assert.assertNotNull(tmpDom4);
-
             Assert.assertTrue(tmpDom1.equals(tmpDom2));
             Assert.assertFalse(tmpDom1.equals(tmpDom3));
             Assert.assertFalse(tmpDom1.equals(tmpDom4));
@@ -899,12 +781,10 @@ public class AuthorizationServiceSteps extends TestBase {
         });
     }
 
-    @Then("^The domain matches the creator$")
+    @Then("The domain matches the creator")
     public void checkDomainAgainstCreator() {
-
         Domain domain = (Domain) stepData.get(DOMAIN);
         DomainCreator domainCreator = (DomainCreator) stepData.get(DOMAIN_CREATOR);
-
         Assert.assertNotNull(domain);
         Assert.assertNotNull(domain.getId());
         Assert.assertNotNull(domainCreator);
@@ -918,15 +798,12 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^The domain matches the parameters$")
+    @Then("The domain matches the parameters")
     public void checkDomainAgainstParameters(List<CucDomain> domains) {
-
         Domain domain = (Domain) stepData.get(DOMAIN);
-
         Assert.assertEquals(1, domains.size());
         CucDomain tmpDom = domains.get(0);
         tmpDom.doParse();
-
         if (tmpDom.getName() != null) {
             Assert.assertEquals(tmpDom.getName(), domain.getName());
         }
@@ -938,24 +815,19 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^(\\d+) more domains (?:was|were) created$")
+    @Then("{long} more domains (was/were) created")
     public void checkIncreasedCountResult(Long cnt) {
-
         Long count = (Long) stepData.get(COUNT);
         Long initialCount = (Long) stepData.get("InitialCount");
-
         Assert.assertEquals(cnt.longValue(), count.longValue() - initialCount.longValue());
     }
 
-    @When("^I configure the group service$")
-    public void setGroupConfigurationValue(List<CucConfig> cucConfigs)
-            throws Exception {
-
+    @When("I configure the group service")
+    public void setGroupConfigurationValue(List<CucConfig> cucConfigs) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaId scopeId;
         KapuaId parentScopeId;
         Account tmpAccount = (Account) stepData.get(LAST_ACCOUNT);
-
         if (tmpAccount != null) {
             scopeId = tmpAccount.getId();
             parentScopeId = tmpAccount.getScopeId();
@@ -963,7 +835,6 @@ public class AuthorizationServiceSteps extends TestBase {
             scopeId = SYS_SCOPE_ID;
             parentScopeId = SYS_SCOPE_ID;
         }
-
         for (CucConfig config : cucConfigs) {
             config.addConfigToMap(valueMap);
             if (config.getScopeId() != null) {
@@ -981,10 +852,8 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I count the group entries in the database$")
-    public void countGroupEntries()
-            throws Exception {
-
+    @When("I count the group entries in the database")
+    public void countGroupEntries() throws Exception {
         stepData.remove(COUNT);
         primeException();
         try {
@@ -995,21 +864,17 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I create the group(?:|s)$")
-    public void createAListOfGroups(List<CucGroup> groups)
-            throws Exception {
-
+    @Given("I create the group(s)")
+    public void createAListOfGroups(List<CucGroup> groups) throws Exception {
         Group group = null;
         GroupCreator groupCreator = null;
         stepData.remove(GROUP_CREATOR);
         stepData.remove(GROUP);
         stepData.remove("GroupId");
-
         primeException();
         for (CucGroup tmpGrp : groups) {
             tmpGrp.doParse();
             groupCreator = groupFactory.newCreator(tmpGrp.getScopeId(), tmpGrp.getName());
-
             try {
                 group = groupService.create(groupCreator);
                 stepData.put(GROUP_CREATOR, groupCreator);
@@ -1021,15 +886,12 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I update the group name to \"(.+)\"$")
-    public void updateLastGroupName(String name)
-            throws Exception {
-
+    @When("I update the group name to {string}")
+    public void updateLastGroupName(String name) throws Exception {
         Group group = (Group) stepData.get(GROUP);
         group.setName(name);
         // Sleep for a bit to make sure the time stamps are really different!
         Thread.sleep(50);
-
         try {
             Group groupSecond = groupService.update(group);
             stepData.put(GROUP_SECOND, groupSecond);
@@ -1039,13 +901,10 @@ public class AuthorizationServiceSteps extends TestBase {
 
     }
 
-    @When("^I update the group with an incorrect ID$")
-    public void updateGroupWithFalseId()
-            throws Exception {
-
+    @When("I update the group with an incorrect ID")
+    public void updateGroupWithFalseId() throws Exception {
         Group group = (Group) stepData.get(GROUP);
         group.setId(getKapuaId());
-
         primeException();
         try {
             groupService.update(group);
@@ -1054,10 +913,8 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I delete the group with name \"([^\"]*)\"$")
-    public void deleteGroupWithName(String groupName)
-            throws Exception {
-
+    @Then("I delete the group with name {string}")
+    public void deleteGroupWithName(String groupName) throws Exception {
         primeException();
         try {
             GroupQuery tmpQuery = groupFactory.newQuery(getCurrentScopeId());
@@ -1069,11 +926,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I try to delete the group with name \"([^\"]*)\"$")
-    public void tryToDeleteGroupWithName(String groupName)
-            throws Exception {
+    @Then("I try to delete the group with name {string}")
+    public void tryToDeleteGroupWithName(String groupName) throws Exception {
         Group group = (Group) stepData.get(GROUP);
-
         primeException();
         try {
             Assert.assertEquals(groupName, group.getName());
@@ -1083,10 +938,8 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I try to delete a random group id$")
-    public void deleteGroupWithRandomId()
-            throws Exception {
-
+    @When("I try to delete a random group id")
+    public void deleteGroupWithRandomId() throws Exception {
         primeException();
         try {
             groupService.delete(SYS_SCOPE_ID, getKapuaId());
@@ -1095,13 +948,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the group with name \"([^\"]*)\"$")
-    public void findGroupByRememberedId(String groupName)
-            throws Exception {
-
+    @When("I search for the group with name {string}")
+    public void findGroupByRememberedId(String groupName) throws Exception {
         Group group = (Group) stepData.get(GROUP);
         Assert.assertEquals(groupName, group.getName());
-
         primeException();
         try {
             Group groupSecond = groupService.find(group.getScopeId(), group.getId());
@@ -1109,16 +959,12 @@ public class AuthorizationServiceSteps extends TestBase {
         } catch (KapuaException ex) {
             verifyException(ex);
         }
-
     }
 
-    @When("^I count all the groups in scope (\\d+)$")
-    public void countGroupsInScope(int scope)
-            throws Exception {
-
+    @When("I count all the groups in scope {int}")
+    public void countGroupsInScope(int scope) throws Exception {
         KapuaId tmpId = getKapuaId(scope);
         GroupQuery tmpQuery = groupFactory.newQuery(tmpId);
-
         primeException();
         try {
             Long count = groupService.count(tmpQuery);
@@ -1128,18 +974,14 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I query for the group \"(.+)\" in scope (\\d+)$")
-    public void queryForGroup(String name, int scope)
-            throws Exception {
-
+    @When("I query for the group {string} in scope {int}")
+    public void queryForGroup(String name, int scope) throws Exception {
         KapuaId tmpId = getKapuaId(scope);
         GroupQuery tmpQuery = groupFactory.newQuery(tmpId);
         tmpQuery.setPredicate(tmpQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
-
         stepData.remove("GroupList");
         stepData.remove(GROUP);
         stepData.remove(COUNT);
-
         primeException();
         try {
             GroupListResult groupList = groupService.query(tmpQuery);
@@ -1151,43 +993,36 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^A group was created$")
+    @Then("A group was created")
     public void checkGroupNotNull() {
-
         Assert.assertNotNull(stepData.get(GROUP));
     }
 
-    @Then("^No group was created$")
+    @Then("No group was created")
     public void checkGroupIsNull() {
-
         Assert.assertNull(stepData.get(GROUP));
     }
 
-    @Then("^The group was found$")
+    @Then("The group was found")
     public void checkThatTheGroupWasFound() {
-
         Assert.assertNotNull(stepData.get(GROUP_SECOND));
     }
 
-    @Then("^No group was found$")
+    @Then("No group was found")
     public void checkNoGroupWasFound() {
-
         Assert.assertNull(stepData.get(GROUP_SECOND));
     }
 
-    @Then("^The group name is \"(.+)\"$")
+    @Then("The group name is {string}")
     public void checkGroupName(String name) {
-
         Group group = (Group) stepData.get(GROUP);
         Assert.assertEquals(group.getName(), name.trim());
     }
 
-    @Then("^The group matches the creator$")
+    @Then("The group matches the creator")
     public void checkGroupAgainstCreator() {
-
         Group group = (Group) stepData.get(GROUP);
         GroupCreator groupCreator = (GroupCreator) stepData.get(GROUP_CREATOR);
-
         Assert.assertNotNull(group);
         Assert.assertNotNull(group.getId());
         Assert.assertNotNull(groupCreator);
@@ -1199,12 +1034,10 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertNotNull(group.getModifiedOn());
     }
 
-    @Then("^The group was correctly updated$")
+    @Then("The group was correctly updated")
     public void checkUpdatedGroup() {
-
         Group group = (Group) stepData.get(GROUP);
         Group groupSecond = (Group) stepData.get(GROUP_SECOND);
-
         Assert.assertNotNull(groupSecond);
         Assert.assertNotNull(groupSecond.getId());
         Assert.assertEquals(group.getScopeId(), groupSecond.getScopeId());
@@ -1215,12 +1048,10 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertNotEquals(group.getModifiedOn(), groupSecond.getModifiedOn());
     }
 
-    @Then("^The group was correctly found$")
+    @Then("The group was correctly found")
     public void checkFoundGroup() {
-
         Group group = (Group) stepData.get(GROUP);
         Group groupSecond = (Group) stepData.get(GROUP_SECOND);
-
         Assert.assertNotNull(groupSecond);
         Assert.assertNotNull(groupSecond.getId());
         Assert.assertEquals(group.getScopeId(), groupSecond.getScopeId());
@@ -1231,21 +1062,17 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertEquals(group.getModifiedOn(), groupSecond.getModifiedOn());
     }
 
-    @Given("^The permission(?:|s) \"(.+)\"$")
+    @Given("The permission(s) {string}")
     public void createPermissionsForDomain(String permList) {
-
         // Split the parameter string and make sure there is at least one item
         String[] tmpList = permList.toLowerCase().split(",");
         Assert.assertNotNull(tmpList);
         Assert.assertNotEquals(0, tmpList.length);
-
         // Parse the items and fill the list
         Set<Permission> permissions = new HashSet<>();
         KapuaId currId = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
-
         // Get the current domain
         Domain curDomain = (Domain) stepData.get(DOMAIN);
-
         for (String perm : tmpList) {
             switch (perm.trim()) {
                 case "read":
@@ -1267,21 +1094,16 @@ public class AuthorizationServiceSteps extends TestBase {
         }
         // Make sure that there is at least one valid item
         Assert.assertFalse(permissions.isEmpty());
-
         stepData.put(PERMISSIONS, permissions);
     }
 
-    @Given("^The role \"(.*)\"$")
-    public void provideRoleForDomain(String name)
-            throws Exception {
-
+    @Given("The role {string}")
+    public void provideRoleForDomain(String name) throws Exception {
         KapuaId currId = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         Set<Permission> permissions = (Set<Permission>) stepData.get(PERMISSIONS);
-
         RoleCreator roleCreator = roleFactory.newCreator(currId);
         roleCreator.setName(name);
         roleCreator.setPermissions(permissions);
-
         try {
             primeException();
             stepData.remove("Role");
@@ -1296,26 +1118,22 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Given("^An invalid role ID$")
+    @Given("An invalid role ID")
     public void provideInvalidRoleObjectID() {
-
         stepData.remove(ROLE_IDS);
         Set<KapuaId> roleIds = new HashSet<>();
         roleIds.add(getKapuaId());
         stepData.put(ROLE_IDS, roleIds);
     }
 
-    @When("^I create the access role$")
-    public void createAccessRole()
-            throws Exception {
-
+    @When("I create the access role")
+    public void createAccessRole() throws Exception {
         KapuaId currScope = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
         Role role = (Role) stepData.get("Role");
         AccessRoleCreator tmpCreator = accessRoleFactory.newCreator(currScope);
         tmpCreator.setAccessInfoId(accessInfo.getId());
         tmpCreator.setRoleId(role.getId());
-
         try {
             primeException();
             stepData.remove(ACCESS_ROLE);
@@ -1326,18 +1144,14 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I create a clean access info entity$")
-    public void createCleanAccessInfoEntity()
-            throws Exception {
-
+    @When("I create a clean access info entity")
+    public void createCleanAccessInfoEntity() throws Exception {
         KapuaId currScope = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         User tmpUser = (User) stepData.get("User");
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(currScope);
         accessInfoCreator.setUserId(tmpUser.getId());
-
         stepData.remove(PERMISSIONS);
         stepData.remove(ROLE_IDS);
-
         try {
             primeException();
             stepData.put(ACCESS_INFO_CREATOR, accessInfoCreator);
@@ -1349,30 +1163,24 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I create the access info entity$")
-    public void createAccessInfoEntity()
-            throws Exception {
-
+    @When("I create the access info entity")
+    public void createAccessInfoEntity() throws Exception {
         KapuaId currScope = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         User tmpUser = (User) stepData.get("User");
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(currScope);
         accessInfoCreator.setUserId(tmpUser.getId());
-
         Set<Permission> permissions = (Set<Permission>) stepData.get(PERMISSIONS);
         Set<KapuaId> roleIds = (Set<KapuaId>) stepData.get(ROLE_IDS);
-
         if (permissions != null && !permissions.isEmpty()) {
             accessInfoCreator.setPermissions(permissions);
         } else {
             accessInfoCreator.setPermissions(null);
         }
-
         if (roleIds != null && !roleIds.isEmpty()) {
             accessInfoCreator.setRoleIds(roleIds);
         } else {
             accessInfoCreator.setRoleIds(null);
         }
-
         try {
             primeException();
             stepData.put(ACCESS_INFO_CREATOR, accessInfoCreator);
@@ -1384,12 +1192,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the permissions of the last access info entity$")
-    public void findThePermissionsOfTheLastAccessInfoEntity()
-            throws Exception {
-
+    @When("I search for the permissions of the last access info entity")
+    public void findThePermissionsOfTheLastAccessInfoEntity() throws Exception {
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
-
         try {
             primeException();
             stepData.remove(ACCESS_PERMISSIONS);
@@ -1401,12 +1206,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the roles of the last access info entity$")
-    public void findTheRolesOfTheLastAccessInfoEntity()
-            throws Exception {
-
+    @When("I search for the roles of the last access info entity")
+    public void findTheRolesOfTheLastAccessInfoEntity() throws Exception {
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
-
         try {
             primeException();
             stepData.remove(ACCESS_ROLES);
@@ -1417,12 +1219,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the last created access info entity$")
-    public void findLastCreatedAccessInfoEntity()
-            throws Exception {
-
+    @When("I search for the last created access info entity")
+    public void findLastCreatedAccessInfoEntity() throws Exception {
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
-
         try {
             primeException();
             stepData.remove(ACCESS_INFO_FOUND);
@@ -1433,13 +1232,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for an access info entity by user ID$")
-    public void findTheAccessInfoEntityByUserId()
-            throws Exception {
-
+    @When("I search for an access info entity by user ID")
+    public void findTheAccessInfoEntityByUserId() throws Exception {
         KapuaId currScope = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         User tmpUser = (User) stepData.get("User");
-
         try {
             primeException();
             stepData.remove(ACCESS_INFO_FOUND);
@@ -1450,13 +1246,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the last created access role entity$")
-    public void findLastCreatedAccessRole()
-            throws Exception {
-
+    @When("I search for the last created access role entity")
+    public void findLastCreatedAccessRole() throws Exception {
         KapuaId currScope = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         AccessRole accessRole = (AccessRole) stepData.get(ACCESS_ROLE);
-
         try {
             primeException();
             stepData.remove(ACCESS_ROLE_FOUND);
@@ -1467,12 +1260,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I count the access roles in scope (\\d+)$")
-    public void countAccesRolesInScope(Integer scope)
-            throws Exception {
-
+    @When("I count the access roles in scope {int}")
+    public void countAccesRolesInScope(Integer scope) throws Exception {
         AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(getKapuaId(scope));
-
         try {
             primeException();
             stepData.remove(COUNT);
@@ -1483,13 +1273,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete the last created access role entry$")
-    public void deleteLastCreatedAccessRoleEntry()
-            throws Exception {
-
+    @When("I delete the last created access role entry")
+    public void deleteLastCreatedAccessRoleEntry() throws Exception {
         KapuaId currScope = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         AccessRole accessRole = (AccessRole) stepData.get(ACCESS_ROLE);
-
         try {
             primeException();
             accessRoleService.delete(currScope, accessRole.getId());
@@ -1498,13 +1285,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete the existing access info entity$")
-    public void deleteLastCreatedAccessInfoEntity()
-            throws Exception {
-
+    @When("I delete the existing access info entity")
+    public void deleteLastCreatedAccessInfoEntity() throws Exception {
         KapuaId currScope = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
-
         try {
             primeException();
             accessInfoService.delete(currScope, accessInfo.getId());
@@ -1513,12 +1297,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I count the access info entities for scope (\\d+)$")
-    public void countAccessInfoEntitiesInScope(Integer scope)
-            throws Exception {
-
+    @When("I count the access info entities for scope {int}")
+    public void countAccessInfoEntitiesInScope(Integer scope) throws Exception {
         AccessInfoQuery tmpQuery = accessInfoFactory.newQuery(getKapuaId(scope));
-
         try {
             primeException();
             stepData.remove(COUNT);
@@ -1529,16 +1310,12 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I query for the access info entities for the last user$")
-    public void queryForLastUserAccessInfoEntities()
-            throws Exception {
-
+    @When("I query for the access info entities for the last user")
+    public void queryForLastUserAccessInfoEntities() throws Exception {
         KapuaId currScope = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         User user = (User) stepData.get("User");
-
         AccessInfoQuery tmpQuery = accessInfoFactory.newQuery(currScope);
         tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessInfoAttributes.USER_ID, user.getId(), AttributePredicate.Operator.EQUAL));
-
         try {
             primeException();
             stepData.remove(COUNT);
@@ -1553,17 +1330,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I create the permission(?:|s)$")
-    public void createPermissionEntries()
-            throws Exception {
-
+    @When("I create the permission(s)")
+    public void createPermissionEntries() throws Exception {
         KapuaId currScope = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
         Set<Permission> permissions = (Set<Permission>) stepData.get(PERMISSIONS);
-
         AccessPermissionCreator accessPermissionCreator = accessPermissionFactory.newCreator(currScope);
         accessPermissionCreator.setAccessInfoId(accessInfo.getId());
-
         try {
             primeException();
             AccessPermission accessPermission = null;
@@ -1584,13 +1357,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the last created permission$")
-    public void findTheLastCreatedAccessPermission()
-            throws Exception {
-
+    @When("I search for the last created permission")
+    public void findTheLastCreatedAccessPermission() throws Exception {
         stepData.remove(ACCESS_PERMISSION_FOUND);
         AccessPermission permission = (AccessPermission) stepData.get(LAST_ACCESS_PERMISSION);
-
         try {
             AccessPermission accessPermissionFound = accessPermissionService.find(permission.getScopeId(), permission.getId());
             stepData.put(ACCESS_PERMISSION_FOUND, accessPermissionFound);
@@ -1599,12 +1369,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete the last created access permission$")
-    public void deleteLastCreatedPermission()
-            throws Exception {
-
+    @When("I delete the last created access permission")
+    public void deleteLastCreatedPermission() throws Exception {
         AccessPermission permission = (AccessPermission) stepData.get(LAST_ACCESS_PERMISSION);
-
         try {
             primeException();
             accessPermissionService.delete(permission.getScopeId(), permission.getId());
@@ -1613,13 +1380,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I count the permissions in scope (\\d+)$")
-    public void countPermissionsForScope(Integer scope)
-            throws Exception {
-
+    @When("I count the permissions in scope {int}")
+    public void countPermissionsForScope(Integer scope) throws Exception {
         KapuaId tmpId = getKapuaId(scope);
         AccessPermissionQuery tmpQuery = accessPermissionFactory.newQuery(tmpId);
-
         try {
             primeException();
             stepData.remove(COUNT);
@@ -1630,37 +1394,18 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I check the sanity of the access info factory$")
-    public void accessInfoServiceSanityCheck()
-            throws Exception {
-
+    @When("I check the sanity of the access info factory")
+    public void accessInfoServiceSanityCheck() throws Exception {
         try {
             primeException();
-
             Assert.assertNotNull(accessInfoFactory.newCreator(getKapuaId()));
             Assert.assertNotNull(accessInfoFactory.newEntity(null));
             Assert.assertNotNull(accessInfoFactory.newQuery(getKapuaId()));
             Assert.assertNotNull(accessInfoFactory.newListResult());
-
             AccessInfoCreator tmpCreator = accessInfoFactory.newCreator(getKapuaId());
             Assert.assertNotNull(tmpCreator);
-//            tmpCreator.setUserId(getKapuaId());
-//
-//            AccessInfoCreator tmpCreator2 = new AccessInfoCreatorImpl(tmpCreator);
-//            assertNotNull(tmpCreator2);
-//            assertEquals(tmpCreator.getUserId(), tmpCreator2.getUserId());
-
             AccessInfo tmpAccInfo = accessInfoFactory.newEntity(getKapuaId());
             Assert.assertNotNull(tmpAccInfo);
-//            tmpAccInfo.setUserId(getKapuaId());
-//
-//            AccessInfo tmpAccInfo2 = new AccessInfoImpl(tmpAccInfo);
-//            assertNotNull(tmpAccInfo2);
-//            assertNotNull(tmpAccInfo2.getUserId());
-//
-//            tmpAccInfo2.setUserId(null);
-//            assertNull(tmpAccInfo2.getUserId());
-
             tmpAccInfo.setUserId(null);
             Assert.assertNull(tmpAccInfo.getUserId());
         } catch (Exception ex) {
@@ -1668,72 +1413,51 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I check the sanity of the access permission factory$")
+    @When("I check the sanity of the access permission factory")
     public void accessPermissionFactorySanityCheck() {
         Assert.assertNotNull(accessPermissionFactory.newCreator(getKapuaId()));
         Assert.assertNotNull(accessPermissionFactory.newEntity(null));
         Assert.assertNotNull(accessPermissionFactory.newEntity(getKapuaId()));
         Assert.assertNotNull(accessPermissionFactory.newQuery(getKapuaId()));
         Assert.assertNotNull(accessPermissionFactory.newListResult());
-
         KapuaId tmpId = getKapuaId();
         AccessPermissionCreator tmpCreator = accessPermissionFactory.newCreator(tmpId);
         Assert.assertNotNull(tmpCreator);
         Assert.assertNotNull(tmpCreator.getScopeId());
         Assert.assertEquals(tmpId, tmpCreator.getScopeId());
-
         AccessPermission tmpAccPerm = accessPermissionFactory.newEntity(getKapuaId());
         Assert.assertNotNull(tmpAccPerm);
         tmpAccPerm.setAccessInfoId(getKapuaId());
         Permission tmpPerm = permissionFactory.newPermission(new TestDomain(), Actions.read, getKapuaId(), getKapuaId());
         tmpAccPerm.setPermission(tmpPerm);
         Assert.assertEquals(tmpPerm, tmpAccPerm.getPermission());
-
-//        AccessPermission tmpAccPerm2 = new AccessPermissionImpl(tmpAccPerm);
-//        assertNotNull(tmpAccPerm2);
-//        assertEquals(tmpAccPerm.getAccessInfoId(), tmpAccPerm2.getAccessInfoId());
-//        assertEquals(tmpAccPerm.getPermission(), tmpAccPerm2.getPermission());
-
         tmpAccPerm.setAccessInfoId(null);
         Assert.assertNull(tmpAccPerm.getAccessInfoId());
-
         // No typo. This is by design. When an object permissions are null, when asked for them, a
         // new set of empty permissions is returned instead.
         tmpAccPerm.setPermission(null);
         Assert.assertNotNull(tmpAccPerm.getPermission());
     }
 
-    @When("^I check the sanity of the access role factory$")
-    public void accessRoleFactorySanityCheck()
-            throws Exception {
-
+    @When("I check the sanity of the access role factory")
+    public void accessRoleFactorySanityCheck() throws Exception {
         try {
             primeException();
-
             Assert.assertNotNull(accessRoleFactory.newCreator(getKapuaId()));
             Assert.assertNotNull(accessRoleFactory.newEntity(getKapuaId()));
             Assert.assertNotNull(accessRoleFactory.newQuery(getKapuaId()));
             Assert.assertNotNull(accessRoleFactory.newListResult());
-
             KapuaId tmpId = getKapuaId();
             AccessRoleCreator tmpCreator = accessRoleFactory.newCreator(tmpId);
             Assert.assertNotNull(tmpCreator);
             Assert.assertNotNull(tmpCreator.getScopeId());
             Assert.assertEquals(tmpId, tmpCreator.getScopeId());
-
             AccessRole tmpRole = accessRoleFactory.newEntity(getKapuaId());
             Assert.assertNotNull(tmpRole);
             tmpRole.setAccessInfoId(getKapuaId());
             tmpRole.setRoleId(getKapuaId());
-
-//            AccessRole tmpRole2 = new AccessRoleImpl(tmpRole);
-//            assertNotNull(tmpRole2);
-//            assertEquals(tmpRole.getRoleId(), tmpRole2.getRoleId());
-//            assertEquals(tmpRole.getAccessInfoId(), tmpRole2.getAccessInfoId());
-
             tmpRole.setAccessInfoId(null);
             Assert.assertNull(tmpRole.getAccessInfoId());
-
             tmpRole.setRoleId(null);
             Assert.assertNull(tmpRole.getRoleId());
         } catch (KapuaException ex) {
@@ -1741,92 +1465,84 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^A role entity was created$")
+    @Then("A role entity was created")
     public void checkThatRoleWasCreated() {
         Role role = (Role) stepData.get("Role");
         Assert.assertNotNull(role);
     }
 
-    @Then("^An access role entity was created$")
+    @Then("An access role entity was created")
     public void checkThatAccessRoleWasCreated() {
         AccessRole accessRole = (AccessRole) stepData.get(ACCESS_ROLE);
         Assert.assertNotNull(accessRole);
     }
 
-    @Then("^I find an access role entity$")
+    @Then("I find an access role entity")
     public void checkThatAnAccessRoleEntityWasFound() {
         AccessRole accessRoleFound = (AccessRole) stepData.get(ACCESS_ROLE_FOUND);
         Assert.assertNotNull(accessRoleFound);
     }
 
-    @Then("^An access info entity was created$")
+    @Then("An access info entity was created")
     public void checkThatAccessInfoEntityExists() {
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
         Assert.assertNotNull(accessInfo);
     }
 
-    @Then("^I find an accessinfo entity$")
+    @Then("I find an accessinfo entity")
     public void checkThatAnAccessInfoEntityWasFound() {
         AccessInfo accessInfoFound = (AccessInfo) stepData.get(ACCESS_INFO_FOUND);
         Assert.assertNotNull(accessInfoFound);
     }
 
-    @Then("^I find no access info entity$")
+    @Then("I find no access info entity")
     public void checkThatAnAccessInfoEntityWasNotFound() {
         AccessInfo accessInfoFound = (AccessInfo) stepData.get(ACCESS_INFO_FOUND);
         Assert.assertNull(accessInfoFound);
     }
 
-    @Then("^I find an access permission entity$")
+    @Then("I find an access permission entity")
     public void checkThatAnAccessPermissionWasFound() {
         AccessPermission accessPermissionFound = (AccessPermission) stepData.get(ACCESS_PERMISSION_FOUND);
         Assert.assertNotNull(accessPermissionFound);
     }
 
-    @Then("^There are no such access permissions$")
+    @Then("There are no such access permissions")
     public void checkThatThePermissionsWereRemoved() {
         AccessPermissionListResult accessPermissions = (AccessPermissionListResult) stepData.get(ACCESS_PERMISSIONS);
         Assert.assertEquals(0, accessPermissions.getSize());
     }
 
-    @Then("^There are no such access roles$")
+    @Then("There are no such access roles")
     public void checkThatTheRolesWereRemoved() {
         AccessRoleListResult accessRoles = (AccessRoleListResult) stepData.get(ACCESS_ROLES);
         Assert.assertEquals(0, accessRoles.getSize());
     }
 
-    @Then("^The entity matches the creator$")
+    @Then("The entity matches the creator")
     public void checkEntityAgainstCreator() {
-
         AccessInfoCreator accessInfoCreator = (AccessInfoCreator) stepData.get(ACCESS_INFO_CREATOR);
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
-
         Assert.assertEquals(accessInfoCreator.getUserId(), accessInfo.getUserId());
         Assert.assertEquals(accessInfoCreator.getScopeId(), accessInfo.getScopeId());
     }
 
-    @Then("^The permissions match the creator$")
+    @Then("The permissions match the creator")
     public void checkAccessInfoEntityPermissions() {
-
         AccessInfoCreator accessInfoCreator = (AccessInfoCreator) stepData.get(ACCESS_INFO_CREATOR);
         AccessPermissionListResult accessPermissions = (AccessPermissionListResult) stepData.get(ACCESS_PERMISSIONS);
-
         Assert.assertEquals(accessInfoCreator.getPermissions().size(), accessPermissions.getSize());
-
         for (int i = 0; i < accessPermissions.getSize(); i++) {
             Assert.assertTrue(accessInfoCreator.getPermissions().contains(accessPermissions.getItem(i).getPermission()));
         }
     }
 
-    @Then("^The access info roles match the creator$")
+    @Then("The access info roles match the creator")
     public void checkAccessInfoEntityRoles() {
-
         AccessInfoCreator accessInfoCreator = (AccessInfoCreator) stepData.get(ACCESS_INFO_CREATOR);
         AccessRoleListResult accessRoles = (AccessRoleListResult) stepData.get(ACCESS_ROLES);
-
         Assert.assertNotEquals(0, accessRoles.getSize());
         Assert.assertEquals(accessInfoCreator.getRoleIds().size(), accessRoles.getSize());
-
         for (int i = 0; i < accessRoles.getSize(); i++) {
             Assert.assertTrue(accessInfoCreator.getRoleIds().contains(accessRoles.getItem(i).getRoleId()));
         }
@@ -1835,37 +1551,28 @@ public class AuthorizationServiceSteps extends TestBase {
     // The following test step is more of a filler. The only purpose is to achieve some coverage
     // of the Access Role object equals function.
     // As such this step is of limited usefulness and should be taken with a grain of salt.
-    @Then("^I can compare access role objects$")
+    @Then("I can compare access role objects")
     public void checkAccessRoleComparison() throws Exception {
-
         AccessRole accRole1 = accessRoleFactory.newEntity(getKapuaId());
         AccessRole accRole2 = accessRoleFactory.newEntity(getKapuaId());
-
         primeException();
         try {
             Assert.assertTrue(accRole1.equals(accRole1));
             Assert.assertFalse(accRole1.equals(null));
             Assert.assertFalse(accRole1.equals(Integer.valueOf(15)));
-
             Assert.assertTrue(accRole1.equals(accRole2));
-
             accRole2.setAccessInfoId(getKapuaId());
             Assert.assertFalse(accRole1.equals(accRole2));
-
             accRole1.setAccessInfoId(getKapuaId());
             accRole2.setAccessInfoId(null);
             Assert.assertFalse(accRole1.equals(accRole2));
-
             accRole2.setAccessInfoId(accRole1.getAccessInfoId());
             Assert.assertTrue(accRole1.equals(accRole2));
-
             accRole2.setRoleId(getKapuaId());
             Assert.assertFalse(accRole1.equals(accRole2));
-
             accRole1.setRoleId(getKapuaId());
             accRole2.setRoleId(null);
             Assert.assertFalse(accRole1.equals(accRole2));
-
             accRole2.setRoleId(accRole1.getRoleId());
             Assert.assertTrue(accRole1.equals(accRole2));
         } catch (KapuaException ex) {
@@ -1876,47 +1583,36 @@ public class AuthorizationServiceSteps extends TestBase {
     // The following test step is more of a filler. The only purpose is to achieve some coverage
     // of the Access Role object equals function.
     // As such this step is of limited usefulness and should be taken with a grain of salt.
-    @Then("^I can compare access permission objects$")
+    @Then("I can compare access permission objects")
     public void checkAccessPermissionComparison() {
-
         AccessPermission accPerm1 = accessPermissionFactory.newEntity(getKapuaId());
         AccessPermission accPerm2 = accessPermissionFactory.newEntity(getKapuaId());
         Permission tmpPerm1 = permissionFactory.newPermission(new TestDomain(), Actions.read, SYS_SCOPE_ID, getKapuaId());
         Permission tmpPerm2 = permissionFactory.newPermission(new TestDomain(), Actions.write, SYS_SCOPE_ID, getKapuaId());
-
         Assert.assertTrue(accPerm1.equals(accPerm1));
         Assert.assertFalse(accPerm1.equals(null));
         Assert.assertFalse(accPerm1.equals(Integer.valueOf(15)));
-
         Assert.assertTrue(accPerm1.equals(accPerm2));
-
         accPerm1.setAccessInfoId(null);
         accPerm2.setAccessInfoId(getKapuaId());
         Assert.assertFalse(accPerm1.equals(accPerm2));
-
         accPerm1.setAccessInfoId(getKapuaId());
         accPerm2.setAccessInfoId(null);
         Assert.assertFalse(accPerm1.equals(accPerm2));
-
         accPerm1.setAccessInfoId(getKapuaId());
         accPerm2.setAccessInfoId(getKapuaId());
         Assert.assertFalse(accPerm1.equals(accPerm2));
-
         accPerm2.setAccessInfoId(accPerm1.getAccessInfoId());
         Assert.assertTrue(accPerm1.equals(accPerm2));
-
         accPerm1.setPermission(null);
         accPerm2.setPermission(tmpPerm2);
         Assert.assertFalse(accPerm1.equals(accPerm2));
-
         accPerm1.setPermission(tmpPerm1);
         accPerm2.setPermission(null);
         Assert.assertFalse(accPerm1.equals(accPerm2));
-
         accPerm1.setPermission(tmpPerm1);
         accPerm2.setPermission(tmpPerm2);
         Assert.assertFalse(accPerm1.equals(accPerm2));
-
         accPerm2.setPermission(accPerm1.getPermission());
         Assert.assertTrue(accPerm1.equals(accPerm2));
     }
@@ -1924,19 +1620,15 @@ public class AuthorizationServiceSteps extends TestBase {
     // The following test step is more of a filler. The only purpose is to achieve some coverage
     // of the Authorization Permission factory.
     // As such this step is of limited usefulness and should be taken with a grain of salt.
-    @Then("^The permission factory returns sane results$")
-    public void permissionFactorySanityChecks()
-            throws KapuaException {
-
+    @Then("The permission factory returns sane results")
+    public void permissionFactorySanityChecks() throws KapuaException {
         Permission tmpPerm = null;
         TestDomain tmpDomain = new TestDomain();
-
         tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.read, SYS_SCOPE_ID);
         Assert.assertNotNull(tmpPerm);
         Assert.assertNotNull(tmpPerm.getDomain());
         Assert.assertEquals(tmpDomain.getName(), tmpPerm.getDomain());
         Assert.assertEquals(Actions.read, tmpPerm.getAction());
-
         tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.write, SYS_SCOPE_ID, getKapuaId(9));
         Assert.assertNotNull(tmpPerm);
         Assert.assertNotNull(tmpPerm.getDomain());
@@ -1944,12 +1636,10 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertEquals(Actions.write, tmpPerm.getAction());
         Assert.assertEquals(getKapuaId(9), tmpPerm.getGroupId());
         Assert.assertFalse(tmpPerm.getForwardable());
-
         tmpPerm = permissionFactory.newPermission(null, Actions.execute, SYS_SCOPE_ID, getKapuaId(9), true);
         Assert.assertNotNull(tmpPerm);
         Assert.assertEquals(Actions.execute, tmpPerm.getAction());
         Assert.assertTrue(tmpPerm.getForwardable());
-
         tmpDomain.setName(null);
         tmpPerm = permissionFactory.newPermission(tmpDomain, Actions.connect, SYS_SCOPE_ID, getKapuaId());
         Assert.assertNotNull(tmpPerm);
@@ -1959,18 +1649,14 @@ public class AuthorizationServiceSteps extends TestBase {
     // The following test step is more of a filler. The only purpose is to achieve some coverage
     // of the Authorization Permission object equals function.
     // As such this step is of limited usefulness and should be taken with a grain of salt.
-    @Then("^I can compare permission objects$")
+    @Then("I can compare permission objects")
     public void checkPermissionComparison() {
-
         Permission perm1 = permissionFactory.newPermission(new TestDomain("test_domain_1"), Actions.read, getKapuaId(10), getKapuaId(100));
         Permission perm2 = permissionFactory.newPermission(new TestDomain("test_domain_1"), Actions.read, getKapuaId(10), getKapuaId(100));
-
         Assert.assertTrue(perm1.equals(perm1));
         Assert.assertFalse(perm1.equals(null));
         Assert.assertFalse(perm1.equals(Integer.valueOf(10)));
-
         Assert.assertTrue(perm1.equals(perm2));
-
         perm1.setDomain(null);
         Assert.assertFalse(perm1.equals(perm2));
         perm2.setDomain(null);
@@ -1979,10 +1665,8 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertFalse(perm1.equals(perm2));
         perm2.setDomain("test_2");
         Assert.assertFalse(perm1.equals(perm2));
-
         perm1.setDomain("test");
         perm2.setDomain("test");
-
         perm1.setTargetScopeId(null);
         Assert.assertFalse(perm1.equals(perm2));
         perm2.setTargetScopeId(null);
@@ -1991,10 +1675,8 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertFalse(perm1.equals(perm2));
         perm2.setTargetScopeId(getKapuaId(15));
         Assert.assertFalse(perm1.equals(perm2));
-
         perm1.setTargetScopeId(getKapuaId(10));
         perm2.setTargetScopeId(getKapuaId(10));
-
         perm1.setGroupId(null);
         Assert.assertFalse(perm1.equals(perm2));
         perm2.setGroupId(null);
@@ -2005,21 +1687,18 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertFalse(perm1.equals(perm2));
         perm2.setGroupId(getKapuaId(100));
         Assert.assertTrue(perm1.equals(perm2));
-
         perm1.setAction(Actions.read);
         perm2.setAction(Actions.write);
         Assert.assertFalse(perm1.equals(perm2));
     }
 
-    @Then("^Access role with name \"([^\"]*)\" is found$")
+    @Then("Access role with name {string} is found")
     public void accessRoleWithNameIsFinded(String roleName) throws Exception {
-
         try {
             primeException();
             RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
             roleQuery.setPredicate(roleQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, roleName));
             RoleListResult roleList = roleService.query(roleQuery);
-
             AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(getCurrentScopeId());
             accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ROLE_ID, roleList.getFirstItem().getId()));
             AccessRoleListResult searchAccessRole = accessRoleService.query(accessRoleQuery);
@@ -2029,7 +1708,7 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create the roles$")
+    @And("I create the roles")
     public void iCreateTheRoles(List<CucRole> roleNames) throws Exception {
         RoleCreator roleCreator = roleFactory.newCreator(getCurrentScopeId());
         ArrayList<Role> roleArrayList = new ArrayList<Role>();
@@ -2050,7 +1729,7 @@ public class AuthorizationServiceSteps extends TestBase {
         stepData.put(ROLE_LIST, roleArrayList);
     }
 
-    @And("^I add permissions to the role$")
+    @And("I add permissions to the role")
     public void iAddPermissionsToTheRole() throws Exception {
         Role role = (Role) stepData.get("Role");
         Set<Permission> permissions = (Set<Permission>) stepData.get(PERMISSIONS);
@@ -2059,7 +1738,6 @@ public class AuthorizationServiceSteps extends TestBase {
         for (Permission permission : permissions) {
             rolePermissionCreator.setPermission(permission);
             rolePermissionCreator.setRoleId(role.getId());
-
             try {
                 primeException();
                 stepData.remove(ROLE_PERMISSION);
@@ -2073,19 +1751,17 @@ public class AuthorizationServiceSteps extends TestBase {
         stepData.put("RolePermissionList", rolePermissionList);
     }
 
-    @And("^I add access roles to user \"([^\"]*)\"$")
+    @And("I add access roles to user {string}")
     public void iAddAccessRolesToUser(String userName) throws Exception {
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
         List<Role> roleList = (List<Role>) stepData.get(ROLE_LIST);
         User user = (User) stepData.get("User");
         Assert.assertEquals(userName, user.getName());
         AccessRoleCreator accessRoleCreator = accessRoleFactory.newCreator(getCurrentScopeId());
-
         for (Role role : roleList) {
             accessRoleCreator.setAccessInfoId(accessInfo.getId());
             accessRoleCreator.setRoleId(role.getId());
             stepData.put("AccessRoleCreator", accessRoleCreator);
-
             try {
                 primeException();
                 stepData.remove(ACCESS_ROLE);
@@ -2098,10 +1774,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I delete role permissions$")
+    @And("I delete role permissions")
     public void iDeleteAccessRolePermissions() throws Exception {
         RolePermission rolePermission = (RolePermission) stepData.get(ROLE_PERMISSION);
-
         try {
             rolePermissionService.delete(rolePermission.getScopeId(), rolePermission.getId());
         } catch (KapuaException ex) {
@@ -2109,10 +1784,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I find the group with name \"([^\"]*)\"$")
+    @And("I find the group with name {string}")
     public void iFindLastCreatedGroup(String groupName) throws Exception {
         Group group = (Group) stepData.get(GROUP);
-
         try {
             primeException();
             Assert.assertEquals(groupName, group.getName());
@@ -2122,31 +1796,27 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I find a role with name \"([^\"]*)\"$")
+    @And("I find a role with name {string}")
     public void iFindRoleWithName(String roleName) throws Exception {
         try {
             primeException();
             RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
             roleQuery.setPredicate(roleQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, roleName, AttributePredicate.Operator.EQUAL));
-
             stepData.remove(ROLE_LIST_RESULT);
             stepData.remove("Role");
             RoleListResult roleListResult = roleService.query(roleQuery);
             stepData.put(ROLE_LIST_RESULT, roleListResult);
             stepData.put("Role", roleListResult.getFirstItem());
-
             Assert.assertTrue(roleListResult.getSize() > 0);
         } catch (KapuaException ke) {
             verifyException(ke);
         }
-
     }
 
-    @And("^I create a group with name \"([^\"]*)\"$")
+    @And("I create a group with name {string}")
     public void iCreateAGroupWithName(String groupName) throws Exception {
         GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
         groupCreator.setName(groupName);
-
         try {
             primeException();
             stepData.remove(GROUP);
@@ -2157,14 +1827,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I try to create groups with invalid characters in name$")
+    @And("I try to create groups with invalid characters in name")
     public void iTryToCreateInvalidGroups() throws Exception {
         GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
         String invalidCharacters = "!\"#$%&'()=»Ç>:;<-.,⁄@‹›€*ı–°·‚_±Œ„‰?“‘”’ÉØ∏{}|ÆæÒÔÓÌÏÎÍÅ«";
         for (int i = 0; i < invalidCharacters.length(); i++) {
             String groupName = GROUP + invalidCharacters.charAt(i);
             groupCreator.setName(groupName);
-
             try {
                 primeException();
                 stepData.remove(GROUP);
@@ -2176,10 +1845,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I delete the last created role permissions$")
+    @And("I delete the last created role permissions")
     public void iDeleteTheLastCreatedRolePermissions() throws Exception {
         ArrayList<RolePermission> rolePermissions = (ArrayList<RolePermission>) stepData.get(ROLE_PERMISSIONS);
-
         try {
             primeException();
             for (RolePermission rolePermission : rolePermissions) {
@@ -2190,15 +1858,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I search for the permissions of role \"([^\"]*)\"$")
+    @And("I search for the permissions of role {string}")
     public void iSearchForThePermissionsOfTheRole(String roleName) throws Exception {
         Role role = (Role) stepData.get("Role");
         ArrayList<RolePermission> rolePermissionList = new ArrayList<>();
         Assert.assertEquals(roleName, role.getName());
-
         RolePermissionQuery rolePermissionQuery = rolePermissionFactory.newQuery(getCurrentScopeId());
         rolePermissionQuery.setPredicate(rolePermissionQuery.attributePredicate(RolePermissionAttributes.ROLE_ID, role.getId(), AttributePredicate.Operator.EQUAL));
-
         RolePermissionListResult rolePermissions = rolePermissionService.query(rolePermissionQuery);
         stepData.remove(ROLE_PERMISSIONS);
         for (int i = 0; i < rolePermissions.getSize(); i++) {
@@ -2208,15 +1874,13 @@ public class AuthorizationServiceSteps extends TestBase {
             rolePermissionList.add(rolePermission);
         }
         stepData.put(ROLE_PERMISSIONS, rolePermissionList);
-
         long rolePermissionListSize = rolePermissionList.size();
         stepData.put(COUNT, rolePermissionListSize);
     }
 
-    @And("^I delete the default admin role permission$")
+    @And("I delete the default admin role permission")
     public void iDeleteTheDefaultRolePermission() throws Exception {
         ArrayList<RolePermission> rolePermissions = (ArrayList<RolePermission>) stepData.get(ROLE_PERMISSIONS);
-
         primeException();
         try {
             for (RolePermission rolePermission : rolePermissions) {
@@ -2229,10 +1893,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I delete all admin role permissions except default permission$")
+    @And("I delete all admin role permissions except default permission")
     public void iDeleteTheLastCreatedAdminRolePermissions() throws Exception {
         ArrayList<RolePermission> rolePermissions = (ArrayList<RolePermission>) stepData.get(ROLE_PERMISSIONS);
-
         try {
             primeException();
             for (RolePermission rolePermission : rolePermissions) {
@@ -2245,16 +1908,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I count the access roles from user \"([^\"]*)\"$")
+    @And("I count the access roles from user {string}")
     public void iCountTheAccessRolesFromUser(String userName) throws Exception {
-
         User lastUser = (User) stepData.get("User");
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
         AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(getCurrentScopeId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
-
         Assert.assertEquals(userName, lastUser.getName());
-
         try {
             primeException();
             stepData.remove(COUNT);
@@ -2265,21 +1925,18 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for granted user$")
+    @When("I search for granted user")
     public void iSearchGrantedUserToRole() throws Exception {
-
         ArrayList<User> grantedUserList = new ArrayList<>();
         long grantedUsersCount = 0;
         try {
             primeException();
             AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(getCurrentScopeId());
             AccessRoleListResult accessRoleList = accessRoleService.query(accessRoleQuery);
-
             for (AccessRole a : accessRoleList.getItems()) {
                 AccessInfo accessInfo = accessInfoService.find(getCurrentScopeId(), a.getAccessInfoId());
                 User grantedUser = userService.find(getCurrentScopeId(), accessInfo.getUserId());
                 stepData.put("GrantedUser", grantedUser);
-
                 if (!grantedUser.getId().equals(KapuaId.ONE)) {
                     grantedUserList.add(grantedUser);
                     grantedUsersCount = grantedUserList.size();
@@ -2292,39 +1949,33 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I find granted user(?:|s) with name$")
+    @Then("I find granted user(s) with name")
     public void iFindGrantedUsersWithName(List<CucUser> grantedUsers) throws Exception {
         ArrayList<String> grantedUserNames = new ArrayList<>();
         ArrayList<User> grantedUsersList = (ArrayList<User>) stepData.get("GrantedUserList");
-
         for (User grantedUser : grantedUsersList) {
             grantedUserNames.add(grantedUser.getName());
         }
-
         for (CucUser user : grantedUsers) {
             Assert.assertTrue(grantedUserNames.contains(user.getName()));
         }
     }
 
-    @And("^I try to find role with name \"([^\"]*)\" in account \"([^\"]*)\"$")
+    @And("I try to find role with name {string} in account {string}")
     public void iFindSpecificRoleInChildAccount(String roleName, String accountName) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Assert.assertEquals(accountName, account.getName());
-
         RoleQuery roleQuery = roleFactory.newQuery(account.getId());
-
         roleQuery.setPredicate(roleQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, roleName, AttributePredicate.Operator.EQUAL));
-
         RoleListResult childRolesList = roleService.query(roleQuery);
         stepData.put("ChildRolesList", childRolesList);
     }
 
-    @And("^I create role \"([^\"]*)\" in account \"([^\"]*)\"$")
+    @And("I create role {string} in account {string}")
     public void iCreateRoleInSubaccount(String roleName, String accountName) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Assert.assertEquals(accountName, account.getName());
         RoleCreator roleCreator = null;
-
         roleCreator = roleFactory.newCreator(account.getId());
         roleCreator.setName(roleName);
         try {
@@ -2336,30 +1987,24 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create the following role permission(?:|s) in account \"([^\"]*)\"$")
+    @And("I create the following role permission(s) in account {string}")
     public void iCreateTheFollowingRolePermissionInSubaccount(String accountName, List<CucRolePermission> perms) throws Exception {
-
         Role role = (Role) stepData.get("Role");
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Assert.assertEquals(accountName, account.getName());
         Domain domain = (Domain) stepData.get(DOMAIN);
         RolePermission rolePermission = null;
         ArrayList<RolePermission> rolePermissions = new ArrayList<>();
-
         stepData.remove(CHILD_ACCOUNT_ROLE_PERMISSION);
-
         primeException();
         for (CucRolePermission tmpCPerm : perms) {
             tmpCPerm.doParse();
             Assert.assertNotNull(tmpCPerm.getScopeId());
             Assert.assertNotNull(tmpCPerm.getAction());
-
             domain.setScopeId(tmpCPerm.getScopeId());
-
             RolePermissionCreator rolePermissionCreator = rolePermissionFactory.newCreator(account.getId());
             rolePermissionCreator.setRoleId(role.getId());
             rolePermissionCreator.setPermission(permissionFactory.newPermission(domain.getDomain(), tmpCPerm.getAction(), tmpCPerm.getTargetScopeId()));
-
             try {
                 stepData.remove("ChildAccountRolePermissions");
                 rolePermission = rolePermissionService.create(rolePermissionCreator);
@@ -2371,17 +2016,15 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I search for the permissions of found role \"([^\"]*)\" in account \"([^\"]*)\"$")
+    @And("I search for the permissions of found role {string} in account {string}")
     public void iSearchForThePermissionsOfFoundedRoleInSubaccount(String roleName, String accountName) throws Exception {
         Role role = (Role) stepData.get("Role");
         Assert.assertEquals(roleName, role.getName());
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Assert.assertEquals(accountName, account.getName());
         ArrayList<RolePermission> rolePermissionList = new ArrayList<>();
-
         RolePermissionQuery rolePermissionQuery = rolePermissionFactory.newQuery(account.getId());
         rolePermissionQuery.setPredicate(rolePermissionQuery.attributePredicate(RolePermissionAttributes.ROLE_ID, role.getId(), AttributePredicate.Operator.EQUAL));
-
         RolePermissionListResult rolePermissions = rolePermissionService.query(rolePermissionQuery);
         stepData.remove(CHILD_ACCOUNT_ROLE_PERMISSION);
         for (int i = 0; i < rolePermissions.getSize(); i++) {
@@ -2391,23 +2034,21 @@ public class AuthorizationServiceSteps extends TestBase {
             rolePermissionList.add(rolePermission);
         }
         stepData.put(CHILD_ACCOUNT_ROLE_PERMISSION, rolePermissionList);
-
         long rolePermissionListSize = rolePermissionList.size();
         stepData.put(COUNT, rolePermissionListSize);
     }
 
-    @Then("^Role with name \"([^\"]*)\" in account \"([^\"]*)\" is found$")
+    @Then("Role with name {string} in account {string} is found")
     public void roleInChildAccountIsFound(String roleName, String accountName) {
         RoleListResult childRolesList = (RoleListResult) stepData.get("ChildRolesList");
         Role role = (Role) stepData.get("Role");
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Assert.assertEquals(roleName, role.getName());
         Assert.assertEquals(accountName, account.getName());
-
         Assert.assertTrue(childRolesList.getSize() > 0);
     }
 
-    @And("^I add access role \"([^\"]*)\" to user \"([^\"]*)\" in account \"([^\"]*)\"$")
+    @And("I add access role {string} to user {string} in account {string}")
     public void iAddAccessRoleToUserInChildAccount(String roleName, String childUserName, String accountName) throws Exception {
         AccessInfo accessInfo = (AccessInfo) stepData.get(CHILD_ACCOUNT_ACCESS_INFO);
         Account account = (Account) stepData.get(LAST_ACCOUNT);
@@ -2417,11 +2058,9 @@ public class AuthorizationServiceSteps extends TestBase {
         accessRoleCreator.setAccessInfoId(accessInfo.getId());
         accessRoleCreator.setRoleId(role.getId());
         stepData.put("ChildAccountAccessRoleCreator", accessRoleCreator);
-
         Assert.assertEquals(roleName, role.getName());
         Assert.assertEquals(accountName, account.getName());
         Assert.assertEquals(childUserName, childUser.getName());
-
         try {
             primeException();
             stepData.remove("ChildAccountAccessRole");
@@ -2433,30 +2072,25 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create the access info entity in account \"([^\"]*)\"$")
+    @And("I create the access info entity in account {string}")
     public void iCreateTheAccessInfoEntityInChildAccount(String accountName) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         User tmpUser = (User) stepData.get("ChildAccountUser");
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
         accessInfoCreator.setUserId(tmpUser.getId());
-
         Assert.assertEquals(accountName, account.getName());
-
         Set<Permission> permissions = (Set<Permission>) stepData.get(PERMISSIONS);
         Set<KapuaId> roleIds = (Set<KapuaId>) stepData.get(ROLE_IDS);
-
         if (permissions != null && !permissions.isEmpty()) {
             accessInfoCreator.setPermissions(permissions);
         } else {
             accessInfoCreator.setPermissions(null);
         }
-
         if (roleIds != null && !roleIds.isEmpty()) {
             accessInfoCreator.setRoleIds(roleIds);
         } else {
             accessInfoCreator.setRoleIds(null);
         }
-
         try {
             primeException();
             stepData.put("ChildAccountAccessInfoCreator", accessInfoCreator);
@@ -2468,16 +2102,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I search for access roles in user \"([^\"]*)\"$")
+    @And("I search for access roles in user {string}")
     public void iSearchForAccessRolesFromTheLastUser(String userName) throws Exception {
         AccessInfo accessInfo = (AccessInfo) stepData.get(ACCESS_INFO);
         User user = (User) stepData.get("User");
-
         Assert.assertEquals(userName, user.getName());
-
         AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(getCurrentScopeId());
         accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
-
         try {
             primeException();
             AccessRoleListResult accessRoleListResult = accessRoleService.query(accessRoleQuery);
@@ -2487,15 +2118,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I count the access roles from user in account \"([^\"]*)\"$")
+    @And("I count the access roles from user in account {string}")
     public void iCountTheAccessRolesFromUserInChildAccount(String accountName) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         AccessInfo accessInfo = (AccessInfo) stepData.get(CHILD_ACCOUNT_ACCESS_INFO);
         Assert.assertEquals(accountName, account.getName());
-
         AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(account.getId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
-
         try {
             primeException();
             stepData.remove(COUNT);
@@ -2506,11 +2135,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I update the role name to \"([^\"]*)\"$")
+    @When("I update the role name to {string}")
     public void iUpdateTheRoleName(String newRoleName) throws Exception {
         Role role = (Role) stepData.get("Role");
         role.setName(newRoleName);
-
         try {
             primeException();
             stepData.remove("Role");
@@ -2521,28 +2149,24 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create the access info entities$")
+    @And("I create the access info entities")
     public void iCreateTheAccessInfoEntities() throws Exception {
         KapuaId currScope = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         ArrayList<User> userArray = (ArrayList<User>) stepData.get("UserList");
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(currScope);
         ArrayList<AccessInfo> accessInfoList = new ArrayList<>();
-
         Set<Permission> permissions = (Set<Permission>) stepData.get(PERMISSIONS);
         Set<KapuaId> roleIds = (Set<KapuaId>) stepData.get(ROLE_IDS);
-
         if (permissions != null && !permissions.isEmpty()) {
             accessInfoCreator.setPermissions(permissions);
         } else {
             accessInfoCreator.setPermissions(null);
         }
-
         if (roleIds != null && !roleIds.isEmpty()) {
             accessInfoCreator.setRoleIds(roleIds);
         } else {
             accessInfoCreator.setRoleIds(null);
         }
-
         for (User user : userArray) {
             accessInfoCreator.setUserId(user.getId());
             try {
@@ -2559,16 +2183,15 @@ public class AuthorizationServiceSteps extends TestBase {
         stepData.put("AccessInfoList", accessInfoList);
     }
 
-    @Given("^I prepare a role creator with name \"([^\"]*)\" and description \"([^\"]*)\"$")
+    @Given("I prepare a role creator with name {string} and description {string}")
     public void iPrepareARoleCreatorWithNameAndDescription(String name, String description) {
         RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
         roleCreator.setName(name);
         roleCreator.setDescription(description);
-
         stepData.put(ROLE_CREATOR, roleCreator);
     }
 
-    @When("^I create a new role entity from the existing creator$")
+    @When("I create a new role entity from the existing creator")
     public void iCreateANewRoleEntityFromTheExistingCreator() throws Exception {
         RoleCreator roleCreator = (RoleCreator) stepData.get(ROLE_CREATOR);
         primeException();
@@ -2583,7 +2206,7 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I create (\\d+) roles$")
+    @Given("I create {int} roles")
     public void iCreateRoles(int num) throws Exception {
         primeException();
         try {
@@ -2597,10 +2220,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I count the roles in the database$")
+    @When("I count the roles in the database")
     public void iCountTheRolesInTheDatabase() throws Exception {
         RoleQuery tmpQuery = roleFactory.newQuery(getCurrentScopeId());
-
         primeException();
         try {
             stepData.remove(COUNT);
@@ -2611,11 +2233,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I update the role description to \"([^\"]*)\"$")
+    @And("I update the role description to {string}")
     public void iUpdateTheRoleDescriptionTo(String newRoleDesc) throws Exception {
         Role role = (Role) stepData.get("Role");
         role.setDescription(newRoleDesc);
-
         try {
             primeException();
             stepData.remove("Role");
@@ -2626,10 +2247,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I delete the role with name \"([^\"]*)\" and description \"([^\"]*)\"$")
-    public void iDeleteTheRoleWithNameAndDescription(String roleName, String roleDescription) throws Throwable {
+    @Then("I delete the role with name {string} and description {string}")
+    public void iDeleteTheRoleWithNameAndDescription(String roleName, String roleDescription) throws Exception {
         Role role = (Role) stepData.get("Role");
-
         primeException();
         try {
             Assert.assertEquals(roleName, role.getName());
@@ -2641,13 +2261,12 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I search for a role with description \"([^\"]*)\"$")
+    @Then("I search for a role with description {string}")
     public void iFindARoleWithDescription(String roleDesc) throws Throwable {
         try {
             primeException();
             RoleQuery roleQuery = roleFactory.newQuery(getCurrentScopeId());
             roleQuery.setPredicate(roleQuery.attributePredicate(KapuaNamedEntityAttributes.DESCRIPTION, roleDesc, AttributePredicate.Operator.EQUAL));
-
             stepData.remove(ROLE_LIST_RESULT);
             stepData.remove(ROLE_FOUND);
             RoleListResult roleListResult = roleService.query(roleQuery);
@@ -2658,13 +2277,12 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I try to create roles with invalid characters \"([^\"]*)\" in name$")
+    @Given("I try to create roles with invalid characters {string} in name")
     public void iTryToCreateRolesWithInvalidCharactersInName(String invalidCharacters) throws Exception {
         RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
         for (int i = 0; i < invalidCharacters.length(); i++) {
             String roleName = ROLE_NAME + invalidCharacters.charAt(i);
             roleCreator.setName(roleName);
-
             try {
                 primeException();
                 stepData.remove("Role");
@@ -2676,14 +2294,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I try to create roles with invalid characters \"([^\"]*)\" in description$")
+    @Given("I try to create roles with invalid characters {string} in description")
     public void iTryToCreateRolesWithInvalidCharactersInDescription(String invalidCharacters) throws Exception {
         RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
         for (int i = 0; i < invalidCharacters.length(); i++) {
             String roleDescription = "roleDescription" + invalidCharacters.charAt(i);
             roleCreator.setDescription(roleDescription);
             roleCreator.setName(ROLE_NAME + i);
-
             try {
                 primeException();
                 stepData.remove("Role");
@@ -2695,13 +2312,12 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I update the role name with special characters \"([^\"]*)\"$")
-    public void iUpdateTheRoleNameWithSpecialCharacters(String invalidSymbols) throws Throwable {
+    @Then("I update the role name with special characters {string}")
+    public void iUpdateTheRoleNameWithSpecialCharacters(String invalidSymbols) throws Exception {
         RoleCreator roleCreator = roleFactory.newCreator(SYS_SCOPE_ID);
         for (int i = 0; i < invalidSymbols.length(); i++) {
             String roleName = ROLE_NAME + invalidSymbols.charAt(i);
             roleCreator.setName(ROLE_NAME + i);
-
             try {
                 primeException();
                 stepData.remove("Role");
@@ -2715,9 +2331,8 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I change the group name from \"([^\"]*)\" to \"([^\"]*)\"$")
-    public void iChangeTheGroupNameTo(String groupName, String newGroupName) throws Throwable {
-
+    @And("I change the group name from {string} to {string}")
+    public void iChangeTheGroupNameTo(String groupName, String newGroupName) throws Exception {
         try {
             GroupQuery query = groupFactory.newQuery(SYS_SCOPE_ID);
             query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
@@ -2731,9 +2346,8 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I change the description of group with name \"([^\"]*)\" to \"([^\"]*)\"$")
-    public void iChangeTheGroupDescriptionTo(String groupName, String groupDescription) throws Throwable {
-
+    @And("I change the description of group with name {string} to {string}")
+    public void iChangeTheGroupDescriptionTo(String groupName, String groupDescription) throws Exception {
         try {
             GroupQuery query = groupFactory.newQuery(SYS_SCOPE_ID);
             query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, groupName, AttributePredicate.Operator.EQUAL));
@@ -2746,7 +2360,7 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I search for a group named \"([^\"]*)\"$")
+    @And("I search for a group named {string}")
     public void iSearchForAGroupNamed(String groupName) throws Exception {
         try {
             stepData.remove(GROUP_SECOND);
@@ -2761,11 +2375,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I change devices group$")
+    @And("I change devices group")
     public void iChangeDevicesGroup() throws Exception {
         Group group = (Group) stepData.get(GROUP);
         Device device = (Device) stepData.get("Device");
-
         try {
             device.setGroupId(group.getId());
             stepData.put("Device", device);
@@ -2774,12 +2387,11 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I create the group with name \"([^\"]*)\" and description \"([^\"]*)\"$")
+    @Given("I create the group with name {string} and description {string}")
     public void iCreateTheGroupWithName(String groupName, String groupDescription) throws Exception {
         GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
         groupCreator.setName(groupName);
         groupCreator.setDescription(groupDescription);
-
         try {
             primeException();
             stepData.remove(GROUP);
@@ -2790,12 +2402,10 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the group with description \"([^\"]*)\"$")
+    @When("I search for the group with description {string}")
     public void iSearchForTheGroupWithDescription(String description) throws Exception {
-
         Group group = (Group) stepData.get(GROUP);
         Assert.assertEquals(description, group.getDescription());
-
         primeException();
         try {
             Group groupSecond = groupService.find(group.getScopeId(), group.getId());
@@ -2805,10 +2415,9 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I find the group with description \"([^\"]*)\"$")
+    @Then("I find the group with description {string}")
     public void iFindTheGroupWithDescription(String description) throws Exception {
         Group group = (Group) stepData.get(GROUP);
-
         try {
             primeException();
             Assert.assertEquals(description, group.getDescription());
@@ -2818,12 +2427,11 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I update the group name from \"([^\"]*)\" to \"([^\"]*)\"$")
+    @When("I update the group name from {string} to {string}")
     public void iUpdateTheGroupNameFromTo(String name1, String name2) throws Exception {
         Group group = (Group) stepData.get(GROUP);
         Assert.assertEquals(name1, group.getName());
         group.setName(name2);
-
         try {
             Group secondGroup = groupService.update(group);
             stepData.put(GROUP_SECOND, secondGroup);
@@ -2832,12 +2440,11 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I update the group description from \"([^\"]*)\" to \"([^\"]*)\"$")
+    @When("I update the group description from {string} to {string}")
     public void iUpdateTheGroupDescriptionFromTo(String description1, String description2) throws Exception {
         Group group = (Group) stepData.get(GROUP);
         Assert.assertEquals(description1, group.getDescription());
         group.setDescription(description2);
-
         try {
             Group groupSecond = groupService.update(group);
             stepData.put(GROUP_SECOND, groupSecond);
@@ -2846,14 +2453,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @And("^I try to create the group with invalid characters \"([^\"]*)\" in name and description \"([^\"]*)\"$")
+    @And("I try to create the group with invalid characters {string} in name and description {string}")
     public void iTryToCreateTheGroupWithInvalidCharactersInNameAndDescription(String invalidSymbols, String description) throws Exception {
         GroupCreator groupCreator = groupFactory.newCreator(getCurrentScopeId());
         for (int i = 0; i < invalidSymbols.length(); i++) {
             String groupName = GROUP_NAME + invalidSymbols.charAt(i);
             groupCreator.setName(groupName);
             groupCreator.setDescription(description);
-
             try {
                 primeException();
                 stepData.remove(GROUP);
@@ -2865,14 +2471,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I update the group name from \"([^\"]*)\" to name with special characters \"([^\"]*)\"$")
+    @When("I update the group name from {string} to name with special characters {string}")
     public void iUpdateTheGroupNameFromToNameWithSpecialCharacters(String name, String invalidSymbols) throws Exception {
         Group group = (Group) stepData.get(GROUP);
         Assert.assertEquals(name, group.getName());
         for (int i = 0; i < invalidSymbols.length(); i++) {
             String groupName = name + invalidSymbols.charAt(i);
             group.setName(groupName);
-
             try {
                 primeException();
                 stepData.remove(GROUP);
@@ -2884,14 +2489,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I try to create the group with special characters \"([^\"]*)\" in description$")
+    @Given("I try to create the group with special characters {string} in description")
     public void iTryToCreateTheGroupWithSpecialCharactersInDescription(String invalidSymbols) throws Exception {
         GroupCreator groupCreator = groupFactory.newCreator(SYS_SCOPE_ID);
         for (int i = 0; i < invalidSymbols.length(); i++) {
             String groupDescription = "description" + invalidSymbols.charAt(i);
             groupCreator.setDescription(groupDescription);
             groupCreator.setName(GROUP_NAME + i);
-
             try {
                 primeException();
                 stepData.remove(GROUP);
@@ -2903,14 +2507,13 @@ public class AuthorizationServiceSteps extends TestBase {
         }
     }
 
-    @When("^I update the group description to description with special characters \"([^\"]*)\"$")
+    @When("I update the group description to description with special characters {string}")
     public void iUpdateTheGroupDescriptionFromToDescriptionWithSpecialCharacters(String invalidSymbols) throws Exception {
         GroupCreator groupCreator = groupFactory.newCreator(SYS_SCOPE_ID);
         for (int i = 0; i < invalidSymbols.length(); i++) {
             String groupDescription = "description" + invalidSymbols.charAt(i);
             groupCreator.setDescription(groupDescription);
             groupCreator.setName(GROUP_NAME + i);
-
             try {
                 primeException();
                 stepData.remove(GROUP);

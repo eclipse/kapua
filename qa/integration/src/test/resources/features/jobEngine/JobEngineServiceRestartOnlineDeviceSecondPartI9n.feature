@@ -39,7 +39,7 @@ Feature: JobEngineService restart job tests with online device - second part
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device events
     And The type of the last event is "CONFIGURATION"
@@ -66,7 +66,7 @@ Feature: JobEngineService restart job tests with online device - second part
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 3 or more device events
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 10
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     And KuraMock is disconnected
     And I logout
 
@@ -176,8 +176,8 @@ Feature: JobEngineService restart job tests with online device - second part
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
-    And Command pwd is executed
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
+    And Command "pwd" is executed
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 3 device events
     And The type of the last event is "COMMAND"
@@ -208,7 +208,7 @@ Feature: JobEngineService restart job tests with online device - second part
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 3 or more device events
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 10
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     When KuraMock is disconnected
     And I logout
 
@@ -282,7 +282,7 @@ Feature: JobEngineService restart job tests with online device - second part
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
     And I search events from devices in account "kapua-sys" and 2 events is found
     Given I create a job with the name "TestJob"
     And I add targets to job
@@ -306,7 +306,7 @@ Feature: JobEngineService restart job tests with online device - second part
     And I confirm the executed job is finished
     And I search events from devices in account "kapua-sys" and 3 or more events are found
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 10
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     And KuraMock is disconnected
     And I logout
 
@@ -411,8 +411,8 @@ Feature: JobEngineService restart job tests with online device - second part
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
-    And Command pwd is executed
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
+    And Command "pwd" is executed
     When I search events from devices in account "kapua-sys" and 3 events is found
     And The type of the last event is "COMMAND"
     Given I create a job with the name "TestJob"
@@ -441,7 +441,7 @@ Feature: JobEngineService restart job tests with online device - second part
     And I confirm job target has step index 1 and status "PROCESS_OK"
     When I search events from devices in account "kapua-sys" and 3 or more events is found
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 10
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     When KuraMock is disconnected
     And I logout
 

@@ -100,11 +100,9 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         KapuaSecurityUtils.clearSession();
     }
 
-    @When("^Keystores are requested$")
+    @When("Keystores are requested")
     public void keystoreRequested() throws Exception {
-
         List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
-
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -115,49 +113,44 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         }
     }
 
-    @Then("^Keystores are received$")
+    @Then("Keystores are received")
     public void keystoreReceived() {
         List<DeviceKeystore> deviceKeystores = (List<DeviceKeystore>) stepData.get(KEYSTORES);
         Assert.assertNotNull(deviceKeystores);
     }
 
-    @Then("^Keystores are (\\d+)$")
+    @Then("Keystores are {long}")
     public void keystoreAreSize(long size) {
         List<DeviceKeystore> keystores = (List<DeviceKeystore>) stepData.get(KEYSTORES);
         Assert.assertEquals(size, keystores.size());
     }
 
-    @Then("^Keystores has Keystore named \"(.*)\" is present$")
+    @Then("Keystores has Keystore named {string} is present")
     public void keystoreNamedIsPresent(String keystoreName) {
         List<DeviceKeystore> keystores = (List<DeviceKeystore>) stepData.get(KEYSTORES);
-
         DeviceKeystore keystore = keystores.stream().filter(k -> k.getId().equals(keystoreName)).findAny().orElse(null);
         Assert.assertNotNull(keystore);
     }
 
-    @Then("^Keystores has Keystore named \"(.*)\" has type \"(.*)\"$")
+    @Then("Keystores has Keystore named {string} has type {string}")
     public void keystoreNamedHasType(String keystoreName, String keystoreType) {
         List<DeviceKeystore> keystores = (List<DeviceKeystore>) stepData.get(KEYSTORES);
-
         DeviceKeystore keystore = keystores.stream().filter(k -> k.getId().equals(keystoreName)).findAny().orElse(null);
         Assert.assertNotNull(keystore);
         Assert.assertEquals(keystoreType, keystore.getKeystoreType());
     }
 
-    @Then("^Keystores has Keystore named \"(.*)\" has size (\\d+)$")
+    @Then("Keystores has Keystore named {string} has size {int}")
     public void keystoreNamedHasSize(String keystoreName, Integer keystoreSize) {
         List<DeviceKeystore> keystores = (List<DeviceKeystore>) stepData.get(KEYSTORES);
-
         DeviceKeystore keystore = keystores.stream().filter(k -> k.getId().equals(keystoreName)).findAny().orElse(null);
         Assert.assertNotNull(keystore);
         Assert.assertEquals(keystoreSize, keystore.getSize());
     }
 
-    @When("^All Keystore Items are requested$")
+    @When("All Keystore Items are requested")
     public void requestKeystoreItems() throws Exception {
-
         List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
-
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -168,17 +161,14 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         }
     }
 
-    @When("^Keystore Items with alias \"(.*)\" are requested$")
+    @When("Keystore Items with alias {string} are requested")
     public void requestKeystoreItemsByAlias(String alias) throws Exception {
-
         List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
-
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
                 DeviceKeystoreItemQuery query = deviceKeystoreManagementFactory.newDeviceKeystoreItemQuery();
                 query.setAlias(alias);
-
                 DeviceKeystoreItems keystoreItems = deviceKeystoreManagementService.getKeystoreItems(device.getScopeId(), device.getId(), query, null);
                 List<DeviceKeystoreItem> keystoreItemList = keystoreItems.getKeystoreItems();
                 stepData.put(KEYSTORES_ITEMS, keystoreItemList);
@@ -186,17 +176,14 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         }
     }
 
-    @When("^Keystore Items with keystore id \"(.*)\" are requested$")
+    @When("Keystore Items with keystore id {string} are requested")
     public void requestKeystoreItemsByKeystoreId(String keystoreId) throws Exception {
-
         List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
-
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
                 DeviceKeystoreItemQuery query = deviceKeystoreManagementFactory.newDeviceKeystoreItemQuery();
                 query.setKeystoreId(keystoreId);
-
                 DeviceKeystoreItems keystoreItems = deviceKeystoreManagementService.getKeystoreItems(device.getScopeId(), device.getId(), query, null);
                 List<DeviceKeystoreItem> keystoreItemList = keystoreItems.getKeystoreItems();
                 stepData.put(KEYSTORES_ITEMS, keystoreItemList);
@@ -204,48 +191,43 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         }
     }
 
-    @Then("^Keystore Items are received$")
+    @Then("Keystore Items are received")
     public void keystoreItemsReceived() {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
         Assert.assertNotNull(deviceKeystoreItems);
     }
 
-    @Then("^Keystore Items are (\\d+)$")
+    @Then("Keystore Items are {long}")
     public void keystoreItemsAreSize(long size) {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
         Assert.assertEquals(size, deviceKeystoreItems.size());
     }
 
-    @Then("^Keystore Items has Item with alias \"(.*)\" is present$")
+    @Then("Keystore Items has Item with alias {string} is present")
     public void keystoreItemsWithAliasIsPresent(String keystoreItemAlias) {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
-
         DeviceKeystoreItem keystoreItem = deviceKeystoreItems.stream().filter(k -> k.getAlias().equals(keystoreItemAlias)).findAny().orElse(null);
         Assert.assertNotNull(keystoreItem);
     }
 
-    @Then("^Keystore Items has Item with alias \"(.*)\" is not present$")
+    @Then("Keystore Items has Item with alias {string} is not present")
     public void keystoreItemsWithAliasIsNotPresent(String keystoreItemAlias) {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
-
         DeviceKeystoreItem keystoreItem = deviceKeystoreItems.stream().filter(k -> k.getAlias().equals(keystoreItemAlias)).findAny().orElse(null);
         Assert.assertNull(keystoreItem);
     }
 
-    @Then("^Keystore Items has Item with alias \"(.*)\" has type \"(.*)\"$")
+    @Then("Keystore Items has Item with alias {string} has type {string}")
     public void keystoreItemsWithAliasHasType(String keystoreName, String keystoreType) {
         List<DeviceKeystoreItem> keystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
-
         DeviceKeystoreItem keystoreItem = keystoreItems.stream().filter(k -> k.getAlias().equals(keystoreName)).findAny().orElse(null);
         Assert.assertNotNull(keystoreItem);
         Assert.assertEquals(keystoreType, keystoreItem.getItemType());
     }
 
-    @When("^Keystore Item with keystore id \"(.*)\" and alias \"(.*)\" is requested$")
+    @When("Keystore Item with keystore id {string} and alias {string} is requested")
     public void requestKeystoreItemRequested(String keystoreId, String alias) throws Exception {
-
         List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
-
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -255,17 +237,15 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         }
     }
 
-    @Then("^Keystore Item is received$")
+    @Then("Keystore Item is received")
     public void keystoreItemIsReceived() {
         DeviceKeystoreItem deviceKeystoreItem = (DeviceKeystoreItem) stepData.get(KEYSTORES_ITEM);
-
         Assert.assertNotNull(deviceKeystoreItem);
     }
 
-    @Then("^Keystore Item matches expected$")
+    @Then("Keystore Item matches expected")
     public void keystoreItemMatchesExpected() {
         DeviceKeystoreItem deviceKeystoreItem = (DeviceKeystoreItem) stepData.get(KEYSTORES_ITEM);
-
         Assert.assertNotNull(deviceKeystoreItem);
         Assert.assertEquals("HttpsKeystore", deviceKeystoreItem.getKeystoreId());
         Assert.assertEquals("localhost", deviceKeystoreItem.getAlias());
@@ -274,11 +254,9 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         Assert.assertNotNull(deviceKeystoreItem.getCertificateChain());
     }
 
-    @When("^I install a Keystore Certificate with alias \"(.*)\"$")
+    @When("I install a Keystore Certificate with alias {string}")
     public void installKeystoreCertificateWithAlias(String alias) throws Exception {
-
         List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
-
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -316,17 +294,14 @@ public class DeviceManagementKeystoreSteps extends TestBase {
                         "zT5+hEVOZ4JYPb3xVXkzIjSWmnDVbwC9MFtRaER9MhugKmiAp8SRLbylD0GKOhSB\n" +
                         "2BDf6JrzhIddKxQ75KgMZE6FQaC3Bz1DFyrj\n" +
                         "-----END CERTIFICATE-----");
-
                 deviceKeystoreManagementService.createKeystoreCertificate(device.getScopeId(), device.getId(), deviceKeystoreCertificate, null);
             }
         }
     }
 
-    @When("^I install a Keystore Keypair with alias \"(.*)\"$")
+    @When("I install a Keystore Keypair with alias {string}")
     public void installKeystoreKeypairWithAlias(String alias) throws Exception {
-
         List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
-
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -337,21 +312,17 @@ public class DeviceManagementKeystoreSteps extends TestBase {
                 deviceKeystoreKeypair.setSize(4096);
                 deviceKeystoreKeypair.setSignatureAlgorithm("SHA256withRSA");
                 deviceKeystoreKeypair.setAttributes("CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US");
-
                 deviceKeystoreManagementService.createKeystoreKeypair(device.getScopeId(), device.getId(), deviceKeystoreKeypair, null);
-
                 stepData.put(DEVICE_KEYSTORE_KEYPAIR, deviceKeystoreKeypair);
             }
         }
     }
 
-    @Then("^Keystore Items has Item with alias \"(.*)\" that matches the installed certificate$")
+    @Then("Keystore Items has Item with alias {string} that matches the installed certificate")
     public void keystoreItemsWithAliasMatchesCertificate(String keystoreItemAlias) {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
-
         DeviceKeystoreItem keystoreItem = deviceKeystoreItems.stream().filter(k -> k.getAlias().equals(keystoreItemAlias)).findAny().orElse(null);
         Assert.assertNotNull(keystoreItem);
-
         Assert.assertEquals("SSLKeystore", keystoreItem.getKeystoreId());
         Assert.assertEquals("CN=mqtt.eclipse.org", keystoreItem.getSubjectDN());
         Assert.assertEquals(1, keystoreItem.getSubjectAN().size());
@@ -365,27 +336,22 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         Assert.assertEquals("TRUSTED_CERTIFICATE", keystoreItem.getItemType());
     }
 
-    @Then("^Keystore Items has Item with alias \"(.*)\" that matches the installed keypair$")
+    @Then("Keystore Items has Item with alias {string} that matches the installed keypair")
     public void keystoreItemsWithAliasMatchesKeypair(String keystoreItemAlias) {
         List<DeviceKeystoreItem> deviceKeystoreItems = (List<DeviceKeystoreItem>) stepData.get(KEYSTORES_ITEMS);
-
         DeviceKeystoreItem keystoreItem = deviceKeystoreItems.stream().filter(k -> k.getAlias().equals(keystoreItemAlias)).findAny().orElse(null);
         Assert.assertNotNull(keystoreItem);
-
         DeviceKeystoreKeypair keystoreKeypair = (DeviceKeystoreKeypair) stepData.get(DEVICE_KEYSTORE_KEYPAIR);
         Assert.assertNotNull(keystoreKeypair);
-
         Assert.assertEquals(keystoreKeypair.getKeystoreId(), keystoreItem.getKeystoreId());
         Assert.assertEquals(keystoreKeypair.getAlgorithm(), keystoreItem.getAlgorithm());
         Assert.assertEquals(keystoreKeypair.getSize(), keystoreItem.getSize());
         Assert.assertEquals("PRIVATE_KEY", keystoreItem.getItemType());
     }
 
-    @When("^I delete a Keystore Item from keystore \"(.*)\" with alias \"(.*)\"$")
+    @When("I delete a Keystore Item from keystore {string} with alias {string}")
     public void deleteKeystoreItemWithAlias(String keystoreId, String alias) throws Exception {
-
         List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
-
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -394,11 +360,9 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         }
     }
 
-    @When("^I send a Certificate Signing Request for Keystore Item with keystore \"(.*)\" and alias \"(.*)\"$")
+    @When("I send a Certificate Signing Request for Keystore Item with keystore {string} and alias {string}")
     public void sendCertificateSigningRequestFor(String keystoreId, String alias) throws Exception {
-
         List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
-
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -407,24 +371,21 @@ public class DeviceManagementKeystoreSteps extends TestBase {
                 deviceKeystoreCSRInfo.setAlias(alias);
                 deviceKeystoreCSRInfo.setSignatureAlgorithm("SHA256withRSA");
                 deviceKeystoreCSRInfo.setAttributes("CN=Kura, OU=IoT, O=Eclipse, C=US");
-
                 DeviceKeystoreCSR deviceKeystoreCSR = deviceKeystoreManagementService.createKeystoreCSR(device.getScopeId(), device.getId(), deviceKeystoreCSRInfo, null);
                 stepData.put(DEVICE_KEYSTORE_CSR, deviceKeystoreCSR);
             }
         }
     }
 
-    @Then("^The Certificate Signing Request is received$")
+    @Then("The Certificate Signing Request is received")
     public void keystoreCertificateSigningRequestIsReceived() {
         DeviceKeystoreCSR deviceKeystoreCSR = (DeviceKeystoreCSR) stepData.get(DEVICE_KEYSTORE_CSR);
-
         Assert.assertNotNull(deviceKeystoreCSR);
     }
 
-    @Then("^The Certificate Signing Request matches expected")
+    @Then("The Certificate Signing Request matches expected")
     public void keystoreCertificateSigningRequestMatchesExpected() {
         DeviceKeystoreCSR deviceKeystoreCSR = (DeviceKeystoreCSR) stepData.get(DEVICE_KEYSTORE_CSR);
-
         Assert.assertNotNull(deviceKeystoreCSR);
         Assert.assertEquals("-----BEGIN CERTIFICATE REQUEST-----\n" +
                 "MIICgTCCAWkCAQAwPDELMAkGA1UEBhMCVVMxEDAOBgNVBAoTB0VjbGlwc2UxDDAK\n" +

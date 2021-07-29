@@ -114,6 +114,9 @@ public class TestBase {
     /**
      * Check the exception that was caught. In case the exception was expected the type and message is shown in the cucumber logs.
      * Otherwise the exception is rethrown failing the test and dumping the stack trace to help resolving problems.
+     *
+     * @param ex
+     * @throws Exception
      */
     public void verifyException(Exception ex)
             throws Exception {

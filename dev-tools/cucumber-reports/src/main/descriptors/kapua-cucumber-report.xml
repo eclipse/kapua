@@ -57,87 +57,87 @@
 
         <fileSet>
             <outputDirectory>authorization-service</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/AuthorizationServiceI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>user-service-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/UserServiceI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>user-service-lockout-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/LockoutExpirationI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-service-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/DeviceI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-lifecycle-service-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/DeviceLifecycleI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>connection-user-coupling-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/ConnectionI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-broker-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/DeviceBrokerI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-broker-ipConfigFile-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/DeviceBrokerIpConfigFileI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-broker-ipSysEnv-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/DeviceBrokerIpSysEnvI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-broker-ipUndefined-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/DeviceBrokerIpUndefinedI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-data-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/DeviceDataI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-broker-ACL-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/BrokerACLI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>device-manager-ACL-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/BrokerACLDeviceManageI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>datastore-transport-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/DatastoreTransportI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>datastore-rest-i9n</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/DatastoreRestI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>job-engine-online-device</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/JobEngineOnlineDeviceI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
 
         <fileSet>
             <outputDirectory>job-engine-offline-device</outputDirectory>
-            <directory>../../qa/integration/target/cucumber/JobEngineOfflineDeviceI9n</directory>
+            <directory>../../qa/integration/target/cucumber</directory>
         </fileSet>
         </fileSets>
 

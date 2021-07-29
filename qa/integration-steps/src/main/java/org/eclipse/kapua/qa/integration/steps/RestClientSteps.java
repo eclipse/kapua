@@ -57,9 +57,8 @@ public class RestClientSteps extends Assert {
         this.stepData = stepData;
     }
 
-    @When("^REST GET call at \"(.*)\"")
+    @When("REST GET call at {string}")
     public void restGetCall(String resource) throws Exception {
-
         String host = (String) stepData.get("host");
         String port = (String) stepData.get("port");
         String tokenId = (String) stepData.get(TOKEN_ID);
@@ -92,9 +91,8 @@ public class RestClientSteps extends Assert {
         }
     }
 
-    @When("^REST POST call at \"(.*)\" with JSON \"(.*)\"")
+    @When("REST POST call at {string} with JSON {string}")
     public void restPostCallWithJson(String resource, String json) throws Exception {
-
         String host = (String) stepData.get("host");
         String port = (String) stepData.get("port");
         String tokenId = (String) stepData.get(TOKEN_ID);
@@ -134,17 +132,15 @@ public class RestClientSteps extends Assert {
         }
     }
 
-    @Then("^REST response containing text \"(.*)\"$")
+    @Then("REST response containing text {string}")
     public void restResponseContaining(String checkStr) throws Exception {
-
         String restResponse = (String) stepData.get(REST_RESPONSE);
         assertTrue(String.format("Response %s doesn't include %s.", restResponse, checkStr),
                 restResponse.contains(checkStr));
     }
 
-    @Then("^REST response containing Account$")
+    @Then("REST response containing Account")
     public void restResponseContainingAccount() throws Exception {
-
         String restResponse = (String) stepData.get(REST_RESPONSE);
         Account account = XmlUtil.unmarshalJson(restResponse, Account.class, null);
         KapuaId accId = account.getId();
@@ -153,51 +149,45 @@ public class RestClientSteps extends Assert {
         stepData.put("lastAccountCompactId", accId.toCompactId());
     }
 
-    @Then("^REST response containing \"(.*)\" with prefix account \"(.*)\"$")
+    @Then("REST response containing {string} with prefix account {string}")
     public void restResponseContainingPrefixVar(String checkStr, String var) {
-
         String restResponse = (String) stepData.get(REST_RESPONSE);
         Account account = (Account) stepData.get(var);
         assertTrue(String.format("Response %s doesn't include %s.", restResponse, account.getId() + "-data-message" + checkStr),
                 restResponse.contains(account.getId() + "-data-message" + checkStr));
     }
 
-    @Then("^REST response containing AccessToken$")
+    @Then("REST response containing AccessToken")
     public void restResponseContainingAccessToken() throws Exception {
-
         String restResponse = (String) stepData.get(REST_RESPONSE);
         AccessToken token = XmlUtil.unmarshalJson(restResponse, AccessToken.class, null);
         assertTrue("Token is null.", token.getTokenId() != null);
         stepData.put(TOKEN_ID, token.getTokenId());
     }
 
-    @Then("^REST response containing User")
+    @Then("REST response containing User")
     public void restResponseContainingUser() throws Exception {
-
         String restResponse = (String) stepData.get(REST_RESPONSE);
         User user = XmlUtil.unmarshalJson(restResponse, User.class, null);
         stepData.put("lastUserCompactId", user.getId().toCompactId());
     }
 
-    @Then("^REST response contains list of Users")
+    @Then("REST response contains list of Users")
     public void restResponseContainsUsers() throws Exception {
-
         String restResponse = (String) stepData.get(REST_RESPONSE);
         UserListResult userList = XmlUtil.unmarshalJson(restResponse, UserListResult.class, null);
         Assert.assertFalse("Retrieved user list should NOT be empty.", userList.isEmpty());
     }
 
-    @Then("^REST response doesn't contain User")
+    @Then("REST response doesn't contain User")
     public void restResponseDoesntContainUser() throws Exception {
-
         String restResponse = (String) stepData.get(REST_RESPONSE);
         User user = XmlUtil.unmarshalJson(restResponse, User.class, null);
         Assert.assertTrue("There should be NO User retrieved.", user == null);
     }
 
-    @Then("^REST response code is (\\d+)$")
+    @Then("REST response code is {int}")
     public void restResponseDoesntContainUser(int expeted) throws Exception {
-
         int restResponseCode = (Integer) stepData.get(REST_RESPONSE_CODE);
         Assert.assertEquals("Wrong response code.", expeted, restResponseCode);
     }
@@ -236,7 +226,7 @@ public class RestClientSteps extends Assert {
             Object oValue = stepData.get(key);
             if (oValue instanceof String) {
                 String value = (String) oValue;
-                template = template.replace("$" + key + "$", value);
+                template = template.replace("" + key + "", value);
             }
         }
 
@@ -244,25 +234,22 @@ public class RestClientSteps extends Assert {
     }
 
     // TODO move this step in common steps
-    @Given("^Move step data \"(.*)\" to \"(.*)\"$")
+    @Given("Move step data {string} to {string}")
     public void moveStepData(String keyFrom, String keyTo) {
-
         Object valueFrom = stepData.get(keyFrom);
         stepData.put(keyTo, valueFrom);
     }
 
     // TODO move this step in common steps
-    @Given("^Move Account compact id from step data \"(.*)\" to \"(.*)\"$")
+    @Given("Move Account compact id from step data {string} to {string}")
     public void moveAccountCompactIdStepData(String keyFrom, String keyTo) {
-
         Account account = (Account) stepData.get(keyFrom);
         stepData.put(keyTo, account.getId().toCompactId());
     }
 
     // TODO move this step in common steps
-    @Given("^Clear step data with key \"(.*)\"$")
+    @Given("Clear step data with key {string}")
     public void clearStepData(String key) {
-
         stepData.remove(key);
     }
 }

@@ -21,7 +21,7 @@ import io.cucumber.junit.CucumberOptions;
 @CucumberOptions(
         features = { "classpath:features/job/JobServiceI9n.feature",
                      "classpath:features/job/JobStepServiceI9n.feature",
-                     "classpath:features/job/JobTargetServiceI9n.feature",
+                     "classpath:features/job/JobTargetsServiceI9n.feature",
                      "classpath:features/job/JobExecutionServiceI9n.feature"
                    },
         glue = { "org.eclipse.kapua.service.job.steps",
@@ -29,8 +29,8 @@ import io.cucumber.junit.CucumberOptions;
                  "org.eclipse.kapua.qa.common"
                },
         plugin = { "pretty",
-                   "html:target/cucumber",
-                   "json:target/cucumber.json" },
+                   "html:target/cucumber/JobServiceI9n",
+                   "json:target/JobServiceI9n_cucumber.json" },
         monochrome = true)
 public class RunJobServiceI9nTest {
 }

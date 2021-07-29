@@ -42,6 +42,8 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -55,6 +57,8 @@ import java.util.Set;
  * Creator of Accounts, Users, Permissions that are used in ACL tests
  */
 public class AclCreator {
+
+    private static final Logger logger = LoggerFactory.getLogger(MqttDevice.class);
 
     private static final KapuaId SYS_ID = new KapuaEid(BigInteger.ONE);
 
@@ -129,7 +133,7 @@ public class AclCreator {
         try {
             userService.setConfigValues(accId, scopeId, valueMap);
         } catch (KapuaException ex) {
-            ex.printStackTrace();
+            logger.warn("Error", ex);
         }
     }
 
@@ -148,7 +152,7 @@ public class AclCreator {
         try {
             userService.setConfigValues(accId, scopeId, valueMap);
         } catch (KapuaException ex) {
-            ex.printStackTrace();
+            logger.warn("Error", ex);
         }
     }
 
@@ -168,8 +172,7 @@ public class AclCreator {
             try {
                 accessInfoService.create(accessInfoCreatorCreator(permissionList, user, account));
             } catch (KapuaException ke) {
-                ke.printStackTrace();
-                //skip
+                logger.warn("Error", ke);
             }
 
             return null;

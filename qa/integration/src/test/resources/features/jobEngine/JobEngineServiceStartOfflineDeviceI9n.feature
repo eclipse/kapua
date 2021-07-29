@@ -107,7 +107,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
@@ -130,7 +130,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I start the Kura Mock
     And Device is connected
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     And Device status is "DISCONNECTED"
@@ -150,7 +150,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
     Then Device status is "CONNECTED"
     When KuraMock is disconnected
     And I wait 1 second
@@ -174,7 +174,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I start the Kura Mock
     And Device is connected
     And Bundles are requested
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
     When KuraMock is disconnected
     And I wait 1 second
     And Device status is "DISCONNECTED"
@@ -269,7 +269,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
-    And Package named org.eclipse.kura.example.beacon with version 1.0.300 is received
+    And Package named "org.eclipse.kura.example.beacon" with version "1.0.300" is received
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
@@ -315,7 +315,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
@@ -344,7 +344,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I start the Kura Mock
     And Device is connected
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     And Device status is "DISCONNECTED"
@@ -364,7 +364,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
@@ -392,7 +392,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I start the Kura Mock
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     And Device status is "DISCONNECTED"
@@ -412,8 +412,8 @@ Feature: JobEngineService tests for starting job with offline device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
+    And A bundle named "com.google.guava" with id 95 and version "19.0.0" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
@@ -442,8 +442,8 @@ Feature: JobEngineService tests for starting job with offline device
     When I start the Kura Mock
     And Device is connected
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    And A bundle named com.google.guava with id 95 and version 19.0.0 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
+    And A bundle named "com.google.guava" with id 95 and version "19.0.0" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     And Device status is "DISCONNECTED"
@@ -463,8 +463,8 @@ Feature: JobEngineService tests for starting job with offline device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
+    And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
@@ -493,8 +493,8 @@ Feature: JobEngineService tests for starting job with offline device
     When I start the Kura Mock
     And Device is connected
     And Bundles are requested
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
+    And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     And Device status is "DISCONNECTED"
@@ -514,7 +514,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
@@ -543,7 +543,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I start the Kura Mock
     And Device is connected
     And Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     And Device status is "DISCONNECTED"
@@ -564,7 +564,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
     And Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"
@@ -594,7 +594,7 @@ Feature: JobEngineService tests for starting job with offline device
     And Device is connected
     And Packages are requested and 1 package is received
     And Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     And Device status is "DISCONNECTED"
@@ -614,9 +614,9 @@ Feature: JobEngineService tests for starting job with offline device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
-    And Package named org.eclipse.kura.example.beacon with version 1.0.300 is received
+    And Package named "org.eclipse.kura.example.beacon" with version "1.0.300" is received
     And Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
     Then Device status is "DISCONNECTED"

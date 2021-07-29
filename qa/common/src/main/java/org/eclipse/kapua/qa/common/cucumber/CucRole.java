@@ -28,6 +28,14 @@ public class CucRole {
     private KapuaId id;
     private Set<Actions> actionSet;
 
+    public CucRole(String name, Integer scopeId, String actions, KapuaId id, Set<Actions> actionSet) {
+        this.name = name;
+        this.scopeId = scopeId;
+        this.actions = actions;
+        this.id = id;
+        this.actionSet = actionSet;
+    }
+
     public void doParse() {
         if (scopeId != null) {
             id = new KapuaEid(BigInteger.valueOf(scopeId));

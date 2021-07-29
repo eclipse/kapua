@@ -11,6 +11,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @docker
+@env_none
 Feature: Testing docker steps
   Test that documents functionality of docker steps.
 
@@ -19,7 +20,7 @@ Feature: Testing docker steps
 
     Given List images by name "kapua/kapua-broker:1.6.0-SNAPSHOT"
     #And Pull image "kapua/kapua-sql:1.6.0-SNAPSHOT"
-    And Pull image "elasticsearch:5.4.0"
+    And Pull image "elasticsearch:7.8.1"
     Then Create network
     And Start DB container with name "db"
     And Start ES container with name "es"

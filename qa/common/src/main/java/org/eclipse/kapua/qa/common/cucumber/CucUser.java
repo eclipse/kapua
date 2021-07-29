@@ -46,6 +46,18 @@ public class CucUser {
 
     private String expirationDate;
 
+    public CucUser(String name, String displayName, String email, String phoneNumber, UserStatus status, UserType userType, BigInteger scopeId, String password, String expirationDate) {
+        this.name = name;
+        this.displayName = displayName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.status = status;
+        this.userType = userType;
+        this.scopeId = scopeId;
+        this.password = password;
+        this.expirationDate = expirationDate;
+    }
+
     public String getName() {
         return name;
     }

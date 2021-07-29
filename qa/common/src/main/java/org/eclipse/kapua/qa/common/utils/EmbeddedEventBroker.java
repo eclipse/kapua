@@ -104,7 +104,12 @@ public class EmbeddedEventBroker {
             try {
                 Thread.sleep(Duration.ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Wait interrupted!", e);
+                }
+                else {
+                    logger.warn("Wait interrupted!");
+                }
             }
         }
         logger.info("Stopping Event Broker instance ... done!");

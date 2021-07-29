@@ -1232,7 +1232,7 @@ Feature: User Permission tests
      | name         |
      | subAccount01 |
     And Account "subAccount1" has 1 children
-    And I set the expiration date to 2030-05-05
+    And I set the expiration date to "2030-05-05"
     And I logout
 
   Scenario: Adding Account:Delete permission to user in sub-account scope

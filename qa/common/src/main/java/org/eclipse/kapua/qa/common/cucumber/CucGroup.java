@@ -23,6 +23,12 @@ public class CucGroup {
     private Integer scope;
     private KapuaId scopeId;
 
+    public CucGroup(String name, Integer scope, KapuaId scopeId) {
+        this.name = name;
+        this.scope = scope;
+        this.scopeId = scopeId;
+    }
+
     public void doParse() {
         if (this.scope != null) {
             this.scopeId = new KapuaEid(BigInteger.valueOf(scope.longValue()));
