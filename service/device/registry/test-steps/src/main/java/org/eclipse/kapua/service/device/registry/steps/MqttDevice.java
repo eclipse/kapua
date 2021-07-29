@@ -122,7 +122,7 @@ public class MqttDevice {
             subscribedClient.connect(subscriberOpts);
             subscribedClient.subscribe(NO_TOPIC_FILTER, DEFAULT_QOS);
         } catch (MqttException e) {
-            e.printStackTrace();
+            logger.warn("Error", e);
         }
 
         subscribedClient.setCallback(new MqttCallback() {
@@ -259,7 +259,7 @@ public class MqttDevice {
         try {
             mqttClient.publish(topic, payload.getBytes(), DEFAULT_QOS, DEFAULT_RETAIN);
         } catch (MqttException e) {
-            e.printStackTrace();
+            logger.warn("Error", e);
         }
     }
 

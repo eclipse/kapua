@@ -15,12 +15,16 @@ package org.eclipse.kapua.qa.common.cucumber;
 public class CucMetric {
 
     private String metric;
-
     private String type;
-
     private String value;
-
     private int message;
+
+    public CucMetric(String metric, String type, String value, int message) {
+        this.metric = metric;
+        this.type = type;
+        this.value = value;
+        this.message = message;
+    }
 
     public String getMetric() {
         return metric;

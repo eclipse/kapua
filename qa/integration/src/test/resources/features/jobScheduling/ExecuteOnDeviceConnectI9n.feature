@@ -56,7 +56,7 @@ Feature: JobEngineService execute job on device connect
     Then No exception was thrown
     And I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule1" is created
-    And The trigger is set to start today at 00:00.
+    And The trigger is set to start today at "00:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     And I wait 3 seconds
@@ -106,7 +106,7 @@ Feature: JobEngineService execute job on device connect
     Then No exception was thrown
     And I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule2" is created
-    And The trigger is set to start tomorrow at 06:00.
+    And The trigger is set to start tomorrow at "06:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     And I wait 3 seconds
@@ -155,8 +155,8 @@ Feature: JobEngineService execute job on device connect
     Then No exception was thrown
     And I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule3" is created
-    And The trigger is set to start today at 00:00.
-    And The trigger is set to end tomorrow at 20:00.
+    And The trigger is set to start today at "00:00"
+    And The trigger is set to end tomorrow at "20:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     And I wait 3 seconds
@@ -206,8 +206,8 @@ Feature: JobEngineService execute job on device connect
     Then No exception was thrown
     And I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule4" is created
-    And The trigger is set to start today at 0:00.
-    And The trigger is set to end in 10 seconds.
+    And The trigger is set to start today at "0:00"
+    And The trigger is set to end in 10 seconds
     Then I create a new trigger from the existing creator with previously defined date properties
     And I wait 11 seconds
     And I restart the Kura Mock
@@ -257,7 +257,7 @@ Feature: JobEngineService execute job on device connect
     Then No exception was thrown
     And I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule1" is created
-    And The trigger is set to start today at 00:00.
+    And The trigger is set to start today at "00:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     When Device is connected
@@ -307,7 +307,7 @@ Feature: JobEngineService execute job on device connect
     And A new job target item
     Then I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "TestSchedule1" is created
-    And The trigger is set to start today at 00:00.
+    And The trigger is set to start today at "00:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     When Device is connected

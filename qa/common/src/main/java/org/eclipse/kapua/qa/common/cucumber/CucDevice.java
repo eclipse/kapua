@@ -51,6 +51,31 @@ public class CucDevice {
     String applicationIdentifiers;
     String acceptEncoding;
 
+    public CucDevice(Integer scopeId, Integer groupId, Integer connectionId, Integer preferredUserId, String clientId, String displayName, String status, String modelId,
+        String serialNumber, String imei, String imsi, String iccid, String biosVersion, String firmwareVersion, String osVersion, String jvmVersion, String osgiFrameworkVersion,
+        String applicationFrameworkVersion, String applicationIdentifiers, String acceptEncoding) {
+        this.scopeId = scopeId;
+        this.groupId = groupId;
+        this.connectionId = connectionId;
+        this.preferredUserId = preferredUserId;
+        this.clientId = clientId;
+        this.displayName = displayName;
+        this.status = status;
+        this.modelId = modelId;
+        this.serialNumber = serialNumber;
+        this.imei = imei;
+        this.imsi = imsi;
+        this.iccid = iccid;
+        this.biosVersion = biosVersion;
+        this.firmwareVersion = firmwareVersion;
+        this.osVersion = osVersion;
+        this.jvmVersion = jvmVersion;
+        this.osgiFrameworkVersion = osgiFrameworkVersion;
+        this.applicationFrameworkVersion = applicationFrameworkVersion;
+        this.applicationIdentifiers = applicationIdentifiers;
+        this.acceptEncoding = acceptEncoding;
+    }
+
     public void parse() {
         if (scopeId != null) {
             kScopeId = new KapuaEid(BigInteger.valueOf(scopeId));

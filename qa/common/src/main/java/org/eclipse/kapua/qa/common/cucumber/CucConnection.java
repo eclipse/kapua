@@ -45,16 +45,21 @@ public class CucConnection {
     private static UserService userService = KapuaLocator.getInstance().getService(UserService.class);
     private static AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
 
-    public CucConnection(String clientId, String clientIp, String serverIp, String protocol, String allowUserChange) {
-        this(clientIp, serverIp, protocol, allowUserChange);
+    public CucConnection(String scope, KapuaId scopeId, String status, String clientId, String user, KapuaId userId, String allowUserChange, String userCouplingMode,
+            String reservedUser, KapuaId reservedUserId, String protocol, String clientIp, String serverIp) {
+        this.scope = scope;
+        this.scopeId = scopeId;
+        this.status = status;
         this.clientId = clientId;
-    }
-
-    public CucConnection(String clientIp, String serverIp, String protocol, String allowUserChange) {
+        this.user = user;
+        this.userId = userId;
+        this.allowUserChange = allowUserChange;
+        this.userCouplingMode = userCouplingMode;
+        this.reservedUser = reservedUser;
+        this.reservedUserId = reservedUserId;
+        this.protocol = protocol;
         this.clientIp = clientIp;
         this.serverIp = serverIp;
-        this.protocol = protocol;
-        this.allowUserChange = allowUserChange;
     }
 
     public String getScope() {

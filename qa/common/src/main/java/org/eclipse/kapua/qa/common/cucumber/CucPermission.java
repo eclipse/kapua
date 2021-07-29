@@ -14,6 +14,8 @@ package org.eclipse.kapua.qa.common.cucumber;
 
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.id.KapuaId;
+
 import java.math.BigInteger;
 
 /**
@@ -26,7 +28,14 @@ public class CucPermission {
     private Actions action;
 
     private Integer targetScope;
-    private KapuaEid targetScopeId;
+    private KapuaId targetScopeId;
+
+    public CucPermission(String domain, Actions action, Integer targetScope, KapuaId targetScopeId) {
+        this.domain = domain;
+        this.action = action;
+        this.targetScope = targetScope;
+        this.targetScopeId = targetScopeId;
+    }
 
     public String getDomain() {
         return domain;
@@ -44,14 +53,14 @@ public class CucPermission {
         this.action = action;
     }
 
-    public KapuaEid getTargetScopeId() {
+    public KapuaId getTargetScopeId() {
         if (targetScope != null) {
             return targetScopeId = new KapuaEid(BigInteger.valueOf(targetScope));
         }
         return targetScopeId;
     }
 
-    public void setTargetScopeId(KapuaEid targetScopeId) {
+    public void setTargetScopeId(KapuaId targetScopeId) {
         this.targetScopeId = targetScopeId;
     }
 

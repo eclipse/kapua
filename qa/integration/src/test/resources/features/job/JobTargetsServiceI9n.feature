@@ -120,20 +120,6 @@ Scenario: Query for the targets of a specific job
     Then I count 4
     Then I logout
 
-Scenario: Update a job target TargetId
-
-    Given I login as user with name "kapua-sys" and password "kapua-password"
-    And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
-    Given I create a job with the name "TestJob1"
-    And A regular job target item
-    When I update the job target target id
-    Then No exception was thrown
-    And The job target matches the creator
-    Then I logout
-
 Scenario: Update a job target step index
 
     Given I login as user with name "kapua-sys" and password "kapua-password"

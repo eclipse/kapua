@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
-import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,31 +73,20 @@ import io.cucumber.java.en.When;
 @Singleton
 public class SimulatedDeviceSteps {
 
-    private static final Logger logger = LoggerFactory.getLogger(SimulatedDeviceSteps.class);
+    private final Logger logger = LoggerFactory.getLogger(SimulatedDeviceSteps.class);
 
-    private static final long DEFAULT_REQUEST_TIMEOUT = Duration.ofSeconds(Integer.getInteger("org.eclipse.kapua.service.device.registry.steps.timeoutBundleOperation", 5)).toMillis();
-
-    private static final Duration DEFAULT_PERIOD = Duration.ofSeconds(1);
-
+    private final long defaultRequestTimeout = Duration.ofSeconds(Integer.getInteger("org.eclipse.kapua.service.device.registry.steps.timeoutBundleOperation", 5)).toMillis();
+    private final Duration defaultPeriod = Duration.ofSeconds(1);
     private final Map<String, List<AutoCloseable>> closables = new HashMap<>();
-
     private List<DeviceBundle> bundles;
-
     private List<DevicePackage> packages;
-
     private ScheduledExecutorService downloadExecutor;
-
     private final SimulatedDevice currentDevice;
-
     private String nodeUri;
-
     private final Session session;
 
     @Inject
-    public SimulatedDeviceSteps(
-            final SimulatedDevice currentDevice,
-            final Session session) {
-
+    public SimulatedDeviceSteps(SimulatedDevice currentDevice, Session session) {
         this.currentDevice = currentDevice;
         this.session = session;
     }
@@ -121,25 +109,24 @@ public class SimulatedDeviceSteps {
         downloadExecutor.shutdown();
     }
 
-    @Given("The account name is (.*) and the client ID is (.*)")
-    public void setClientId(final String accountName, final String clientId) {
+    @Given("The account name is {string} and the client ID is {string}")
+    public void setClientId(String accountName, String clientId) {
         currentDevice.setAccountName(accountName);
         currentDevice.setClientId(clientId);
     }
 
-    @Given("The broker URI is (.*)")
-    public void setNodeUri(final String nodeUri) {
+    @Given("The broker URI is {string}")
+    public void setNodeUri(String nodeUri) {
         this.nodeUri = nodeUri;
     }
 
-    @Given("My credentials are username \"(.*)\" and password \"(.*)\"")
-    public void setUsernamePasswordCredentials(final String username, final String password) {
+    @Given("My credentials are username {string} and password {string}")
+    public void setUsernamePasswordCredentials(String username, String password) {
         session.setCredentials(KapuaLocator.getInstance().getFactory(CredentialsFactory.class).newUsernamePasswordCredentials(username, password));
     }
 
     @When("I start the simulator")
     public void startSimulator() throws Exception {
-
         currentDevice.started();
 
         final GatewayConfiguration configuration = new GatewayConfiguration(nodeUri, currentDevice.getAccountName(), currentDevice.getClientId());
@@ -163,22 +150,21 @@ public class SimulatedDeviceSteps {
     @When("I stop the simulator")
     public void stopSimulator() {
         Suppressed.closeAll(closables.remove("simulator/" + currentDevice.getClientId()));
-
         currentDevice.stopped();
     }
 
-    @Then("Device (.*) for account (.*) is registered after (\\d+) seconds?")
+    @Then("Device {string} for account {string} is registered after {int} seconds")
     public void deviceIsRegistered(final String clientId, final String accountName, final int timeout) throws Exception {
-        Wait.assertFor("Wait for connection state to become " + DeviceConnectionStatus.CONNECTED, Duration.ofSeconds(timeout), DEFAULT_PERIOD, () -> {
+        Wait.assertFor("Wait for connection state to become " + DeviceConnectionStatus.CONNECTED, Duration.ofSeconds(timeout), defaultPeriod, () -> {
             session.withLogin(() -> {
                 assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.CONNECTED);
             });
         });
     }
 
-    @Then("Device (.*) for account (.*) is not registered after (\\d+) seconds?")
+    @Then("Device {string} for account {string} is not registered after {int} seconds")
     public void deviceIsNotRegistered(final String clientId, final String accountName, final int timeout) throws Exception {
-        Wait.assertFor("Wait for connection state to become " + DeviceConnectionStatus.DISCONNECTED, Duration.ofSeconds(timeout), DEFAULT_PERIOD, () -> {
+        Wait.assertFor("Wait for connection state to become " + DeviceConnectionStatus.DISCONNECTED, Duration.ofSeconds(timeout), defaultPeriod, () -> {
             session.withLogin(() -> {
                 assertConnectionStatus(clientId, accountName, DeviceConnectionStatus.DISCONNECTED);
             });
@@ -229,27 +215,27 @@ public class SimulatedDeviceSteps {
         });
     }
 
-    @When("I start the bundle (.*) with version (.*)")
+    @When("I start the bundle {string} with version {string}")
     public void startBundle(final String bundleSymbolicName, final String version) throws Exception {
         session.withLogin(() -> {
             With.withUserAccount(currentDevice.getAccountName(), account -> {
                 With.withDevice(account, currentDevice.getClientId(), device -> {
                     DeviceBundle bundle = findBundle(bundleSymbolicName, version);
                     DeviceBundleManagementService service = KapuaLocator.getInstance().getService(DeviceBundleManagementService.class);
-                    service.start(account.getId(), device.getId(), Long.toString(bundle.getId()), DEFAULT_REQUEST_TIMEOUT);
+                    service.start(account.getId(), device.getId(), Long.toString(bundle.getId()), defaultRequestTimeout);
                 });
             });
         });
     }
 
-    @When("I stop the bundle (.*) with version (.*)")
+    @When("I stop the bundle {string} with version {string}")
     public void stopBundle(final String bundleSymbolicName, final String version) throws Exception {
         session.withLogin(() -> {
             With.withUserAccount(currentDevice.getAccountName(), account -> {
                 With.withDevice(account, currentDevice.getClientId(), device -> {
                     DeviceBundle bundle = findBundle(bundleSymbolicName, version);
                     DeviceBundleManagementService service = KapuaLocator.getInstance().getService(DeviceBundleManagementService.class);
-                    service.stop(account.getId(), device.getId(), Long.toString(bundle.getId()), DEFAULT_REQUEST_TIMEOUT);
+                    service.stop(account.getId(), device.getId(), Long.toString(bundle.getId()), defaultRequestTimeout);
                 });
             });
         });
@@ -261,7 +247,7 @@ public class SimulatedDeviceSteps {
             With.withUserAccount(currentDevice.getAccountName(), account -> {
                 With.withDevice(account, currentDevice.getClientId(), device -> {
                     DeviceBundleManagementService service = KapuaLocator.getInstance().getService(DeviceBundleManagementService.class);
-                    DeviceBundles bundles = service.get(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
+                    DeviceBundles bundles = service.get(account.getId(), device.getId(), defaultRequestTimeout);
 
                     Assert.assertNotNull(bundles);
 
@@ -271,7 +257,7 @@ public class SimulatedDeviceSteps {
         });
     }
 
-    @Then("The bundle (.*) with version (.*) is present and (.*)")
+    @Then("The bundle {string} with version {string} is present and {string}")
     public void hasBundle(String bundleSymbolicName, String version, String state) throws KapuaException {
         DeviceBundle bundle = findBundle(bundleSymbolicName, version);
 
@@ -301,7 +287,7 @@ public class SimulatedDeviceSteps {
                 With.withDevice(account, currentDevice.getClientId(), device -> {
                     final DevicePackageManagementService service = KapuaLocator.getInstance().getService(DevicePackageManagementService.class);
 
-                    final DevicePackages packages = service.getInstalled(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
+                    final DevicePackages packages = service.getInstalled(account.getId(), device.getId(), defaultRequestTimeout);
 
                     Assert.assertNotNull(packages);
 
@@ -316,8 +302,8 @@ public class SimulatedDeviceSteps {
         Assert.assertTrue(packages.isEmpty());
     }
 
-    @Then("Package \"(.+)\" with version (.+) is installed and has (\\d+) mock bundles")
-    public void assertPackage(final String packageName, final String version, int numberOfMockBundles) {
+    @Then("Package {string} with version {string} is installed and has {int} mock bundle(s)")
+    public void assertPackage(String packageName, String version, int numberOfMockBundles) {
         final DevicePackage pkg = findPackage(packageName, version);
 
         // Assert.assertNotNull(pkg.getInstallDate());
@@ -341,8 +327,8 @@ public class SimulatedDeviceSteps {
         }
     }
 
-    @When("I start to download package \"(.+)\" with version (.+) from (.*)")
-    public void downloadPackage(final String packageName, final String version, final URI uri) throws Exception {
+    @When("I start to download package {string} with version {string} from {string}")
+    public void downloadPackage(final String packageName, final String version, final String uri) throws Exception {
         session.withLogin(() -> {
             With.withUserAccount(currentDevice.getAccountName(), account -> {
                 With.withDevice(account, currentDevice.getClientId(), device -> {
@@ -352,15 +338,15 @@ public class SimulatedDeviceSteps {
                     request.setInstall(true);
                     request.setName(packageName);
                     request.setVersion(version);
-                    request.setUri(uri);
+                    request.setUri(Util.parseUri(uri));
 
-                    service.downloadExec(account.getId(), device.getId(), request, DEFAULT_REQUEST_TIMEOUT);
+                    service.downloadExec(account.getId(), device.getId(), request, defaultRequestTimeout);
                 });
             });
         });
     }
 
-    @Then("The download state changes to (.+) in the next (\\d+) seconds?")
+    @Then("The download state changes to {string} in the next {int} second(s)")
     public void assertDownloadState(final String state, int waitSeconds) throws Exception {
         session.withLogin(() -> {
             With.withUserAccount(currentDevice.getAccountName(), account -> {
@@ -369,7 +355,7 @@ public class SimulatedDeviceSteps {
                     final DevicePackageDownloadStatus downloadState = DevicePackageDownloadStatus.valueOf(state);
 
                     Wait.waitFor("Download state change", Duration.ofSeconds(waitSeconds), Duration.ofMillis(500), () -> {
-                        final DevicePackageDownloadOperation operation = service.downloadStatus(account.getId(), device.getId(), DEFAULT_REQUEST_TIMEOUT);
+                        final DevicePackageDownloadOperation operation = service.downloadStatus(account.getId(), device.getId(), defaultRequestTimeout);
                         if (operation == null) {
                             return false;
                         }

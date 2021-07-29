@@ -20,6 +20,12 @@ public class CucTopic {
 
     private String captured;
 
+    public CucTopic(String topic, String clientId, String captured) {
+        this.topic = topic;
+        this.clientId = clientId;
+        this.captured = captured;
+    }
+
     public String getTopic() {
         return topic;
     }

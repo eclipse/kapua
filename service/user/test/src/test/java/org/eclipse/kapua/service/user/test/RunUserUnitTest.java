@@ -26,8 +26,8 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.qa.common"
                },
         plugin = { "pretty",
-                   "html:target/cucumber",
-                   "json:target/cucumber.json" },
+                   "html:target/cucumber/UserService",
+                   "json:target/UserService_cucumber.json" },
         monochrome = true)
 public class RunUserUnitTest {
 }

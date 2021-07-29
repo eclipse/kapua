@@ -22,16 +22,16 @@ import org.junit.runner.RunWith;
         features = {
                 "classpath:features/jobScheduling/TriggerServiceI9n.feature",
         },
-        glue = { "org.eclipse.kapua.service.job.steps",
+        glue = {"org.eclipse.kapua.service.job.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.device.registry.steps",
                 "org.eclipse.kapua.service.scheduler.steps"
         },
-        plugin = { "pretty",
-                "html:target/cucumber",
-                "json:target/cucumber.json" },
+        plugin = {"pretty",
+                "html:target/cucumber/TriggerServiceI9n",
+                "json:target/TriggerServiceI9n_cucumber.json" },
         monochrome = true)
 public class RunTriggerServiceI9nTest {
 }

@@ -31,6 +31,12 @@ public class CucAccount {
 
     private String expirationDate;
 
+    public CucAccount(String name, BigInteger scopeId, String expirationDate) {
+        this.name = name;
+        this.scopeId = scopeId;
+        this.expirationDate = expirationDate;
+    }
+
     public String getName() {
         return name;
     }

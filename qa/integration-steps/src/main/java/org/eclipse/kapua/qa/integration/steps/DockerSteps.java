@@ -40,6 +40,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 
 import org.apache.activemq.command.BrokerInfo;
+import org.eclipse.kapua.qa.common.BasicSteps;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.Assert;
@@ -94,7 +95,7 @@ public class DockerSteps {
         DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add("telemetry-consumer");
         DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add("lifecycle-consumer");
         DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add("message-broker");
-        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add("job-engine");
+        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add(BasicSteps.JOB_ENGINE_CONTAINER_NAME);
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME = new ArrayList<>();
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("events-broker");
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("es");
@@ -120,17 +121,17 @@ public class DockerSteps {
         containerMap = new HashMap<>();
     }
 
-    @Given("^Enable debug$")
+    @Given("Enable debug")
     public void enableDebug() {
         this.debug = true;
     }
 
-    @Given("^Disable debug$")
+    @Given("Disable debug")
     public void disableDebug() {
         this.debug = false;
     }
 
-    @Given("^Create mqtt \"(.*)\" client for broker \"(.*)\" on port (\\d+) with user \"(.*)\" and pass \"(.*)\"$")
+    @Given("Create mqtt {string} client for broker {string} on port {int} with user {string} and pass {string}")
     public void createMqttClient(String clientId, String broker, int port, String user, String pass) {
         try {
             BrokerClient client = new BrokerClient(broker, port, clientId, user, pass);
@@ -140,18 +141,17 @@ public class DockerSteps {
         }
     }
 
-    @Given("^Connect to mqtt client \"(.*)\"$")
+    @Given("Connect to mqtt client {string}")
     public void connectMqttClient(String clientId) {
         BrokerClient client = (BrokerClient) stepData.get(clientId);
         try {
             client.connect();
         } catch (MqttException e) {
             logger.error("Unable to connect to mqtt broker with client " + clientId, e);
-            e.printStackTrace();
         }
     }
 
-    @Given("^Disconnect mqtt client \"(.*)\"$")
+    @Given("Disconnect mqtt client {string}")
     public void disconnectMqttClient(String clientId) {
         BrokerClient client = (BrokerClient) stepData.get(clientId);
         try {
@@ -161,7 +161,7 @@ public class DockerSteps {
         }
     }
 
-    @Given("^Subscribe mqtt client \"(.*)\" to topic \"(.*)\"$")
+    @Given("Subscribe mqtt client {string} to topic {string}")
     public void subscribeMqttClient(String clientId, String topic) {
         BrokerClient client = (BrokerClient) stepData.get(clientId);
         try {
@@ -171,14 +171,14 @@ public class DockerSteps {
         }
     }
 
-    @Then("^Client \"(.*)\" has (\\d+) messages?.*$")
+    @Then("Client {string} has {int} messages")
     public void clientCountMsg(String clientId, int numMsgs) {
         BrokerClient client = (BrokerClient) stepData.get(clientId);
         int receivedMsgs = client.getRecivedMsgCnt();
         Assert.assertEquals(numMsgs, receivedMsgs);
     }
 
-    @Given("^Publish string \"(.*)\" to topic \"(.*)\" as client \"(.*)\"")
+    @Given("Publish string {string} to topic {string} as client {string}")
     public void publishMqttClient(String message, String topic, String clientId) {
         BrokerClient client = (BrokerClient) stepData.get(clientId);
         try {
@@ -188,7 +188,7 @@ public class DockerSteps {
         }
     }
 
-    @Given("^Start full docker environment$")
+    @Given("Start full docker environment")
     public void startFullDockerEnvironment() throws Exception {
         logger.info("Starting full docker environment...");
         try {
@@ -212,7 +212,7 @@ public class DockerSteps {
                 this.wait(WAIT_FOR_EVENTS_BROKER);
             }
 
-            startJobEngineContainer("job-engine");
+            startJobEngineContainer(BasicSteps.JOB_ENGINE_CONTAINER_NAME);
             synchronized (this) {
                 this.wait(WAIT_FOR_JOB_ENGINE);
             }
@@ -320,21 +320,21 @@ public class DockerSteps {
         return false;
     }
 
-    @Given("^Stop full docker environment$")
+    @Given("Stop full docker environment")
     public void stopFullDockerEnvironment() throws DockerException, InterruptedException {
         printContainersLog(DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME);
         removeContainers(DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME);
         removeContainers(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
     }
 
-    @Given("^Create network$")
+    @Given("Create network")
     public void createNetwork() throws DockerException, InterruptedException {
         networkConfig = NetworkConfig.builder().name(NETWORK_PREFIX).build();
         NetworkCreation networkCreation = DockerUtil.getDockerClient().createNetwork(networkConfig);
         networkId = networkCreation.id();
     }
 
-    @Given("^Remove network$")
+    @Given("Remove network")
     public void removeNetwork() throws DockerException, InterruptedException {
         List<Network> networkList = DockerUtil.getDockerClient().listNetworks(ListNetworksFilterParam.byNetworkName(NETWORK_PREFIX));
         if (networkList != null) {
@@ -353,12 +353,12 @@ public class DockerSteps {
         }
     }
 
-    @Given("^Pull image \"(.*)\"$")
+    @Given("Pull image {string}")
     public void pullImage(String image) throws DockerException, InterruptedException {
         DockerUtil.getDockerClient().pull(image);
     }
 
-    @Given("^List images by name \"(.*)\"$")
+    @Given("List images by name {string}")
     public void listImages(String imageName) throws Exception {
         List<Image> images = DockerUtil.getDockerClient().listImages(DockerClient.ListImagesParam.byName(imageName));
         if ((images != null) && (images.size() > 0)) {
@@ -370,7 +370,7 @@ public class DockerSteps {
         }
     }
 
-    @And("^Start DB container with name \"(.*)\"$")
+    @And("Start DB container with name {string}")
     public void startDBContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting DB container...");
         ContainerConfig dbConfig = getDbContainerConfig();
@@ -383,7 +383,7 @@ public class DockerSteps {
         logger.info("DB container started: {}", containerId);
     }
 
-    @And("^Start ES container with name \"(.*)\"$")
+    @And("Start ES container with name {string}")
     public void startESContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting ES container...");
         ContainerConfig esConfig = getEsContainerConfig();
@@ -396,7 +396,7 @@ public class DockerSteps {
         logger.info("ES container started: {}", containerId);
     }
 
-    @And("^Start EventBroker container with name \"(.*)\"$")
+    @And("Start EventBroker container with name {string}")
     public void startEventBrokerContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting EventBroker container...");
         ContainerConfig ebConfig = getEventBrokerContainerConfig();
@@ -409,7 +409,7 @@ public class DockerSteps {
         logger.info("EventBroker container started: {}", containerId);
     }
 
-    @And("^Start JobEngine container with name \"(.*)\"$")
+    @And("Start JobEngine container with name {string}")
     public void startJobEngineContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Job Engine container {}...", name);
         ContainerConfig mbConfig = getJobEngineContainerConfig();
@@ -422,7 +422,7 @@ public class DockerSteps {
         logger.info("Job Engine {} container started: {}", name, containerId);
     }
 
-    @And("^Start MessageBroker container with name \"(.*)\"$")
+    @And("Start MessageBroker container with name {string}")
     public void startMessageBrokerContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Message Broker container {}...", name);
         ContainerConfig mbConfig = getBrokerContainerConfig("message-broker", 1883, 1883, 1893, 1893, 8883, 8883, 8161, 8161, 5005, 5005, "kapua/kapua-broker:" + KAPUA_VERSION);
@@ -435,7 +435,7 @@ public class DockerSteps {
         logger.info("Message Broker {} container started: {}", name, containerId);
     }
 
-    @And("^Start TelemetryConsumer container with name \"(.*)\"$")
+    @And("Start TelemetryConsumer container with name {string}")
     public void startTelemetryConsumerContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Telemetry Consumer container {}...", name);
         ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(getTelemetryConsumerConfig(8080, 8091, 8001, 8002), name);
@@ -447,7 +447,7 @@ public class DockerSteps {
         logger.info("Telemetry Consumer {} container started: {}", name, containerId);
     }
 
-    @And("^Start LifecycleConsumer container with name \"(.*)\"$")
+    @And("Start LifecycleConsumer container with name {string}")
     public void startLifecycleConsumerContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Lifecycle Consumer container {}...", name);
         ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(getLifecycleConsumerConfig(8080, 8090, 8001, 8001), name);
@@ -459,7 +459,7 @@ public class DockerSteps {
         logger.info("Lifecycle Consumer {} container started: {}", name, containerId);
     }
 
-    @Then("^Stop container with name \"(.*)\"$")
+    @Then("Stop container with name {string}")
     public void stopContainer(List<String> names) throws DockerException, InterruptedException {
         for (String name : names) {
             logger.info("Stopping container {}...", name);
@@ -469,7 +469,7 @@ public class DockerSteps {
         }
     }
 
-    @Then("^Remove container with name \"(.*)\"$")
+    @Then("Remove container with name {string}")
     public void removeContainers(List<String> names) throws DockerException, InterruptedException {
         for (String name : names) {
             removeContainer(name);
@@ -500,7 +500,7 @@ public class DockerSteps {
         }
     }
 
-    @Given("^Print log for container with name \"(.*)\"$")
+    @Given("Print log for container with name {string}")
     public void printContainersLog(List<String> names) {
         if (printContainerLogOnContainerExit) {
             for (String name : names) {

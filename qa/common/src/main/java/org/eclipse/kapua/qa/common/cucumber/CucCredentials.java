@@ -34,6 +34,13 @@ public class CucCredentials {
 
     private String expirationDate;
 
+    public CucCredentials(String name, String password, boolean enabled, String expirationDate) {
+        this.name = name;
+        this.password = password;
+        this.enabled = enabled;
+        this.expirationDate = expirationDate;
+    }
+
     public String getName() {
         return name;
     }

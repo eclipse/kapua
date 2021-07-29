@@ -166,32 +166,29 @@ public class UserServiceSteps extends TestBase {
         updateScenario(scenario);
     }
 
-    @Given("^User with name \"(.*)\" in scope with id (\\d+)$")
+    @Given("User with name {string} in scope with id {int}")
     public void crateUserWithName(String userName, int scopeId) {
         long now = (new Date()).getTime();
         String userEmail = MessageFormat.format("testuser_{0,number,#}@organization.com", now);
         String displayName = MessageFormat.format("User Display Name {0}", now);
         KapuaEid scpId = new KapuaEid(BigInteger.valueOf(scopeId));
-
         UserCreator uc = userFactory.newCreator(scpId, userName);
         uc.setDisplayName(displayName);
         uc.setEmail(userEmail);
         uc.setPhoneNumber("+1 555 123 4567");
         uc.setUserStatus(UserStatus.ENABLED);
-
         stepData.put(USER_CREATOR, uc);
-
         scenario.log("User " + userName + " created.");
     }
 
-    @When("^I create user$")
+    @When("I create user")
     public void createUser() throws Exception {
         stepData.remove("User");
         User user = userService.create((UserCreator) stepData.get(USER_CREATOR));
         stepData.put("User", user);
     }
 
-    @Given("^An invalid user$")
+    @Given("An invalid user")
     public void provideInvalidUserObject() {
         User user = userFactory.newEntity(getKapuaId());
         user.setId(getKapuaId());
@@ -199,7 +196,7 @@ public class UserServiceSteps extends TestBase {
         stepData.put("User", user);
     }
 
-    @When("^I change name to \"(.*)\"$")
+    @When("I change name to {string}")
     public void changeUserName(String userName) throws Exception {
         User user = (User) stepData.get("User");
         user.setName(userName);
@@ -207,7 +204,7 @@ public class UserServiceSteps extends TestBase {
         stepData.put("User", user);
     }
 
-    @When("^I change user to$")
+    @When("I change user to")
     public void changeUserTo(List<CucUser> userList) throws Exception {
         User user = (User) stepData.get("User");
         try {
@@ -225,7 +222,7 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete user$")
+    @When("I delete user")
     public void deleteUser() throws Exception {
         try {
             primeException();
@@ -236,7 +233,7 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for user with name \"(.*)\"$")
+    @When("I search for user with name {string}")
     public void searchUserWithName(String userName) throws Exception {
         stepData.remove("User");
         primeException();
@@ -248,13 +245,11 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for users")
+    @When("I search for users")
     public void searchForUsers() throws Exception {
         KapuaId scpId = DEFAULT_ID;
         Set<ComparableUser> iFoundUsers;
-
         stepData.remove(USER_LIST);
-
         KapuaQuery query = userFactory.newQuery(scpId);
         UserListResult queryResult = userService.query(query);
         iFoundUsers = new HashSet<>();
@@ -265,11 +260,10 @@ public class UserServiceSteps extends TestBase {
         stepData.put(USER_LIST, iFoundUsers);
     }
 
-    @Then("^I find user with name \"(.*)\"$")
+    @Then("I find user with name {string}")
     public void findUserWithName(String userName) throws Exception {
         UserCreator userCreator = (UserCreator) stepData.get(USER_CREATOR);
         User user = (User) stepData.get("User");
-
         Assert.assertNotNull(user.getId());
         Assert.assertNotNull(user.getId().getId());
         Assert.assertTrue(user.getOptlock() >= 0);
@@ -285,27 +279,24 @@ public class UserServiceSteps extends TestBase {
         Assert.assertEquals(UserStatus.ENABLED, user.getStatus());
     }
 
-    @Then("^I don't find user with name \"(.*)\"$")
+    @Then("I don't find user with name {string}")
     public void dontFindUserWithName(String userName) throws Exception {
         User user = userService.findByName(userName);
         Assert.assertNull(user);
     }
 
-    @Then("^I find user$")
+    @Then("I find user")
     public void findUserFull(List<CucUser> userList) {
         User user = (User) stepData.get("User");
-
         for (CucUser userItem : userList) {
             matchUserData(user, userItem);
         }
     }
 
-    @Then("^I find users$")
+    @Then("I find users")
     public void findUsersFull(List<CucUser> userList) {
-
         Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get(USER_LIST);
         boolean userChecks;
-
         for (CucUser userItem : userList) {
             userChecks = false;
             for (ComparableUser foundUserItem : iFoundUsers) {
@@ -321,13 +312,12 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I find no user$")
+    @Then("I find no user")
     public void noUserFound() {
-
         Assert.assertNull(stepData.get("User"));
     }
 
-    @When("^I search for user with id (\\d+) in scope with id (\\d+)$")
+    @When("I search for user with id {int} in scope with id {int}")
     public void searchUserWithIdAndScopeId(int userId, int scopeId) throws Exception {
         KapuaEid scpId = new KapuaEid(BigInteger.valueOf(scopeId));
         KapuaEid usrId = new KapuaEid(BigInteger.valueOf(userId));
@@ -336,21 +326,21 @@ public class UserServiceSteps extends TestBase {
         stepData.put("User", user);
     }
 
-    @When("^I search for created user by id$")
+    @When("I search for created user by id")
     public void searchUserById() throws Exception {
         User user = (User) stepData.get("User");
         user = userService.find(user.getId(), user.getScopeId());
         stepData.put("User", user);
     }
 
-    @When("^I search for created user by name$")
+    @When("I search for created user by name")
     public void searchUserByName() throws Exception {
         User user = (User) stepData.get("User");
         user = userService.findByName(user.getName());
         stepData.put("User", user);
     }
 
-    @When("^I query for users in scope with id (\\d+)$")
+    @When("I query for users in scope with id {int}")
     public void queryForUsers(int scopeId) throws Exception {
         stepData.remove(USER_LIST);
         UserQuery query = userFactory.newQuery(new KapuaEid(BigInteger.valueOf(scopeId)));
@@ -362,7 +352,7 @@ public class UserServiceSteps extends TestBase {
         stepData.put(USER_LIST, iFoundUsers);
     }
 
-    @When("^I count users in scope (\\d+)$")
+    @When("I count users in scope {int}")
     public void countUsersInScope(int scopeId) throws Exception {
         UserQuery query = userFactory.newQuery(new KapuaEid(BigInteger.valueOf(scopeId)));
         stepData.remove(COUNT);
@@ -370,18 +360,18 @@ public class UserServiceSteps extends TestBase {
         stepData.put(COUNT, userCnt);
     }
 
-    @Then("^I count (\\d+) (?:user|users)$")
+    @Then("I count {long} (user/users)")
     public void countUserCount(Long cnt) {
         Assert.assertEquals(cnt, stepData.get(COUNT));
     }
 
-    @Then("^I count (\\d+) (?:user|users) as query result list$")
+    @Then("I count {long} (user/users) as query result list")
     public void countUserQuery(long cnt) {
         Set<ComparableUser> userLst = (Set<ComparableUser>) stepData.get(USER_LIST);
         Assert.assertEquals(cnt, userLst.size());
     }
 
-    @Then("^I create same user$")
+    @Then("I create same user")
     public void createSameUser() throws Exception {
         try {
             primeException();
@@ -391,14 +381,14 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Given("^User that doesn't exist$")
+    @Given("User that doesn't exist")
     public void createNonexistentUser() {
         stepData.remove("User");
         User user = createUserInstance(3234123, 1354133);
         stepData.put("User", user);
     }
 
-    @When("^I update nonexistent user$")
+    @When("I update nonexistent user")
     public void updateNonexistenUser() throws Exception {
         User user = (User) stepData.get("User");
         try {
@@ -409,7 +399,7 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete nonexistent user$")
+    @When("I delete nonexistent user")
     public void deleteNonexistenUser() throws Exception {
         User user = (User) stepData.get("User");
         try {
@@ -420,16 +410,14 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I have the following (?:user|users)$")
+    @Given("I have the following (user/users)")
     public void haveUsers(List<CucUser> userList) throws Exception {
-
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         KapuaId accountId = (KapuaId) stepData.get("LastAccountId");
         KapuaId currentAccount;
         Set<ComparableUser> iHaveUsers = new HashSet<>();
         User lastUser = null;
         stepData.remove(USER_LIST);
-
         if (account != null) {
             currentAccount = account.getId();
         } else if (accountId != null) {
@@ -437,7 +425,6 @@ public class UserServiceSteps extends TestBase {
         } else {
             currentAccount = DEFAULT_ID;
         }
-
         primeException();
         try {
             for (CucUser userItem : userList) {
@@ -463,26 +450,26 @@ public class UserServiceSteps extends TestBase {
         stepData.put("User", lastUser);
     }
 
-    @When("^I retrieve metadata in scope (\\d+)$")
+    @When("I retrieve metadata in scope {int}")
     public void getMetadata(int scopeId) throws KapuaException {
         stepData.remove(METADATA);
         KapuaTocd metadata = userService.getConfigMetadata(getKapuaId(scopeId));
         stepData.put(METADATA, metadata);
     }
 
-    @Then("^I have metadata$")
+    @Then("I have metadata")
     public void haveMetadata() {
         KapuaTocd metadata = (KapuaTocd) stepData.get(METADATA);
         Assert.assertNotNull("Metadata should be retrieved.", metadata);
     }
 
-    @Given("^I add credentials$")
+    @Given("I add credentials")
     public void givenCredentials(List<CucCredentials> credentialsList) throws Exception {
         CucCredentials cucCredentials = credentialsList.get(0);
         createCredentials(cucCredentials);
     }
 
-    @Given("^I search for last created user's credentials$")
+    @Given("I search for last created user's credentials")
     public void searchForLastCreatedCredentials() throws Exception {
         ComparableUser comparableUser = (ComparableUser) stepData.get(LAST_USER);
         primeException();
@@ -498,35 +485,34 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I find (\\d+) credentials$")
+    @Given("I find {int} credentials")
     public void checkCredentialsNumber(int expectedCount) throws Exception {
         int count = (int) stepData.get("CredentialsCount");
         Assert.assertEquals(expectedCount, count);
     }
 
-    @Given("^I delete the last created user's credential$")
+    @Given("I delete the last created user's credential")
     public void deleteLastCreatedUsersCredentials() throws Exception {
         Credential credential = (Credential) stepData.get("CredentialFound");
         primeException();
         try {
             credentialService.delete(getCurrentScopeId(), credential.getId());
-
         } catch (KapuaException ke) {
             verifyException(ke);
         }
     }
 
-    @Given("^Add permissions to the last created user$")
+    @Given("Add permissions to the last created user")
     public void givenPermissions(List<CucPermission> permissionList) throws Exception {
         createPermissions(permissionList, (ComparableUser) stepData.get(LAST_USER), (Account) stepData.get(LAST_ACCOUNT));
     }
 
-    @Given("^Full permissions$")
+    @Given("Full permissions")
     public void givenFullPermissions() throws Exception {
         createPermissions(null, (ComparableUser) stepData.get(LAST_USER), (Account) stepData.get(LAST_ACCOUNT));
     }
 
-    @Given("^I delete the last permission added to the new User$")
+    @Given("I delete the last permission added to the new User")
     public void deletePermissionForUser() throws Exception {
         AccessPermission accessPermission = (AccessPermission) stepData.get(LAST_FOUND_ACCESS_PERMISSION);
         primeException();
@@ -537,7 +523,7 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I query for the last permission added to the new User$")
+    @Given("I query for the last permission added to the new User")
     public void queryForLastAddedPermission() throws Exception {
         Permission permission = (Permission) stepData.get(LAST_PERMISSION_ADDED_TO_USER);
         primeException();
@@ -551,13 +537,13 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Given("I find the last permission added to the new user$")
+    @Given("I find the last permission added to the new user")
     public void checkForNullLastAddedPermission() {
         AccessPermission accessPermission = (AccessPermission) stepData.get(LAST_FOUND_ACCESS_PERMISSION);
         Assert.assertNotNull(accessPermission);
     }
 
-    @Given("^User A$")
+    @Given("User A")
     public void givenUserA(List<CucUser> userList) throws Exception {
         // User is created within account that was last created in steps
         ComparableUser tmpUser = null;
@@ -566,13 +552,12 @@ public class UserServiceSteps extends TestBase {
         while (userIterator.hasNext()) {
             tmpUser = userIterator.next();
         }
-
         stepData.put("UserA", tmpUser);
         stepData.put(LAST_USER, tmpUser);
         stepData.put("User", tmpUser.getUser());
     }
 
-    @Given("^User B$")
+    @Given("User B")
     public void givenUserB(List<CucUser> userList) throws Exception {
         // User is created within account that was last created in steps
         ComparableUser tmpUser = null;
@@ -586,7 +571,7 @@ public class UserServiceSteps extends TestBase {
         stepData.put("User", tmpUser.getUser());
     }
 
-    @Given("^A generic user$")
+    @Given("A generic user")
     public void givenGenericUser(List<CucUser> userList) throws Exception {
         // User is created within account that was last created in steps
         ComparableUser tmpUser = null;
@@ -600,11 +585,10 @@ public class UserServiceSteps extends TestBase {
         stepData.put("User", tmpUser.getUser());
     }
 
-    @When("^I login as user with name \"(.*)\" and password \"(.*)\"$")
+    @When("I login as user with name {string} and password {string}")
     public void loginUser(String userName, String password) throws Exception {
         LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(userName, password);
         authenticationService.logout();
-
         primeException();
         try {
             authenticationService.login(credentials);
@@ -613,13 +597,11 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @When("^I try to login as user with name \"(.*)\" with wrong password (\\d+) times$")
+    @When("I try to login as user with name {string} with wrong password {int} times")
     public void loginUserNTimes(String userName, int n) throws Exception {
-
         String password = "wrongPassword";
         LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(userName, password);
         authenticationService.logout();
-
         for (int i = 0; i < n; i++) {
             primeException();
             try {
@@ -630,9 +612,8 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I try to delete user \"(.*)\"$")
+    @Then("I try to delete user {string}")
     public void thenDeleteUser(String userName) throws Exception {
-
         primeException();
         try {
             User userToDelete = userService.findByName(userName);
@@ -644,9 +625,8 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I find user \"(.*)\"$")
+    @Then("I find user {string}")
     public void thenIFindUser(String userName) throws Exception {
-
         primeException();
         try {
             User user = userService.findByName(userName);
@@ -656,9 +636,8 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I don't find user \"(.*)\"$")
+    @Then("I don't find user {string}")
     public void thenIdontFindUser(String userName) throws Exception {
-
         primeException();
         try {
             User user = userService.findByName(userName);
@@ -668,21 +647,18 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Given("^Move User compact id from step data \"(.*)\" to \"(.*)\"$")
+    @Given("Move User compact id from step data {string} to {string}")
     public void moveUserCompactIdStepData(String keyFrom, String keyTo) {
-
         ComparableUser comparableUser = (ComparableUser) stepData.get(keyFrom);
         stepData.put(keyTo, comparableUser.getUser().getId().toCompactId());
     }
 
-    @When("^I configure user service$")
-    public void setUserServiceConfig(List<CucConfig> cucConfigs)
-            throws Exception {
+    @When("I configure user service")
+    public void setUserServiceConfig(List<CucConfig> cucConfigs) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaId accId;
         KapuaId scopeId;
         Account tmpAccount = (Account) stepData.get(LAST_ACCOUNT);
-
         if (tmpAccount != null) {
             accId = tmpAccount.getId();
             scopeId = tmpAccount.getScopeId();
@@ -690,11 +666,9 @@ public class UserServiceSteps extends TestBase {
             accId = SYS_SCOPE_ID;
             scopeId = SYS_SCOPE_ID;
         }
-
         for (CucConfig config : cucConfigs) {
             config.addConfigToMap(valueMap);
         }
-
         primeException();
         try {
             userService.setConfigValues(accId, scopeId, valueMap);
@@ -703,17 +677,14 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @When("^I configure the user service for the account with the id (\\d+)$")
-    public void setUserServiceConfig(int accountId, List<CucConfig> cucConfigs)
-            throws Exception {
+    @When("I configure the user service for the account with the id {int}")
+    public void setUserServiceConfig(int accountId, List<CucConfig> cucConfigs) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaId accId = new KapuaEid(BigInteger.valueOf(accountId));
         KapuaId scopeId = SYS_SCOPE_ID;
-
         for (CucConfig config : cucConfigs) {
             config.addConfigToMap(valueMap);
         }
-
         primeException();
         try {
             userService.setConfigValues(accId, scopeId, valueMap);
@@ -722,27 +693,22 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @When("^I configure credential service$")
-    public void setCredentialServiceConfig(List<CucConfig> cucConfigs)
-            throws Exception {
+    @When("I configure credential service")
+    public void setCredentialServiceConfig(List<CucConfig> cucConfigs) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaId accId;
         KapuaId scopeId;
         Account tmpAccount = (Account) stepData.get(LAST_ACCOUNT);
-
         if (tmpAccount != null) {
             accId = tmpAccount.getId();
             scopeId = tmpAccount.getScopeId();
         } else {
-
             accId = SYS_SCOPE_ID;
             scopeId = SYS_SCOPE_ID;
         }
-
         for (CucConfig config : cucConfigs) {
             config.addConfigToMap(valueMap);
         }
-
         primeException();
         try {
             credentialService.setConfigValues(accId, scopeId, valueMap);
@@ -751,7 +717,7 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I logout$")
+    @Then("I logout")
     public void logout() throws KapuaException {
         authenticationService.logout();
     }
@@ -782,7 +748,6 @@ public class UserServiceSteps extends TestBase {
                     String phone = userItem.getPhoneNumber();
                     KapuaEid scopeId = (KapuaEid) account.getId();
                     Date expirationDate = userItem.getExpirationDate();
-
                     UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, scopeId, expirationDate);
                     User user = userService.create(userCreator);
                     users.add(new ComparableUser(user));
@@ -790,10 +755,8 @@ public class UserServiceSteps extends TestBase {
             } catch (KapuaException ke) {
                 verifyException(ke);
             }
-
             return null;
         });
-
         return users;
     }
 
@@ -812,13 +775,11 @@ public class UserServiceSteps extends TestBase {
         String displayName = MessageFormat.format("User Display Name {0}", now);
         KapuaEid usrId = new KapuaEid(BigInteger.valueOf(userId));
         KapuaEid scpId = new KapuaEid(BigInteger.valueOf(scopeId));
-
         User user = userFactory.newEntity(scpId);
         user.setId(usrId);
         user.setName(username);
         user.setDisplayName(displayName);
         user.setEmail(userEmail);
-
         return user;
     }
 
@@ -829,19 +790,16 @@ public class UserServiceSteps extends TestBase {
      */
     private UserCreator userCreatorCreator(String name, String displayName, String email, String phone, KapuaId scopeId) {
         UserCreator userCreator = userFactory.newCreator(scopeId, name);
-
         userCreator.setName(name);
         userCreator.setDisplayName(displayName);
         userCreator.setEmail(email);
         userCreator.setPhoneNumber(phone);
-
         return userCreator;
     }
 
     private UserCreator userCreatorCreator(String name, String displayName, String email, String phone, KapuaId scopeId, Date expirationDate) {
         UserCreator userCreator = userCreatorCreator(name, displayName, email, phone, scopeId);
         userCreator.setExpirationDate(expirationDate);
-
         return userCreator;
     }
 
@@ -864,7 +822,6 @@ public class UserServiceSteps extends TestBase {
         } catch (KapuaException ke) {
             verifyException(ke);
         }
-
         return credentialList.size() == 1 ? credentialList.get(0) : null;
     }
 
@@ -880,9 +837,7 @@ public class UserServiceSteps extends TestBase {
      */
     private CredentialCreator credentialCreatorCreator(KapuaId scopeId, KapuaId userId, String password, CredentialStatus status, Date expirationDate) {
         CredentialCreator credentialCreator;
-
         credentialCreator = credentialFactory.newCreator(scopeId, userId, CredentialType.PASSWORD, password, status, expirationDate);
-
         return credentialCreator;
     }
 
@@ -895,9 +850,7 @@ public class UserServiceSteps extends TestBase {
      * @param account        account in which user is defined
      * @throws Exception
      */
-    private void createPermissions(List<CucPermission> permissionList, ComparableUser user, Account account)
-            throws Exception {
-
+    private void createPermissions(List<CucPermission> permissionList, ComparableUser user, Account account) throws Exception {
         KapuaSecurityUtils.doPrivileged(() -> {
             primeException();
             try {
@@ -905,10 +858,8 @@ public class UserServiceSteps extends TestBase {
             } catch (KapuaException ke) {
                 verifyException(ke);
             }
-
             return null;
         });
-
         return;
     }
 
@@ -922,7 +873,6 @@ public class UserServiceSteps extends TestBase {
      * @return AccessInfoCreator instance for creating user permissions
      */
     private AccessInfoCreator accessInfoCreatorCreator(List<CucPermission> permissionList, ComparableUser user, Account account) throws KapuaException {
-
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
         accessInfoCreator.setUserId(user.getUser().getId());
         accessInfoCreator.setScopeId(user.getUser().getScopeId());
@@ -931,7 +881,7 @@ public class UserServiceSteps extends TestBase {
             for (CucPermission cucPermission : permissionList) {
                 stepData.remove(LAST_PERMISSION_ADDED_TO_USER);
                 Actions action = cucPermission.getAction();
-                KapuaEid targetScopeId = cucPermission.getTargetScopeId();
+                KapuaId targetScopeId = cucPermission.getTargetScopeId();
                 if (targetScopeId == null) {
                     targetScopeId = (KapuaEid) account.getId();
                 }
@@ -946,7 +896,6 @@ public class UserServiceSteps extends TestBase {
             permissions.add(permission);
         }
         accessInfoCreator.setPermissions(permissions);
-
         return accessInfoCreator;
     }
 
@@ -975,13 +924,12 @@ public class UserServiceSteps extends TestBase {
         return true;
     }
 
-    @And("^I create user with name \"([^\"]*)\"$")
+    @And("I create user with name {string}")
     public void iCreateUserWithName(String userName) throws Exception {
         stepData.remove(USER_CREATOR);
         UserCreator userCreator = userFactory.newCreator(getCurrentScopeId());
         userCreator.setName(userName);
         stepData.put(USER_CREATOR, userCreator);
-
         try {
             primeException();
             stepData.remove("User");
@@ -992,11 +940,10 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I try to edit user to name \"([^\"]*)\"$")
+    @Then("I try to edit user to name {string}")
     public void iTryToEditUserWithName(String newUserName) throws Exception {
         User user = (User) stepData.get("User");
         user.setName(newUserName);
-
         try {
             primeException();
             stepData.remove("User");
@@ -1007,11 +954,10 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create user with name \"([^\"]*)\" in account \"([^\"]*)\"$")
+    @And("I create user with name {string} in account {string}")
     public void iCreateUserWithNameInSubaccount(String name, String accountName) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Assert.assertEquals(accountName, account.getName());
-
         UserCreator userCreator = userFactory.newCreator(account.getId());
         userCreator.setName(name);
         primeException();
@@ -1025,11 +971,10 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create users with following names$")
+    @And("I create users with following names")
     public void iCreateUsersWithFollowingNames(List<CucUser> tmpUsers) throws Exception {
         UserCreator userCreator = userFactory.newCreator(getCurrentScopeId());
         ArrayList<User> userList = new ArrayList<>();
-
         for (CucUser tmpUser : tmpUsers) {
             userCreator.setName(tmpUser.getName());
             User user = userService.create(userCreator);
@@ -1038,7 +983,7 @@ public class UserServiceSteps extends TestBase {
         stepData.put(USER_LIST, userList);
     }
 
-    @Given("^I have the following user with expiration date in the future$")
+    @Given("I have the following user with expiration date in the future")
     public void iHaveTheFollowingUserWithExpirationDateInTheFuture(List<CucUser> userList) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         KapuaId accountId = (KapuaId) stepData.get("LastAccountId");
@@ -1046,7 +991,6 @@ public class UserServiceSteps extends TestBase {
         Set<ComparableUser> iHaveUsers = new HashSet<>();
         User lastUser = null;
         stepData.remove(USER_LIST);
-
         if (account != null) {
             currentAccount = account.getId();
         } else if (accountId != null) {
@@ -1054,7 +998,6 @@ public class UserServiceSteps extends TestBase {
         } else {
             currentAccount = DEFAULT_ID;
         }
-
         primeException();
         try {
             for (CucUser userItem : userList) {
@@ -1075,20 +1018,17 @@ public class UserServiceSteps extends TestBase {
         stepData.put("User", lastUser);
     }
 
-    @And("^I find user with expiration date in the future$")
+    @And("I find user with expiration date in the future")
     public void iFindUserWithExpirationDateInTheFuture(List<CucUser> userList) {
         Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get(USER_LIST);
         boolean userChecks;
-
         for (CucUser userItem : userList) {
             userChecks = false;
             for (ComparableUser foundUserItem : iFoundUsers) {
                 Date t1 = foundUserItem.getUser().getExpirationDate();
                 Date t2 = userItem.getExpirationDate();
-
                 LocalDate localDate1 = t1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDate localDate2 = t2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
                 if (localDate1.getYear() == localDate2.getYear() && localDate1.getMonthValue() == localDate2.getMonthValue()
                     && localDate1.getDayOfMonth() == localDate2.getDayOfMonth()) {
                     matchUserData(foundUserItem.getUser(), userItem);
@@ -1102,14 +1042,12 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I search for the user with expiration date in the present$")
+    @Then("I search for the user with expiration date in the present")
     public void iSearchForTheUserWithExpirationDateInThePresent() throws KapuaException {
         KapuaId scpId = DEFAULT_ID;
         Set<ComparableUser> iFoundUsers;
-
         stepData.remove(USER_LIST);
         KapuaQuery query = userFactory.newQuery(scpId);
-
         UserListResult queryResult = userService.query(query);
         iFoundUsers = new HashSet<>();
         List<User> users = queryResult.getItems();
@@ -1117,20 +1055,17 @@ public class UserServiceSteps extends TestBase {
             iFoundUsers.add(new ComparableUser(userItems));
         }
         stepData.put(USER_LIST, iFoundUsers);
-
     }
 
-    @And("^I find user with expiration date in the present$")
+    @And("I find user with expiration date in the present")
     public void iFindUserWithExpirationDateInThePresent(List<CucUser> userList) {
         Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get(USER_LIST);
         boolean userChecks;
-
         for (CucUser userItem : userList) {
             userChecks = false;
             for (ComparableUser foundUserItem : iFoundUsers) {
                 Date t1 = foundUserItem.getUser().getExpirationDate();
                 Date t2 = userItem.getExpirationDate();
-
                 LocalDate localDate1 = t1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDate localDate2 = t2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 if (localDate1.getYear() == localDate2.getYear() && localDate1.getMonthValue() == localDate2.getMonthValue()
@@ -1146,11 +1081,10 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I search for the user with expiration date in the past$")
+    @Then("I search for the user with expiration date in the past")
     public void iSearchForTheUserWithExpirationDateInThePast() throws KapuaException {
         KapuaId scpId = DEFAULT_ID;
         Set<ComparableUser> iFoundUsers;
-
         stepData.remove(USER_LIST);
         KapuaQuery query = userFactory.newQuery(scpId);
         UserListResult queryResult = userService.query(query);
@@ -1162,11 +1096,10 @@ public class UserServiceSteps extends TestBase {
         stepData.put(USER_LIST, iFoundUsers);
     }
 
-    @And("^I find user with expiration date in the past$")
+    @And("I find user with expiration date in the past")
     public void iFindUserWithExpirationDateInThePast(List<CucUser> userList) {
         Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get(USER_LIST);
         boolean userChecks;
-
         for (CucUser userItem : userList) {
             userChecks = false;
             for (ComparableUser foundUserItem : iFoundUsers) {
@@ -1188,22 +1121,19 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @And("^I find users with phone number \"([^\"]*)\"$")
+    @And("I find users with phone number {string}")
     public void iFindUsersWithPhoneNumber(String phoneNumber) {
-
-            UserListResult users = (UserListResult) stepData.get(FOUND_USERS);
-            for (User user : users.getItems()){
-                Assert.assertEquals(user.getPhoneNumber(),(phoneNumber));
-            }
-            stepData.put(USER_LIST, users);
-
+        UserListResult users = (UserListResult) stepData.get(FOUND_USERS);
+        for (User user : users.getItems()){
+            Assert.assertEquals(user.getPhoneNumber(),(phoneNumber));
+        }
+        stepData.put(USER_LIST, users);
     }
 
-    @Then("^I find users with emails$")
+    @Then("I find users with emails")
     public void iFindUsersWithEmails(List<CucUser> userList) {
         Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get(USER_LIST);
         boolean userChecks;
-
         for (CucUser userItem : userList) {
             userChecks = false;
             for (ComparableUser foundUserItem : iFoundUsers) {
@@ -1219,11 +1149,10 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I find users with email$")
+    @Then("I find users with email")
     public void iFindUsersWithTheSameEmailAddress(List<CucUser> userList) {
         Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get(USER_LIST);
         boolean userChecks;
-
         for (CucUser userItem : userList) {
             userChecks = false;
             for (ComparableUser foundUserItem : iFoundUsers) {
@@ -1239,11 +1168,10 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I find users with phone number$")
+    @Then("I find users with phone number")
     public void iFindUsersWithPhoneNumber(List<CucUser> userList) {
         Set<ComparableUser> iFoundUsers = (Set<ComparableUser>) stepData.get(USER_LIST);
         boolean userChecks;
-
         for (CucUser userItem : userList) {
             userChecks = false;
             for (ComparableUser foundUserItem : iFoundUsers) {
@@ -1259,7 +1187,7 @@ public class UserServiceSteps extends TestBase {
         }
     }
 
-    @And("^I search users with phone number \"([^\"]*)\"$")
+    @And("I search users with phone number {string}")
     public void iSearchUsersWithPhoneNumber(String phoneNum) throws Throwable {
         UserQuery userQuery = userFactory.newQuery(DEFAULT_ID);
         userQuery.setPredicate(userQuery.attributePredicate(UserAttributes.PHONE_NUMBER, phoneNum, AttributePredicate.Operator.EQUAL));
@@ -1267,7 +1195,7 @@ public class UserServiceSteps extends TestBase {
         stepData.put(FOUND_USERS, userListResult);
     }
 
-    @And("^I search users with email \"([^\"]*)\"$")
+    @And("I search users with email {string}")
     public void iSearchForUsersWithEmail(String email) throws Throwable {
        UserQuery userQuery = userFactory.newQuery(DEFAULT_ID);
        userQuery.setPredicate(userQuery.attributePredicate(UserAttributes.EMAIL, email, AttributePredicate.Operator.EQUAL));
@@ -1275,7 +1203,7 @@ public class UserServiceSteps extends TestBase {
        stepData.put(FOUND_USERS, userListResult);
     }
 
-    @Then("^I find users with email \"([^\"]*)\"$")
+    @Then("I find users with email {string}")
     public void iFindUsersWithEmail(String email) {
        UserListResult users = (UserListResult) stepData.get(FOUND_USERS);
        for (User user : users.getItems()){

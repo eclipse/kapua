@@ -34,6 +34,14 @@ public class CucConfig {
     /** String representation of parameter value. */
     private String value;
 
+    public CucConfig(String scopeId, String parentId, String type, String name, String value) {
+        this.scopeId = scopeId != null ? Integer.valueOf(scopeId) : null;
+        this.parentId = parentId != null ? Integer.valueOf(parentId) : null;
+        this.type = type;
+        this.name = name;
+        this.value = value;
+    }
+
     public Integer getScopeId() {
         return scopeId;
     }

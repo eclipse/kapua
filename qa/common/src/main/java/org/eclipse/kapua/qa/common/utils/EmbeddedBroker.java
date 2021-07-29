@@ -104,8 +104,7 @@ public class EmbeddedBroker {
             }
 
         } catch (Exception e) {
-            logger.error("Failed to stop Broker!");
-            e.printStackTrace();
+            logger.error("Failed to stop Broker!", e);
         }
 
         DatastoreMediator.getInstance().clearCache();
@@ -114,7 +113,12 @@ public class EmbeddedBroker {
             try {
                 Thread.sleep(Duration.ofSeconds(EXTRA_STARTUP_DELAY).toMillis());
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Wait interrupted!", e);
+                }
+                else {
+                    logger.warn("Wait interrupted!");
+                }
             }
         }
         logger.info("Stopping Broker instance ... done!");

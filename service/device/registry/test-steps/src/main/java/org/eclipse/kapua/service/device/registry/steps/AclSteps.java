@@ -18,15 +18,10 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
-import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authorization.access.AccessInfoService;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.Assert;
 
@@ -89,29 +84,8 @@ public class AclSteps extends TestBase {
     private static CredentialsFactory credentialsFactory;
 
     /**
-     * Account service.
-     */
-    private static AccountService accountService;
-
-    /**
-     * Account factory.
-     */
-    private static AccountFactory accountFactory;
-
-    /**
-     * User service.
-     */
-    private static UserService userService;
-
-    /**
-     * Credential service.
-     */
-    private static CredentialService credentialService;
-
-    /**
      * Accessinfo service.
      */
-    private static AccessInfoService accessInfoService;
 
     /**
      * Helper for creating Accoutn, User and other artifacts needed in tests.
@@ -128,11 +102,6 @@ public class AclSteps extends TestBase {
         locator = KapuaLocator.getInstance();
         authenticationService = locator.getService(AuthenticationService.class);
         credentialsFactory = locator.getFactory(CredentialsFactory.class);
-        accountService = locator.getService(AccountService.class);
-        accountFactory = locator.getFactory(AccountFactory.class);
-        userService = locator.getService(UserService.class);
-        credentialService = locator.getService(CredentialService.class);
-        accessInfoService = locator.getService(AccessInfoService.class);
 
         mqttDevice = new MqttDevice();
         clientMqttMessage = new HashMap<>();
@@ -146,15 +115,13 @@ public class AclSteps extends TestBase {
         updateScenario(scenario);
     }
 
-    @Given("string \"(.*)\" is published to topic \"(.*)\" with client \"(.*)\"$")
+    @Given("string {string} is published to topic {string} with client {string}")
     public void clientPublishString(String payload, String topic, String clientId) {
-
         mqttDevice.mqttClientPublishString(clientId, payload, topic, clientMqttMessage, listenerMqttMessage);
     }
 
-    @Given("^Mqtt Device is started$")
+    @Given("Mqtt Device is started")
     public void startMqttDevice() throws KapuaException {
-
         mqttDevice.mqttSubscriberConnect();
         // Wait for broker to start
         waitInMillis(BROKER_START_WAIT_MILLIS);
@@ -164,19 +131,16 @@ public class AclSteps extends TestBase {
         authenticationService.login(credentials);
     }
 
-    @When("^Mqtt Device is stoped$")
+    @When("Mqtt Device is stoped")
     public void stopMqttDevice() throws KapuaException {
-
         mqttDevice.mqttClientsDisconnect();
         mqttDevice.mqttSubscriberDisconnect();
         // Logout system user
         authenticationService.logout();
     }
 
-    @Given("^broker with clientId \"(.*)\" and user \"(.*)\" and password \"(.*)\" is listening on topic \"(.*)\"$")
-    public void connectClientToBroker(String clientId, String userName, String password, String topicFilter)
-            throws Exception {
-
+    @Given("broker with clientId {string} and user {string} and password {string} is listening on topic {string}")
+    public void connectClientToBroker(String clientId, String userName, String password, String topicFilter) throws Exception {
         try {
             primeException();
             mqttDevice.mqttClientConnect(clientId, userName, password, topicFilter);
@@ -185,15 +149,13 @@ public class AclSteps extends TestBase {
         }
     }
 
-    @Given("^clients are disconnected$")
+    @Given("clients are disconnected")
     public void disconnectClientsFromBroker() {
-
         mqttDevice.mqttClientsDisconnect();
     }
 
-    @Then("^Broker receives string \"([^\"]*)\" on topic \"([^\"]*)\"$")
-    public void brokerReceivesStringOnTopic(String payload, String topic) throws Throwable {
-
+    @Then("Broker receives string {string} on topic {string}")
+    public void brokerReceivesStringOnTopic(String payload, String topic) {
         if ((listenerMqttMessage != null) && (listenerMqttMessage.size() == 1)) {
             String message = listenerMqttMessage.get(topic);
             Assert.assertEquals(payload, message);
@@ -202,18 +164,16 @@ public class AclSteps extends TestBase {
         }
     }
 
-    @Then("^Broker doesn't receive string \"([^\"]*)\" on topic \"([^\"]*)\"$")
-    public void brokerDoesntReceiveStringOnTopic(String payload, String topic) throws Throwable {
-
+    @Then("Broker doesn't receive string {string} on topic {string}")
+    public void brokerDoesntReceiveStringOnTopic(String payload, String topic) {
         if ((listenerMqttMessage != null) && (listenerMqttMessage.size() >= 1)) {
             String message = listenerMqttMessage.get(topic);
             Assert.assertNotEquals(payload, message);
         }
     }
 
-    @Then("^client \"([^\"]*)\" receives string \"([^\"]*)\" on topic \"([^\"]*)\"$")
-    public void iReceiveStringOnTopic(String clientId, String payload, String topic) throws Throwable {
-
+    @Then("client {string} receives string {string} on topic {string}")
+    public void iReceiveStringOnTopic(String clientId, String payload, String topic) {
         Map<String, String> messages = clientMqttMessage.get(clientId);
         if ((messages != null) && (messages.size() >= 1)) {
             String message = messages.get(topic);
@@ -224,9 +184,8 @@ public class AclSteps extends TestBase {
         }
     }
 
-    @Then("^client \"([^\"]*)\" doesn't receive string \"([^\"]*)\" on topic \"([^\"]*)\"$")
-    public void clientDoesntReceiveStringOnTopic(String clientId, String payload, String topic) throws Throwable {
-
+    @Then("client {string} doesn't receive string {string} on topic {string}")
+    public void clientDoesntReceiveStringOnTopic(String clientId, String payload, String topic) {
         Map<String, String> messages = clientMqttMessage.get(clientId);
         if ((messages != null) && (messages.size() >= 1)) {
             String message = messages.get(topic);
@@ -234,61 +193,54 @@ public class AclSteps extends TestBase {
         }
     }
 
-    @And("^broker account and user are created$")
-    public void createBrokerAccountAndUser() throws Throwable {
-
+    @And("broker account and user are created")
+    public void createBrokerAccountAndUser() throws Exception {
         Account account = aclCreator.createAccount(ACCOUNT, ORG, MAIL);
         User user = aclCreator.createUser(account, NAME);
         aclCreator.attachUserCredentials(account, user);
         aclCreator.attachBrokerPermissions(account, user);
     }
 
-    @And("^device account and user are created$")
-    public void createDeviceAccountAndUser() throws Throwable {
-
+    @And("device account and user are created")
+    public void createDeviceAccountAndUser() throws Exception {
         Account account = aclCreator.createAccount(ACCOUNT, ORG, MAIL);
         User user = aclCreator.createUser(account, NAME);
         aclCreator.attachUserCredentials(account, user);
         aclCreator.attachDevicePermissions(account, user);
     }
 
-    @And("^data view account and user are created$")
-    public void createDataViewAccountAndUser() throws Throwable {
-
+    @And("data view account and user are created")
+    public void createDataViewAccountAndUser() throws Exception {
         Account account = aclCreator.createAccount(ACCOUNT, ORG, MAIL);
         User user = aclCreator.createUser(account, NAME);
         aclCreator.attachUserCredentials(account, user);
         aclCreator.attachDataViewPermissions(account, user);
     }
 
-    @And("^data manage account and user are created$")
-    public void createDataManageAccountAndUser() throws Throwable {
-
+    @And("data manage account and user are created")
+    public void createDataManageAccountAndUser() throws Exception {
         Account account = aclCreator.createAccount(ACCOUNT, ORG, MAIL);
         User user = aclCreator.createUser(account, NAME);
         aclCreator.attachUserCredentials(account, user);
         aclCreator.attachDataManagePermissions(account, user);
     }
 
-    @And("^other broker account and user are created$")
-    public void createOtherBrokerAccountAndUser() throws Throwable {
-
+    @And("other broker account and user are created")
+    public void createOtherBrokerAccountAndUser() throws Exception {
         Account account = aclCreator.createAccount("domino","Domino Corp.", "lisa@domino.org");
         User user = aclCreator.createUser(account, "domina");
         aclCreator.attachUserCredentials(account, user);
         aclCreator.attachBrokerPermissions(account, user);
     }
 
-    @Then("^exception is thrown$")
-    public void exceptionIsThrown() throws Throwable {
-
+    @Then("exception is thrown")
+    public void exceptionIsThrown() {
         Exception e = (Exception) stepData.get("exception");
         Assert.assertNotNull("Exception expected!", e);
     }
 
-    @Then("^exception is not thrown$")
-    public void exceptionIsNotThrown() throws Throwable {
-
+    @Then("exception is not thrown")
+    public void exceptionIsNotThrown() {
         Exception e = (Exception) stepData.get("exception");
         Assert.assertNull("Exception not expected!", e);
     }

@@ -32,6 +32,17 @@ public class CucRolePermission {
     private KapuaId targetScope;
     private Integer targetScopeId;
 
+    public CucRolePermission(KapuaId scope, Integer scopeId, KapuaId role, Integer roleId, Actions action, String actionName, KapuaId targetScope, Integer targetScopeId) {
+        this.scope = scope;
+        this.scopeId = scopeId;
+        this.role = role;
+        this.roleId = roleId;
+        this.action = action;
+        this.actionName = actionName;
+        this.targetScope = targetScope;
+        this.targetScopeId = targetScopeId;
+    }
+
     public void doParse() {
         if (this.scopeId != null) {
             this.scope = new KapuaEid(BigInteger.valueOf(scopeId));

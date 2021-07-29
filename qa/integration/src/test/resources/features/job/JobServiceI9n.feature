@@ -230,15 +230,6 @@ Scenario: Init Security Context for all scenarios
     Then I count 0
     Then I logout
 
-#Scenario: Query for job items
-#
-#    Given Scope with ID 10
-#    Then I create 10 job items
-#    Given Scope with ID 20
-#    Then I create 20 job items
-#    When I query for jobs in scope 10
-#    Then There are exactly 10 items
-
   Scenario: Query for jobs with specified name
 
     Given I login as user with name "kapua-sys" and password "kapua-password"

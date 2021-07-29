@@ -86,7 +86,7 @@ public class EndpointServiceSteps extends TestBase {
     // * The Cucumber test steps                                                          *
     // ************************************************************************************
 
-    @And("^I create endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
+    @And("I create endpoint with schema {string}, domain {string} and port {int}")
     public void iCreateEndpointWithSchemaDnsAndPort(String schema, String dns, int port) throws Exception {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setSchema(schema);
@@ -102,7 +102,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I try to create endpoint with invalid symbols in schema$")
+    @And("I try to create endpoint with invalid symbols in schema")
     public void iTryToCreateInvalidEndpoint() throws Exception {
         String invalidSymbols = "!\"#$%&'()=»Ç" +
                 ">:;<-.,⁄@‹›€" +
@@ -127,7 +127,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create endpoint with domain name \"([^\"]*)\" and port (\\d+) without schema$")
+    @And("I create endpoint with domain name {string} and port {int} without schema")
     public void iCreateEndpointWithDnsAndPort(String dns, int port) throws Exception {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setDns(dns);
@@ -141,7 +141,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create endpoint with schema \"([^\"]*)\" without domain name and port$")
+    @And("I create endpoint with schema {string} without domain name and port")
     public void iCreateEndpointWithSchemaOnly(String schema) throws Exception {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setSchema(schema);
@@ -154,7 +154,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create endpoint with NULL parameters$")
+    @And("I create endpoint with NULL parameters")
     public void iCreateEndpointWithNullParameters() throws Exception {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setSchema(null);
@@ -169,10 +169,9 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete the endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
+    @When("I delete the endpoint with schema {string}, domain {string} and port {int}")
     public void iDeleteEndpointWithSchema(String schema, String domain, int port) throws Throwable {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
@@ -180,17 +179,15 @@ public class EndpointServiceSteps extends TestBase {
             Assert.assertEquals(schema, endpointInfo.getSchema());
             Assert.assertEquals(domain, endpointInfo.getDns());
             Assert.assertEquals(port, endpointInfo.getPort());
-
             endpointInfoService.delete(SYS_SCOPE_ID, endpointInfo.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
 
-    @And("^I try to find endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
+    @And("I try to find endpoint with schema {string}, domain {string} and port {int}")
     public void foundEndpointBySchemaDomainPort(String schema, String domain, int port) throws Exception {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
@@ -198,7 +195,6 @@ public class EndpointServiceSteps extends TestBase {
             Assert.assertEquals(schema, endpointInfo.getSchema());
             Assert.assertEquals(domain, endpointInfo.getDns());
             Assert.assertEquals(port, endpointInfo.getPort());
-
             stepData.put(ENDPOINT_INFO, endpointInfo);
             stepData.put("EndpointInfoId", endpointInfo.getId());
         } catch (Exception ex) {
@@ -206,16 +202,14 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I try to find endpoint with schema \"([^\"]*)\"$")
+    @And("I try to find endpoint with schema {string}")
     public void foundEndpointBySchema(String schema) throws Exception {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
             EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
             Assert.assertEquals(schema, endpointInfo.getSchema());
-
             stepData.put(ENDPOINT_INFO, endpointInfo);
             stepData.put("EndpointInfoId", endpointInfo.getId());
         } catch (Exception ex) {
@@ -223,11 +217,10 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I try to edit endpoint schema to \"([^\"]*)\"$")
+    @And("I try to edit endpoint schema to {string}")
     public void editEndpointSchema(String schema) throws Exception {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get(ENDPOINT_INFO);
         endpointInfo.setSchema(schema);
-
         primeException();
         try {
             EndpointInfo newEndpoint = endpointInfoService.update(endpointInfo);
@@ -237,24 +230,21 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I delete endpoint with schema \"([^\"]*)\"$")
+    @And("I delete endpoint with schema {string}")
     public void iDeleteEndpointWithSchema(String schema) throws Exception {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
             EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
-
             endpointInfoService.delete(SYS_SCOPE_ID, endpointInfo.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
 
-    @And("^I delete the last created endpoint$")
+    @And("I delete the last created endpoint")
     public void iDeleteTheLastCreatedEndpoint() throws Exception {
-
         try {
             EndpointInfo endpointInfo = (EndpointInfo) stepData.get(ENDPOINT_INFO);
             endpointInfoService.delete(SYS_SCOPE_ID, endpointInfo.getId());
@@ -263,10 +253,9 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I delete endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
+    @And("I delete endpoint with schema {string}, domain {string} and port {int}")
     public void iDeleteEndpointWithSchemaDomainAndPort(String schema, String domainName, int port) throws Exception {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
@@ -274,17 +263,15 @@ public class EndpointServiceSteps extends TestBase {
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.PORT, port, AttributePredicate.Operator.EQUAL));
             EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
             endpointInfoService.delete(getCurrentScopeId(), endpointInfo.getId());
-
             stepData.put("DeletedEndpointInfo", endpointInfo);
         } catch (Exception ex) {
             verifyException(ex);
         }
     }
 
-    @And("^I search for all endpoints in current scopeId")
+    @And("I search for all endpoints in current scopeId")
     public void iSearchForAllEndpoints() throws Exception {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             EndpointInfoListResult endpointInfo = endpointInfoService.query(endpointInfoQuery);
@@ -294,62 +281,53 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I find (\\d+) endpoints")
+    @Then("I find {int} endpoints")
     public void iFindEndpoint(int numberOfEndpoints) {
         int foundEndpoints = (int) stepData.get("NumberOfEndpoints");
         Assert.assertEquals(foundEndpoints, numberOfEndpoints);
     }
 
-    @Then("^I found endpoint with schema \"([^\"]*)\"$")
+    @Then("I found endpoint with schema {string}")
     public void iFoundEndpoint(String endpointSchema) {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
-
         Assert.assertEquals(endpointSchema, endpointInfo.getSchema());
     }
 
-    @Then("^I found endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
+    @Then("I found endpoint with schema {string}, domain {string} and port {int}")
     public void iFoundEndpointWithSchemaDomainAndPort(String endpointSchema, String domainName, int port) {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
-
         Assert.assertEquals(endpointSchema, endpointInfo.getSchema());
         Assert.assertEquals(domainName, endpointInfo.getDns());
         Assert.assertEquals(port, endpointInfo.getPort());
     }
 
-    @Then("^I did not find endpoint with schema \"([^\"]*)\"$")
+    @Then("I did not find endpoint with schema {string}")
     public void notFoundEndpointWithSchema(String endpointSchema) {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
-
         Assert.assertNotEquals(endpointSchema, endpointInfo.getSchema());
     }
 
-    @When("^I delete all endpoints with schema \"([^\"]*)\"$")
+    @When("I delete all endpoints with schema {string}")
     public void iDeleteEndpointsWithSchema(String schema) throws Throwable {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
-
             EndpointInfoListResult endpointsToDelete = endpointInfoService.query(endpointInfoQuery);
-
             for (int i = 0; i < endpointsToDelete.getSize(); i++) {
                 endpointInfoService.delete(getCurrentScopeId(), endpointsToDelete.getItem(i).getId());
             }
-
         } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
 
-    @Then("^I edit last created endpoint Schema to \"([^\"]*)\"$")
+    @Then("I edit last created endpoint Schema to {string}")
     public void iEditEndpointSchema(String schema) throws Throwable {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
-
         if (schema.equals("NULL")) {
             schema = null;
         }
-
         try {
             endpointInfo.setSchema(schema);
             endpointInfoService.update(endpointInfo);
@@ -358,14 +336,12 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I edit last created endpoint Domain Name to \"([^\"]*)\"$")
+    @Then("I edit last created endpoint Domain Name to {string}")
     public void iEditLastCreatedEndpointDomainNameTo(String domainName) throws Throwable {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
-
         if (domainName.equals("NULL")) {
             domainName = null;
         }
-
         try {
             endpointInfo.setDns(domainName);
             endpointInfoService.update(endpointInfo);
@@ -374,7 +350,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I edit last created endpoint Port to (\\d+)$")
+    @Then("I edit last created endpoint Port to {int}")
     public void iEditLastCreatedEndpointPort(int port) throws Throwable {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
         try {
@@ -385,7 +361,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I edit port number to (\\d+) in endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
+    @Then("I edit port number to {int} in endpoint with schema {string}, domain {string} and port {int}")
     public void iEditLastCreatedEndpointPortInEndpoint(int newPort, String schema, String domainName, int port) throws Throwable {
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
@@ -400,7 +376,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create endpoint with schema \"([^\"]*)\" and port (\\d+) without domain name$")
+    @And("I create endpoint with schema {string} and port {int} without domain name")
     public void iCreateEndpointWithSchemaAndPortWithoutDomain(String schema, int port ) throws Throwable {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setSchema(schema);
@@ -415,7 +391,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create endpoint with domain name \"([^\"]*)\" without schema and port$")
+    @And("I create endpoint with domain name {string} without schema and port")
     public void iCreateEndpointWithDomainWithoutSchemaAndPort(String domainName) throws Throwable{
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setDns(domainName);
@@ -428,7 +404,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create endpoint with schema \"([^\"]*)\" and domain \"([^\"]*)\" without port$")
+    @And("I create endpoint with schema {string} and domain {string} without port")
     public void iCreateEndpointWithSchemaAndDomainWithoutPort(String schema, String domainName) throws Throwable {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setDns(domainName);
@@ -442,7 +418,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create endpoint with port (\\d+) without schema and domain name$")
+    @And("I create endpoint with port {int} without schema and domain name")
     public void iCreateEndpointWithPortWithoutSchemaAndDomain(int port) throws Throwable{
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setPort(port);
@@ -455,7 +431,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\", port (\\d+) and \"([^\"]*)\" secure field$")
+    @And("I create endpoint with schema {string}, domain {string}, port {int} and {string} secure field")
     public void iCreateEndpointWithSchemaDomainPortAndSecureField(String schema, String domainName, int port, String secureField) throws Throwable {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setSchema(schema);
@@ -467,7 +443,6 @@ public class EndpointServiceSteps extends TestBase {
         } else {
             endpointInfoCreator.setSecure(false);
         }
-
         try {
             EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
             stepData.put("EndpointInfo", endpointInfo);
@@ -476,7 +451,7 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I edit last created endpoint Secure field to \"([^\"]*)\"$")
+    @Then("I edit last created endpoint Secure field to {string}")
     public void iEditLastCreatedEndpointSecureField(String secureField) throws Throwable {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
         try {
@@ -491,5 +466,3 @@ public class EndpointServiceSteps extends TestBase {
         }
     }
 }
-
-

@@ -13,6 +13,7 @@
 package org.eclipse.kapua.qa.common;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
@@ -20,7 +21,9 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.job.engine.client.JobStartOptionsClient;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
+import org.eclipse.kapua.job.engine.jbatch.JobStartOptionsImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
@@ -101,6 +104,8 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
 
                     // Jobs
                     Job.class,
+                    JobStartOptionsClient.class,
+                    JobStartOptionsImpl.class,
                     JobListResult.class,
                     JobXmlRegistry.class,
                     JobTargetSublist.class,
@@ -134,8 +139,9 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                     DeviceConfiguration.class,
                     DevicePackages.class,
                     DevicePackageDownloadRequest.class,
-                    DevicePackageUninstallRequest.class
+                    DevicePackageUninstallRequest.class,
 
+                    ExceptionInfo.class
             };
             try {
                 context = JAXBContextFactory.createContext(classes, null);

@@ -30,7 +30,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
 
@@ -48,7 +48,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     When I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     And I create a new trigger from the existing creator with previously defined date properties
     Then An exception was thrown
@@ -78,11 +78,11 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start today at 0:00.
-    And The trigger is set to start today at 23:59.
+    And The trigger is set to start today at "0:00"
+    And The trigger is set to start today at "23:59"
     And I create a new trigger from the existing creator with previously defined date properties
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start today at 12:00.
+    And The trigger is set to start today at "12:00"
     When I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name schedule1 already exists"
     And I create a new trigger from the existing creator with previously defined date properties
     Then An exception was thrown
@@ -98,7 +98,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
 
@@ -112,7 +112,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "www" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
 
@@ -144,10 +144,10 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
+    And The trigger is set to start on "12-12-2020" at "10:10"
     And I create a new trigger from the existing creator with previously defined date properties
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
+    And The trigger is set to start on "12-12-2020" at "10:10"
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
 
@@ -161,7 +161,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
+    And The trigger is set to start on "12-12-2020" at "10:10"
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
@@ -181,12 +181,12 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     Then A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-01-2030 at 10:10.
-    And The trigger is set to end on 15-12-2030 at 10:10.
+    And The trigger is set to start on "12-01-2030" at "10:10"
+    And The trigger is set to end on "15-12-2030" at "10:10"
     Then I create a new trigger from the existing creator with previously defined date properties
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start on 12-12-2030 at 10:10.
-    And The trigger is set to end on 15-12-2030 at 10:10.
+    And The trigger is set to start on "12-12-2030" at "10:10"
+    And The trigger is set to end on "15-12-2030" at "10:10"
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
 
@@ -199,7 +199,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "" is created
-    And The trigger is set to end on 12-12-2020 at 10:10.
+    And The trigger is set to end on "12-12-2020" at "10:10"
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
@@ -218,8 +218,8 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 11:00.
-    And The trigger is set to end on 12-12-2020 at 10:00.
+    And The trigger is set to start on "12-12-2020" at "11:00"
+    And The trigger is set to end on "12-12-2020" at "10:00"
     When I expect the exception "TriggerInvalidDatesException" with the text "Trigger with startsOn 12/12/20 11:00 AM, endsOn 12/12/20 10:00 AM will never fire according to the current date"
     And I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
@@ -234,8 +234,8 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 10:00.
-    And The trigger is set to end on 12-12-2020 at 10:00.
+    And The trigger is set to start on "12-12-2020" at "10:00"
+    And The trigger is set to end on "12-12-2020" at "10:00"
     When I expect the exception "TriggerInvalidDatesException" with the text "Trigger with startsOn 12/12/20 10:00 AM, endsOn 12/12/20 10:00 AM will never fire according to the current date"
     And I create a new trigger from the existing creator with previously defined date properties
     And  An exception was thrown
@@ -254,7 +254,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I set retry interval to 1
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
@@ -274,7 +274,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I set retry interval to 1
     When I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     And I create a new trigger from the existing creator with previously defined date properties
@@ -306,11 +306,11 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I set retry interval to 1
     And I create a new trigger from the existing creator with previously defined date properties
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start today at 12:00.
+    And The trigger is set to start today at "12:00"
     And I set retry interval to 1
     When I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name schedule1 already exists"
     And I create a new trigger from the existing creator with previously defined date properties
@@ -326,7 +326,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I set retry interval to 1
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
@@ -341,7 +341,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I set retry interval to 1
     Then I expect the exception "KapuaIllegalArgumentException" with the text " Value over than allowed max length. Max length is: 255."
     And I create a new trigger from the existing creator with previously defined date properties
@@ -357,7 +357,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "www" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I set retry interval to 1
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
@@ -391,12 +391,12 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
+    And The trigger is set to start on "12-12-2020" at "10:10"
     And I set retry interval to 1
     And I create a new trigger from the existing creator with previously defined date properties
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
+    And The trigger is set to start on "12-12-2020" at "10:10"
     And I set retry interval to 1
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
@@ -411,7 +411,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
+    And The trigger is set to start on "12-12-2020" at "10:10"
     And I set retry interval to 1
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
@@ -432,13 +432,13 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     Then A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-01-2030 at 10:10.
-    And The trigger is set to end on 15-12-2030 at 10:10.
+    And The trigger is set to start on "12-01-2030" at "10:10"
+    And The trigger is set to end on "15-12-2030" at "10:10"
     And I set retry interval to 1
     Then I create a new trigger from the existing creator with previously defined date properties
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start on 12-12-2030 at 10:10.
-    And The trigger is set to end on 15-12-2030 at 10:10.
+    And The trigger is set to start on "12-12-2030" at "10:10"
+    And The trigger is set to end on "15-12-2030" at "10:10"
     And I set retry interval to 1
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
@@ -453,7 +453,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "" is created
-    And The trigger is set to end on 12-12-2020 at 10:10.
+    And The trigger is set to end on "12-12-2020" at "10:10"
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
@@ -472,8 +472,8 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 11:00.
-    And The trigger is set to end on 12-12-2020 at 10:00.
+    And The trigger is set to start on "12-12-2020" at "11:00"
+    And The trigger is set to end on "12-12-2020" at "10:00"
     Then I set retry interval to 1
     When I expect the exception "TriggerInvalidDatesException" with the text "Trigger with startsOn 12/12/20 11:00 AM, endsOn 12/12/20 10:00 AM will never fire according to the current date"
     And I create a new trigger from the existing creator with previously defined date properties
@@ -489,8 +489,8 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 10:00.
-    And The trigger is set to end on 12-12-2020 at 10:00.
+    And The trigger is set to start on "12-12-2020" at "10:00"
+    And The trigger is set to end on "12-12-2020" at "10:00"
     Then I set retry interval to 1
     When I expect the exception "TriggerInvalidDatesException" with the text "Trigger with startsOn 12/12/20 10:00 AM, endsOn 12/12/20 10:00 AM will never fire according to the current date"
     And I create a new trigger from the existing creator with previously defined date properties
@@ -510,8 +510,8 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 0:00.
-    And The trigger is set to end tomorrow at 10:00.
+    And The trigger is set to start today at "0:00"
+    And The trigger is set to end tomorrow at "10:00"
     Then I set retry interval to null
     When I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument interval"
     And I create a new trigger from the existing creator with previously defined date properties
@@ -527,8 +527,8 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 0:00.
-    And The trigger is set to end tomorrow at 10:00.
+    And The trigger is set to start today at "0:00"
+    And The trigger is set to end tomorrow at "10:00"
     When I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument interval"
     And I create a new trigger from the existing creator with previously defined date properties
     And  An exception was thrown
@@ -547,7 +547,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     Then I set cron expression to "0 15 10 * * ?"
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
@@ -562,7 +562,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     Then I set cron expression to "1"
     And I expect the exception "KapuaException" with the text "An internal error occurred: Error during Persistence Operation"
     And I create a new trigger from the existing creator with previously defined date properties
@@ -578,7 +578,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument cronExpression"
     And I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
@@ -613,12 +613,12 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
+    And The trigger is set to start on "12-12-2020" at "10:10"
     Then I set cron expression to "0 15 10 * * ?"
     And I create a new trigger from the existing creator with previously defined date properties
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
+    And The trigger is set to start on "12-12-2020" at "10:10"
     Then I set cron expression to "0 15 15 * * ?"
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
@@ -633,7 +633,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
+    And The trigger is set to start on "12-12-2020" at "10:10"
     Then I set cron expression to "0 15 15 * * ?"
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
@@ -654,13 +654,13 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     Then A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-01-2030 at 10:10.
-    And The trigger is set to end on 15-12-2030 at 10:10.
+    And The trigger is set to start on "12-01-2030" at "10:10"
+    And The trigger is set to end on "15-12-2030" at "10:10"
     Then I set cron expression to "0 15 15 * * ?"
     Then I create a new trigger from the existing creator with previously defined date properties
     And A regular trigger creator with the name "schedule1" is created
-    And The trigger is set to start on 12-12-2030 at 10:10.
-    And The trigger is set to end on 15-12-2030 at 10:10.
+    And The trigger is set to start on "12-12-2030" at "10:10"
+    And The trigger is set to end on "15-12-2030" at "10:10"
     Then I set cron expression to "0 15 15 * * ?"
     And I create a new trigger from the existing creator with previously defined date properties
     And I logout
@@ -675,7 +675,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "" is created
-    And The trigger is set to end on 12-12-2020 at 10:10.
+    And The trigger is set to end on "12-12-2020" at "10:10"
     Then I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
@@ -695,8 +695,8 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 12:00.
-    And The trigger is set to end on 10-12-2020 at 10:00.
+    And The trigger is set to start on "12-12-2020" at "12:00"
+    And The trigger is set to end on "10-12-2020" at "10:00"
     Then I set cron expression to "0 15 10 * * ?"
     When I expect the exception "TriggerInvalidDatesException" with the text "Trigger with startsOn 12/12/20 12:00 PM, endsOn 12/10/20 10:00 AM will never fire according to the current date"
     And I create a new trigger from the existing creator with previously defined date properties
@@ -712,8 +712,8 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 10:00.
-    And The trigger is set to end on 12-12-2020 at 10:00.
+    And The trigger is set to start on "12-12-2020" at "10:00"
+    And The trigger is set to end on "12-12-2020" at "10:00"
     Then I set cron expression to "0 15 10 * * ?"
     When I expect the exception "TriggerInvalidDatesException" with the text "Trigger with startsOn 12/12/20 10:00 AM, endsOn 12/12/20 10:00 AM will never fire according to the current date"
     And I create a new trigger from the existing creator with previously defined date properties
@@ -733,8 +733,8 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 10:00.
-    And The trigger is set to end tomorrow at 10:00.
+    And The trigger is set to start on "12-12-2020" at "10:00"
+    And The trigger is set to end tomorrow at "10:00"
     Then I set retry interval to 2
     And I create a new trigger from the existing creator with previously defined date properties
     Then I delete trigger with name "schedule0"
@@ -755,8 +755,8 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 10:00.
-    And The trigger is set to end tomorrow at 20:00.
+    And The trigger is set to start on "12-12-2020" at "10:00"
+    And The trigger is set to end tomorrow at "20:00"
     Then I set cron expression to "0 15 10 * * ?"
     And I create a new trigger from the existing creator with previously defined date properties
     Then I delete trigger with name "schedule0"
@@ -777,7 +777,7 @@ Scenario: Init Security Context for all scenarios
     And I create a job with the name "job0"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I create a new trigger from the existing creator with previously defined date properties
     Then I delete trigger with name "schedule0"
     And I search for the trigger with name "schedule0" in the database

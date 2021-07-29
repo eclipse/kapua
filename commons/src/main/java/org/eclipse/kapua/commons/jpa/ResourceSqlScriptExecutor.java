@@ -99,7 +99,7 @@ public class ResourceSqlScriptExecutor {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Error", e);
             }
 
             Query q = entityManager.createNativeQuery(sqlStringBuilder.toString());

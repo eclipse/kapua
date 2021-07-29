@@ -80,7 +80,7 @@ public abstract class AbstractMessageStoreServiceTest extends Assert {
             adminUserId = KapuaSecurityUtils.getSession().getUserId();
             adminScopeId = KapuaSecurityUtils.getSession().getScopeId();
         } catch (KapuaException exc) {
-            exc.printStackTrace();
+            logger.warn("Error", exc);
         }
     }
 
@@ -103,7 +103,7 @@ public abstract class AbstractMessageStoreServiceTest extends Assert {
 
             authenticationService.logout();
         } catch (KapuaException exc) {
-            exc.printStackTrace();
+            logger.warn("Error", exc);
         }
     }
 

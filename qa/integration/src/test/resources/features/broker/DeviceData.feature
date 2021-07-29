@@ -24,14 +24,14 @@ Feature: Device data scenarios
 
   Scenario: Connect to the system and publish some data
 
-    Given The account name is kapua-sys and the client ID is sim-1
-    And The broker URI is tcp://kapua-broker:kapua-password@localhost:1883
+    Given The account name is "kapua-sys" and the client ID is "sim-1"
+    And The broker URI is "tcp://kapua-broker:kapua-password@localhost:1883"
     And My credentials are username "kapua-sys" and password "kapua-password"
     And I have a mock data application named "my-app-1"
 
     When I start the simulator
 
-    Then Device sim-1 for account kapua-sys is registered after 15 seconds
+    Then Device "sim-1" for account "kapua-sys" is registered after 15 seconds
     And I expect the device to report the applications
       | DEPLOY-V2 |
       | CMD-V1    |
@@ -63,9 +63,9 @@ Feature: Device data scenarios
     And  I expect the latest captured message on channel "my-app-1/my-topic-5/data" to have the metrics
       | key         | type    | value |
       | foo.boolean | BOOLEAN | true  |
-    Then Device sim-1 for account kapua-sys is registered after 15 seconds
+    Then Device "sim-1" for account "kapua-sys" is registered after 15 seconds
     When I stop the simulator
-    Then Device sim-1 for account kapua-sys is not registered after 5 seconds
+    Then Device "sim-1" for account "kapua-sys" is not registered after 5 seconds
     And I delete the messages for this device
 
 @teardown

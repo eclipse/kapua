@@ -75,7 +75,7 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
@@ -97,7 +97,7 @@ Feature: JobEngineService start job tests with online device
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 3 device events
     And Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
+    And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
     When KuraMock is disconnected
     And I logout
 
@@ -115,7 +115,7 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
@@ -137,7 +137,7 @@ Feature: JobEngineService start job tests with online device
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 3 device events
     And Bundles are requested
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
     And KuraMock is disconnected
     And I logout
 
@@ -155,7 +155,7 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     When Configuration is requested
-    Then A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
+    Then A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device events
     And The type of the last event is "CONFIGURATION"
@@ -177,7 +177,7 @@ Feature: JobEngineService start job tests with online device
     Then I find 3 device events
     And The type of the last event is "CONFIGURATION"
     And Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 10
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     And KuraMock is disconnected
     And I logout
 
@@ -358,8 +358,8 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 2 device events
     And The type of the last event is "BUNDLE"
@@ -387,8 +387,8 @@ Feature: JobEngineService start job tests with online device
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 4 device events
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
     And KuraMock is disconnected
     And I logout
 
@@ -406,8 +406,8 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Configuration is requested
-    Then A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
-    And Command pwd is executed
+    Then A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
+    And Command "pwd" is executed
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 3 device events
     And The type of the last event is "COMMAND"
@@ -432,7 +432,7 @@ Feature: JobEngineService start job tests with online device
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 5 device events
     And Configuration is requested
-    Then A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 10
+    Then A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     When KuraMock is disconnected
     And I logout
 
@@ -534,7 +534,7 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     And Bundles are requested
-    And A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     And I search events from devices in account "kapua-sys" and 2 events are found
     And The type of the last event is "BUNDLE"
     And I create a job with the name "TestJob"
@@ -554,7 +554,7 @@ Feature: JobEngineService start job tests with online device
     And I confirm the executed job is finished
     And I search events from devices in account "kapua-sys" and 3 events are found
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
     And KuraMock is disconnected
     And I logout
 
@@ -572,7 +572,7 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     And I search events from devices in account "kapua-sys" and 2 events are found
     And The type of the last event is "BUNDLE"
     And I create a job with the name "TestJob"
@@ -592,7 +592,7 @@ Feature: JobEngineService start job tests with online device
     And I confirm the executed job is finished
     And I search events from devices in account "kapua-sys" and 2 events are found
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     And KuraMock is disconnected
     And I logout
 
@@ -610,7 +610,7 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     And Bundles are requested
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
     And I search events from devices in account "kapua-sys" and 2 events are found
     And The type of the last event is "BUNDLE"
     And I create a job with the name "TestJob"
@@ -630,7 +630,7 @@ Feature: JobEngineService start job tests with online device
     And I confirm the executed job is finished
     And I search events from devices in account "kapua-sys" and 3 events are found
     Then Bundles are requested
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
     Then KuraMock is disconnected
     And I logout
 
@@ -646,7 +646,7 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
     And I search events from devices in account "kapua-sys" and 2 events are found
     And I create a job with the name "TestJob"
     And I add targets to job
@@ -665,7 +665,7 @@ Feature: JobEngineService start job tests with online device
     And I confirm the executed job is finished
     And I search events from devices in account "kapua-sys" and 3 events are found
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 10
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     And KuraMock is disconnected
     And I logout
 
@@ -836,8 +836,8 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and RESOLVED
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and ACTIVE
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
     When I search events from devices in account "kapua-sys" and 2 events are found
     And The type of the last event is "BUNDLE"
     And I create a job with the name "TestJob"
@@ -863,8 +863,8 @@ Feature: JobEngineService start job tests with online device
     And I confirm the executed job is finished
     When I search events from devices in account "kapua-sys" and 4 events are found
     And Bundles are requested
-    Then A bundle named slf4j.api with id 34 and version 1.7.21 is present and ACTIVE
-    And A bundle named org.eclipse.kura.linux.bluetooth with id 77 and version 1.0.300 is present and RESOLVED
+    Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
+    And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
     And KuraMock is disconnected
     And I logout
 
@@ -882,8 +882,8 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock devices after 5 seconds
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 5
-    And Command pwd is executed
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
+    And Command "pwd" is executed
     When I search events from devices in account "kapua-sys" and 3 events are found
     And The type of the last event is "COMMAND"
     And I create a job with the name "TestJob"
@@ -906,7 +906,7 @@ Feature: JobEngineService start job tests with online device
     And I confirm the executed job is finished
     When I search events from devices in account "kapua-sys" and 5 events are found
     Then Configuration is requested
-    And A Configuration named org.eclipse.kura.clock.ClockService has property clock.ntp.retry.interval with value 10
+    And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     When KuraMock is disconnected
     And I logout
 

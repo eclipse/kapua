@@ -119,9 +119,8 @@ public class AccountServiceSteps extends TestBase {
         stepData.put(ACCOUNT_CREATOR, accountCreator);
     }
 
-    @Given("^Account$")
+    @Given("Account")
     public void givenAccount(List<CucAccount> accountList) throws Exception {
-
         CucAccount cucAccount = accountList.get(0);
         // If accountId is not set in account list, use last created Account for scope id
         if (cucAccount.getScopeId() == null) {
@@ -135,10 +134,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I create a generic account with name \"(.*)\"$")
-    public void createGenericAccount(String name)
-            throws Exception {
-
+    @When("I create a generic account with name {string}")
+    public void createGenericAccount(String name) throws Exception {
         AccountCreator accountCreator = prepareRegularAccountCreator(SYS_SCOPE_ID, name);
         stepData.put(ACCOUNT_CREATOR, accountCreator);
         stepData.remove(LAST_ACCOUNT);
@@ -153,10 +150,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I create a generic account with name \"(.*)\" in current scopeId$")
-    public void createGenericAccountInCurrentScopeId(String name)
-            throws Exception {
-
+    @When("I create a generic account with name {string} in current scopeId")
+    public void createGenericAccountInCurrentScopeId(String name) throws Exception {
         AccountCreator accountCreator = prepareRegularAccountCreator(getCurrentScopeId(), name);
         stepData.put("AccountCreator", accountCreator);
         stepData.remove(LAST_ACCOUNT);
@@ -171,10 +166,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I create (\\d+) accounts in current scopeId?$")
-    public void createAccountsInCurrentScopeId(int numberOfAccounts)
-            throws Exception {
-
+    @When("I create {int} accounts in current scopeId")
+    public void createAccountsInCurrentScopeId(int numberOfAccounts) throws Exception {
         for (int i = 0; i < numberOfAccounts; i++) {
             AccountCreator accountCreator = prepareRegularAccountCreator(getCurrentScopeId(), "account" + i);
             try {
@@ -186,10 +179,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @Given("^An existing account that expires on \"(.*)\" with the name \"(.*)\"$")
-    public void createTestAccountWithName(String expirationDateStr, String name)
-            throws Exception {
-
+    @Given("An existing account that expires on {string} with the name {string}")
+    public void createTestAccountWithName(String expirationDateStr, String name) throws Exception {
         Date expirationDate = new SimpleDateFormat(DATE_FORMAT).parse(expirationDateStr);
         AccountCreator accountCreator = prepareRegularAccountCreator(SYS_SCOPE_ID, name);
         accountCreator.setExpirationDate(expirationDate);
@@ -206,10 +197,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I create (\\d+) childs for account with Id (\\d+)$")
-    public void createANumberOfAccounts(int num, int parentId)
-            throws Exception {
-
+    @Given("I create {int} childs for account with Id {int}")
+    public void createANumberOfAccounts(int num, int parentId) throws Exception {
         for (int i = 0; i < num; i++) {
             AccountCreator accountCreator = prepareRegularAccountCreator(new KapuaEid(BigInteger.valueOf(parentId)), TMP_ACC + String.format("%d", i));
             try {
@@ -222,10 +211,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I create (\\d+) childs for account with name \"(.*)\"$")
-    public void createANumberOfChildrenForAccountWithName(int num, String name)
-            throws Exception {
-
+    @Given("I create {int} childs for account with name {string}")
+    public void createANumberOfChildrenForAccountWithName(int num, String name) throws Exception {
         Account tmpAcc = accountService.findByName(name);
         for (int i = 0; i < num; i++) {
             AccountCreator accountCreator = prepareRegularAccountCreator(tmpAcc.getId(), TMP_ACC + String.format("%d", i));
@@ -239,10 +226,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I create (\\d+) childs for account with expiration date \"(.*)\" and name \"(.*)\"$")
-    public void createANumberOfChildrenForAccountWithName(int num, String expirationDateStr, String name)
-            throws Exception {
-
+    @Given("I create {int} childs for account with expiration date {string} and name {string}")
+    public void createANumberOfChildrenForAccountWithName(int num, String expirationDateStr, String name) throws Exception {
         Account tmpAcc = accountService.findByName(name);
         for (int i = 0; i < num; i++) {
             Date expirationDate = new SimpleDateFormat(DATE_FORMAT).parse(expirationDateStr);
@@ -259,10 +244,8 @@ public class AccountServiceSteps extends TestBase {
     }
 
 
-    @Given("^I create (\\d+) accounts with organization name \"(.*)\"$")
-    public void createANumberOfChildrenForAccountWithOrganizationName(int num, String name)
-            throws Exception {
-
+    @Given("I create {int} accounts with organization name {string}")
+    public void createANumberOfChildrenForAccountWithOrganizationName(int num, String name) throws Exception {
         for (int i = 0; i < num; i++) {
             AccountCreator accountCreator = prepareRegularAccountCreator(SYS_SCOPE_ID, TMP_ACC + String.format("%d", i));
             accountCreator.setOrganizationName(name);
@@ -276,10 +259,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I create an account with a null name$")
-    public void createAccountWithNullName()
-            throws Exception {
-
+    @When("I create an account with a null name")
+    public void createAccountWithNullName() throws Exception {
         AccountCreator accountCreator = prepareRegularAccountCreator(SYS_SCOPE_ID, null);
         try {
             primeException();
@@ -289,10 +270,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I modify the account \"(.*)\"$")
-    public void changeAccountDetails(String name)
-            throws Exception {
-
+    @When("I modify the account {string}")
+    public void changeAccountDetails(String name) throws Exception {
         try {
             primeException();
 
@@ -311,10 +290,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I modify the current account$")
-    public void updateAccount()
-            throws Exception {
-
+    @When("I modify the current account")
+    public void updateAccount() throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
 
         try {
@@ -325,10 +302,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I change the account \"(.*)\" name to \"(.*)\"$")
-    public void changeAccountName(String accName, String name)
-            throws Exception {
-
+    @When("I change the account {string} name to {string}")
+    public void changeAccountName(String accName, String name) throws Exception {
         Account tmpAcc = accountService.findByName(accName);
         tmpAcc.setName(name);
 
@@ -340,10 +315,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I change the expiration date of the account \"(.*)\" to \"(.*)\"$")
-    public void changeAccountExpirationDate(String accName, String expirationDateStr)
-            throws Exception {
-
+    @When("I change the expiration date of the account {string} to {string}")
+    public void changeAccountExpirationDate(String accName, String expirationDateStr) throws Exception {
         Account tmpAcc = accountService.findByName(accName);
         Date expirationDate;
         if (expirationDateStr.equals("never")) {
@@ -360,10 +333,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I change the parent path for account \"(.*)\"$")
-    public void changeParentPathForAccount(String name)
-            throws Exception {
-
+    @When("I change the parent path for account {string}")
+    public void changeParentPathForAccount(String name) throws Exception {
         Account tmpAcc = accountService.findByName(name);
         String modParentPath = tmpAcc.getParentAccountPath() + "/mod";
         tmpAcc.setParentAccountPath(modParentPath);
@@ -376,22 +347,7 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-//    @When("^I try to change the account \"(.*)\" scope Id to (\\d+)$")
-//    public void changeAccountScopeId(String name, int newScopeId)
-//            throws Exception {
-//
-//        AccountImpl tmpAcc = (AccountImpl) accountService.findByName(name);
-//        tmpAcc.setScopeId(new KapuaEid(BigInteger.valueOf(newScopeId)));
-//
-//        try {
-//            primeException();
-//            accountService.update(tmpAcc);
-//        } catch (KapuaException ex) {
-//            verifyException(ex);
-//        }
-//    }
-
-    @When("^I select account \"(.*)\"$")
+    @When("I select account {string}")
     public void selectAccount(String accountName) throws Exception {
         try {
             Account tmpAccount;
@@ -407,9 +363,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("I change the current account expiration date to \"(.+)\"")
+    @When("I change the current account expiration date to {string}")
     public void changeCurrentAccountExpirationDate(String newExpiration) throws Exception {
-
         Account currAcc = (Account) stepData.get(LAST_ACCOUNT);
         Date newDate = parseDateString(newExpiration);
 
@@ -423,10 +378,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete account \"(.*)\"$")
-    public void deleteAccountWithName(String name)
-            throws Exception {
-
+    @When("I delete account {string}")
+    public void deleteAccountWithName(String name) throws Exception {
         try {
             primeException();
             Account tmpAcc = accountService.findByName(name);
@@ -436,10 +389,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I try to delete the system account$")
-    public void deleteSystemAccount()
-            throws Exception {
-
+    @When("I try to delete the system account")
+    public void deleteSystemAccount() throws Exception {
         String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
         Account tmpAcc = accountService.findByName(adminUserName);
 
@@ -454,10 +405,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete a random account$")
-    public void deleteRandomAccount()
-            throws Exception {
-
+    @When("I delete a random account")
+    public void deleteRandomAccount() throws Exception {
         try {
             primeException();
             accountService.delete(SYS_SCOPE_ID, new KapuaEid(IdGenerator.generate()));
@@ -466,10 +415,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the account with name \"(.*)\"$")
-    public void findAccountByName(String name)
-            throws Exception {
-
+    @When("I search for the account with name {string}")
+    public void findAccountByName(String name) throws Exception {
         try {
             primeException();
             stepData.remove(LAST_ACCOUNT);
@@ -480,10 +427,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the account with the remembered account Id$")
-    public void findAccountByStoredId()
-            throws Exception {
-
+    @When("I search for the account with the remembered account Id")
+    public void findAccountByStoredId() throws Exception {
         try {
             primeException();
             stepData.remove(LAST_ACCOUNT);
@@ -495,10 +440,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for the account with the remembered parent and account Ids$")
-    public void findAccountByStoredScopeAndAccountIds()
-            throws Exception {
-
+    @When("I search for the account with the remembered parent and account Ids")
+    public void findAccountByStoredScopeAndAccountIds() throws Exception {
         try {
             primeException();
             stepData.remove(LAST_ACCOUNT);
@@ -510,10 +453,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I search for a random account Id$")
-    public void findRandomAccountId()
-            throws Exception {
-
+    @When("I search for a random account Id")
+    public void findRandomAccountId() throws Exception {
         try {
             primeException();
             stepData.remove(LAST_ACCOUNT);
@@ -524,9 +465,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I set the following parameters$")
-    public void setAccountParameters(DataTable dataTable)
-            throws Exception {
+    @When("I set the following parameters")
+    public void setAccountParameters(DataTable dataTable) throws Exception {
         Assert.assertEquals("Wrong test setup. Bad parameters size!", 2, dataTable.width());
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Properties accProps = account.getEntityProperties();
@@ -545,10 +485,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I configure \"(.*)\" item \"(.*)\" to \"(.*)\"$")
-    public void setConfigurationValue(String type, String name, String value)
-            throws Exception {
-
+    @When("I configure {string} item {string} to {string}")
+    public void setConfigurationValue(String type, String name, String value) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
 
         switch (type) {
@@ -573,10 +511,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I add the unknown config item \"(.*)\" with value (\\d+)$")
-    public void addUnknownIntegerConfigurationValue(String name, int value)
-            throws Exception {
-
+    @When("I add the unknown config item {string} with value {int}")
+    public void addUnknownIntegerConfigurationValue(String name, int value) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         try {
             primeException();
@@ -588,10 +524,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I query for all accounts that have the system account as parent$")
-    public void queryForNumberOfTopLevelAccounts()
-            throws Exception {
-
+    @When("I query for all accounts that have the system account as parent")
+    public void queryForNumberOfTopLevelAccounts() throws Exception {
         AccountQuery query = accountFactory.newQuery(SYS_SCOPE_ID);
         stepData.remove(INT_VALUE);
         try {
@@ -603,10 +537,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I set the expiration date to (.*)$")
-    public void setExpirationDate(String expirationDateStr)
-            throws Exception {
-
+    @When("I set the expiration date to {string}")
+    public void setExpirationDate(String expirationDateStr) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         stepData.remove(LAST_ACCOUNT);
         try {
@@ -620,9 +552,8 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @Then("^The account matches the creator settings$")
+    @Then("The account matches the creator settings")
     public void checkCreatedAccountDefaults() {
-
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         AccountCreator accountCreator = (AccountCreator) stepData.get(ACCOUNT_CREATOR);
 
@@ -648,19 +579,14 @@ public class AccountServiceSteps extends TestBase {
         Assert.assertEquals(accountCreator.getOrganizationPhoneNumber(), account.getOrganization().getPhoneNumber());
     }
 
-    @Then("^Account \"(.*)\" exists$")
-    public void checkWhetherAccountExists(String name)
-            throws KapuaException {
-
+    @Then("Account {string} exists")
+    public void checkWhetherAccountExists(String name) throws KapuaException {
         Account tmpAcc = accountService.findByName(name);
-
         Assert.assertNotNull(tmpAcc);
     }
 
-    @Then("^Account \"(.*)\" is correctly modified$")
-    public void checkForAccountModifications(String name)
-            throws KapuaException {
-
+    @Then("Account {string} is correctly modified")
+    public void checkForAccountModifications(String name) throws KapuaException {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Account tmpAcc = accountService.findByName(name);
 
@@ -668,10 +594,8 @@ public class AccountServiceSteps extends TestBase {
         Assert.assertEquals(account.getOrganization().getCity(), tmpAcc.getOrganization().getCity());
     }
 
-    @Then("^The account with name \"([^\"]*)\" has (\\d+) subaccount(?:|s)$")
-    public void checkNumberOfAccounts(String accountName, int num)
-            throws KapuaException {
-
+    @Then("The account with name {string} has {int} subaccount(s)")
+    public void checkNumberOfAccounts(String accountName, int num) throws KapuaException {
         KapuaQuery query = accountFactory.newQuery(getCurrentScopeId());
         Account account = accountService.find(getCurrentScopeId());
         Assert.assertEquals(accountName, account.getName());
@@ -680,10 +604,8 @@ public class AccountServiceSteps extends TestBase {
         Assert.assertEquals(num, accountCnt);
     }
 
-    @Then("^Account \"(.*)\" has (\\d+) children$")
-    public void checkNumberOfChildrenForNamedAccount(String name, int num)
-            throws Exception {
-
+    @Then("Account {string} has {int} children")
+    public void checkNumberOfChildrenForNamedAccount(String name, int num) throws Exception {
         try {
             primeException();
             Account tmpAcc = accountService.findByName(name);
@@ -696,27 +618,21 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @Then("^The account does not exist$")
+    @Then("The account does not exist")
     public void tryToFindInexistentAccount() {
-
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-
         Assert.assertNull(account);
     }
 
-    @Then("^The System account exists$")
-    public void findSystemAccount()
-            throws KapuaException {
-
+    @Then("The System account exists")
+    public void findSystemAccount() throws KapuaException {
         String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
         Account tmpAcc = accountService.findByName(adminUserName);
-
         Assert.assertNotNull(tmpAcc);
     }
 
-    @Then("^The account has the following parameters$")
-    public void checkAccountParameters(DataTable dataTable)
-            throws KapuaException {
+    @Then("The account has the following parameters")
+    public void checkAccountParameters(DataTable dataTable) throws KapuaException {
         Assert.assertEquals("Wrong test setup. Bad parameters size!", 2, dataTable.width());
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Properties accProps = account.getEntityProperties();
@@ -726,60 +642,44 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @Then("^The account has metadata$")
-    public void checkMetadataExistence()
-            throws KapuaException {
-
+    @Then("The account has metadata")
+    public void checkMetadataExistence() throws KapuaException {
         KapuaId accountId = (KapuaId) stepData.get(LAST_ACCOUNT_ID);
         KapuaTocd metaData = accountService.getConfigMetadata(accountId);
-
         Assert.assertNotNull(metaData);
     }
 
-    @Then("^The default configuration for the account is set$")
-    public void checkDefaultAccountConfiguration()
-            throws KapuaException {
-
+    @Then("The default configuration for the account is set")
+    public void checkDefaultAccountConfiguration() throws KapuaException {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Map<String, Object> valuesRead = accountService.getConfigValues(account.getId());
-
         Assert.assertTrue(valuesRead.containsKey("maxNumberChildEntities"));
         Assert.assertEquals(0, valuesRead.get("maxNumberChildEntities"));
     }
 
-    @Then("^The config item \"(.*)\" is set to \"(.*)\"$")
-    public void checkConfigValue(String name, String value)
-            throws KapuaException {
-
+    @Then("The config item {string} is set to {string}")
+    public void checkConfigValue(String name, String value) throws KapuaException {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Map<String, Object> valuesRead = accountService.getConfigValues(account.getId());
-
         Assert.assertTrue(valuesRead.containsKey(name));
         Assert.assertEquals(value, valuesRead.get(name).toString());
     }
 
-    @Then("^The config item \"(.*)\" is missing$")
-    public void checkMissingConfigItem(String name)
-            throws KapuaException {
-
+    @Then("The config item {string} is missing")
+    public void checkMissingConfigItem(String name) throws KapuaException {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Map<String, Object> valuesRead = accountService.getConfigValues(account.getId());
-
         Assert.assertFalse(valuesRead.containsKey(name));
     }
 
-    @Then("^The returned value is (\\d+)$")
+    @Then("The returned value is {int}")
     public void checkIntegerReturnValue(int val) {
-
         int intVal = (int) stepData.get(INT_VALUE);
-
         Assert.assertEquals(val, intVal);
     }
 
-    @When("^I configure account service$")
-    public void setAccountServiceConfig(List<CucConfig> cucConfigs)
-            throws Exception {
-
+    @When("I configure account service")
+    public void setAccountServiceConfig(List<CucConfig> cucConfigs) throws Exception {
         Map<String, Object> valueMap = new HashMap<>();
         KapuaId accId;
         KapuaId scopeId;
@@ -879,7 +779,7 @@ public class AccountServiceSteps extends TestBase {
         return accountCreator;
     }
 
-    @And("^I find account with name \"([^\"]*)\"$")
+    @And("I find account with name {string}")
     public void iFindAccountWithName(String accountName) throws Exception {
         AccountQuery accountQuery = accountFactory.newQuery(getCurrentScopeId());
         accountQuery.setPredicate(accountQuery.attributePredicate(AccountAttributes.NAME, accountName, AttributePredicate.Operator.EQUAL));
@@ -887,7 +787,7 @@ public class AccountServiceSteps extends TestBase {
         Assert.assertTrue(accountListResult.getSize() > 0);
     }
 
-    @And("^I try to edit description to \"([^\"]*)\"$")
+    @And("I try to edit description to {string}")
     public void iTryToEditAccountWithName(String description) throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         account.setDescription(description);
@@ -900,7 +800,7 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @And("^I create an account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email address \"([^\"]*)\"$")
+    @And("I create an account with name {string}, organization name {string} and email address {string}")
     public void iCreateAAccountWithNameOrganizationNameAndEmailaddress(String accountName, String organizationName, String email) throws Exception {
         AccountCreator accountCreator = accountFactory.newCreator(getCurrentScopeId());
         accountCreator.setName(accountName);
@@ -919,33 +819,33 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I look for my account by id$")
+    @When("I look for my account by id")
     public void findMyAccountById() throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Account selfAccount = accountService.find(account.getId());
         stepData.put(LAST_ACCOUNT,selfAccount);
     }
 
-    @When("^I look for my account by id and scope id$")
+    @When("I look for my account by id and scope id")
     public void findMyAccountByIdAndScopeId() throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Account selfAccount = accountService.find(account.getId(), account.getScopeId());
         stepData.put(LAST_ACCOUNT,selfAccount);
     }
 
-    @When("^I look for my account by name$")
+    @When("I look for my account by name")
     public void findMyAccountByName() throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Account selfAccount = accountService.findByName(account.getName());
         stepData.put(LAST_ACCOUNT,selfAccount);
     }
 
-    @Then("^I am able to read my account info")
+    @Then("I am able to read my account info")
     public void verifySelfAccount() throws Exception {
         Assert.assertNotNull(stepData.get(LAST_ACCOUNT));
     }
 
-    @And("^I create an account with name \"([^\"]*)\", organization name \"([^\"]*)\" and email address \"([^\"]*)\" and child account$")
+    @And("I create an account with name {string}, organization name {string} and email address {string} and child account")
     public void iCreateAccountWithNameOrganizationNameAndEmailaddressAndChildAccount(String accountName, String organizationName, String email) throws Exception {
         Account lastAccount = (Account) stepData.get(LAST_ACCOUNT);
 
@@ -964,7 +864,7 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I query for all sub-accounts in \"([^\"]*)\"$")
+    @When("I query for all sub-accounts in {string}")
     public void queryForAllAccountsInCurrentScopeId(String accountName) throws Exception {
         Account tmpAccount = accountService.findByName(accountName);
         AccountQuery query = accountFactory.newQuery(tmpAccount.getId());
@@ -977,37 +877,10 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I find (\\d+) accounts?$")
+    @When("I find {int} account(s)")
     public void iFindAccounts(int numberOfAccounts) {
         int foundAccounts = (int) stepData.get("NumberOfFoundAccounts");
         Assert.assertEquals(foundAccounts, numberOfAccounts);
     }
 
-
-    // *****************
-    // * Inner Classes *
-    // *****************
-
-    // Custom String tuple class for name/value pairs as given in the cucumber feature file
-    static public class StringTuple {
-
-        private String name;
-        private String value;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public void setValue(String value) {
-            this.value = value;
-        }
-    }
 }

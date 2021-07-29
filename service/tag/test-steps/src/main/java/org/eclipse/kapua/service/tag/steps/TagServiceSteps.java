@@ -79,10 +79,8 @@ public class TagServiceSteps extends TestBase {
         updateScenario(scenario);
     }
 
-    @Given("^I configure the tag service$")
-    public void setConfigurationValue(List<CucConfig> testConfigs)
-            throws Exception {
-
+    @Given("I configure the tag service")
+    public void setConfigurationValue(List<CucConfig> testConfigs) throws Exception {
         Account lastAcc = (Account) stepData.get("LastAccount");
         KapuaId scopeId = SYS_SCOPE_ID;
         KapuaId parentId = SYS_SCOPE_ID;
@@ -91,7 +89,6 @@ public class TagServiceSteps extends TestBase {
             parentId = lastAcc.getScopeId();
         }
         Map<String, Object> valueMap = new HashMap<>();
-
         for (CucConfig config : testConfigs) {
             config.addConfigToMap(valueMap);
         }
@@ -103,7 +100,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I create tag with name \"([^\"]*)\" without description$")
+    @Given("I create tag with name {string} without description")
     public void tagWithNameWithoutDescriptionIsCreated(String tagName) throws Exception {
         try {
             TagCreator tagCreator = tagCreatorCreatorWithoutDescription(tagName);
@@ -115,7 +112,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @And("^A tag with name \"([^\"]*)\" is created$")
+    @And("A tag with name {string} is created")
     public void creatingTagWithName(String tagName) throws Exception {
         try {
             TagCreator tagCreator = tagCreatorCreatorWithoutDescription(tagName);
@@ -127,9 +124,8 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @When("^I create tag with name \"([^\"]*)\" and description \"([^\"]*)\"$")
+    @When("I create tag with name {string} and description {string}")
     public void tagWithNameIsCreatedWithDescription(String tagName, String tagDescription) throws Exception {
-
         try {
             TagCreator tagCreator = tagCreatorCreatorWithDescription(tagName, tagDescription);
             stepData.remove("tag");
@@ -140,9 +136,8 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @When("^I create tag with name \"([^\"]*)\"$")
+    @When("I create tag with name {string}")
     public void tagWithNameIsCreatedWithoutDescription(String tagName) throws Exception {
-
         try {
             TagCreator tagCreator = tagCreatorCreatorWithDescription(tagName, null);
             stepData.remove("tag");
@@ -153,7 +148,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @Given("^I try to create tags with that include invalid symbols in name$")
+    @Given("I try to create tags with that include invalid symbols in name")
     public void tagWithInvalidSymbols() throws Exception {
         String invalidSymbols = "!\"#$%&'()=»Ç" +
                 ">:;<-.,⁄@‹›€" +
@@ -172,7 +167,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @When("^Tag with name \"([^\"]*)\" is searched$")
+    @When("Tag with name {string} is searched")
     public void tagWithNameIfSearched(String tagName) throws Throwable {
         try {
             stepData.remove("tag");
@@ -188,7 +183,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @When("^I delete tag with name \"([^\"]*)\"$")
+    @When("I delete tag with name {string}")
     public void deleteTagWithName(String tagName) throws Throwable {
         try {
             primeException();
@@ -202,27 +197,24 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @Then("^I find a tag with name \"([^\"]*)\"$")
+    @Then("I find a tag with name {string}")
     public void tagWithNameIsFound(String tagName) {
-
         Tag foundTag = (Tag) stepData.get("tag");
         Assert.assertEquals(tagName, foundTag.getName());
     }
 
-    @Then("^No tag was found$")
+    @Then("No tag was found")
     public void checkNoTagWasFound() {
-
         Assert.assertNull(stepData.get("tag"));
     }
 
-    @Then("^Tag with name \"([^\"]*)\" is not found$")
+    @Then("Tag with name {string} is not found")
     public void tagWithNameNotFound(String tagName) {
-
         Tag foundTag = (Tag) stepData.get("tag");
         Assert.assertNull(foundTag);
     }
 
-    @Then("^I find and delete tag with name \"([^\"]*)\"$")
+    @Then("I find and delete tag with name {string}")
     public void tagWithNameIsDeleted(String tagName) throws Throwable {
         try {
             Tag foundTag = (Tag) stepData.get("tag");
@@ -243,22 +235,19 @@ public class TagServiceSteps extends TestBase {
      * @return tag creator for tag with specified name
      */
     private TagCreator tagCreatorCreatorWithoutDescription(String tagName) {
-
         TagCreator tagCreator = tagFactory.newCreator(getCurrentScopeId());
         tagCreator.setName(tagName);
-
         return tagCreator;
     }
 
     public TagCreator tagCreatorCreatorWithDescription(String tagName, String tagDescription) {
-
         TagCreator tagCreator = tagFactory.newCreator(SYS_SCOPE_ID);
         tagCreator.setName(tagName);
         tagCreator.setDescription(tagDescription);
         return tagCreator;
     }
 
-    @And("^Tag name is changed into name \"([^\"]*)\"$")
+    @And("Tag name is changed into name {string}")
     public void tagNameIsChangedIntoName(String tagName) throws Exception {
         Tag tag = (Tag) stepData.get("tag");
         tag.setName(tagName);
@@ -272,7 +261,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @And("^Name of tag \"([^\"]*)\" is changed into \"([^\"]*)\"$")
+    @And("Name of tag {string} is changed into {string}")
     public void nameOfTagIsChangedInto(String tagName, String newTagName) throws Exception {
         try {
             primeException();
@@ -288,7 +277,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @And("^Tag description is changed into \"([^\"]*)\"$")
+    @And("Tag description is changed into {string}")
     public void tagDescriptionIsChangedInto(String description) throws Exception {
         Tag tag = (Tag) stepData.get("tag");
         try {
@@ -302,7 +291,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @And("^Description of tag \"([^\"]*)\" is changed into \"([^\"]*)\"$")
+    @And("Description of tag {string} is changed into {string}")
     public void descriptionOfTagIsChangedInto(String tagName, String newDescription) throws Exception {
         try {
             TagQuery query = tagFactory.newQuery(getCurrentScopeId());
@@ -319,7 +308,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @And("^I delete the tag with name \"([^\"]*)\"$")
+    @And("I delete the tag with name {string}")
     public void tagIsDeleted(String tagName) throws Exception {
         Tag tag = (Tag) stepData.get("tag");
         try {
@@ -329,7 +318,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @Given("^Tag is assigned to device$")
+    @Given("Tag is assigned to device")
     public void tagIsAssignedToDevice() throws Throwable {
         Tag tag = (Tag) stepData.get("tag");
         Device device = (Device) stepData.get("Device");
@@ -341,7 +330,7 @@ public class TagServiceSteps extends TestBase {
         }
     }
 
-    @Given("^Tag is not assigned to device$")
+    @Given("Tag is not assigned to device")
     public void tagIsNotAssignedToDevice() throws Throwable {
         Tag tag = (Tag) stepData.get("tag");
         Device device = (Device) stepData.get("Device");

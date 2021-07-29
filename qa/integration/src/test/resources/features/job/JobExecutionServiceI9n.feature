@@ -127,61 +127,6 @@ Scenario: Query for executions of a specific job
     When I query for the execution items for the current job
     Then I count 3
 
-#Scenario: Target with a null scope ID
-#
-#    Given A null scope
-#    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "scopeId"
-#    When I create a job with the name "TestJob"
-#    Then An exception was thrown
-#
-#Scenario: Delete a job target twice
-#
-#    Given I create a job with the name "TestJob"
-#    And A regular job target item
-#    When I delete the last job target in the database
-#    Given I expect the exception "KapuaEntityNotFoundException" with the text "type jobTarget"
-#    When I delete the last job target in the database
-#    Then An exception was thrown
-#
-#Scenario: Create and count multiple job targets
-#
-#    Given I create a job with the name "TestJob"
-#    And A regular job target item
-#    And A regular job target item
-#    And A regular job target item
-#    And A regular job target item
-#    When I count the targets in the current scope
-#    Then There are exactly 4 items
-#
-#Scenario: Query for the targets of a specific job
-#
-#    Given I create a job with the name "TestJob1"
-#    And A regular job target item
-#    And A regular job target item
-#    And A regular job target item
-#    And A regular job target item
-#    Given I create a job with the name "TestJob2"
-#    And A regular job target item
-#    And A regular job target item
-#    Given I create a job with the name "TestJob3"
-#    And A regular job target item
-#    And A regular job target item
-#    And A regular job target item
-#    Given I query for the job with the name "TestJob2"
-#    When I query the targets for the current job
-#    Then There are exactly 2 items
-#    Given I query for the job with the name "TestJob1"
-#    When I query the targets for the current job
-#    Then There are exactly 4 items
-#
-#Scenario: Update a job target TargetId
-#
-#    Given I create a job with the name "TestJob1"
-#    And A regular job target item
-#    When I update the job target target id
-#    Then No exception was thrown
-#    And The job target matches the creator
-
 Scenario: Job execution factory sanity checks
 
     And I test the sanity of the job execution factory
