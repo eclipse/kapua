@@ -30,6 +30,20 @@ paths:
           schema:
             type: string
           description: The channel name to filter results. It allows '#' wildcard in last channel level
+        - description: The sort parameter
+          name: sortParam
+          in: query
+          schema:
+            type: string
+        - description: The sort direction. Can be ascending (default) or descending.
+          name: sortDir
+          in: query
+          schema:
+            type: string
+            enum:
+              - ASCENDING
+              - DESCENDING
+            default: ASCENDING
         - $ref: '../openapi.yaml#/components/parameters/limit'
         - $ref: '../openapi.yaml#/components/parameters/offset'
       responses:
