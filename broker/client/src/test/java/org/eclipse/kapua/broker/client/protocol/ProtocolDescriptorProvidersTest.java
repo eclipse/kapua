@@ -12,14 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.client.protocol;
 
+import org.eclipse.kapua.broker.client.setting.BrokerClientSetting;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
 public class ProtocolDescriptorProvidersTest {
+
+    @Before
+    public void initialize() {
+        BrokerClientSetting.resetInstance();
+    }
 
     @Test
     public void getInstanceNullProviderTest() {
