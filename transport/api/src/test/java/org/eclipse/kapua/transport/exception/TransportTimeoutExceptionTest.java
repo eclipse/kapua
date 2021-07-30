@@ -44,10 +44,4 @@ public class TransportTimeoutExceptionTest extends Assert {
         }
     }
 
-    @Test(expected = TransportTimeoutException.class)
-    public void throwingTransportTimeoutExceptionTest() throws TransportTimeoutException {
-        for (Long value : values) {
-            throw new TransportTimeoutException(value);
-        }
-    }
 }
