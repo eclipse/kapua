@@ -1289,9 +1289,9 @@ public class UserServiceSteps extends TestBase {
         KapuaId userId = KapuaSecurityUtils.getSession().getUserId();
         KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
 
-        MfaOptionFactory mfaFactory = locator.getFactory(MfaOptionFactoryImpl.class);
+        MfaOptionFactory mfaFactory = KapuaLocator.getInstance().getFactory(MfaOptionFactoryImpl.class);
         MfaOptionCreator mfaCreator = mfaFactory.newCreator(scopeId, userId, "mfaSecretKey");
-        MfaOptionService mfaOptionService = locator.getService(MfaOptionServiceImpl.class);
+        MfaOptionService mfaOptionService = KapuaLocator.getInstance().getService(MfaOptionServiceImpl.class);
         try {
             mfaOptionService.create(mfaCreator);
         } catch (KapuaException e) {
@@ -1304,14 +1304,14 @@ public class UserServiceSteps extends TestBase {
         KapuaId userId = KapuaSecurityUtils.getSession().getUserId();
         KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
 
-        MfaOptionService mfaOptionService = locator.getService(MfaOptionServiceImpl.class);
+        MfaOptionService mfaOptionService = KapuaLocator.getInstance().getService(MfaOptionServiceImpl.class);
         MfaOption mfaOption = null;
         try {
             mfaOption = mfaOptionService.findByUserId(scopeId, userId);
         } catch (KapuaException e) {
             e.printStackTrace();
         }
-        assertNotNull(mfaOption);
+        Assert.assertNotNull(mfaOption);
     }
 
     @Then("^The lockout error counter for user \"([^\"]*)\" is (\\d+)$")
@@ -1349,7 +1349,7 @@ public class UserServiceSteps extends TestBase {
             e.printStackTrace();
         }
 
-        assertEquals(expectedCounter, credential.getLoginFailures());
+        Assert.assertEquals(expectedCounter, credential.getLoginFailures());
     }
 
     // *****************

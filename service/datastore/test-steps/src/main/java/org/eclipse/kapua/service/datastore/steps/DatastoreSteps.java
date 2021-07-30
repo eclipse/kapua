@@ -2495,7 +2495,7 @@ public class DatastoreSteps extends TestBase {
 
     private <T extends StorableListResult> void theListHaveLimitExceedValue(Class<T> bar, String lstKey, String limitExceedVal) {
         T tmpList = (T) stepData.get(lstKey);
-        assertEquals(tmpList.isLimitExceeded(), Boolean.parseBoolean(limitExceedVal));
+        Assert.assertEquals(tmpList.isLimitExceeded(), Boolean.parseBoolean(limitExceedVal));
     }
 
     /**
