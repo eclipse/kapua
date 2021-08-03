@@ -54,6 +54,12 @@ import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
+import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
+import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionFactoryImpl;
+import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionServiceImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialQueryImpl;
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
@@ -93,6 +99,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * Implementation of Gherkin steps used in user test scenarios.
@@ -1322,6 +1329,74 @@ public class UserServiceSteps extends TestBase {
            assertEquals(user.getEmail(), (email));
        }
        stepData.put(USER_LIST, users);
+    }
+
+    @And("^I enable mfa$")
+    public void iEnableMfa() {
+        KapuaId userId = KapuaSecurityUtils.getSession().getUserId();
+        KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
+
+        MfaOptionFactory mfaFactory = locator.getFactory(MfaOptionFactoryImpl.class);
+        MfaOptionCreator mfaCreator = mfaFactory.newCreator(scopeId, userId, "mfaSecretKey");
+        MfaOptionService mfaOptionService = locator.getService(MfaOptionServiceImpl.class);
+        try {
+            mfaOptionService.create(mfaCreator);
+        } catch (KapuaException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Then("^I have mfa enable$")
+    public void iHaveMfaIsEnable() {
+        KapuaId userId = KapuaSecurityUtils.getSession().getUserId();
+        KapuaId scopeId = KapuaSecurityUtils.getSession().getScopeId();
+
+        MfaOptionService mfaOptionService = locator.getService(MfaOptionServiceImpl.class);
+        MfaOption mfaOption = null;
+        try {
+            mfaOption = mfaOptionService.findByUserId(scopeId, userId);
+        } catch (KapuaException e) {
+            e.printStackTrace();
+        }
+        assertNotNull(mfaOption);
+    }
+
+    @Then("^The lockout error counter for user \"([^\"]*)\" is (\\d+)$")
+    public void theLockoutErrorCounterForUserIs(String username, int expectedCounter) {
+        KapuaId userIdTmp = null;
+        KapuaId scopeIdTmp = null;
+        try {
+            userIdTmp = KapuaSecurityUtils.doPrivileged(new Callable<KapuaId>() {
+                @Override
+                public KapuaId call() throws Exception {
+                    return userService.findByName(username).getId();
+                }
+            });
+            scopeIdTmp = KapuaSecurityUtils.doPrivileged(new Callable<KapuaId>() {
+                @Override
+                public KapuaId call() throws Exception {
+                    return userService.findByName(username).getScopeId();
+                }
+            });
+        } catch (KapuaException e) {
+            e.printStackTrace();
+        }
+
+        Credential credential = null;
+        final KapuaId userId = userIdTmp;
+        final KapuaId scopeId = scopeIdTmp;
+        try {
+            credential = KapuaSecurityUtils.doPrivileged(new Callable<Credential>() {
+                @Override
+                public Credential call() throws Exception {
+                    return credentialService.findByUserId(scopeId, userId).getFirstItem();
+                }
+            });
+        } catch (KapuaException e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(expectedCounter, credential.getLoginFailures());
     }
 
     // *****************
