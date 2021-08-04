@@ -13,6 +13,10 @@
 package org.eclipse.kapua.commons.setting.system;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+
+import java.util.Map;
+import java.util.EnumMap;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -22,40 +26,72 @@ public class SystemSettingKeyTest extends Assert {
 
     @Test
     public void keyTest() {
-        SystemSettingKey[] systemSettings = {SystemSettingKey.SYS_PROVISION_ACCOUNT_NAME, SystemSettingKey.SYS_ADMIN_ACCOUNT,
-                SystemSettingKey.SYS_ADMIN_USERNAME, SystemSettingKey.VERSION, SystemSettingKey.BUILD_VERSION, SystemSettingKey.BUILD_NUMBER,
-                SystemSettingKey.CHAR_ENCODING, SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER, SystemSettingKey.DB_NAME, SystemSettingKey.DB_USERNAME,
-                SystemSettingKey.DB_PASSWORD, SystemSettingKey.DB_JDBC_DRIVER, SystemSettingKey.DB_CONNECTION_SCHEME, SystemSettingKey.DB_CONNECTION_HOST,
-                SystemSettingKey.DB_CONNECTION_PORT, SystemSettingKey.DB_CONNECTION_USE_SSL, SystemSettingKey.DB_CONNECTION_TRUSTSTORE_URL,
-                SystemSettingKey.DB_CONNECTION_TRUSTSTORE_PWD, SystemSettingKey.DB_CONNECTION_ADDITIONAL_OPTIONS, SystemSettingKey.DB_SCHEMA,
-                SystemSettingKey.DB_SCHEMA_ENV, SystemSettingKey.DB_SCHEMA_UPDATE, SystemSettingKey.DB_USE_TIMEZONE, SystemSettingKey.DB_USE_LEGACY_DATETIME_CODE,
-                SystemSettingKey.DB_SERVER_TIMEZONE, SystemSettingKey.DB_CHAR_ENCODING, SystemSettingKey.DB_POOL_SIZE_INITIAL, SystemSettingKey.DB_POOL_SIZE_MIN,
-                SystemSettingKey.DB_POOL_SIZE_MAX, SystemSettingKey.DB_POOL_BORROW_TIMEOUT, SystemSettingKey.DB_CHARACTER_ESCAPE, SystemSettingKey.DB_CHARACTER_WILDCARD_ANY,
-                SystemSettingKey.DB_CHARACTER_WILDCARD_SINGLE, SystemSettingKey.BROKER_SCHEME, SystemSettingKey.BROKER_HOST, SystemSettingKey.METRICS_ENABLE_JMX,
-                SystemSettingKey.KAPUA_KEY_SIZE, SystemSettingKey.KAPUA_INSERT_MAX_RETRY, SystemSettingKey.EVENT_BUS_URL, SystemSettingKey.EVENT_BUS_USERNAME, SystemSettingKey.EVENT_BUS_PASSWORD,
-                SystemSettingKey.EVENT_BUS_PRODUCER_POOL_MIN_SIZE, SystemSettingKey.EVENT_BUS_PRODUCER_POOL_MAX_SIZE,
-                SystemSettingKey.EVENT_BUS_PRODUCER_POOL_BORROW_WAIT_MAX, SystemSettingKey.EVENT_BUS_PRODUCER_EVICTION_INTERVAL, SystemSettingKey.EVENT_BUS_CONSUMER_POOL_SIZE,
-                SystemSettingKey.EVENT_BUS_MESSAGE_SERIALIZER, SystemSettingKey.EVENT_BUS_TRANSPORT_USE_EPOLL, SystemSettingKey.HOUSEKEEPER_EXECUTION_WAIT_TIME,
-                SystemSettingKey.HOUSEKEEPER_EVENT_SCAN_WINDOW, SystemSettingKey.HOUSEKEEPER_OLD_MESSAGES_TIME_WINDOW, SystemSettingKey.SETTINGS_HOTSWAP,
-                SystemSettingKey.CACHING_PROVIDER, SystemSettingKey.TMETADATA_LOCAL_CACHE_SIZE_MAXIMUM, SystemSettingKey.CACHE_CONFIG_URL,
-                SystemSettingKey.CACHE_TTL, SystemSettingKey.JCACHE_EXPIRY_POLICY};
 
-        String[] expectedValue = {"commons.sys.provision.account.name", "commons.sys.admin.account", "commons.sys.admin.userName", "commons.version", "commons.build.version",
-                "commons.build.number", "character.encoding", "commons.db.jdbcConnectionUrlResolver", "commons.db.name", "commons.db.username", "commons.db.password",
-                "commons.db.jdbc.driver", "commons.db.connection.scheme", "commons.db.connection.host", "commons.db.connection.port", "commons.db.connection.useSsl",
-                "commons.db.connection.trust.store.url", "commons.db.connection.trust.store.pwd", "commons.db.connection.additionalOptions", "commons.db.schema",
-                "COMMONS_DB_SCHEMA", "commons.db.schema.update", "commons.db.useTimezone", "commons.db.useLegacyDatetimeCode",
-                "commons.db.serverTimezone", "commons.db.characterEncoding", "commons.db.pool.size.initial", "commons.db.pool.size.min",
-                "commons.db.pool.size.max", "commons.db.pool.borrow.timeout", "commons.db.character.escape", "commons.db.character.wildcard.any",
-                "commons.db.character.wildcard.single", "broker.scheme", "broker.host", "metrics.enable.jmx",
-                "commons.entity.key.size", "commons.entity.insert.max.retry", "commons.eventbus.url", "commons.eventbus.username",
-                "commons.eventbus.password", "commons.eventbus.producerPool.minSize", "commons.eventbus.producerPool.maxSize", "commons.eventbus.producerPool.maxWaitOnBorrow",
-                "commons.eventbus.producerPool.evictionInterval", "commons.eventbus.consumerPool.size", "commons.eventbus.messageSerializer", "commons.eventbus.transport.useEpoll",
-                "commons.eventbus.houskeeper.waitTime", "commons.eventbus.houskeeper.eventScanWindow", "commons.eventbus.houskeeper.oldMessagesTimeWindow", "commons.settings.hotswap",
-                "commons.cache.provider.classname", "commons.cache.local.tmetadata.maxsize", "commons.cache.config.url", "commons.cache.config.ttl", "commons.cache.config.expiryPolicy"};
+        EnumMap<SystemSettingKey, String> systemSettings = new EnumMap<>(SystemSettingKey.class);
 
-        for (int i = 0; i < systemSettings.length; i++) {
-            assertEquals("Expected and actual values should be the same.", expectedValue[i], systemSettings[i].key());
+        systemSettings.put(SystemSettingKey.SYS_PROVISION_ACCOUNT_NAME, "commons.sys.provision.account.name");
+        systemSettings.put(SystemSettingKey.SYS_ADMIN_ACCOUNT, "commons.sys.admin.account");
+        systemSettings.put(SystemSettingKey.SYS_ADMIN_USERNAME, "commons.sys.admin.userName");
+        systemSettings.put(SystemSettingKey.VERSION, "commons.version");
+        systemSettings.put(SystemSettingKey.BUILD_VERSION, "commons.build.version");
+        systemSettings.put(SystemSettingKey.BUILD_NUMBER, "commons.build.number");
+        systemSettings.put(SystemSettingKey.CHAR_ENCODING, "character.encoding");
+        systemSettings.put(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER, "commons.db.jdbcConnectionUrlResolver");
+        systemSettings.put(SystemSettingKey.DB_NAME, "commons.db.name");
+        systemSettings.put(SystemSettingKey.DB_USERNAME, "commons.db.username");
+        systemSettings.put(SystemSettingKey.DB_PASSWORD, "commons.db.password");
+        systemSettings.put(SystemSettingKey.DB_JDBC_DRIVER, "commons.db.jdbc.driver");
+        systemSettings.put(SystemSettingKey.DB_CONNECTION_SCHEME, "commons.db.connection.scheme");
+        systemSettings.put(SystemSettingKey.DB_CONNECTION_HOST, "commons.db.connection.host");
+        systemSettings.put(SystemSettingKey.DB_CONNECTION_PORT, "commons.db.connection.port");
+        systemSettings.put(SystemSettingKey.DB_CONNECTION_USE_SSL, "commons.db.connection.useSsl");
+        systemSettings.put(SystemSettingKey.DB_CONNECTION_TRUSTSTORE_URL, "commons.db.connection.trust.store.url");
+        systemSettings.put(SystemSettingKey.DB_CONNECTION_TRUSTSTORE_PWD, "commons.db.connection.trust.store.pwd");
+        systemSettings.put(SystemSettingKey.DB_CONNECTION_ADDITIONAL_OPTIONS, "commons.db.connection.additionalOptions");
+        systemSettings.put(SystemSettingKey.DB_SCHEMA, "commons.db.schema");
+        systemSettings.put(SystemSettingKey.DB_SCHEMA_ENV, "COMMONS_DB_SCHEMA");
+        systemSettings.put(SystemSettingKey.DB_SCHEMA_UPDATE, "commons.db.schema.update");
+        systemSettings.put(SystemSettingKey.DB_USE_TIMEZONE, "commons.db.useTimezone");
+        systemSettings.put(SystemSettingKey.DB_USE_LEGACY_DATETIME_CODE, "commons.db.useLegacyDatetimeCode");
+        systemSettings.put(SystemSettingKey.DB_SERVER_TIMEZONE, "commons.db.serverTimezone");
+        systemSettings.put(SystemSettingKey.DB_CHAR_ENCODING, "commons.db.characterEncoding");
+        systemSettings.put(SystemSettingKey.DB_POOL_SIZE_MIN, "commons.db.pool.size.min");
+        systemSettings.put(SystemSettingKey.DB_POOL_SIZE_MAX, "commons.db.pool.size.max");
+        systemSettings.put(SystemSettingKey.DB_POOL_IDLE_TIMEOUT, "commons.db.pool.idle.timeout");
+        systemSettings.put(SystemSettingKey.DB_POOL_KEEPALIVE_TIME, "commons.db.pool.keepalive.timeout");
+        systemSettings.put(SystemSettingKey.DB_POOL_MAX_LIFETIME, "commons.db.pool.max.lifetime");
+        systemSettings.put(SystemSettingKey.DB_POOL_TEST_QUERY, "commons.db.pool.test.query");
+        systemSettings.put(SystemSettingKey.DB_POOL_LEAKDETECTION_THRESHOLD, "commons.db.pool.leakdetection.threshold");
+        systemSettings.put(SystemSettingKey.DB_CHARACTER_ESCAPE, "commons.db.character.escape");
+        systemSettings.put(SystemSettingKey.DB_CHARACTER_WILDCARD_ANY, "commons.db.character.wildcard.any");
+        systemSettings.put(SystemSettingKey.DB_CHARACTER_WILDCARD_SINGLE, "commons.db.character.wildcard.single");
+        systemSettings.put(SystemSettingKey.BROKER_SCHEME, "broker.scheme");
+        systemSettings.put(SystemSettingKey.BROKER_HOST, "broker.host");
+        systemSettings.put(SystemSettingKey.METRICS_ENABLE_JMX, "metrics.enable.jmx");
+        systemSettings.put(SystemSettingKey.KAPUA_KEY_SIZE, "commons.entity.key.size");
+        systemSettings.put(SystemSettingKey.KAPUA_INSERT_MAX_RETRY, "commons.entity.insert.max.retry");
+        systemSettings.put(SystemSettingKey.EVENT_BUS_URL, "commons.eventbus.url");
+        systemSettings.put(SystemSettingKey.EVENT_BUS_USERNAME, "commons.eventbus.username");
+        systemSettings.put(SystemSettingKey.EVENT_BUS_PASSWORD, "commons.eventbus.password");
+        systemSettings.put(SystemSettingKey.EVENT_BUS_PRODUCER_POOL_MIN_SIZE, "commons.eventbus.producerPool.minSize");
+        systemSettings.put(SystemSettingKey.EVENT_BUS_PRODUCER_POOL_MAX_SIZE, "commons.eventbus.producerPool.maxSize");
+        systemSettings.put(SystemSettingKey.EVENT_BUS_PRODUCER_POOL_BORROW_WAIT_MAX, "commons.eventbus.producerPool.maxWaitOnBorrow");
+        systemSettings.put(SystemSettingKey.EVENT_BUS_PRODUCER_EVICTION_INTERVAL, "commons.eventbus.producerPool.evictionInterval");
+        systemSettings.put(SystemSettingKey.EVENT_BUS_CONSUMER_POOL_SIZE, "commons.eventbus.consumerPool.size");
+        systemSettings.put(SystemSettingKey.EVENT_BUS_MESSAGE_SERIALIZER, "commons.eventbus.messageSerializer");
+        systemSettings.put(SystemSettingKey.EVENT_BUS_TRANSPORT_USE_EPOLL, "commons.eventbus.transport.useEpoll");
+        systemSettings.put(SystemSettingKey.HOUSEKEEPER_EXECUTION_WAIT_TIME, "commons.eventbus.houskeeper.waitTime");
+        systemSettings.put(SystemSettingKey.HOUSEKEEPER_EVENT_SCAN_WINDOW, "commons.eventbus.houskeeper.eventScanWindow");
+        systemSettings.put(SystemSettingKey.HOUSEKEEPER_OLD_MESSAGES_TIME_WINDOW, "commons.eventbus.houskeeper.oldMessagesTimeWindow");
+        systemSettings.put(SystemSettingKey.SETTINGS_HOTSWAP, "commons.settings.hotswap");
+        systemSettings.put(SystemSettingKey.CACHING_PROVIDER, "commons.cache.provider.classname");
+        systemSettings.put(SystemSettingKey.TMETADATA_LOCAL_CACHE_SIZE_MAXIMUM, "commons.cache.local.tmetadata.maxsize");
+        systemSettings.put(SystemSettingKey.CACHE_CONFIG_URL, "commons.cache.config.url");
+        systemSettings.put(SystemSettingKey.CACHE_TTL, "commons.cache.config.ttl");
+        systemSettings.put(SystemSettingKey.JCACHE_EXPIRY_POLICY, "commons.cache.config.expiryPolicy");
+
+        for (Map.Entry<SystemSettingKey, String> entry : systemSettings.entrySet()) {
+            assertEquals("Expected and actual values should be the same.", entry.getKey().key(), entry.getValue());
         }
     }
 }
