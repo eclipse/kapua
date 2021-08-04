@@ -188,7 +188,9 @@ public class ClientInfoRegistryFacade extends AbstractRegistryFacade {
 
         String indexName = SchemaUtil.getClientIndexName(query.getScopeId());
         TypeDescriptor typeDescriptor = new TypeDescriptor(indexName, ClientInfoSchema.CLIENT_TYPE_NAME);
-        return new ClientInfoListResultImpl(getElasticsearchClient().query(typeDescriptor, query, ClientInfo.class));
+        ClientInfoListResultImpl result = new ClientInfoListResultImpl(getElasticsearchClient().query(typeDescriptor, query, ClientInfo.class));
+        setLimitExceed(query, result);
+        return result;
     }
 
     /**

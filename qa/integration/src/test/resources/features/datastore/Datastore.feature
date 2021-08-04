@@ -976,6 +976,330 @@ Feature: Datastore tests
     Then An assertion error was thrown
     And I logout
 
+  Scenario: Create 4 clients, query all clients with offset 0 and limit 1
+    Check if value of limitExceed is true.
+
+    Given I delete all indices
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic                     |
+      | test-client-1 | ci_topic_by_account/1/2/3 |
+      | test-client-1 | ci_topic_by_account/1/2/4 |
+      | test-client-1 | ci_topic_by_account/1/2/5 |
+      | test-client-1 | ci_topic_by_account/1/2/6 |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account channels with limit 1 and offset 0 and store them as "AccountChannelList"
+    Then The channel list "AccountChannelList" have limitExceed value true
+    And I delete all indices
+    And I logout
+
+  Scenario: Create 4 clients, query all clients with offset 0 and limit 4
+    Check if value of limitExceed is false.
+
+    Given I delete all indices
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic                     |
+      | test-client-1 | ci_topic_by_account/1/2/3 |
+      | test-client-1 | ci_topic_by_account/1/2/4 |
+      | test-client-1 | ci_topic_by_account/1/2/5 |
+      | test-client-1 | ci_topic_by_account/1/2/6 |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account channels with limit 4 and offset 0 and store them as "AccountChannelList"
+    Then The channel list "AccountChannelList" have limitExceed value false
+    And I delete all indices
+    And I logout
+
+  Scenario: Create 4 clients, query all clients with offset 2 and limit 1
+    Check if value of limitExceed is true.
+
+    Given I delete all indices
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic                     |
+      | test-client-1 | ci_topic_by_account/1/2/3 |
+      | test-client-1 | ci_topic_by_account/1/2/4 |
+      | test-client-1 | ci_topic_by_account/1/2/5 |
+      | test-client-1 | ci_topic_by_account/1/2/6 |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account channels with limit 1 and offset 2 and store them as "AccountChannelList"
+    Then The channel list "AccountChannelList" have limitExceed value true
+    And I delete all indices
+    And I logout
+
+  Scenario: Create 4 clients, query all clients with offset 1 and limit 3
+    Check if value of limitExceed is false.
+
+    Given I delete all indices
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic                     |
+      | test-client-1 | ci_topic_by_account/1/2/3 |
+      | test-client-1 | ci_topic_by_account/1/2/4 |
+      | test-client-1 | ci_topic_by_account/1/2/5 |
+      | test-client-1 | ci_topic_by_account/1/2/6 |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account channels with limit 3 and offset 1 and store them as "AccountChannelList"
+    Then The channel list "AccountChannelList" have limitExceed value false
+    And I delete all indices
+    And I logout
+
+  Scenario: Create 4 metrics, query all metrics with offset 0 and limit 1
+    Check if value of limitExceed is true.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    Then I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+    And I set the following metrics to the message 0 from the list "TestMessages"
+      | metric       | type   | value |
+      | tst-metric-1 | double | 123   |
+      | tst-metric-2 | int    | 123   |
+    And I set the following metrics to the message 1 from the list "TestMessages"
+      | metric       | type   | value |
+      | tst-metric-3 | string | 123   |
+      | tst-metric-4 | bool   | true  |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account metrics with limit 1 and offset 0 and store them as "AccountMetrics"
+    Then The metric list "AccountMetrics" have limitExceed value true
+    And I delete all indices
+
+  Scenario: Create 4 metrics, query all metrics with offset 0 and limit 4
+    Check if value of limitExceed is false.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    Then I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+    And I set the following metrics to the message 0 from the list "TestMessages"
+      | metric       | type   | value |
+      | tst-metric-1 | double | 123   |
+      | tst-metric-2 | int    | 123   |
+    And I set the following metrics to the message 1 from the list "TestMessages"
+      | metric       | type   | value |
+      | tst-metric-3 | string | 123   |
+      | tst-metric-4 | bool   | true  |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account metrics with limit 4 and offset 0 and store them as "AccountMetrics"
+    Then The metric list "AccountMetrics" have limitExceed value false
+    And I delete all indices
+
+  Scenario: Create 4 metrics, query all metrics with offset 2 and limit 1
+    Check if value of limitExceed is true.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    Then I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+    And I set the following metrics to the message 0 from the list "TestMessages"
+      | metric       | type   | value |
+      | tst-metric-1 | double | 123   |
+      | tst-metric-2 | int    | 123   |
+    And I set the following metrics to the message 1 from the list "TestMessages"
+      | metric       | type   | value |
+      | tst-metric-3 | string | 123   |
+      | tst-metric-4 | bool   | true  |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account metrics with limit 1 and offset 2 and store them as "AccountMetrics"
+    Then The metric list "AccountMetrics" have limitExceed value true
+    And I delete all indices
+
+  Scenario: Create 4 metrics, query all metrics with offset 3 and limit 1
+    Check if value of limitExceed is false.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    Then I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/3 |
+    And I set the following metrics to the message 0 from the list "TestMessages"
+      | metric       | type   | value |
+      | tst-metric-1 | double | 123   |
+      | tst-metric-2 | int    | 123   |
+    And I set the following metrics to the message 1 from the list "TestMessages"
+      | metric       | type   | value |
+      | tst-metric-3 | string | 123   |
+      | tst-metric-4 | bool   | true  |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account metrics with limit 1 and offset 3 and store them as "AccountMetrics"
+    Then The metric list "AccountMetrics" have limitExceed value false
+    And I delete all indices
+
+  Scenario: Create 4 clients, query all clients with offset 0 and limit 1
+    Check if value of limitExceed is true.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/4 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/4 |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account clients with limit 1 and offset 0 and store them as "ClientInfo"
+    Then The client list "ClientInfo" have limitExceed value true
+    And I delete all indices
+
+  Scenario: Create 4 clients, query all clients with offset 0 and limit 4
+    Check if value of limitExceed is false.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/4 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/4 |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account clients with limit 4 and offset 0 and store them as "ClientInfo"
+    Then The client list "ClientInfo" have limitExceed value false
+    And I delete all indices
+
+  Scenario: Create 4 clients, query all clients with offset 2 and limit 1
+    Check if value of limitExceed is true.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/4 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/4 |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account clients with limit 1 and offset 2 and store them as "ClientInfo"
+    Then The client list "ClientInfo" have limitExceed value true
+    And I delete all indices
+
+  Scenario: Create 4 clients, query all clients with offset 3 and limit 1
+    Check if value of limitExceed is false.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-device-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages with the following details and remember the list as "TestMessages"
+      | clientId      | topic            |
+      | test-client-1 | test_topic/1/2/3 |
+      | test-client-2 | test_topic/1/2/4 |
+      | test-client-3 | test_topic/1/2/3 |
+      | test-client-4 | test_topic/1/2/4 |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account clients with limit 1 and offset 3 and store them as "ClientInfo"
+    Then The client list "ClientInfo" have limitExceed value false
+    And I delete all indices
+
+  Scenario: Create 4 messages, query all messages with offset 0 and limit 1
+    Check if value of limitExceed is true.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-client-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
+      | clientId      | topic               | count | startDate                | endDate                  |
+      | test-client-1 | delete/by/date/test | 4     | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account messages with limit 1 and offset 0 and store them as "MessageInfo"
+    Then The message list "MessageInfo" have limitExceed value true
+    And I delete all indices
+
+  Scenario: Create 4 messages, query all messages with offset 0 and limit 4
+    Check if value of limitExceed is false.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-client-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
+      | clientId      | topic               | count | startDate                | endDate                  |
+      | test-client-1 | delete/by/date/test | 4    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account messages with limit 4 and offset 0 and store them as "MessageInfo"
+    Then The message list "MessageInfo" have limitExceed value false
+    And I delete all indices
+
+  Scenario: Create 4 messages, query all messages with offset 2 and limit 1
+    Check if value of limitExceed is true.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-client-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
+      | clientId      | topic               | count | startDate                | endDate                  |
+      | test-client-1 | delete/by/date/test | 4    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account messages with limit 1 and offset 2 and store them as "MessageInfo"
+    Then The message list "MessageInfo" have limitExceed value true
+    And I delete all indices
+
+  Scenario: Create 4 messages, query all messages with offset 3 and limit 1
+    Check if value of limitExceed is false.
+
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And The device "test-client-1"
+    And I set the database to device timestamp indexing
+    When I prepare a number of messages in the specified ranges and remember the list as "TestMessages"
+      | clientId      | topic               | count | startDate                | endDate                  |
+      | test-client-1 | delete/by/date/test | 4    | 2018-10-01T12:00:00.000Z | 2018-12-31T12:00:00.000Z |
+    Then I store the messages from list "TestMessages" and remember the IDs as "StoredMessageIDs"
+    And I refresh all indices
+    When I query for the current account messages with limit 1 and offset 3 and store them as "MessageInfo"
+    Then The message list "MessageInfo" have limitExceed value false
+    And I delete all indices
+
   Scenario: Stop broker after all scenarios
 
     Given Stop Broker
