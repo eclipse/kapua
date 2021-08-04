@@ -160,8 +160,11 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        KapuaId scopeIdPermission = entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId))
-                .getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ? scopeId : null;
+        EndpointInfo endpointInfoToDelete = entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId));
+        KapuaId scopeIdPermission = null;
+        if (endpointInfoToDelete != null && endpointInfoToDelete.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS)) {
+            scopeIdPermission = scopeId;
+        }
 
         AUTHORIZATION_SERVICE.checkPermission(
                 PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.delete, scopeIdPermission)
@@ -180,8 +183,12 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        KapuaId scopeIdPermission = entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId))
-                .getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ? scopeId : null;
+        EndpointInfo endpointInfoToFind = entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId));
+        KapuaId scopeIdPermission = null;
+        if (endpointInfoToFind != null && endpointInfoToFind.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS)) {
+            scopeIdPermission = scopeId;
+        }
+
         AUTHORIZATION_SERVICE.checkPermission(
                 PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeIdPermission)
         );
