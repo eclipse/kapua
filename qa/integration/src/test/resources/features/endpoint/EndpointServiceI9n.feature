@@ -891,5 +891,6 @@ Scenario: Init Security Context for all scenarios
     And I delete all CORS filters
     And I logout
 
+@teardown
 Scenario: Reset Security Context for all scenarios
     Given Reset Security Context
