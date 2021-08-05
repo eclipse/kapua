@@ -60,13 +60,14 @@ public class DeviceEvents extends AbstractKapuaResource {
     /**
      * Gets the {@link DeviceEvent} list in the scope.
      *
-     * @param scopeId   The {@link ScopeId} in which to search results.
-     * @param deviceId  The id of the {@link Device} in which to search results
-     * @param resource  The resource of the {@link DeviceEvent} in which to search results
-     * @param sortParam The name of the parameter that will be used as a sorting key
-     * @param sortDir   The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
-     * @param offset    The result set offset.
-     * @param limit     The result set limit.
+     * @param scopeId       The {@link ScopeId} in which to search results.
+     * @param deviceId      The id of the {@link Device} in which to search results
+     * @param resource      The resource of the {@link DeviceEvent} in which to search results
+     * @param sortParam     The name of the parameter that will be used as a sorting key
+     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
+     * @param askTotalCount Ask for the total count of the matched entities in the result
+     * @param offset        The result set offset.
+     * @param limit         The result set limit.
      * @return The {@link DeviceEventListResult} of all the deviceEvents associated to the current selected scope.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
@@ -81,6 +82,7 @@ public class DeviceEvents extends AbstractKapuaResource {
             @QueryParam("endDate") DateParam endDateParam,
             @QueryParam("sortParam") String sortParam,
             @QueryParam("sortDir") @DefaultValue("ASCENDING") SortOrder sortDir,
+            @QueryParam("askTotalCount") boolean askTotalCount,
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         DeviceEventQuery query = deviceEventFactory.newQuery(scopeId);
@@ -107,6 +109,7 @@ public class DeviceEvents extends AbstractKapuaResource {
         if (!Strings.isNullOrEmpty(sortParam)) {
             query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
         }
+        query.setAskTotalCount(askTotalCount);
         query.setOffset(offset);
         query.setLimit(limit);
 
