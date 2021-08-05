@@ -48,6 +48,10 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystores;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallOptions;
+import org.eclipse.kapua.service.device.management.packages.model.install.DevicePackageInstallRequest;
+import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOptions;
+import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobQuery;
 import org.eclipse.kapua.service.job.JobXmlRegistry;
@@ -162,6 +166,10 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceCommandInput.class,
                     DevicePackageDownloadRequest.class,
                     DevicePackageDownloadOptions.class,
+                    DevicePackageInstallRequest.class,
+                    DevicePackageInstallOptions.class,
+                    DevicePackageUninstallRequest.class,
+                    DevicePackageUninstallOptions.class,
                     DeviceAssets.class,
                     DeviceConfiguration.class,
 
