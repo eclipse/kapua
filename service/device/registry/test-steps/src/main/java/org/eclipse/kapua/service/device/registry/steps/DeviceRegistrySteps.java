@@ -144,7 +144,6 @@ public class DeviceRegistrySteps extends TestBase {
     private static final String LAST_ACCOUNT = "LastAccount";
     private static final String DEVICE_QUERY = "DeviceQuery";
     private static final String DEVICE_LIST = "DeviceList";
-    private static final String COUNT = "Count";
     private static final String DEVICE_CONNECTION_CREATOR = "DeviceConnectionCreator";
     private static final String DEVICE_CONNECTION = "DeviceConnection";
     private static final String DEVICE_CONNECTION_ID = "DeviceConnectionId";
@@ -614,42 +613,19 @@ public class DeviceRegistrySteps extends TestBase {
 
     @When("I count the devices based on the remembered query")
     public void countForDevices() throws Exception {
-        DeviceQuery tmpQuery = (DeviceQuery) stepData.get(DEVICE_QUERY);
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long deviceCount = deviceRegistryService.count(tmpQuery);
-            stepData.put(COUNT, deviceCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)deviceRegistryService.count((DeviceQuery) stepData.get(DEVICE_QUERY)));
     }
 
     @When("I count the devices in scope {int}")
     public void countDevicesInScope(int scope) throws Exception {
-        DeviceQuery tmpQuery = deviceFactory.newQuery(getKapuaId(scope));
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long count = deviceRegistryService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)deviceRegistryService.count(deviceFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I count devices with BIOS version {string}")
     public void countDevicesWithBIOSVersion(String version) throws Exception {
         DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.BIOS_VERSION, version, AttributePredicate.Operator.EQUAL));
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long count = deviceRegistryService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)deviceRegistryService.count(tmpQuery));
     }
 
     @When("I update some device parameters")
@@ -1106,14 +1082,7 @@ public class DeviceRegistrySteps extends TestBase {
 
     @Then("I count {int} connections in scope {int}")
     public void countConnectioncInScope(int target, int scope) throws Exception {
-        DeviceConnectionQuery query = deviceConnectionFactory.newQuery(getKapuaId(scope));
-        primeException();
-        try {
-            long tmpCount = deviceConnectionService.count(query);
-            Assert.assertEquals(target, tmpCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCountAndCheck(() -> (int)deviceConnectionService.count(deviceConnectionFactory.newQuery(getKapuaId(scope))), target);
     }
 
     @When("I search for a connection by scope and connection IDs")
@@ -1379,15 +1348,7 @@ public class DeviceRegistrySteps extends TestBase {
 
     @When("I count events for scope {int}")
     public void countEventsInScope(int scpId) throws Exception {
-        DeviceEventQuery tmpQuery = eventFactory.newQuery(getKapuaId(scpId));
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long count = eventService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)eventService.count(eventFactory.newQuery(getKapuaId(scpId))));
     }
 
     @When("I query for {string} events")

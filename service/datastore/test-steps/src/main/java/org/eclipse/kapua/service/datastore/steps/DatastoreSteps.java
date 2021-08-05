@@ -834,33 +834,28 @@ public class DatastoreSteps extends TestBase {
         }
     }
 
-    @Then("^The channel list \"(.+)\" have limitExceed value (true|false)$")
-    public void theChannelListHaveLimitExceedValue(String lstKey, String limitExceedVal) {
-
+    @Then("The channel list {string} have limitExceed value {booleanValue}")
+    public void theChannelListHaveLimitExceedValue(String lstKey, boolean limitExceedVal) {
         theListHaveLimitExceedValue(ChannelInfoListResult.class, lstKey, limitExceedVal);
     }
 
-    @Then("^The metric list \"(.+)\" have limitExceed value (true|false)$")
-    public void theMetricListHaveLimitExceedValue(String lstKey, String limitExceedVal) {
-
+    @Then("The metric list {string} have limitExceed value {booleanValue}")
+    public void theMetricListHaveLimitExceedValue(String lstKey, boolean limitExceedVal) {
         theListHaveLimitExceedValue(MetricInfoListResult.class, lstKey, limitExceedVal);
     }
 
-    @Then("^The message list \"(.+)\" have limitExceed value (true|false)$")
-    public void theMessageListHaveLimitExceedValue(String lstKey, String limitExceedVal) {
-
+    @Then("The message list {string} have limitExceed value {booleanValue}")
+    public void theMessageListHaveLimitExceedValue(String lstKey, boolean limitExceedVal) {
         theListHaveLimitExceedValue(MessageListResult.class, lstKey, limitExceedVal);
     }
 
-    @Then("^The client list \"(.+)\" have limitExceed value (true|false)$")
-    public void theClientListHaveLimitExceedValue(String lstKey, String limitExceedVal) {
-
+    @Then("The client list {string} have limitExceed value {booleanValue}")
+    public void theClientListHaveLimitExceedValue(String lstKey, boolean limitExceedVal) {
         theListHaveLimitExceedValue(ClientInfoListResult.class, lstKey, limitExceedVal);
     }
 
-    @When("^I query for the current account channels with limit (\\d+) and offset (\\d+) and store them as \"(.+)\"$")
+    @When("I query for the current account channels with limit {int} and offset {int} and store them as {string}")
     public void queryChannelWithOffsetAndLimit(int limit, int offset, String lstKey) throws KapuaException {
-
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfoQuery tmpQuery = createBaseChannelInfoQuery(account.getId(), limit);
         tmpQuery.setOffset(offset);
@@ -869,9 +864,8 @@ public class DatastoreSteps extends TestBase {
         stepData.put(lstKey, tmpList);
     }
 
-    @When("^I query for the current account metrics with limit (\\d+) and offset (\\d+) and store them as \"(.+)\"$")
+    @When("I query for the current account metrics with limit {int} and offset {int} and store them as {string}")
     public void queryMetricWithOffsetAndLimit(int limit, int offset, String lstKey) throws KapuaException {
-
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         MetricInfoQuery tmpQuery = createBaseMetricInfoQuery(account.getId(), limit);
         tmpQuery.setOffset(offset);
@@ -880,9 +874,8 @@ public class DatastoreSteps extends TestBase {
         stepData.put(lstKey, tmpList);
     }
 
-    @When("^I query for the current account messages with limit (\\d+) and offset (\\d+) and store them as \"(.+)\"$")
+    @When("I query for the current account messages with limit {int} and offset {int} and store them as {string}")
     public void queryMessageWithOffsetAndLimit(int limit, int offset, String lstKey) throws KapuaException {
-
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         MessageQuery tmpQuery = createBaseMessageQuery(account.getId(), limit);
         tmpQuery.setOffset(offset);
@@ -891,9 +884,8 @@ public class DatastoreSteps extends TestBase {
         stepData.put(lstKey, tmpList);
     }
 
-    @When("^I query for the current account clients with limit (\\d+) and offset (\\d+) and store them as \"(.+)\"$")
+    @When("I query for the current account clients with limit {int} and offset {int} and store them as {string}")
     public void queryClientWithOffsetAndLimit(int limit, int offset, String lstKey) throws KapuaException {
-
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         ClientInfoQuery tmpQuery = createBaseClientInfoQuery(account.getId(), limit);
         tmpQuery.setOffset(offset);
@@ -902,7 +894,7 @@ public class DatastoreSteps extends TestBase {
         stepData.put(lstKey, tmpList);
     }
 
-    @When("^I count the current account channels and store the count as \"(.*)\"$")
+    @When("I count the current account channels and store the count as {string}")
     public void countAccountChannels(String countKey) throws KapuaException {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         ChannelInfoQuery tmpQuery = createBaseChannelInfoQuery(account.getId(), 100);
@@ -2263,9 +2255,9 @@ public class DatastoreSteps extends TestBase {
         System.setProperty(DatastoreSettingsKey.INDEXING_WINDOW_OPTION.key(), windowOption.trim().toLowerCase());
     }
 
-    private <T extends StorableListResult> void theListHaveLimitExceedValue(Class<T> bar, String lstKey, String limitExceedVal) {
+    private <T extends StorableListResult> void theListHaveLimitExceedValue(Class<T> bar, String lstKey, boolean limitExceedVal) {
         T tmpList = (T) stepData.get(lstKey);
-        Assert.assertEquals(tmpList.isLimitExceeded(), Boolean.parseBoolean(limitExceedVal));
+        Assert.assertEquals(tmpList.isLimitExceeded(), limitExceedVal);
     }
 
     /**

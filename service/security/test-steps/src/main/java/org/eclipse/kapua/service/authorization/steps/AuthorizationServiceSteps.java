@@ -40,7 +40,6 @@ import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
 import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleAttributes;
@@ -115,7 +114,6 @@ public class AuthorizationServiceSteps extends TestBase {
     private static final String ACCESS_ROLE_FOUND = "AccessRoleFound";
     private static final String CHILD_ACCOUNT_ACCESS_INFO = "ChildAccountAccessInfo";
     private static final String CHILD_ACCOUNT_ROLE_PERMISSION = "ChildAccountRolePermission";
-    private static final String COUNT = "Count";
     private static final String DOMAIN = "Domain";
     private static final String DOMAIN_CREATOR = "DomainCreator";
     private static final String DOMAIN_ID = "DomainId";
@@ -386,30 +384,12 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the roles in scope {int}")
     public void countRolesInScope(int scope) throws Exception {
-        KapuaId tmpId = getKapuaId(scope);
-        RoleQuery tmpQuery = roleFactory.newQuery(tmpId);
-        stepData.remove(COUNT);
-        primeException();
-        try {
-            Long count = roleService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)roleService.count(roleFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I count the role permissions in scope {int}")
     public void countRolePermissionsInScope(Integer scope) throws Exception {
-        KapuaId tmpId = getKapuaId(scope);
-        RolePermissionQuery tmpQuery = rolePermissionFactory.newQuery(tmpId);
-        stepData.remove(COUNT);
-        primeException();
-        try {
-            Long count = rolePermissionService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)rolePermissionService.count(rolePermissionFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I query for the role {string} in scope {int}")
@@ -419,13 +399,12 @@ public class AuthorizationServiceSteps extends TestBase {
         tmpQuery.setPredicate(tmpQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
         stepData.remove(ROLE_LIST);
         stepData.remove(ROLE_FOUND);
-        stepData.remove(COUNT);
         primeException();
         try {
             RoleListResult roleList = roleService.query(tmpQuery);
             stepData.put(ROLE_LIST, roleList);
             stepData.put(ROLE_FOUND, roleList.getFirstItem());
-            stepData.put(COUNT, Long.valueOf(roleList.getSize()));
+            stepData.updateCount(roleList.getSize());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -696,15 +675,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the domain entries in the database")
     public void countDomainEntries() throws Exception {
-        stepData.remove(COUNT);
-        try {
-            primeException();
-            DomainQuery query = domainFactory.newQuery(null);
-            Long count = domainRegistryService.count(query);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)domainRegistryService.count(domainFactory.newQuery(null)));
     }
 
     @When("I query for domains with the name {string}")
@@ -712,12 +683,11 @@ public class AuthorizationServiceSteps extends TestBase {
         DomainQuery query = domainFactory.newQuery(null);
         query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
         stepData.remove("DomainList");
-        stepData.remove(COUNT);
         try {
             primeException();
             DomainListResult domainList = domainRegistryService.query(query);
             stepData.put("DomainList", domainList);
-            stepData.put(COUNT, Long.valueOf(domainList.getSize()));
+            stepData.updateCount(domainList.getSize());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -725,8 +695,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @Then("This is the initial count")
     public void setInitialCount() {
-        Long startCount = (Long) stepData.get(COUNT);
-        stepData.put("InitialCount", startCount);
+        stepData.updateInitialCount(stepData.getCount());
     }
 
     @Then("A domain was created")
@@ -816,10 +785,8 @@ public class AuthorizationServiceSteps extends TestBase {
     }
 
     @Then("{long} more domains (was/were) created")
-    public void checkIncreasedCountResult(Long cnt) {
-        Long count = (Long) stepData.get(COUNT);
-        Long initialCount = (Long) stepData.get("InitialCount");
-        Assert.assertEquals(cnt.longValue(), count.longValue() - initialCount.longValue());
+    public void checkIncreasedCountResult(long cnt) {
+        Assert.assertEquals(cnt, stepData.getCount() - stepData.getInitialCount());
     }
 
     @When("I configure the group service")
@@ -854,14 +821,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the group entries in the database")
     public void countGroupEntries() throws Exception {
-        stepData.remove(COUNT);
-        primeException();
-        try {
-            Long count = groupService.count(groupFactory.newQuery(SYS_SCOPE_ID));
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)groupService.count(groupFactory.newQuery(SYS_SCOPE_ID)));
     }
 
     @Given("I create the group(s)")
@@ -963,15 +923,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count all the groups in scope {int}")
     public void countGroupsInScope(int scope) throws Exception {
-        KapuaId tmpId = getKapuaId(scope);
-        GroupQuery tmpQuery = groupFactory.newQuery(tmpId);
-        primeException();
-        try {
-            Long count = groupService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)groupService.count(groupFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I query for the group {string} in scope {int}")
@@ -981,13 +933,12 @@ public class AuthorizationServiceSteps extends TestBase {
         tmpQuery.setPredicate(tmpQuery.attributePredicate(KapuaNamedEntityAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
         stepData.remove("GroupList");
         stepData.remove(GROUP);
-        stepData.remove(COUNT);
         primeException();
         try {
             GroupListResult groupList = groupService.query(tmpQuery);
             stepData.put("GroupList", groupList);
             stepData.put(GROUP, groupList.getFirstItem());
-            stepData.put(COUNT, Long.valueOf(groupList.getSize()));
+            stepData.updateCount(groupList.getSize());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1262,15 +1213,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the access roles in scope {int}")
     public void countAccesRolesInScope(Integer scope) throws Exception {
-        AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(getKapuaId(scope));
-        try {
-            primeException();
-            stepData.remove(COUNT);
-            Long count = accessRoleService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)accessRoleService.count(accessRoleFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I delete the last created access role entry")
@@ -1299,15 +1242,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the access info entities for scope {int}")
     public void countAccessInfoEntitiesInScope(Integer scope) throws Exception {
-        AccessInfoQuery tmpQuery = accessInfoFactory.newQuery(getKapuaId(scope));
-        try {
-            primeException();
-            stepData.remove(COUNT);
-            Long count = accessInfoService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)accessInfoService.count(accessInfoFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I query for the access info entities for the last user")
@@ -1318,13 +1253,10 @@ public class AuthorizationServiceSteps extends TestBase {
         tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessInfoAttributes.USER_ID, user.getId(), AttributePredicate.Operator.EQUAL));
         try {
             primeException();
-            stepData.remove(COUNT);
             stepData.remove("AccessList");
             AccessInfoListResult accessList = accessInfoService.query(tmpQuery);
             stepData.put("AccessList", accessList);
-            if (accessList != null) {
-                stepData.put(COUNT, Long.valueOf(accessList.getSize()));
-            }
+            stepData.updateCount(accessList.getSize());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1382,16 +1314,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the permissions in scope {int}")
     public void countPermissionsForScope(Integer scope) throws Exception {
-        KapuaId tmpId = getKapuaId(scope);
-        AccessPermissionQuery tmpQuery = accessPermissionFactory.newQuery(tmpId);
-        try {
-            primeException();
-            stepData.remove(COUNT);
-            Long count = accessPermissionService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)accessPermissionService.count(accessPermissionFactory.newQuery(getKapuaId(scope))));
     }
 
     @When("I check the sanity of the access info factory")
@@ -1874,8 +1797,7 @@ public class AuthorizationServiceSteps extends TestBase {
             rolePermissionList.add(rolePermission);
         }
         stepData.put(ROLE_PERMISSIONS, rolePermissionList);
-        long rolePermissionListSize = rolePermissionList.size();
-        stepData.put(COUNT, rolePermissionListSize);
+        stepData.updateCount(rolePermissionList.size());
     }
 
     @And("I delete the default admin role permission")
@@ -1915,20 +1837,13 @@ public class AuthorizationServiceSteps extends TestBase {
         AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(getCurrentScopeId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
         Assert.assertEquals(userName, lastUser.getName());
-        try {
-            primeException();
-            stepData.remove(COUNT);
-            Long count = accessRoleService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)accessRoleService.count(tmpQuery));
     }
 
     @When("I search for granted user")
     public void iSearchGrantedUserToRole() throws Exception {
         ArrayList<User> grantedUserList = new ArrayList<>();
-        long grantedUsersCount = 0;
+        int grantedUsersCount = 0;
         try {
             primeException();
             AccessRoleQuery accessRoleQuery = accessRoleFactory.newQuery(getCurrentScopeId());
@@ -1943,7 +1858,7 @@ public class AuthorizationServiceSteps extends TestBase {
                 }
             }
             stepData.put("GrantedUserList", grantedUserList);
-            stepData.put(COUNT, grantedUsersCount);
+            stepData.updateCount(grantedUsersCount);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -2034,8 +1949,7 @@ public class AuthorizationServiceSteps extends TestBase {
             rolePermissionList.add(rolePermission);
         }
         stepData.put(CHILD_ACCOUNT_ROLE_PERMISSION, rolePermissionList);
-        long rolePermissionListSize = rolePermissionList.size();
-        stepData.put(COUNT, rolePermissionListSize);
+        stepData.updateCount(rolePermissionList.size());
     }
 
     @Then("Role with name {string} in account {string} is found")
@@ -2111,8 +2025,7 @@ public class AuthorizationServiceSteps extends TestBase {
         accessRoleQuery.setPredicate(accessRoleQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
         try {
             primeException();
-            AccessRoleListResult accessRoleListResult = accessRoleService.query(accessRoleQuery);
-            stepData.put(COUNT, (long) accessRoleListResult.getSize());
+            stepData.updateCount(accessRoleService.query(accessRoleQuery).getSize());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -2125,14 +2038,7 @@ public class AuthorizationServiceSteps extends TestBase {
         Assert.assertEquals(accountName, account.getName());
         AccessRoleQuery tmpQuery = accessRoleFactory.newQuery(account.getId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(AccessRoleAttributes.ACCESS_INFO_ID, accessInfo.getId(), AttributePredicate.Operator.EQUAL));
-        try {
-            primeException();
-            stepData.remove(COUNT);
-            Long count = accessRoleService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)accessRoleService.count(tmpQuery));
     }
 
     @When("I update the role name to {string}")
@@ -2222,15 +2128,7 @@ public class AuthorizationServiceSteps extends TestBase {
 
     @When("I count the roles in the database")
     public void iCountTheRolesInTheDatabase() throws Exception {
-        RoleQuery tmpQuery = roleFactory.newQuery(getCurrentScopeId());
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long count = roleService.count(tmpQuery);
-            stepData.put(COUNT, count - 1);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)(roleService.count(roleFactory.newQuery(getCurrentScopeId())) - 1));
     }
 
     @And("I update the role description to {string}")

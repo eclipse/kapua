@@ -297,6 +297,11 @@ public class BasicSteps extends TestBase {
         return new JmsTopic(topic);
     }
 
+    @ParameterType(value = "true|True|TRUE|false|False|FALSE")
+    public boolean booleanValue(String value) {
+        return Boolean.valueOf(value);
+    }
+
     private void setProperties(Scenario scenario, String schema, String updateSchema,
             String dbHost, String dbPort, String dbConnResolver, String dbDriver, String jdbcConnection,
             String jwtKey, String jwtCertificate, String brokerIp, String jobEngineUrl, String jobEngineAuthMode, String additionalOptions) {
@@ -496,14 +501,14 @@ public class BasicSteps extends TestBase {
         Assert.assertFalse("An unexpected exception was raised!", exCaught);
     }
 
-    @Then("I count {long}")
-    public void checkCountResult(Long num) {
-        Assert.assertEquals(num, stepData.get("Count"));
+    @Then("I count {int}")
+    public void checkCountResult(int num) {
+        Assert.assertEquals(num, stepData.getCount());
     }
 
-    @Then("I count {long} or more")
-    public void checkAsyncCountResult(Long num) {
-        Assert.assertTrue((Long) stepData.get("Count") >= num);
+    @Then("I count {int} or more")
+    public void checkAsyncCountResult(int num) {
+        Assert.assertTrue(stepData.getCount() >= num);
     }
 
     @Then("I get the integer {int}")

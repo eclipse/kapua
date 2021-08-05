@@ -28,6 +28,9 @@ import javax.inject.Singleton;
 @Singleton
 public class StepData {
 
+    private static final String COUNT = "count";
+    private static final String INITIAL_COUNT = "InitialCount";
+
     /**
      * Generic map that accepts string key that represents data and data
      * as any object.
@@ -70,5 +73,23 @@ public class StepData {
         }
 
         return keys;
+    }
+
+    public int getCount() {
+        return (int)(get(COUNT)!=null ? get(COUNT) : -1);
+    }
+
+    public void updateCount(int count) {
+        remove(COUNT);
+        put(COUNT, count);
+    }
+
+    public int getInitialCount() {
+        return (int)(get(INITIAL_COUNT)!=null ? get(INITIAL_COUNT) : -1);
+    }
+
+    public void updateInitialCount(int count) {
+        remove(INITIAL_COUNT);
+        put(INITIAL_COUNT, count);
     }
 }

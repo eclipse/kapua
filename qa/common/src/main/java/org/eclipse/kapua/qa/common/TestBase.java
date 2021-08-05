@@ -12,10 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
+import org.junit.Assert;
 
 import io.cucumber.java.Scenario;
 
@@ -27,6 +29,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Random;
+import java.util.concurrent.Callable;
 
 public class TestBase {
 
@@ -76,7 +79,6 @@ public class TestBase {
     }
 
     public KapuaId getCurrentScopeId() {
-
         if (stepData.contains("LastAccountId")) {
             return (KapuaId) stepData.get("LastAccountId");
         } else if (stepData.get(LAST_ACCOUNT) != null) {
@@ -87,7 +89,6 @@ public class TestBase {
     }
 
     public KapuaId getCurrentParentId() {
-
         if (stepData.get(LAST_ACCOUNT) != null) {
             return ((Account) stepData.get(LAST_ACCOUNT)).getScopeId();
         } else {
@@ -96,7 +97,6 @@ public class TestBase {
     }
 
     public KapuaId getCurrentUserId() {
-
         if (stepData.contains("LastUserId")) {
             return (KapuaId) stepData.get("LastUserId");
         } else if (stepData.get("LastUser") != null) {
@@ -118,9 +118,7 @@ public class TestBase {
      * @param ex
      * @throws Exception
      */
-    public void verifyException(Exception ex)
-            throws Exception {
-
+    public void verifyException(Exception ex) throws Exception {
         boolean exceptionExpected = stepData.contains("ExceptionExpected") && (boolean) stepData.get("ExceptionExpected");
         String exceptionName = stepData.contains("ExceptionName") ? ((String) stepData.get("ExceptionName")).trim() : "";
         String exceptionMessage = stepData.contains("ExceptionMessage") ? ((String) stepData.get("ExceptionMessage")).trim() : "";
@@ -137,9 +135,7 @@ public class TestBase {
         stepData.put("Exception", ex);
     }
 
-    public void verifyAssertionError(AssertionError assetError)
-            throws AssertionError {
-
+    public void verifyAssertionError(AssertionError assetError) throws AssertionError {
         boolean assertErrorExpected = stepData.contains("AssertErrorExpected") ? (boolean) stepData.get("AssertErrorExpected") : false;
         String assertErrorName = stepData.contains("AssertErrorName") ? ((String) stepData.get("AssertErrorName")).trim() : "";
         String assertErrorMessage = stepData.contains("AssertErrorMessage") ? ((String) stepData.get("AssertErrorMessage")).trim() : "";
@@ -190,8 +186,28 @@ public class TestBase {
         return expDate;
     }
 
-    public String getRandomString() {
+    protected void updateCount(Callable<Integer> countEvaluator) throws Exception {
+        primeException();
+        try {
+            stepData.updateCount(countEvaluator.call());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
 
+    protected void updateCountAndCheck(Callable<Integer> countEvaluator, int valueToCompare) throws Exception {
+        primeException();
+        try {
+            int count = countEvaluator.call();
+            stepData.updateCount(count);
+            //why this check???
+            Assert.assertEquals(valueToCompare, count);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    public String getRandomString() {
         return String.valueOf(random.nextInt());
     }
 }

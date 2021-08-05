@@ -50,7 +50,6 @@ import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.eclipse.kapua.service.job.step.definition.JobStepType;
@@ -96,7 +95,6 @@ public class JobServiceSteps extends TestBase {
 
     private static final Logger logger = LoggerFactory.getLogger(JobServiceSteps.class);
 
-    private static final String COUNT = "Count";
     private static final String CURRENT_JOB_ID = "CurrentJobId";
     private static final String CURRENT_JOB_STEP_DEFINITION_ID = "CurrentJobStepDefinitionId";
     private static final String CURRENT_STEP_ID = "CurrentStepId";
@@ -389,44 +387,19 @@ public class JobServiceSteps extends TestBase {
 
     @When("I count the jobs in the database")
     public void countJobsInDatabase() throws Exception {
-        JobQuery tmpQuery = jobFactory.newQuery(getCurrentScopeId());
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long count = jobService.count(tmpQuery);
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)jobService.count(jobFactory.newQuery(getCurrentScopeId())));
     }
 
     @When("I query for jobs in scope {int}")
     public void countJobsInScope(int id) throws Exception {
-        JobQuery tmpQuery = jobFactory.newQuery(getKapuaId(id));
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            JobListResult jobList = jobService.query(tmpQuery);
-            Long count = (long) jobList.getSize();
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> jobService.query(jobFactory.newQuery(getKapuaId(id))).getSize());
     }
 
     @When("I count the jobs with the name starting with {string}")
     public void countJobsWithName(String name) throws Exception {
         JobQuery tmpQuery = jobFactory.newQuery(getCurrentScopeId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(JobAttributes.NAME, name, Operator.STARTS_WITH));
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            JobListResult jobList = jobService.query(tmpQuery);
-            Long count = (long) jobList.getSize();
-            stepData.put(COUNT, count);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)jobService.query(tmpQuery).getSize());
     }
 
     @When("I query for the job with the name {string}")
@@ -628,28 +601,12 @@ public class JobServiceSteps extends TestBase {
 
     @When("I count the step definition in the database")
     public void countStepDefinitionInDatabase() throws Exception {
-        JobStepDefinitionQuery tmpQuery = jobStepDefinitionFactory.newQuery(getCurrentScopeId());
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long itemCount = jobStepDefinitionService.count(tmpQuery);
-            stepData.put(COUNT, itemCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)jobStepDefinitionService.count(jobStepDefinitionFactory.newQuery(getCurrentScopeId())));
     }
 
     @When("I query for step definitions in scope {int}")
     public void countStepDefinitijonsInScope(Integer id) throws Exception {
-        JobStepDefinitionQuery tmpQuery = jobStepDefinitionFactory.newQuery(getKapuaId(id));
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long itemCount = (long) jobStepDefinitionService.query(tmpQuery).getSize();
-            stepData.put(COUNT, itemCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> jobStepDefinitionService.query(jobStepDefinitionFactory.newQuery(getKapuaId(id))).getSize());
     }
 
     @When("I delete the step definition")
@@ -852,11 +809,9 @@ public class JobServiceSteps extends TestBase {
         primeException();
         try {
             stepData.remove("JobStepList");
-            stepData.remove(COUNT);
             JobStepListResult stepList = jobStepService.query(tmpQuery);
-            Long itemCount = (long) stepList.getSize();
             stepData.put("JobStepList", stepList);
-            stepData.put(COUNT, itemCount);
+            stepData.updateCount(stepList.getSize());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -864,15 +819,7 @@ public class JobServiceSteps extends TestBase {
 
     @When("I count the steps in the scope")
     public void countStepsInScope() throws Exception {
-        JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long itemCount = jobStepService.count(tmpQuery);
-            stepData.put(COUNT, itemCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)jobStepService.count(jobStepFactory.newQuery(getCurrentScopeId())));
     }
 
     @When("I delete the last step")
@@ -1034,15 +981,7 @@ public class JobServiceSteps extends TestBase {
 
     @When("I count the targets in the current scope")
     public void countTargetsForJob() throws Exception {
-        JobTargetQuery tmpQuery = jobTargetFactory.newQuery(getCurrentScopeId());
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long itemCount = jobTargetService.count(tmpQuery);
-            stepData.put(COUNT, itemCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)jobTargetService.count(jobTargetFactory.newQuery(getCurrentScopeId())));
     }
 
     @When("I query the targets for the current job")
@@ -1053,10 +992,9 @@ public class JobServiceSteps extends TestBase {
         primeException();
         try {
             stepData.remove(JOB_TARGET_LIST);
-            stepData.remove(COUNT);
             JobTargetListResult targetList = jobTargetService.query(tmpQuery);
             stepData.put(JOB_TARGET_LIST, targetList);
-            stepData.put(COUNT, (long)targetList.getSize());//to be fixed. use int everywhere as count
+            stepData.updateCount(targetList.getSize());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1175,14 +1113,7 @@ public class JobServiceSteps extends TestBase {
         Job job = (Job) stepData.get("Job");
         JobExecutionQuery tmpQuery = jobExecutionFactory.newQuery(getCurrentScopeId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(JobExecutionAttributes.JOB_ID, job.getId(), Operator.EQUAL));
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long itemCount = jobExecutionService.count(tmpQuery);
-            stepData.put(COUNT, itemCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        updateCount(() -> (int)jobExecutionService.count(tmpQuery));
     }
 
     @Then("I query for the execution items for the current job")
@@ -1193,30 +1124,26 @@ public class JobServiceSteps extends TestBase {
         primeException();
         try {
             stepData.remove(JOB_EXECUTION_LIST);
-            stepData.remove(COUNT);
             JobExecutionListResult resultList = jobExecutionService.query(tmpQuery);
-            Long itemCount = (long) resultList.getSize();
             stepData.put(JOB_EXECUTION_LIST, resultList);
-            stepData.put(COUNT, itemCount);
+            stepData.updateCount(resultList.getSize());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
 
-    @Then("I query for the execution items for the current job and I count {long}")
-    public void queryExecutionsForJob(Long num) throws Exception {
+    @Then("I query for the execution items for the current job and I count {int}")
+    public void queryExecutionsForJob(int num) throws Exception {
         Job job = (Job) stepData.get("Job");
         JobExecutionQuery tmpQuery = jobExecutionFactory.newQuery(getCurrentScopeId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(JobExecutionAttributes.JOB_ID, job.getId(), Operator.EQUAL));
         primeException();
         try {
             stepData.remove(JOB_EXECUTION_LIST);
-            stepData.remove(COUNT);
             JobExecutionListResult resultList = jobExecutionService.query(tmpQuery);
-            Long itemCount = (long) resultList.getSize();
             stepData.put(JOB_EXECUTION_LIST, resultList);
-            stepData.put(COUNT, itemCount);
-            Assert.assertEquals(num, itemCount);
+            stepData.updateCount(resultList.getSize());
+            Assert.assertEquals(num, resultList.getSize());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1314,9 +1241,7 @@ public class JobServiceSteps extends TestBase {
     @And("I search for the job targets in database")
     public void iSearchForTheJobTargetsInDatabase() {
         ArrayList<JobTarget> jobTargets = (ArrayList<JobTarget>) stepData.get(JOB_TARGET_LIST);
-        stepData.remove(COUNT);
-        Long jobTargetSize = (long) jobTargets.size();
-        stepData.put(COUNT, jobTargetSize);
+        stepData.updateCount(jobTargets.size());
     }
 
     @And("I search for step definition(s) with the name")
@@ -1530,12 +1455,10 @@ public class JobServiceSteps extends TestBase {
         primeException();
         try {
             stepData.remove(JOB_EXECUTION_LIST);
-            stepData.remove(COUNT);
             JobExecutionListResult resultList = jobExecutionService.query(tmpQuery);
-            Long executionsCount = (long) resultList.getSize();
             stepData.put(JOB_EXECUTION_LIST, resultList);
-            stepData.put(COUNT, executionsCount);
-            Assert.assertTrue(executionsCount >= numberOfExecutions);
+            stepData.updateCount(resultList.getSize());
+            Assert.assertTrue(resultList.getSize() >= numberOfExecutions);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1570,18 +1493,9 @@ public class JobServiceSteps extends TestBase {
         }
     }
 
-    @When("I count the targets in the current scope and I count {long}")
-    public void iCountTheTargetsInTheCurrentScopeAndICount(Long targetNum) throws Exception {
-        JobTargetQuery tmpQuery = jobTargetFactory.newQuery(getCurrentScopeId());
-        primeException();
-        try {
-            stepData.remove(COUNT);
-            Long targetCount = jobTargetService.count(tmpQuery);
-            stepData.put(COUNT, targetCount);
-            Assert.assertEquals(targetNum, targetCount);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+    @When("I count the targets in the current scope and I count {int}")
+    public void iCountTheTargetsInTheCurrentScopeAndICount(int targetNum) throws Exception {
+        updateCountAndCheck(() -> (int)jobTargetService.count(jobTargetFactory.newQuery(getCurrentScopeId())), targetNum);
     }
 
     @And("I confirm job target has step index {int} and status {string}")
@@ -1620,27 +1534,19 @@ public class JobServiceSteps extends TestBase {
     }
 
     @When("I try to create job with permitted symbols {string} in name")
-    public void iTryToCreateJobWithPermittedSymbolsInName(String validCharacters) throws Throwable {
-        JobCreator jobCreator = jobFactory.newCreator(getCurrentScopeId());
-        for (int i = 0; i < validCharacters.length(); i++) {
-            String jobName = JOB_NAME + validCharacters.charAt(i);
-            jobCreator.setName(jobName);
-            try {
-                primeException();
-                Job job = jobService.create(jobCreator);
-                stepData.put("Job", job);
-                stepData.put(CURRENT_JOB_ID, job.getId());
-            } catch (KapuaException ex) {
-                verifyException(ex);
-            }
-        }
+    public void iTryToCreateJobWithPermittedSymbolsInName(String validCharacters) throws Exception {
+        tryToCreateJob(validCharacters);
     }
 
     @When("I try to create job with invalid symbols {string} in name")
-    public void iTryToCreateJobWithInvalidSymbolsInName(String invalidCharacters) throws Throwable {
+    public void iTryToCreateJobWithInvalidSymbolsInName(String invalidCharacters) throws Exception {
+        tryToCreateJob(invalidCharacters);
+    }
+
+    private void tryToCreateJob(String characters) throws Exception {
         JobCreator jobCreator = jobFactory.newCreator(getCurrentScopeId());
-        for (int i = 0; i < invalidCharacters.length(); i++) {
-            String jobName = JOB_NAME + invalidCharacters.charAt(i);
+        for (int i = 0; i < characters.length(); i++) {
+            String jobName = JOB_NAME + characters.charAt(i);
             jobCreator.setName(jobName);
             try {
                 primeException();
@@ -1660,30 +1566,20 @@ public class JobServiceSteps extends TestBase {
     }
 
     @Then("I try to update job name with permitted symbols {string} in name")
-    public void iTryToUpdateJobNameWithPermittedSymbolsInName(String validCharacters) throws Throwable {
-        JobCreator jobCreator = jobFactory.newCreator(getCurrentScopeId());
-        for (int i = 0; i < validCharacters.length(); i++) {
-            String jobName = JOB_NAME + validCharacters.charAt(i);
-            jobCreator.setName(JOB_NAME + i);
-            try {
-                primeException();
-                stepData.remove("Job");
-                Job job = jobService.create(jobCreator);
-                job.setName(jobName);
-                jobService.update(job);
-                stepData.put(CURRENT_JOB_ID, job.getId());
-                stepData.put("Job", job);
-            } catch (KapuaException ex) {
-                verifyException(ex);
-            }
-        }
+    public void iTryToUpdateJobNameWithPermittedSymbolsInName(String validCharacters) throws Exception {
+        tryToUpdateJobName(validCharacters);
     }
 
     @When("I try to update job name with invalid symbols {string} in name")
-    public void iTryToUpdateJobNameWithInvalidSymbolsInName(String invalidCharacters) throws Throwable {
+    public void iTryToUpdateJobNameWithInvalidSymbolsInName(String invalidCharacters) throws Exception {
+        tryToUpdateJobName(invalidCharacters);
+    }
+
+    private void tryToUpdateJobName(String characters) throws Exception {
         JobCreator jobCreator = jobFactory.newCreator(getCurrentScopeId());
-        for (int i = 0; i < invalidCharacters.length(); i++) {
-            String jobName = JOB_NAME + invalidCharacters.charAt(i);
+        //are we sure works as expected with invalid characters?
+        for (int i = 0; i < characters.length(); i++) {
+            String jobName = JOB_NAME + characters.charAt(i);
             jobCreator.setName(JOB_NAME + i);
             try {
                 primeException();
@@ -1734,4 +1630,5 @@ public class JobServiceSteps extends TestBase {
             verifyException(e);
         }
     }
+
 }

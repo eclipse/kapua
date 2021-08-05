@@ -105,7 +105,6 @@ public class UserServiceSteps extends TestBase {
     private static final String USER_CREATOR = "UserCreator";
     private static final String USER_LIST = "UserList";
     private static final String USER_NOT_FOUND = "User %1s was not found!";
-    private static final String COUNT = "Count";
     private static final String LAST_ACCOUNT = "LastAccount";
     private static final String METADATA = "Metadata";
     private static final String LAST_USER = "LastUser";
@@ -355,18 +354,16 @@ public class UserServiceSteps extends TestBase {
     @When("I count users in scope {int}")
     public void countUsersInScope(int scopeId) throws Exception {
         UserQuery query = userFactory.newQuery(new KapuaEid(BigInteger.valueOf(scopeId)));
-        stepData.remove(COUNT);
-        Long userCnt = userService.count(query);
-        stepData.put(COUNT, userCnt);
+        stepData.updateCount((int)userService.count(query));
     }
 
-    @Then("I count {long} (user/users)")
-    public void countUserCount(Long cnt) {
-        Assert.assertEquals(cnt, stepData.get(COUNT));
+    @Then("I count {int} (user/users)")
+    public void countUserCount(int cnt) {
+        Assert.assertEquals(cnt, stepData.getCount());
     }
 
-    @Then("I count {long} (user/users) as query result list")
-    public void countUserQuery(long cnt) {
+    @Then("I count {int} (user/users) as query result list")
+    public void countUserQuery(int cnt) {
         Set<ComparableUser> userLst = (Set<ComparableUser>) stepData.get(USER_LIST);
         Assert.assertEquals(cnt, userLst.size());
     }
