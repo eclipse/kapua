@@ -33,6 +33,7 @@ import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.device.call.kura.model.configuration.KuraDeviceConfiguration;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
@@ -176,7 +177,9 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     Trigger.class,
                     TriggerListResult.class,
                     TriggerQuery.class,
-                    TriggerXmlRegistry.class
+                    TriggerXmlRegistry.class,
+
+                    KuraDeviceConfiguration.class
             }, properties);
         } catch (Exception e) {
             throw new RuntimeException(e);
