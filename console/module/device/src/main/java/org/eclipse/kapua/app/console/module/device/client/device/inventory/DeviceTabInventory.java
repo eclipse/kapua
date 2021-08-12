@@ -58,6 +58,7 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
 
         this.deviceTabs = deviceTabs;
         setEnabled(false);
+        getHeader().setVisible(false);
     }
 
     @Override
@@ -65,15 +66,16 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
         super.setEntity(gwtDevice);
 
         setDirty();
-
-        setEnabled(gwtDevice != null &&
-                gwtDevice.isOnline() &&
-                currentSession.hasPermission(DeviceManagementSessionPermission.read()) &&
-                gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_INVENTORY_V1));
+        if (gwtDevice != null) {
+            setEnabled(gwtDevice.isOnline() && currentSession.hasPermission(DeviceManagementSessionPermission.read()));
+            getHeader().setVisible(gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_INVENTORY_V1));
+        } else {
+            setEnabled(false);
+            getHeader().setVisible(false);
+        }
 
         if (initialized && tabsPanel.getSelectedItem() == null) {
             tabsPanel.setSelection(inventoryDeploymentPackageTab);
-
         }
 
         if (toolBar != null) {
