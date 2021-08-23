@@ -46,16 +46,19 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
         configComponents = new DeviceConfigComponents(currentSession, this);
         configSnapshots = new DeviceConfigSnapshots(currentSession, this);
         setEnabled(false);
+        getHeader().setVisible(false);
     }
 
     @Override
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
-
-        setEnabled(gwtDevice != null &&
-                gwtDevice.isOnline() &&
-                currentSession.hasPermission(DeviceManagementSessionPermission.read()) &&
-                gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_CONFIGURATION));
+        if (gwtDevice != null) {
+            setEnabled(gwtDevice.isOnline() && currentSession.hasPermission(DeviceManagementSessionPermission.read()));
+            getHeader().setVisible(gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_CONFIGURATION));
+        } else {
+            setEnabled(false);
+            getHeader().setVisible(false);
+        }
         doRefresh();
     }
 

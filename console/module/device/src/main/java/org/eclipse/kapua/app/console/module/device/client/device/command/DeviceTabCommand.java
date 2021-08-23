@@ -96,17 +96,19 @@ public class DeviceTabCommand extends KapuaTabItem<GwtDevice> {
         super(currentSession, DEVICE_MSGS.tabCommand(), new KapuaIcon(IconSet.TERMINAL));
         initialized = false;
         setEnabled(false);
+        getHeader().setVisible(false);
     }
 
     @Override
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
-
-        setEnabled(gwtDevice != null &&
-                gwtDevice.isOnline() &&
-                currentSession.hasPermission(DeviceManagementSessionPermission.execute()) &&
-                gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_COMMAND));
-
+        if (gwtDevice != null) {
+            setEnabled(gwtDevice.isOnline() && currentSession.hasPermission(DeviceManagementSessionPermission.execute()));
+            getHeader().setVisible(gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_COMMAND));
+        } else {
+            setEnabled(false);
+            getHeader().setVisible(false);
+        }
         doRefresh();
     }
 

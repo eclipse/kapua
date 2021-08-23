@@ -94,17 +94,19 @@ public class DeviceTabBundles extends KapuaTabItem<GwtDevice> {
         this.devicesView = devicesView;
         initialized = false;
         setEnabled(false);
+        getHeader().setVisible(false);
     }
 
     @Override
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
-
-        setEnabled(gwtDevice != null &&
-                gwtDevice.isOnline() &&
-                currentSession.hasPermission(DeviceManagementSessionPermission.read()) &&
-                (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) || (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2))));
-
+        if (gwtDevice != null) {
+            setEnabled(gwtDevice.isOnline() && currentSession.hasPermission(DeviceManagementSessionPermission.read()));
+            getHeader().setVisible(gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V1) || (gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_DEPLOY_V2)));
+        } else {
+            setEnabled(false);
+            getHeader().setVisible(false);
+        }
         doRefresh();
     }
 
