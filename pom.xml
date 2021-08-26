@@ -104,7 +104,7 @@
         <swagger-ui.version>3.23.0</swagger-ui.version>
         <zxing.version>3.4.1</zxing.version>
 
-        <cucumber.version>6.10.4</cucumber.version>
+        <cucumber.version>6.11.0</cucumber.version>
         <spotify.version>8.15.1</spotify.version>
 
         <!-- Plugins versions -->
