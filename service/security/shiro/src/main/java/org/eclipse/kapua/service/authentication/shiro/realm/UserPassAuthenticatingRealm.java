@@ -225,7 +225,7 @@ public class UserPassAuthenticatingRealm extends AuthenticatingRealm {
         boolean checkedUsernameAndPasswordMatch = false;
         boolean userPasswordMatch = true;
         try {
-            if (KapuaSecurityUtils.doPrivileged(() -> mfaOptionService.findByUserId(userId, scopeId) != null)) {
+            if (KapuaSecurityUtils.doPrivileged(() -> mfaOptionService.findByUserId(scopeId, userId) != null)) {
                 hasMfa = true;
             }
         } catch (KapuaException e) {
