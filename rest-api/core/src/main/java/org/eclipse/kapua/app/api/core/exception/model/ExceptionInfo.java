@@ -58,7 +58,7 @@ public class ExceptionInfo extends ThrowableInfo {
      * @param kapuaErrorCode The associated {@link KapuaErrorCode}.
      * @param exception      The cause of the error.
      * @since 1.0.0
-     * @deprecated Since 1.6.0. Please make use of {@link #ExceptionInfo(Status, KapuaException)} to avoid misalignment of {@link #getKapuaErrorCode()}.
+     * @deprecated since 2.0.0. Please make use of {@link #ExceptionInfo(Status, KapuaException)} to avoid misalignment of {@link #getKapuaErrorCode()}.
      */
     @Deprecated
     public ExceptionInfo(Status httpStatus, KapuaErrorCode kapuaErrorCode, KapuaException exception) {

@@ -28,24 +28,28 @@
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-app-web-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-locator-guice</artifactId>
             <scope>runtime</scope>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-rest-api-core</artifactId>
         </dependency>
+
+        <!--  Service implementations dependencies-->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-rest-api-resources</artifactId>
         </dependency>
-
-        <!--  Service implementations dependencies-->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-account-internal</artifactId>
@@ -134,30 +138,31 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-mqtt</artifactId>
         </dependency>
+
+        <!-- Jersey -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-internal</artifactId>
         </dependency>
 
-        <!-- Jersey -->
+        <!-- Moxy for object marshalling unmarshalling -->
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>
         </dependency>
 
-        <!-- Moxy for object marshalling unmarshalling -->
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-moxy</artifactId>
         </dependency>
 
+        <!-- Apache shiro security framework -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>provided</scope>
         </dependency>
 
-        <!-- Apache shiro security framework -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
@@ -169,19 +174,18 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- re-declare as provided as our web container will provide this -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
 
-        <!-- re-declare as provided as our web container will provide this -->
+        <!-- Elasticsearch Dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Elasticsearch Dependencies -->
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>

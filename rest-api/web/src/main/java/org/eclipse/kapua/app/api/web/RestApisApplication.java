@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.web;
 
-import java.util.HashMap;
-
-import javax.ws.rs.core.MediaType;
-import javax.xml.bind.JAXBException;
-
 import org.eclipse.kapua.app.api.core.KapuaSerializableBodyWriter;
 import org.eclipse.kapua.app.api.core.ListBodyWriter;
 import org.eclipse.kapua.app.api.core.MoxyJsonConfigContextResolver;
@@ -28,11 +23,17 @@ import org.glassfish.jersey.server.filter.UriConnegFilter;
 import org.glassfish.jersey.server.spi.Container;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
 
+import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXBException;
+import java.util.HashMap;
+
 public class RestApisApplication extends ResourceConfig {
 
     public RestApisApplication() throws JAXBException {
-        packages("org.eclipse.kapua.app.api",
-                 "org.eclipse.kapua.service");
+        packages(
+                "org.eclipse.kapua.app.api",
+                "org.eclipse.kapua.service"
+        );
 
         // Bind media type to resource extension
         HashMap<String, MediaType> mappedMediaTypes = new HashMap<>();
@@ -41,37 +42,32 @@ public class RestApisApplication extends ResourceConfig {
 
         property(ServerProperties.MEDIA_TYPE_MAPPINGS, mappedMediaTypes);
         property(ServerProperties.WADL_FEATURE_DISABLE, true);
+
         register(UriConnegFilter.class);
-        register(JaxbContextResolver.class);
-        register(RestApiJAXBContextProvider.class);
         register(KapuaSerializableBodyWriter.class);
         register(ListBodyWriter.class);
         register(MoxyJsonConfigContextResolver.class);
 
+        register(RestApiJAXBContextResolver.class);
+        register(RestApiJAXBContextProvider.class);
         register(new ContainerLifecycleListener() {
 
             @Override
             public void onStartup(Container container) {
                 ServiceLocator serviceLocator = container.getApplicationHandler().getServiceLocator();
-
                 RestApiJAXBContextProvider provider = serviceLocator.createAndInitialize(RestApiJAXBContextProvider.class);
                 XmlUtil.setContextProvider(provider);
             }
 
             @Override
-            /**
-             * Nothing to do
-             */
             public void onReload(Container container) {
+                // Nothing to do
             }
 
             @Override
-            /**
-             * Nothing to do
-             */
             public void onShutdown(Container container) {
+                // Nothing to do
             }
         });
     }
-
 }

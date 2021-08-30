@@ -12,23 +12,34 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
-import javax.xml.bind.JAXBContext;
-
 import org.eclipse.kapua.KapuaException;
 
+import javax.xml.bind.JAXBContext;
+
 /**
- * Jaxb context provider service definition.
+ * {@link JAXBContextProvider} definition.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface JAXBContextProvider {
 
     /**
-     * Get the jaxb context
+     * Gets the {@link JAXBContext}
      *
-     * @return
+     * @return The {@link JAXBContext}
      * @throws KapuaException
+     * @since 1.0.0
+     * @deprecated since 2.0.0. Make use of {@link #getJAXBContext(Class)} which supports by-type JAXBContext. Invoking this may return the undesired JAXBContext.
      */
-    public JAXBContext getJAXBContext() throws KapuaException;
+    @Deprecated
+    JAXBContext getJAXBContext() throws KapuaException;
+
+    /**
+     * Gets the {@link JAXBContext}
+     *
+     * @return The {@link JAXBContext}
+     * @throws KapuaException
+     * @since 1.5.0
+     */
+    JAXBContext getJAXBContext(Class<?> clazz) throws KapuaException;
 }

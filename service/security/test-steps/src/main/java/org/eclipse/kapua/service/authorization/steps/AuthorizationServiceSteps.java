@@ -22,12 +22,12 @@ import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.TestDomain;
-import org.eclipse.kapua.qa.common.cucumber.CucUser;
-import org.eclipse.kapua.qa.common.cucumber.CucRolePermission;
+import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.cucumber.CucDomain;
 import org.eclipse.kapua.qa.common.cucumber.CucGroup;
 import org.eclipse.kapua.qa.common.cucumber.CucRole;
-import org.eclipse.kapua.qa.common.cucumber.CucConfig;
+import org.eclipse.kapua.qa.common.cucumber.CucRolePermission;
+import org.eclipse.kapua.qa.common.cucumber.CucUser;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authorization.access.AccessInfo;
 import org.eclipse.kapua.service.authorization.access.AccessInfoAttributes;
@@ -63,19 +63,19 @@ import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RolePermission;
-import org.eclipse.kapua.service.authorization.role.RoleListResult;
-import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
-import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
-import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
-import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
-import org.eclipse.kapua.service.authorization.role.RolePermissionService;
-import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
+import org.eclipse.kapua.service.authorization.role.RoleListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermission;
+import org.eclipse.kapua.service.authorization.role.RolePermissionAttributes;
+import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
+import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
+import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
+import org.eclipse.kapua.service.authorization.role.RolePermissionQuery;
+import org.eclipse.kapua.service.authorization.role.RolePermissionService;
+import org.eclipse.kapua.service.authorization.role.RoleQuery;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.device.registry.Device;
-import org.eclipse.kapua.service.authorization.role.RolePermissionCreator;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.junit.Assert;
@@ -161,7 +161,7 @@ public class AuthorizationServiceSteps extends TestBase {
         super(stepData);
     }
 
-    @After(value="@setup")
+    @After(value = "@setup")
     public void setServices() {
         KapuaLocator locator = KapuaLocator.getInstance();
         accessInfoService = locator.getService(AccessInfoService.class);
@@ -1634,7 +1634,7 @@ public class AuthorizationServiceSteps extends TestBase {
     @And("I create the roles")
     public void iCreateTheRoles(List<CucRole> roleNames) throws Exception {
         RoleCreator roleCreator = roleFactory.newCreator(getCurrentScopeId());
-        ArrayList<Role> roleArrayList = new ArrayList<Role>();
+        ArrayList<Role> roleArrayList = new ArrayList<>();
         stepData.remove(ROLE_LIST);
         Role role = null;
         for (CucRole roleName : roleNames) {

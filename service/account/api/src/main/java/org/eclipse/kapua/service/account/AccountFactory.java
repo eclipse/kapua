@@ -30,7 +30,7 @@ public interface AccountFactory extends KapuaEntityFactory<Account, AccountCreat
      * @param name    The name to set in the {@link AccountCreator}
      * @return The newly instantiated {@link AccountCreator}
      * @since 1.0.0
-     * @deprecated Since 1.6.0. Please make use of {@link #newCreator(KapuaId)} and then use {@link AccountCreator#setName(String)}.
+     * @deprecated since 2.0.0. Please make use of {@link #newCreator(KapuaId)} and then use {@link AccountCreator#setName(String)}.
      */
     @Deprecated
     AccountCreator newCreator(KapuaId scopeId, String name);

@@ -101,10 +101,10 @@ public class XmlUtil {
      * @throws JAXBException See {@link JAXBContextFactory#createContext(Class[], Map)}
      * @since 1.0.0
      */
-    private static JAXBContext getContext() throws JAXBException {
+    private static JAXBContext getContext(Class<?> clazz) throws JAXBException {
         JAXBContext context;
         try {
-            context = getContextProvider().getJAXBContext();
+            context = getContextProvider().getJAXBContext(clazz);
 
             if (context == null) {
                 LOG.warn("No JAXBContext found! Creating one using JAXBContextFactory.createContext(...)");
@@ -206,7 +206,7 @@ public class XmlUtil {
      */
     private static void marshal(@NotNull Object object, @NotNull Writer writer, @NotNull Map<String, Object> additionalProperties) throws JAXBException {
 
-        JAXBContext context = getContext();
+        JAXBContext context = getContext(Object.class);
 
         Marshaller marshaller = context.createMarshaller();
         marshaller.setSchema(null);
@@ -250,7 +250,7 @@ public class XmlUtil {
      * @param objectString The {@link String} serialized.
      * @param type         The {@link Class} type to unmarshal to.
      * @return The unmarshalled {@link Object}.
-     * @throws JAXBException See {@link #getContext()}.
+     * @throws JAXBException See {@link #getContext(Class)}.
      * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
      * @since 1.0.0
      */
@@ -272,7 +272,7 @@ public class XmlUtil {
      * @param reader The source {@link Reader}.
      * @param type   The {@link Class} type to unmarshal to.
      * @return The unmarshalled {@link Object}.
-     * @throws JAXBException See {@link #getContext()}.
+     * @throws JAXBException See {@link #getContext(Class)}.
      * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
      * @since 1.0.0
      */
@@ -288,7 +288,7 @@ public class XmlUtil {
      * @param type         The {@link Class} type to unmarshal to.
      * @param namespaceUri The namespace {@link java.net.URI} to use
      * @return The unmarshalled {@link Object}.
-     * @throws JAXBException See {@link #getContext()}.
+     * @throws JAXBException See {@link #getContext(Class)}.
      * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
      * @since 1.0.0
      */
@@ -312,7 +312,7 @@ public class XmlUtil {
      * @param type         The {@link Class} type to unmarshal to.
      * @param namespaceUri The namespace {@link java.net.URI} to use
      * @return The unmarshalled {@link Object}.
-     * @throws JAXBException See {@link #getContext()}.
+     * @throws JAXBException See {@link #getContext(Class)}.
      * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
      * @since 1.0.0
      */
@@ -327,7 +327,7 @@ public class XmlUtil {
      * @param objectString The {@link String} serialized.
      * @param type         The {@link Class} type to unmarshal to.
      * @return The unmarshalled {@link Object}.
-     * @throws JAXBException See {@link #getContext()}.
+     * @throws JAXBException See {@link #getContext(Class)}.
      * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
      * @since 1.5.0
      */
@@ -349,10 +349,10 @@ public class XmlUtil {
      * @param type         The {@link Class} type to unmarshal to.
      * @param namespaceUri The namespace {@link java.net.URI} to use
      * @return The unmarshalled {@link Object}.
-     * @throws JAXBException See {@link #getContext()}.
+     * @throws JAXBException See {@link #getContext(Class)}.
      * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
      * @since 1.0.0
-     * @deprecated Since 1.6.0. It is always used with {@code null} namespaceUri. Please make use of {@link #unmarshal(Reader, Class)}
+     * @deprecated since 2.0.0. It is always used with {@code null} namespaceUri. Please make use of {@link #unmarshal(Reader, Class)}
      */
     @Deprecated
     public static <T> T unmarshalJson(@NotNull String objectString, @NotNull Class<T> type, @Nullable String namespaceUri)
@@ -373,7 +373,7 @@ public class XmlUtil {
      * @param reader The {@link Reader} serialized.
      * @param type   The {@link Class} type to unmarshal to.
      * @return The unmarshalled {@link Object}.
-     * @throws JAXBException See {@link #getContext()}.
+     * @throws JAXBException See {@link #getContext(Class)}.
      * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
      * @since 2.0.0
      */
@@ -394,7 +394,7 @@ public class XmlUtil {
      * @param type         The {@link Class} type to unmarshal to.
      * @param namespaceUri The namespace {@link java.net.URI} to use
      * @return The unmarshalled {@link Object}.
-     * @throws JAXBException See {@link #getContext()}.
+     * @throws JAXBException See {@link #getContext(Class)}.
      * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
      * @since 1.0.0
      */
@@ -419,11 +419,11 @@ public class XmlUtil {
      * @param additionalProperties Additional {@link Properties} to configure the {@link Unmarshaller}
      * @param <T>                  The return {@link Class}
      * @return The unmarshalled {@link Object}.
-     * @throws JAXBException See {@link #getContext()}.
+     * @throws JAXBException See {@link #getContext(Class)}.
      * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
      */
     private static <T> T unmarshal(@NotNull Reader reader, @NotNull Class<T> type, @Nullable String namespaceUri, @NotNull Map<String, Object> additionalProperties) throws JAXBException, SAXException {
-        JAXBContext context = getContext();
+        JAXBContext context = getContext(type);
 
         Unmarshaller unmarshaller = context.createUnmarshaller();
         unmarshaller.setSchema(null);

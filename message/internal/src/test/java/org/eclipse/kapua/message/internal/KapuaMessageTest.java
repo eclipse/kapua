@@ -22,7 +22,6 @@ import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -37,9 +36,48 @@ import java.util.UUID;
 @Category(JUnitTests.class)
 public class KapuaMessageTest {
 
-    private static final String KAPUA_MESSAGE_XML_STR = "missing";
+    private static final String KAPUA_MESSAGE_XML_STR = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<message>\n" +
+            "   <id>11111111-2222-3333-4444-555555555555</id>\n" +
+            "   <scopeId>AQ</scopeId>\n" +
+            "   <deviceId>AQ</deviceId>\n" +
+            "   <receivedOn>2017-01-18T12:11:46.000Z</receivedOn>\n" +
+            "   <sentOn>2017-01-18T12:10:56.000Z</sentOn>\n" +
+            "   <capturedOn>2017-01-18T12:10:46.000Z</capturedOn>\n" +
+            "   <position>\n" +
+            "      <altitude>430.3</altitude>\n" +
+            "      <heading>280.0</heading>\n" +
+            "      <latitude>15.3333</latitude>\n" +
+            "      <longitude>45.1111</longitude>\n" +
+            "      <precision>12.0</precision>\n" +
+            "      <satellites>5</satellites>\n" +
+            "      <speed>60.2</speed>\n" +
+            "      <status>4</status>\n" +
+            "      <timestamp>2017-01-18T12:10:46.000Z</timestamp>\n" +
+            "   </position>\n" +
+            "   <channel>\n" +
+            "      <semanticParts>part1</semanticParts>\n" +
+            "      <semanticParts>part2</semanticParts>\n" +
+            "      <semanticParts>part3</semanticParts>\n" +
+            "   </channel>\n" +
+            "   <payload>\n" +
+            "      <metrics>\n" +
+            "         <metric>\n" +
+            "            <valueType>string</valueType>\n" +
+            "            <value>value1</value>\n" +
+            "            <name>key1</name>\n" +
+            "         </metric>\n" +
+            "         <metric>\n" +
+            "            <valueType>string</valueType>\n" +
+            "            <value>value2</value>\n" +
+            "            <name>key2</name>\n" +
+            "         </metric>\n" +
+            "      </metrics>\n" +
+            "      <body>Ym9keQ==</body>\n" +
+            "   </payload>\n" +
+            "</message>\n";
 
-    private ZonedDateTime referenceDate = ZonedDateTime.of(2017, 1, 18, 13, 10, 46, 0, ZoneId.systemDefault());
+    private ZonedDateTime referenceDate = ZonedDateTime.of(2017, 1, 18, 12, 10, 46, 0, ZoneId.of("UTC"));
 
     private Date capturedDate = Date.from(referenceDate.toInstant());
 
@@ -49,11 +87,11 @@ public class KapuaMessageTest {
 
     @Before
     public void before() throws Exception {
-        XmlUtil.setContextProvider(new MessageJAXBContextProvider());
+        XmlUtil.setContextProvider(new MessageTestJAXBContextProvider());
     }
 
     @Test
-    public void kapuaMessage() throws Exception {
+    public void kapuaMessage() {
         KapuaChannel kapuaChannel = new KapuaChannelImpl();
         KapuaPayload kapuaMetrics = new KapuaPayloadImpl();
 
@@ -102,7 +140,6 @@ public class KapuaMessageTest {
     }
 
     @Test
-    @Ignore("KapuaMessage marshaling not working")
     public void marshallMessage() throws Exception {
         KapuaChannel kapuaChannel = new KapuaChannelImpl();
         KapuaPayload kapuaMetrics = new KapuaPayloadImpl();

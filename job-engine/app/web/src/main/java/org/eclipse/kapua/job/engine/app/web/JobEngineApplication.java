@@ -12,13 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.web;
 
-import java.util.HashMap;
-
-import javax.ws.rs.core.MediaType;
-
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.app.web.jaxb.JobEngineJAXBContextProvider;
-
+import org.eclipse.kapua.job.engine.app.web.jaxb.JobEngineJAXBContextResolver;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -27,10 +23,16 @@ import org.glassfish.jersey.server.filter.UriConnegFilter;
 import org.glassfish.jersey.server.spi.Container;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
 
+import javax.ws.rs.core.MediaType;
+import java.util.HashMap;
+
 public class JobEngineApplication extends ResourceConfig {
 
     public JobEngineApplication() {
-        packages("org.eclipse.kapua.job.engine.app", "org.eclipse.kapua.app.api.core");
+        packages(
+                "org.eclipse.kapua.app.api.core",
+                "org.eclipse.kapua.job.engine.app"
+        );
 
         // Bind media type to resource extension
         HashMap<String, MediaType> mappedMediaTypes = new HashMap<>();
@@ -38,8 +40,12 @@ public class JobEngineApplication extends ResourceConfig {
 
         property(ServerProperties.MEDIA_TYPE_MAPPINGS, mappedMediaTypes);
         property(ServerProperties.WADL_FEATURE_DISABLE, true);
+
         register(UriConnegFilter.class);
         register(JacksonFeature.class);
+
+        register(JobEngineJAXBContextResolver.class);
+        register(JobEngineJAXBContextProvider.class);
 
         register(new ContainerLifecycleListener() {
 
@@ -51,20 +57,14 @@ public class JobEngineApplication extends ResourceConfig {
             }
 
             @Override
-            /**
-             * Nothing to do
-             */
             public void onReload(Container container) {
+                // Nothing to do
             }
 
             @Override
-            /**
-             * Nothing to do
-             */
             public void onShutdown(Container container) {
+                // Nothing to do
             }
         });
-
     }
-
 }

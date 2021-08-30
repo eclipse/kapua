@@ -58,7 +58,7 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @param creator The {@link DeviceConnectionCreator} from which to create the {@link DeviceConnection}.
      * @throws KapuaException In case of errors.
      * @since 1.0.0
-     * @deprecated Since 1.6.0. It has never been implemented.
+     * @deprecated since 2.0.0. It has never been implemented.
      */
     @Deprecated
     void connect(DeviceConnectionCreator creator) throws KapuaException;
@@ -70,7 +70,7 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @param clientId TThe {@link DeviceConnection#getClientId()}.
      * @throws KapuaException In case of errors.
      * @since 1.0.0
-     * @deprecated Since 1.6.0. It has never been implemented.
+     * @deprecated since 2.0.0. It has never been implemented.
      */
     @Deprecated
     void disconnect(KapuaId scopeId, String clientId) throws KapuaException;

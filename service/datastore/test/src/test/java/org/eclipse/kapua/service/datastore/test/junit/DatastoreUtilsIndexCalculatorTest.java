@@ -15,13 +15,11 @@ package org.eclipse.kapua.service.datastore.test.junit;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreException;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
@@ -42,11 +40,6 @@ public class DatastoreUtilsIndexCalculatorTest {
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtilsIndexCalculatorTest.class);
 
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm Z");
-
-    @BeforeClass
-    public static void setUpBeforeClass() {
-        XmlUtil.setContextProvider(new DatastoreJAXBContextProvider());
-    }
 
     @Test
     public void testIndex() throws KapuaException, ParseException {

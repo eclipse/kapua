@@ -34,7 +34,7 @@ public class KapuaPayloadTest {
 
     @Before
     public void before() throws Exception {
-        XmlUtil.setContextProvider(new MessageJAXBContextProvider());
+        XmlUtil.setContextProvider(new MessageTestJAXBContextProvider());
     }
 
     @Test

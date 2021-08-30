@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
+import com.google.common.base.Strings;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.kapua.commons.setting.KapuaSettingErrorCodes;
 import org.eclipse.kapua.commons.setting.KapuaSettingException;
@@ -107,7 +108,7 @@ public class KapuaFileUtils {
      * @since 1.0.0
      */
     private static boolean hasValidScheme(String stringPath) {
-        return stringPath != null && (hasFileScheme(stringPath) || hasHttpScheme(stringPath));
+        return !Strings.isNullOrEmpty(stringPath) && (hasFileScheme(stringPath) || hasHttpScheme(stringPath));
     }
 
     private static boolean hasFileScheme(String stringPath) {

@@ -19,6 +19,8 @@ import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import javax.batch.runtime.BatchStatus;
@@ -36,9 +38,11 @@ import java.util.Properties;
  */
 public class StepContextWrapper {
 
+    private static final Logger LOG = LoggerFactory.getLogger(StepContextWrapper.class);
+
     private static final KapuaIdFactory KAPUA_ID_FACTORY = KapuaLocator.getInstance().getFactory(KapuaIdFactory.class);
 
-    private StepContext stepContext;
+    private final StepContext stepContext;
 
     public StepContextWrapper(StepContext stepContext) {
         this.stepContext = stepContext;
@@ -89,12 +93,14 @@ public class StepContextWrapper {
                 try {
                     stepProperty = (T) Enum.valueOf(enumType, stepPropertyString);
                 } catch (IllegalArgumentException iae) {
+                    LOG.error("Error while parsing property {} with value {} to enum {}.", stepPropertyName, stepPropertyString, type.getName(), iae);
                     throw new KapuaIllegalArgumentException(stepPropertyName, stepPropertyString);
                 }
             } else {
                 try {
                     stepProperty = XmlUtil.unmarshal(stepPropertyString, type);
                 } catch (JAXBException | SAXException e) {
+                    LOG.error("Error while parsing property {} with value {} to {}.", stepPropertyName, stepPropertyString, type, e);
                     throw new KapuaIllegalArgumentException(stepPropertyName, stepPropertyString);
                 }
             }

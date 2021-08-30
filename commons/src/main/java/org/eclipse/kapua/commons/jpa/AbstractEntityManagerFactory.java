@@ -49,7 +49,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
      * @param datasourceName      The {@link DataSource} name.
      * @param uniqueConstraints   The unique constraints for the given {@link PersistenceUnit}.
      * @since 1.0.0
-     * @deprecated Since 1.6.0. Unique constraint are not used.
+     * @deprecated since 2.0.0. Unique constraint are not used.
      */
     @Deprecated
     protected AbstractEntityManagerFactory(String persistenceUnitName, String datasourceName, Map<String, String> uniqueConstraints) {

@@ -33,30 +33,33 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-import javax.xml.bind.JAXBContext;
-
 @Category(JUnitTests.class)
-public class JaxbContextResolverTest {
+public class RestApiJAXBContextResolverTest {
 
-    JaxbContextResolver jaxbContextResolver;
+    RestApiJAXBContextResolver jaxbContextResolver;
 
     @Before
     public void initialize() {
-        jaxbContextResolver = new JaxbContextResolver();
+        jaxbContextResolver = new RestApiJAXBContextResolver();
     }
 
     @Test
     public void getContextTest() {
-        Class[] classes = {String.class, Account.class, KapuaTocd.class, Exception.class, EntityNotFoundExceptionInfo.class, ChannelInfo.class, Device.class, Credential.class, Job.class,
+        Class<?>[] classes = {String.class, Account.class, KapuaTocd.class, Exception.class, EntityNotFoundExceptionInfo.class, ChannelInfo.class, Device.class, Credential.class, Job.class,
                 KuraDeploymentPackages.class, KapuaRequestMessage.class, KapuaResponseMessage.class, DeviceManagementOperation.class, AccessToken.class, Role.class, Group.class, User.class};
 
-        for (Class clazz : classes) {
-            Assert.assertTrue("True expected.", jaxbContextResolver.getContext(clazz) instanceof JAXBContext);
+        for (Class<?> clazz : classes) {
+            Assert.assertNotNull("The context returned should not be null", jaxbContextResolver.getContext(clazz));
         }
     }
 
     @Test
+    public void getContextObjectTest() {
+        Assert.assertNotNull("The context returned should not be null", jaxbContextResolver.getContext(Object.class));
+    }
+
+    @Test(expected = NullPointerException.class)
     public void getContextNullTest() {
-        Assert.assertTrue("True expected.", jaxbContextResolver.getContext(null) instanceof JAXBContext);
+        jaxbContextResolver.getContext(null);
     }
 }

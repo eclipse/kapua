@@ -12,34 +12,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.web.jaxb;
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Providers;
-import javax.xml.bind.JAXBContext;
-
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.web.commons.xml.JaxRSJAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 
-public class JobEngineJAXBContextProvider implements JAXBContextProvider {
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.Providers;
+
+public class JobEngineJAXBContextProvider extends JaxRSJAXBContextProvider implements JAXBContextProvider {
 
     @Context
     Providers providers;
 
     @Override
-    public JAXBContext getJAXBContext() throws KapuaException {
-        if (providers == null) {
-            throw KapuaException.internalError("Unable to find any provider.");
-        }
-
-        ContextResolver<JAXBContext> cr = providers.getContextResolver(JAXBContext.class,
-                MediaType.APPLICATION_JSON_TYPE);
-        JAXBContext jaxbContext = cr.getContext(JAXBContext.class);
-        if (jaxbContext == null) {
-            throw KapuaException.internalError("Unable to get a JAXBContext.");
-        }
-
-        return jaxbContext;
+    protected Providers getProviders() {
+        return providers;
     }
 
+    @Override
+    protected MediaType getMediaType() {
+        return MediaType.APPLICATION_JSON_TYPE;
+    }
 }

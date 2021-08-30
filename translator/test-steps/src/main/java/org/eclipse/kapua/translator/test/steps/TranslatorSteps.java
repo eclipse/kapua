@@ -119,7 +119,7 @@ public class TranslatorSteps extends TestBase {
             MqttPayload mqttPayload = new MqttPayload(kuraPayload.toByteArray());
             MqttMessage mqttMessage = new MqttMessage(mqttTopic, date, mqttPayload);
             stepData.put("MqttMessage", mqttMessage);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
@@ -328,7 +328,7 @@ public class TranslatorSteps extends TestBase {
             MqttMessage mqttMessage = (MqttMessage) stepData.get("MqttMessage");
             KuraDataMessage kuraDataMessage = translatorDataMqttKura.translate((MqttMessage) null);
             stepData.put("KuraDataMessage", kuraDataMessage);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }
@@ -377,7 +377,7 @@ public class TranslatorSteps extends TestBase {
         try {
             JmsMessage jmsMessage = translatorDataKuraJms.translate((KuraDataMessage) null);
             stepData.put("JmsMessage", jmsMessage);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             verifyException(ex);
         }
     }

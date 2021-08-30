@@ -967,6 +967,11 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-app-web-commons</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-scheduler-test-steps</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -2510,12 +2515,13 @@
         <module>extras</module>
 
         <!-- Applications -->
-        <module>rest-api</module>
-        <module>job-engine</module>
+        <module>app</module>
         <module>broker</module>
         <module>consumer</module>
+        <module>job-engine</module>
+        <module>rest-api</module>
 
-        <!-- Client -->
+        <!-- Kapua Client -->
         <module>client</module>
 
         <!-- Simulator framework -->
@@ -2524,6 +2530,7 @@
         <!-- Assembly -->
         <module>assembly</module>
 
+        <!-- Dev -->
         <module>dev-tools</module>
         <module>deployment</module>
 

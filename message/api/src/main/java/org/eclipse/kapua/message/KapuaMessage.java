@@ -16,6 +16,7 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.xml.MessageXmlRegistry;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -128,6 +129,7 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      * @since 1.0.0
      */
     @XmlElement(name = "receivedOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getReceivedOn();
 
     /**
@@ -145,6 +147,7 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      * @since 1.0.0
      */
     @XmlElement(name = "sentOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getSentOn();
 
     /**
@@ -162,6 +165,7 @@ public interface KapuaMessage<C extends KapuaChannel, P extends KapuaPayload> ex
      * @since 1.0.0
      */
     @XmlElement(name = "capturedOn")
+    @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getCapturedOn();
 
     /**

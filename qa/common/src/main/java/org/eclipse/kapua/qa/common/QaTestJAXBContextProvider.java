@@ -12,17 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
+import org.eclipse.kapua.commons.util.xml.DefaultJAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.job.engine.client.JobStartOptionsClient;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
@@ -84,123 +82,114 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.Devi
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobXmlRegistry;
-import org.eclipse.persistence.jaxb.JAXBContextFactory;
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.JAXBContext;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
 /**
- * JAXB context provided for proper (un)marshalling of interface annotated classes.
- * This particular implementation is used only in unit and integration tests.
+ * QA Tests {@link JAXBContextProvider} implementation.
  * <p>
- * Application and interfaces have their own implementation of provider.
+ * It relies {@link DefaultJAXBContextProvider} implementation.
+ *
+ * @since 1.0.0
  */
-public class TestJAXBContextProvider implements JAXBContextProvider {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TestJAXBContextProvider.class);
-
-    private JAXBContext context;
+public class QaTestJAXBContextProvider extends DefaultJAXBContextProvider implements JAXBContextProvider {
 
     @Override
-    public JAXBContext getJAXBContext() throws KapuaException {
-        if (context == null) {
-            Class<?>[] classes = new Class<?>[]{
-                    KapuaTmetadata.class,
-                    KapuaTocd.class,
-                    KapuaTad.class,
-                    KapuaTicon.class,
-                    TscalarImpl.class,
-                    KapuaToption.class,
-                    KapuaTdesignate.class,
-                    KapuaTobject.class,
-                    MetatypeXmlRegistry.class,
+    protected List<Class<?>> getClassesToBound() {
+        return Arrays.asList(
+                // Kapua Service Configuration + Device Management Configuration
+                KapuaTmetadata.class,
+                KapuaTocd.class,
+                KapuaTad.class,
+                KapuaTicon.class,
+                TscalarImpl.class,
+                KapuaToption.class,
+                KapuaTdesignate.class,
+                KapuaTobject.class,
+                MetatypeXmlRegistry.class,
 
-                    // KapuaEvent
-                    ServiceEvent.class,
-                    EventStoreRecordCreator.class,
-                    EventStoreRecordListResult.class,
-                    EventStoreRecordQuery.class,
-                    EventStoreXmlRegistry.class,
+                // Kapua Event
+                ServiceEvent.class,
+                EventStoreRecordCreator.class,
+                EventStoreRecordListResult.class,
+                EventStoreRecordQuery.class,
+                EventStoreXmlRegistry.class,
 
-                    // Jobs
-                    Job.class,
-                    JobStartOptionsClient.class,
-                    JobStartOptions.class,
-                    JobListResult.class,
-                    JobXmlRegistry.class,
-                    JobTargetSublist.class,
-                    DeviceCommandInput.class,
-                    DeviceCommandOutput.class,
+                // Device Management Asset
+                DeviceAsset.class,
+                DeviceAssets.class,
 
-                    // Device Management Inventory
-                    DeviceInventory.class,
-                    DeviceInventoryItem.class,
-                    KuraInventoryItems.class,
-                    KuraInventoryItem.class,
-                    DeviceInventoryBundles.class,
-                    DeviceInventoryBundle.class,
-                    KuraInventoryBundles.class,
-                    KuraInventoryBundle.class,
-                    DeviceInventoryContainers.class,
-                    DeviceInventoryContainer.class,
-                    KuraInventoryContainers.class,
-                    KuraInventoryContainer.class,
-                    DeviceInventoryPackages.class,
-                    DeviceInventoryPackage.class,
-                    KuraInventoryPackages.class,
-                    KuraInventoryPackage.class,
-                    DeviceInventorySystemPackages.class,
-                    DeviceInventorySystemPackage.class,
-                    KuraInventorySystemPackages.class,
-                    KuraInventorySystemPackage.class,
-                    DeviceInventoryXmlRegistry.class,
+                // Device Management Bundle
+                DeviceBundle.class,
+                DeviceBundles.class,
+                KuraBundle.class,
+                KuraBundles.class,
+                KuraBundleInfo.class,
 
-                    // Device Management Keystore
-                    DeviceKeystore.class,
-                    DeviceKeystoreCSR.class,
-                    DeviceKeystoreCSRInfo.class,
-                    DeviceKeystoreCertificate.class,
-                    DeviceKeystoreItem.class,
-                    DeviceKeystoreItemQuery.class,
-                    DeviceKeystoreItems.class,
-                    DeviceKeystoreKeypair.class,
-                    DeviceKeystoreXmlRegistry.class,
-                    DeviceKeystores.class,
+                // Device Management Command
+                DeviceCommandInput.class,
+                DeviceCommandOutput.class,
 
-                    KuraDeviceComponentConfiguration.class,
-                    KuraDeviceConfiguration.class,
-                    KuraDeploymentPackage.class,
-                    KuraDeploymentPackages.class,
-                    KuraBundle.class,
-                    KuraBundles.class,
-                    KuraBundleInfo.class,
-                    KuraSnapshotIds.class,
+                // Device Management Configuration + Device Management Snapshots
+                DeviceConfiguration.class,
+                KuraDeviceComponentConfiguration.class,
+                KuraDeviceConfiguration.class,
+                KuraSnapshotIds.class,
 
-                    DeviceAsset.class,
-                    DeviceAssets.class,
-                    DeviceBundle.class,
-                    DeviceBundles.class,
-                    DeviceConfiguration.class,
-                    DevicePackages.class,
-                    DevicePackageDownloadRequest.class,
-                    DevicePackageUninstallRequest.class,
+                // Device Management Inventory
+                DeviceInventory.class,
+                DeviceInventoryItem.class,
+                KuraInventoryItems.class,
+                KuraInventoryItem.class,
+                DeviceInventoryBundles.class,
+                DeviceInventoryBundle.class,
+                KuraInventoryBundles.class,
+                KuraInventoryBundle.class,
+                DeviceInventoryContainers.class,
+                DeviceInventoryContainer.class,
+                KuraInventoryContainers.class,
+                KuraInventoryContainer.class,
+                DeviceInventoryPackages.class,
+                DeviceInventoryPackage.class,
+                KuraInventoryPackages.class,
+                KuraInventoryPackage.class,
+                DeviceInventorySystemPackages.class,
+                DeviceInventorySystemPackage.class,
+                KuraInventorySystemPackages.class,
+                KuraInventorySystemPackage.class,
+                DeviceInventoryXmlRegistry.class,
 
-                    ExceptionInfo.class
-            };
-            try {
-                Map<String, Object> properties = new HashMap<>(1);
-                properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+                // Device Management Keystore
+                DeviceKeystore.class,
+                DeviceKeystoreCSR.class,
+                DeviceKeystoreCSRInfo.class,
+                DeviceKeystoreCertificate.class,
+                DeviceKeystoreItem.class,
+                DeviceKeystoreItemQuery.class,
+                DeviceKeystoreItems.class,
+                DeviceKeystoreKeypair.class,
+                DeviceKeystoreXmlRegistry.class,
+                DeviceKeystores.class,
 
-                context = JAXBContextFactory.createContext(classes, properties);
-                LOG.debug("Default JAXB context initialized!");
-            } catch (Exception e) {
-                throw KapuaException.internalError(e, "Error creating JAXBContext!");
-            }
-        }
-        return context;
+                // Device Management Packages
+                DevicePackages.class,
+                DevicePackageDownloadRequest.class,
+                DevicePackageUninstallRequest.class,
+                KuraDeploymentPackage.class,
+                KuraDeploymentPackages.class,
+
+                // Jobs
+                Job.class,
+                JobListResult.class,
+                JobXmlRegistry.class,
+                JobTargetSublist.class,
+                DeviceCommandInput.class,
+                DeviceCommandOutput.class,
+
+                // Job Engine
+                JobStartOptions.class,
+                JobTargetSublist.class
+        );
     }
 }

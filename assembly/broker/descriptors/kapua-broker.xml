@@ -242,6 +242,7 @@
 
                 <include>${pom.groupId}:kapua-account-api</include>
                 <include>${pom.groupId}:kapua-account-internal</include>
+                <include>${pom.groupId}:kapua-app-web-commons</include>
                 <include>${pom.groupId}:kapua-broker-api</include>
                 <include>${pom.groupId}:kapua-broker-core</include>
                 <include>${pom.groupId}:kapua-broker-client</include>

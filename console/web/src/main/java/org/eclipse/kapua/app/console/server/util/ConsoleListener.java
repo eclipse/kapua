@@ -44,8 +44,8 @@ public class ConsoleListener implements ServletContextListener {
     public void contextInitialized(final ServletContextEvent event) {
         try {
             LOG.info("Initialize Console JABContext Provider...");
-            JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
-            XmlUtil.setContextProvider(consoleProvider);
+            JAXBContextProvider consoleJAXBContextProvider = new ConsoleJAXBContextProvider();
+            XmlUtil.setContextProvider(consoleJAXBContextProvider);
             LOG.info("Initialize Console JABContext Provider... DONE!");
         } catch (Exception e) {
             LOG.error("Initialize Console JABContext Provider... ERROR! Error: {}", e.getMessage(), e);

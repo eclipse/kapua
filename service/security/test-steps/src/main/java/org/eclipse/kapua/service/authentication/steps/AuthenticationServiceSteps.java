@@ -66,7 +66,7 @@ public class AuthenticationServiceSteps extends TestBase {
         updateScenario(scenario);
     }
 
-    @After(value="@setup")
+    @After(value = "@setup")
     public void setServices() {
         locator = KapuaLocator.getInstance();
         credentialService = locator.getService(CredentialService.class);
@@ -136,14 +136,14 @@ public class AuthenticationServiceSteps extends TestBase {
 
     @When("I check that service configuration {string} matches value {string}")
     public void checkConfigValue(String key, String value) {
-        Map<String, Object> configValues = (Map<String, Object>)stepData.get("configValues");
+        Map<String, Object> configValues = (Map<String, Object>) stepData.get("configValues");
         Object configValue = configValues.get(key);
         Assert.assertEquals(value, configValue);
     }
 
     @When("I check that service configuration {string} has no value")
     public void checkNullConfigValue(String key) {
-        Map<String, Object> configValues = (Map<String, Object>)stepData.get("configValues");
+        Map<String, Object> configValues = (Map<String, Object>) stepData.get("configValues");
         Object configValue = configValues.get(key);
         Assert.assertEquals(configValue, null);
     }

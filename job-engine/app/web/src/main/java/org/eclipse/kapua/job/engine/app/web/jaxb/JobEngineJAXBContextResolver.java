@@ -25,11 +25,11 @@ import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionI
 import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobScopedEngineExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
+import org.eclipse.kapua.app.web.commons.xml.JaxRSJAXBContextResolver;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -72,16 +72,12 @@ import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerXmlRegistry;
-import org.eclipse.persistence.jaxb.JAXBContextFactory;
-import org.eclipse.persistence.jaxb.MarshallerProperties;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
-import javax.xml.bind.JAXBContext;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Provide a customized JAXBContext that makes the concrete implementations
@@ -91,104 +87,88 @@ import java.util.Map;
  */
 @Provider
 @Produces({MediaType.APPLICATION_JSON})
-public class JaxbContextResolver implements ContextResolver<JAXBContext> {
-
-    private JAXBContext jaxbContext;
-
-    public JaxbContextResolver() {
-        try {
-            Map<String, Object> properties = new HashMap<>(1);
-            properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
-
-            jaxbContext = JAXBContextFactory.createContext(new Class[]{
-                    // REST API exception models
-                    ThrowableInfo.class,
-                    ExceptionInfo.class,
-
-                    SubjectUnauthorizedExceptionInfo.class,
-
-                    EntityNotFoundExceptionInfo.class,
-                    IllegalArgumentExceptionInfo.class,
-                    IllegalNullArgumentExceptionInfo.class,
-
-                    // Jobs Exception Info
-                    CleanJobDataExceptionInfo.class,
-                    JobAlreadyRunningExceptionInfo.class,
-                    JobEngineExceptionInfo.class,
-                    JobScopedEngineExceptionInfo.class,
-                    JobInvalidTargetExceptionInfo.class,
-                    JobMissingStepExceptionInfo.class,
-                    JobMissingTargetExceptionInfo.class,
-                    JobNotRunningExceptionInfo.class,
-                    JobResumingExceptionInfo.class,
-                    JobRunningExceptionInfo.class,
-                    JobStartingExceptionInfo.class,
-                    JobStoppingExceptionInfo.class,
-
-                    // Authentication
-                    AuthenticationXmlRegistry.class,
-                    AccessToken.class,
-
-                    // Device Management Keystore
-                    DeviceKeystores.class,
-                    DeviceKeystore.class,
-                    DeviceKeystoreCertificate.class,
-                    DeviceKeystoreItems.class,
-                    DeviceKeystoreItem.class,
-                    DeviceKeystoreItemQuery.class,
-                    DeviceKeystoreKeypair.class,
-                    DeviceKeystoreCSRInfo.class,
-                    DeviceKeystoreCSR.class,
-                    DeviceKeystoreXmlRegistry.class,
-
-                    // Jobs
-                    Job.class,
-                    JobQuery.class,
-                    JobXmlRegistry.class,
-
-                    JobStep.class,
-                    JobStepListResult.class,
-                    JobStepQuery.class,
-                    JobStepXmlRegistry.class,
-                    JobStepProperty.class,
-
-                    JobExecution.class,
-                    JobExecutionListResult.class,
-                    JobExecutionQuery.class,
-                    JobExecutionXmlRegistry.class,
-
-                    JobTarget.class,
-                    JobTargetListResult.class,
-                    JobTargetQuery.class,
-                    JobExecutionXmlRegistry.class,
-
-                    JobTargetSublist.class,
-
-                    DeviceCommandInput.class,
-                    DevicePackageDownloadRequest.class,
-                    DevicePackageDownloadOptions.class,
-                    DevicePackageInstallRequest.class,
-                    DevicePackageInstallOptions.class,
-                    DevicePackageUninstallRequest.class,
-                    DevicePackageUninstallOptions.class,
-                    DeviceAssets.class,
-                    DeviceConfiguration.class,
-
-                    Trigger.class,
-                    TriggerListResult.class,
-                    TriggerQuery.class,
-                    TriggerXmlRegistry.class,
-
-                    KuraDeviceConfiguration.class
-            }, properties);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class JobEngineJAXBContextResolver extends JaxRSJAXBContextResolver {
 
     @Override
-    public JAXBContext getContext(Class<?> type) {
-        return jaxbContext;
-    }
+    protected List<Class<?>> getClassesToBound() {
+        return Arrays.asList(
+                // REST API exception models
+                ThrowableInfo.class,
+                ExceptionInfo.class,
 
+                SubjectUnauthorizedExceptionInfo.class,
+
+                EntityNotFoundExceptionInfo.class,
+                IllegalArgumentExceptionInfo.class,
+                IllegalNullArgumentExceptionInfo.class,
+
+                // Jobs Exception Info
+                CleanJobDataExceptionInfo.class,
+                JobAlreadyRunningExceptionInfo.class,
+                JobEngineExceptionInfo.class,
+                JobInvalidTargetExceptionInfo.class,
+                JobMissingStepExceptionInfo.class,
+                JobMissingTargetExceptionInfo.class,
+                JobNotRunningExceptionInfo.class,
+                JobResumingExceptionInfo.class,
+                JobRunningExceptionInfo.class,
+                JobStartingExceptionInfo.class,
+                JobStoppingExceptionInfo.class,
+
+                // Authentication
+                AuthenticationXmlRegistry.class,
+                AccessToken.class,
+
+                // Device Management Keystore
+                DeviceKeystores.class,
+                DeviceKeystore.class,
+                DeviceKeystoreCertificate.class,
+                DeviceKeystoreItems.class,
+                DeviceKeystoreItem.class,
+                DeviceKeystoreItemQuery.class,
+                DeviceKeystoreKeypair.class,
+                DeviceKeystoreCSRInfo.class,
+                DeviceKeystoreCSR.class,
+                DeviceKeystoreXmlRegistry.class,
+
+                // Jobs
+                Job.class,
+                JobQuery.class,
+                JobXmlRegistry.class,
+
+                JobStep.class,
+                JobStepListResult.class,
+                JobStepQuery.class,
+                JobStepXmlRegistry.class,
+                JobStepProperty.class,
+
+                JobExecution.class,
+                JobExecutionListResult.class,
+                JobExecutionQuery.class,
+                JobExecutionXmlRegistry.class,
+
+                JobTarget.class,
+                JobTargetListResult.class,
+                JobTargetQuery.class,
+                JobExecutionXmlRegistry.class,
+
+                JobTargetSublist.class,
+
+                DeviceAssets.class,
+                DeviceCommandInput.class,
+                DevicePackageDownloadRequest.class,
+                DevicePackageDownloadOptions.class,
+                DevicePackageInstallRequest.class,
+                DevicePackageInstallOptions.class,
+                DevicePackageUninstallRequest.class,
+                DevicePackageUninstallOptions.class,
+                DeviceConfiguration.class,
+                KuraDeviceConfiguration.class,
+
+                Trigger.class,
+                TriggerListResult.class,
+                TriggerQuery.class,
+                TriggerXmlRegistry.class
+        );
+    }
 }

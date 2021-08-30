@@ -15,7 +15,7 @@ package org.eclipse.kapua.message.internal.xml;
 import java.math.BigDecimal;
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.message.internal.MessageJAXBContextProvider;
+import org.eclipse.kapua.message.internal.MessageTestJAXBContextProvider;
 import org.eclipse.kapua.message.xml.XmlAdaptedMetric;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
@@ -43,7 +43,7 @@ public class KapuaMetricTest {
 
     @Before
     public void before() throws Exception {
-        XmlUtil.setContextProvider(new MessageJAXBContextProvider());
+        XmlUtil.setContextProvider(new MessageTestJAXBContextProvider());
     }
 
     @Test
