@@ -28,7 +28,7 @@
             <fileMode>0755</fileMode>
         </file>
         <file>
-            <source>${project.basedir}/target/kapua-consumer-lifecycle-${project.version}-uber.jar</source>
+            <source>${project.basedir}/../../../consumer/lifecycle-app/target/kapua-consumer-lifecycle-${project.version}-app.jar</source>
             <fileMode>0755</fileMode>
         </file>
     </files>
