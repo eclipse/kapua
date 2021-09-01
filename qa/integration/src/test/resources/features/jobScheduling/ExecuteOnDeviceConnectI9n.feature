@@ -16,7 +16,7 @@
 
 Feature: JobEngineService execute job on device connect
 
-@setup
+  @setup
   Scenario: Start full docker environment
     Given Init Jaxb Context
     And Init Security Context
@@ -59,9 +59,9 @@ Feature: JobEngineService execute job on device connect
     And The trigger is set to start today at "00:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
-    And I wait 3 seconds
+    And I wait 6 seconds
     When Device is connected
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -109,9 +109,9 @@ Feature: JobEngineService execute job on device connect
     And The trigger is set to start tomorrow at "06:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
-    And I wait 3 seconds
+    And I wait 6 seconds
     When Device is connected
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 0
@@ -159,9 +159,9 @@ Feature: JobEngineService execute job on device connect
     And The trigger is set to end tomorrow at "20:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
-    And I wait 3 seconds
+    And I wait 6 seconds
     When Device is connected
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -211,7 +211,7 @@ Feature: JobEngineService execute job on device connect
     Then I create a new trigger from the existing creator with previously defined date properties
     And I wait 11 seconds
     And I restart the Kura Mock
-    And I wait 3 seconds
+    And I wait 6 seconds
     When Device is connected
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
@@ -261,15 +261,15 @@ Feature: JobEngineService execute job on device connect
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     When Device is connected
-    And I wait 3 seconds
+    And I wait 6 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 4 device events
     And The type of the last event is "COMMAND"
     Then KuraMock is disconnected
-    And I wait 3 seconds
+    And I wait 6 seconds
     When I restart the Kura Mock
     Then Device is connected
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -311,15 +311,15 @@ Feature: JobEngineService execute job on device connect
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     When Device is connected
-    And I wait 3 seconds
+    And I wait 6 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 3 device events
     And The type of the last event is "BIRTH"
     Then KuraMock is disconnected
-    And I wait 3 seconds
+    And I wait 6 seconds
     When I restart the Kura Mock
     Then Device is connected
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 0
@@ -330,6 +330,6 @@ Feature: JobEngineService execute job on device connect
     And The type of the last event is "BIRTH"
     And I logout
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

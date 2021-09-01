@@ -50,7 +50,7 @@ Feature: Job Engine Service - Keystore Step Definitions
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     And I query for the job with the name "TestJob - Keystore Steps" and I find it
     And I query for the execution items for the current job and I count 1
@@ -87,7 +87,7 @@ Feature: Job Engine Service - Keystore Step Definitions
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     And I confirm job target has step index 0 and status "PROCESS_OK"
     And I query for the job with the name "TestJob - Keystore Steps" and I find it
     And I query for the execution items for the current job and I count 1
@@ -151,7 +151,7 @@ Feature: Job Engine Service - Keystore Step Definitions
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     And I confirm job target has step index 3 and status "PROCESS_OK"
     And I query for the job with the name "TestJob - Keystore Steps" and I find it
     And I query for the execution items for the current job and I count 1

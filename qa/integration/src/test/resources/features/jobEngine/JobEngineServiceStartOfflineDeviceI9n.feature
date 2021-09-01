@@ -51,7 +51,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -85,7 +85,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -121,7 +121,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -165,7 +165,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -206,7 +206,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -241,7 +241,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -283,7 +283,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -335,7 +335,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -384,7 +384,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -433,7 +433,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -484,7 +484,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -534,7 +534,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -584,7 +584,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -636,7 +636,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1
     And I confirm the executed job is finished
@@ -680,7 +680,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -717,7 +717,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -755,7 +755,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -797,7 +797,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -834,7 +834,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -871,7 +871,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -908,7 +908,7 @@ Feature: JobEngineService tests for starting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -956,7 +956,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1001,7 +1001,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1046,7 +1046,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1095,7 +1095,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1139,7 +1139,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1183,7 +1183,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
@@ -1227,7 +1227,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     Given I query for the job with the name "TestJob"
     When I query for the execution items for the current job
     Then I count 1
