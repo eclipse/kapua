@@ -57,7 +57,7 @@ public class GwtDeviceKeystoreKeypair extends GwtEntityModel {
     }
 
     public String getAttributes() {
-        return get("algorithm");
+        return get("attributes");
     }
 
     public void setAttributes(String attributes) {
