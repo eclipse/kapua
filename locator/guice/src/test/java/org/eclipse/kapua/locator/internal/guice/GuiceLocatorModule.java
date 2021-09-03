@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 Red Hat Inc and others
+ * Copyright (c) 2016, 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -8,27 +8,19 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     Red Hat Inc - initial API and implementation
+ *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.locator.internal.guice;
 
-import java.math.BigInteger;
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 
-import javax.inject.Singleton;
-
-import org.eclipse.kapua.model.id.KapuaId;
-
-@Singleton
-public class FactoryAImpl implements FactoryA {
+public class GuiceLocatorModule extends AbstractKapuaModule {
 
     @Override
-    public KapuaId newKapuaId(String shortId) {
-        return null;
-    }
-
-    @Override
-    public KapuaId newKapuaId(BigInteger bigInteger) {
-        return null;
+    protected void configureModule() {
+        bind(ServiceA.class).to(ServiceAImpl.class);
+        bind(FactoryA.class).to(FactoryAImpl.class);
     }
 
 }

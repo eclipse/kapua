@@ -14,14 +14,38 @@
 <!DOCTYPE xml>
 <locator-config>
     <provided>
+        <!-- 
+            Service/Factory A are bound via AbstractKapuaModule
+         -->
+        <!-- 
         <api>org.eclipse.kapua.locator.internal.guice.ServiceA</api>
         <api>org.eclipse.kapua.locator.internal.guice.FactoryA</api>
+         -->
+
+        <!-- 
+            Service/Factory B are bound via </api> element
+         -->
+        <api>org.eclipse.kapua.locator.internal.guice.ServiceB</api>
+        <api>org.eclipse.kapua.locator.internal.guice.FactoryB</api>
+        
+        <!-- 
+            Service/Factory E are excluded because of the package
+         -->
+        <api>org.eclipse.kapua.locator.internal.guice.extra.ServiceE</api>
+        
         <provide>
             <interceptor>annotation</interceptor>
             <with>Impl</with>
         </provide>
     </provided>
     <packages>
-        <package>org.eclipse.kapua.locator.internal.guice</package>
+        <package>org.eclipse.kapua.locator.internal</package>
+        <excludes>
+         <!-- 
+            Service/Factory in org.eclipse.kapua.locator.internal.guice.extra
+            are excluded
+         -->
+         <package>org.eclipse.kapua.locator.internal.guice.extra</package>
+        </excludes>
     </packages>
 </locator-config>
