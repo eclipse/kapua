@@ -15,6 +15,7 @@ package org.eclipse.kapua.commons.model.query;
 import org.eclipse.kapua.commons.model.AbstractKapuaEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.RandomUtils;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,151 +26,261 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
-
 @Category(JUnitTests.class)
-public class KapuaListResultImplTest extends Assert {
+public class KapuaListResultImplTest {
 
     private final static Random RANDOM = RandomUtils.getInstance();
 
-    KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
-
     @Test
     public void kapuaListResultImplTest() {
-        assertFalse(kapuaListResult.isLimitExceeded());
-    }
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
 
-    @Test
-    public void setTrueAndFalseLimitExceededTest() {
-        kapuaListResult.setLimitExceeded(true);
-        assertTrue(kapuaListResult.isLimitExceeded());
-        kapuaListResult.setLimitExceeded(false);
-        assertFalse(kapuaListResult.isLimitExceeded());
-    }
-
-    @Test
-    public void getItemTest() {
-        AbstractKapuaEntity kapuaEntity = Mockito.mock(AbstractKapuaEntity.class);
-        kapuaListResult.addItem(kapuaEntity);
-        assertEquals("Actual and expected values are not the same!", kapuaEntity, kapuaListResult.getItem(0));
-    }
-
-    @Test
-    public void getFirstItemTest() {
-        AbstractKapuaEntity kapuaEntity = Mockito.mock(AbstractKapuaEntity.class);
-        kapuaListResult.addItem(kapuaEntity);
-        assertEquals("Actual and expected values are not the same!", kapuaEntity, kapuaListResult.getFirstItem());
-    }
-
-    @Test
-    public void getSizeTest() {
-        assertEquals("Actual and expected values are not the same!", 0, kapuaListResult.getSize());
-        List<AbstractKapuaEntity> items = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            items.add(Mockito.mock(AbstractKapuaEntity.class));
-        }
-        kapuaListResult.addItems(items);
-        assertEquals("Actual and expected values are not the same!", 10, kapuaListResult.getSize());
-    }
-
-    @Test
-    public void isEmptyTest() {
-        assertTrue(kapuaListResult.isEmpty());
-        AbstractKapuaEntity kapuaEntity = Mockito.mock(AbstractKapuaEntity.class);
-        kapuaListResult.addItem(kapuaEntity);
-        assertFalse(kapuaListResult.isEmpty());
-    }
-
-    @Test
-    public void getItemsTest() {
-        List<AbstractKapuaEntity> items = new ArrayList<>();
-        assertEquals("Actual and expected values are not the same!", items, kapuaListResult.getItems());
+        Assert.assertNotNull(kapuaListResult.getItems());
+        Assert.assertTrue(kapuaListResult.getItems().isEmpty());
+        Assert.assertFalse(kapuaListResult.isLimitExceeded());
+        Assert.assertNull(kapuaListResult.getTotalCount());
     }
 
     @Test
     public void addItemsTest() {
+        AbstractKapuaEntity kapuaEntity1 = Mockito.mock(AbstractKapuaEntity.class);
+        AbstractKapuaEntity kapuaEntity2 = Mockito.mock(AbstractKapuaEntity.class);
+
         List<AbstractKapuaEntity> items = new ArrayList<>();
+        items.add(kapuaEntity1);
+        items.add(kapuaEntity2);
+
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
         kapuaListResult.addItems(items);
-        assertEquals("Actual and expected values are not the same!", items, kapuaListResult.getItems());
+
+        Assert.assertEquals(2, kapuaListResult.getItems().size());
+        Assert.assertEquals(kapuaEntity1, kapuaListResult.getItems().get(0));
+        Assert.assertEquals(kapuaEntity2, kapuaListResult.getItems().get(1));
+        Assert.assertEquals(items, kapuaListResult.getItems());
     }
 
     @Test
     public void addItemTest() {
-        AbstractKapuaEntity kapuaEntityFirst = Mockito.mock(AbstractKapuaEntity.class);
-        kapuaListResult.addItem(kapuaEntityFirst);
-        assertEquals("Actual and expected values are not the same!", kapuaEntityFirst, kapuaListResult.getFirstItem());
-        AbstractKapuaEntity kapuaEntitySecond = Mockito.mock(AbstractKapuaEntity.class);
-        kapuaListResult.addItem(kapuaEntitySecond);
-        AbstractKapuaEntity kapuaEntityThird = Mockito.mock(AbstractKapuaEntity.class);
-        kapuaListResult.addItem(kapuaEntityThird);
-        for (AbstractKapuaEntity item : kapuaListResult.getItems()) {
-            assertTrue(kapuaListResult.getItems().contains(item));
-        }
+        AbstractKapuaEntity kapuaEntity1 = Mockito.mock(AbstractKapuaEntity.class);
+        AbstractKapuaEntity kapuaEntity2 = Mockito.mock(AbstractKapuaEntity.class);
+
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+        kapuaListResult.addItem(kapuaEntity1);
+        kapuaListResult.addItem(kapuaEntity2);
+
+        Assert.assertEquals(2, kapuaListResult.getItems().size());
+        Assert.assertEquals(kapuaEntity1, kapuaListResult.getItems().get(0));
+        Assert.assertEquals(kapuaEntity2, kapuaListResult.getItems().get(1));
     }
 
     @Test
     public void clearItemsTest() {
-        List<AbstractKapuaEntity> items = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            items.add(Mockito.mock(AbstractKapuaEntity.class));
+        int testSize = 10;
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+
+        for (int i = 0; i < testSize; i++) {
+            kapuaListResult.addItem(Mockito.mock(AbstractKapuaEntity.class));
         }
-        kapuaListResult.addItems(items);
-        for (int i = 0; i < 10; i++) {
-            assertEquals("Actual and expected values are not the same!", items.get(i), kapuaListResult.getItems().get(i));
-        }
+
+        Assert.assertEquals(testSize, kapuaListResult.getSize());
+
         kapuaListResult.clearItems();
-        assertEquals("Actual and expected values are not the same!", 0, kapuaListResult.getSize());
+
+        Assert.assertEquals(0, kapuaListResult.getSize());
     }
 
     @Test
-    public void sortTest() {
-        List<AbstractKapuaEntity> items = new ArrayList<>();
-        BigInteger eid1 = new BigInteger(64, RANDOM);
-        BigInteger eid2 = new BigInteger(64, RANDOM);
-        BigInteger eid3 = new BigInteger(64, RANDOM);
+    public void getFirstItemTest() {
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
 
-        AbstractKapuaEntity item1 = Mockito.mock(AbstractKapuaEntity.class);
-        Mockito.when(item1.getScopeId()).thenReturn(new KapuaEid(eid1));
-        items.add(item1);
+        AbstractKapuaEntity kapuaEntity1 = Mockito.mock(AbstractKapuaEntity.class);
+        kapuaListResult.addItem(kapuaEntity1);
 
-        AbstractKapuaEntity item2 = Mockito.mock(AbstractKapuaEntity.class);
-        Mockito.when(item2.getScopeId()).thenReturn(new KapuaEid(eid2));
-        items.add(item2);
+        AbstractKapuaEntity kapuaEntity2 = Mockito.mock(AbstractKapuaEntity.class);
+        kapuaListResult.addItem(kapuaEntity2);
 
-        AbstractKapuaEntity item3 = Mockito.mock(AbstractKapuaEntity.class);
-        Mockito.when(item3.getScopeId()).thenReturn(new KapuaEid(eid3));
-        items.add(item3);
+        Assert.assertEquals(kapuaEntity1, kapuaListResult.getFirstItem());
+        Assert.assertNotEquals(kapuaEntity2, kapuaListResult.getFirstItem());
+    }
 
-        kapuaListResult.addItem(items.get(0));
-        kapuaListResult.addItem(items.get(1));
-        kapuaListResult.addItem(items.get(2));
+    @Test
+    public void getItemsTest() {
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
 
-        kapuaListResult.sort(new SortByHashCode());
-        items.sort(new SortByHashCode());
+        AbstractKapuaEntity kapuaEntity1 = Mockito.mock(AbstractKapuaEntity.class);
+        kapuaListResult.addItem(kapuaEntity1);
 
-        for (int i = 0; i < items.size(); i++) {
-            assertEquals("Actual and expected values are not the same!", items.get(i), kapuaListResult.getItem(i));
+        AbstractKapuaEntity kapuaEntity2 = Mockito.mock(AbstractKapuaEntity.class);
+        kapuaListResult.addItem(kapuaEntity2);
+
+        Assert.assertEquals(2, kapuaListResult.getItems().size());
+        Assert.assertEquals(kapuaEntity1, kapuaListResult.getItems().get(0));
+        Assert.assertEquals(kapuaEntity2, kapuaListResult.getItems().get(1));
+    }
+
+    @Test
+    public void getItemsPredicateTest() {
+        int testSize = 10;
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+
+        for (int i = 0; i < testSize; i++) {
+            AbstractKapuaEntity kapuaEntity = Mockito.mock(AbstractKapuaEntity.class);
+            Mockito.when(kapuaEntity.getId()).thenReturn(new KapuaEid(new BigInteger(String.valueOf(i))));
+
+            kapuaListResult.addItem(kapuaEntity);
+        }
+
+        List<AbstractKapuaEntity> filteredItems = kapuaListResult.getItems(i -> i.getId().getId().longValue() % 2 == 0);
+
+        Assert.assertEquals(5, filteredItems.size());
+        for (AbstractKapuaEntity filteredItem : filteredItems) {
+            Assert.assertEquals(0, filteredItem.getId().getId().longValue() % 2);
         }
     }
 
     @Test
-    public void getTotalCountTest() {
-        Long totalCount = null;
-        kapuaListResult.setTotalCount(totalCount);
-        assertNull(kapuaListResult.getTotalCount());
-        Long totalCountMax = Long.MAX_VALUE;
-        kapuaListResult.setTotalCount(totalCountMax);
-        assertEquals("Actual and expected values are not the same!", totalCountMax, kapuaListResult.getTotalCount());
-        Long totalCountMin = Long.MIN_VALUE;
-        kapuaListResult.setTotalCount(totalCountMin);
-        assertEquals("Actual and expected values are not the same!", totalCountMin, kapuaListResult.getTotalCount());
+    public void getItemsAsMapKeyTest() {
+        int testSize = 10;
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+
+        for (int i = 0; i < testSize; i++) {
+            AbstractKapuaEntity kapuaEntity = Mockito.mock(AbstractKapuaEntity.class);
+            Mockito.when(kapuaEntity.getId()).thenReturn(new KapuaEid(new BigInteger(String.valueOf(i))));
+
+            kapuaListResult.addItem(kapuaEntity);
+        }
+
+        Map<KapuaId, AbstractKapuaEntity> itemsAsMap = kapuaListResult.getItemsAsMap(AbstractKapuaEntity::getId);
+
+        Assert.assertEquals(kapuaListResult.getSize(), itemsAsMap.size());
+        for (Map.Entry<KapuaId, AbstractKapuaEntity> entry : itemsAsMap.entrySet()) {
+            Assert.assertEquals(entry.getKey(), entry.getValue().getId());
+        }
     }
-}
 
-class SortByHashCode implements Comparator<AbstractKapuaEntity> {
+    @Test
+    public void getItemsAsMapKeyValueTest() {
+        int testSize = 10;
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
 
-    public int compare(AbstractKapuaEntity a, AbstractKapuaEntity b) {
-        return (a.getScopeId().hashCode() - b.getScopeId().hashCode());
+        for (int i = 0; i < testSize; i++) {
+            AbstractKapuaEntity kapuaEntity = Mockito.mock(AbstractKapuaEntity.class);
+            Mockito.when(kapuaEntity.getId()).thenReturn(new KapuaEid(new BigInteger(String.valueOf(i))));
+
+            kapuaListResult.addItem(kapuaEntity);
+        }
+
+        Map<KapuaId, KapuaId> itemsAsMap = kapuaListResult.getItemsAsMap(AbstractKapuaEntity::getId, AbstractKapuaEntity::getId);
+
+        Assert.assertEquals(kapuaListResult.getSize(), itemsAsMap.size());
+        for (Map.Entry<KapuaId, KapuaId> entry : itemsAsMap.entrySet()) {
+            Assert.assertEquals(entry.getKey(), entry.getValue());
+        }
+    }
+
+
+    @Test
+    public void getItemTest() {
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+
+        AbstractKapuaEntity kapuaEntity1 = Mockito.mock(AbstractKapuaEntity.class);
+        kapuaListResult.addItem(kapuaEntity1);
+
+        AbstractKapuaEntity kapuaEntity2 = Mockito.mock(AbstractKapuaEntity.class);
+        kapuaListResult.addItem(kapuaEntity2);
+
+        Assert.assertEquals(kapuaEntity1, kapuaListResult.getItem(0));
+        Assert.assertEquals(kapuaEntity2, kapuaListResult.getItem(1));
+    }
+
+    @Test
+    public void getSizeTest() {
+        int testSize = 10;
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+
+        for (int i = 0; i < testSize; i++) {
+            kapuaListResult.addItem(Mockito.mock(AbstractKapuaEntity.class));
+        }
+
+        Assert.assertEquals(testSize, kapuaListResult.getSize());
+    }
+
+    @Test
+    public void isEmptyTest() {
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+        Assert.assertTrue(kapuaListResult.isEmpty());
+
+        kapuaListResult.addItem(Mockito.mock(AbstractKapuaEntity.class));
+        Assert.assertFalse(kapuaListResult.isEmpty());
+    }
+
+    @Test
+    public void setGetLimitExceededTrueTest() {
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+        kapuaListResult.setLimitExceeded(true);
+
+        Assert.assertTrue(kapuaListResult.isLimitExceeded());
+    }
+
+    @Test
+    public void setGetLimitExceededFalseTest() {
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+        kapuaListResult.setLimitExceeded(false);
+
+        Assert.assertFalse(kapuaListResult.isLimitExceeded());
+    }
+
+    @Test
+    public void setGetTotalCountDefaultTest() {
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+
+        Assert.assertNull(kapuaListResult.getTotalCount());
+    }
+
+    @Test
+    public void setGetTotalCountValueTest() {
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+        kapuaListResult.setTotalCount(10L);
+
+        Assert.assertEquals(new Long(10L), kapuaListResult.getTotalCount());
+    }
+
+    @Test
+    public void sortComparatorTest() {
+        int testSize = 10;
+        KapuaListResultImpl<AbstractKapuaEntity> kapuaListResult = new KapuaListResultImpl<>();
+
+        // Add the max value
+        AbstractKapuaEntity kapuaEntityMax = Mockito.mock(AbstractKapuaEntity.class);
+        Mockito.when(kapuaEntityMax.getId()).thenReturn(new KapuaEid(new BigInteger(String.valueOf(Long.MAX_VALUE))));
+        kapuaListResult.addItem(kapuaEntityMax);
+
+        // Add values between
+        for (int i = 0; i < testSize; i++) {
+            AbstractKapuaEntity kapuaEntity = Mockito.mock(AbstractKapuaEntity.class);
+            Mockito.when(kapuaEntity.getId()).thenReturn(new KapuaEid(new BigInteger(String.valueOf(RANDOM.nextLong()))));
+
+            kapuaListResult.addItem(kapuaEntity);
+        }
+
+        // Add the min value
+        AbstractKapuaEntity kapuaEntityMin = Mockito.mock(AbstractKapuaEntity.class);
+        Mockito.when(kapuaEntityMin.getId()).thenReturn(new KapuaEid(new BigInteger(String.valueOf(Long.MIN_VALUE))));
+        kapuaListResult.addItem(kapuaEntityMin);
+
+        // Check result are not sorted by `.getId()` ascending
+        Assert.assertTrue(kapuaListResult.getItem(0).getId().getId().compareTo(kapuaListResult.getItem(1).getId().getId()) > 0);
+        Assert.assertTrue(kapuaListResult.getItem(0).getId().getId().compareTo(kapuaListResult.getItem(kapuaListResult.getSize() - 1).getId().getId()) > 0);
+
+        // Sort
+        kapuaListResult.sort(Comparator.comparing(i -> i.getId().getId()));
+
+        // Check result are sorted
+        for (int i = 0; i < kapuaListResult.getSize() - 1; i++) {
+            Assert.assertTrue(kapuaListResult.getItem(i).getId().getId().compareTo(kapuaListResult.getItem(i + 1).getId().getId()) < 0);
+        }
     }
 }
