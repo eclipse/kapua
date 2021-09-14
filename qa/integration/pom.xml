@@ -227,6 +227,10 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-translator-kura-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-translator-kura-mqtt</artifactId>
         </dependency>
         <dependency>
@@ -243,6 +247,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-api</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-transport-amqp</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -351,11 +359,6 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-mqtt</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-camel</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

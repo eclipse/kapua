@@ -20,8 +20,8 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = {
-                "classpath:features/jobEngine/JobEngineServiceStartOfflineDeviceI9n.feature",
-                "classpath:features/jobEngine/JobEngineServiceRestartOfflineDeviceI9n.feature"
+                "classpath:features/jobEngine/JobEngineServiceStartOfflineDeviceI9n.feature"//,
+//                "classpath:features/jobEngine/JobEngineServiceRestartOfflineDeviceI9n.feature"
         },
         glue = { "org.eclipse.kapua.service.job.steps",
                 "org.eclipse.kapua.service.user.steps",

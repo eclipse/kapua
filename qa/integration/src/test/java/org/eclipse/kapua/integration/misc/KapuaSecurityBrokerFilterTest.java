@@ -157,7 +157,7 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         System.setProperty("broker.connector.internal.password", "kapua-password");
 
         Mockito.when(connectionContext.getConnector()).thenReturn(connector);
-        Mockito.when((connector).getName()).thenReturn("internalMqtt");
+        Mockito.when((connector).getName()).thenReturn("amqp");
         try {
             kapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
         } catch (Exception e) {
@@ -281,7 +281,7 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         ConnectionContext connectionContext = Mockito.mock(ConnectionContext.class);
 
         Mockito.when(connectionContext.getConnector()).thenReturn(connector);
-        Mockito.when((connector).getName()).thenReturn("internalMqtt");
+        Mockito.when((connector).getName()).thenReturn("amqp");
         Mockito.when(connectionContext.getConnection()).thenReturn(connection);
         Mockito.doReturn(true).when(connection).isNetworkConnection();
         Mockito.when(connectionContext.getSecurityContext()).thenReturn(Mockito.mock(SecurityContext.class));

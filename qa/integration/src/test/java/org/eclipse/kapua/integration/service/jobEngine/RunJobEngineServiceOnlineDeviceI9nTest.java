@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
                 "classpath:features/jobEngine/JobEngineServiceStartOnlineDeviceI9n.feature",
                 "classpath:features/jobEngine/JobEngineServiceRestartOnlineDeviceI9n.feature",
                 "classpath:features/jobEngine/JobEngineServiceRestartOnlineDeviceSecondPartI9n.feature",
-                "classpath:features/jobEngine/JobEngineServiceStopOnlineDeviceI9n.feature",
+                "classpath:features/jobEngine/JobEngineServiceStopOnlineDeviceI9n.feature"
         },
         glue = {"org.eclipse.kapua.service.job.steps",
                 "org.eclipse.kapua.service.user.steps",

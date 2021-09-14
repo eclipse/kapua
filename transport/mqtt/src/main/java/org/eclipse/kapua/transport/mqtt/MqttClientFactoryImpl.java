@@ -15,7 +15,7 @@ package org.eclipse.kapua.transport.mqtt;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.locator.KapuaProvider;
+//import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.transport.TransportClientFactory;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
 import org.eclipse.kapua.transport.message.mqtt.MqttMessage;
@@ -29,7 +29,8 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+//commented waiting for a proper solution to force a bind between interface and desired implementation (commenting out this annotation will force the usage of the AMQP client factory)
+//@KapuaProvider
 public class MqttClientFactoryImpl implements TransportClientFactory<MqttTopic, MqttPayload, MqttMessage, MqttMessage, MqttFacade, MqttClientConnectionOptions> {
 
     @Override

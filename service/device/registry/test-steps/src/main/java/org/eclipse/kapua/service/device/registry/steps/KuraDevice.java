@@ -703,7 +703,7 @@ public class KuraDevice implements MqttCallback {
             }
             // Fail
             else {
-                LOG.error("Kapua Mock Device unhandled topic: {}", topic);
+                LOG.warn("Kapua Mock Device unhandled topic: {}", topic);
             }
         } catch (Exception e) {
             LOG.error("Error while handling the request on topic: {}", topic, e);

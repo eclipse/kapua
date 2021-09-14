@@ -28,6 +28,8 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+build.properties
+MANIFEST.MF
 
 #
 # Eclipse .gitignore

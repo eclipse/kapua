@@ -124,8 +124,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private Future<?> stealingLinkManagerFuture;
 
     private static final String CONNECTOR_NAME_VM = String.format("vm://%s", BrokerClientSetting.getInstance().getString(BrokerClientSettingKey.BROKER_NAME));
-    private static final String CONNECTOR_MQTT_NAME_INTERNAL;
-    private static final String CONNECTOR_AMQP_NAME_INTERNAL;
+    private static final String CONNECTOR_NAME_INTERNAL;
 
     private static final String ERROR = "@@ error";
 
@@ -140,8 +139,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         BROKER_ID_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME);
         AUTHENTICATOR_CLASS_NAME = config.getString(BrokerSettingKey.AUTHENTICATOR_CLASS_NAME);
         AUTHORIZER_CLASS_NAME = config.getString(BrokerSettingKey.AUTHORIZER_CLASS_NAME);
-        CONNECTOR_MQTT_NAME_INTERNAL = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_MQTT_NAME);
-        CONNECTOR_AMQP_NAME_INTERNAL = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_AMQP_NAME);
+        CONNECTOR_NAME_INTERNAL = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_NAME);
         STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME = config.getLong(BrokerSettingKey.STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME);
         stealingLinkEnabled = config.getBoolean(BrokerSettingKey.BROKER_STEALING_LINK_ENABLED);
         publishInfoMessageSizeLimit = BrokerSetting.getInstance().getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
@@ -352,8 +350,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         if (context != null) {
             if (context.getConnector() == null ||
                     CONNECTOR_NAME_VM.equals(((TransportConnector) context.getConnector()).getName()) ||
-                    CONNECTOR_MQTT_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName()) ||
-                    CONNECTOR_AMQP_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName())) {
+                    CONNECTOR_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName())) {
                 return true;
             }
 
@@ -369,8 +366,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private boolean isInternalConnector(ConnectionContext context) {
         if (context != null &&
                 (context.getConnector() == null ||
-                CONNECTOR_MQTT_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName()) ||
-                CONNECTOR_AMQP_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName()))) {
+                CONNECTOR_NAME_INTERNAL.equals(((TransportConnector) context.getConnector()).getName()))) {
                 return true;
         }
         return false;

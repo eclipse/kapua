@@ -1071,6 +1071,11 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-translator-kura-amqp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-translator-kura-mqtt</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -1087,6 +1092,11 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-transport-jms</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-transport-amqp</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

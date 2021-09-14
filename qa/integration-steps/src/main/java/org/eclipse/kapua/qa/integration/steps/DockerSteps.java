@@ -81,6 +81,7 @@ public class DockerSteps {
     private static final long WAIT_FOR_BROKER = 60000;
     private static final int HTTP_COMMUNICATION_TIMEOUT = 3000;
 
+    private static final int AMQP_EXTERNAL_PORT = 5682;
     private static final int LIFECYCLE_HEALTH_CHECK_PORT = 8090;
     private static final int TElEMETRY_HEALTH_CHECK_PORT = 8091;
 
@@ -107,7 +108,7 @@ public class DockerSteps {
     private boolean printContainerLogOnContainerExit;
     private NetworkConfig networkConfig;
     private String networkId;
-    private boolean debug;
+    private boolean debug = true;
     private List<String> envVar;
     private Map<String, String> containerMap;
     public Map<String, Integer> portMap;
@@ -508,7 +509,7 @@ public class DockerSteps {
     @And("Start MessageBroker container with name {string}")
     public void startMessageBrokerContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Message Broker container {}...", name);
-        ContainerConfig mbConfig = getBrokerContainerConfig("message-broker", 1883, 1883, 1893, 1893, 8883, 8883, 8161, 8161, 5005, 5005, "kapua/kapua-broker:" + KAPUA_VERSION);
+        ContainerConfig mbConfig = getBrokerContainerConfig("message-broker", 1883, 1883, 8883, 8883, 8161, 8161, 5672, AMQP_EXTERNAL_PORT, 5005, 5005, "kapua/kapua-broker:" + KAPUA_VERSION);
         ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(mbConfig, name);
         String containerId = mbContainerCreation.id();
 
@@ -663,17 +664,17 @@ public class DockerSteps {
      */
     private ContainerConfig getBrokerContainerConfig(String brokerIp,
                                                      int mqttPort, int mqttHostPort,
-                                                     int mqttInternalPort, int mqttInternalHostPort,
                                                      int mqttsPort, int mqttsHostPort,
                                                      int webPort, int webHostPort,
+                                                     int amqpPort, int amqpHostPort,
                                                      int debugPort, int debugHostPort,
                                                      String dockerImage) {
 
         final Map<String, List<PortBinding>> portBindings = new HashMap<>();
         addHostPort(ALL_IP, portBindings, mqttPort, mqttHostPort);
-        addHostPort(ALL_IP, portBindings, mqttInternalPort, mqttInternalHostPort);
         addHostPort(ALL_IP, portBindings, mqttsPort, mqttsHostPort);
         addHostPort(ALL_IP, portBindings, webPort, webHostPort);
+        addHostPort(ALL_IP, portBindings, amqpPort, amqpHostPort);
         addHostPort(ALL_IP, portBindings, debugPort, debugHostPort);
 
         final HostConfig hostConfig = HostConfig.builder().portBindings(portBindings).build();
@@ -697,9 +698,9 @@ public class DockerSteps {
 
         String[] ports = {
                 String.valueOf(mqttPort),
-                String.valueOf(mqttInternalPort),
                 String.valueOf(mqttsPort),
                 String.valueOf(webPort),
+                String.valueOf(amqpPort),
                 String.valueOf(debugPort)
         };
 

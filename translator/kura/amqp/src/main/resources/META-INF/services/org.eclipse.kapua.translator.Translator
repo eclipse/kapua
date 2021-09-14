@@ -1,0 +1,4 @@
+org.eclipse.kapua.translator.kura.amqp.TranslatorDataKuraAmqp
+org.eclipse.kapua.translator.kura.amqp.TranslatorRequestKuraAmqp
+org.eclipse.kapua.translator.amqp.kura.TranslatorDataAmqpKura
+org.eclipse.kapua.translator.amqp.kura.TranslatorResponseAmqpKura
