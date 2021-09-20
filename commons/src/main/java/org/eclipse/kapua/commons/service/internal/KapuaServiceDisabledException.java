@@ -14,9 +14,23 @@ package org.eclipse.kapua.commons.service.internal;
 
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.service.KapuaService;
 
+/**
+ * {@link KapuaException} to throw when a {@link KapuaService} is used and it is disabled.
+ *
+ * @since 1.2.0
+ */
 public class KapuaServiceDisabledException extends KapuaException {
 
+    private static final long serialVersionUID = 1811130737787308884L;
+
+    /**
+     * Constructor.
+     *
+     * @param serviceName The disabled {@link KapuaService} name.
+     * @since 1.2.0
+     */
     public KapuaServiceDisabledException(String serviceName) {
         super(KapuaErrorCodes.SERVICE_DISABLED, serviceName);
     }
