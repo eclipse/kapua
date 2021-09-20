@@ -19,11 +19,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * {@link KapuaListResult} implementation.
  *
- * @param <E> {@link KapuaEntity} domain
+ * @param <E> {@link KapuaEntity} type.
  * @since 1.0.0
  */
 public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResult<E> {
@@ -54,6 +58,30 @@ public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResu
     }
 
     @Override
+    public List<E> getItems() {
+        if (items == null) {
+            items = new ArrayList<>();
+        }
+
+        return items;
+    }
+
+    @Override
+    public List<E> getItems(Predicate<E> filter) {
+        return getItems().stream().filter(filter).collect(Collectors.toList());
+    }
+
+    @Override
+    public <K> Map<K, E> getItemsAsMap(Function<E, K> keyMapper) {
+        return getItems().stream().collect(Collectors.toMap(keyMapper, e -> e));
+    }
+
+    @Override
+    public <K, V> Map<K, V> getItemsAsMap(Function<E, K> keyMapper, Function<E, V> valueMapper) {
+        return getItems().stream().collect(Collectors.toMap(keyMapper, valueMapper));
+    }
+
+    @Override
     public E getItem(int index) {
         return getItems().get(index);
     }
@@ -71,15 +99,6 @@ public class KapuaListResultImpl<E extends KapuaEntity> implements KapuaListResu
     @Override
     public boolean isEmpty() {
         return getItems().isEmpty();
-    }
-
-    @Override
-    public List<E> getItems() {
-        if (items == null) {
-            items = new ArrayList<>();
-        }
-
-        return items;
     }
 
     @Override

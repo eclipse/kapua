@@ -25,12 +25,15 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * {@link KapuaListResult} definition.
  *
- * @param <E> {@link KapuaEntity} domain
- * @since 1.0
+ * @param <E> {@link KapuaEntity} type.
+ * @since 1.0.0
  */
 @XmlRootElement(name = "result")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -70,6 +73,43 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
     @XmlElementWrapper(name = "items")
     @XmlElement(name = "item")
     List<E> getItems();
+
+    /**
+     * Gets the {@link KapuaEntity}s that matched the {@link KapuaQuery#getPredicate()} and applies even more filtering.
+     * <p>
+     * This is meant to be used to filter result when is not possible to do so with {@link KapuaQuery#getPredicate()}s.
+     *
+     * @param filter The filter to apply to select results.
+     * @return The filtered {@link KapuaEntity}s that matched the {@link KapuaQuery#getPredicate()}.
+     * @since 1.6.0
+     */
+    List<E> getItems(@NotNull Predicate<E> filter);
+
+    /**
+     * Gets a {@link Map} whose {@link Map#keySet()} are generated from the given {@link Map.Entry#getKey()} mapper {@link Function}.
+     * The {@link Map#values()} are the {@link KapuaEntity}s themself.
+     * <p>
+     * This is like invoking {@link #getItemsAsMap(Function, Function)} whose value mapper returns the {@link KapuaEntity} itself.
+     *
+     * @param keyMapper The {@link Function} which defines the {@link Map.Entry#getKey()} for each {@link Map.Entry}
+     * @param <K>       The type of the {@link Map.Entry#getKey()}
+     * @return The {@link Map} generated according to the mapping {@link Map.Entry#getKey()} {@link Function}.
+     * @since 1.6.0
+     */
+    <K> Map<K, E> getItemsAsMap(@NotNull Function<E, K> keyMapper);
+
+    /**
+     * Gets a {@link Map} whose {@link Map#keySet()} are generated from the given {@link Map.Entry#getKey()} mapper {@link Function}.
+     * The {@link Map#values()} are generated from the given {@link Map.Entry#getValue()} mapper {@link Function}.
+     *
+     * @param keyMapper   The {@link Function} which defines the {@link Map.Entry#getKey()} for each {@link Map.Entry}
+     * @param valueMapper The {@link Function} which defines the {@link Map.Entry#getValue()} for each {@link Map.Entry}
+     * @param <K>         The type of the {@link Map.Entry#getKey()}
+     * @param <V>         The type of the {@link Map.Entry#getValue()}
+     * @return The {@link Map} generated according to the mapping {@link Function}s.
+     * @since 1.6.0
+     */
+    <K, V> Map<K, V> getItemsAsMap(@NotNull Function<E, K> keyMapper, @NotNull Function<E, V> valueMapper);
 
     /**
      * Gets the {@link KapuaEntity} at the given position in the {@link KapuaListResult}.
