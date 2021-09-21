@@ -78,7 +78,7 @@ public interface JobStepProperty {
     void setExampleValue(String exampleValue);
 
     /**
-     * Gets whether or not this must have a {@link #getPropertyValue()}
+     * Gets whether this must have a {@link #getPropertyValue()}
      *
      * @return {@code true} if must have a {@link #getPropertyValue()}, {@code false} otherwise.
      * @since 1.5.0
@@ -86,12 +86,28 @@ public interface JobStepProperty {
     Boolean getRequired();
 
     /**
-     * Whether or not this must have a {@link #getPropertyValue()}
+     * Whether this must have a {@link #getPropertyValue()}
      *
      * @param required {@code true} if must have a {@link #getPropertyValue()}, {@code false} otherwise.
      * @since 1.5.0
      */
     void setRequired(Boolean required);
+
+    /**
+     * Gets whether this {@link #getPropertyValue()} is a secret that shouldn't be shown (i.e. passwords).
+     *
+     * @return {@code true} if {@link #getPropertyValue()} is a secret that shouldn't be shown, {@code false} otherwise.
+     * @since 1.6.0
+     */
+    Boolean getSecret();
+
+    /**
+     * Whether t{@link #getPropertyValue()} is a secret that shouldn't be shown (i.e. passwords).
+     *
+     * @param se {@code true} if {@link #getPropertyValue()} is a secret that shouldn't be shown, {@code false} otherwise.
+     * @since 1.6.0
+     */
+    void setSecret(Boolean se);
 
     /**
      * @return
