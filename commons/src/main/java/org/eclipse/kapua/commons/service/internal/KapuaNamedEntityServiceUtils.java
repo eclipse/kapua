@@ -13,7 +13,9 @@
 package org.eclipse.kapua.commons.service.internal;
 
 import org.eclipse.kapua.KapuaDuplicateNameException;
+import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
@@ -33,8 +35,6 @@ public class KapuaNamedEntityServiceUtils<E extends KapuaNamedEntity, C extends 
     }
 
     public void checkEntityNameUniqueness(C creator) throws KapuaException {
-        //
-        // Check duplicate name
         KapuaQuery query = kapuaNamedEntityFactory.newQuery(creator.getScopeId());
         query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, creator.getName()));
 
@@ -44,8 +44,6 @@ public class KapuaNamedEntityServiceUtils<E extends KapuaNamedEntity, C extends 
     }
 
     public void checkEntityNameUniqueness(E entity) throws KapuaException {
-        //
-        // Check duplicate name
         KapuaQuery query = kapuaNamedEntityFactory.newQuery(entity.getScopeId());
         query.setPredicate(
                 query.andPredicate(
@@ -56,6 +54,29 @@ public class KapuaNamedEntityServiceUtils<E extends KapuaNamedEntity, C extends 
 
         if (kapuaNamedEntityService.count(query) > 0) {
             throw new KapuaDuplicateNameException(entity.getName());
+        }
+    }
+
+    public void checkEntityNameUniquenessInAllScopes(C creator) throws KapuaException {
+        KapuaQuery query = kapuaNamedEntityFactory.newQuery(null);
+        query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, creator.getName()));
+
+        if (KapuaSecurityUtils.doPrivileged(() -> kapuaNamedEntityService.count(query) > 0)) {
+            throw new KapuaDuplicateNameInAnotherAccountError(creator.getName());
+        }
+    }
+
+    public void checkEntityNameUniquenessInAllScopes(E entity) throws KapuaException {
+        KapuaQuery query = kapuaNamedEntityFactory.newQuery(null);
+        query.setPredicate(
+                query.andPredicate(
+                        query.attributePredicate(KapuaNamedEntityAttributes.NAME, entity.getName()),
+                        query.attributePredicate(KapuaNamedEntityAttributes.ENTITY_ID, entity.getId(), AttributePredicate.Operator.NOT_EQUAL)
+                )
+        );
+
+        if (KapuaSecurityUtils.doPrivileged(() -> kapuaNamedEntityService.count(query) > 0)) {
+            throw new KapuaDuplicateNameInAnotherAccountError(entity.getName());
         }
     }
 }
