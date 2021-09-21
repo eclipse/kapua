@@ -34,6 +34,8 @@ components:
           type: string
         required:
           type: boolean
+        secret:
+          type: boolean
         exampleValue:
           type: string
           readOnly: true
@@ -98,10 +100,16 @@ components:
             name: assets
             propertyType: org.eclipse.kapua.service.device.management.asset.DeviceAssets
             required: true
+            secret: false
+          - name: password
+            propertyType: java.lang.String
+            required: true
+            secret: true
           - name: timeout
             propertyType: java.lang.Long
             propertyValue: '30000'
             required: false
+            secret: false
         stepType: TARGET
     jobStepDefinitionListResult:
       allOf:
@@ -145,10 +153,12 @@ components:
                     name: assets
                     propertyType: org.eclipse.kapua.service.device.management.asset.DeviceAssets
                     required: true
+                    secret: false
                   - name: timeout
                     propertyType: java.lang.Long
                     propertyValue: '30000'
                     required: false
+                    secret: false
                 stepType: TARGET
               - type: jobStepDefinition
                 id: Ag
@@ -164,8 +174,14 @@ components:
                   - name: bundleId
                     propertyType: java.lang.String
                     required: true
+                    secret: false
+                  - name: password
+                    propertyType: java.lang.String
+                    required: true
+                    secret: true
                   - name: timeout
                     propertyType: java.lang.Long
                     propertyValue: '30000'
                     required: false
+                    secret: false
                 stepType: TARGET
