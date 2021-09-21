@@ -48,6 +48,14 @@ public class GwtJobStepProperty extends KapuaBaseModel {
         set("required", required);
     }
 
+    public Boolean getSecret() {
+        return get("secret");
+    }
+
+    public void setSecret(Boolean secret) {
+        set("secret", secret);
+    }
+
     public String getExampleValue() {
         return get("exampleValue");
     }
