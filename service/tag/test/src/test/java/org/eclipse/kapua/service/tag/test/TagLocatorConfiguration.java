@@ -92,7 +92,7 @@ public class TagLocatorConfiguration {
                 bind(TagService.class).toInstance(new TagServiceImpl());
                 bind(TagFactory.class).toInstance(new TagFactoryImpl());
 
-                //Inject actual Device service related services
+                // Inject actual Device service related services
                 DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
                 bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
 
@@ -110,6 +110,5 @@ public class TagLocatorConfiguration {
 
         Injector injector = Guice.createInjector(module);
         mockedLocator.setInjector(injector);
-
     }
 }

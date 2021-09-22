@@ -16,7 +16,11 @@
     <provided>
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
+
         <api>org.eclipse.kapua.service.generator.id.IdGeneratorService</api>
+
+        <api>org.eclipse.kapua.service.tag.TagService</api>
+        <api>org.eclipse.kapua.service.tag.TagFactory</api>
     </provided>
     <packages>
         <package>org.eclipse.kapua.commons</package>
