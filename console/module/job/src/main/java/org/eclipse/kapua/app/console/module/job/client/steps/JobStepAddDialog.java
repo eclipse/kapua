@@ -343,6 +343,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
         textField.setAllowBlank(!property.getRequired());
         textField.setFieldLabel(property.getRequired() ? "* " + fieldLabel : fieldLabel);
+        textField.setPassword(property.getSecret());
 
         if (property.getMinLength() != null) {
             textField.setMinLength(property.getMinLength());
