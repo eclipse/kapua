@@ -55,12 +55,11 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private static final Logger LOG = LoggerFactory.getLogger(RoleServiceImpl.class);
 
-    private final KapuaNamedEntityServiceUtils<Role, RoleCreator> namedEntityServiceUtils;
-
     @Inject
     private AuthorizationService authorizationService;
     @Inject
     private PermissionFactory permissionFactory;
+
     @Inject
     private RolePermissionFactory rolePermissionFactory;
 
@@ -71,8 +70,6 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
                 RoleCacheFactory.getInstance(),
                 RoleService.class,
                 RoleFactory.class);
-
-        this.namedEntityServiceUtils = new KapuaNamedEntityServiceUtils<>(this, KapuaLocator.getInstance().getFactory(RoleFactory.class));
     }
 
     @Override
@@ -96,7 +93,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(roleCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(RoleFactory.class), roleCreator);
 
         //
         // If permission are created out of the role scope, check that the current user has the permission on the external scopeId.
@@ -154,7 +151,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(role);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(RoleFactory.class), role);
 
         //
         // Do update

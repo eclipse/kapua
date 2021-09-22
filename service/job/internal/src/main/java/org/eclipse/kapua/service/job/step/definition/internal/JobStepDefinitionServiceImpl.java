@@ -35,26 +35,25 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * {@link JobStepDefinitionService} exposes APIs to manage JobStepDefinition objects.<br>
- * It includes APIs to create, update, find, list and delete StepDefinitions.<br>
- * Instances of the JobStepDefinitionService can be acquired through the ServiceLocator object.
+ * {@link JobStepDefinitionService} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @Singleton
 public class JobStepDefinitionServiceImpl extends AbstractKapuaService implements JobStepDefinitionService {
-
-    private final KapuaNamedEntityServiceUtils<JobStepDefinition, JobStepDefinitionCreator> namedEntityServiceUtils;
 
     @Inject
     private AuthorizationService authorizationService;
     @Inject
     private PermissionFactory permissionFactory;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public JobStepDefinitionServiceImpl() {
         super(JobEntityManagerFactory.getInstance(), null);
-
-        this.namedEntityServiceUtils = new KapuaNamedEntityServiceUtils<>(this, KapuaLocator.getInstance().getFactory(JobStepDefinitionFactory.class));
     }
 
     @Override
@@ -73,7 +72,7 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(creator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, KapuaLocator.getInstance().getFactory(JobStepDefinitionFactory.class), creator);
 
         //
         // Do create
@@ -96,7 +95,7 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(jobStepDefinition);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, KapuaLocator.getInstance().getFactory(JobStepDefinitionFactory.class), jobStepDefinition);
 
         //
         // Do Update

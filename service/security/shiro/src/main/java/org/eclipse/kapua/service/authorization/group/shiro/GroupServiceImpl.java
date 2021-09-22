@@ -49,8 +49,6 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
     private static final Logger LOG = LoggerFactory.getLogger(GroupServiceImpl.class);
 
-    private final KapuaNamedEntityServiceUtils<Group, GroupCreator> namedEntityServiceUtils;
-
     @Inject
     private AuthorizationService authorizationService;
     @Inject
@@ -62,8 +60,6 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
                 AuthorizationEntityManagerFactory.getInstance(),
                 GroupService.class,
                 GroupFactory.class);
-
-        this.namedEntityServiceUtils = new KapuaNamedEntityServiceUtils<>(this, KapuaLocator.getInstance().getFactory(GroupFactory.class));
     }
 
     @Override
@@ -86,7 +82,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(groupCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(GroupFactory.class), groupCreator);
 
         //
         // Do create
@@ -114,7 +110,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(group);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(GroupFactory.class), group);
 
         //
         // Do update

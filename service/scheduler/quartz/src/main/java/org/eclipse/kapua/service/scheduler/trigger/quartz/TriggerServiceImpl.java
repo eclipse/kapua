@@ -58,7 +58,19 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
     private static final Logger LOG = LoggerFactory.getLogger(TriggerServiceImpl.class);
 
-    private final KapuaNamedEntityServiceUtils<Trigger, TriggerCreator> namedEntityServiceUtils;
+    /**
+     * Lazy {@code static} reference to {@link TriggerDefinition} named "Inteval Job".
+     *
+     * @since 1.2.0
+     */
+    private static TriggerDefinition intervalJobTriggerDefinition;
+
+    /**
+     * Lazy {@code static} reference to {@link TriggerDefinition} named "Cron Job".
+     *
+     * @since 1.2.0
+     */
+    private static TriggerDefinition cronJobTriggerDefinition;
 
     @Inject
     private AuthorizationService authorizationService;
@@ -70,9 +82,6 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
     @Inject
     private TriggerDefinitionFactory triggerDefinitionFactory;
 
-    private static TriggerDefinition intervalJobTriggerDefinition;
-    private static TriggerDefinition cronJobTriggerDefinition;
-
     /**
      * Constructor.
      *
@@ -80,8 +89,6 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
      */
     public TriggerServiceImpl() {
         super(SchedulerEntityManagerFactory.getInstance(), null);
-
-        this.namedEntityServiceUtils = new KapuaNamedEntityServiceUtils<>(this, KapuaLocator.getInstance().getFactory(TriggerFactory.class));
     }
 
     @Override
@@ -121,7 +128,7 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(triggerCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(TriggerFactory.class), triggerCreator);
 
         //
         // Check dates
@@ -211,7 +218,7 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(trigger);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(TriggerFactory.class), trigger);
 
         //
         // Check dates
@@ -361,7 +368,7 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
      * @throws KapuaException In case is not found.
      * @since 1.1.0
      */
-    private TriggerDefinition getIntervalJobTriggerDefinition() throws KapuaException {
+    private synchronized TriggerDefinition getIntervalJobTriggerDefinition() throws KapuaException {
         if (intervalJobTriggerDefinition == null) {
             intervalJobTriggerDefinition = getTriggerDefinition("Interval Job");
         }
@@ -376,7 +383,7 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
      * @throws KapuaException In case is not found.
      * @since 1.1.0
      */
-    private TriggerDefinition getCronJobTriggerDefinition() throws KapuaException {
+    private synchronized TriggerDefinition getCronJobTriggerDefinition() throws KapuaException {
         if (cronJobTriggerDefinition == null) {
             cronJobTriggerDefinition = getTriggerDefinition("Cron Job");
         }

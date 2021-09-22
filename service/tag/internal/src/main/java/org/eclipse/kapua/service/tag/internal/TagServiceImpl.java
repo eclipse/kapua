@@ -43,11 +43,8 @@ import javax.inject.Singleton;
 @Singleton
 public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Tag, TagCreator, TagService, TagListResult, TagQuery, TagFactory> implements TagService {
 
-    private final KapuaNamedEntityServiceUtils<Tag, TagCreator> namedEntityServiceUtils;
-
     @Inject
     private AuthorizationService authorizationService;
-
     @Inject
     private PermissionFactory permissionFactory;
 
@@ -57,8 +54,6 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
                 TagEntityManagerFactory.getInstance(),
                 TagService.class,
                 TagFactory.class);
-
-        this.namedEntityServiceUtils = new KapuaNamedEntityServiceUtils<>(this, KapuaLocator.getInstance().getFactory(TagFactory.class));
     }
 
     @Override
@@ -81,7 +76,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(tagCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(TagFactory.class), tagCreator);
 
         //
         // Do create
@@ -109,7 +104,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(tag);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(TagFactory.class), tag);
 
         //
         // Do Update

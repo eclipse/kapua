@@ -64,8 +64,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
     private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
 
-    private final KapuaNamedEntityServiceUtils<Account, AccountCreator> namedEntityServiceUtils;
-
     @Inject
     private AuthorizationService authorizationService;
 
@@ -85,8 +83,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 AccountCacheFactory.getInstance(),
                 AccountService.class,
                 AccountFactory.class);
-
-        this.namedEntityServiceUtils = new KapuaNamedEntityServiceUtils<>(this, KapuaLocator.getInstance().getFactory(AccountFactory.class));
     }
 
     @Override
@@ -127,8 +123,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(accountCreator);
-        namedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(accountCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(AccountFactory.class), accountCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, KapuaLocator.getInstance().getFactory(AccountFactory.class), accountCreator);
 
         //
         // Check that expiration date is no later than parent expiration date

@@ -57,16 +57,14 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     private static final Logger LOG = LoggerFactory.getLogger(JobServiceImpl.class);
 
-    private final KapuaNamedEntityServiceUtils<Job, JobCreator> namedEntityServiceUtils;
-
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
+    private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
 
     @Inject
     private AuthorizationService authorizationService;
     @Inject
     private PermissionFactory permissionFactory;
-
-    private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
 
     @Inject
     private TriggerService triggerService;
@@ -79,8 +77,6 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
                 JobEntityManagerFactory.getInstance(),
                 JobService.class,
                 JobFactory.class);
-
-        this.namedEntityServiceUtils = new KapuaNamedEntityServiceUtils<>(this, KapuaLocator.getInstance().getFactory(JobFactory.class));
     }
 
     @Override
@@ -103,7 +99,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(creator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(JobFactory.class), creator);
 
         //
         // Do create
@@ -130,7 +126,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(job);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(JobFactory.class), job);
 
         //
         // Do update

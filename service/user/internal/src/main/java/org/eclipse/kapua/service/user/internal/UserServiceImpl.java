@@ -52,22 +52,23 @@ import java.util.Objects;
 
 /**
  * {@link UserService} implementation.
+ *
+ * @since 1.0.0
  */
 @Singleton
 public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<User, UserCreator, UserService, UserListResult, UserQuery, UserFactory> implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private final KapuaNamedEntityServiceUtils<User, UserCreator> namedEntityServiceUtils;
-
     @Inject
     private AuthorizationService authorizationService;
-
     @Inject
     private PermissionFactory permissionFactory;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public UserServiceImpl() {
         super(UserService.class.getName(),
@@ -76,8 +77,6 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
                 UserCacheFactory.getInstance(),
                 UserService.class,
                 UserFactory.class);
-
-        this.namedEntityServiceUtils = new KapuaNamedEntityServiceUtils<>(this, KapuaLocator.getInstance().getFactory(UserFactory.class));
     }
 
     @Override
@@ -109,8 +108,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check duplicate name
-        namedEntityServiceUtils.checkEntityNameUniqueness(userCreator);
-        namedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(userCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(UserFactory.class), userCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, KapuaLocator.getInstance().getFactory(UserFactory.class), userCreator);
 
         //
         // Check User.userType
