@@ -14,21 +14,25 @@ package org.eclipse.kapua.service;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaEntity;
+import org.eclipse.kapua.model.KapuaNamedEntity;
+
+import javax.validation.constraints.NotNull;
 
 /**
- * Common interface for all KapuaService that are managing identifiable entities.
+ * Base {@code interface} for all {@link KapuaService}s that are managing {@link KapuaNamedEntity}es.
  *
- * @param <E> - Class of the KapuaEntity being managed by this Service
- * @since 1.0
+ * @param <E> Type of the {@link KapuaNamedEntity} being managed.
+ * @since 1.0.0
  */
-public interface KapuaNamedEntityService<E extends KapuaEntity> extends KapuaService {
+public interface KapuaNamedEntityService<E extends KapuaNamedEntity> extends KapuaService {
 
     /**
-     * Find the entity by name
+     * Finds a {@link KapuaNamedEntity} by its {@link KapuaNamedEntity#getName()}
      *
-     * @param name
-     * @return
+     * @param name The {@link KapuaNamedEntity#getName()}.
+     * @return The found {@link KapuaEntity}, or {@code null}.
      * @throws KapuaException
+     * @since 1.0.0
      */
-    E findByName(String name) throws KapuaException;
+    E findByName(@NotNull String name) throws KapuaException;
 }
