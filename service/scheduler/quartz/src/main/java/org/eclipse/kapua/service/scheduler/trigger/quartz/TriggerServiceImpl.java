@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
-import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.SchedulerDomains;
@@ -30,10 +30,9 @@ import org.eclipse.kapua.service.scheduler.quartz.SchedulerEntityManagerFactory;
 import org.eclipse.kapua.service.scheduler.quartz.driver.QuartzTriggerDriver;
 import org.eclipse.kapua.service.scheduler.quartz.driver.exception.TriggerNeverFiresException;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
+import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
@@ -59,6 +58,8 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
     private static final Logger LOG = LoggerFactory.getLogger(TriggerServiceImpl.class);
 
+    private final KapuaNamedEntityServiceUtils<Trigger, TriggerCreator> namedEntityServiceUtils;
+
     @Inject
     private AuthorizationService authorizationService;
     @Inject
@@ -79,6 +80,8 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
      */
     public TriggerServiceImpl() {
         super(SchedulerEntityManagerFactory.getInstance(), null);
+
+        this.namedEntityServiceUtils = new KapuaNamedEntityServiceUtils<>(this, KapuaLocator.getInstance().getFactory(TriggerFactory.class));
     }
 
     @Override
@@ -118,13 +121,10 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         //
         // Check duplicate name
-        TriggerQuery query = new TriggerQueryImpl(triggerCreator.getScopeId());
-        query.setPredicate(query.attributePredicate(TriggerAttributes.NAME, triggerCreator.getName()));
+        namedEntityServiceUtils.checkEntityNameUniqueness(triggerCreator);
 
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(triggerCreator.getName());
-        }
-
+        //
+        // Check dates
         if (triggerCreator.getEndsOn() != null) {
             Date startTime = triggerCreator.getStartsOn();
             Date endTime = triggerCreator.getEndsOn();
@@ -211,18 +211,10 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         //
         // Check duplicate name
-        TriggerQuery query = new TriggerQueryImpl(trigger.getScopeId());
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(TriggerAttributes.NAME, trigger.getName()),
-                        query.attributePredicate(TriggerAttributes.ENTITY_ID, trigger.getId(), AttributePredicate.Operator.NOT_EQUAL)
-                )
-        );
+        namedEntityServiceUtils.checkEntityNameUniqueness(trigger);
 
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(trigger.getName());
-        }
-
+        //
+        // Check dates
         if (trigger.getEndsOn() != null) {
             Date startTime = new Date(trigger.getStartsOn().getTime());
             Date endTime = new Date(trigger.getEndsOn().getTime());

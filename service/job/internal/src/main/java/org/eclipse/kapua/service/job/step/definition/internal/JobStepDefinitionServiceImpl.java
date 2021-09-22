@@ -15,7 +15,9 @@ package org.eclipse.kapua.service.job.step.definition.internal;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -25,6 +27,7 @@ import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
+import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 
@@ -41,6 +44,8 @@ import javax.inject.Singleton;
 @Singleton
 public class JobStepDefinitionServiceImpl extends AbstractKapuaService implements JobStepDefinitionService {
 
+    private final KapuaNamedEntityServiceUtils<JobStepDefinition, JobStepDefinitionCreator> namedEntityServiceUtils;
+
     @Inject
     private AuthorizationService authorizationService;
     @Inject
@@ -48,6 +53,8 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
     public JobStepDefinitionServiceImpl() {
         super(JobEntityManagerFactory.getInstance(), null);
+
+        this.namedEntityServiceUtils = new KapuaNamedEntityServiceUtils<>(this, KapuaLocator.getInstance().getFactory(JobStepDefinitionFactory.class));
     }
 
     @Override
@@ -63,6 +70,10 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
         //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+
+        //
+        // Check duplicate name
+        namedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(creator);
 
         //
         // Do create
@@ -83,6 +94,12 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
+        //
+        // Check duplicate name
+        namedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(jobStepDefinition);
+
+        //
+        // Do Update
         return entityManagerSession.doTransactedAction(em -> JobStepDefinitionDAO.update(em, jobStepDefinition));
     }
 
