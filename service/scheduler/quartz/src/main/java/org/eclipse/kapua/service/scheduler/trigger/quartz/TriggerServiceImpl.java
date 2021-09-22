@@ -44,6 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -313,7 +314,11 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
         //
         // Do find
         Trigger trigger = entityManagerSession.doAction(em -> TriggerDAO.find(em, scopeId, triggerId));
-        adaptTrigger(trigger);
+
+        if (trigger != null) {
+            adaptTrigger(trigger);
+        }
+
         return trigger;
     }
 
@@ -431,7 +436,7 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
      * @throws KapuaException In case that {@link TriggerDefinition} is not found.
      * @since 1.1.0
      */
-    private void adaptTrigger(Trigger trigger) throws KapuaException {
+    private void adaptTrigger(@NotNull Trigger trigger) throws KapuaException {
         boolean converted = false;
         if (trigger.getRetryInterval() != null) {
             trigger.setTriggerDefinitionId(getIntervalJobTriggerDefinition().getId());
