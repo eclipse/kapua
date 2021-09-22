@@ -23,7 +23,6 @@ import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.job.engine.client.JobStartOptionsClient;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
-import org.eclipse.kapua.job.engine.jbatch.JobStartOptionsImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
 import org.eclipse.kapua.model.config.metatype.KapuaTicon;
@@ -105,7 +104,6 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                     // Jobs
                     Job.class,
                     JobStartOptionsClient.class,
-                    JobStartOptionsImpl.class,
                     JobListResult.class,
                     JobXmlRegistry.class,
                     JobTargetSublist.class,
