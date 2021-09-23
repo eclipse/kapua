@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.model.domain;
 
+import org.eclipse.kapua.model.KapuaEntityCreator;
+import org.eclipse.kapua.model.KapuaUpdatableEntity;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
@@ -34,9 +38,9 @@ public enum Actions {
      * Represent any type of fetching data from the system. <br>
      * Common usage is on:
      * <ul>
-     * <li>{@link KapuaEntityService#find(org.eclipse.kapua.model.id.KapuaId, org.eclipse.kapua.model.id.KapuaId)}</li>
-     * <li>{@link KapuaEntityService#query(org.eclipse.kapua.model.query.KapuaQuery)}</li>
-     * <li>{@link KapuaEntityService#count(org.eclipse.kapua.model.query.KapuaQuery)}</li>
+     * <li>{@link KapuaEntityService#find(KapuaId, KapuaId)}</li>
+     * <li>{@link KapuaEntityService#query(KapuaQuery)}</li>
+     * <li>{@link KapuaEntityService#count(KapuaQuery)}</li>
      * <li>{@link KapuaNamedEntityService#findByName(String)}</li>
      * </ul>
      *
@@ -48,8 +52,8 @@ public enum Actions {
      * Represent any type of writing data into the system.
      * Common usage is on:
      * <ul>
-     * <li>{@link KapuaEntityService#create(org.eclipse.kapua.model.KapuaEntityCreator)}</li>
-     * <li>{@link KapuaUpdatableEntityService#update(org.eclipse.kapua.model.KapuaEntity)}</li>
+     * <li>{@link KapuaEntityService#create(KapuaEntityCreator)}</li>
+     * <li>{@link KapuaUpdatableEntityService#update(KapuaUpdatableEntity)}</li>
      * </ul>
      *
      * @since 1.0.0
@@ -60,7 +64,7 @@ public enum Actions {
      * Represent any type of deleting data from the system. <br>
      * Common usage is on:
      * <ul>
-     * <li>{@link KapuaEntityService#delete(org.eclipse.kapua.model.id.KapuaId, org.eclipse.kapua.model.id.KapuaId)}</li>
+     * <li>{@link KapuaEntityService#delete(KapuaId, KapuaId)}</li>
      * </ul>
      *
      * @since 1.0.0
@@ -83,5 +87,5 @@ public enum Actions {
      *
      * @since 1.0.0
      */
-    execute,;
+    execute,
 }
