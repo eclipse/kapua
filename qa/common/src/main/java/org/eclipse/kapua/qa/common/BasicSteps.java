@@ -89,7 +89,7 @@ public class BasicSteps extends TestBase {
         this.database = database;
     }
 
-    @Before(value="@setup and @env_docker", order=0)
+    @Before(value="@setup and (@env_docker or @env_docker_base)", order=0)
     public void initParametersDocker(Scenario scenario) {
         logger.info("=====> Init parameters for docker environment...");
         setProperties(scenario, "kapuadb", "true", "localhost", "3306", "DEFAULT", "org.h2.Driver",
@@ -97,7 +97,7 @@ public class BasicSteps extends TestBase {
         logger.info("=====> Init parameters for docker environment... DONE");
     }
 
-    @Before(value="@setup and (@env_docker_base or @env_none)", order=0)
+    @Before(value="@setup and @env_none", order=0)
     public void initParametersEmbedded(Scenario scenario) {
         logger.info("=====> Init parameters for embedded environment...");
         setProperties(scenario, "kapuadb", "true", "", "", "H2", "org.h2.Driver", "jdbc:h2:mem:",
@@ -367,15 +367,15 @@ public class BasicSteps extends TestBase {
     }
 
     @Before(value="@env_docker_base and not (@setup or @teardown)", order=0)
-    public void beforeScenarioEmbeddedMinimal(Scenario scenario) {
+    public void beforeScenarioDockerBase(Scenario scenario) {
         beforeCommon(scenario);
-        beforeNoDocker();
+        databaseInit();
     }
 
     @Before(value="@env_none and not (@setup or @teardown)", order=0)
     public void beforeScenarioNone(Scenario scenario) {
         beforeCommon(scenario);
-        beforeNoDocker();
+        databaseInit();
     }
 
     @After(value="@env_docker and not (@setup or @teardown)", order=0)
@@ -384,8 +384,8 @@ public class BasicSteps extends TestBase {
     }
 
     @After(value="@env_docker_base and not (@setup or @teardown)", order=0)
-    public void afterScenarioEmbeddedMinimal(Scenario scenario) {
-        afterScenarioNoDocker(scenario);
+    public void afterScenarioDockerBase(Scenario scenario) {
+        afterScenarioDocker(scenario);
     }
 
     @After(value="@env_none and not (@setup or @teardown)", order=0)
@@ -398,8 +398,8 @@ public class BasicSteps extends TestBase {
         stepData.clear();
     }
 
-    protected void beforeNoDocker() {
-        database.setup();
+    protected void databaseInit() {
+        database.init();
         // Create KapuaSession using KapuaSecurtiyUtils and kapua-sys user as logged in user.
         // All operations on database are performed using system user.
         // Only for unit tests. Integration tests assume that a real login is performed.
@@ -419,11 +419,11 @@ public class BasicSteps extends TestBase {
         logger.info("Database drop...");
         try {
             database.dropAll();
-            logger.info("Database drop... DONE");
             database.close();
         } catch (Exception e) {
             logger.error("Failed execute @After", e);
         }
+        logger.info("Database drop... DONE");
         KapuaSecurityUtils.clearSession();
     }
 

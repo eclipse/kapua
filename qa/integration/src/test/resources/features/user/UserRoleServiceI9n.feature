@@ -10,7 +10,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@user
+@userIntegrationBase
 @userRole
 @env_docker_base
 
@@ -20,8 +20,7 @@ Feature: User role service integration tests
 Scenario: Initialize test environment
     Given Init Jaxb Context
     And Init Security Context
-    And Start Datastore
-    And Start Event Broker
+    And Start base docker environment
 
   Scenario: Adding existing roles to user
   Adding several different roles to one user
@@ -1644,6 +1643,5 @@ Scenario: Initialize test environment
 
 @teardown
   Scenario: Stop test environment
-    Given Stop Event Broker
-    And Stop Datastore
+    Given Stop base docker environment
     And Reset Security Context

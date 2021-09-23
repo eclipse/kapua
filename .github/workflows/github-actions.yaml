@@ -241,6 +241,34 @@ jobs:
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@user" verify
       - run: bash <(curl -s https://codecov.io/bash)
+  test-userIntegrationBase:
+    needs: build-kapua
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+        with:
+          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
+          restore-keys: |
+            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - uses: nick-invision/retry@v2.4.0
+        with:
+          timeout_minutes: 30
+          retry_on: error
+          max_attempts: 3
+          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@userIntegrationBase" verify
+      - run: bash <(curl -s https://codecov.io/bash)
   test-userIntegration:
     needs: build-kapua
     runs-on: ubuntu-latest
@@ -311,6 +339,34 @@ jobs:
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobs" verify
       - run: bash <(curl -s https://codecov.io/bash)
+  test-jobsIntegrationBase:
+    needs: build-kapua
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+        with:
+          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
+          restore-keys: |
+            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - uses: nick-invision/retry@v2.4.0
+        with:
+          timeout_minutes: 30
+          retry_on: error
+          max_attempts: 3
+          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobsIntegrationBase" verify
+      - run: bash <(curl -s https://codecov.io/bash)
   test-jobsIntegration:
     needs: build-kapua
     runs-on: ubuntu-latest
@@ -353,12 +409,47 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+        with:
+          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
+          restore-keys: |
+            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 30
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerService" verify
+      - run: bash <(curl -s https://codecov.io/bash)
+  test-triggerServiceIntegrationBase:
+    needs: build-kapua
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+        with:
+          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
+          restore-keys: |
+            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - uses: nick-invision/retry@v2.4.0
+        with:
+          timeout_minutes: 30
+          retry_on: error
+          max_attempts: 3
+          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerServiceIntegrationBase" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-triggerServiceIntegration:
     needs: build-kapua

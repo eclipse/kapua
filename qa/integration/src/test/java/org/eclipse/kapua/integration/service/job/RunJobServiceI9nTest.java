@@ -26,7 +26,8 @@ import io.cucumber.junit.CucumberOptions;
                    },
         glue = { "org.eclipse.kapua.service.job.steps",
                  "org.eclipse.kapua.service.user.steps",
-                 "org.eclipse.kapua.qa.common"
+                 "org.eclipse.kapua.qa.common",
+                 "org.eclipse.kapua.qa.integration.steps"
                },
         plugin = { "pretty",
                    "html:target/cucumber/JobServiceI9n",

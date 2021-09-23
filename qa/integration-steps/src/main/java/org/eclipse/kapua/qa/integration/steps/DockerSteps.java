@@ -41,6 +41,7 @@ import io.cucumber.java.en.Then;
 
 import org.apache.activemq.command.BrokerInfo;
 import org.eclipse.kapua.qa.common.BasicSteps;
+import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.Assert;
@@ -55,6 +56,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,8 +70,8 @@ public class DockerSteps {
     private static final String NETWORK_PREFIX = "kapua-net";
     private static final String KAPUA_VERSION = "1.6.0-SNAPSHOT";
     private static final String ES_IMAGE = "elasticsearch:7.8.1";
-    private static final List<String> DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME;
     private static final List<String> DEFAULT_DEPLOYMENT_CONTAINERS_NAME;
+    private static final List<String> DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME;
     private static final int WAIT_COUNT = 120;//total wait time = 240 secs (120 * 2000ms)
     private static final long WAIT_STEP = 2000;
     private static final long WAIT_FOR_DB = 10000;
@@ -91,15 +93,15 @@ public class DockerSteps {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     static {
-        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME = new ArrayList<>();
-        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add("telemetry-consumer");
-        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add("lifecycle-consumer");
-        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add("message-broker");
-        DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME.add(BasicSteps.JOB_ENGINE_CONTAINER_NAME);
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME = new ArrayList<>();
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("events-broker");
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("es");
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("db");
+        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("telemetry-consumer");
+        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("lifecycle-consumer");
+        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("message-broker");
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME = new ArrayList<>();
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.JOB_ENGINE_CONTAINER_NAME);
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("events-broker");
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("es");
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("db");
     }
 
     private boolean printContainerLogOnContainerExit = true;
@@ -111,13 +113,16 @@ public class DockerSteps {
     public Map<String, Integer> portMap;
     public Map<String, BrokerInfo> brokerMap;
 
+    private DBHelper database;
     private StepData stepData;
 
     private static final String ALL_IP = "0.0.0.0";
 
+
     @Inject
-    public DockerSteps(StepData stepData) {
+    public DockerSteps(StepData stepData, DBHelper database) {
         this.stepData = stepData;
+        this.database = database;
         containerMap = new HashMap<>();
     }
 
@@ -191,32 +196,9 @@ public class DockerSteps {
     @Given("Start full docker environment")
     public void startFullDockerEnvironment() throws Exception {
         logger.info("Starting full docker environment...");
+        stopFullDockerEnvironment();
+        startBaseDockerEnvironmentInternal();
         try {
-            pullImage(ES_IMAGE);
-            stopFullDockerEnvironment();
-            removeNetwork();
-            createNetwork();
-
-            startDBContainer("db");
-            synchronized (this) {
-                this.wait(WAIT_FOR_DB);
-            }
-
-            startESContainer("es");
-            synchronized (this) {
-                this.wait(WAIT_FOR_ES);
-            }
-
-            startEventBrokerContainer("events-broker");
-            synchronized (this) {
-                this.wait(WAIT_FOR_EVENTS_BROKER);
-            }
-
-            startJobEngineContainer(BasicSteps.JOB_ENGINE_CONTAINER_NAME);
-            synchronized (this) {
-                this.wait(WAIT_FOR_JOB_ENGINE);
-            }
-
             startMessageBrokerContainer("message-broker");
             synchronized (this) {
                 this.wait(WAIT_FOR_BROKER);
@@ -240,6 +222,45 @@ public class DockerSteps {
         }
         catch (Exception e) {
             logger.error("Error while starting full docker environment: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    @Given("Start base docker environment")
+    public void startBaseDockerEnvironment() throws Exception {
+        stopBaseDockerEnvironment();
+        startBaseDockerEnvironmentInternal();
+    }
+
+    private void startBaseDockerEnvironmentInternal() throws Exception {
+        logger.info("Starting full docker environment...");
+        try {
+            pullImage(ES_IMAGE);
+            removeNetwork();
+            createNetwork();
+
+            startDBContainer("db");
+            synchronized (this) {
+                this.wait(WAIT_FOR_DB);
+            }
+
+            startESContainer("es");
+            synchronized (this) {
+                this.wait(WAIT_FOR_ES);
+            }
+
+            startEventBrokerContainer("events-broker");
+            synchronized (this) {
+                this.wait(WAIT_FOR_EVENTS_BROKER);
+            }
+
+            startJobEngineContainer(BasicSteps.JOB_ENGINE_CONTAINER_NAME);
+            synchronized (this) {
+                this.wait(WAIT_FOR_JOB_ENGINE);
+            }
+        }
+        catch (Exception e) {
+            logger.error("Error while starting base docker environment: {}", e.getMessage(), e);
             throw e;
         }
     }
@@ -321,10 +342,17 @@ public class DockerSteps {
     }
 
     @Given("Stop full docker environment")
-    public void stopFullDockerEnvironment() throws DockerException, InterruptedException {
-        printContainersLog(DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME);
-        removeContainers(DEFAULT_DEPLOYMENT_KAPUA_CONTAINERS_NAME);
+    public void stopFullDockerEnvironment() throws DockerException, InterruptedException, SQLException {
+        database.dropAll();
+        printContainersLog(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
+        stopBaseDockerEnvironment();
         removeContainers(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
+    }
+
+    @Given("Stop base docker environment")
+    public void stopBaseDockerEnvironment() throws DockerException, InterruptedException, SQLException {
+        database.dropAll();
+        removeContainers(DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME);
     }
 
     @Given("Create network")

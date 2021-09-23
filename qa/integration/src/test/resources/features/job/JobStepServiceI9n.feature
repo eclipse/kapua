@@ -10,9 +10,9 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@jobs
+@jobsIntegrationBase
 @jobStepService
-@env_none
+@env_docker_base
 
 Feature: Job step service CRUD tests
   The Job Step service is responsible for maintaining job steps.
@@ -21,6 +21,7 @@ Feature: Job step service CRUD tests
 Scenario: Init Security Context for all scenarios
   Given Init Jaxb Context
   And Init Security Context
+  And Start base docker environment
 
   Scenario: Regular step creation
 
@@ -170,5 +171,6 @@ Scenario: Step factory sanity checks
     Given I test the sanity of the step factory
 
 @teardown
-Scenario: Reset Security Context for all scenarios
-    Given Reset Security Context
+  Scenario: Stop test environment
+    Given Stop base docker environment
+    And Reset Security Context

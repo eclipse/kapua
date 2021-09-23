@@ -10,9 +10,9 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@jobs
+@jobsIntegrationBase
 @jobExecutionService
-@env_none
+@env_docker_base
 
 Feature: Job Execution service CRUD tests
     The Job service is responsible for maintaining the status of the target step executions.
@@ -21,6 +21,7 @@ Feature: Job Execution service CRUD tests
 Scenario: Init Security Context for all scenarios
   Given Init Jaxb Context
   And Init Security Context
+  And Start base docker environment
 
 Scenario: Regular job execution creation
 
@@ -132,5 +133,6 @@ Scenario: Job execution factory sanity checks
     And I test the sanity of the job execution factory
 
 @teardown
-  Scenario: Reset Security Context for all scenarios
-    Given Reset Security Context
+  Scenario: Stop test environment
+    Given Stop base docker environment
+    And Reset Security Context

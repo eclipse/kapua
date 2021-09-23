@@ -10,9 +10,9 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@jobs
+@jobsIntegrationBase
 @jobService
-@env_none
+@env_docker_base
 
 Feature: Job service CRUD tests
   The Job service is responsible for executing scheduled actions on various targets.
@@ -21,6 +21,7 @@ Feature: Job service CRUD tests
 Scenario: Init Security Context for all scenarios
   Given Init Jaxb Context
   And Init Security Context
+  And Start base docker environment
 
   Scenario: Regular job creation
 
@@ -250,5 +251,6 @@ Scenario: Init Security Context for all scenarios
     Then No exception was thrown
 
 @teardown
-  Scenario: Reset Security Context for all scenarios
-    Given Reset Security Context
+  Scenario: Stop test environment
+    Given Stop base docker environment
+    And Reset Security Context

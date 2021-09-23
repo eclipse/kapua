@@ -169,17 +169,7 @@ public class JobServiceSteps extends TestBase {
     // * Setup and tear-down steps                                                        *
     // ************************************************************************************
 
-    @Before(value="@env_docker", order=10)
-    public void beforeScenarioDockerFull(Scenario scenario) {
-        updateScenario(scenario);
-    }
-
-    @Before(value="@env_docker_base", order=10)
-    public void beforeScenarioEmbeddedMinimal(Scenario scenario) {
-        updateScenario(scenario);
-    }
-
-    @Before(value="@env_none", order=10)
+    @Before(value="@env_docker or @env_docker_base or @env_none", order=10)
     public void beforeScenarioNone(Scenario scenario) {
         updateScenario(scenario);
     }

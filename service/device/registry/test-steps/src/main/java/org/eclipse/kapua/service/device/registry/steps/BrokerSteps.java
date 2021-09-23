@@ -140,7 +140,7 @@ public class BrokerSteps extends TestBase {
      * Client simulating Kura device
      */
     private KuraDevice kuraDevice;
-    private ArrayList<KuraDevice> kuraDevices = kuraDevices = new ArrayList<>();
+    private ArrayList<KuraDevice> kuraDevices = new ArrayList<>();
 
     @Inject
     public BrokerSteps(StepData stepData) {
@@ -160,17 +160,7 @@ public class BrokerSteps extends TestBase {
         deviceAssetManagementService = locator.getService(DeviceAssetManagementService.class);
     }
 
-    @Before(value="@env_docker", order=10)
-    public void beforeScenarioDockerFull(Scenario scenario) {
-        beforeInternal(scenario);
-    }
-
-    @Before(value="@env_docker_base", order=10)
-    public void beforeScenarioEmbeddedMinimal(Scenario scenario) {
-        beforeInternal(scenario);
-    }
-
-    @Before(value="@env_none", order=10)
+    @Before(value="@env_docker or @env_docker_base or @env_none", order=10)
     public void beforeScenarioNone(Scenario scenario) {
         beforeInternal(scenario);
     }
