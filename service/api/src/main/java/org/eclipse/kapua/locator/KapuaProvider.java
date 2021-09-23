@@ -17,6 +17,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * A class annotated with @KapuaProvider is used by the KapuaLocator to 
+ * create a binding with its matching interface.
+ * @deprecated
+ * A new mechanism to create bindings between interfaces and implementations will
+ * be developed so that this annotation will be no longer necessary. It will be
+ * removed in a future version. 
+ */
+@Deprecated
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface KapuaProvider {

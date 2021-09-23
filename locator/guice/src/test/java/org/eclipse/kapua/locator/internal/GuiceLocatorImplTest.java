@@ -16,15 +16,19 @@ package org.eclipse.kapua.locator.internal;
 import java.util.List;
 
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.core.ServiceModuleConfiguration;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
 import org.eclipse.kapua.locator.guice.GuiceLocatorImpl;
 import org.eclipse.kapua.locator.guice.TestService;
 import org.eclipse.kapua.locator.internal.guice.FactoryA;
 import org.eclipse.kapua.locator.internal.guice.FactoryB;
+import org.eclipse.kapua.locator.internal.guice.FactoryC;
+import org.eclipse.kapua.locator.internal.guice.FactoryD;
 import org.eclipse.kapua.locator.internal.guice.ServiceA;
 import org.eclipse.kapua.locator.internal.guice.ServiceB;
 import org.eclipse.kapua.locator.internal.guice.ServiceC;
+import org.eclipse.kapua.locator.internal.guice.extra.ServiceE;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
@@ -61,20 +65,45 @@ public class GuiceLocatorImplTest {
         Assert.assertNotNull(locator.getService(ServiceA.class));
     }
 
-    @Test(expected = KapuaRuntimeException.class)
-    public void shouldProvideServiceB() {
-        Assert.assertNotNull(locator.getService(ServiceB.class));
-    }
-
     @Test
     public void shouldProvideFactoryA() {
         Assert.assertNotNull(locator.getFactory(FactoryA.class));
     }
 
     @Test
-    public void shouldNotFindFactory() {
+    public void shouldProvideServiceB() {
+        Assert.assertNotNull(locator.getService(ServiceB.class));
+    }
+
+    @Test
+    public void shouldProvideFactoryB() {
+        Assert.assertNotNull(locator.getFactory(FactoryB.class));
+    }
+
+    @Test
+    public void shouldProvideOneServiceModule() {
+        Assert.assertEquals(1, ServiceModuleConfiguration.getServiceModules().size());
+    }
+
+    @Test(expected = KapuaRuntimeException.class)
+    public void shouldNotProvideServiceC() {
+        Assert.assertNotNull(locator.getService(ServiceC.class));
+    }
+
+    @Test(expected = KapuaRuntimeException.class)
+    public void shouldNotProvideFactoryC() {
+        Assert.assertNotNull(locator.getFactory(FactoryC.class));
+    }
+
+    @Test(expected = KapuaRuntimeException.class)
+    public void shouldNotProvideServiceD() {
+        Assert.assertNotNull(locator.getService(ServiceE.class));
+    }
+
+    @Test
+    public void shouldNotFindFactoryD() {
         try {
-            locator.getFactory(FactoryB.class);
+            locator.getFactory(FactoryD.class);
             Assert.fail("getFactory must throw an exception for un-bound factories");
         } catch (KapuaRuntimeException e) {
             Assert.assertEquals(KapuaLocatorErrorCodes.FACTORY_UNAVAILABLE, e.getCode());
@@ -86,12 +115,7 @@ public class GuiceLocatorImplTest {
     @Test
     public void shouldProvideAll() {
         List<KapuaService> result = locator.getServices();
-        Assert.assertEquals(1, result.size());
-
-        {
-            KapuaService service = result.get(0);
-            Assert.assertTrue(service instanceof ServiceA);
-        }
+        Assert.assertEquals(2, result.size());
     }
 
     @Test(expected = KapuaRuntimeException.class)
