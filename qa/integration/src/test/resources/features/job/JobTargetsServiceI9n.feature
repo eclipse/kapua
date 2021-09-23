@@ -10,9 +10,9 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@jobs
+@jobsIntegrationBase
 @jobTargetService
-@env_none
+@env_docker_base
 
 Feature: Job Target service CRUD tests
     The Job service is responsible for maintaining a list of job targets.
@@ -21,6 +21,7 @@ Feature: Job Target service CRUD tests
 Scenario: Init Security Context for all scenarios
   Given Init Jaxb Context
   And Init Security Context
+  And Start base docker environment
 
 Scenario: Regular target creation
 
@@ -160,5 +161,6 @@ Scenario: Job target factory sanity checks
     When I test the sanity of the job target factory
 
 @teardown
-  Scenario: Reset Security Context for all scenarios
-    Given Reset Security Context
+  Scenario: Stop test environment
+    Given Stop base docker environment
+    And Reset Security Context

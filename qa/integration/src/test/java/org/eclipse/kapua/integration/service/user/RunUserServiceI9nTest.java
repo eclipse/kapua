@@ -24,6 +24,7 @@ import io.cucumber.junit.CucumberOptions;
                 "classpath:features/user/UserServiceI9n.feature"
         },
         glue = {"org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.authorization.steps",

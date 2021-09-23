@@ -10,9 +10,9 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@jobs
-@triggerService
-@env_none
+@jobsIntegrationBase
+@triggerServiceIntegrationBase
+@env_docker_base
 
 Feature: Trigger service tests
 
@@ -20,6 +20,7 @@ Feature: Trigger service tests
 Scenario: Init Security Context for all scenarios
   Given Init Jaxb Context
   And Init Security Context
+  And Start base docker environment
 
   Scenario: Adding "Device Connect" Schedule With All Valid Parameters
   Login as kapua-sys user and create a job with name job0.
@@ -785,5 +786,6 @@ Scenario: Init Security Context for all scenarios
     Then I logout
 
 @teardown
-  Scenario: Reset Security Context for all scenarios
-    Given Reset Security Context
+  Scenario: Stop test environment
+    Given Stop base docker environment
+    And Reset Security Context

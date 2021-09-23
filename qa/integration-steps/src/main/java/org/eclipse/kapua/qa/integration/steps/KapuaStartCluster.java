@@ -35,7 +35,7 @@ public class KapuaStartCluster {
     }
 
     public static void main(String argv[]) throws Exception {
-        DockerSteps ds = new DockerSteps(null);
+        DockerSteps ds = new DockerSteps(null, null);
         ds.startFullDockerEnvironment();
         String adminClientId = "admin-test-client";
         MqttClient adminClient = connect(adminClientId, "kapua-sys", "kapua-password");

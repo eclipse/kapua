@@ -261,7 +261,7 @@ Feature: JobEngineService execute job on device connect
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     When Device is connected
-    And I wait 3 seconds
+    And I wait 10 seconds
     When I search for events from device "rpione3" in account "kapua-sys"
     Then I find 4 device events
     And The type of the last event is "COMMAND"

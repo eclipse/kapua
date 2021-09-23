@@ -10,7 +10,7 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@user
+@userIntegrationBase
 @userService
 @env_docker_base
 
@@ -21,7 +21,7 @@ Feature: User Service Integration
 Scenario: Initialize test environment
     Given Init Jaxb Context
     And Init Security Context
-    And Start Event Broker
+    And Start base docker environment
 
   Scenario: Deleting user in account that is lower in hierarchy
   Using user A in in different scope than user B, try to delete user B. Scope of user A is one
@@ -214,5 +214,5 @@ Scenario: Initialize test environment
 
 @teardown
   Scenario: Stop test environment
-    Given Stop Event Broker
+    Given Stop base docker environment
     And Reset Security Context

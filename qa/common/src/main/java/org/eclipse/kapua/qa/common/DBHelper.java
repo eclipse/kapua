@@ -51,9 +51,8 @@ public class DBHelper {
 
     private Connection connection;
 
-    public void setup() {
+    public void init() {
         logger.warn("########################### Called DBHelper ###########################");
-        System.setProperty(SystemSettingKey.DB_JDBC_CONNECTION_URL_RESOLVER.key(), "H2");
         SystemSetting config = SystemSetting.getInstance();
         String dbUsername = config.getString(SystemSettingKey.DB_USERNAME);
         String dbPassword = config.getString(SystemSettingKey.DB_PASSWORD);
@@ -81,6 +80,7 @@ public class DBHelper {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+            connection = null;
         }
     }
 
@@ -97,13 +97,12 @@ public class DBHelper {
      * Method that unconditionally deletes database.
      */
     public void deleteAll() {
-
         KapuaConfigurableServiceSchemaUtilsWithResources.scriptSession(FULL_SCHEMA_PATH, DELETE_SCRIPT);
         KapuaCacheManager.invalidateAll();
     }
 
     public void dropAll() throws SQLException {
-        if (!connection.isClosed()) {
+        if (connection!=null && !connection.isClosed()) {
             String[] types = {"TABLE"};
             ResultSet sqlResults = connection.getMetaData().getTables(null, null, "%", types);
 
@@ -113,7 +112,10 @@ public class DBHelper {
                     preparedStatement.execute();
                 }
             }
-            this.close();
+            close();
+        }
+        else {
+            logger.warn("================================> invoked drop all on closed connection!");
         }
         KapuaCacheManager.invalidateAll();
     }

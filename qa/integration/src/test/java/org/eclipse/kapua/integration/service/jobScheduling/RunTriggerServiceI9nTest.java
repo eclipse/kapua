@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
         glue = {"org.eclipse.kapua.service.job.steps",
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.account.steps",
                 "org.eclipse.kapua.service.device.registry.steps",
                 "org.eclipse.kapua.service.scheduler.steps"
