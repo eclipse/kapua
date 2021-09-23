@@ -12,7 +12,7 @@
 ###############################################################################
 @user
 @userService
-@env_embedded_minimal
+@env_docker_base
 
 Feature: User Service Integration
   User Service integration scenarios

@@ -174,7 +174,7 @@ public class JobServiceSteps extends TestBase {
         updateScenario(scenario);
     }
 
-    @Before(value="@env_embedded_minimal", order=10)
+    @Before(value="@env_docker_base", order=10)
     public void beforeScenarioEmbeddedMinimal(Scenario scenario) {
         updateScenario(scenario);
     }
