@@ -12,7 +12,7 @@
 ###############################################################################
 @user
 @userRole
-@env_embedded_minimal
+@env_docker_base
 
 Feature: User role service integration tests
 

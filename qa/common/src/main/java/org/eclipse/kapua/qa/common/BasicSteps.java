@@ -97,7 +97,7 @@ public class BasicSteps extends TestBase {
         logger.info("=====> Init parameters for docker environment... DONE");
     }
 
-    @Before(value="@setup and (@env_embedded_minimal or @env_none)", order=0)
+    @Before(value="@setup and (@env_docker_base or @env_none)", order=0)
     public void initParametersEmbedded(Scenario scenario) {
         logger.info("=====> Init parameters for embedded environment...");
         setProperties(scenario, "kapuadb", "true", "", "", "H2", "org.h2.Driver", "jdbc:h2:mem:",
@@ -366,7 +366,7 @@ public class BasicSteps extends TestBase {
         beforeCommon(scenario);
     }
 
-    @Before(value="@env_embedded_minimal and not (@setup or @teardown)", order=0)
+    @Before(value="@env_docker_base and not (@setup or @teardown)", order=0)
     public void beforeScenarioEmbeddedMinimal(Scenario scenario) {
         beforeCommon(scenario);
         beforeNoDocker();
@@ -383,7 +383,7 @@ public class BasicSteps extends TestBase {
         afterScenarioDocker(scenario);
     }
 
-    @After(value="@env_embedded_minimal and not (@setup or @teardown)", order=0)
+    @After(value="@env_docker_base and not (@setup or @teardown)", order=0)
     public void afterScenarioEmbeddedMinimal(Scenario scenario) {
         afterScenarioNoDocker(scenario);
     }

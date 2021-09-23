@@ -105,7 +105,7 @@ public class AccountServiceSteps extends TestBase {
 
     // Setup and tear-down steps
 
-    @Before(value="@env_docker or @env_embedded_minimal or @env_none", order=10)
+    @Before(value="@env_docker or @env_docker_base or @env_none", order=10)
     public void beforeScenarioNone(Scenario scenario) {
         updateScenario(scenario);
     }
