@@ -46,7 +46,7 @@ public class KapuaExceptionHandler {
     }
 
     /**
-     * Old way of handling {@link Throwable}s from {@link org.eclipse.kapua.service.KapuaService}s and othe components.
+     * Old way of handling {@link Throwable}s from {@link org.eclipse.kapua.service.KapuaService}s and other components.
      * <p>
      * It was used to always {@code throw} a {@link GwtKapuaException} which worked but IDEs were not able to handle that,
      * which lead to pieces of code like the following:
