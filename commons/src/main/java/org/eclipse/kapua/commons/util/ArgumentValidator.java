@@ -216,7 +216,7 @@ public class ArgumentValidator {
      * @param minLength    The minimum valid length. If {@code null} it means unbounded.
      * @param maxLength    The maximum valid length. If {@code null} it means unbounded.
      * @param argumentName The argument name with will be used in the exception
-     * @throws KapuaIllegalArgumentException If the given {@link String} excedees the given length limits.
+     * @throws KapuaIllegalArgumentException If the given {@link String} exceeds the given length limits.
      */
     public static void lengthRange(@NotNull String value, @Nullable Integer minLength, @Nullable Integer maxLength, @NotNull String argumentName) throws KapuaIllegalArgumentException {
 
@@ -236,7 +236,7 @@ public class ArgumentValidator {
      * @param minValue     The minimum valid value. If {@code null} it means unbounded.
      * @param maxValue     The maximum valid value. If {@code null} it means unbounded.
      * @param argumentName The argument name with will be used in the exception
-     * @throws KapuaIllegalArgumentException If the given {@link String} excedees the given length limits.
+     * @throws KapuaIllegalArgumentException If the given {@link String} exceeds the given length limits.
      */
     public static <V extends Comparable<V>> void valueRange(@NotNull V value, @Nullable V minValue, @Nullable V maxValue, @NotNull String argumentName) throws KapuaIllegalArgumentException {
 
@@ -255,7 +255,7 @@ public class ArgumentValidator {
      * Same as {@link #validateEntityName(String, Integer, Integer, String)} but assumes default minimum length of 3 chars and maximum length of 255 chars.
      *
      * @param name         The value to validate. Usually would be the {@link KapuaNamedEntity#getName()} or {@link KapuaNamedEntityCreator#getName()}, but other values could be provided
-     * @param argumentName The name of the argumento to bundle with the {@link KapuaIllegalArgumentException}
+     * @param argumentName The name of the argument to bundle with the {@link KapuaIllegalArgumentException}
      * @throws KapuaIllegalNullArgumentException If the given value to validate is {@code null}.
      * @throws KapuaIllegalArgumentException     If other validations fails.
      * @see ArgumentValidator#notEmptyOrNull(String, String)
@@ -280,7 +280,7 @@ public class ArgumentValidator {
      * @param name         The value to validate. Usually would be the {@link KapuaNamedEntity#getName()} or {@link KapuaNamedEntityCreator#getName()}, but other values could be provided
      * @param minLength    The minimum length of the field. If {@code null} the minLength validation is skipped
      * @param maxLength    The maximum length of the field. If {@code null} the maxLength validation is skipped
-     * @param argumentName The name of the argumento to bundle with the {@link KapuaIllegalArgumentException}
+     * @param argumentName The name of the argument to bundle with the {@link KapuaIllegalArgumentException}
      * @throws KapuaIllegalNullArgumentException If the given value to validate is {@code null}.
      * @throws KapuaIllegalArgumentException     If other validations fails.
      * @see ArgumentValidator#notEmptyOrNull(String, String)
