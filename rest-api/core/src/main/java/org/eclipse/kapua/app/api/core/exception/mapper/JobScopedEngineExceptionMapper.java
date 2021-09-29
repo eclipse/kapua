@@ -13,8 +13,8 @@
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
 import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
-import org.eclipse.kapua.job.engine.exception.JobEngineException;
+import org.eclipse.kapua.app.api.core.exception.model.JobScopedEngineExceptionInfo;
+import org.eclipse.kapua.job.engine.exception.JobScopedEngineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,16 +24,16 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class JobEngineExceptionMapper implements ExceptionMapper<JobEngineException> {
+public class JobScopedEngineExceptionMapper implements ExceptionMapper<JobScopedEngineException> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(JobEngineExceptionMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JobScopedEngineExceptionMapper.class);
 
     @Override
-    public Response toResponse(JobEngineException jobEngineException) {
-        LOG.error("Job Engine Generic Exception", jobEngineException);
+    public Response toResponse(JobScopedEngineException jobScopedEngineException) {
+        LOG.error("Job Engine Generic Exception", jobScopedEngineException);
         return Response//
                 .status(Status.INTERNAL_SERVER_ERROR) //
-                .entity(new JobEngineExceptionInfo(Status.INTERNAL_SERVER_ERROR, KapuaErrorCodes.INTERNAL_ERROR, jobEngineException)) //
+                .entity(new JobScopedEngineExceptionInfo(Status.INTERNAL_SERVER_ERROR, KapuaErrorCodes.INTERNAL_ERROR, jobScopedEngineException)) //
                 .build();
     }
 

@@ -12,7 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import java.util.Set;
+import org.eclipse.kapua.job.engine.exception.JobEngineErrorCodes;
+import org.eclipse.kapua.job.engine.exception.JobInvalidTargetException;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -21,15 +24,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.job.engine.exception.JobInvalidTargetException;
-import org.eclipse.kapua.job.engine.exception.KapuaJobEngineErrorCodes;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import java.util.Set;
 
 @XmlRootElement(name = "jobInvalidTargetExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JobInvalidTargetExceptionInfo extends JobEngineExceptionInfo {
+public class JobInvalidTargetExceptionInfo extends JobScopedEngineExceptionInfo {
 
     @XmlElement(name = "targetId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -41,7 +40,7 @@ public class JobInvalidTargetExceptionInfo extends JobEngineExceptionInfo {
     }
 
     public JobInvalidTargetExceptionInfo(JobInvalidTargetException jobInvalidTargetException) {
-        super(Status.INTERNAL_SERVER_ERROR, KapuaJobEngineErrorCodes.JOB_TARGET_INVALID, jobInvalidTargetException);
+        super(Status.INTERNAL_SERVER_ERROR, JobEngineErrorCodes.JOB_TARGET_INVALID, jobInvalidTargetException);
         if (jobInvalidTargetException != null) {
             setJobTargetIdSubset(jobInvalidTargetException.getTargetSublist());
         }

@@ -12,16 +12,41 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.exception;
 
+import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.Job;
 
-public class CleanJobDataException extends JobEngineException {
+import javax.validation.constraints.NotNull;
 
-    public CleanJobDataException(Throwable t, KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.CANNOT_CLEANUP_JOB_DATA, t, scopeId, jobId);
+/**
+ * {@link JobScopedEngineException} to {@code throw} when {@link JobEngineService#cleanJobData(KapuaId, KapuaId)} fails.
+ *
+ * @since 1.0.0
+ */
+public class CleanJobDataException extends JobScopedEngineException {
+
+    private static final long serialVersionUID = 1707473193853657195L;
+
+    /**
+     * Constructor.
+     *
+     * @param scopeId The {@link Job#getScopeId()}
+     * @param jobId   The {@link Job#getId()}
+     * @since 1.0.0
+     */
+    public CleanJobDataException(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
+        super(JobEngineErrorCodes.CANNOT_CLEANUP_JOB_DATA, scopeId, jobId);
     }
 
-    public CleanJobDataException(KapuaId scopeId, KapuaId jobId) {
-        this(null, scopeId, jobId);
+    /**
+     * Constructor.
+     *
+     * @param cause   The original {@link Throwable}.
+     * @param scopeId The {@link Job#getScopeId()}
+     * @param jobId   The {@link Job#getId()}
+     * @since 1.0.0
+     */
+    public CleanJobDataException(@NotNull Throwable cause, @NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
+        super(JobEngineErrorCodes.CANNOT_CLEANUP_JOB_DATA, cause, scopeId, jobId);
     }
-
 }

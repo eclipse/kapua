@@ -12,6 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
+import org.eclipse.kapua.job.engine.exception.JobEngineErrorCodes;
+import org.eclipse.kapua.job.engine.exception.JobStoppingException;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,14 +24,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.eclipse.kapua.job.engine.exception.JobStoppingException;
-import org.eclipse.kapua.job.engine.exception.KapuaJobEngineErrorCodes;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-
 @XmlRootElement(name = "jobStartingExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JobStoppingExceptionInfo extends JobEngineExceptionInfo {
+public class JobStoppingExceptionInfo extends JobScopedEngineExceptionInfo {
 
     @XmlElement(name = "executionId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -37,7 +37,7 @@ public class JobStoppingExceptionInfo extends JobEngineExceptionInfo {
     }
 
     public JobStoppingExceptionInfo(JobStoppingException jobStoppingException) {
-        super(Status.INTERNAL_SERVER_ERROR, KapuaJobEngineErrorCodes.JOB_STOPPING, jobStoppingException);
+        super(Status.INTERNAL_SERVER_ERROR, JobEngineErrorCodes.JOB_STOPPING, jobStoppingException);
     }
 
     public KapuaId getExecutionId() {

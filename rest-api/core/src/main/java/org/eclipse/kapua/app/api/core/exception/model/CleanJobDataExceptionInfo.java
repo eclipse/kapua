@@ -12,24 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
+import org.eclipse.kapua.job.engine.exception.CleanJobDataException;
+import org.eclipse.kapua.job.engine.exception.JobEngineErrorCodes;
+
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.kapua.job.engine.exception.CleanJobDataException;
-import org.eclipse.kapua.job.engine.exception.KapuaJobEngineErrorCodes;
-
 @XmlRootElement(name = "cleanJobDataExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CleanJobDataExceptionInfo extends JobEngineExceptionInfo {
+public class CleanJobDataExceptionInfo extends JobScopedEngineExceptionInfo {
 
     public CleanJobDataExceptionInfo() {
         this(null);
     }
 
     public CleanJobDataExceptionInfo(CleanJobDataException cleanJobDataException) {
-        super(Status.INTERNAL_SERVER_ERROR, KapuaJobEngineErrorCodes.CANNOT_CLEANUP_JOB_DATA, cleanJobDataException);
+        super(Status.INTERNAL_SERVER_ERROR, JobEngineErrorCodes.CANNOT_CLEANUP_JOB_DATA, cleanJobDataException);
     }
 
 }

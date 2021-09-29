@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.client;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
@@ -25,7 +21,6 @@ import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobExecutionEnqueuedExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
@@ -44,7 +39,6 @@ import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSetting;
 import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSettingKeys;
 import org.eclipse.kapua.job.engine.exception.CleanJobDataException;
 import org.eclipse.kapua.job.engine.exception.JobAlreadyRunningException;
-import org.eclipse.kapua.job.engine.exception.JobExecutionEnqueuedException;
 import org.eclipse.kapua.job.engine.exception.JobInvalidTargetException;
 import org.eclipse.kapua.job.engine.exception.JobMissingStepException;
 import org.eclipse.kapua.job.engine.exception.JobMissingTargetException;
@@ -55,7 +49,6 @@ import org.eclipse.kapua.job.engine.exception.JobStartingException;
 import org.eclipse.kapua.job.engine.exception.JobStoppingException;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-
 import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,6 +63,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.xml.bind.JAXBException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @KapuaProvider
 public class JobEngineServiceClient implements JobEngineService {
@@ -154,9 +150,9 @@ public class JobEngineServiceClient implements JobEngineService {
             String requestBody = XmlUtil.marshalJson(multipleJobIdRequest);
             log.debug("JobEngine POST Call to {}, body {}", path, requestBody);
             Response response = jobEngineTarget.path(path)
-                                               .request(MediaType.APPLICATION_JSON_TYPE)
-                                               .accept(MediaType.APPLICATION_JSON_TYPE)
-                                               .post(Entity.json(requestBody));
+                    .request(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.APPLICATION_JSON_TYPE)
+                    .post(Entity.json(requestBody));
             String responseText = response.readEntity(String.class);
             log.debug("JobEngine GET Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
             Family family = response.getStatusInfo().getFamily();
@@ -262,6 +258,7 @@ public class JobEngineServiceClient implements JobEngineService {
             if (StringUtils.isBlank(responseText)) {
                 throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, "Job Engine returned an error but no message was given");
             }
+
             ExceptionInfo exceptionInfo = XmlUtil.unmarshalJson(responseText, ExceptionInfo.class, null);
             switch (exceptionInfo.getKapuaErrorCode()) {
                 case "ENTITY_NOT_FOUND":
@@ -276,12 +273,6 @@ public class JobEngineServiceClient implements JobEngineService {
                             jobAlreadyRunningExceptionInfo.getJobId(),
                             jobAlreadyRunningExceptionInfo.getExecutionId(),
                             jobAlreadyRunningExceptionInfo.getJobTargetIdSubset());
-                case "JOB_EXECUTION_ENQUEUED":
-                    JobExecutionEnqueuedExceptionInfo jobExecutionEnqueuedExceptionInfo = XmlUtil.unmarshalJson(responseText, JobExecutionEnqueuedExceptionInfo.class, null);
-                    throw new JobExecutionEnqueuedException(jobExecutionEnqueuedExceptionInfo.getScopeId(),
-                            jobExecutionEnqueuedExceptionInfo.getJobId(),
-                            jobExecutionEnqueuedExceptionInfo.getExecutionId(),
-                            jobExecutionEnqueuedExceptionInfo.getEnqueuedJobExecutionId());
                 case "JOB_TARGET_INVALID":
                     JobInvalidTargetExceptionInfo jobInvalidTargetExceptionInfo = XmlUtil.unmarshalJson(responseText, JobInvalidTargetExceptionInfo.class, null);
                     throw new JobInvalidTargetException(jobInvalidTargetExceptionInfo.getScopeId(), jobInvalidTargetExceptionInfo.getJobId(), jobInvalidTargetExceptionInfo.getJobTargetIdSubset());

@@ -13,15 +13,13 @@
 package org.eclipse.kapua.job.engine.jbatch.listener;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
-import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
 import org.eclipse.kapua.job.engine.exception.JobAlreadyRunningException;
-import org.eclipse.kapua.job.engine.exception.JobExecutionEnqueuedException;
+import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
 import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSetting;
 import org.eclipse.kapua.job.engine.jbatch.setting.JobEngineSettingKeys;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecution;
@@ -31,6 +29,7 @@ import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionStatus;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.execution.JobExecution;
@@ -99,7 +98,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
      * According to the {@link JobStartOptions#getEnqueue()} parameter, the {@link JobExecution} can be:
      * <ul>
      * <li>if ({@code enqueue} = {@code false}) then {@link JobAlreadyRunningException} is {@code throw}n </li>
-     * <li>if ({@code enqueue} = {@code true}) then a new {@link QueuedJobExecution} is created and {@link JobExecutionEnqueuedException} is {@code throw}n</li>
+     * <li>if ({@code enqueue} = {@code true}) then a new {@link QueuedJobExecution} is created</li>
      * </ul>
      */
     @Override

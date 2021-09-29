@@ -12,55 +12,59 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.exception;
 
+import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.execution.JobExecution;
+import org.eclipse.kapua.service.job.targets.JobTarget;
 
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 /**
- * {@link JobAlreadyRunningException} definition.
- * <p>
- * Occurs when you start a {@link org.eclipse.kapua.service.job.execution.JobExecution} and there is another {@link org.eclipse.kapua.service.job.execution.JobExecution}
- * running with the same {@link org.eclipse.kapua.job.engine.JobStartOptions}.
+ * {@link JobScopedEngineException} to {@code throw} when {@link JobEngineService#startJob(KapuaId, KapuaId)} is invoked on a set of {@link JobTarget}s already in processing.
  *
  * @since 1.0.0
  */
-public class JobAlreadyRunningException extends JobEngineException {
+public class JobAlreadyRunningException extends JobScopedEngineException {
 
-    private final KapuaId scopeId;
-    private final KapuaId jobId;
+    private static final long serialVersionUID = -2111938324698571671L;
+
     private final KapuaId jobExecutionId;
     private final Set<KapuaId> jobTargetIdSubset;
 
     /**
      * Constuctor.
      *
-     * @param scopeId           The scope {@link KapuaId}.
-     * @param jobId             The {@link org.eclipse.kapua.service.job.Job} {@link KapuaId}.
-     * @param jobExecutionId    The current {@link org.eclipse.kapua.service.job.execution.JobExecution}
-     * @param jobTargetIdSubset The sub{@link Set} of {@link org.eclipse.kapua.service.job.targets.JobTarget} {@link KapuaId}s
+     * @param scopeId           The {@link Job#getScopeId()}.
+     * @param jobId             The {@link Job#getId()}.
+     * @param jobExecutionId    The current {@link JobExecution#getId()}
+     * @param jobTargetIdSubset The sub{@link Set} of {@link JobTarget#getId()}s.
      * @since 1.0.0
      */
-    public JobAlreadyRunningException(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId, Set<KapuaId> jobTargetIdSubset) {
-        super(KapuaJobEngineErrorCodes.JOB_ALREADY_RUNNING, scopeId, jobId, jobExecutionId, jobTargetIdSubset.toArray());
+    public JobAlreadyRunningException(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId jobExecutionId, @NotNull Set<KapuaId> jobTargetIdSubset) {
+        super(JobEngineErrorCodes.JOB_ALREADY_RUNNING, scopeId, jobId, jobExecutionId, jobTargetIdSubset.toArray());
 
-        this.scopeId = scopeId;
-        this.jobId = jobId;
         this.jobExecutionId = jobExecutionId;
         this.jobTargetIdSubset = jobTargetIdSubset;
     }
 
-    public KapuaId getScopeId() {
-        return scopeId;
-    }
-
-    public KapuaId getJobId() {
-        return jobId;
-    }
-
+    /**
+     * Gets the current {@link JobExecution#getId()} that cannot be started.
+     *
+     * @return The current {@link JobExecution#getId()} that cannot be started.
+     * @since 1.0.0
+     */
     public KapuaId getJobExecutionId() {
         return jobExecutionId;
     }
 
+    /**
+     * Gets the {@link Set} of {@link JobTarget}s to process for this {@link JobExecution}.
+     *
+     * @return The {@link Set} of {@link JobTarget}s to process for this {@link JobExecution}.
+     * @since 1.0.0
+     */
     public Set<KapuaId> getJobTargetIdSubset() {
         return jobTargetIdSubset;
     }

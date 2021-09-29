@@ -58,8 +58,7 @@ public class KapuaException extends Exception {
     }
 
     /**
-     * Builds a new KapuaException instance based on the supplied KapuaErrorCode,
-     * an Throwable cause, and optional arguments for the associated exception message.
+     * Constructor.
      *
      * @param code      The {@link KapuaErrorCode} associated with the {@link Exception}.
      * @param cause     The original {@link Throwable}.
@@ -150,6 +149,11 @@ public class KapuaException extends Exception {
     //
 
     /**
+     * Gets the defined message by the {@link #getCode()}.
+     * <p>
+     * It uses {@link ExceptionMessageUtils#getLocalizedMessage(String, Locale, KapuaErrorCode, Object[])} using {@link Locale#US}.
+     *
+     * @see ExceptionMessageUtils#getLocalizedMessage(String, Locale, KapuaErrorCode, Object[])
      * @since 1.0.0
      */
     @Override
@@ -158,6 +162,11 @@ public class KapuaException extends Exception {
     }
 
     /**
+     * Gets the defined message by the {@link #getCode()}.
+     * <p>
+     * It uses {@link ExceptionMessageUtils#getLocalizedMessage(String, Locale, KapuaErrorCode, Object[])} using {@link Locale#getDefault()}.
+     *
+     * @see ExceptionMessageUtils#getLocalizedMessage(String, Locale, KapuaErrorCode, Object[])
      * @since 1.0.0
      */
     @Override

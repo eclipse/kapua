@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.job.engine.exception.JobEngineErrorCodes;
-import org.eclipse.kapua.job.engine.exception.JobResumingException;
+import org.eclipse.kapua.KapuaErrorCode;
+import org.eclipse.kapua.job.engine.exception.JobScopedEngineException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
@@ -24,27 +24,43 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-@XmlRootElement(name = "jobResumingExceptionInfo")
+@XmlRootElement(name = "jobScopedEngineExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JobResumingExceptionInfo extends JobScopedEngineExceptionInfo {
+public class JobScopedEngineExceptionInfo extends JobEngineExceptionInfo {
 
-    @XmlElement(name = "executionId")
+    @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    private KapuaId executionId;
+    private KapuaId scopeId;
 
-    public KapuaId getExecutionId() {
-        return executionId;
+    @XmlElement(name = "jobId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    private KapuaId jobId;
+
+    public JobScopedEngineExceptionInfo() {
+        super();
     }
 
-    public void setExecutionId(KapuaId executionId) {
-        this.executionId = executionId;
+    public JobScopedEngineExceptionInfo(Status httpStatus, KapuaErrorCode kapuaErrorCode, JobScopedEngineException jobScopedEngineException) {
+        super(httpStatus, kapuaErrorCode, jobScopedEngineException);
+
+        setScopeId(jobScopedEngineException.getScopeId());
+        setJobId(jobScopedEngineException.getJobId());
     }
 
-    public JobResumingExceptionInfo() {
-        this(null);
+    public KapuaId getScopeId() {
+        return scopeId;
     }
 
-    public JobResumingExceptionInfo(JobResumingException jobResumingException) {
-        super(Status.INTERNAL_SERVER_ERROR, JobEngineErrorCodes.JOB_RESUMING, jobResumingException);
+    private void setScopeId(KapuaId scopeId) {
+        this.scopeId = scopeId;
     }
+
+    public KapuaId getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(KapuaId jobId) {
+        this.jobId = jobId;
+    }
+
 }

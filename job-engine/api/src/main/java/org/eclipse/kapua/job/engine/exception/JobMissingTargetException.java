@@ -12,25 +12,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.exception;
 
+import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.step.JobStep;
 
-public class JobMissingTargetException extends JobEngineException {
+import javax.validation.constraints.NotNull;
 
-    private final KapuaId scopeId;
-    private final KapuaId jobId;
+/**
+ * {@link JobEngineException} to {@code throw} when {@link JobEngineService#startJob(KapuaId, KapuaId)} is invoked on a {@link Job} that has no {@link JobStep} defined.
+ *
+ * @since 1.0.0
+ */
+public class JobMissingTargetException extends JobScopedEngineException {
 
-    public JobMissingTargetException(KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_TARGET_MISSING, scopeId, jobId);
-        this.scopeId = scopeId;
-        this.jobId = jobId;
+    private static final long serialVersionUID = 8149524601245117470L;
+
+    /**
+     * Constructor.
+     *
+     * @param scopeId The {@link Job#getScopeId()}.
+     * @param jobId   The {@link Job#getId()}.
+     * @since 1.0.0
+     */
+    public JobMissingTargetException(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
+        super(JobEngineErrorCodes.JOB_TARGET_MISSING, scopeId, jobId);
     }
-
-    public KapuaId getScopeId() {
-        return scopeId;
-    }
-
-    public KapuaId getJobId() {
-        return jobId;
-    }
-
 }

@@ -13,22 +13,54 @@
 package org.eclipse.kapua.job.engine.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.execution.JobExecution;
 
-public class JobStoppingException extends JobEngineException {
+import javax.validation.constraints.NotNull;
 
-    public JobStoppingException(Throwable t, KapuaId scopeId, KapuaId jobId) {
-        this(t, scopeId, jobId, null);
+/**
+ * {@link JobEngineException} to {@code throw} when a {@link Job} cannot be stopped for internal reasons.
+ *
+ * @since 1.0.0
+ */
+public class JobStoppingException extends JobScopedEngineException {
+
+    private static final long serialVersionUID = 2961246592680304270L;
+
+    /**
+     * Constructor.
+     *
+     * @param scopeId        The {@link Job#getScopeId()}.
+     * @param jobId          The {@link Job#getId()}.
+     * @param jobExecutionId The {@link JobExecution#getId()} that cannot be stopped.
+     * @since 1.0.0
+     */
+    public JobStoppingException(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId jobExecutionId) {
+        super(JobEngineErrorCodes.JOB_EXECUTION_STOPPING, scopeId, jobId, jobExecutionId);
     }
 
-    public JobStoppingException(Throwable t, KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
-        super(KapuaJobEngineErrorCodes.JOB_STOPPING, t, scopeId, jobId, jobExecutionId);
+    /**
+     * Constructor.
+     *
+     * @param cause   The original {@link Throwable}.
+     * @param scopeId The {@link Job#getScopeId()}.
+     * @param jobId   The {@link Job#getId()}.
+     * @since 1.0.0
+     */
+    public JobStoppingException(@NotNull Throwable cause, @NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
+        super(JobEngineErrorCodes.JOB_STOPPING, cause, scopeId, jobId);
     }
 
-    public JobStoppingException(KapuaId scopeId, KapuaId jobId) {
-        this(scopeId, jobId, null);
-    }
-
-    public JobStoppingException(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
-        super(KapuaJobEngineErrorCodes.JOB_STOPPING, scopeId, jobId, jobExecutionId);
+    /**
+     * Constructor.
+     *
+     * @param cause          The original {@link Throwable}.
+     * @param scopeId        The {@link Job#getScopeId()}.
+     * @param jobId          The {@link Job#getId()}.
+     * @param jobExecutionId The {@link JobExecution#getId()} that cannot be stopped.
+     * @since 1.0.0
+     */
+    public JobStoppingException(@NotNull Throwable cause, @NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId jobExecutionId) {
+        super(JobEngineErrorCodes.JOB_EXECUTION_STOPPING, cause, scopeId, jobId, jobExecutionId);
     }
 }

@@ -27,13 +27,13 @@ import org.eclipse.kapua.app.api.core.exception.model.IllegalNullArgumentExcepti
 import org.eclipse.kapua.app.api.core.exception.model.InternalUserOnlyExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
-import org.eclipse.kapua.app.api.core.exception.model.JobExecutionEnqueuedExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobScopedEngineExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.MfaRequiredExceptionInfo;
@@ -354,7 +354,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     CleanJobDataExceptionInfo.class,
                     JobAlreadyRunningExceptionInfo.class,
                     JobEngineExceptionInfo.class,
-                    JobExecutionEnqueuedExceptionInfo.class,
+                    JobScopedEngineExceptionInfo.class,
                     JobInvalidTargetExceptionInfo.class,
                     JobMissingStepExceptionInfo.class,
                     JobMissingTargetExceptionInfo.class,
