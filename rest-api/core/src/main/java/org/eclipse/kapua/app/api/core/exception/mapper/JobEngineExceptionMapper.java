@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
-import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
 import org.eclipse.kapua.job.engine.exception.JobEngineException;
 import org.slf4j.Logger;
@@ -30,10 +29,11 @@ public class JobEngineExceptionMapper implements ExceptionMapper<JobEngineExcept
 
     @Override
     public Response toResponse(JobEngineException jobEngineException) {
-        LOG.error("Job Engine Generic Exception", jobEngineException);
-        return Response//
-                .status(Status.INTERNAL_SERVER_ERROR) //
-                .entity(new JobEngineExceptionInfo(Status.INTERNAL_SERVER_ERROR, KapuaErrorCodes.INTERNAL_ERROR, jobEngineException)) //
+        LOG.error(jobEngineException.getMessage(), jobEngineException);
+
+        return Response
+                .status(Status.INTERNAL_SERVER_ERROR)
+                .entity(new JobEngineExceptionInfo(Status.INTERNAL_SERVER_ERROR, jobEngineException))
                 .build();
     }
 

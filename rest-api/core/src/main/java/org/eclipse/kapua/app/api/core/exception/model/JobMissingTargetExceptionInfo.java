@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.job.engine.exception.JobEngineErrorCodes;
 import org.eclipse.kapua.job.engine.exception.JobMissingTargetException;
 
 import javax.ws.rs.core.Response.Status;
@@ -24,12 +23,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JobMissingTargetExceptionInfo extends JobScopedEngineExceptionInfo {
 
-    public JobMissingTargetExceptionInfo() {
-        this(null);
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobMissingTargetExceptionInfo() {
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param jobMissingTargetException The root exception.
+     * @since 1.0.0
+     */
     public JobMissingTargetExceptionInfo(JobMissingTargetException jobMissingTargetException) {
-        super(Status.INTERNAL_SERVER_ERROR, JobEngineErrorCodes.JOB_TARGET_MISSING, jobMissingTargetException);
+        super(Status.INTERNAL_SERVER_ERROR, jobMissingTargetException);
     }
 
 }

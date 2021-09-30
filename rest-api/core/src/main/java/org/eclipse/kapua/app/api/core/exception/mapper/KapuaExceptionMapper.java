@@ -29,10 +29,10 @@ public class KapuaExceptionMapper implements ExceptionMapper<KapuaException> {
 
     @Override
     public Response toResponse(KapuaException kapuaException) {
-        LOG.error("Generic Kapua exception!", kapuaException);
+        LOG.error(kapuaException.getMessage(), kapuaException);
         return Response
                 .serverError()
-                .entity(new ExceptionInfo(Status.INTERNAL_SERVER_ERROR, kapuaException.getCode(), kapuaException))
+                .entity(new ExceptionInfo(Status.INTERNAL_SERVER_ERROR, kapuaException))
                 .build();
     }
 

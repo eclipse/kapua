@@ -27,6 +27,8 @@ public class JobResumingException extends JobScopedEngineException {
 
     private static final long serialVersionUID = 3492844432935460889L;
 
+    private final KapuaId jobExecutionId;
+
     /**
      * Constructor.
      *
@@ -37,6 +39,8 @@ public class JobResumingException extends JobScopedEngineException {
      */
     public JobResumingException(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId jobExecutionId) {
         super(JobEngineErrorCodes.JOB_RESUMING, scopeId, jobId, jobExecutionId);
+
+        this.jobExecutionId = jobExecutionId;
     }
 
     /**
@@ -50,6 +54,17 @@ public class JobResumingException extends JobScopedEngineException {
      */
     public JobResumingException(@NotNull Throwable cause, @NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId jobExecutionId) {
         super(JobEngineErrorCodes.JOB_RESUMING, cause, scopeId, jobId, jobExecutionId);
+
+        this.jobExecutionId = jobExecutionId;
     }
 
+    /**
+     * Gets the {@link JobExecution#getId()} which was not able to resume.
+     *
+     * @return The {@link JobExecution#getId()} which was not able to resume.
+     * @since 1.6.0
+     */
+    public KapuaId getJobExecutionId() {
+        return jobExecutionId;
+    }
 }

@@ -29,7 +29,8 @@ public class DeviceManagementRequestContentExceptionMapper implements ExceptionM
 
     @Override
     public Response toResponse(DeviceManagementRequestContentException managementRequestContentException) {
-        LOG.error("Device Management Request Content", managementRequestContentException);
+        LOG.error(managementRequestContentException.getMessage(), managementRequestContentException);
+
         return Response
                 .status(Status.INTERNAL_SERVER_ERROR)
                 .entity(new DeviceManagementRequestContentExceptionInfo(managementRequestContentException))

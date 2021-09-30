@@ -23,12 +23,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MfaRequiredExceptionInfo extends ExceptionInfo {
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected MfaRequiredExceptionInfo() {
         super();
     }
 
-    public MfaRequiredExceptionInfo(Response.Status httpStatus, KapuaAuthenticationException kapuaException) {
-        super(httpStatus, kapuaException.getCode(), kapuaException);
+    /**
+     * Constructor.
+     *
+     * @param httpStatus                   The {@link Response.Status} of the {@link Response}
+     * @param kapuaAuthenticationException The root exception.
+     * @since 1.0.0
+     */
+    public MfaRequiredExceptionInfo(Response.Status httpStatus, KapuaAuthenticationException kapuaAuthenticationException) {
+        super(httpStatus, kapuaAuthenticationException);
     }
-
 }

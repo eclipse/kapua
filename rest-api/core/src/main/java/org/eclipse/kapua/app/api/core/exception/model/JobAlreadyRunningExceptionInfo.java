@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.core.exception.model;
 
 import org.eclipse.kapua.job.engine.exception.JobAlreadyRunningException;
-import org.eclipse.kapua.job.engine.exception.JobEngineErrorCodes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
@@ -39,28 +38,46 @@ public class JobAlreadyRunningExceptionInfo extends JobScopedEngineExceptionInfo
     @XmlElementWrapper(name = "jobTargetIdSubset")
     private Set<KapuaId> jobTargetIdSubset;
 
-    public JobAlreadyRunningExceptionInfo() {
-        this(null);
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobAlreadyRunningExceptionInfo() {
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param jobAlreadyRunningException The root exception.
+     * @since 1.0.0
+     */
     public JobAlreadyRunningExceptionInfo(JobAlreadyRunningException jobAlreadyRunningException) {
-        super(Status.INTERNAL_SERVER_ERROR, JobEngineErrorCodes.JOB_ALREADY_RUNNING, jobAlreadyRunningException);
+        super(Status.INTERNAL_SERVER_ERROR, jobAlreadyRunningException);
+
+        this.executionId = jobAlreadyRunningException.getJobExecutionId();
+        this.jobTargetIdSubset = jobAlreadyRunningException.getJobTargetIdSubset();
     }
 
+    /**
+     * Gets the {@link JobAlreadyRunningException#getJobExecutionId()}.
+     *
+     * @return The {@link JobAlreadyRunningException#getJobExecutionId()}.
+     * @since 1.0.0
+     */
     public KapuaId getExecutionId() {
         return executionId;
     }
 
-    public void setExecutionId(KapuaId executionId) {
-        this.executionId = executionId;
-    }
-
+    /**
+     * Gets the {@link JobAlreadyRunningException#getJobTargetIdSubset()}.
+     *
+     * @return The {@link JobAlreadyRunningException#getJobTargetIdSubset()}.
+     * @since 1.0.0
+     */
     public Set<KapuaId> getJobTargetIdSubset() {
         return jobTargetIdSubset;
-    }
-
-    public void setJobTargetIdSubset(Set<KapuaId> jobTargetIdSubset) {
-        this.jobTargetIdSubset = jobTargetIdSubset;
     }
 
 }

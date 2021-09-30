@@ -35,12 +35,23 @@ public class DeviceManagementResponseCodeExceptionInfo extends ExceptionInfo {
     @XmlElement(name = "stacktrace")
     private String stacktrace;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected DeviceManagementResponseCodeExceptionInfo() {
-        // Required by JAXB
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param deviceManagementResponseCodeException The root exception.
+     * @since 1.0.0
+     */
     public DeviceManagementResponseCodeExceptionInfo(DeviceManagementResponseCodeException deviceManagementResponseCodeException) {
-        super(Status.INTERNAL_SERVER_ERROR, deviceManagementResponseCodeException.getCode(), deviceManagementResponseCodeException);
+        super(Status.INTERNAL_SERVER_ERROR, deviceManagementResponseCodeException);
 
         this.responseCode = deviceManagementResponseCodeException.getResponseCode();
         this.errorMessage = deviceManagementResponseCodeException.getErrorMessage();
@@ -48,14 +59,32 @@ public class DeviceManagementResponseCodeExceptionInfo extends ExceptionInfo {
 
     }
 
+    /**
+     * Gets the {@link DeviceManagementResponseCodeException#getResponseCode()}.
+     *
+     * @return The {@link DeviceManagementResponseCodeException#getResponseCode()}.
+     * @since 1.0.0
+     */
     public KapuaResponseCode getResponseCode() {
         return responseCode;
     }
 
+    /**
+     * Gets the {@link DeviceManagementResponseCodeException#getErrorMessage()}.
+     *
+     * @return The {@link DeviceManagementResponseCodeException#getErrorMessage()}.
+     * @since 1.0.0
+     */
     public String getErrorMessage() {
         return errorMessage;
     }
 
+    /**
+     * Gets the {@link DeviceManagementResponseCodeException#getStacktrace()}.
+     *
+     * @return The {@link DeviceManagementResponseCodeException#getStacktrace()}.
+     * @since 1.0.0
+     */
     public String getStacktrace() {
         return stacktrace;
     }

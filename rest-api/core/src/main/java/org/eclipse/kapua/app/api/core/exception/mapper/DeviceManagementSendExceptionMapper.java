@@ -29,7 +29,8 @@ public class DeviceManagementSendExceptionMapper implements ExceptionMapper<Devi
 
     @Override
     public Response toResponse(DeviceManagementSendException deviceManagementSendException) {
-        LOG.error("Device Management Send", deviceManagementSendException);
+        LOG.error(deviceManagementSendException.getMessage(), deviceManagementSendException);
+
         return Response
                 .status(Status.INTERNAL_SERVER_ERROR)
                 .entity(new DeviceManagementSendExceptionInfo(deviceManagementSendException))

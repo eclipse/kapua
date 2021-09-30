@@ -29,7 +29,8 @@ public class DeviceManagementTimeoutExceptionMapper implements ExceptionMapper<D
 
     @Override
     public Response toResponse(DeviceManagementTimeoutException deviceManagementTimeoutException) {
-        LOG.error("Device Management Timeout", deviceManagementTimeoutException);
+        LOG.error(deviceManagementTimeoutException.getMessage(), deviceManagementTimeoutException);
+
         return Response
                 .status(Status.INTERNAL_SERVER_ERROR)
                 .entity(new DeviceManagementTimeoutExceptionInfo(deviceManagementTimeoutException))

@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
+import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
+import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
-import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Provider
 public class KapuaServiceDisabledExceptionMapper implements ExceptionMapper<KapuaServiceDisabledException> {
@@ -31,11 +30,11 @@ public class KapuaServiceDisabledExceptionMapper implements ExceptionMapper<Kapu
     private static final Status STATUS = Status.NOT_FOUND;
 
     @Override
-    public Response toResponse(KapuaServiceDisabledException kapuaException) {
-        LOG.error("Service Disabled exception!", kapuaException);
+    public Response toResponse(KapuaServiceDisabledException kapuaServiceDisabledException) {
+        LOG.error(kapuaServiceDisabledException.getMessage(), kapuaServiceDisabledException);
         return Response
                 .status(STATUS)
-                .entity(new ExceptionInfo(STATUS, kapuaException.getCode(), kapuaException))
+                .entity(new ExceptionInfo(STATUS, kapuaServiceDisabledException))
                 .build();
     }
 

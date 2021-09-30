@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.job.engine.exception.JobScopedEngineException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -36,31 +36,36 @@ public class JobScopedEngineExceptionInfo extends JobEngineExceptionInfo {
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId jobId;
 
-    public JobScopedEngineExceptionInfo() {
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobScopedEngineExceptionInfo() {
         super();
     }
 
-    public JobScopedEngineExceptionInfo(Status httpStatus, KapuaErrorCode kapuaErrorCode, JobScopedEngineException jobScopedEngineException) {
-        super(httpStatus, kapuaErrorCode, jobScopedEngineException);
+    /**
+     * Constructor.
+     *
+     * @param httpStatus               The {@link Status} of the {@link Response}
+     * @param jobScopedEngineException The root exception.
+     * @since 1.0.0
+     */
+    public JobScopedEngineExceptionInfo(Status httpStatus, JobScopedEngineException jobScopedEngineException) {
+        super(httpStatus, jobScopedEngineException);
 
-        setScopeId(jobScopedEngineException.getScopeId());
-        setJobId(jobScopedEngineException.getJobId());
+        this.scopeId = jobScopedEngineException.getScopeId();
+        this.jobId = jobScopedEngineException.getJobId();
     }
 
     public KapuaId getScopeId() {
         return scopeId;
     }
 
-    private void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId;
-    }
-
     public KapuaId getJobId() {
         return jobId;
     }
 
-    public void setJobId(KapuaId jobId) {
-        this.jobId = jobId;
-    }
 
 }

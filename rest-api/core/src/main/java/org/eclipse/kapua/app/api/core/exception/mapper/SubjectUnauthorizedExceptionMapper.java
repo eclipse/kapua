@@ -14,7 +14,6 @@ package org.eclipse.kapua.app.api.core.exception.mapper;
 
 import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,11 +28,12 @@ public class SubjectUnauthorizedExceptionMapper implements ExceptionMapper<Subje
     private static final Logger LOG = LoggerFactory.getLogger(SubjectUnauthorizedExceptionMapper.class);
 
     @Override
-    public Response toResponse(SubjectUnauthorizedException exception) {
-        LOG.error("Subject not authorized!", exception);
-        return Response//
-                .status(Status.FORBIDDEN) //
-                .entity(new SubjectUnauthorizedExceptionInfo(Status.FORBIDDEN, exception)) //
+    public Response toResponse(SubjectUnauthorizedException subjectUnauthorizedException) {
+        LOG.error(subjectUnauthorizedException.getMessage(), subjectUnauthorizedException);
+
+        return Response
+                .status(Status.FORBIDDEN)
+                .entity(new SubjectUnauthorizedExceptionInfo(Status.FORBIDDEN, subjectUnauthorizedException))
                 .build();
     }
 

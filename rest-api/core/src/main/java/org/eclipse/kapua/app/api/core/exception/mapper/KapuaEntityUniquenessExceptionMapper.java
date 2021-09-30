@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
+import org.eclipse.kapua.KapuaEntityUniquenessException;
+import org.eclipse.kapua.app.api.core.exception.model.EntityUniquenessExceptionInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.eclipse.kapua.KapuaEntityUniquenessException;
-import org.eclipse.kapua.app.api.core.exception.model.EntityUniquenessExceptionInfo;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Provider
 public class KapuaEntityUniquenessExceptionMapper implements ExceptionMapper<KapuaEntityUniquenessException> {
@@ -29,12 +28,12 @@ public class KapuaEntityUniquenessExceptionMapper implements ExceptionMapper<Kap
     private static final Logger LOG = LoggerFactory.getLogger(KapuaEntityUniquenessExceptionMapper.class);
 
     @Override
-    public Response toResponse(KapuaEntityUniquenessException kapuaException) {
-        LOG.error("Entity uniqueness exception!", kapuaException);
-        return Response//
-                       .status(Status.fromStatusCode(409)) //
-                       .entity(new EntityUniquenessExceptionInfo(Status.fromStatusCode(409), kapuaException)) //
-                       .build();
+    public Response toResponse(KapuaEntityUniquenessException kapuaEntityUniquenessException) {
+        LOG.error(kapuaEntityUniquenessException.getMessage(), kapuaEntityUniquenessException);
+        return Response
+                .status(Status.fromStatusCode(409))
+                .entity(new EntityUniquenessExceptionInfo(Status.fromStatusCode(409), kapuaEntityUniquenessException))
+                .build();
     }
 
 }

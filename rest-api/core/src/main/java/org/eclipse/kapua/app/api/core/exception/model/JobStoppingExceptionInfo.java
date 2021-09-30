@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.job.engine.exception.JobEngineErrorCodes;
 import org.eclipse.kapua.job.engine.exception.JobStoppingException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -32,20 +31,34 @@ public class JobStoppingExceptionInfo extends JobScopedEngineExceptionInfo {
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId executionId;
 
-    public JobStoppingExceptionInfo() {
-        this(null);
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobStoppingExceptionInfo() {
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param jobStoppingException The root exception.
+     * @since 1.0.0
+     */
     public JobStoppingExceptionInfo(JobStoppingException jobStoppingException) {
-        super(Status.INTERNAL_SERVER_ERROR, JobEngineErrorCodes.JOB_STOPPING, jobStoppingException);
+        super(Status.INTERNAL_SERVER_ERROR, jobStoppingException);
+
+        this.executionId = jobStoppingException.getJobExecutionId();
     }
 
+    /**
+     * Gets the {@link JobStoppingException#getJobExecutionId()}.
+     *
+     * @return The {@link JobStoppingException#getJobExecutionId()}.
+     * @since 1.0.0
+     */
     public KapuaId getExecutionId() {
         return executionId;
     }
-
-    public void setExecutionId(KapuaId executionId) {
-        this.executionId = executionId;
-    }
-
 }

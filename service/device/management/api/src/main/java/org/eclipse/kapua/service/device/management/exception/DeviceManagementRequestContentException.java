@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.exception;
 
-import org.eclipse.kapua.KapuaSerializable;
-
 import javax.validation.constraints.NotNull;
 
 /**
@@ -41,9 +39,9 @@ public class DeviceManagementRequestContentException extends DeviceManagementReq
     }
 
     /**
-     * Gets the {@link KapuaSerializable}
+     * Gets the content that cannot be serialized.
      *
-     * @return The {@link KapuaSerializable}
+     * @return The content that cannot be serialized.
      * @since 1.1.0
      */
     public Object getRequestContent() {

@@ -27,23 +27,34 @@ public class DeviceManagementRequestContentExceptionInfo extends ExceptionInfo {
     @XmlElement(name = "requestContent")
     private Object requestContent;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected DeviceManagementRequestContentExceptionInfo() {
-        // Required by JAXB
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param deviceManagementRequestContentException The root exception.
+     * @since 1.0.0
+     */
     public DeviceManagementRequestContentExceptionInfo(DeviceManagementRequestContentException deviceManagementRequestContentException) {
-        super(Response.Status.INTERNAL_SERVER_ERROR, deviceManagementRequestContentException.getCode(), deviceManagementRequestContentException);
+        super(Response.Status.INTERNAL_SERVER_ERROR, deviceManagementRequestContentException);
 
         this.requestContent = deviceManagementRequestContentException.getRequestContent();
     }
 
     /**
-     * Gets the request payload which was not serializable.
+     * Gets the {@link DeviceManagementRequestContentException#getRequestContent()}.
      *
-     * @return The request payload which was not serializable.
+     * @return The {@link DeviceManagementRequestContentException#getRequestContent()}.
      * @since 1.5.0
      */
-    public Object getRequestPayload() {
+    public Object getRequestContent() {
         return requestContent;
     }
 }

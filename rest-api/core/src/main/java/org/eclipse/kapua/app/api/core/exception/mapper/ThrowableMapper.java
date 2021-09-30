@@ -28,10 +28,10 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
 
     @Override
     public Response toResponse(Throwable throwable) {
-        LOG.error("Severe error!", throwable);
-        return Response //
-                .serverError() //
-                .entity(new ThrowableInfo(Status.INTERNAL_SERVER_ERROR, throwable)) //
+        LOG.error(throwable.getMessage(), throwable);
+        return Response
+                .serverError()
+                .entity(new ThrowableInfo(Status.INTERNAL_SERVER_ERROR, throwable))
                 .build();
     }
 }

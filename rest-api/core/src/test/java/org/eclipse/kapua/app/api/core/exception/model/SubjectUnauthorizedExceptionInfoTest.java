@@ -76,23 +76,4 @@ public class SubjectUnauthorizedExceptionInfoTest extends Assert {
     public void subjectUnauthorizedExceptionInfoNullExceptionTest() {
         new SubjectUnauthorizedExceptionInfo(Response.Status.OK, null);
     }
-
-    @Test
-    public void setAndGetPermission() {
-        Permission newPermission = Mockito.mock(Permission.class);
-        SubjectUnauthorizedExceptionInfo subjectUnauthorizedExceptionInfo1 = new SubjectUnauthorizedExceptionInfo();
-        SubjectUnauthorizedExceptionInfo subjectUnauthorizedExceptionInfo2 = new SubjectUnauthorizedExceptionInfo(Response.Status.OK, subjectUnauthorizedException);
-
-        subjectUnauthorizedExceptionInfo1.setPermission(newPermission);
-        subjectUnauthorizedExceptionInfo2.setPermission(newPermission);
-
-        assertEquals("Expected and actual values should be the same.", newPermission, subjectUnauthorizedExceptionInfo1.getPermission());
-        assertEquals("Expected and actual values should be the same.", newPermission, subjectUnauthorizedExceptionInfo2.getPermission());
-
-        subjectUnauthorizedExceptionInfo1.setPermission(null);
-        subjectUnauthorizedExceptionInfo2.setPermission(null);
-
-        assertNull("Null expected.", subjectUnauthorizedExceptionInfo1.getPermission());
-        assertNull("Null expected.", subjectUnauthorizedExceptionInfo2.getPermission());
-    }
 } 

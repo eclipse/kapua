@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.job.engine.exception.JobEngineErrorCodes;
 import org.eclipse.kapua.job.engine.exception.JobNotRunningException;
 
 import javax.ws.rs.core.Response.Status;
@@ -24,12 +23,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JobNotRunningExceptionInfo extends JobScopedEngineExceptionInfo {
 
-    public JobNotRunningExceptionInfo() {
-        this(null);
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobNotRunningExceptionInfo() {
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param jobNotRunningException The root exception.
+     * @since 1.0.0
+     */
     public JobNotRunningExceptionInfo(JobNotRunningException jobNotRunningException) {
-        super(Status.INTERNAL_SERVER_ERROR, JobEngineErrorCodes.JOB_NOT_RUNNING, jobNotRunningException);
+        super(Status.INTERNAL_SERVER_ERROR, jobNotRunningException);
     }
 
 }

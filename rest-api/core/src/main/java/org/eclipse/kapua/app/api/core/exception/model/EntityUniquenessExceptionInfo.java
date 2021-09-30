@@ -12,13 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
+import org.eclipse.kapua.KapuaEntityUniquenessException;
+
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.eclipse.kapua.KapuaEntityUniquenessException;
+import java.util.List;
+import java.util.Map;
 
 @XmlRootElement(name = "entityUniquenessExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -27,22 +30,49 @@ public class EntityUniquenessExceptionInfo extends ExceptionInfo {
     @XmlElement(name = "entityType")
     private String entityType;
 
+    @XmlElement(name = "uniquesFieldValues")
+    private List<Map.Entry<String, Object>> uniquesFieldValues;
+
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected EntityUniquenessExceptionInfo() {
         super();
     }
 
-    public EntityUniquenessExceptionInfo(Status httpStatus, KapuaEntityUniquenessException kapuaException) {
-        super(httpStatus, kapuaException.getCode(), kapuaException);
+    /**
+     * Constructor.
+     *
+     * @param httpStatus                     The {@link Status} of the {@link Response}
+     * @param kapuaEntityUniquenessException The root exception.
+     * @since 1.0.0
+     */
+    public EntityUniquenessExceptionInfo(Status httpStatus, KapuaEntityUniquenessException kapuaEntityUniquenessException) {
+        super(httpStatus, kapuaEntityUniquenessException);
 
-        setEntityType(kapuaException.getEntityType());
+        this.entityType = kapuaEntityUniquenessException.getEntityType();
+        this.uniquesFieldValues = kapuaEntityUniquenessException.getUniquesFieldValues();
     }
 
+    /**
+     * Gets the {@link KapuaEntityUniquenessException#getEntityType()}.
+     *
+     * @return The {@link KapuaEntityUniquenessException#getEntityType()}.
+     * @since 1.0.0
+     */
     public String getEntityType() {
         return entityType;
     }
 
-    private void setEntityType(String entityType) {
-        this.entityType = entityType;
+    /**
+     * Gets the {@link KapuaEntityUniquenessException#getUniquesFieldValues()}.
+     *
+     * @return The {@link KapuaEntityUniquenessException#getUniquesFieldValues()}.
+     * @since 1.6.0
+     */
+    public List<Map.Entry<String, Object>> getUniquesFieldValues() {
+        return uniquesFieldValues;
     }
-
 }

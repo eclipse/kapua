@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.job.engine.exception.JobEngineErrorCodes;
 import org.eclipse.kapua.job.engine.exception.JobMissingStepException;
 
 import javax.ws.rs.core.Response.Status;
@@ -24,12 +23,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JobMissingStepExceptionInfo extends JobScopedEngineExceptionInfo {
 
-    public JobMissingStepExceptionInfo() {
-        this(null);
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobMissingStepExceptionInfo() {
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param jobMissingStepException The root exception.
+     * @since 1.0.0
+     */
     public JobMissingStepExceptionInfo(JobMissingStepException jobMissingStepException) {
-        super(Status.INTERNAL_SERVER_ERROR, JobEngineErrorCodes.JOB_STEP_MISSING, jobMissingStepException);
+        super(Status.INTERNAL_SERVER_ERROR, jobMissingStepException);
     }
 
 }

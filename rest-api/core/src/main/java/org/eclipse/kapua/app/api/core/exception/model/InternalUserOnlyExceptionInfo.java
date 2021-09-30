@@ -23,12 +23,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class InternalUserOnlyExceptionInfo extends ExceptionInfo {
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected InternalUserOnlyExceptionInfo() {
         super();
     }
 
-    public InternalUserOnlyExceptionInfo(Response.Status httpStatus, InternalUserOnlyException kapuaException) {
-        super(httpStatus, kapuaException.getCode(), kapuaException);
+    /**
+     * Constructor.
+     *
+     * @param httpStatus                The {@link Response.Status} of the {@link Response}
+     * @param internalUserOnlyException The root exception.
+     * @since 1.0.0
+     */
+    public InternalUserOnlyExceptionInfo(Response.Status httpStatus, InternalUserOnlyException internalUserOnlyException) {
+        super(httpStatus, internalUserOnlyException);
     }
 
 }

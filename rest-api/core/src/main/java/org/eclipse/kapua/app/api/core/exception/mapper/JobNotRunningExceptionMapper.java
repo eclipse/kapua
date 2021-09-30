@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
+import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
+import org.eclipse.kapua.job.engine.exception.JobNotRunningException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.eclipse.kapua.job.engine.exception.JobNotRunningException;
-import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Provider
 public class JobNotRunningExceptionMapper implements ExceptionMapper<JobNotRunningException> {
@@ -30,11 +29,12 @@ public class JobNotRunningExceptionMapper implements ExceptionMapper<JobNotRunni
 
     @Override
     public Response toResponse(JobNotRunningException jobNotRunningException) {
-        LOG.error("Job Not Running", jobNotRunningException);
-        return Response//
-                       .status(Status.INTERNAL_SERVER_ERROR) //
-                       .entity(new JobNotRunningExceptionInfo(jobNotRunningException)) //
-                       .build();
+        LOG.error(jobNotRunningException.getMessage(), jobNotRunningException);
+
+        return Response
+                .status(Status.INTERNAL_SERVER_ERROR)
+                .entity(new JobNotRunningExceptionInfo(jobNotRunningException))
+                .build();
     }
 
 }

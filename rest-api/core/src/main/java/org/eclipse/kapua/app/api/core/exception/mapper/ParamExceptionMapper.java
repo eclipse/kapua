@@ -12,19 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalArgumentExceptionInfo;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
-
 import org.glassfish.jersey.server.ParamException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
 @Provider
 public class ParamExceptionMapper implements ExceptionMapper<ParamException> {
@@ -33,18 +32,20 @@ public class ParamExceptionMapper implements ExceptionMapper<ParamException> {
 
     @Override
     public Response toResponse(ParamException paramException) {
+
         KapuaIllegalArgumentException kapuaIllegalArgumentException;
+
         KapuaException cause = KapuaExceptionUtils.extractKapuaException(paramException);
         if (cause instanceof KapuaIllegalArgumentException) {
             kapuaIllegalArgumentException = (KapuaIllegalArgumentException) cause;
         } else {
             kapuaIllegalArgumentException = new KapuaIllegalArgumentException(paramException.getParameterName(), null);
         }
-        LOG.error("Illegal argument exception!", paramException);
-        return Response//
-                .status(Status.BAD_REQUEST) //
-                .entity(new IllegalArgumentExceptionInfo(Status.BAD_REQUEST, kapuaIllegalArgumentException)) //
+
+        LOG.error(paramException.getMessage(), paramException);
+        return Response
+                .status(Status.BAD_REQUEST)
+                .entity(new IllegalArgumentExceptionInfo(Status.BAD_REQUEST, kapuaIllegalArgumentException))
                 .build();
     }
-
 }

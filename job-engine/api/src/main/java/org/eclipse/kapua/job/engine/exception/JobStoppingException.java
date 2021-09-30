@@ -27,6 +27,8 @@ public class JobStoppingException extends JobScopedEngineException {
 
     private static final long serialVersionUID = 2961246592680304270L;
 
+    private final KapuaId jobExecutionId;
+
     /**
      * Constructor.
      *
@@ -37,6 +39,8 @@ public class JobStoppingException extends JobScopedEngineException {
      */
     public JobStoppingException(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId jobExecutionId) {
         super(JobEngineErrorCodes.JOB_EXECUTION_STOPPING, scopeId, jobId, jobExecutionId);
+
+        this.jobExecutionId = jobExecutionId;
     }
 
     /**
@@ -49,6 +53,8 @@ public class JobStoppingException extends JobScopedEngineException {
      */
     public JobStoppingException(@NotNull Throwable cause, @NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
         super(JobEngineErrorCodes.JOB_STOPPING, cause, scopeId, jobId);
+
+        this.jobExecutionId = null;
     }
 
     /**
@@ -62,5 +68,17 @@ public class JobStoppingException extends JobScopedEngineException {
      */
     public JobStoppingException(@NotNull Throwable cause, @NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId jobExecutionId) {
         super(JobEngineErrorCodes.JOB_EXECUTION_STOPPING, cause, scopeId, jobId, jobExecutionId);
+
+        this.jobExecutionId = jobExecutionId;
+    }
+
+    /**
+     * Gets the {@link JobExecution#getId()} that cannot be stopped.
+     *
+     * @return The {@link JobExecution#getId()} that cannot be stopped.
+     * @since 1.6.0
+     */
+    public KapuaId getJobExecutionId() {
+        return jobExecutionId;
     }
 }

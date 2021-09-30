@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.job.engine.exception.JobEngineErrorCodes;
 import org.eclipse.kapua.job.engine.exception.JobInvalidTargetException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
@@ -35,23 +34,34 @@ public class JobInvalidTargetExceptionInfo extends JobScopedEngineExceptionInfo 
     @XmlElementWrapper(name = "jobTargetIdSubset")
     private Set<KapuaId> jobTargetIdSubset;
 
-    public JobInvalidTargetExceptionInfo() {
-        this(null);
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobInvalidTargetExceptionInfo() {
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param jobInvalidTargetException The root exception.
+     * @since 1.0.0
+     */
     public JobInvalidTargetExceptionInfo(JobInvalidTargetException jobInvalidTargetException) {
-        super(Status.INTERNAL_SERVER_ERROR, JobEngineErrorCodes.JOB_TARGET_INVALID, jobInvalidTargetException);
-        if (jobInvalidTargetException != null) {
-            setJobTargetIdSubset(jobInvalidTargetException.getTargetSublist());
-        }
+        super(Status.INTERNAL_SERVER_ERROR, jobInvalidTargetException);
+
+        this.jobTargetIdSubset = jobInvalidTargetException.getTargetSublist();
     }
 
+    /**
+     * Gets the {@link JobInvalidTargetException#getTargetSublist()}.
+     *
+     * @return The {@link JobInvalidTargetException#getTargetSublist()}.
+     * @since 1.0.0
+     */
     public Set<KapuaId> getJobTargetIdSubset() {
         return jobTargetIdSubset;
     }
-
-    public void setJobTargetIdSubset(Set<KapuaId> jobTargetIdSubset) {
-        this.jobTargetIdSubset = jobTargetIdSubset;
-    }
-
 }

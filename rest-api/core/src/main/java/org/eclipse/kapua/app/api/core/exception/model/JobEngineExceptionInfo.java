@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.job.engine.exception.JobEngineException;
 
 import javax.ws.rs.core.Response.Status;
@@ -24,11 +23,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JobEngineExceptionInfo extends ExceptionInfo {
 
-    public JobEngineExceptionInfo() {
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobEngineExceptionInfo() {
         super();
     }
 
-    public JobEngineExceptionInfo(Status httpStatus, KapuaErrorCode kapuaErrorCode, JobEngineException jobEngineException) {
-        super(httpStatus, kapuaErrorCode, jobEngineException);
+    /**
+     * Constructor.
+     *
+     * @param jobEngineException The root exception.
+     * @since 1.0.0
+     */
+    public JobEngineExceptionInfo(Status httpStatus, JobEngineException jobEngineException) {
+        super(httpStatus, jobEngineException);
     }
 }

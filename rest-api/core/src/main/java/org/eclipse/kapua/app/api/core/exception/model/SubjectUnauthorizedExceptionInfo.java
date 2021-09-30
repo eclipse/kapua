@@ -15,6 +15,7 @@ package org.eclipse.kapua.app.api.core.exception.model;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,21 +29,35 @@ public class SubjectUnauthorizedExceptionInfo extends ExceptionInfo {
     @XmlElement(name = "permission")
     private Permission permission;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected SubjectUnauthorizedExceptionInfo() {
         super();
     }
 
-    public SubjectUnauthorizedExceptionInfo(Status httpStatus, SubjectUnauthorizedException kapuaException) {
-        super(httpStatus, kapuaException.getCode(), kapuaException);
+    /**
+     * Constructor.
+     *
+     * @param httpStatus                   The {@link Response.Status} of the {@link Response}
+     * @param subjectUnauthorizedException The root exception.
+     * @since 1.0.0
+     */
+    public SubjectUnauthorizedExceptionInfo(Status httpStatus, SubjectUnauthorizedException subjectUnauthorizedException) {
+        super(httpStatus, subjectUnauthorizedException);
 
-        setPermission(kapuaException.getPermission());
+        this.permission = subjectUnauthorizedException.getPermission();
     }
 
+    /**
+     * Gets the {@link SubjectUnauthorizedException#getPermission()}.
+     *
+     * @return The {@link SubjectUnauthorizedException#getPermission()}.
+     * @since 1.0.0
+     */
     public Permission getPermission() {
         return permission;
-    }
-
-    public void setPermission(Permission permission) {
-        this.permission = permission;
     }
 }

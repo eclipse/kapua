@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.api.core.exception.model;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -30,31 +31,47 @@ public class IllegalArgumentExceptionInfo extends ExceptionInfo {
     @XmlElement(name = "argumentValue")
     private String argumentValue;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected IllegalArgumentExceptionInfo() {
         super();
     }
 
-    public IllegalArgumentExceptionInfo(Status httpStatus, KapuaIllegalArgumentException kapuaException) {
-        super(httpStatus, kapuaException.getCode(), kapuaException);
+    /**
+     * Constructor.
+     *
+     * @param httpStatus                    The {@link Status} of the {@link Response}
+     * @param kapuaIllegalArgumentException The root exception.
+     * @since 1.0.0
+     */
+    public IllegalArgumentExceptionInfo(Status httpStatus, KapuaIllegalArgumentException kapuaIllegalArgumentException) {
+        super(httpStatus, kapuaIllegalArgumentException);
 
-        setArgumentName(kapuaException.getArgumentName());
-        setArgumentValue(kapuaException.getArgumentValue());
+        this.argumentName = kapuaIllegalArgumentException.getArgumentName();
+        this.argumentValue = kapuaIllegalArgumentException.getArgumentValue();
     }
 
+    /**
+     * Gets the {@link KapuaIllegalArgumentException#getArgumentName()}.
+     *
+     * @return The {@link KapuaIllegalArgumentException#getArgumentName()}.
+     * @since 1.0.0
+     */
     public String getArgumenName() {
         return argumentName;
     }
 
-    private void setArgumentName(String argumentName) {
-        this.argumentName = argumentName;
-    }
-
+    /**
+     * Gets the {@link KapuaIllegalArgumentException#getArgumentValue()}.
+     *
+     * @return The {@link KapuaIllegalArgumentException#getArgumentValue()}.
+     * @since 1.0.0
+     */
     public String getArgumentValue() {
         return argumentValue;
-    }
-
-    private void setArgumentValue(String argumentValue) {
-        this.argumentValue = argumentValue;
     }
 
 }

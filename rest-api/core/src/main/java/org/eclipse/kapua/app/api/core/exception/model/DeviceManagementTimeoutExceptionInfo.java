@@ -25,16 +25,33 @@ public class DeviceManagementTimeoutExceptionInfo extends ExceptionInfo {
 
     private Long timeout;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected DeviceManagementTimeoutExceptionInfo() {
-        // Required by JAXB
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param deviceManagementTimeoutException The root exception.
+     * @since 1.0.0
+     */
     public DeviceManagementTimeoutExceptionInfo(DeviceManagementTimeoutException deviceManagementTimeoutException) {
-        super(Response.Status.INTERNAL_SERVER_ERROR, deviceManagementTimeoutException.getCode(), deviceManagementTimeoutException);
+        super(Response.Status.INTERNAL_SERVER_ERROR, deviceManagementTimeoutException);
 
         this.timeout = deviceManagementTimeoutException.getTimeout();
     }
 
+    /**
+     * Gets the {@link DeviceManagementTimeoutException#getTimeout()}.
+     *
+     * @return The {@link DeviceManagementTimeoutException#getTimeout()}.
+     * @since 1.0.0
+     */
     public Long getTimeout() {
         return timeout;
     }

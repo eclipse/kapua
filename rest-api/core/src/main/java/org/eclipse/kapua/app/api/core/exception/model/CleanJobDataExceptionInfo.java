@@ -13,7 +13,6 @@
 package org.eclipse.kapua.app.api.core.exception.model;
 
 import org.eclipse.kapua.job.engine.exception.CleanJobDataException;
-import org.eclipse.kapua.job.engine.exception.JobEngineErrorCodes;
 
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -24,12 +23,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CleanJobDataExceptionInfo extends JobScopedEngineExceptionInfo {
 
-    public CleanJobDataExceptionInfo() {
-        this(null);
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected CleanJobDataExceptionInfo() {
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param cleanJobDataException The root exception.
+     * @since 1.0.0
+     */
     public CleanJobDataExceptionInfo(CleanJobDataException cleanJobDataException) {
-        super(Status.INTERNAL_SERVER_ERROR, JobEngineErrorCodes.CANNOT_CLEANUP_JOB_DATA, cleanJobDataException);
+        super(Status.INTERNAL_SERVER_ERROR, cleanJobDataException);
     }
-
 }
