@@ -12,6 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.steps;
 
+import com.google.inject.Singleton;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -31,14 +37,6 @@ import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.junit.Assert;
-
-import com.google.inject.Singleton;
-
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 
 import javax.inject.Inject;
 import java.util.List;

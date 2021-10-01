@@ -34,7 +34,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-locator-guice</artifactId>
@@ -138,8 +137,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-transport-mqtt</artifactId>
         </dependency>
-
-        <!-- Jersey -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-user-internal</artifactId>
@@ -150,19 +147,12 @@
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet-core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-moxy</artifactId>
         </dependency>
 
         <!-- Apache shiro security framework -->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-web</artifactId>
@@ -179,13 +169,13 @@
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
         </dependency>
-
-        <!-- Elasticsearch Dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Elasticsearch Dependencies -->
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>

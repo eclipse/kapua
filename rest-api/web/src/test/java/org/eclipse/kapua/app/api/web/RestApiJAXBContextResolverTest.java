@@ -45,17 +45,33 @@ public class RestApiJAXBContextResolverTest {
 
     @Test
     public void getContextTest() {
-        Class<?>[] classes = {String.class, Account.class, KapuaTocd.class, Exception.class, EntityNotFoundExceptionInfo.class, ChannelInfo.class, Device.class, Credential.class, Job.class,
-                KuraDeploymentPackages.class, KapuaRequestMessage.class, KapuaResponseMessage.class, DeviceManagementOperation.class, AccessToken.class, Role.class, Group.class, User.class};
+        Class<?>[] classes = {
+                AccessToken.class,
+                Account.class,
+                ChannelInfo.class,
+                Credential.class,
+                Device.class,
+                DeviceManagementOperation.class,
+                EntityNotFoundExceptionInfo.class,
+                Exception.class,
+                Group.class,
+                Job.class,
+                KapuaRequestMessage.class,
+                KapuaResponseMessage.class,
+                KapuaTocd.class,
+                KuraDeploymentPackages.class,
+                Role.class,
+                String.class,
+                User.class};
 
         for (Class<?> clazz : classes) {
-            Assert.assertNotNull("The context returned should not be null", jaxbContextResolver.getContext(clazz));
+            Assert.assertNotNull(jaxbContextResolver.getContext(clazz));
         }
     }
 
     @Test
     public void getContextObjectTest() {
-        Assert.assertNotNull("The context returned should not be null", jaxbContextResolver.getContext(Object.class));
+        Assert.assertNotNull(jaxbContextResolver.getContext(Object.class));
     }
 
     @Test(expected = NullPointerException.class)

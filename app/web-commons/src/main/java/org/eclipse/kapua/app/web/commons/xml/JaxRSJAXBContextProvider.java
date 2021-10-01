@@ -30,13 +30,13 @@ public abstract class JaxRSJAXBContextProvider implements JAXBContextProvider {
     @Override
     public JAXBContext getJAXBContext(Class<?> clazz) throws KapuaException {
         if (getProviders() == null) {
-            throw KapuaException.internalError("Unable to find any provider.");
+            throw KapuaException.internalError("Unable to find any " + Providers.class.getName());
         }
 
         ContextResolver<JAXBContext> contextResolver = getProviders().getContextResolver(JAXBContext.class, getMediaType());
         JAXBContext jaxbContext = contextResolver.getContext(clazz);
         if (jaxbContext == null) {
-            throw KapuaException.internalError("Unable to get a JAXBContext.");
+            throw KapuaException.internalError("Unable to get a " + JAXBContext.class.getName() + " from the " + contextResolver.getClass().getName());
         }
 
         return jaxbContext;
