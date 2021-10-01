@@ -71,9 +71,6 @@
         <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
         <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
 
-        <api>org.eclipse.kapua.service.tag.TagFactory</api>
-        <api>org.eclipse.kapua.service.tag.TagService</api>
-
         <api>org.eclipse.kapua.service.user.UserFactory</api>
         <api>org.eclipse.kapua.service.user.UserService</api>
 

@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -35,6 +34,7 @@ import org.eclipse.kapua.service.tag.TagQuery;
 import org.eclipse.kapua.service.tag.TagService;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 //import org.eclipse.kapua.locator.KapuaLocator;
 
@@ -43,7 +43,7 @@ import javax.inject.Inject;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Tag, TagCreator, TagService, TagListResult, TagQuery, TagFactory> implements TagService {
 
     @Inject
