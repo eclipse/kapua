@@ -58,7 +58,7 @@ public class JobAddDialog extends EntityAddEditDialog {
         name.setMaxLength(255);
         name.setName("name");
         name.setFieldLabel("* " + JOB_MSGS.dialogAddFieldName());
-        name.setValidator(new TextFieldValidator(name, FieldType.NAME_SPACE));
+        name.setValidator(new TextFieldValidator(name, FieldType.NAME_SPACE_COLON));
         name.setToolTip(JOB_MSGS.dialogAddFieldNameTooltip());
         jobFormPanel.add(name);
 
