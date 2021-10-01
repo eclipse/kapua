@@ -67,6 +67,12 @@ public class BasicSteps extends TestBase {
     private static final Logger logger = LoggerFactory.getLogger(BasicSteps.class);
 
     public static final String JOB_ENGINE_CONTAINER_NAME = "job-engine";
+    public static final String ES_CONTAINER_NAME = "es";
+    public static final String DB_CONTAINER_NAME = "db";
+    public static final String EVENTS_BROKER_CONTAINER_NAME = "events-broker";
+    public static final String MESSAGE_BROKER_CONTAINER_NAME = "message-broker";
+    public static final String TELEMETRY_CONSUMER_CONTAINER_NAME = "telemetry-consumer";
+    public static final String LIFECYCLE_CONSUMER_CONTAINER_NAME = "lifecycle-consumer";
     public static final int JOB_ENGINE_CONTAINER_PORT = 8080;
 
     private static final double WAIT_MULTIPLIER = Double.parseDouble(System.getProperty("org.eclipse.kapua.qa.waitMultiplier", "1.0"));
@@ -361,31 +367,25 @@ public class BasicSteps extends TestBase {
         }
     }
 
-    @Before(value="@env_docker and not (@setup or @teardown)", order=0)
+    @Before(value="(@env_docker or @env_docker_base) and not (@setup or @teardown)", order=0)
     public void beforeScenarioDockerFull(Scenario scenario) {
         beforeCommon(scenario);
     }
 
-    @Before(value="@env_docker_base and not (@setup or @teardown)", order=0)
+    @Before(value="@env_none and not (@setup or @teardown)", order=0)
     public void beforeScenarioDockerBase(Scenario scenario) {
         beforeCommon(scenario);
         databaseInit();
     }
 
-    @Before(value="@env_none and not (@setup or @teardown)", order=0)
-    public void beforeScenarioNone(Scenario scenario) {
-        beforeCommon(scenario);
-        databaseInit();
-    }
-
-    @After(value="@env_docker and not (@setup or @teardown)", order=0)
+    @After(value="(@env_docker or @env_docker_base) and not (@setup or @teardown)", order=0)
     public void afterScenarioDockerFull(Scenario scenario) {
         afterScenarioDocker(scenario);
     }
 
-    @After(value="@env_docker_base and not (@setup or @teardown)", order=0)
-    public void afterScenarioDockerBase(Scenario scenario) {
-        afterScenarioDocker(scenario);
+    @After(value="@env_docker_base and @setup", order=0)
+    public void afterScenarioDockerBaseSetup(Scenario scenario) {
+        databaseInit();
     }
 
     @After(value="@env_none and not (@setup or @teardown)", order=0)

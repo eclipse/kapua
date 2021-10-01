@@ -77,7 +77,7 @@ public class DockerSteps {
     private static final long WAIT_FOR_DB = 10000;
     private static final long WAIT_FOR_ES = 10000;
     private static final long WAIT_FOR_EVENTS_BROKER = 10000;
-    private static final long WAIT_FOR_JOB_ENGINE = 10000;
+    private static final long WAIT_FOR_JOB_ENGINE = 30000;
     private static final long WAIT_FOR_BROKER = 60000;
     private static final int HTTP_COMMUNICATION_TIMEOUT = 3000;
 
@@ -94,14 +94,21 @@ public class DockerSteps {
 
     static {
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME = new ArrayList<>();
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("telemetry-consumer");
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("lifecycle-consumer");
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("message-broker");
+        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.TELEMETRY_CONSUMER_CONTAINER_NAME);
+        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.LIFECYCLE_CONSUMER_CONTAINER_NAME);
+        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.MESSAGE_BROKER_CONTAINER_NAME);
+        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.TELEMETRY_CONSUMER_CONTAINER_NAME);
+        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.LIFECYCLE_CONSUMER_CONTAINER_NAME);
+        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.MESSAGE_BROKER_CONTAINER_NAME);
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME = new ArrayList<>();
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.JOB_ENGINE_CONTAINER_NAME);
-        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("events-broker");
-        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("es");
-        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("db");
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.EVENTS_BROKER_CONTAINER_NAME);
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.ES_CONTAINER_NAME);
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.DB_CONTAINER_NAME);
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.JOB_ENGINE_CONTAINER_NAME);
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.EVENTS_BROKER_CONTAINER_NAME);
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.ES_CONTAINER_NAME);
+        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.DB_CONTAINER_NAME);
     }
 
     private boolean printContainerLogOnContainerExit = true;
@@ -343,16 +350,19 @@ public class DockerSteps {
 
     @Given("Stop full docker environment")
     public void stopFullDockerEnvironment() throws DockerException, InterruptedException, SQLException {
-        database.dropAll();
-        printContainersLog(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
-        stopBaseDockerEnvironment();
-        removeContainers(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
+        stopFullDockerEnvironmentInternal();
     }
 
     @Given("Stop base docker environment")
     public void stopBaseDockerEnvironment() throws DockerException, InterruptedException, SQLException {
+        stopFullDockerEnvironmentInternal();
+    }
+
+    private void stopFullDockerEnvironmentInternal() throws SQLException, DockerException, InterruptedException {
         database.dropAll();
+        printContainersLog(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
         removeContainers(DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME);
+        removeContainers(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
     }
 
     @Given("Create network")
@@ -508,19 +518,24 @@ public class DockerSteps {
         logger.info("Removing container {}...", name);
         List<Container> containers = null;
         try {
-            containers = DockerUtil.getDockerClient().listContainers(ListContainersParam.filter("name", name));
+            containers = DockerUtil.getDockerClient().listContainers(ListContainersParam.allContainers());//filter("name", name));
             if (containers == null || containers.isEmpty()) {
                 logger.info("Cannot remove container '{}'. (Container not found!)", name);
             } else {
                 containers.forEach(container -> {
-                    try {
-                        DockerUtil.getDockerClient().removeContainer(container.id(), new RemoveContainerParam("force", "true"));
-                    } catch (DockerException | InterruptedException e) {
-                        //test fails since the environment is not cleaned up
-                        Assert.fail("Cannot remove container!");
-                    }
-                    containerMap.remove(name);
-                    logger.info("Container {} removed. (Container id: {})", name, container.id());
+                    container.names().forEach((containerName) -> {
+                        if (containerName.equals(name)) {
+                            try {
+                                DockerUtil.getDockerClient().removeContainer(container.id(), new RemoveContainerParam("force", "true"));
+                                containerMap.remove(name);
+                                logger.info("Container {} removed. (Container id: {})", name, container.id());
+                                return;
+                            } catch (DockerException | InterruptedException e) {
+                                //test fails since the environment is not cleaned up
+                                Assert.fail("Cannot remove container!");
+                            }
+                        }
+                    });
                 });
             }
         } catch (DockerException | InterruptedException e) {
@@ -532,12 +547,19 @@ public class DockerSteps {
     public void printContainersLog(List<String> names) {
         if (printContainerLogOnContainerExit) {
             for (String name : names) {
-                printContainerLog(name);
+                if (isPrintContainer(name)) {
+                    printContainerLog(name);
+                }
             }
         }
         else {
             logger.info("Print containers log in exit disabled.");
         }
+    }
+
+    private boolean isPrintContainer(String name) {
+        return BasicSteps.JOB_ENGINE_CONTAINER_NAME.equals(name) ||
+            BasicSteps.MESSAGE_BROKER_CONTAINER_NAME.equals(name);
     }
 
     private void printContainerLog(String name) {
