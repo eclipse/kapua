@@ -24,19 +24,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DeviceManagementSendExceptionInfo extends ExceptionInfo {
 
-    private KapuaRequestMessage kapuaRequestMessage;
+    private KapuaRequestMessage<?, ?> kapuaRequestMessage;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected DeviceManagementSendExceptionInfo() {
-        // Required by JAXB
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param deviceManagementSendException The root exception.
+     * @since 1.0.0
+     */
     public DeviceManagementSendExceptionInfo(DeviceManagementSendException deviceManagementSendException) {
-        super(Response.Status.INTERNAL_SERVER_ERROR, deviceManagementSendException.getCode(), deviceManagementSendException);
+        super(Response.Status.INTERNAL_SERVER_ERROR, deviceManagementSendException);
 
         this.kapuaRequestMessage = deviceManagementSendException.getRequestMessage();
     }
 
-    public KapuaRequestMessage getSend() {
+    /**
+     * Gets the {@link DeviceManagementSendExceptionInfo#getRequestMessage()}.
+     *
+     * @return The {@link DeviceManagementSendExceptionInfo#getRequestMessage()}.
+     * @since 1.0.0
+     */
+    public KapuaRequestMessage<?, ?> getRequestMessage() {
         return kapuaRequestMessage;
     }
 }

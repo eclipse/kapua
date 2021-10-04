@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
+import org.eclipse.kapua.job.engine.exception.JobResumingException;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -19,32 +23,42 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.eclipse.kapua.job.engine.exception.JobResumingException;
-import org.eclipse.kapua.job.engine.exception.KapuaJobEngineErrorCodes;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
-
 @XmlRootElement(name = "jobResumingExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JobResumingExceptionInfo extends JobEngineExceptionInfo {
+public class JobResumingExceptionInfo extends JobScopedEngineExceptionInfo {
 
     @XmlElement(name = "executionId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId executionId;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobResumingExceptionInfo() {
+        super();
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param jobResumingException The root exception.
+     * @since 1.0.0
+     */
+    public JobResumingExceptionInfo(JobResumingException jobResumingException) {
+        super(Status.INTERNAL_SERVER_ERROR, jobResumingException);
+
+        this.executionId = jobResumingException.getJobExecutionId();
+    }
+
+    /**
+     * Gets the {@link JobResumingException#getJobExecutionId()}.
+     *
+     * @return The {@link JobResumingException#getJobExecutionId()}.
+     * @since 1.0.0
+     */
     public KapuaId getExecutionId() {
         return executionId;
-    }
-
-    public void setExecutionId(KapuaId executionId) {
-        this.executionId = executionId;
-    }
-
-    public JobResumingExceptionInfo() {
-        this(null);
-    }
-
-    public JobResumingExceptionInfo(JobResumingException jobResumingException) {
-        super(Status.INTERNAL_SERVER_ERROR, KapuaJobEngineErrorCodes.JOB_RESUMING, jobResumingException);
     }
 }

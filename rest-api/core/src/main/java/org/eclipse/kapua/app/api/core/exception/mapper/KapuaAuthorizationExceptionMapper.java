@@ -13,6 +13,8 @@
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -22,8 +24,12 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class KapuaAuthorizationExceptionMapper implements ExceptionMapper<KapuaAuthorizationException> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(KapuaAuthorizationExceptionMapper.class);
+
     @Override
-    public Response toResponse(KapuaAuthorizationException exception) {
+    public Response toResponse(KapuaAuthorizationException kapuaAuthorizationException) {
+        LOG.error(kapuaAuthorizationException.getMessage(), kapuaAuthorizationException);
+
         return Response.status(Status.FORBIDDEN).build();
     }
 

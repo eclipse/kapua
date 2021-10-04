@@ -15,6 +15,8 @@ package org.eclipse.kapua.app.api.core.exception.mapper;
 import org.eclipse.kapua.app.api.core.exception.model.MfaRequiredExceptionInfo;
 import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -24,14 +26,19 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public class KapuaAuthenticationExceptionMapper implements ExceptionMapper<KapuaAuthenticationException> {
 
+    private static final Logger LOG = LoggerFactory.getLogger(KapuaAuthenticationExceptionMapper.class);
+
     @Override
-    public Response toResponse(KapuaAuthenticationException exception) {
-        if (exception.getCode().equals(KapuaAuthenticationErrorCodes.REQUIRE_MFA_CREDENTIALS)) {
-            return Response//
-                    .status(Status.FORBIDDEN) //
-                    .entity(new MfaRequiredExceptionInfo(Status.FORBIDDEN, exception)) //
+    public Response toResponse(KapuaAuthenticationException kapuaAuthenticationException) {
+        LOG.error(kapuaAuthenticationException.getMessage(), kapuaAuthenticationException);
+
+        if (kapuaAuthenticationException.getCode().equals(KapuaAuthenticationErrorCodes.REQUIRE_MFA_CREDENTIALS)) {
+            return Response
+                    .status(Status.FORBIDDEN)
+                    .entity(new MfaRequiredExceptionInfo(Status.FORBIDDEN, kapuaAuthenticationException))
                     .build();
         }
+
         return Response.status(Status.UNAUTHORIZED).build();
     }
 

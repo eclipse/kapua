@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
+import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
+import org.eclipse.kapua.job.engine.exception.JobInvalidTargetException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.eclipse.kapua.job.engine.exception.JobInvalidTargetException;
-import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Provider
 public class JobInvalidTargetExceptionMapper implements ExceptionMapper<JobInvalidTargetException> {
@@ -30,11 +29,12 @@ public class JobInvalidTargetExceptionMapper implements ExceptionMapper<JobInval
 
     @Override
     public Response toResponse(JobInvalidTargetException jobInvalidTargetException) {
-        LOG.error("Invalid Job Target", jobInvalidTargetException);
-        return Response//
-                       .status(Status.INTERNAL_SERVER_ERROR) //
-                       .entity(new JobInvalidTargetExceptionInfo(jobInvalidTargetException)) //
-                       .build();
+        LOG.error(jobInvalidTargetException.getMessage(), jobInvalidTargetException);
+
+        return Response
+                .status(Status.INTERNAL_SERVER_ERROR)
+                .entity(new JobInvalidTargetExceptionInfo(jobInvalidTargetException))
+                .build();
     }
 
 }

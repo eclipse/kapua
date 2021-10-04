@@ -29,7 +29,8 @@ public class DeviceManagementResponseCodeExceptionMapper implements ExceptionMap
 
     @Override
     public Response toResponse(DeviceManagementResponseCodeException deviceManagementResponseCodeException) {
-        LOG.error("Device Management Response Code", deviceManagementResponseCodeException);
+        LOG.error(deviceManagementResponseCodeException.getMessage(), deviceManagementResponseCodeException);
+
         return Response
                 .status(Status.INTERNAL_SERVER_ERROR)
                 .entity(new DeviceManagementResponseCodeExceptionInfo(deviceManagementResponseCodeException))

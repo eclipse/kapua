@@ -29,7 +29,8 @@ public class DeviceManagementResponseContentExceptionMapper implements Exception
 
     @Override
     public Response toResponse(DeviceManagementResponseContentException deviceManagementResponseContentException) {
-        LOG.error("Device Management Response Content", deviceManagementResponseContentException);
+        LOG.error(deviceManagementResponseContentException.getMessage(), deviceManagementResponseContentException);
+
         return Response
                 .status(Status.INTERNAL_SERVER_ERROR)
                 .entity(new DeviceManagementResponseContentExceptionInfo(deviceManagementResponseContentException))

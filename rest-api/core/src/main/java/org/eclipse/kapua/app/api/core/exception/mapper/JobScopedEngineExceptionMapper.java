@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
-import org.eclipse.kapua.app.api.core.exception.model.DeviceManagementRequestContentExceptionInfo;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
+import org.eclipse.kapua.app.api.core.exception.model.JobScopedEngineExceptionInfo;
+import org.eclipse.kapua.job.engine.exception.JobScopedEngineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,17 +23,17 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class DeviceManagementRequestContentExceptionMapper implements ExceptionMapper<DeviceManagementRequestContentException> {
+public class JobScopedEngineExceptionMapper implements ExceptionMapper<JobScopedEngineException> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DeviceManagementRequestContentExceptionMapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JobScopedEngineExceptionMapper.class);
 
     @Override
-    public Response toResponse(DeviceManagementRequestContentException managementRequestContentException) {
-        LOG.error(managementRequestContentException.getMessage(), managementRequestContentException);
+    public Response toResponse(JobScopedEngineException jobScopedEngineException) {
+        LOG.error(jobScopedEngineException.getMessage(), jobScopedEngineException);
 
         return Response
                 .status(Status.INTERNAL_SERVER_ERROR)
-                .entity(new DeviceManagementRequestContentExceptionInfo(managementRequestContentException))
+                .entity(new JobScopedEngineExceptionInfo(Status.INTERNAL_SERVER_ERROR, jobScopedEngineException))
                 .build();
     }
 

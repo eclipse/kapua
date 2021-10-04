@@ -13,23 +13,58 @@
 package org.eclipse.kapua.job.engine.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.execution.JobExecution;
 
-public class JobResumingException extends JobEngineException {
+import javax.validation.constraints.NotNull;
 
-    public JobResumingException(Throwable t, KapuaId scopeId, KapuaId jobId) {
-        this(t, scopeId, jobId, null);
+/**
+ * The {@link org.eclipse.kapua.service.job.Job} resume has thrown an error.
+ *
+ * @since 1.0.0
+ */
+public class JobResumingException extends JobScopedEngineException {
+
+    private static final long serialVersionUID = 3492844432935460889L;
+
+    private final KapuaId jobExecutionId;
+
+    /**
+     * Constructor.
+     *
+     * @param scopeId        The {@link Job#getScopeId()}.
+     * @param jobId          The {@link Job#getId()}.
+     * @param jobExecutionId The {@link JobExecution#getId()} that cannot be stopped.
+     * @since 1.0.0
+     */
+    public JobResumingException(@NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId jobExecutionId) {
+        super(JobEngineErrorCodes.JOB_RESUMING, scopeId, jobId, jobExecutionId);
+
+        this.jobExecutionId = jobExecutionId;
     }
 
-    public JobResumingException(Throwable t, KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
-        super(KapuaJobEngineErrorCodes.JOB_RESUMING, t, scopeId, jobId, jobExecutionId);
+    /**
+     * Constructor.
+     *
+     * @param cause          The original {@link Throwable}.
+     * @param scopeId        The {@link Job#getScopeId()}.
+     * @param jobId          The {@link Job#getId()}.
+     * @param jobExecutionId The {@link JobExecution#getId()} that cannot be stopped.
+     * @since 1.0.0
+     */
+    public JobResumingException(@NotNull Throwable cause, @NotNull KapuaId scopeId, @NotNull KapuaId jobId, @NotNull KapuaId jobExecutionId) {
+        super(JobEngineErrorCodes.JOB_RESUMING, cause, scopeId, jobId, jobExecutionId);
+
+        this.jobExecutionId = jobExecutionId;
     }
 
-    public JobResumingException(KapuaId scopeId, KapuaId jobId) {
-        this(scopeId, jobId, null);
+    /**
+     * Gets the {@link JobExecution#getId()} which was not able to resume.
+     *
+     * @return The {@link JobExecution#getId()} which was not able to resume.
+     * @since 1.6.0
+     */
+    public KapuaId getJobExecutionId() {
+        return jobExecutionId;
     }
-
-    public JobResumingException(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) {
-        super(KapuaJobEngineErrorCodes.JOB_RESUMING, scopeId, jobId, jobExecutionId);
-    }
-
 }

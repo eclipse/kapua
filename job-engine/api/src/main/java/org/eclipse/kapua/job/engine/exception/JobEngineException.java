@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2017, 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -13,54 +13,55 @@
 package org.eclipse.kapua.job.engine.exception;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.model.id.KapuaId;
+
+import javax.validation.constraints.NotNull;
 
 /**
+ * Base {@link KapuaException} for the {@code kapua-job-engine-api} module.
+ *
  * @since 1.0.0
  */
 public abstract class JobEngineException extends KapuaException {
 
-    private final KapuaId scopeId;
-    private final KapuaId jobId;
+    private static final long serialVersionUID = 6422745329878392484L;
 
     private static final String ERROR_MESSAGES_BUNDLE_NAME = "job-engine-service-error-messages";
 
     /**
+     * Constructor.
+     *
+     * @param code The {@link JobEngineErrorCodes} associated with the {@link Exception}
      * @since 1.0.0
      */
-    protected JobEngineException(KapuaJobEngineErrorCodes code) {
-        this(code, null, null, null);
+    protected JobEngineException(@NotNull JobEngineErrorCodes code) {
+        super(code);
     }
 
     /**
+     * Constructor.
+     *
+     * @param code      The {@link JobEngineErrorCodes} associated with the {@link Exception}.
+     * @param arguments The arguments associated with the {@link Exception}.
      * @since 1.0.0
      */
-    protected JobEngineException(KapuaJobEngineErrorCodes code, KapuaId scopeId, KapuaId jobId, Object... arguments) {
-        this(code, null, scopeId, jobId, arguments);
+    protected JobEngineException(@NotNull JobEngineErrorCodes code, @NotNull Object... arguments) {
+        super(code, arguments);
     }
 
     /**
+     * Constructor.
+     *
+     * @param code      The {@link JobEngineErrorCodes} associated with the {@link Exception}.
+     * @param cause     The original {@link Throwable}.
+     * @param arguments The arguments associated with the {@link Exception}.
      * @since 1.0.0
      */
-    protected JobEngineException(KapuaJobEngineErrorCodes code, Throwable cause, KapuaId scopeId, KapuaId jobId, Object... arguments) {
-        super(code, cause, scopeId, jobId, arguments);
-        this.scopeId = scopeId;
-        this.jobId = jobId;
+    protected JobEngineException(@NotNull JobEngineErrorCodes code, @NotNull Throwable cause, @NotNull Object... arguments) {
+        super(code, cause, arguments);
     }
 
-    /**
-     * @since 1.5.0
-     */
     @Override
     protected String getKapuaErrorMessagesBundle() {
         return ERROR_MESSAGES_BUNDLE_NAME;
-    }
-
-    public KapuaId getScopeId() {
-        return scopeId;
-    }
-
-    public KapuaId getJobId() {
-        return jobId;
     }
 }

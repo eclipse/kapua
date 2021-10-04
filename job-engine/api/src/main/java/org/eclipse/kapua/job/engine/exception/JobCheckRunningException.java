@@ -12,11 +12,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.exception;
 
+import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.Job;
 
-public class JobCheckRunningException extends CheckRunningJobEngineException {
+import javax.validation.constraints.NotNull;
 
-    public JobCheckRunningException(Throwable t, KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_CHECK_RUNNING, t, scopeId, jobId);
+/**
+ * Exception to {@code throw} when {@link JobEngineService#isRunning(KapuaId, KapuaId)} fails.
+ *
+ * @since 1.0.0
+ */
+public class JobCheckRunningException extends JobScopedEngineException {
+
+    private static final long serialVersionUID = -2502188601968533816L;
+
+    /**
+     * Constructor.
+     *
+     * @param cause   The original {@link Throwable}.
+     * @param scopeId The {@link Job#getScopeId()}
+     * @param jobId   The {@link Job#getId()}
+     * @since 1.0.0
+     */
+    public JobCheckRunningException(@NotNull Throwable cause, @NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
+        super(JobEngineErrorCodes.JOB_CHECK_RUNNING, cause, scopeId, jobId);
     }
 }

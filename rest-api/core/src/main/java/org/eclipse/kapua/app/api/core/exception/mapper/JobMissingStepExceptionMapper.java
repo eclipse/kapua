@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
+import org.eclipse.kapua.job.engine.exception.JobMissingStepException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.eclipse.kapua.job.engine.exception.JobMissingStepException;
-import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Provider
 public class JobMissingStepExceptionMapper implements ExceptionMapper<JobMissingStepException> {
@@ -30,11 +29,12 @@ public class JobMissingStepExceptionMapper implements ExceptionMapper<JobMissing
 
     @Override
     public Response toResponse(JobMissingStepException jobMissingStepException) {
-        LOG.error("Missing Job Step", jobMissingStepException);
-        return Response//
-                       .status(Status.INTERNAL_SERVER_ERROR) //
-                       .entity(new JobMissingStepExceptionInfo(jobMissingStepException)) //
-                       .build();
+        LOG.error(jobMissingStepException.getMessage(), jobMissingStepException);
+
+        return Response
+                .status(Status.INTERNAL_SERVER_ERROR)
+                .entity(new JobMissingStepExceptionInfo(jobMissingStepException))
+                .build();
     }
 
 }

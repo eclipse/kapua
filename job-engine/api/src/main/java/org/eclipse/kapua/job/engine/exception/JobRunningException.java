@@ -13,10 +13,27 @@
 package org.eclipse.kapua.job.engine.exception;
 
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.Job;
 
-public class JobRunningException extends JobEngineException {
+import javax.validation.constraints.NotNull;
 
-    public JobRunningException(KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_RUNNING, scopeId, jobId);
+/**
+ * {@link JobEngineException} to {@code throw} when an operation on a {@link Job} that requires it to not be running.
+ *
+ * @since 1.0.0
+ */
+public class JobRunningException extends JobScopedEngineException {
+
+    private static final long serialVersionUID = -4413571026722007610L;
+
+    /**
+     * Constructor.
+     *
+     * @param scopeId The {@link Job#getScopeId()}.
+     * @param jobId   The {@link Job#getId()}.
+     * @since 1.0.0
+     */
+    public JobRunningException(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
+        super(JobEngineErrorCodes.JOB_RUNNING, scopeId, jobId);
     }
 }

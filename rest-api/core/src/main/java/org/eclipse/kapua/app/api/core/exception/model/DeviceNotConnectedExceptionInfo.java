@@ -35,21 +35,44 @@ public class DeviceNotConnectedExceptionInfo extends ExceptionInfo {
     @XmlElement(name = "connectionStatus")
     private DeviceConnectionStatus connectionStatus;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected DeviceNotConnectedExceptionInfo() {
-        // Required by JAXB
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param deviceNotConnectedException The root exception.
+     * @since 1.0.0
+     */
     public DeviceNotConnectedExceptionInfo(DeviceNotConnectedException deviceNotConnectedException) {
-        super(Response.Status.INTERNAL_SERVER_ERROR, deviceNotConnectedException.getCode(), deviceNotConnectedException);
+        super(Response.Status.INTERNAL_SERVER_ERROR, deviceNotConnectedException);
 
         this.deviceId = deviceNotConnectedException.getDeviceId();
         this.connectionStatus = deviceNotConnectedException.getCurrentConnectionStatus();
     }
 
+    /**
+     * Gets the {@link DeviceNotConnectedException#getDeviceId()}.
+     *
+     * @return The {@link DeviceNotConnectedException#getDeviceId()}.
+     * @since 1.0.0
+     */
     public KapuaId getDeviceId() {
         return deviceId;
     }
 
+    /**
+     * Gets the {@link DeviceNotConnectedException#getCurrentConnectionStatus()}.
+     *
+     * @return The {@link DeviceNotConnectedException#getCurrentConnectionStatus()}.
+     * @since 1.0.0
+     */
     public DeviceConnectionStatus getConnectionStatus() {
         return connectionStatus;
     }

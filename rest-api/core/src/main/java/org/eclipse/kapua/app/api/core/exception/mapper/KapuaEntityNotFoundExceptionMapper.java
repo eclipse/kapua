@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
 @Provider
 public class KapuaEntityNotFoundExceptionMapper implements ExceptionMapper<KapuaEntityNotFoundException> {
@@ -28,11 +28,11 @@ public class KapuaEntityNotFoundExceptionMapper implements ExceptionMapper<Kapua
     private static final Logger LOG = LoggerFactory.getLogger(KapuaEntityNotFoundExceptionMapper.class);
 
     @Override
-    public Response toResponse(KapuaEntityNotFoundException kapuaException) {
-        LOG.error("Entity not found exception!", kapuaException);
-        return Response//
-                .status(Status.NOT_FOUND) //
-                .entity(new EntityNotFoundExceptionInfo(Status.NOT_FOUND, kapuaException)) //
+    public Response toResponse(KapuaEntityNotFoundException kapuaEntityNotFoundException) {
+        LOG.error(kapuaEntityNotFoundException.getMessage(), kapuaEntityNotFoundException);
+        return Response
+                .status(Status.NOT_FOUND)
+                .entity(new EntityNotFoundExceptionInfo(Status.NOT_FOUND, kapuaEntityNotFoundException))
                 .build();
     }
 }

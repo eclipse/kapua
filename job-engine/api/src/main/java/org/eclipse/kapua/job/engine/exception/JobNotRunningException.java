@@ -12,11 +12,29 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.exception;
 
+import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.Job;
 
-public class JobNotRunningException extends JobEngineException {
+import javax.validation.constraints.NotNull;
 
-    public JobNotRunningException(KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_NOT_RUNNING, scopeId, jobId);
+/**
+ * {@link JobEngineException} to {@code throw} then {@link JobEngineService#stopJob(KapuaId, KapuaId)} is invoked on a {@link Job} that is not running.
+ *
+ * @since 1.0.0
+ */
+public class JobNotRunningException extends JobScopedEngineException {
+
+    private static final long serialVersionUID = -2145561479308057812L;
+
+    /**
+     * Constructor.
+     *
+     * @param scopeId The {@link Job#getScopeId()}.
+     * @param jobId   The {@link Job#getId()}.
+     * @since 1.0.0
+     */
+    public JobNotRunningException(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
+        super(JobEngineErrorCodes.JOB_NOT_RUNNING, scopeId, jobId);
     }
 }

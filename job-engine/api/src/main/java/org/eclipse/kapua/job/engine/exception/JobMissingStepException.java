@@ -12,11 +12,30 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.exception;
 
+import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.job.Job;
+import org.eclipse.kapua.service.job.targets.JobTarget;
 
-public class JobMissingStepException extends JobEngineException {
+import javax.validation.constraints.NotNull;
 
-    public JobMissingStepException(KapuaId scopeId, KapuaId jobId) {
-        super(KapuaJobEngineErrorCodes.JOB_STEP_MISSING, scopeId, jobId);
+/**
+ * {@link JobEngineException} to {@code throw} when {@link JobEngineService#startJob(KapuaId, KapuaId)} is invoked on a {@link Job} that has no {@link JobTarget} defined.
+ *
+ * @since 1.0.0
+ */
+public class JobMissingStepException extends JobScopedEngineException {
+
+    private static final long serialVersionUID = -8398975490847119948L;
+
+    /**
+     * Constructor.
+     *
+     * @param scopeId The {@link Job#getScopeId()}.
+     * @param jobId   The {@link Job#getId()}.
+     * @since 1.0.0
+     */
+    public JobMissingStepException(@NotNull KapuaId scopeId, @NotNull KapuaId jobId) {
+        super(JobEngineErrorCodes.JOB_STEP_MISSING, scopeId, jobId);
     }
 }

@@ -15,6 +15,7 @@ package org.eclipse.kapua.app.api.core.exception.model;
 import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.KapuaException;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -28,18 +29,60 @@ public class ExceptionInfo extends ThrowableInfo {
     @XmlElement(name = "kapuaErrorCode")
     private String kapuaErrorCode;
 
-    public ExceptionInfo() {
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected ExceptionInfo() {
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param httpStatus The {@link Status} of the {@link Response}
+     * @param exception  The cause of the error.
+     * @since 1.6.0
+     */
+    public ExceptionInfo(Status httpStatus, KapuaException exception) {
+        super(httpStatus, exception);
+
+        setKapuaErrorCode(exception.getCode());
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param httpStatus     The {@link Status} of the {@link Response}
+     * @param kapuaErrorCode The associated {@link KapuaErrorCode}.
+     * @param exception      The cause of the error.
+     * @since 1.0.0
+     * @deprecated Since 1.6.0. Please make use of {@link #ExceptionInfo(Status, KapuaException)} to avoid misalignment of {@link #getKapuaErrorCode()}.
+     */
+    @Deprecated
     public ExceptionInfo(Status httpStatus, KapuaErrorCode kapuaErrorCode, KapuaException exception) {
         super(httpStatus, exception);
+
         setKapuaErrorCode(kapuaErrorCode);
     }
 
+    /**
+     * Gets the {@link KapuaException#getCode()}.
+     *
+     * @return The {@link KapuaException#getCode()}.
+     * @since 1.0.0
+     */
     public String getKapuaErrorCode() {
         return kapuaErrorCode;
     }
 
+    /**
+     * Sets the {@link KapuaException#getCode()}.
+     *
+     * @param kapuaErrorCode The {@link KapuaException#getCode()}.
+     * @since 1.0.0
+     */
     private void setKapuaErrorCode(KapuaErrorCode kapuaErrorCode) {
         this.kapuaErrorCode = kapuaErrorCode.name();
     }

@@ -12,24 +12,35 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
+import org.eclipse.kapua.job.engine.exception.JobStartingException;
+
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.eclipse.kapua.job.engine.exception.JobStartingException;
-import org.eclipse.kapua.job.engine.exception.KapuaJobEngineErrorCodes;
-
 @XmlRootElement(name = "jobStartingExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JobStartingExceptionInfo extends JobEngineExceptionInfo {
+public class JobStartingExceptionInfo extends JobScopedEngineExceptionInfo {
 
-    public JobStartingExceptionInfo() {
-        this(null);
+
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobStartingExceptionInfo() {
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param jobStartingException The root exception.
+     * @since 1.0.0
+     */
     public JobStartingExceptionInfo(JobStartingException jobStartingException) {
-        super(Status.INTERNAL_SERVER_ERROR, KapuaJobEngineErrorCodes.JOB_STARTING, jobStartingException);
+        super(Status.INTERNAL_SERVER_ERROR, jobStartingException);
     }
 
 }

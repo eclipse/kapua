@@ -12,10 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.job.engine.exception.JobStoppingException;
+import org.eclipse.kapua.job.engine.exception.JobScopedEngineException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -23,42 +24,48 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-@XmlRootElement(name = "jobStartingExceptionInfo")
+@XmlRootElement(name = "jobScopedEngineExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JobStoppingExceptionInfo extends JobScopedEngineExceptionInfo {
+public class JobScopedEngineExceptionInfo extends JobEngineExceptionInfo {
 
-    @XmlElement(name = "executionId")
+    @XmlElement(name = "scopeId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    private KapuaId executionId;
+    private KapuaId scopeId;
+
+    @XmlElement(name = "jobId")
+    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
+    private KapuaId jobId;
 
     /**
      * Constructor.
      *
      * @since 1.0.0
      */
-    protected JobStoppingExceptionInfo() {
+    protected JobScopedEngineExceptionInfo() {
         super();
     }
 
     /**
      * Constructor.
      *
-     * @param jobStoppingException The root exception.
+     * @param httpStatus               The {@link Status} of the {@link Response}
+     * @param jobScopedEngineException The root exception.
      * @since 1.0.0
      */
-    public JobStoppingExceptionInfo(JobStoppingException jobStoppingException) {
-        super(Status.INTERNAL_SERVER_ERROR, jobStoppingException);
+    public JobScopedEngineExceptionInfo(Status httpStatus, JobScopedEngineException jobScopedEngineException) {
+        super(httpStatus, jobScopedEngineException);
 
-        this.executionId = jobStoppingException.getJobExecutionId();
+        this.scopeId = jobScopedEngineException.getScopeId();
+        this.jobId = jobScopedEngineException.getJobId();
     }
 
-    /**
-     * Gets the {@link JobStoppingException#getJobExecutionId()}.
-     *
-     * @return The {@link JobStoppingException#getJobExecutionId()}.
-     * @since 1.0.0
-     */
-    public KapuaId getExecutionId() {
-        return executionId;
+    public KapuaId getScopeId() {
+        return scopeId;
     }
+
+    public KapuaId getJobId() {
+        return jobId;
+    }
+
+
 }

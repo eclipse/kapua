@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
+import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
+import org.eclipse.kapua.job.engine.exception.JobAlreadyRunningException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.eclipse.kapua.job.engine.exception.JobAlreadyRunningException;
-import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Provider
 public class JobAlreadyRunningExceptionMapper implements ExceptionMapper<JobAlreadyRunningException> {
@@ -30,11 +29,12 @@ public class JobAlreadyRunningExceptionMapper implements ExceptionMapper<JobAlre
 
     @Override
     public Response toResponse(JobAlreadyRunningException jobAlreadyRunningException) {
-        LOG.error("Job Already Running", jobAlreadyRunningException);
-        return Response//
-                       .status(Status.INTERNAL_SERVER_ERROR) //
-                       .entity(new JobAlreadyRunningExceptionInfo(jobAlreadyRunningException)) //
-                       .build();
+        LOG.error(jobAlreadyRunningException.getMessage(), jobAlreadyRunningException);
+
+        return Response
+                .status(Status.INTERNAL_SERVER_ERROR)
+                .entity(new JobAlreadyRunningExceptionInfo(jobAlreadyRunningException))
+                .build();
     }
 
 }

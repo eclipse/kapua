@@ -23,12 +23,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SelfManagedOnlyExceptionInfo extends ExceptionInfo {
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected SelfManagedOnlyExceptionInfo() {
         super();
     }
 
-    public SelfManagedOnlyExceptionInfo(Response.Status httpStatus, SelfManagedOnlyException kapuaException) {
-        super(httpStatus, kapuaException.getCode(), kapuaException);
+    /**
+     * Constructor.
+     *
+     * @param httpStatus               The {@link Response.Status} of the {@link Response}
+     * @param selfManagedOnlyException The root exception.
+     * @since 1.0.0
+     */
+    public SelfManagedOnlyExceptionInfo(Response.Status httpStatus, SelfManagedOnlyException selfManagedOnlyException) {
+        super(httpStatus, selfManagedOnlyException);
     }
 
 }

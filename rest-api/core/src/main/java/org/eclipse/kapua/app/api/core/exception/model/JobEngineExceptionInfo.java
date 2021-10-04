@@ -12,56 +12,33 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
+import org.eclipse.kapua.job.engine.exception.JobEngineException;
+
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.KapuaErrorCode;
-import org.eclipse.kapua.job.engine.exception.JobEngineException;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 @XmlRootElement(name = "jobEngineExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JobEngineExceptionInfo extends ExceptionInfo {
 
-    @XmlElement(name = "scopeId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    private KapuaId scopeId;
-
-    @XmlElement(name = "jobId")
-    @XmlJavaTypeAdapter(KapuaIdAdapter.class)
-    private KapuaId jobId;
-
-    public JobEngineExceptionInfo() {
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobEngineExceptionInfo() {
         super();
     }
 
-    public JobEngineExceptionInfo(Status httpStatus, KapuaErrorCode kapuaErrorCode, JobEngineException jobEngineException) {
-        super(httpStatus, kapuaErrorCode, jobEngineException);
-        if (jobEngineException != null) {
-            setScopeId(jobEngineException.getScopeId());
-            setJobId(jobEngineException.getJobId());
-        }
+    /**
+     * Constructor.
+     *
+     * @param jobEngineException The root exception.
+     * @since 1.0.0
+     */
+    public JobEngineExceptionInfo(Status httpStatus, JobEngineException jobEngineException) {
+        super(httpStatus, jobEngineException);
     }
-
-    public KapuaId getScopeId() {
-        return scopeId;
-    }
-
-    private void setScopeId(KapuaId scopeId) {
-        this.scopeId = scopeId;
-    }
-
-    public KapuaId getJobId() {
-        return jobId;
-    }
-
-    public void setJobId(KapuaId jobId) {
-        this.jobId = jobId;
-    }
-
 }

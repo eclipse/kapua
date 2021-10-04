@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
-
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.app.api.core.exception.model.IllegalNullArgumentExceptionInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
 @Provider
 public class KapuaIllegalNullArgumentExceptionMapper implements ExceptionMapper<KapuaIllegalNullArgumentException> {
@@ -28,11 +28,11 @@ public class KapuaIllegalNullArgumentExceptionMapper implements ExceptionMapper<
     private static final Logger LOG = LoggerFactory.getLogger(KapuaIllegalNullArgumentExceptionMapper.class);
 
     @Override
-    public Response toResponse(KapuaIllegalNullArgumentException kapuaException) {
-        LOG.error("Illegal null argument exception!", kapuaException);
-        return Response//
-                .status(Status.BAD_REQUEST) //
-                .entity(new IllegalNullArgumentExceptionInfo(Status.BAD_REQUEST, kapuaException)) //
+    public Response toResponse(KapuaIllegalNullArgumentException kapuaIllegalNullArgumentException) {
+        LOG.error(kapuaIllegalNullArgumentException.getMessage(), kapuaIllegalNullArgumentException);
+        return Response
+                .status(Status.BAD_REQUEST)
+                .entity(new IllegalNullArgumentExceptionInfo(Status.BAD_REQUEST, kapuaIllegalNullArgumentException))
                 .build();
     }
 }

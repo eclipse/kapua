@@ -28,16 +28,33 @@ public class DeviceManagementResponseContentExceptionInfo extends ExceptionInfo 
     @XmlElement(name = "responsePayload")
     private KapuaResponsePayload responsePayload;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected DeviceManagementResponseContentExceptionInfo() {
-        // Required by JAXB
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param deviceManagementResponseContentException The root exception.
+     * @since 1.0.0
+     */
     public DeviceManagementResponseContentExceptionInfo(DeviceManagementResponseContentException deviceManagementResponseContentException) {
-        super(Status.INTERNAL_SERVER_ERROR, deviceManagementResponseContentException.getCode(), deviceManagementResponseContentException);
+        super(Status.INTERNAL_SERVER_ERROR, deviceManagementResponseContentException);
 
         this.responsePayload = deviceManagementResponseContentException.getResponsePayload();
     }
 
+    /**
+     * Gets the {@link DeviceManagementResponseContentException#getResponsePayload()}.
+     *
+     * @return The {@link DeviceManagementResponseContentException#getResponsePayload()}.
+     * @since 1.0.0
+     */
     public KapuaResponsePayload getResponsePayload() {
         return responsePayload;
     }

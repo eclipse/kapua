@@ -12,17 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.jbatch;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
 import org.eclipse.kapua.job.engine.exception.CleanJobDataException;
 import org.eclipse.kapua.job.engine.exception.JobCheckRunningException;
 import org.eclipse.kapua.job.engine.exception.JobInvalidTargetException;
@@ -33,6 +28,7 @@ import org.eclipse.kapua.job.engine.exception.JobResumingException;
 import org.eclipse.kapua.job.engine.exception.JobRunningException;
 import org.eclipse.kapua.job.engine.exception.JobStartingException;
 import org.eclipse.kapua.job.engine.exception.JobStoppingException;
+import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
@@ -53,6 +49,10 @@ import org.eclipse.kapua.service.job.targets.JobTargetAttributes;
 import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 @KapuaProvider
 public class JobEngineServiceJbatch implements JobEngineService {
@@ -150,23 +150,6 @@ public class JobEngineServiceJbatch implements JobEngineService {
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
 
         return internalIsRunning(scopeId, jobId);
-    }
-
-    private boolean internalIsRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException {
-        //
-        // Check existence
-        Job job = JOB_SERVICE.find(scopeId, jobId);
-        if (job == null) {
-            throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
-        }
-
-        //
-        // Do check running
-        try {
-            return JbatchDriver.isRunningJob(scopeId, jobId);
-        } catch (Exception e) {
-            throw new JobCheckRunningException(e, scopeId, jobId);
-        }
     }
 
     @Override
@@ -337,6 +320,38 @@ public class JobEngineServiceJbatch implements JobEngineService {
             JbatchDriver.cleanJobData(scopeId, jobId);
         } catch (Exception ex) {
             throw new CleanJobDataException(ex, scopeId, jobId);
+        }
+    }
+
+    //
+    // Private methods
+    //
+
+    /**
+     * Using the {@link JbatchDriver} checks whether the {@link Job} is running.
+     *
+     * @param scopeId The {@link Job#getScopeId()}.
+     * @param jobId   The {@link Job#getId()}.
+     * @return {@code true} if {@link JbatchDriver} reports that is running, {@code false} otherwise.
+     * @throws JobCheckRunningException     if {@link Job} running status cannot be checked.
+     * @throws KapuaEntityNotFoundException if {@link Job} does not exists.
+     * @throws KapuaException               if any other error occurs.
+     * @since 1.5.0
+     */
+    private boolean internalIsRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException {
+        //
+        // Check existence
+        Job job = JOB_SERVICE.find(scopeId, jobId);
+        if (job == null) {
+            throw new KapuaEntityNotFoundException(Job.TYPE, jobId);
+        }
+
+        //
+        // Do check running
+        try {
+            return JbatchDriver.isRunningJob(scopeId, jobId);
+        } catch (Exception e) {
+            throw new JobCheckRunningException(e, scopeId, jobId);
         }
     }
 }

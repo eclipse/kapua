@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import java.util.Set;
+import org.eclipse.kapua.job.engine.exception.JobInvalidTargetException;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -21,38 +23,45 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.job.engine.exception.JobInvalidTargetException;
-import org.eclipse.kapua.job.engine.exception.KapuaJobEngineErrorCodes;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
+import java.util.Set;
 
 @XmlRootElement(name = "jobInvalidTargetExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JobInvalidTargetExceptionInfo extends JobEngineExceptionInfo {
+public class JobInvalidTargetExceptionInfo extends JobScopedEngineExceptionInfo {
 
     @XmlElement(name = "targetId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     @XmlElementWrapper(name = "jobTargetIdSubset")
     private Set<KapuaId> jobTargetIdSubset;
 
-    public JobInvalidTargetExceptionInfo() {
-        this(null);
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    protected JobInvalidTargetExceptionInfo() {
+        super();
     }
 
+    /**
+     * Constructor.
+     *
+     * @param jobInvalidTargetException The root exception.
+     * @since 1.0.0
+     */
     public JobInvalidTargetExceptionInfo(JobInvalidTargetException jobInvalidTargetException) {
-        super(Status.INTERNAL_SERVER_ERROR, KapuaJobEngineErrorCodes.JOB_TARGET_INVALID, jobInvalidTargetException);
-        if (jobInvalidTargetException != null) {
-            setJobTargetIdSubset(jobInvalidTargetException.getTargetSublist());
-        }
+        super(Status.INTERNAL_SERVER_ERROR, jobInvalidTargetException);
+
+        this.jobTargetIdSubset = jobInvalidTargetException.getTargetSublist();
     }
 
+    /**
+     * Gets the {@link JobInvalidTargetException#getTargetSublist()}.
+     *
+     * @return The {@link JobInvalidTargetException#getTargetSublist()}.
+     * @since 1.0.0
+     */
     public Set<KapuaId> getJobTargetIdSubset() {
         return jobTargetIdSubset;
     }
-
-    public void setJobTargetIdSubset(Set<KapuaId> jobTargetIdSubset) {
-        this.jobTargetIdSubset = jobTargetIdSubset;
-    }
-
 }

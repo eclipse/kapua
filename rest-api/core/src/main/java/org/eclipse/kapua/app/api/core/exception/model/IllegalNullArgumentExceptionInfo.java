@@ -14,6 +14,7 @@ package org.eclipse.kapua.app.api.core.exception.model;
 
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,21 +28,35 @@ public class IllegalNullArgumentExceptionInfo extends ExceptionInfo {
     @XmlElement(name = "argumentName")
     private String argumentName;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected IllegalNullArgumentExceptionInfo() {
         super();
     }
 
-    public IllegalNullArgumentExceptionInfo(Status httpStatus, KapuaIllegalNullArgumentException kapuaException) {
-        super(httpStatus, kapuaException.getCode(), kapuaException);
+    /**
+     * Constructor.
+     *
+     * @param httpStatus                        The {@link Status} of the {@link Response}
+     * @param kapuaIllegalNullArgumentException The root exception.
+     * @since 1.0.0
+     */
+    public IllegalNullArgumentExceptionInfo(Status httpStatus, KapuaIllegalNullArgumentException kapuaIllegalNullArgumentException) {
+        super(httpStatus, kapuaIllegalNullArgumentException);
 
-        setArgumentName(kapuaException.getArgumentName());
+        this.argumentName = kapuaIllegalNullArgumentException.getArgumentName();
     }
 
+    /**
+     * Gets the {@link KapuaIllegalNullArgumentException#getArgumentName()}.
+     *
+     * @return The {@link KapuaIllegalNullArgumentException#getArgumentName()}.
+     * @since 1.0.0
+     */
     public String getArgumenName() {
         return argumentName;
-    }
-
-    private void setArgumentName(String argumentName) {
-        this.argumentName = argumentName;
     }
 }

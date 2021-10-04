@@ -12,16 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
+import org.eclipse.kapua.KapuaEntityNotFoundException;
+import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdAdapter;
+
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.model.id.KapuaIdAdapter;
 
 @XmlRootElement(name = "entityNotFoundExceptionInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -34,31 +35,46 @@ public class EntityNotFoundExceptionInfo extends ExceptionInfo {
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
     private KapuaId entityId;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected EntityNotFoundExceptionInfo() {
         super();
     }
 
-    public EntityNotFoundExceptionInfo(Status httpStatus, KapuaEntityNotFoundException kapuaException) {
-        super(httpStatus, kapuaException.getCode(), kapuaException);
+    /**
+     * Constructor.
+     *
+     * @param httpStatus                   The {@link Status} of the {@link Response}
+     * @param kapuaEntityNotFoundException The root exception.
+     * @since 1.0.0
+     */
+    public EntityNotFoundExceptionInfo(Status httpStatus, KapuaEntityNotFoundException kapuaEntityNotFoundException) {
+        super(httpStatus, kapuaEntityNotFoundException);
 
-        setEntityType(kapuaException.getEntityType());
-        setEntityId(kapuaException.getEntityId());
+        this.entityType = kapuaEntityNotFoundException.getEntityType();
+        this.entityId = kapuaEntityNotFoundException.getEntityId();
     }
 
+    /**
+     * Gets the {@link KapuaEntityNotFoundException#getEntityType()}.
+     *
+     * @return The {@link KapuaEntityNotFoundException#getEntityType()}.
+     * @since 1.0.0
+     */
     public String getEntityType() {
         return entityType;
     }
 
-    private void setEntityType(String entityType) {
-        this.entityType = entityType;
-    }
-
+    /**
+     * Gets the {@link KapuaEntityNotFoundException#getEntityId()}.
+     *
+     * @return The {@link KapuaEntityNotFoundException#getEntityId()}.
+     * @since 1.0.0
+     */
     public KapuaId getEntityId() {
         return entityId;
     }
-
-    private void setEntityId(KapuaId entityId) {
-        this.entityId = entityId;
-    }
-
 }
