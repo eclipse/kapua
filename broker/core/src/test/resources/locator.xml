@@ -32,10 +32,10 @@
     </provided>
     <packages>
         <package>org.eclipse.kapua.commons</package>
-        <package>org.eclipse.kapua.service</package>
-        <package>org.eclipse.kapua.transport</package>
+        <package>org.eclipse.kapua.job.engine</package>
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.model.config</package>
-        <package>org.eclipse.kapua.job.engine</package>
+        <package>org.eclipse.kapua.service</package>
+        <package>org.eclipse.kapua.transport</package>
     </packages>
 </locator-config>

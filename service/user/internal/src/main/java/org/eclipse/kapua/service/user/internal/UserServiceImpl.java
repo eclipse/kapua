@@ -28,7 +28,6 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -108,8 +107,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(UserFactory.class), userCreator);
-        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, KapuaLocator.getInstance().getFactory(UserFactory.class), userCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, userCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, userCreator);
 
         //
         // Check User.userType

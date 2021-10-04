@@ -28,7 +28,6 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
@@ -69,7 +68,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
     @Inject
     private PermissionFactory permissionFactory;
-
 
     /**
      * Constructor.
@@ -123,8 +121,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(AccountFactory.class), accountCreator);
-        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, KapuaLocator.getInstance().getFactory(AccountFactory.class), accountCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, accountCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, accountCreator);
 
         //
         // Check that expiration date is no later than parent expiration date

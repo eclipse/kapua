@@ -99,7 +99,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(JobFactory.class), creator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, creator);
 
         //
         // Do create
@@ -126,7 +126,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(JobFactory.class), job);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, job);
 
         //
         // Do update

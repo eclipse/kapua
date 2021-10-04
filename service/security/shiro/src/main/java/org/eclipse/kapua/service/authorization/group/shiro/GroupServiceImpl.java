@@ -19,7 +19,6 @@ import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResource
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -82,7 +81,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(GroupFactory.class), groupCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, groupCreator);
 
         //
         // Do create
@@ -110,7 +109,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(GroupFactory.class), group);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, group);
 
         //
         // Do update

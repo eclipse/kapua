@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -31,7 +30,6 @@ import org.eclipse.kapua.service.scheduler.quartz.driver.QuartzTriggerDriver;
 import org.eclipse.kapua.service.scheduler.quartz.driver.exception.TriggerNeverFiresException;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
@@ -128,7 +126,7 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(TriggerFactory.class), triggerCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, triggerCreator);
 
         //
         // Check dates
@@ -218,7 +216,7 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(TriggerFactory.class), trigger);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, trigger);
 
         //
         // Check dates

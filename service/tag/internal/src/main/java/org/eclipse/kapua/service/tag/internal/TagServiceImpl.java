@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -45,6 +44,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     @Inject
     private AuthorizationService authorizationService;
+
     @Inject
     private PermissionFactory permissionFactory;
 
@@ -76,7 +76,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(TagFactory.class), tagCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, tagCreator);
 
         //
         // Do create
@@ -104,7 +104,7 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(TagFactory.class), tag);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, tag);
 
         //
         // Do Update

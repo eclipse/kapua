@@ -13,10 +13,9 @@
 package org.eclipse.kapua.model;
 
 /**
- * Kapua object factory service definition. (Marker interface)
+ * Kapua {@link Object} factory definition.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public interface KapuaObjectFactory {
 }

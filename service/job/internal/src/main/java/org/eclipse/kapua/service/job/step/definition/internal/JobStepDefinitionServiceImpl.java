@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -27,7 +26,6 @@ import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
-import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionFactory;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 
@@ -44,6 +42,7 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
     @Inject
     private AuthorizationService authorizationService;
+
     @Inject
     private PermissionFactory permissionFactory;
 
@@ -72,7 +71,7 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, KapuaLocator.getInstance().getFactory(JobStepDefinitionFactory.class), creator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, creator);
 
         //
         // Do create
@@ -95,7 +94,7 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, KapuaLocator.getInstance().getFactory(JobStepDefinitionFactory.class), jobStepDefinition);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, jobStepDefinition);
 
         //
         // Do Update

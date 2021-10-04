@@ -21,7 +21,6 @@ import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -93,7 +92,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(RoleFactory.class), roleCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, roleCreator);
 
         //
         // If permission are created out of the role scope, check that the current user has the permission on the external scopeId.
@@ -151,7 +150,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check duplicate name
-        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, KapuaLocator.getInstance().getFactory(RoleFactory.class), role);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, role);
 
         //
         // Do update
