@@ -1143,8 +1143,8 @@ public class JobServiceSteps extends TestBase {
     public void confirmJobIsFinished() {
         JobExecutionListResult resultList = (JobExecutionListResult) stepData.get(JOB_EXECUTION_LIST);
         JobExecution jobExecution = resultList.getFirstItem();
-        Assert.assertNotNull(jobExecution.getEndedOn());
-        Assert.assertNotNull(jobExecution.getLog());
+        Assert.assertNotNull("Job execution end date cannot be null!", jobExecution.getEndedOn());
+        Assert.assertNotNull("Job execution log cannot be null!", jobExecution.getLog());
     }
 
     @Then("The job execution matches the creator")

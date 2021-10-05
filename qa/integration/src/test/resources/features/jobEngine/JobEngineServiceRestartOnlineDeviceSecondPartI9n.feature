@@ -245,7 +245,7 @@ Feature: JobEngineService restart job tests with online device - second part
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     Then I restart a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 1 or more
@@ -483,7 +483,7 @@ Feature: JobEngineService restart job tests with online device - second part
     When I query for the execution items for the current job and I count 1 or more
     And I confirm the executed job is finished
     Then I restart a job
-    And I wait 10 seconds
+    And I wait 14 seconds
     And I confirm job target has step index 1 and status "PROCESS_OK"
     Given I query for the job with the name "TestJob" and I find it
     When I query for the execution items for the current job and I count 2 or more
