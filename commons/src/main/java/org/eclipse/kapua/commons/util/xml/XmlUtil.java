@@ -335,7 +335,8 @@ public class XmlUtil {
             throws JAXBException, SAXException {
         try (Reader reader = new StringReader(objectString)) {
             return unmarshalJson(reader, type, namespaceUri);
-        } catch (IOException ioe) {
+        } catch (Exception ioe) {
+            LOG.info("unmarshal ======> {}", objectString);
             // This exception is thrown when operations are performed on a closed Reader.
             // This Reader is self-contained in this XmlUtil class and .unmarshal(...) is not closing it.
             // Therefore if this IOException occurs, something really bad happened.
