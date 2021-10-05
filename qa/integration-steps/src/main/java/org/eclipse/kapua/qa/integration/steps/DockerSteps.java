@@ -203,7 +203,7 @@ public class DockerSteps {
     @Given("Start full docker environment")
     public void startFullDockerEnvironment() throws Exception {
         logger.info("Starting full docker environment...");
-        stopFullDockerEnvironment();
+        stopFullDockerEnvironmentInternal();
         startBaseDockerEnvironmentInternal();
         try {
             startMessageBrokerContainer("message-broker");
@@ -360,9 +360,13 @@ public class DockerSteps {
 
     private void stopFullDockerEnvironmentInternal() throws SQLException, DockerException, InterruptedException {
         database.dropAll();
+        printContainersNames("Print containers logs");
         printContainersLog(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
+        printContainersNames("Remove base containers");
         removeContainers(DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME);
+        printContainersNames("Remove additional containers");
         removeContainers(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
+        printContainersNames("Remove containers DONE");
     }
 
     @Given("Create network")
@@ -397,7 +401,7 @@ public class DockerSteps {
     }
 
     @Given("List images by name {string}")
-    public void listImages(String imageName) throws Exception {
+    public void listImages(String imageName) throws DockerException, InterruptedException {
         List<Image> images = DockerUtil.getDockerClient().listImages(DockerClient.ListImagesParam.byName(imageName));
         if ((images != null) && (images.size() > 0)) {
             for (Image image : images) {
@@ -406,6 +410,22 @@ public class DockerSteps {
         } else {
             logger.info("No docker images found.");
         }
+    }
+
+    public void printContainersNames(String stepDescription) {
+        logger.info("Print containers - {}", stepDescription);
+        int count = 0;
+        try {
+            List<Container> containerList = DockerUtil.getDockerClient().listContainers(ListContainersParam.allContainers());
+            count = containerList.size();
+            containerList.forEach(container -> {
+                container.names().forEach((containerName) -> logger.info("\t\t{}", containerName));
+            });
+        }
+        catch (DockerException | InterruptedException e) {
+            logger.warn("Cannot print container name for step '{}'", stepDescription, e);
+        }
+        logger.info("Print containers ({}) DONE - {}", count, stepDescription);
     }
 
     @And("Start DB container with name {string}")
@@ -518,7 +538,7 @@ public class DockerSteps {
         logger.info("Removing container {}...", name);
         List<Container> containers = null;
         try {
-            containers = DockerUtil.getDockerClient().listContainers(ListContainersParam.allContainers());//filter("name", name));
+            containers = DockerUtil.getDockerClient().listContainers(ListContainersParam.allContainers());
             if (containers == null || containers.isEmpty()) {
                 logger.info("Cannot remove container '{}'. (Container not found!)", name);
             } else {
