@@ -14,12 +14,9 @@ package org.eclipse.kapua.service.device.registry.steps;
 
 import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
@@ -79,15 +76,12 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceKeystoreManagementService = locator.getService(DeviceKeystoreManagementService.class);
         deviceKeystoreManagementFactory = locator.getFactory(DeviceKeystoreManagementFactory.class);
-
-        JAXBContextProvider consoleProvider = new TestJAXBContextProvider();
-        XmlUtil.setContextProvider(consoleProvider);
     }
 
     @After
     public void afterScenario() {
 
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
+        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get(KURA_DEVICES);
 
         if (kuraDevices != null) {
             for (KuraDevice kuraDevice : kuraDevices) {
@@ -95,6 +89,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
                     kuraDevice.mqttClientDisconnect();
                 }
             }
+            kuraDevices.clear();
         }
 
         KapuaSecurityUtils.clearSession();
@@ -102,7 +97,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
 
     @When("Keystores are requested")
     public void keystoreRequested() throws Exception {
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
+        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -150,7 +145,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
 
     @When("All Keystore Items are requested")
     public void requestKeystoreItems() throws Exception {
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
+        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -163,7 +158,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
 
     @When("Keystore Items with alias {string} are requested")
     public void requestKeystoreItemsByAlias(String alias) throws Exception {
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
+        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -178,7 +173,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
 
     @When("Keystore Items with keystore id {string} are requested")
     public void requestKeystoreItemsByKeystoreId(String keystoreId) throws Exception {
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
+        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -227,7 +222,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
 
     @When("Keystore Item with keystore id {string} and alias {string} is requested")
     public void requestKeystoreItemRequested(String keystoreId, String alias) throws Exception {
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
+        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -256,7 +251,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
 
     @When("I install a Keystore Certificate with alias {string}")
     public void installKeystoreCertificateWithAlias(String alias) throws Exception {
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
+        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -301,8 +296,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
 
     @When("I install a Keystore Keypair with alias {string}")
     public void installKeystoreKeypairWithAlias(String alias) throws Exception {
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
-        for (KuraDevice kuraDevice : kuraDevices) {
+        for (KuraDevice kuraDevice : (List<KuraDevice>) stepData.get(KURA_DEVICES)) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
                 DeviceKeystoreKeypair deviceKeystoreKeypair = deviceKeystoreManagementFactory.newDeviceKeystoreKeypair();
@@ -351,7 +345,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
 
     @When("I delete a Keystore Item from keystore {string} with alias {string}")
     public void deleteKeystoreItemWithAlias(String keystoreId, String alias) throws Exception {
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
+        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {
@@ -362,7 +356,7 @@ public class DeviceManagementKeystoreSteps extends TestBase {
 
     @When("I send a Certificate Signing Request for Keystore Item with keystore {string} and alias {string}")
     public void sendCertificateSigningRequestFor(String keystoreId, String alias) throws Exception {
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get("KuraDevices");
+        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             if (device != null) {

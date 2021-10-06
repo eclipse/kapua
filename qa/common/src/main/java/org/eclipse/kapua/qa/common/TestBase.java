@@ -53,6 +53,7 @@ public class TestBase {
     /**
      * Commonly used constants
      */
+    protected static final String KURA_DEVICES = "kuraDevices";
     protected static final KapuaId SYS_SCOPE_ID = KapuaId.ONE;
     protected static final KapuaId SYS_USER_ID = new KapuaEid(BigInteger.ONE);
     protected static final int DEFAULT_SCOPE_ID = 42;
