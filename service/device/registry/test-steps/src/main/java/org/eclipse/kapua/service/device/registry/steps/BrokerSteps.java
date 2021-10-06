@@ -94,7 +94,6 @@ public class BrokerSteps extends TestBase {
      */
     private static final String BROKER_URI = "tcp://localhost:1883";
 
-    private static final String KURA_DEVICES = "KuraDevices";
     private static final String PACKAGES = "packages";
     private static final String BUNDLES = "bundles";
     private static final String CONFIGURATIONS = "configurations";
@@ -139,7 +138,6 @@ public class BrokerSteps extends TestBase {
     /**
      * Client simulating Kura device
      */
-    private KuraDevice kuraDevice;
     private ArrayList<KuraDevice> kuraDevices = new ArrayList<>();
 
     @Inject
@@ -167,14 +165,13 @@ public class BrokerSteps extends TestBase {
 
     private void beforeInternal(Scenario scenario) {
         updateScenario(scenario);
+        stepData.put(KURA_DEVICES, kuraDevices);
         BrokerSetting.resetInstance();
     }
 
     @After(value="not (@setup or @teardown)", order=10)
     public void afterScenario() {
-        if (kuraDevice != null) {
-            this.kuraDevice.mqttClientDisconnect();
-        }
+        disconnectAll();
     }
 
     @When("I start the Kura Mock")
@@ -182,15 +179,13 @@ public class BrokerSteps extends TestBase {
         if (!kuraDevices.isEmpty()) {
             kuraDevices.clear();
         }
-        kuraDevice = new KuraDevice();
+        KuraDevice kuraDevice = new KuraDevice();
         kuraDevice.mqttClientConnect();
         kuraDevices.add(kuraDevice);
-        stepData.put(KURA_DEVICES, kuraDevices);
     }
 
     @When("I restart the Kura Mock")
     public void restartKuraMock() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         List<KuraDevice> restartedKuraDevices = new ArrayList<>();
         if (!kuraDevices.isEmpty()) {
             for (KuraDevice kuraDevice : kuraDevices) {
@@ -199,7 +194,6 @@ public class BrokerSteps extends TestBase {
                 restartedKuraDevices.add(kuraDevice);
             }
         }
-        stepData.put(KURA_DEVICES, restartedKuraDevices);
     }
 
     @When("I get the KuraMock device(s) after {int} seconds")
@@ -225,7 +219,6 @@ public class BrokerSteps extends TestBase {
 
     @When("KuraMock is disconnected")
     public void kuraMockDisconnected() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         deviceDeathMessage();
         for (KuraDevice kuraDevice : kuraDevices) {
             kuraDevice.mqttClientDisconnect();
@@ -234,7 +227,6 @@ public class BrokerSteps extends TestBase {
 
     @When("Device birth message is sent")
     public void deviceBirthMessage() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             mqttBirth = "$EDC/kapua-sys/" + kuraDevice.getClientId() + "/MQTT/BIRTH";
             kuraDevice.sendMessageFromFile(mqttBirth, 0, false, "/mqtt/rpione3_MQTT_BIRTH.mqtt");
@@ -252,7 +244,6 @@ public class BrokerSteps extends TestBase {
 
     @When("Device death message is sent")
     public void deviceDeathMessage() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             mqttDc = "$EDC/kapua-sys/" + kuraDevice.getClientId() + "/MQTT/DC";
             kuraDevice.sendMessageFromFile(mqttDc, 0, false, "/mqtt/rpione3_MQTT_DC.mqtt");
@@ -315,7 +306,6 @@ public class BrokerSteps extends TestBase {
 
     @When("Bundles are requested")
     public void requestBundles() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             Assert.assertNotNull(device);
@@ -369,7 +359,6 @@ public class BrokerSteps extends TestBase {
 
     @When("Configuration is requested")
     public void requestConfiguration() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
             Assert.assertNotNull(device);
@@ -513,7 +502,6 @@ public class BrokerSteps extends TestBase {
     @Then("Device(s) status is {string}")
     public void deviceStatusIs(String deviceStatus) throws Exception {
         DeviceConnection deviceConn = null;
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         for (KuraDevice kuraDevice : kuraDevices) {
             deviceConn = deviceConnectionService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
         }
@@ -527,17 +515,15 @@ public class BrokerSteps extends TestBase {
         }
         for (int i = 0; i < numberOfDevices; i++) {
             String clientId = "device" + i;
-            kuraDevice = new KuraDevice();
+            KuraDevice kuraDevice = new KuraDevice();
             kuraDevice.addMoreThanOneDeviceToKuraMock(clientId);
             kuraDevice.mqttClientConnect();
             kuraDevices.add(kuraDevice);
         }
-        stepData.put(KURA_DEVICES, kuraDevices);
     }
 
     @And("Device assets are requested")
     public void deviceAssetsAreRequested() throws Exception {
-        ArrayList<KuraDevice> kuraDevices = (ArrayList<KuraDevice>) stepData.get(KURA_DEVICES);
         DeviceAssets deviceAssets = new DeviceAssetsImpl();
         for (KuraDevice kuraDevice : kuraDevices) {
             Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
@@ -571,5 +557,14 @@ public class BrokerSteps extends TestBase {
                 Assert.assertEquals(numberOfPackages, packages.size());
             }
         }
+    }
+
+    private void disconnectAll() {
+        for (KuraDevice kuraDevice : kuraDevices) {
+            if (kuraDevice != null) {
+                kuraDevice.mqttClientDisconnect();
+            }
+        }
+        kuraDevices.clear();
     }
 }

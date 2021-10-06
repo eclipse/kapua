@@ -362,6 +362,7 @@ public class DockerSteps {
         database.dropAll();
         printContainersNames("Print containers logs");
         printContainersLog(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
+        printContainersLog(DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME);
         printContainersNames("Remove base containers");
         removeContainers(DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME);
         printContainersNames("Remove additional containers");
