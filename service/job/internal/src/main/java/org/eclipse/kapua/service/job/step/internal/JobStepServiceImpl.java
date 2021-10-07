@@ -220,7 +220,6 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
             JobStep currentJobStep = JobStepDAO.find(em, jobStep.getScopeId(), jobStep.getId());
 
             if (jobStep.getStepIndex() != currentJobStep.getStepIndex()) {
-
                 // Moved before current position.
                 if (jobStep.getStepIndex() < currentJobStep.getStepIndex()) {
                     // Get following JobStep.index
@@ -236,7 +235,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
                     JobStepListResult followingJobStepListResult = JobStepDAO.query(em, followingJobStepQuery);
 
-                    LoggerFactory.getLogger(JobStepServiceImpl.class).warn("Got {} following steps", followingJobStepListResult.getSize());
+                    LoggerFactory.getLogger(JobStepServiceImpl.class).warn("Got {} steps to move", followingJobStepListResult.getSize());
 
                     // Move them +1 position
                     for (JobStep followingJobStep : followingJobStepListResult.getItems()) {
@@ -247,7 +246,27 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
                 }
                 // Moved after current position
                 else {
-                    // Implement
+                    // Get following JobStep.index
+                    JobStepQuery followingJobStepQuery = new JobStepQueryImpl(jobStep.getScopeId());
+                    followingJobStepQuery.setPredicate(
+                            followingJobStepQuery.andPredicate(
+                                    followingJobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, jobStep.getJobId()),
+                                    followingJobStepQuery.attributePredicate(JobStepAttributes.STEP_INDEX, currentJobStep.getStepIndex(), Operator.GREATER_THAN),
+                                    followingJobStepQuery.attributePredicate(JobStepAttributes.STEP_INDEX, jobStep.getStepIndex(), Operator.LESS_THAN_OR_EQUAL)
+                            )
+                    );
+                    followingJobStepQuery.setSortCriteria(followingJobStepQuery.fieldSortCriteria(JobStepAttributes.STEP_INDEX, SortOrder.ASCENDING));
+
+                    JobStepListResult followingJobStepListResult = JobStepDAO.query(em, followingJobStepQuery);
+
+                    LoggerFactory.getLogger(JobStepServiceImpl.class).warn("Got {} steps to move", followingJobStepListResult.getSize());
+
+                    // Move them +1 position
+                    for (JobStep followingJobStep : followingJobStepListResult.getItems()) {
+                        LoggerFactory.getLogger(JobStepServiceImpl.class).warn("Moving step named {} to index {}", followingJobStep.getName(), followingJobStep.getStepIndex() - 1);
+                        followingJobStep.setStepIndex(followingJobStep.getStepIndex() - 1);
+                        JobStepDAO.update(em, followingJobStep);
+                    }
                 }
             }
 
