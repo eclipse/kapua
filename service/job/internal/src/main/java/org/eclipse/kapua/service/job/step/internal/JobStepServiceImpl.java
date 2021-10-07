@@ -48,6 +48,7 @@ import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.DatatypeConverter;
 import java.util.AbstractMap;
@@ -212,8 +213,46 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
             throw new CannotModifyJobStepsException(jobStep.getJobId());
         }
 
+        //
         // Do Update
-        return entityManagerSession.doTransactedAction(em -> JobStepDAO.update(em, jobStep));
+        return entityManagerSession.doTransactedAction((em) -> {
+            // Check if JobStep.stepIndex has changed
+            JobStep currentJobStep = JobStepDAO.find(em, jobStep.getScopeId(), jobStep.getId());
+
+            if (jobStep.getStepIndex() != currentJobStep.getStepIndex()) {
+
+                // Moved before current position.
+                if (jobStep.getStepIndex() < currentJobStep.getStepIndex()) {
+                    // Get following JobStep.index
+                    JobStepQuery followingJobStepQuery = new JobStepQueryImpl(jobStep.getScopeId());
+                    followingJobStepQuery.setPredicate(
+                            followingJobStepQuery.andPredicate(
+                                    followingJobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, jobStep.getJobId()),
+                                    followingJobStepQuery.attributePredicate(JobStepAttributes.STEP_INDEX, jobStep.getStepIndex(), Operator.GREATER_THAN_OR_EQUAL),
+                                    followingJobStepQuery.attributePredicate(JobStepAttributes.STEP_INDEX, currentJobStep.getStepIndex(), Operator.LESS_THAN)
+                            )
+                    );
+                    followingJobStepQuery.setSortCriteria(followingJobStepQuery.fieldSortCriteria(JobStepAttributes.STEP_INDEX, SortOrder.ASCENDING));
+
+                    JobStepListResult followingJobStepListResult = JobStepDAO.query(em, followingJobStepQuery);
+
+                    LoggerFactory.getLogger(JobStepServiceImpl.class).warn("Got {} following steps", followingJobStepListResult.getSize());
+
+                    // Move them +1 position
+                    for (JobStep followingJobStep : followingJobStepListResult.getItems()) {
+                        LoggerFactory.getLogger(JobStepServiceImpl.class).warn("Moving step named {} to index {}", followingJobStep.getName(), followingJobStep.getStepIndex() + 1);
+                        followingJobStep.setStepIndex(followingJobStep.getStepIndex() + 1);
+                        JobStepDAO.update(em, followingJobStep);
+                    }
+                }
+                // Moved after current position
+                else {
+                    // Implement
+                }
+            }
+
+            return JobStepDAO.update(em, jobStep);
+        });
     }
 
     @Override
