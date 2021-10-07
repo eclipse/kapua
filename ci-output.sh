@@ -16,7 +16,7 @@ tail_log() {
 
 on_error() {
   echo ERROR: An error was encountered with the build.
-  tail_log -5000
+  tail_log -50000
   exit 1
 }
 trap 'on_error' ERR
