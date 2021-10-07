@@ -53,9 +53,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@brokerAcl" verify
@@ -76,7 +77,7 @@ jobs:
             ${{ runner.os }}-maven-
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@tag" verify
@@ -102,9 +103,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@broker" verify
@@ -131,7 +133,7 @@ jobs:
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@device" verify
@@ -157,9 +159,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@deviceManagement" verify
@@ -185,9 +188,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@connection" verify
@@ -213,9 +217,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@datastore" verify
@@ -236,7 +241,7 @@ jobs:
             ${{ runner.os }}-maven-
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@user" verify
@@ -262,9 +267,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@userIntegrationBase" verify
@@ -290,9 +296,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@userIntegration" verify
@@ -313,7 +320,7 @@ jobs:
             ${{ runner.os }}-maven-
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@security" verify
@@ -334,7 +341,7 @@ jobs:
             ${{ runner.os }}-maven-
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobs" verify
@@ -360,9 +367,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobsIntegrationBase" verify
@@ -388,9 +396,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobsIntegration" verify
@@ -416,9 +425,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerService" verify
@@ -444,9 +454,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerServiceIntegrationBase" verify
@@ -472,9 +483,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerServiceIntegration" verify
@@ -495,7 +507,7 @@ jobs:
             ${{ runner.os }}-maven-
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@account" verify
@@ -521,9 +533,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStepDefinitions" verify
@@ -549,9 +562,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStartOfflineDevice" verify
@@ -577,9 +591,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStartOnlineDevice" verify
@@ -605,9 +620,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOfflineDevice" verify
@@ -633,9 +649,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOnlineDevice" verify
@@ -661,9 +678,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOnlineDeviceSecondPart" verify
@@ -689,9 +707,10 @@ jobs:
           restore-keys: |
             ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: docker images -a
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineServiceStop" verify
@@ -712,7 +731,7 @@ jobs:
             ${{ runner.os }}-maven-
       - uses: nick-invision/retry@v2.4.0
         with:
-          timeout_minutes: 30
+          timeout_minutes: 45
           retry_on: error
           max_attempts: 3
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' verify
