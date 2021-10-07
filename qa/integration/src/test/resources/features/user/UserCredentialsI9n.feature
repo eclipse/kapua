@@ -48,7 +48,7 @@ Scenario: Init Security Context for all scenarios
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And I expect the exception "KapuaIllegalArgumentException" with the text "*"
+    And I expect the exception "KapuaPasswordTooShortException" with the text "*"
     Then I add credentials
       | name    | password    | enabled |
       | kapua-a | Password12@ | true    |
