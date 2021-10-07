@@ -15,17 +15,17 @@
 @env_none
 
 Feature: Job step definition service CRUD tests
-    The Job Step Definition service is responsible for maintaining job step definitions.
-    During regular runtime the step definitions are automatically extracted from the various
-    service implementations.
+  The Job Step Definition service is responsible for maintaining job step definitions.
+  During regular runtime the step definitions are automatically extracted from the various
+  service implementations.
 
-@setup
-@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
-Scenario: Initialize test environment
+  @setup
+  @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+  Scenario: Initialize test environment
     Given Init Jaxb Context
     And Init Security Context
 
-Scenario: Regular step definition creation
+  Scenario: Regular step definition creation
 
     Given A regular definition creator with the name "TestDefinition" and 3 properties
     When I create a new step definition entity from the existing creator
@@ -34,17 +34,17 @@ Scenario: Regular step definition creation
     Then No exception was thrown
     And The step definition entity matches the creator
 
-Scenario: Regular step definition with a property list
+  Scenario: Regular step definition with a property list
 
     Given A regular step definition creator with the name "TestDefinition" and the following properties
-    | name  | type | value |
-    | prop1 | t1   | 123   |
-    | prop2 | t1   | 123   |
-    | prop3 | t1   | 123   |
+      | name  | type | value |
+      | prop1 | t1   | 123   |
+      | prop2 | t1   | 123   |
+      | prop3 | t1   | 123   |
     When I create a new step definition entity from the existing creator
     Then No exception was thrown
 
-Scenario: Step definition with a null scope ID
+  Scenario: Step definition with a null scope ID
 
     Given A null scope
     Given A regular step definition creator with the name "TestDefinition"
@@ -52,7 +52,7 @@ Scenario: Step definition with a null scope ID
     When I create a new step definition entity from the existing creator
     Then An exception was thrown
 
-Scenario: Step definition with a null name
+  Scenario: Step definition with a null name
 
     Given A regular step definition creator with the name "TestDefinition"
     And I set the step definition creator name to null
@@ -60,22 +60,22 @@ Scenario: Step definition with a null name
     When I create a new step definition entity from the existing creator
     Then An exception was thrown
 
-Scenario: Step definition with an empty name
+  Scenario: Step definition with an empty name
 
     Given A regular step definition creator with the name ""
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "name"
     When I create a new step definition entity from the existing creator
     Then An exception was thrown
 
-Scenario: Step definition with a duplicate name
+  Scenario: Step definition with a duplicate name
 
     Given A regular step definition creator with the name "TestDefinition"
     When I create a new step definition entity from the existing creator
-    Given I expect the exception "KapuaException" with the text "Persistence"
+    Given I expect the exception "KapuaDuplicateNameInAnotherAccountError" with the text "An entity with the same name TestDefinition already exist."
     And I create a new step definition entity from the existing creator
     Then An exception was thrown
 
-Scenario: Delete a step definition
+  Scenario: Delete a step definition
 
     Given A regular step definition creator with the name "TestDefinition"
     When I create a new step definition entity from the existing creator
@@ -85,7 +85,7 @@ Scenario: Delete a step definition
     And I search for the step definition in the database
     Then There is no such step definition item in the database
 
-Scenario: Delete a step definition twice
+  Scenario: Delete a step definition twice
 
     Given A regular step definition creator with the name "TestDefinition"
     When I create a new step definition entity from the existing creator
@@ -94,7 +94,7 @@ Scenario: Delete a step definition twice
     When I delete the step definition
     Then An exception was thrown
 
-Scenario: Update a step definition name
+  Scenario: Update a step definition name
 
     Given A regular step definition creator with the name "TestDefinition"
     When I create a new step definition entity from the existing creator
@@ -103,9 +103,9 @@ Scenario: Update a step definition name
     When I search for the step definition in the database
     Then The step definition name is "SomeRandomNewName"
 
-Scenario: Update a step definition target type
-    The step target type field is not changeable. Any attempt to update the
-    field will be silently ignored.
+  Scenario: Update a step definition target type
+  The step target type field is not changeable. Any attempt to update the
+  field will be silently ignored.
 
     Given A regular step definition creator with the name "TestDefinition"
     When I create a new step definition entity from the existing creator
@@ -115,9 +115,9 @@ Scenario: Update a step definition target type
     When I search for the step definition in the database
     Then The step definition type is "TARGET"
 
-Scenario: Update a step definition processor name
-    The processor name field is not changeable. Any attempt to update the
-    field will be silently ignored.
+  Scenario: Update a step definition processor name
+  The processor name field is not changeable. Any attempt to update the
+  field will be silently ignored.
 
     Given A regular step definition creator with the name "TestDefinition"
     And I set the step definition creator processor name to "SimpleProcessor"
@@ -127,7 +127,7 @@ Scenario: Update a step definition processor name
     When I search for the step definition in the database
     Then The step definition processor name is "SimpleProcessor"
 
-Scenario: Update a nonexistent step definition
+  Scenario: Update a nonexistent step definition
 
     Given A regular step definition creator with the name "TestDefinition"
     When I create a new step definition entity from the existing creator
@@ -136,20 +136,20 @@ Scenario: Update a nonexistent step definition
     When I change the step definition name to "SomeRandomNewName"
     Then An exception was thrown
 
-Scenario: Count step definition items
+  Scenario: Count step definition items
 
     Given I create 10 step definition items
     When I count the step definition in the database
     Then I count 10
 
-Scenario: Count step definitions in wrong (empty) scope
+  Scenario: Count step definitions in wrong (empty) scope
 
     Given I create 10 step definition items
     Given Scope with ID 20
     When I count the step definition in the database
     Then I count 0
 
-Scenario: Query for step definitions
+  Scenario: Query for step definitions
 
     Given Scope with ID 10
     Then I create 10 step definition items
@@ -158,10 +158,10 @@ Scenario: Query for step definitions
     When I query for step definitions in scope 10
     Then I count 10
 
-Scenario: Step definition factory sanity checks
+  Scenario: Step definition factory sanity checks
 
     Given I test the sanity of the step definition factory
 
-@teardown
-Scenario: Reset Security Context for all scenarios
+  @teardown
+  Scenario: Reset Security Context for all scenarios
     Given Reset Security Context

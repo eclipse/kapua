@@ -22,8 +22,13 @@ import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.QueryFactory;
+import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.KapuaEntityService;
+
+import java.util.Collections;
+import java.util.List;
 
 public class KapuaNamedEntityServiceUtils {
 
@@ -35,9 +40,21 @@ public class KapuaNamedEntityServiceUtils {
     }
 
     public static <E extends KapuaNamedEntity, C extends KapuaNamedEntityCreator<E>> void checkEntityNameUniqueness(KapuaEntityService<E, C> kapuaNamedEntityService, C creator) throws KapuaException {
+        checkEntityNameUniqueness(kapuaNamedEntityService, creator, Collections.emptyList());
+    }
+
+    public static <E extends KapuaNamedEntity, C extends KapuaNamedEntityCreator<E>> void checkEntityNameUniqueness(KapuaEntityService<E, C> kapuaNamedEntityService, C creator, List<QueryPredicate> additionalPredicates) throws KapuaException {
         KapuaQuery query = QUERY_FACTORY.newQuery();
         query.setScopeId(creator.getScopeId());
-        query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, creator.getName()));
+
+        AndPredicate andPredicate = query.andPredicate();
+        andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, creator.getName()));
+
+        for (QueryPredicate additionalPredicate : additionalPredicates) {
+            andPredicate.and(additionalPredicate);
+        }
+
+        query.setPredicate(andPredicate);
 
         if (kapuaNamedEntityService.count(query) > 0) {
             throw new KapuaDuplicateNameException(creator.getName());
@@ -45,14 +62,22 @@ public class KapuaNamedEntityServiceUtils {
     }
 
     public static <E extends KapuaNamedEntity> void checkEntityNameUniqueness(KapuaEntityService<E, ?> kapuaNamedEntityService, E entity) throws KapuaException {
+        checkEntityNameUniqueness(kapuaNamedEntityService, entity, Collections.emptyList());
+    }
+
+    public static <E extends KapuaNamedEntity> void checkEntityNameUniqueness(KapuaEntityService<E, ?> kapuaNamedEntityService, E entity, List<QueryPredicate> additionalPredicates) throws KapuaException {
         KapuaQuery query = QUERY_FACTORY.newQuery();
         query.setScopeId(entity.getScopeId());
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(KapuaNamedEntityAttributes.NAME, entity.getName()),
-                        query.attributePredicate(KapuaNamedEntityAttributes.ENTITY_ID, entity.getId(), AttributePredicate.Operator.NOT_EQUAL)
-                )
-        );
+
+        AndPredicate andPredicate = query.andPredicate();
+        andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.NAME, entity.getName()));
+        andPredicate.and(query.attributePredicate(KapuaNamedEntityAttributes.ENTITY_ID, entity.getId(), AttributePredicate.Operator.NOT_EQUAL));
+
+        for (QueryPredicate additionalPredicate : additionalPredicates) {
+            andPredicate.and(additionalPredicate);
+        }
+
+        query.setPredicate(andPredicate);
 
         if (kapuaNamedEntityService.count(query) > 0) {
             throw new KapuaDuplicateNameException(entity.getName());
