@@ -97,21 +97,14 @@ public class DockerSteps {
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.TELEMETRY_CONSUMER_CONTAINER_NAME);
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.LIFECYCLE_CONSUMER_CONTAINER_NAME);
         DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.MESSAGE_BROKER_CONTAINER_NAME);
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.TELEMETRY_CONSUMER_CONTAINER_NAME);
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.LIFECYCLE_CONSUMER_CONTAINER_NAME);
-        DEFAULT_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.MESSAGE_BROKER_CONTAINER_NAME);
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME = new ArrayList<>();
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.JOB_ENGINE_CONTAINER_NAME);
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.EVENTS_BROKER_CONTAINER_NAME);
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.ES_CONTAINER_NAME);
         DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add(BasicSteps.DB_CONTAINER_NAME);
-        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.JOB_ENGINE_CONTAINER_NAME);
-        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.EVENTS_BROKER_CONTAINER_NAME);
-        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.ES_CONTAINER_NAME);
-        DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME.add("/" + BasicSteps.DB_CONTAINER_NAME);
     }
 
-    private boolean printContainerLogOnContainerExit = true;
+    private boolean printContainerLogOnContainerExit;
     private NetworkConfig networkConfig;
     private String networkId;
     private boolean debug;
@@ -206,13 +199,13 @@ public class DockerSteps {
         stopFullDockerEnvironmentInternal();
         startBaseDockerEnvironmentInternal();
         try {
-            startMessageBrokerContainer("message-broker");
+            startMessageBrokerContainer(BasicSteps.MESSAGE_BROKER_CONTAINER_NAME);
             synchronized (this) {
                 this.wait(WAIT_FOR_BROKER);
             }
 
-            startLifecycleConsumerContainer("lifecycle-consumer");
-            startTelemetryConsumerContainer("telemetry-consumer");
+            startLifecycleConsumerContainer(BasicSteps.LIFECYCLE_CONSUMER_CONTAINER_NAME);
+            startTelemetryConsumerContainer(BasicSteps.TELEMETRY_CONSUMER_CONTAINER_NAME);
             logger.info("Starting full docker environment... DONE (waiting for containers to be ready)");
             //wait until consumers are ready
             int loops = 0;
@@ -246,17 +239,17 @@ public class DockerSteps {
             removeNetwork();
             createNetwork();
 
-            startDBContainer("db");
+            startDBContainer(BasicSteps.DB_CONTAINER_NAME);
             synchronized (this) {
                 this.wait(WAIT_FOR_DB);
             }
 
-            startESContainer("es");
+            startESContainer(BasicSteps.ES_CONTAINER_NAME);
             synchronized (this) {
                 this.wait(WAIT_FOR_ES);
             }
 
-            startEventBrokerContainer("events-broker");
+            startEventBrokerContainer(BasicSteps.EVENTS_BROKER_CONTAINER_NAME);
             synchronized (this) {
                 this.wait(WAIT_FOR_EVENTS_BROKER);
             }
@@ -360,6 +353,7 @@ public class DockerSteps {
 
     private void stopFullDockerEnvironmentInternal() throws SQLException, DockerException, InterruptedException {
         database.dropAll();
+        listAllImages("Stop full docker environment");
         printContainersNames("Print containers logs");
         printContainersLog(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
         printContainersLog(DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME);
@@ -368,6 +362,7 @@ public class DockerSteps {
         printContainersNames("Remove additional containers");
         removeContainers(DEFAULT_DEPLOYMENT_CONTAINERS_NAME);
         printContainersNames("Remove containers DONE");
+        listAllImages("Stop full docker environment");
     }
 
     @Given("Create network")
@@ -413,8 +408,37 @@ public class DockerSteps {
         }
     }
 
-    public void printContainersNames(String stepDescription) {
-        logger.info("Print containers - {}", stepDescription);
+    private void listAllImages(String description) throws DockerException, InterruptedException {
+        logger.info("Print images - {}", description);
+        List<Image> images = DockerUtil.getDockerClient().listImages(DockerClient.ListImagesParam.allImages());
+        int count = 0;
+        if ((images != null) && (images.size() > 0)) {
+             count = images.size();
+             logger.info("ids:");
+             for (Image image : images) {
+                if (filterImageToPrint(image)) {
+                   StringBuilder builder = new StringBuilder();
+                   builder.append(image.id());
+                   image.repoTags().forEach(value -> builder.append("\t").append(value));
+                   logger.info("{}", builder.toString());
+                }
+            }
+        }
+        logger.info("Print images ({}) DONE - {}", count, description);
+    }
+
+    private boolean filterImageToPrint(Image image) {
+        for (String tag : image.repoTags()) {
+            String tagToLowerCase = tag.toLowerCase();
+            if (tagToLowerCase.contains("kapua") || tagToLowerCase.contains("elasticsearch") || tagToLowerCase.contains("activemq") || tagToLowerCase.contains("artemis")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void printContainersNames(String description) {
+        logger.info("Print containers - {}", description);
         int count = 0;
         try {
             List<Container> containerList = DockerUtil.getDockerClient().listContainers(ListContainersParam.allContainers());
@@ -424,9 +448,9 @@ public class DockerSteps {
             });
         }
         catch (DockerException | InterruptedException e) {
-            logger.warn("Cannot print container name for step '{}'", stepDescription, e);
+            logger.warn("Cannot print container name for step '{}'", description, e);
         }
-        logger.info("Print containers ({}) DONE - {}", count, stepDescription);
+        logger.info("Print containers ({}) DONE - {}", count, description);
     }
 
     @And("Start DB container with name {string}")
@@ -532,6 +556,8 @@ public class DockerSteps {
     public void removeContainers(List<String> names) throws DockerException, InterruptedException {
         for (String name : names) {
             removeContainer(name);
+            //search for images with / at the beginning
+            removeContainer("/" + name);
         }
     }
 
@@ -539,7 +565,7 @@ public class DockerSteps {
         logger.info("Removing container {}...", name);
         List<Container> containers = null;
         try {
-            containers = DockerUtil.getDockerClient().listContainers(ListContainersParam.allContainers());
+            containers = DockerUtil.getDockerClient().listContainers(ListContainersParam.filter("name", name));
             if (containers == null || containers.isEmpty()) {
                 logger.info("Cannot remove container '{}'. (Container not found!)", name);
             } else {

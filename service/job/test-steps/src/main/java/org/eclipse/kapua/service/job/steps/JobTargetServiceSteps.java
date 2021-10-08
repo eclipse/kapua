@@ -252,9 +252,27 @@ public class JobTargetServiceSteps extends JobServiceTestBase {
         }
     }
 
-    @And("I confirm job target has step index {int} and status {string}")
-    public void iConfirmJobTargetHasStatus(int stepIndex, String jobStatus) throws Exception {
-        iConfirmJobTargetHasStatus(100, 2, stepIndex, jobStatus);
+    @And("I confirm job target has step index {int} and status {string} within {int} second(s)")
+    public void iConfirmJobTargetHasStatus(int stepIndex, String jobStatus, int timeout) throws Exception {
+        try {
+            JobTarget jobTarget = (JobTarget) stepData.get(JOB_TARGET);
+            long endWaitTime = System.currentTimeMillis() + timeout * 1000;
+            JobTarget targetFound = null;
+            do {
+                targetFound = jobTargetService.find(jobTarget.getScopeId(), jobTarget.getId());
+                if (targetFound.getStepIndex() == stepIndex && jobStatus.equals(targetFound.getStatus().name())) {
+                    return;
+                }
+                Thread.sleep(1000);
+            }
+            while (System.currentTimeMillis() < endWaitTime);
+            //lets the test fail for the right reason
+            targetFound = jobTargetService.find(jobTarget.getScopeId(), jobTarget.getId());
+            Assert.assertEquals(jobStatus, targetFound.getStatus().toString());
+            Assert.assertEquals(stepIndex, targetFound.getStepIndex());
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     @When("I count the targets in the current scope and I count {int}")
@@ -334,30 +352,4 @@ public class JobTargetServiceSteps extends JobServiceTestBase {
                 return JobTargetStatus.PROCESS_FAILED;
         }
     }
-
-    public void iConfirmJobTargetHasStatus(int secondsToWait, int secondsToTry, int stepIndex, String jobTargetStatus) throws KapuaException {
-        JobTarget jobTarget = (JobTarget) stepData.get(JOB_TARGET);
-        long endWaitTime = System.currentTimeMillis() + secondsToWait * 1000L;
-        JobTarget targetFound;
-
-        try {
-            do {
-                targetFound = jobTargetService.find(jobTarget.getScopeId(), jobTarget.getId());
-                if (targetFound.getStepIndex() == stepIndex && jobTargetStatus.equals(targetFound.getStatus().name())) {
-                    return;
-                }
-
-                Thread.sleep(secondsToTry * 1000L);
-            }
-            while (System.currentTimeMillis() < endWaitTime);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        // Lets the test fail for the right reason
-        targetFound = jobTargetService.find(jobTarget.getScopeId(), jobTarget.getId());
-        Assert.assertEquals(jobTargetStatus, targetFound.getStatus().toString());
-        Assert.assertEquals(stepIndex, targetFound.getStepIndex());
-    }
-
 }

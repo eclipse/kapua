@@ -192,8 +192,7 @@ Scenario: Initialize test environment
       | 1       | delete     |
     And I logout
     Given I login as user with name "user1" and password "User@10031995"
-    When I search for events from device "device_1" in account "kapua-sys"
-    Then I find 1 device events
+    When I search for events from device "device_1" in account "kapua-sys" I find 1 event within 30 seconds
     And The type of the last event is "BIRTH"
     And No exception was thrown
     And I logout
@@ -1643,5 +1642,5 @@ Scenario: Initialize test environment
 
 @teardown
   Scenario: Stop test environment
-    Given Stop base docker environment
+    Given Stop full docker environment
     And Reset Security Context

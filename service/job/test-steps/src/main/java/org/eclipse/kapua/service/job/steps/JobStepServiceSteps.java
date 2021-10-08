@@ -36,6 +36,8 @@ import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -45,6 +47,8 @@ import java.util.List;
 
 @Singleton
 public class JobStepServiceSteps extends JobServiceTestBase {
+
+    private static final Logger logger = LoggerFactory.getLogger(JobStepServiceSteps.class);
 
     // Job Step definition service objects
     private JobStepService jobStepService;
@@ -171,7 +175,7 @@ public class JobStepServiceSteps extends JobServiceTestBase {
         KapuaId currentJobId = (KapuaId) stepData.get(CURRENT_JOB_ID);
 
         ArrayList<JobStep> jobSteps = new ArrayList<>();
-        ArrayList<JobStepCreator> jobStepCreators = (ArrayList<JobStepCreator>) stepData.get("JobStepCreators");
+        ArrayList<JobStepCreator> jobStepCreators = (ArrayList<JobStepCreator>) stepData.get(JOB_STEP_CREATORS);
         for (JobStepCreator jobStepCreator : jobStepCreators) {
             jobStepCreator.setJobId(currentJobId);
             primeException();
@@ -274,21 +278,34 @@ public class JobStepServiceSteps extends JobServiceTestBase {
     // Count
     //
 
-    @When("I count the JobSteps and I find {int} JobStep")
-    public void iCountJobStepAndCheck(int count) throws Exception {
+    @When("I count the JobSteps and I find {int} JobStep within {int} second(s)")
+    public void iCountJobStepAndCheck(int count, int timeout) throws Exception {
         KapuaId currentJobId = (KapuaId) stepData.get(CURRENT_JOB_ID);
         primeException();
+        long endWaitTime = System.currentTimeMillis() + timeout * 1000;
         try {
-            JobStepQuery jobStepQuery = jobStepFactory.newQuery(getCurrentScopeId());
-            jobStepQuery.setPredicate(jobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, currentJobId, AttributePredicate.Operator.EQUAL));
-
-            JobStepListResult jobStepListResult = jobStepService.query(jobStepQuery);
-
-            Assert.assertEquals(count, jobStepListResult.getSize());
+            do {
+                if (count == getJobStepListResult(currentJobId).getSize()) {
+                    return;
+                }
+                Thread.sleep(1000);
+            }
+            while (System.currentTimeMillis() < endWaitTime);
+            logger.info("============================    Wait 30 seconds again!!!! job id: {}", currentJobId);
+            Thread.sleep(30000);
+            JobStepListResult list = getJobStepListResult(currentJobId);
+            list.getItems().forEach(jobStep -> logger.info("{} - {}", jobStep.getJobId(), jobStep.getJobStepDefinitionId()));
+            Assert.assertEquals("Wrong job step size!", count, list.getSize());
         } catch (KapuaException ke) {
             verifyException(ke);
         }
+    }
 
+    private JobStepListResult getJobStepListResult(KapuaId currentJobId) throws KapuaException {
+        JobStepQuery jobStepQuery = jobStepFactory.newQuery(getCurrentScopeId());
+        jobStepQuery.setPredicate(jobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, currentJobId, AttributePredicate.Operator.EQUAL));
+
+        return jobStepService.query(jobStepQuery);
     }
 
     @When("I count the JobSteps in the current scope")

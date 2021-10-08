@@ -15,7 +15,7 @@
 
 Feature: JobEngineService start job tests with online device
 
-@setup
+  @setup
   Scenario: Start full docker environment
     Given Init Jaxb Context
     And Init Security Context
@@ -38,26 +38,21 @@ Feature: JobEngineService start job tests with online device
     Then Device status is "CONNECTED"
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 1 device event
+    When I search for events from device "rpione3" in account "kapua-sys" I find 1 event within 30 seconds
     And The type of the last event is "BIRTH"
     Given I create a job with the name "TestJob"
     And I create a new job target item
     And Search for step definition with the name "Command Execution"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name         | type                                                                   | value                                                                                                                                         |
       | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
       | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    And I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
+    And I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And KuraMock is disconnected
     And I logout
 
@@ -76,26 +71,21 @@ Feature: JobEngineService start job tests with online device
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "BUNDLE"
     And I create a job with the name "TestJob"
     And I create a new job target item
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And Bundles are requested
     And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
     When KuraMock is disconnected
@@ -116,26 +106,21 @@ Feature: JobEngineService start job tests with online device
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "BUNDLE"
     And I create a job with the name "TestJob"
     And I create a new job target item
     And Search for step definition with the name "Bundle Stop"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 77    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
     And KuraMock is disconnected
@@ -156,25 +141,20 @@ Feature: JobEngineService start job tests with online device
     And I get the KuraMock device after 5 seconds
     When Configuration is requested
     Then A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "CONFIGURATION"
     And I create a job with the name "TestJob"
     And I create a new job target item
     And Search for step definition with the name "Configuration Put"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
       | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configuration></configurations> |
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-    Then I create a new step entity from the existing creator
+    Then I create a new JobStep from the existing creator
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    When I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    When I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "CONFIGURATION"
     And Configuration is requested
     And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
@@ -195,26 +175,21 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I create a new job target item
     And Search for step definition with the name "Package Download / Install"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name                   | type                                                                                             | value                                                                                                                                                                                                                                                            |
       | packageDownloadRequest | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
       | timeout                | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 or more device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     And Packages are requested and 2 packages are received
     And KuraMock is disconnected
     And I logout
@@ -234,26 +209,21 @@ Feature: JobEngineService start job tests with online device
     And I get the KuraMock device after 5 seconds
     When Device assets are requested
     Then Asset with name "asset1" and channel with name "channel1" and value 123 are received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "ASSET"
     And I create a job with the name "TestJob"
     And I create a new job target item
     And Search for step definition with the name "Asset Write"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name    | type                                                           | value                                                                                                                                                                                                                                     |
       | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><valueType>java.lang.Integer</valueType><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
       | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                     |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     When Device assets are requested
     Then Asset with name "asset1" and channel with name "channel1" and value 1233 are received
     And KuraMock is disconnected
@@ -273,26 +243,21 @@ Feature: JobEngineService start job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device event
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I create a new job target item
     And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name                    | type                                                                                               | value                                                                                                                                                                                                  |
       | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.beacon</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
       | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                  |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 or more device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     And Packages are requested and 0 packages are received
     And KuraMock is disconnected
     And I logout
@@ -316,30 +281,25 @@ Feature: JobEngineService start job tests with online device
     And I get the KuraMock device after 5 seconds
     And Command "pwd" is executed
     And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    And I find 3 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     Then The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I create a new job target item
     And I search for step definition with the name
       | Command Execution          |
       | Package Download / Install |
-    And I create a regular step creator with the name "TestStep1" and properties
+    And I prepare a JobStepCreator with the name "TestStep1" and properties
       | name                   | type                                                                                             | value                                                                                                                                                                                                                                                            |
       | commandInput           | org.eclipse.kapua.service.device.management.command.DeviceCommandInput                           | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput>                                                                                                                    |
       | packageDownloadRequest | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
       | timeout                | java.lang.Long                                                                                   | 10000                                                                                                                                                                                                                                                            |
-    And I create a new step entities from the existing creator
-    And I search the database for created job steps and I find 2
+    And I create multiple new JobSteps from the existing creators
     Then No exception was thrown
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    When I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    And I find 3 or more device events
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    When I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     And Packages are requested and 2 packages are received
     When KuraMock is disconnected
     And I logout
@@ -360,32 +320,27 @@ Feature: JobEngineService start job tests with online device
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "BUNDLE"
     And I create a job with the name "TestJob"
     And I create a new job target item
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     Then Search for step definition with the name "Bundle Stop"
-    And A regular step creator with the name "TestStep2" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep2" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 77    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 4 device events
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 4 events within 30 seconds
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
@@ -408,29 +363,25 @@ Feature: JobEngineService start job tests with online device
     And Configuration is requested
     Then A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
     And Command "pwd" is executed
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "COMMAND"
     And I create a job with the name "TestJob"
     And I create a new job target item
     And I search for step definitions with the name
       | Configuration Put |
       | Command Execution |
-    And I create a regular step creator with the name "TestStep1" and properties
+    And I prepare a JobStepCreator with the name "TestStep1" and properties
       | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
       | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configuration></configurations> |
       | commandInput  | org.eclipse.kapua.service.device.management.command.DeviceCommandInput        | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-    When I create a new step entities from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create multiple new JobSteps from the existing creators
+    And No exception was thrown
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     Then I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 5 device events
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 5 events within 30 seconds
     And Configuration is requested
     Then A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     When KuraMock is disconnected
@@ -452,29 +403,25 @@ Feature: JobEngineService start job tests with online device
     When Device assets are requested
     Then Asset with name "asset1" and channel with name "channel1" and value 123 are received
     And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I create a new job target item
     And I search for step definitions with the name
       | Package Uninstall |
       | Asset Write       |
-    And I create a regular step creator with the name "TestStep1" and properties
+    And I prepare a JobStepCreator with the name "TestStep1" and properties
       | name                    | type                                                                                               | value                                                                                                                                                                                                                                     |
       | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.beacon</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest>                                    |
       | assets                  | org.eclipse.kapua.service.device.management.asset.DeviceAssets                                     | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><valueType>java.lang.Integer</valueType><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
       | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                                     |
-    When I create a new step entities from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create multiple new JobSteps from the existing creators
+    And No exception was thrown
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 or more device events
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     When Device assets are requested
     Then Asset with name "asset1" and channel with name "channel1" and value 1233 are received
     And Packages are requested and 0 packages are received
@@ -504,18 +451,15 @@ Feature: JobEngineService start job tests with online device
     And I create a job with the name "TestJob"
     And I add targets to job
     And Search for step definition with the name "Command Execution"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name         | type                                                                   | value                                                                                                                                         |
       | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
       | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    Then I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search events from devices in account "kapua-sys" and 3 events are found
     When KuraMock is disconnected
     And I logout
@@ -540,18 +484,15 @@ Feature: JobEngineService start job tests with online device
     And I create a job with the name "TestJob"
     And I add targets to job
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search events from devices in account "kapua-sys" and 3 events are found
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
@@ -578,18 +519,15 @@ Feature: JobEngineService start job tests with online device
     And I create a job with the name "TestJob"
     And I add targets to job
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | #34   |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_FAILED"
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_FAILED" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search events from devices in account "kapua-sys" and 2 events are found
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
@@ -616,18 +554,15 @@ Feature: JobEngineService start job tests with online device
     And I create a job with the name "TestJob"
     And I add targets to job
     And Search for step definition with the name "Bundle Stop"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 77    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search events from devices in account "kapua-sys" and 3 events are found
     Then Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
@@ -652,17 +587,14 @@ Feature: JobEngineService start job tests with online device
     And I add targets to job
     When I count the targets in the current scope and I count 2
     And Search for step definition with the name "Configuration Put"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
       | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configuration></configurations> |
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search events from devices in account "kapua-sys" and 3 events are found
     Then Configuration is requested
     And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
@@ -689,18 +621,15 @@ Feature: JobEngineService start job tests with online device
     And I create a job with the name "TestJob"
     And I add targets to job
     And Search for step definition with the name "Asset Write"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name    | type                                                           | value                                                                                                                                                                                                                                     |
       | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><valueType>java.lang.Integer</valueType><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
       | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                     |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution items and I confirm the executed jobs is finished within 20 seconds
     And I search events from devices in account "kapua-sys" and 3 events are found
     And Device assets are requested
     And Asset with name "asset1" and channel with name "channel1" and value 1233 are received
@@ -725,18 +654,15 @@ Feature: JobEngineService start job tests with online device
     And I create a job with the name "TestJob"
     And I add targets to job
     And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name                    | type                                                                                               | value                                                                                                                                                                                                  |
       | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.beacon</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
       | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                  |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
     When I search events from devices in account "kapua-sys" and 3 or more events are found
     And Packages are requested and 0 packages are received
     And KuraMock is disconnected
@@ -760,18 +686,15 @@ Feature: JobEngineService start job tests with online device
     And I create a job with the name "TestJob"
     And I add targets to job
     And Search for step definition with the name "Package Download / Install"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name                   | type                                                                                             | value                                                                                                                                                                                                                                                            |
       | packageDownloadRequest | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
       | timeout                | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And  I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
     And I search events from devices in account "kapua-sys" and 3 or more events are found
     When Packages are requested and 2 packages are received
     And KuraMock is disconnected
@@ -803,20 +726,17 @@ Feature: JobEngineService start job tests with online device
     And I search for step definition with the name
       | Command Execution          |
       | Package Download / Install |
-    And I create a regular step creator with the name "TestStep1" and properties
+    And I prepare a JobStepCreator with the name "TestStep1" and properties
       | name                   | type                                                                                             | value                                                                                                                                                                                                                                                            |
       | commandInput           | org.eclipse.kapua.service.device.management.command.DeviceCommandInput                           | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput>                                                                                                                    |
       | packageDownloadRequest | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.example.publisher_1.0.300.dp</uri><name>Example Publisher</name><version>1.0.300</version><install>true</install></downloadRequest> |
       | timeout                | java.lang.Long                                                                                   | 10000                                                                                                                                                                                                                                                            |
-    And I create a new step entities from the existing creator
-    And I search the database for created job steps and I find 2
+    And I create multiple new JobSteps from the existing creators
     Then No exception was thrown
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
     When I search events from devices in account "kapua-sys" and 3 or more events are found
     And Packages are requested and 2 packages are received
     When KuraMock is disconnected
@@ -843,24 +763,21 @@ Feature: JobEngineService start job tests with online device
     And I create a job with the name "TestJob"
     And I add targets to job
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     Then Search for step definition with the name "Bundle Stop"
-    And A regular step creator with the name "TestStep2" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep2" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 77    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     When I search events from devices in account "kapua-sys" and 4 events are found
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
@@ -891,19 +808,17 @@ Feature: JobEngineService start job tests with online device
     And I search for step definitions with the name
       | Configuration Put |
       | Command Execution |
-    And I create a regular step creator with the name "TestStep1" and properties
+    And I prepare a JobStepCreator with the name "TestStep1" and properties
       | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
       | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.clock.ClockService></id><properties><property name="clock.ntp.host" array="false" encrypted="false" type="String"><value>0.pool.ntp.org</value></property><property name="clock.provider" array="false" encrypted="false" type="String"><value>java-ntp</value></property><property name="clock.ntp.port" array="false" encrypted="false" type="Integer"><value>123</value></property><property name="clock.ntp.max-retry" array="false" encrypted="false" type="Integer"><value>0</value></property><property name="clock.ntp.refresh-interval" array="false" encrypted="false" type="Integer"><value>3600</value></property><property name="clock.set.hwclock" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="enabled" array="false" encrypted="false" type="Boolean"><value>true</value></property><property name="clock.ntp.timeout" array="false" encrypted="false" type="Integer"><value>10000</value></property><property name="clock.ntp.retry.interval" array="false" encrypted="false" type="Integer"><value>10</value></property></properties></configuration></configurations> |
       | commandInput  | org.eclipse.kapua.service.device.management.command.DeviceCommandInput        | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-    When I create a new step entities from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create multiple new JobSteps from the existing creators
+    And No exception was thrown
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     Then I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     When I search events from devices in account "kapua-sys" and 5 events are found
     Then Configuration is requested
     And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
@@ -933,20 +848,17 @@ Feature: JobEngineService start job tests with online device
     And I search for step definitions with the name
       | Package Uninstall |
       | Asset Write       |
-    And I create a regular step creator with the name "TestStep1" and properties
+    And I prepare a JobStepCreator with the name "TestStep1" and properties
       | name                    | type                                                                                               | value                                                                                                                                                                                                                                     |
       | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.beacon</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest>                                    |
       | assets                  | org.eclipse.kapua.service.device.management.asset.DeviceAssets                                     | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>asset1</name><channels><channel><valueType>java.lang.Integer</valueType><value>1233</value><name>channel1</name></channel></channels></deviceAsset></deviceAssets> |
       | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                                                     |
-    When I create a new step entities from the existing creator
-    And I search the database for created job steps and I find 2
-    Then No exception was thrown
+    When I create multiple new JobSteps from the existing creators
+    And No exception was thrown
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
     When I search events from devices in account "kapua-sys" and 3 or more events are found
     And Device assets are requested
     And Asset with name "asset1" and channel with name "channel1" and value 1233 are received
@@ -954,6 +866,6 @@ Feature: JobEngineService start job tests with online device
     When KuraMock is disconnected
     And I logout
 
-    @teardown
-      Scenario: Stop full docker environment
-        Given Stop full docker environment
+  @teardown
+  Scenario: Stop full docker environment
+    Given Stop full docker environment
