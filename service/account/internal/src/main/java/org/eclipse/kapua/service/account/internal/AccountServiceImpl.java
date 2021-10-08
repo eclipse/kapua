@@ -29,7 +29,6 @@ import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
@@ -48,6 +47,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.persistence.TypedQuery;
 import java.util.Map;
 import java.util.Objects;
@@ -57,7 +57,7 @@ import java.util.Objects;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Account, AccountCreator, AccountService, AccountListResult, AccountQuery, AccountFactory>
         implements AccountService {
 

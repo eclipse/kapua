@@ -22,9 +22,6 @@
         <api>org.eclipse.kapua.service.authorization.domain.DomainRegistryService</api>
         <api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
 
-        <api>org.eclipse.kapua.service.account.AccountFactory</api>
-        <api>org.eclipse.kapua.service.account.AccountService</api>
-
         <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
         <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
 

@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.account.internal;
 
 import org.eclipse.kapua.KapuaEntityCloneException;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountCreator;
@@ -22,12 +21,14 @@ import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.Organization;
 
+import javax.inject.Singleton;
+
 /**
  * {@link AccountFactory} implementation.
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class AccountFactoryImpl implements AccountFactory {
 
     @Override
