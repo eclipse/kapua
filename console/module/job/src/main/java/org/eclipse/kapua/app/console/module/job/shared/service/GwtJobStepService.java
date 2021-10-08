@@ -29,6 +29,9 @@ public interface GwtJobStepService extends RemoteService {
     PagingLoadResult<GwtJobStep> query(PagingLoadConfig loadConfig, GwtJobStepQuery gwtJobQuery)
             throws GwtKapuaException;
 
+    Integer count(String scopeId, String jobId)
+            throws GwtKapuaException;
+
     PagingLoadResult<GwtJobStep> findByJobId(PagingLoadConfig loadConfig, String scopeId, String jobId)
             throws GwtKapuaException;
 
@@ -41,16 +44,11 @@ public interface GwtJobStepService extends RemoteService {
     void delete(GwtXSRFToken xsrfToken, String gwtScopeId, String gwtJobStepId)
             throws GwtKapuaException;
 
-    /**
-     * Updates a Job step in the database and returns the refreshed/reloaded entity instance.
-     *
-     * @param gwtJobStep
-     * @return
-     * @throws GwtKapuaException
-     */
-    public GwtJobStep update(GwtXSRFToken xsrfToken, GwtJobStep gwtJobStep)
+    GwtJobStep update(GwtXSRFToken xsrfToken, GwtJobStep gwtJobStep)
             throws GwtKapuaException;
 
-    // Just to make Gwt serialize GwtJobStepProperty
+    /**
+     * Just to make Gwt serialize {@link GwtJobStepProperty}
+     */
     GwtJobStepProperty trickGwt();
 }

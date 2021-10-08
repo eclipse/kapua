@@ -26,8 +26,9 @@ import org.eclipse.kapua.app.console.module.job.shared.service.GwtJobServiceAsyn
 
 public class JobTabStepsToolbar extends EntityCRUDToolbar<GwtJobStep> {
 
-    private String jobId;
     private static final GwtJobServiceAsync JOB_SERVICE = GWT.create(GwtJobService.class);
+
+    private String jobId;
 
     public JobTabStepsToolbar(GwtSession currentSession) {
         super(currentSession, true);

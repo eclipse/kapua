@@ -31,7 +31,9 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.step.JobStep;
+import org.eclipse.kapua.service.job.step.JobStepAttributes;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
+import org.eclipse.kapua.service.job.step.JobStepFactory;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 import org.eclipse.kapua.service.job.step.JobStepService;
@@ -46,7 +48,10 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     private static final JobStepService JOB_STEP_SERVICE = LOCATOR.getService(JobStepService.class);
+    private static final JobStepFactory JOB_STEP_FACTORY = LOCATOR.getFactory(JobStepFactory.class);
+
     private static final JobStepDefinitionService JOB_STEP_DEFINITION_SERVICE = LOCATOR.getService(JobStepDefinitionService.class);
+    private static final long serialVersionUID = 6248597422415080827L;
 
     @Override
     public PagingLoadResult<GwtJobStep> query(PagingLoadConfig loadConfig, GwtJobStepQuery gwtJobStepQuery) throws GwtKapuaException {
@@ -66,8 +71,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             for (JobStep js : jobStepList.getItems()) {
                 GwtJobStep gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(js);
 
-                JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE
-                        .find(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getScopeId()), GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
+                JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getScopeId()), GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
                 gwtJobStep.setJobStepDefinitionName(jobStepDefinition.getName());
 
                 setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
@@ -76,6 +80,23 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             }
 
             return new BasePagingLoadResult<GwtJobStep>(gwtJobStepList, loadConfig.getOffset(), totalLength);
+        } catch (Exception e) {
+            throw KapuaExceptionHandler.buildExceptionFromError(e);
+        }
+    }
+
+    @Override
+    public Integer count(String scopeIdString, String jobIdString) throws GwtKapuaException {
+        try {
+            // Convert from GWT entity
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+            KapuaId jobId = GwtKapuaCommonsModelConverter.convertKapuaId(jobIdString);
+
+            // query
+            JobStepQuery jobStepQuery = JOB_STEP_FACTORY.newQuery(scopeId);
+            jobStepQuery.setPredicate(jobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, jobId));
+
+            return new Long(JOB_STEP_SERVICE.count(jobStepQuery)).intValue();
         } catch (Exception e) {
             throw KapuaExceptionHandler.buildExceptionFromError(e);
         }
@@ -176,6 +197,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
                 // Update job step
                 jobStep.setName(gwtJobStep.getUnescapedJobStepName());
                 jobStep.setDescription(gwtJobStep.getUnescapedDescription());
+                jobStep.setStepIndex(gwtJobStep.getStepIndex());
                 jobStep.setJobStepDefinitionId(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
                 jobStep.setStepProperties(GwtKapuaJobModelConverter.convertJobStepProperties(gwtJobStep.getStepProperties()));
 

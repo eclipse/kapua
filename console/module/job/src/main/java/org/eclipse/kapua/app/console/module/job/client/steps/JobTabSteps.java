@@ -25,25 +25,31 @@ import org.eclipse.kapua.app.console.module.job.shared.model.permission.JobSessi
 public class JobTabSteps extends KapuaTabItem<GwtJob> {
 
     private static final ConsoleJobMessages MSGS = GWT.create(ConsoleJobMessages.class);
+
     private JobTabStepsGrid stepsGrid;
 
     public JobTabSteps(GwtSession currentSession) {
         super(currentSession, MSGS.gridJobTabStepsLabel(), new KapuaIcon(IconSet.TACHOMETER));
+
         stepsGrid = new JobTabStepsGrid(null, currentSession);
         stepsGrid.setRefreshOnRender(false);
+
         setEnabled(false);
     }
 
     @Override
     protected void onRender(Element parent, int index) {
         super.onRender(parent, index);
+
         setBorders(false);
+
         add(stepsGrid);
     }
 
     @Override
     public void setEntity(GwtJob gwtJob) {
         super.setEntity(gwtJob);
+
         if (gwtJob != null) {
             setEnabled(true);
             stepsGrid.setJobId(gwtJob.getId());
