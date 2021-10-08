@@ -132,9 +132,6 @@
 
         <api>org.eclipse.kapua.service.stream.StreamService</api>
 
-        <api>org.eclipse.kapua.service.tag.TagFactory</api>
-        <api>org.eclipse.kapua.service.tag.TagService</api>
-
         <api>org.eclipse.kapua.service.job.JobFactory</api>
         <api>org.eclipse.kapua.service.job.JobService</api>
 
