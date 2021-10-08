@@ -16,10 +16,6 @@
     <provided>
         <api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
         <api>org.eclipse.kapua.service.authentication.CredentialsFactory</api>
-        <api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
-        <api>org.eclipse.kapua.service.authorization.domain.DomainFactory</api>
-        <api>org.eclipse.kapua.service.authorization.domain.DomainRegistryService</api>
-        <api>org.eclipse.kapua.service.authorization.permissio.PermissionFactory</api>
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.service.generator.id.IdGeneratorService</api>
     </provided>

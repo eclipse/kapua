@@ -12,26 +12,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.shiro;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.shiro.SecurityUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
+
+import javax.inject.Singleton;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * {@link AuthorizationService} implementation.
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class AuthorizationServiceImpl implements AuthorizationService {
 
     @Override

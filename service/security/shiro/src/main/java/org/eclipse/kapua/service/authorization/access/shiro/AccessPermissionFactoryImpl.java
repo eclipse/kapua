@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.access.shiro;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionCreator;
@@ -20,12 +19,14 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionFactory;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 
+import javax.inject.Singleton;
+
 /**
  * {@link AccessPermissionFactory} implementation.
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class AccessPermissionFactoryImpl implements AccessPermissionFactory {
 
     @Override

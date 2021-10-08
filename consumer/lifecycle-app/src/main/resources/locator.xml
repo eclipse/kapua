@@ -22,23 +22,6 @@
         <api>org.eclipse.kapua.service.authentication.token.AccessTokenService</api>
         <api>org.eclipse.kapua.service.authentication.token.AccessTokenFactory</api>
 
-        <api>org.eclipse.kapua.service.authorization.AuthorizationService</api>
-        <api>org.eclipse.kapua.service.authorization.permission.PermissionFactory</api>
-        <api>org.eclipse.kapua.service.authorization.access.AccessInfoFactory</api>
-        <api>org.eclipse.kapua.service.authorization.access.AccessInfoService</api>
-        <api>org.eclipse.kapua.service.authorization.access.AccessPermissionFactory</api>
-        <api>org.eclipse.kapua.service.authorization.access.AccessPermissionService</api>
-        <api>org.eclipse.kapua.service.authorization.access.AccessRoleFactory</api>
-        <api>org.eclipse.kapua.service.authorization.access.AccessRoleService</api>
-        <api>org.eclipse.kapua.service.authorization.domain.DomainFactory</api>
-        <api>org.eclipse.kapua.service.authorization.domain.DomainRegistryService</api>
-        <api>org.eclipse.kapua.service.authorization.group.GroupFactory</api>
-        <api>org.eclipse.kapua.service.authorization.group.GroupService</api>
-        <api>org.eclipse.kapua.service.authorization.role.RoleService</api>
-        <api>org.eclipse.kapua.service.authorization.role.RoleFactory</api>
-        <api>org.eclipse.kapua.service.authorization.role.RolePermissionFactory</api>
-        <api>org.eclipse.kapua.service.authorization.role.RolePermissionService</api>
-
         <api>org.eclipse.kapua.service.certificate.CertificateService</api>
         <api>org.eclipse.kapua.service.certificate.CertificateFactory</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
