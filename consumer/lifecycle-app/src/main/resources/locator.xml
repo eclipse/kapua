@@ -73,9 +73,6 @@
         <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory</api>
         <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory</api>
 
-        <api>org.eclipse.kapua.service.user.UserFactory</api>
-        <api>org.eclipse.kapua.service.user.UserService</api>
-
         <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
         <api>org.eclipse.kapua.message.device.data.KapuaDataMessageFactory</api>
         <api>org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleMessageFactory</api>
