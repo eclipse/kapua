@@ -12,26 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.service.job;
 
-import org.junit.runner.RunWith;
-
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
+import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = { "classpath:features/job/JobServiceI9n.feature",
-                     "classpath:features/job/JobStepServiceI9n.feature",
-                     "classpath:features/job/JobTargetsServiceI9n.feature",
-                     "classpath:features/job/JobExecutionServiceI9n.feature"
-                   },
-        glue = { "org.eclipse.kapua.service.job.steps",
-                 "org.eclipse.kapua.service.user.steps",
-                 "org.eclipse.kapua.qa.common",
-                 "org.eclipse.kapua.qa.integration.steps"
-               },
-        plugin = { "pretty",
-                   "html:target/cucumber/JobServiceI9n",
-                   "json:target/JobServiceI9n_cucumber.json" },
+        features = {"classpath:features/job/JobServiceI9n.feature",
+                "classpath:features/job/JobTargetsServiceI9n.feature",
+                "classpath:features/job/JobExecutionServiceI9n.feature"
+        },
+        glue = {"org.eclipse.kapua.service.job.steps",
+                "org.eclipse.kapua.service.user.steps",
+                "org.eclipse.kapua.qa.common",
+                "org.eclipse.kapua.qa.integration.steps"
+        },
+        plugin = {"pretty",
+                "html:target/cucumber/JobServiceI9n",
+                "json:target/JobServiceI9n_cucumber.json"},
         monochrome = true)
 public class RunJobServiceI9nTest {
 }

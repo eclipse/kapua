@@ -20,7 +20,8 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = {
                 "classpath:features/JobStepDefinitionService.feature",
-                "classpath:features/JobService.feature"
+                "classpath:features/JobStepService.feature"
+//                "classpath:features/JobService.feature"
         },
         glue = {"org.eclipse.kapua.service.job.test",
                 "org.eclipse.kapua.service.job.steps",

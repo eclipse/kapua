@@ -58,6 +58,7 @@ public class JobStepDefinitionServiceSteps extends JobServiceTestBase {
     @After(value = "@setup")
     public void setServices() {
         KapuaLocator locator = KapuaLocator.getInstance();
+
         jobStepDefinitionService = locator.getService(JobStepDefinitionService.class);
         jobStepDefinitionFactory = locator.getFactory(JobStepDefinitionFactory.class);
     }

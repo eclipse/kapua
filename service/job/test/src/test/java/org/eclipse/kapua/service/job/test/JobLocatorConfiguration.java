@@ -16,9 +16,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-
 import io.cucumber.java.Before;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -66,7 +64,7 @@ import org.mockito.Mockito;
 @Singleton
 public class JobLocatorConfiguration {
 
-    @Before(value="@setup", order=1)
+    @Before(value = "@setup", order = 1)
     public void setupDI() {
         MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
 
@@ -83,38 +81,35 @@ public class JobLocatorConfiguration {
                     // skip
                 }
 
-                bind(AuthorizationService.class).toInstance(mockedAuthorization);
-                // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
-                // Set KapuaMetatypeFactory for Metatype configuration
+                // Commons
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
-                // binding Account related services
+                // Account
                 bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
 
-                // Inject actual Job service related services
+                // Auth
+                bind(AuthorizationService.class).toInstance(mockedAuthorization);
+                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
+
+                // Job
                 JobEntityManagerFactory jobEntityManagerFactory = JobEntityManagerFactory.getInstance();
                 bind(JobEntityManagerFactory.class).toInstance(jobEntityManagerFactory);
 
                 bind(JobService.class).toInstance(new JobServiceImpl());
                 bind(JobFactory.class).toInstance(new JobFactoryImpl());
-
                 bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl());
                 bind(JobStepDefinitionFactory.class).toInstance(new JobStepDefinitionFactoryImpl());
-
                 bind(JobStepService.class).toInstance(new JobStepServiceImpl());
                 bind(JobStepFactory.class).toInstance(new JobStepFactoryImpl());
-
                 bind(JobTargetService.class).toInstance(new JobTargetServiceImpl());
                 bind(JobTargetFactory.class).toInstance(new JobTargetFactoryImpl());
-
                 bind(JobExecutionService.class).toInstance(new JobExecutionServiceImpl());
                 bind(JobExecutionFactory.class).toInstance(new JobExecutionFactoryImpl());
 
+                // Trigger
                 bind(TriggerService.class).toInstance(new TriggerServiceImpl());
                 bind(TriggerFactory.class).toInstance(new TriggerFactoryImpl());
-
                 bind(TriggerDefinitionService.class).toInstance(new TriggerDefinitionServiceImpl());
                 bind(TriggerDefinitionFactory.class).toInstance(new TriggerDefinitionFactoryImpl());
             }

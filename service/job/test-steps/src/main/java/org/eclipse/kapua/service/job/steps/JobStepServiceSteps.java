@@ -40,6 +40,7 @@ import org.junit.Assert;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Singleton
@@ -67,18 +68,25 @@ public class JobStepServiceSteps extends JobServiceTestBase {
         jobStepFactory = locator.getFactory(JobStepFactory.class);
     }
 
+    @Given("A regular step creator with the name {string}")
+    public void prepareARegularStepCreator(String name) {
+        prepareARegularStepCreatorWithPropertyList(name, Collections.emptyList());
+    }
+
     @Given("A regular step creator with the name {string} and the following properties")
     public void prepareARegularStepCreatorWithPropertyList(String name, List<CucJobStepProperty> list) {
-        JobStepCreator stepCreator;
         KapuaId currentStepDefId = (KapuaId) stepData.get(CURRENT_JOB_STEP_DEFINITION_ID);
-        stepCreator = prepareDefaultJobStepCreator();
-        stepCreator.setName(name);
-        stepCreator.setJobStepDefinitionId(currentStepDefId);
+
         List<JobStepProperty> tmpPropLst = new ArrayList<>();
         for (CucJobStepProperty prop : list) {
             tmpPropLst.add(jobStepFactory.newStepProperty(prop.getName(), prop.getType(), prop.getValue()));
         }
+
+        JobStepCreator stepCreator = prepareDefaultJobStepCreator();
+        stepCreator.setName(name);
+        stepCreator.setJobStepDefinitionId(currentStepDefId);
         stepCreator.setJobStepProperties(tmpPropLst);
+
         stepData.put(JOB_STEP_CREATOR, stepCreator);
     }
 
