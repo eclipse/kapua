@@ -11,7 +11,7 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.service.job.steps;
+package org.eclipse.kapua.service.job.steps.model;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
@@ -23,7 +23,7 @@ import javax.batch.runtime.context.JobContext;
 import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
-public class TestProcessor extends AbstractTargetProcessor implements TargetProcessor {
+public class TestJobStepProcessor extends AbstractTargetProcessor implements TargetProcessor {
 
     @Inject
     JobContext jobContext;
