@@ -12,12 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.endpoint.steps;
 
+
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
@@ -35,8 +37,9 @@ import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
 import javax.inject.Inject;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 @Singleton
 public class EndpointServiceSteps extends TestBase {
@@ -463,6 +466,58 @@ public class EndpointServiceSteps extends TestBase {
             endpointInfoService.update(endpointInfo);
         } catch (Exception e) {
             verifyException(e);
+        }
+    }
+
+    @When("^I create a CORS filter with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
+    public void iCreateCORSFilter(String schema, String domain, int port) throws Exception {
+        EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
+        endpointInfoCreator.setSchema(schema);
+        endpointInfoCreator.setDns(domain);
+        endpointInfoCreator.setPort(port);
+        endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_CORS);
+
+        try {
+            EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I create the following CORS filters$")
+    public void iCreateMultipleCORSFilter(DataTable corsFilters) throws Throwable {
+        for (List<String> config : corsFilters.raw()) {
+            iCreateCORSFilter(config.get(0), config.get(1), Integer.parseInt(config.get(2)));
+        }
+    }
+
+    @Then("I have (\\d+) CORS filters?$")
+    public void iHaveCORSFilter(int expectedNum) throws KapuaException {
+        int corsFilter = KapuaSecurityUtils.doPrivileged(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
+                EndpointInfoListResult corsFilters = endpointInfoService.query(endpointInfoQuery, EndpointInfo.ENDPOINT_TYPE_CORS);
+                return corsFilters.getSize();
+            }
+        });
+        assertEquals(expectedNum, corsFilter);
+    }
+
+    @And("^I delete all CORS filters")
+    public void iDeleteAllCORSFilters() throws Exception {
+        primeException();
+
+        try {
+            EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
+            EndpointInfoListResult endpointsToDelete = endpointInfoService.query(endpointInfoQuery, EndpointInfo.ENDPOINT_TYPE_CORS);
+
+            for (int i = 0; i < endpointsToDelete.getSize(); i++) {
+                endpointInfoService.delete(getCurrentScopeId(), endpointsToDelete.getItem(i).getId());
+            }
+
+        } catch (KapuaException ex) {
+            verifyException(ex);
         }
     }
 }
