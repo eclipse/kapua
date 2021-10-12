@@ -51,10 +51,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -85,10 +82,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -119,10 +113,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -153,10 +144,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -187,10 +175,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -221,10 +206,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -255,10 +237,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -300,10 +279,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -341,10 +317,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -381,10 +354,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -421,10 +391,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -461,10 +428,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -501,10 +465,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -541,10 +502,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a new step entity from the existing creator
     And I search the database for created job steps and I find 2
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -581,10 +539,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -617,10 +572,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -653,10 +605,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -689,10 +638,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -725,10 +671,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -761,10 +704,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -797,10 +737,7 @@ Feature: JobEngineService tests for restarting job with offline device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -844,10 +781,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -887,10 +821,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -930,10 +861,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -973,10 +901,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -1016,10 +941,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -1059,10 +981,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -1102,10 +1021,7 @@ Feature: JobEngineService tests for restarting job with offline device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout

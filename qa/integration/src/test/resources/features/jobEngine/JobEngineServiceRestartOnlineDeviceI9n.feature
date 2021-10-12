@@ -38,8 +38,7 @@ Feature: JobEngineService restart job tests with online device
     Then Device status is "CONNECTED"
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 1 device event
+    When I search for events from device "rpione3" in account "kapua-sys" I find 1 event within 30 seconds
     And The type of the last event is "BIRTH"
     And I create a job with the name "TestJob"
     And I create a new job target item
@@ -50,19 +49,12 @@ Feature: JobEngineService restart job tests with online device
       | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
     And I create a new step entity from the existing creator
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 or more device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 or more events within 30 seconds
     Then KuraMock is disconnected
     And I logout
 
@@ -81,8 +73,7 @@ Feature: JobEngineService restart job tests with online device
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
     And I create a new job target item
@@ -94,19 +85,12 @@ Feature: JobEngineService restart job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 or more device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
     And KuraMock is disconnected
@@ -127,8 +111,7 @@ Feature: JobEngineService restart job tests with online device
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
     And I create a new job target item
@@ -140,19 +123,12 @@ Feature: JobEngineService restart job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 or more device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     Then Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
     And KuraMock is disconnected
@@ -172,8 +148,7 @@ Feature: JobEngineService restart job tests with online device
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Then Packages are requested and 1 package is received
-    And I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    And I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "DEPLOY"
     Given I create a job with the name "TestJob"
     And I create a new job target item
@@ -184,19 +159,12 @@ Feature: JobEngineService restart job tests with online device
       | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                  |
     When I create a new step entity from the existing creator
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
-    And I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 or more device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items or more and I confirm the executed jobs are finished within 45 seconds
+    And I search for events from device "rpione3" in account "kapua-sys" I find 2 or more events within 30 seconds
     Then Packages are requested and 0 packages are received
     And KuraMock is disconnected
     And I logout
@@ -220,8 +188,7 @@ Feature: JobEngineService restart job tests with online device
     And I get the KuraMock device after 5 seconds
     And Command "pwd" is executed
     And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     Given I create a job with the name "TestJob"
     And I create a new job target item
@@ -237,19 +204,12 @@ Feature: JobEngineService restart job tests with online device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 or more device events
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items or more and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     Then KuraMock is disconnected
     And I logout
 
@@ -269,8 +229,7 @@ Feature: JobEngineService restart job tests with online device
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "BUNDLE"
     Given I create a job with the name "TestJob"
     And I create a new job target item
@@ -289,19 +248,12 @@ Feature: JobEngineService restart job tests with online device
     Then No exception was thrown
     And I search the database for created job steps and I find 2
     And I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 4 or more device events
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 4 or more events within 30 seconds
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
@@ -337,17 +289,11 @@ Feature: JobEngineService restart job tests with online device
       | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
     And I create a new step entity from the existing creator
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
     When I search events from devices in account "kapua-sys" and 3 or more events are found
     Then KuraMock is disconnected
     And I logout
@@ -379,17 +325,11 @@ Feature: JobEngineService restart job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
     When I search events from devices in account "kapua-sys" and 3 or more events are found
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
@@ -423,17 +363,11 @@ Feature: JobEngineService restart job tests with online device
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
     When I search events from devices in account "kapua-sys" and 3 or more events are found
     Then Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
@@ -465,17 +399,11 @@ Feature: JobEngineService restart job tests with online device
       | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                  |
     When I create a new step entity from the existing creator
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items or more and I confirm the executed jobs are finished within 45 seconds
     And I search events from devices in account "kapua-sys" and 2 or more events are found
     And Packages are requested and 0 packages are received
     And KuraMock is disconnected
@@ -516,17 +444,11 @@ Feature: JobEngineService restart job tests with online device
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items or more and I confirm the executed jobs are finished within 45 seconds
     When I search events from devices in account "kapua-sys" and 3 or more events are found
     And Packages are requested and 2 packages are received
     Then KuraMock is disconnected
@@ -567,17 +489,11 @@ Feature: JobEngineService restart job tests with online device
     Then No exception was thrown
     And I search the database for created job steps and I find 2
     And I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
     When I search events from devices in account "kapua-sys" and 4 or more events are found
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"

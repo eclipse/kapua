@@ -44,8 +44,7 @@ Feature: JobEngineService stop job tests with online device
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I add target to job
@@ -70,10 +69,8 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 2 and status is "PROCESS_AWAITING"
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 2 and status "PROCESS_OK"
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 2 and status "PROCESS_OK" within 180 seconds
+    When I query for the execution items for the current job and I count 2 or more finished within 30 seconds
     When Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
     And Packages are requested and 2 packages are received
@@ -97,8 +94,7 @@ Feature: JobEngineService stop job tests with online device
     And Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
     And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I add target to job
@@ -123,10 +119,8 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 2 and status is "PROCESS_AWAITING"
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 2 and status "PROCESS_OK"
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 2 and status "PROCESS_OK" within 180 seconds
+    When I query for the execution items for the current job and I count 2 or more finished within 30 seconds
     When Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
     And Packages are requested and 2 packages are received
@@ -149,8 +143,7 @@ Feature: JobEngineService stop job tests with online device
     And I get the KuraMock device after 5 seconds
     And Command "pwd" is executed
     And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I add target to job
@@ -175,10 +168,8 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 2 and status is "PROCESS_AWAITING"
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 2 and status "PROCESS_OK"
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 2 and status "PROCESS_OK" within 180 seconds
+    When I query for the execution items for the current job and I count 2 or more finished within 30 seconds
     And Packages are requested and 2 packages are received
     Then KuraMock is disconnected
     And I logout
@@ -200,8 +191,7 @@ Feature: JobEngineService stop job tests with online device
     And Configuration is requested
     Then A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
     And Packages are requested and 1 packages is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I add target to job
@@ -226,10 +216,8 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 2 and status is "PROCESS_AWAITING"
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 2 and status "PROCESS_OK"
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 2 and status "PROCESS_OK" within 180 seconds
+    When I query for the execution items for the current job and I count 2 or more finished within 30 seconds
     Then Packages are requested and 2 packages are received
     Then KuraMock is disconnected
     And I logout
@@ -251,8 +239,7 @@ Feature: JobEngineService stop job tests with online device
     When Device assets are requested
     Then Asset with name "asset1" and channel with name "channel1" and value 123 are received
     And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I add target to job
@@ -277,10 +264,8 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 2 and status is "PROCESS_AWAITING"
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 2 and status "PROCESS_OK"
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 2 and status "PROCESS_OK" within 180 seconds
+    When I query for the execution items for the current job and I count 2 or more finished within 30 seconds
     When Device assets are requested
     Then Asset with name "asset1" and channel with name "channel1" and value 1233 are received
     And Packages are requested and 2 packages are received
@@ -308,8 +293,7 @@ Feature: JobEngineService stop job tests with online device
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     And Packages are requested and 1 package is received
-    When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "device0" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I add targets to job
@@ -330,10 +314,8 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_AWAITING"
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    When I query for the execution items for the current job and I count 2 or more finished within 30 seconds
     When Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "ACTIVE"
     And Packages are requested and 2 packages are received
@@ -357,8 +339,7 @@ Feature: JobEngineService stop job tests with online device
     And Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
     And Packages are requested and 1 package is received
-    When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "device0" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I add targets to job
@@ -381,10 +362,8 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_AWAITING"
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    When I query for the execution items for the current job and I count 2 or more finished within 30 seconds
     When Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "RESOLVED"
     And Packages are requested and 0 packages are received
@@ -407,8 +386,7 @@ Feature: JobEngineService stop job tests with online device
     And I get the KuraMock devices after 5 seconds
     And Command "pwd" is executed
     And Packages are requested and 1 package is received
-    When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "device0" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I add targets to job
@@ -431,10 +409,8 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_AWAITING"
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    When I query for the execution items for the current job and I count 2 or more finished within 30 seconds
     When Packages are requested and 2 packages are received
     Then KuraMock is disconnected
     And I logout
@@ -456,8 +432,7 @@ Feature: JobEngineService stop job tests with online device
     And Configuration is requested
     Then A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
     And Packages are requested and 1 packages is received
-    When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "device0" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I add targets to job
@@ -480,10 +455,8 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_AWAITING"
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    When I query for the execution items for the current job and I count 2 or more finished within 30 seconds
     And Configuration is requested
     Then A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     And Packages are requested and 0 packages are received
@@ -507,8 +480,7 @@ Feature: JobEngineService stop job tests with online device
     When Device assets are requested
     Then Asset with name "asset1" and channel with name "channel1" and value 123 are received
     And Packages are requested and 1 package is received
-    When I search for events from device "device0" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "device0" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     And I create a job with the name "TestJob"
     And I add targets to job
@@ -531,10 +503,8 @@ Feature: JobEngineService stop job tests with online device
     And I search for the last job target in the database
     And I confirm the step index is different than 1 and status is "PROCESS_AWAITING"
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    When I query for the execution items for the current job and I count 2 or more finished within 30 seconds
     When Device assets are requested
     Then Asset with name "asset1" and channel with name "channel1" and value 1233 are received
     And Packages are requested and 2 packages are received

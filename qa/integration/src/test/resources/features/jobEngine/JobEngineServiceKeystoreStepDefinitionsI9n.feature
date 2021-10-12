@@ -35,8 +35,7 @@ Feature: Job Engine Service - Keystore Step Definitions
     Then Device status is "CONNECTED"
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 1 device event
+    When I search for events from device "rpione3" in account "kapua-sys" I find 1 event within 30 seconds
     And The type of the last event is "BIRTH"
     Given I create a job with the name "TestJob - Keystore Steps"
     And I create a new job target item
@@ -50,13 +49,9 @@ Feature: Job Engine Service - Keystore Step Definitions
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob - Keystore Steps" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    And I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob - Keystore Steps" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
+    And I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And KuraMock is disconnected
     And I logout
 
@@ -69,8 +64,7 @@ Feature: Job Engine Service - Keystore Step Definitions
     Then Device status is "CONNECTED"
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 1 device event
+    When I search for events from device "rpione3" in account "kapua-sys" I find 1 event within 30 seconds
     And The type of the last event is "BIRTH"
     Given I create a job with the name "TestJob - Keystore Steps"
     And I create a new job target item
@@ -87,13 +81,9 @@ Feature: Job Engine Service - Keystore Step Definitions
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob - Keystore Steps" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    And I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob - Keystore Steps" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
+    And I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And KuraMock is disconnected
     And I logout
 
@@ -108,8 +98,7 @@ Feature: Job Engine Service - Keystore Step Definitions
     Then Device status is "CONNECTED"
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 1 device event
+    When I search for events from device "rpione3" in account "kapua-sys" I find 1 event within 30 seconds
     And The type of the last event is "BIRTH"
     Given I create a job with the name "TestJob - Keystore Steps"
     And I create a new job target item
@@ -151,13 +140,9 @@ Feature: Job Engine Service - Keystore Step Definitions
     When I create a new step entity from the existing creator
     Then No exception was thrown
     And I start a job
-    And I wait 10 seconds
-    And I confirm job target has step index 3 and status "PROCESS_OK"
-    And I query for the job with the name "TestJob - Keystore Steps" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
-    And I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 5 device events
+    And I confirm job target has step index 3 and status "PROCESS_OK" within 180 seconds
+    And I query for the job with the name "TestJob - Keystore Steps" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
+    And I search for events from device "rpione3" in account "kapua-sys" I find 5 events within 30 seconds
     And KuraMock is disconnected
     And I logout
 

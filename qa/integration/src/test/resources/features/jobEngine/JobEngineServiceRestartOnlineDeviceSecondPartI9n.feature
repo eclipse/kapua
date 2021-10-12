@@ -40,8 +40,7 @@ Feature: JobEngineService restart job tests with online device - second part
     And I get the KuraMock device after 5 seconds
     Then Configuration is requested
     And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "CONFIGURATION"
     Given I create a job with the name "TestJob"
     And I create a new job target item
@@ -52,19 +51,12 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
     Then I create a new step entity from the existing creator
     And I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    When I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    When I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    When I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 or more device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    When I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     Then Configuration is requested
     And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     And KuraMock is disconnected
@@ -84,8 +76,7 @@ Feature: JobEngineService restart job tests with online device - second part
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "DEPLOY"
     Given I create a job with the name "TestJob"
     And I create a new job target item
@@ -96,19 +87,12 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout                | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
     When I create a new step entity from the existing creator
     And I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Then I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Then I query for the job with the name "TestJob" and I count 1 execution item or more and I confirm the executed job is finished within 20 seconds
     When I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Then I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 or more device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Then I query for the job with the name "TestJob" and I count 2 execution items or more and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     When Packages are requested and 2 packages are received
     And KuraMock is disconnected
     And I logout
@@ -128,8 +112,7 @@ Feature: JobEngineService restart job tests with online device - second part
     And I get the KuraMock device after 5 seconds
     And Device assets are requested
     And Asset with name "asset1" and channel with name "channel1" and value 123 are received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 2 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
     And The type of the last event is "ASSET"
     Given I create a job with the name "TestJob"
     And I create a new job target item
@@ -140,19 +123,12 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                     |
     When I create a new step entity from the existing creator
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 or more device events
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     And Device assets are requested
     And Asset with name "asset1" and channel with name "channel1" and value 1233 are received
     Then KuraMock is disconnected
@@ -178,8 +154,7 @@ Feature: JobEngineService restart job tests with online device - second part
     Then Configuration is requested
     And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "5"
     And Command "pwd" is executed
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "COMMAND"
     Given I create a job with the name "TestJob"
     And I create a new job target item
@@ -194,19 +169,12 @@ Feature: JobEngineService restart job tests with online device - second part
     When I create a new step entities from the existing creator
     And I search the database for created job steps and I find 2
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item or more and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 or more device events
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     Then Configuration is requested
     And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
     When KuraMock is disconnected
@@ -228,8 +196,7 @@ Feature: JobEngineService restart job tests with online device - second part
     And Device assets are requested
     And Asset with name "asset1" and channel with name "channel1" and value 123 are received
     And Packages are requested and 1 package is received
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 device events
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "DEPLOY"
     Given I create a job with the name "TestJob"
     And I create a new job target item
@@ -245,19 +212,12 @@ Feature: JobEngineService restart job tests with online device - second part
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     Then I restart a job
-    And I wait 14 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
-    When I search for events from device "rpione3" in account "kapua-sys"
-    Then I find 3 or more device events
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items or more and I confirm the executed jobs are finished within 45 seconds
+    When I search for events from device "rpione3" in account "kapua-sys" I find 3 or more events within 30 seconds
     And Device assets are requested
     And Asset with name "asset1" and channel with name "channel1" and value 1233 are received
     And Packages are requested and 0 packages are received
@@ -293,17 +253,11 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
     When I create a new step entity from the existing creator
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
     And I search events from devices in account "kapua-sys" and 3 or more events are found
     Then Configuration is requested
     And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
@@ -333,17 +287,11 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout                | java.lang.Long                                                                                   | 30000                                                                                                                                                                                                                                                            |
     When I create a new step entity from the existing creator
     And I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Then I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Then I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
     When I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Then I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Then I query for the job with the name "TestJob" and I count 2 execution items or more and I confirm the executed jobs are finished within 45 seconds
     And I search events from devices in account "kapua-sys" and 3 or more events is found
     When Packages are requested and 2 packages are received
     And KuraMock is disconnected
@@ -375,17 +323,11 @@ Feature: JobEngineService restart job tests with online device - second part
       | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                     |
     When I create a new step entity from the existing creator
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 0 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
+    And I confirm job target has step index 0 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
     And I search events from devices in account "kapua-sys" and 3 or more events is found
     And Device assets are requested
     And Asset with name "asset1" and channel with name "channel1" and value 1233 are received
@@ -428,17 +370,11 @@ Feature: JobEngineService restart job tests with online device - second part
     When I create a new step entities from the existing creator
     And I search the database for created job steps and I find 2
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     Then I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2
-    And I confirm the executed job is finished
-    And I confirm job target has step index 1 and status "PROCESS_OK"
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items and I confirm the executed jobs are finished within 45 seconds
     When I search events from devices in account "kapua-sys" and 3 or more events is found
     Then Configuration is requested
     And A Configuration named "org.eclipse.kura.clock.ClockService" has property "clock.ntp.retry.interval" with value "10"
@@ -477,17 +413,11 @@ Feature: JobEngineService restart job tests with online device - second part
     And I search the database for created job steps and I find 2
     Then No exception was thrown
     Then I restart a job
-    And I wait 10 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 1 execution items or more and I confirm the executed jobs are finished within 45 seconds
     Then I restart a job
-    And I wait 14 seconds
-    And I confirm job target has step index 1 and status "PROCESS_OK"
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 2 or more
-    And I confirm the executed job is finished
+    And I confirm job target has step index 1 and status "PROCESS_OK" within 180 seconds
+    Given I query for the job with the name "TestJob" and I count 2 execution items or more and I confirm the executed jobs are finished within 45 seconds
     When I search events from devices in account "kapua-sys" and 3 or more events is found
     And Device assets are requested
     And Asset with name "asset1" and channel with name "channel1" and value 1233 are received

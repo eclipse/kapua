@@ -98,6 +98,8 @@ import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
@@ -120,6 +122,8 @@ import java.util.Vector;
  */
 @Singleton
 public class DeviceRegistrySteps extends TestBase {
+
+    private static final Logger logger = LoggerFactory.getLogger(DeviceRegistrySteps.class);
 
     private static final String TEST_DEVICE_NAME = "test_name";
     private static final String TEST_BIOS_VERSION_1 = "bios_version_1";
@@ -1389,27 +1393,78 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @When("I search for events from device {string} in account {string}")
-    public void searchForEventsFromDeviceWithClientID(String clientId, String account) throws Exception {
-        DeviceEventQuery tmpQuery;
-        Device tmpDev;
-        DeviceEventListResult tmpList;
-        Account tmpAcc;
+    public void searchForEventsGreaterFromDeviceWithClientID(String clientId, String accountName) throws Exception {
         try {
-            tmpAcc = accountService.findByName(account);
-            Assert.assertNotNull(tmpAcc);
-            Assert.assertNotNull(tmpAcc.getId());
-            tmpDev = deviceRegistryService.findByClientId(tmpAcc.getId(), clientId);
-            Assert.assertNotNull(tmpDev);
-            Assert.assertNotNull(tmpDev.getId());
-            tmpQuery = eventFactory.newQuery(tmpAcc.getId());
-            tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceEventAttributes.DEVICE_ID, tmpDev.getId(), AttributePredicate.Operator.EQUAL));
-            tmpQuery.setSortCriteria(tmpQuery.fieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.ASCENDING));
-            tmpList = eventService.query(tmpQuery);
-            Assert.assertNotNull(tmpList);
-            stepData.put(DEVICE_EVENT_LIST, tmpList);
+            Account account = accountService.findByName(accountName);
+            Assert.assertNotNull(account);
+            Device device = deviceRegistryService.findByClientId(account.getId(), clientId);
+            Assert.assertNotNull(device);
+            DeviceEventQuery eventQuery = eventFactory.newQuery(account.getId());
+            eventQuery.setPredicate(eventQuery.attributePredicate(DeviceEventAttributes.DEVICE_ID, device.getId(), AttributePredicate.Operator.EQUAL));
+            eventQuery.setSortCriteria(eventQuery.fieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.ASCENDING));
+            DeviceEventListResult deviceEventList = eventService.query(eventQuery);
+            stepData.put(DEVICE_EVENT_LIST, deviceEventList);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
+    }
+
+    @When("I search for events from device {string} in account {string} I find {int} or more event(s) within {int} second(s)")
+    public void searchForEventsGreaterFromDeviceWithClientID(String clientId, String account, int events, int timeout) throws Exception {
+        searchForEventsFromDeviceWithClientIDInternal(clientId, account, events, timeout, true);
+    }
+
+    @When("I search for events from device {string} in account {string} I find {int} event(s) within {int} second(s)")
+    public void searchForEventsFromDeviceWithClientID(String clientId, String account, int events, int timeout) throws Exception {
+        searchForEventsFromDeviceWithClientIDInternal(clientId, account, events, timeout, false);
+    }
+
+    private void searchForEventsFromDeviceWithClientIDInternal(String clientId, String account, int events, int timeout, boolean greater) throws Exception {
+        int executions = 0;
+        while (executions++ < timeout) {
+            if (searchForEventsFromDeviceWithClientID(clientId, account, events, false, greater)) {
+                return;
+            }
+            Thread.sleep(1000);
+        }
+        searchForEventsFromDeviceWithClientID(clientId, account, events, true, greater);
+    }
+
+    private boolean searchForEventsFromDeviceWithClientID(String clientId, String accountName, int events, boolean timeoutOccurred, boolean greater) throws Exception {
+        DeviceEventListResult deviceEventList = null;
+        try {
+            Account account = accountService.findByName(accountName);
+            if (timeoutOccurred) {
+                Assert.assertNotNull(account);
+            }
+            else if (account==null) {
+                return false;
+            }
+            Device device = deviceRegistryService.findByClientId(account.getId(), clientId);
+            if (timeoutOccurred) {
+                Assert.assertNotNull(device);
+            }
+            else if (device==null) {
+                return false;
+            }
+            DeviceEventQuery eventQuery = eventFactory.newQuery(account.getId());
+            eventQuery.setPredicate(eventQuery.attributePredicate(DeviceEventAttributes.DEVICE_ID, device.getId(), AttributePredicate.Operator.EQUAL));
+            eventQuery.setSortCriteria(eventQuery.fieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.ASCENDING));
+            deviceEventList = eventService.query(eventQuery);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+        stepData.put(DEVICE_EVENT_LIST, deviceEventList);
+        if (timeoutOccurred) {
+            printEvents(deviceEventList, events);
+            if (greater) {
+                Assert.assertEquals("Wrong device events count", events, deviceEventList.getSize());
+            }
+            else {
+                Assert.assertTrue("Wrong device events count", events<=deviceEventList.getSize());
+            }
+        }
+        return greater ? events<=deviceEventList.getSize() : events==deviceEventList.getSize();
     }
 
     @Then("The event matches the creator parameters")
@@ -1439,15 +1494,30 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @Then("I find {int} device event(s)")
-    public void checkEventListForNumberOfItems(int numberOfEvents) {
+    public void checkEventListForNumberOfItems(int numberOfEvents) throws Exception {
         DeviceEventListResult eventList = (DeviceEventListResult) stepData.get(DEVICE_EVENT_LIST);
+        printEvents(eventList, numberOfEvents);
         Assert.assertEquals(numberOfEvents, eventList.getSize());
     }
 
     @Then("I find {int} or more device event(s)")
-    public void checkEventList(int number) {
+    public void checkEventList(int number) throws Exception {
         DeviceEventListResult eventList = (DeviceEventListResult) stepData.get(DEVICE_EVENT_LIST);
+        printEvents(eventList, number);
         Assert.assertTrue(eventList.getSize() >= number);
+    }
+
+    private void printEvents(DeviceEventListResult eventList, int count) throws Exception {
+        logger.info("Events sie: {}", eventList.getSize());
+        eventList.getItems().forEach((event) -> logger.info("\ttype: {} - id: {} - date: {} - {}", event.getType(), event.getDeviceId(), event.getCreatedOn(), event.getEventMessage()));
+//        if (count > eventList.getSize()) {
+//            logger.info("++++++++++++++++++++++++++++++++++++++++++++++++\n===========================================================\n\n");
+//            Thread.sleep(30000);
+//            searchForEventsFromDeviceWithClientID("rpione3", "kapua-sys" );
+//            eventList = (DeviceEventListResult) stepData.get(DEVICE_EVENT_LIST);
+//            eventList.getItems().forEach((event) -> logger.info("\ttype: {} - id: {} - date: {} - {}", event.getType(), event.getDeviceId(), event.getCreatedOn(), event.getEventMessage()));
+//            logger.info("++++++++++++++++++++++++++++++++++++++++++++++++\n===========================================================\n\n");
+//        }
     }
 
     @Then("There is no such event")

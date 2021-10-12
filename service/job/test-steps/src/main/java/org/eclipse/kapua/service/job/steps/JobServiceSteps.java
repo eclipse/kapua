@@ -1108,13 +1108,10 @@ public class JobServiceSteps extends TestBase {
 
     @Then("I query for the execution items for the current job")
     public void queryExecutionsForJobWithPackages() throws Exception {
-        Job job = (Job) stepData.get("Job");
-        JobExecutionQuery tmpQuery = jobExecutionFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobExecutionAttributes.JOB_ID, job.getId(), Operator.EQUAL));
         primeException();
         try {
             stepData.remove(JOB_EXECUTION_LIST);
-            JobExecutionListResult resultList = jobExecutionService.query(tmpQuery);
+            JobExecutionListResult resultList = getExecutionsForJob((Job) stepData.get("Job"));
             stepData.put(JOB_EXECUTION_LIST, resultList);
             stepData.updateCount(resultList.getSize());
         } catch (KapuaException ex) {
@@ -1122,21 +1119,54 @@ public class JobServiceSteps extends TestBase {
         }
     }
 
-    @Then("I query for the execution items for the current job and I count {int}")
-    public void queryExecutionsForJob(int num) throws Exception {
-        Job job = (Job) stepData.get("Job");
+    @Then("I query for the execution items for the current job and I count {int} finished within {int} second(s)")
+    public void queryExecutionsForJob(int numberOfExecutions, int timeout) throws Exception {
+        iQueryForTheExecutionItemsForTheCurrentJobAndICountOrMoreInternal(numberOfExecutions, timeout, false);
+    }
+
+    @And("I query for the execution items for the current job and I count {int} or more finished within {int} second(s)")
+    public void iQueryForTheExecutionItemsForTheCurrentJobAndICountOrMore(int numberOfExecutions, int timeout) throws Exception {
+        iQueryForTheExecutionItemsForTheCurrentJobAndICountOrMoreInternal(numberOfExecutions, timeout, true);
+    }
+
+    private void iQueryForTheExecutionItemsForTheCurrentJobAndICountOrMoreInternal(int numberOfExecutions, int timeout, boolean greater) throws Exception {
+        long endWaitTime = System.currentTimeMillis() + timeout * 1000;
+        JobExecutionListResult resultList = null;
+        do {
+            primeException();
+            try {
+                stepData.remove(JOB_EXECUTION_LIST);
+                resultList = getExecutionsForJob((Job) stepData.get("Job"));
+                stepData.put(JOB_EXECUTION_LIST, resultList);
+                stepData.updateCount(resultList.getSize());
+                if (greater) {
+                    if (resultList.getSize() >= numberOfExecutions) {
+                        return;
+                    }
+                }
+                else {
+                    if (numberOfExecutions == resultList.getSize()) {
+                        return;
+                    }
+                }
+            } catch (KapuaException ex) {
+                verifyException(ex);
+            }
+            Thread.sleep(1000);
+        }
+        while (System.currentTimeMillis() < endWaitTime);
+        if (greater) {
+            Assert.assertTrue(resultList.getSize() >= numberOfExecutions);
+        }
+        else {
+            Assert.assertEquals(numberOfExecutions, resultList.getSize());
+        }
+    }
+
+    private JobExecutionListResult getExecutionsForJob(Job job) throws Exception {
         JobExecutionQuery tmpQuery = jobExecutionFactory.newQuery(getCurrentScopeId());
         tmpQuery.setPredicate(tmpQuery.attributePredicate(JobExecutionAttributes.JOB_ID, job.getId(), Operator.EQUAL));
-        primeException();
-        try {
-            stepData.remove(JOB_EXECUTION_LIST);
-            JobExecutionListResult resultList = jobExecutionService.query(tmpQuery);
-            stepData.put(JOB_EXECUTION_LIST, resultList);
-            stepData.updateCount(resultList.getSize());
-            Assert.assertEquals(num, resultList.getSize());
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
+        return jobExecutionService.query(tmpQuery);
     }
 
     @When("I confirm the executed job is finished")
@@ -1145,6 +1175,109 @@ public class JobServiceSteps extends TestBase {
         JobExecution jobExecution = resultList.getFirstItem();
         Assert.assertNotNull("Job execution end date cannot be null!", jobExecution.getEndedOn());
         Assert.assertNotNull("Job execution log cannot be null!", jobExecution.getLog());
+    }
+
+    @When("I query for the job with the name {string} and I count {int} execution item(s) or more and I confirm the executed job(s) is/are finished within {int} second(s)")
+    public void iQueryForTheJobWithTheNameAndJobExecutionCountGreaterAndExecutionStatus(String jobName, int count, int timeout) throws Exception {
+        iQueryForTheJobWithTheNameAndJobExecutionCountInternal(jobName, count, timeout, true);
+    }
+
+    @When("I query for the job with the name {string} and I count {int} execution item(s) and I confirm the executed job(s) is/are finished within {int} second(s)")
+    public void iQueryForTheJobWithTheNameAndJobExecutionCountAndExecutionStatus(String jobName, int count, int timeout) throws Exception {
+        iQueryForTheJobWithTheNameAndJobExecutionCountInternal(jobName, count, timeout, false);
+    }
+
+    @When("I query for the job with the name {string} and I count {int} execution item(s) after {int} second(s)")
+    public void iQueryForTheJobWithTheNameAndJobExecutionCountAfter(String jobName, int count, int secondsToWait) throws Exception {
+        Thread.sleep(secondsToWait * 1000);
+        primeException();
+        try {
+            //update job in stepdata to allow job execution retrieval
+            getJobAndUpdateStepData(jobName);
+            JobExecutionListResult jobExecutionList = getJobExecutionListAndUpdateStepData();
+            Assert.assertEquals("Wrong job execution count", 0, jobExecutionList.getSize());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    private void iQueryForTheJobWithTheNameAndJobExecutionCountInternal(String jobName, int count, int timeout, boolean greaterThan) throws Exception {
+        primeException();
+        try {
+            Job job = null;
+            JobExecutionListResult jobExecutionList = null;
+            JobExecution jobExecution = null;
+            int execution = 0;
+            while (execution++ < timeout) {
+                //step 1
+                job = getJobAndUpdateStepData(jobName);
+                //step 2
+                jobExecutionList = getJobExecutionListAndUpdateStepData();
+                jobExecution = jobExecutionList.getFirstItem();
+                if (isJobExecutionCompled(jobExecutionList, jobExecution, job, execution, jobName, count, greaterThan)) {
+                    //all fine return
+                    logger.info("Job executions are fine after {} seconds", execution - 1);
+                    return;
+                }
+                Thread.sleep(1000);
+            }
+            logJobInfo(jobExecutionList, job, execution);
+            jobInfoAssertCheck(jobExecutionList, jobExecution, job, jobName, count, greaterThan);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    private Job getJobAndUpdateStepData(String jobName) throws Exception {
+        stepData.remove("Job");
+        Job job = getJobList(jobName).getFirstItem();
+        stepData.put("Job", job);
+        return job;
+    }
+
+    private JobExecutionListResult getJobExecutionListAndUpdateStepData() throws Exception {
+        stepData.remove(JOB_EXECUTION_LIST);
+        JobExecutionListResult jobExecutionList = getExecutionsForJob((Job) stepData.get("Job"));
+        stepData.put(JOB_EXECUTION_LIST, jobExecutionList);
+        stepData.updateCount(jobExecutionList.getSize());
+        return jobExecutionList;
+    }
+
+    private boolean isJobExecutionCompled(JobExecutionListResult jobExecutionList, JobExecution jobExecution, Job job, int execution, String jobName, int count, boolean greaterThan) {
+        boolean result = jobName.equals(job.getName()) &&
+                jobExecution != null &&
+                jobExecution.getEndedOn() != null &&
+                jobExecution.getLog() != null;
+        return result && (greaterThan ? jobExecutionList.getSize() >= count :jobExecutionList.getSize() == count);
+    }
+
+    private void jobInfoAssertCheck(JobExecutionListResult jobExecutionList, JobExecution jobExecution, Job job, String jobName, int count, boolean greaterThan) {
+        Assert.assertEquals(jobName, job.getName());
+        if (!greaterThan) {
+            Assert.assertEquals("Wrong Job execution expected count" + jobExecutionList.getSize(), count, jobExecutionList.getSize());
+        }
+        else {
+            Assert.assertTrue("Job execution expected count is greater than " + count + " - found " + jobExecutionList.getSize(), count <= jobExecutionList.getSize());
+        }
+        Assert.assertNotNull("Job execution cannot be null!", jobExecution);
+        Assert.assertNotNull("Job execution end date cannot be null!", jobExecution.getEndedOn());
+        Assert.assertNotNull("Job execution log cannot be null!", jobExecution.getLog());
+    }
+
+    private void logJobInfo(JobExecutionListResult jobExecutionList, Job job, int execution) {
+        logger.info("Job executions after {} seconds", execution);
+        logger.info("job id: {} - name: {} - description: {}", job.getId(), job.getName(), job.getDescription());
+        if (jobExecutionList.getItems()!=null) {
+            if (jobExecutionList.getSize()>0) {
+                logger.info("Job execution empty list");
+            }
+            else {
+                logger.info("Job execution list size {}", jobExecutionList.getSize());
+                jobExecutionList.getItems().forEach(jobExecutionTmp -> {
+                    logger.info("    s: {} - e: {} - log: {}", jobExecutionTmp.getStartedOn(), jobExecutionTmp.getEndedOn(), jobExecutionTmp.getLog());
+                });
+            }
+        }
     }
 
     @Then("The job execution matches the creator")
@@ -1437,36 +1570,23 @@ public class JobServiceSteps extends TestBase {
         }
     }
 
-    @And("I query for the execution items for the current job and I count {int} or more")
-    public void iQueryForTheExecutionItemsForTheCurrentJobAndICountOrMore(int numberOfExecutions) throws Exception {
-        Job job = (Job) stepData.get("Job");
-        JobExecutionQuery tmpQuery = jobExecutionFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobExecutionAttributes.JOB_ID, job.getId(), Operator.EQUAL));
-        primeException();
-        try {
-            stepData.remove(JOB_EXECUTION_LIST);
-            JobExecutionListResult resultList = jobExecutionService.query(tmpQuery);
-            stepData.put(JOB_EXECUTION_LIST, resultList);
-            stepData.updateCount(resultList.getSize());
-            Assert.assertTrue(resultList.getSize() >= numberOfExecutions);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
     @When("I query for the job with the name {string} and I find it")
     public void iQueryForTheJobWithTheNameAndIFoundIt(String jobName) throws Exception {
-        JobQuery tmpQuery = jobFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobAttributes.NAME, jobName));
         primeException();
         try {
             stepData.remove("Job");
-            Job job = jobService.query(tmpQuery).getFirstItem();
+            Job job = getJobList(jobName).getFirstItem();
             stepData.put("Job", job);
             Assert.assertEquals(jobName, job.getName());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
+    }
+
+    private JobListResult getJobList(String jobName) throws Exception {
+        JobQuery tmpQuery = jobFactory.newQuery(getCurrentScopeId());
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobAttributes.NAME, jobName));
+        return jobService.query(tmpQuery);
     }
 
     @And("I create a new job target item")
@@ -1488,31 +1608,27 @@ public class JobServiceSteps extends TestBase {
         updateCountAndCheck(() -> (int)jobTargetService.count(jobTargetFactory.newQuery(getCurrentScopeId())), targetNum);
     }
 
-    @And("I confirm job target has step index {int} and status {string}")
-    public void iConfirmJobTargetHasStatus(int stepIndex, String jobStatus) throws Exception {
+    @And("I confirm job target has step index {int} and status {string} within {int} second(s)")
+    public void iConfirmJobTargetHasStatus(int stepIndex, String jobStatus, int timeout) throws Exception {
         try {
-            iConfirmJobTargetHasStatus(100, 2, stepIndex, jobStatus);
+            JobTarget jobTarget = (JobTarget) stepData.get(JOB_TARGET);
+            long endWaitTime = System.currentTimeMillis() + timeout * 1000;
+            JobTarget targetFound = null;
+            do {
+                targetFound = jobTargetService.find(jobTarget.getScopeId(), jobTarget.getId());
+                if (targetFound.getStepIndex() == stepIndex && jobStatus.equals(targetFound.getStatus().name())) {
+                    return;
+                }
+                Thread.sleep(1000);
+            }
+            while (System.currentTimeMillis() < endWaitTime);
+            //lets the test fail for the right reason
+            targetFound = jobTargetService.find(jobTarget.getScopeId(), jobTarget.getId());
+            Assert.assertEquals(jobStatus, targetFound.getStatus().toString());
+            Assert.assertEquals(stepIndex, targetFound.getStepIndex());
         } catch (InterruptedException ex) {
             logger.warn("Waiting interrupted!", ex);
         }
-    }
-
-    public void iConfirmJobTargetHasStatus(int secondsToWait, int secondsToTry, int stepIndex, String jobTargetStatus) throws InterruptedException, KapuaException {
-        JobTarget jobTarget = (JobTarget) stepData.get(JOB_TARGET);
-        long endWaitTime = System.currentTimeMillis() + secondsToWait * 1000;
-        JobTarget targetFound = null;
-        do {
-            targetFound = jobTargetService.find(jobTarget.getScopeId(), jobTarget.getId());
-            if (targetFound.getStepIndex() == stepIndex && jobTargetStatus.equals(targetFound.getStatus().name())) {
-                return;
-            }
-            Thread.sleep(secondsToTry * 1000);
-        }
-        while (System.currentTimeMillis() < endWaitTime);
-        //lets the test fail for the right reason
-        targetFound = jobTargetService.find(jobTarget.getScopeId(), jobTarget.getId());
-        Assert.assertEquals(jobTargetStatus, targetFound.getStatus().toString());
-        Assert.assertEquals(stepIndex, targetFound.getStepIndex());
     }
 
     @Given("I prepare a job with name {string} and description {string}")
