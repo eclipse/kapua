@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.endpoint.steps;
 
+import cucumber.api.DataTable;
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
@@ -42,6 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 
 @ScenarioScoped
@@ -214,7 +217,6 @@ public class EndpointServiceSteps extends TestBase {
     @When("^I delete the endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
     public void iDeleteEndpointWithSchema(String schema, String domain, int port) throws Throwable {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
@@ -232,7 +234,6 @@ public class EndpointServiceSteps extends TestBase {
     @And("^I try to find endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
     public void foundEndpointBySchemaDomainPort(String schema, String domain, int port) throws Exception {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
@@ -251,7 +252,6 @@ public class EndpointServiceSteps extends TestBase {
     @And("^I try to find endpoint with schema \"([^\"]*)\"$")
     public void foundEndpointBySchema(String schema) throws Exception {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
@@ -269,7 +269,6 @@ public class EndpointServiceSteps extends TestBase {
     public void editEndpointSchema(String schema) throws Exception {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get(ENDPOINT_INFO);
         endpointInfo.setSchema(schema);
-
         primeException();
         try {
             EndpointInfo newEndpoint = endpointInfoService.update(endpointInfo);
@@ -282,12 +281,10 @@ public class EndpointServiceSteps extends TestBase {
     @And("^I delete endpoint with schema \"([^\"]*)\"$")
     public void iDeleteEndpointWithSchema(String schema) throws Exception {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
             EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
-
             endpointInfoService.delete(SYS_SCOPE_ID, endpointInfo.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
@@ -296,7 +293,6 @@ public class EndpointServiceSteps extends TestBase {
 
     @And("^I delete the last created endpoint$")
     public void iDeleteTheLastCreatedEndpoint() throws Exception {
-
         try {
             EndpointInfo endpointInfo = (EndpointInfo) stepData.get(ENDPOINT_INFO);
             endpointInfoService.delete(SYS_SCOPE_ID, endpointInfo.getId());
@@ -308,7 +304,6 @@ public class EndpointServiceSteps extends TestBase {
     @And("^I delete endpoint with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
     public void iDeleteEndpointWithSchemaDomainAndPort(String schema, String domainName, int port) throws Exception {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
@@ -316,7 +311,6 @@ public class EndpointServiceSteps extends TestBase {
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.PORT, port, AttributePredicate.Operator.EQUAL));
             EndpointInfo endpointInfo = endpointInfoService.query(endpointInfoQuery).getFirstItem();
             endpointInfoService.delete(getCurrentScopeId(), endpointInfo.getId());
-
             stepData.put("DeletedEndpointInfo", endpointInfo);
         } catch (Exception ex) {
             verifyException(ex);
@@ -326,7 +320,6 @@ public class EndpointServiceSteps extends TestBase {
     @And("^I search for all endpoints in current scopeId")
     public void iSearchForAllEndpoints() throws Exception {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             EndpointInfoListResult endpointInfo = endpointInfoService.query(endpointInfoQuery);
@@ -368,17 +361,13 @@ public class EndpointServiceSteps extends TestBase {
     @When("^I delete all endpoints with schema \"([^\"]*)\"$")
     public void iDeleteEndpointsWithSchema(String schema) throws Throwable {
         primeException();
-
         try {
             EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
             endpointInfoQuery.setPredicate(endpointInfoQuery.attributePredicate(EndpointInfoAttributes.SCHEMA, schema, AttributePredicate.Operator.EQUAL));
-
             EndpointInfoListResult endpointsToDelete = endpointInfoService.query(endpointInfoQuery);
-
             for (int i = 0; i < endpointsToDelete.getSize(); i++) {
                 endpointInfoService.delete(getCurrentScopeId(), endpointsToDelete.getItem(i).getId());
             }
-
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -387,11 +376,9 @@ public class EndpointServiceSteps extends TestBase {
     @Then("^I edit last created endpoint Schema to \"([^\"]*)\"$")
     public void iEditEndpointSchema(String schema) throws Throwable {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
-
         if (schema.equals("NULL")) {
             schema = null;
         }
-
         try {
             endpointInfo.setSchema(schema);
             endpointInfoService.update(endpointInfo);
@@ -403,11 +390,9 @@ public class EndpointServiceSteps extends TestBase {
     @Then("^I edit last created endpoint Domain Name to \"([^\"]*)\"$")
     public void iEditLastCreatedEndpointDomainNameTo(String domainName) throws Throwable {
         EndpointInfo endpointInfo = (EndpointInfo) stepData.get("EndpointInfo");
-
         if (domainName.equals("NULL")) {
             domainName = null;
         }
-
         try {
             endpointInfo.setDns(domainName);
             endpointInfoService.update(endpointInfo);
@@ -509,7 +494,6 @@ public class EndpointServiceSteps extends TestBase {
         } else {
             endpointInfoCreator.setSecure(false);
         }
-
         try {
             EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
             stepData.put("EndpointInfo", endpointInfo);
@@ -532,6 +516,56 @@ public class EndpointServiceSteps extends TestBase {
             verifyException(e);
         }
     }
+
+    @When("^I create a CORS filter with schema \"([^\"]*)\", domain \"([^\"]*)\" and port (\\d+)$")
+    public void iCreateCORSFilter(String schema, String domain, int port) throws Exception {
+        EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
+        endpointInfoCreator.setSchema(schema);
+        endpointInfoCreator.setDns(domain);
+        endpointInfoCreator.setPort(port);
+        endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_CORS);
+
+        try {
+            EndpointInfo endpointInfo = endpointInfoService.create(endpointInfoCreator);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @And("^I create the following CORS filters$")
+    public void iCreateMultipleCORSFilter(DataTable corsFilters) throws Throwable {
+        for (List<String> config : corsFilters.raw()) {
+            iCreateCORSFilter(config.get(0), config.get(1), Integer.parseInt(config.get(2)));
+        }
+    }
+
+    @Then("I have (\\d+) CORS filters?$")
+    public void iHaveCORSFilter(int expectedNum) throws KapuaException {
+        int corsFilter = KapuaSecurityUtils.doPrivileged(new Callable<Integer>() {
+            @Override
+            public Integer call() throws Exception {
+                EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
+                EndpointInfoListResult corsFilters = endpointInfoService.query(endpointInfoQuery, EndpointInfo.ENDPOINT_TYPE_CORS);
+                return corsFilters.getSize();
+            }
+        });
+        assertEquals(expectedNum, corsFilter);
+    }
+
+    @And("^I delete all CORS filters")
+    public void iDeleteAllCORSFilters() throws Exception {
+        primeException();
+
+        try {
+            EndpointInfoQuery endpointInfoQuery = endpointInfoFactory.newQuery(getCurrentScopeId());
+            EndpointInfoListResult endpointsToDelete = endpointInfoService.query(endpointInfoQuery, EndpointInfo.ENDPOINT_TYPE_CORS);
+
+            for (int i = 0; i < endpointsToDelete.getSize(); i++) {
+                endpointInfoService.delete(getCurrentScopeId(), endpointsToDelete.getItem(i).getId());
+            }
+
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
 }
-
-

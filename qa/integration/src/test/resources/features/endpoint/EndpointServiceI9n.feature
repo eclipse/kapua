@@ -10,15 +10,16 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@integration
 @endpoint
+@env_docker
 
 Feature: Endpoint Info Service Integration Tests
   Integration test scenarios for Endpoint Info service
 
+@setup
 Scenario: Init Security Context for all scenarios
-
-  Given Init Security Context
+  Given Init Jaxb Context
+  And Init Security Context
 
   Scenario: Creating Valid Endpoint
   Login as kapua-sys
@@ -755,6 +756,137 @@ Scenario: Init Security Context for all scenarios
     And I delete endpoint with schema "Schema2", domain "abc.com" and port 2222
     And I logout
 
-Scenario: Reset Security Context for all scenarios
+  Scenario: List CORS filters from kapua-sys account
+  Login as kapua-sys, create a CORS filter, then get all CORS filter.
+  There should be 1 CORS filter and no exceptions throw.
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    When I create a CORS filter with schema "http", domain "localhost" and port 8080
+    Then I have 1 CORS filter
+    And I delete all CORS filters
+    And I logout
 
+  Scenario: List CORS filters from kapua-sys account
+  Login as kapua-sys, create 5 CORS filter, then get all CORS filter.
+  There should be 5 CORS filters and no exceptions throw.
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    When I create the following CORS filters
+      | http | localhost | 8080 |
+      | http | localhost | 8081 |
+      | http | localhost | 8082 |
+      | http | localhost | 8090 |
+      | http | localhost | 42   |
+    Then I have 5 CORS filter
+    And I delete all CORS filters
+    And I logout
+
+  Scenario: List CORS filters from a newer created user of kapua-sys account
+  Login as kapua-sys, create a new user user1 and do not give him the permission to creates
+  new CORS filters. Then login as user1 and try to create a CORS filter, an exception should be
+  thrown and no filter should be created.
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    And I create user with name "user1"
+    And I add credentials
+      | name  | password      | enabled |
+      | user1 | User@10031995 | true    |
+    And I select the domain "domain"
+    And I create the access info entity
+    And I create role "test_role" in account "kapua-sys"
+    And I create the following role permissions
+      | scopeId | actionName |
+      | 1       | read       |
+      | 1       | delete     |
+    And I add access role "test_role" to user "user1"
+    And I logout
+    Given I login as user with name "user1" and password "User@10031995"
+    And I expect the exception "SubjectUnauthorizedException" with the text "*"
+    When I create a CORS filter with schema "http", domain "localhost" and port 8080
+    Then An exception was thrown
+    And I have 0 CORS filter
+    And I logout
+
+  Scenario: List CORS filters from a newer created user of kapua-sys account
+  Login as kapua-sys, create a new user user1 and do not give him the permission to creates
+  new CORS filters (give him instead the domain write permission). Then login as user1 and try to
+  create a CORS filter, no exception should be thrown and 1 filter should be created.
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    And I select account "kapua-sys"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    And I create user with name "user1"
+    And I add credentials
+      | name  | password      | enabled |
+      | user1 | User@10031995 | true    |
+    And I select the domain "domain"
+    And I create the access info entity
+    And I create role "test_role" in account "kapua-sys"
+    And I create the following role permissions
+      | scopeId | actionName |
+      | 1       | read       |
+      | 1       | write       |
+      | 1       | delete     |
+    And I add access role "test_role" to user "user1"
+    And I logout
+    Given I login as user with name "user1" and password "User@10031995"
+    And I expect the exception "SubjectUnauthorizedException" with the text "*"
+    When I create a CORS filter with schema "http", domain "localhost" and port 8080
+    Then An exception was thrown
+    And I have 0 CORS filter
+    And I logout
+
+  Scenario: List CORS filters from a newer created user of kapua-sys account
+  Login as kapua-sys, create a new user user1 and give him the permission to creates
+  new CORS filters. Then login as user1 and try to create 5 CORS filters, no exception should be
+  thrown and 5 new filters should be created.
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    Given I create a generic account with name "kapua-sub"
+    And I select account "kapua-sub"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    And I create user with name "user1" in account "kapua-sub"
+    And I add credentials
+      | name  | password      | enabled |
+      | user1 | User@10031995 | true    |
+    And I select the domain "endpoint_info"
+    And I create the access info entity in account "kapua-sub"
+    And I create role "test_role" in account "kapua-sub"
+    And I create the following role permissions in account "kapua-sub"
+      | scopeId | actionName |
+      | 1       | read       |
+      | 1       | write      |
+      | 1       | delete     |
+    And I add access role "test_role" to user "user1" in account "kapua-sub"
+    And I logout
+    Given I login as user with name "user1" and password "User@10031995"
+    When I create the following CORS filters
+      | http | localhost | 8080 |
+      | http | localhost | 8081 |
+      | http | localhost | 8082 |
+      | http | localhost | 8090 |
+      | http | localhost | 42   |
+    Then I have 5 CORS filter
+    And I delete all CORS filters
+    And I logout
+
+Scenario: Reset Security Context for all scenarios
     Given Reset Security Context

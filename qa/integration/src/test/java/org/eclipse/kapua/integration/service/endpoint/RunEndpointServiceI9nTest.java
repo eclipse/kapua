@@ -23,7 +23,8 @@ import org.junit.runner.RunWith;
                 "org.eclipse.kapua.service.user.steps",
                 "org.eclipse.kapua.service.endpoint.steps",
                 "org.eclipse.kapua.qa.common",
-                "org.eclipse.kapua.service.account.steps"
+                "org.eclipse.kapua.service.account.steps",
+                "org.eclipse.kapua.service.authorization.steps"
         },
         plugin = { "pretty",
                 "html:target/cucumber",
