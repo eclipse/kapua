@@ -18,7 +18,6 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -35,12 +34,14 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
+
 /**
  * {@link DomainRegistryService} implementation.
  *
  * @since 1.0
  */
-@KapuaProvider
+@Singleton
 public class DomainRegistryServiceImpl extends AbstractKapuaService implements DomainRegistryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainRegistryServiceImpl.class);

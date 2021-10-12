@@ -20,7 +20,6 @@ import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -40,6 +39,7 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 
+import javax.inject.Singleton;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ import java.util.Map;
  *
  * @since 1.0
  */
-@KapuaProvider
+@Singleton
 public class RolePermissionServiceImpl extends AbstractKapuaService implements RolePermissionService {
 
     private static final RoleService ROLE_SERVICE = KapuaLocator.getInstance().getService(RoleService.class);

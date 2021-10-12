@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.authorization.domain.shiro;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authorization.domain.Domain;
 import org.eclipse.kapua.service.authorization.domain.DomainCreator;
@@ -21,12 +20,14 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainListResult;
 import org.eclipse.kapua.service.authorization.domain.DomainQuery;
 
+import javax.inject.Singleton;
+
 /**
  * {@link DomainFactory} implementation.
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class DomainFactoryImpl implements DomainFactory {
 
     @Override

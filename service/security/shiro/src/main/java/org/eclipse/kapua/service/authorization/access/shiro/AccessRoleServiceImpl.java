@@ -19,7 +19,6 @@ import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -41,12 +40,14 @@ import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerF
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationErrorCodes;
 import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
 
+import javax.inject.Singleton;
+
 /**
  * {@link AccessRole} service implementation.
  *
  * @since 1.0
  */
-@KapuaProvider
+@Singleton
 public class AccessRoleServiceImpl extends AbstractKapuaService implements AccessRoleService {
 
     public AccessRoleServiceImpl() {
