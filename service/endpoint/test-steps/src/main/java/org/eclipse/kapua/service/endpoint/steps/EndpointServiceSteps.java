@@ -13,13 +13,21 @@
 package org.eclipse.kapua.service.endpoint.steps;
 
 
+import com.google.inject.Singleton;
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoAttributes;
 import org.eclipse.kapua.service.endpoint.EndpointInfoCreator;
@@ -29,14 +37,6 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 import org.junit.Assert;
 
-import com.google.inject.Singleton;
-
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -486,7 +486,7 @@ public class EndpointServiceSteps extends TestBase {
 
     @And("^I create the following CORS filters$")
     public void iCreateMultipleCORSFilter(DataTable corsFilters) throws Throwable {
-        for (List<String> config : corsFilters.raw()) {
+        for (List<String> config : corsFilters.asLists()) {
             iCreateCORSFilter(config.get(0), config.get(1), Integer.parseInt(config.get(2)));
         }
     }
@@ -501,7 +501,7 @@ public class EndpointServiceSteps extends TestBase {
                 return corsFilters.getSize();
             }
         });
-        assertEquals(expectedNum, corsFilter);
+        Assert.assertEquals(expectedNum, corsFilter);
     }
 
     @And("^I delete all CORS filters")
