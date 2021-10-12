@@ -17,7 +17,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.cucumber.java.Before;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
@@ -60,9 +59,13 @@ import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerFactoryImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class JobLocatorConfiguration {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JobLocatorConfiguration.class);
 
     @Before(value = "@setup", order = 1)
     public void setupDI() {
@@ -73,14 +76,6 @@ public class JobLocatorConfiguration {
             @Override
             protected void configure() {
 
-                // Inject mocked Authorization Service method checkPermission
-                AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
-                try {
-                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
-                } catch (KapuaException e) {
-                    // skip
-                }
-
                 // Commons
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
@@ -89,7 +84,14 @@ public class JobLocatorConfiguration {
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
 
                 // Auth
-                bind(AuthorizationService.class).toInstance(mockedAuthorization);
+                // Inject mocked Authorization Service method checkPermission
+                AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
+                try {
+                    Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
+                    bind(AuthorizationService.class).toInstance(mockedAuthorization);
+                } catch (Exception e) {
+                    LOG.warn("Error while setting mock AuthorizationService. This may lead to failures...", e);
+                }
                 bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
 
                 // Job

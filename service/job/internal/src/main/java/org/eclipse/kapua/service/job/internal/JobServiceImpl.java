@@ -70,7 +70,6 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     @Inject
     private TriggerService triggerService;
-
     @Inject
     private TriggerFactory triggerFactory;
 

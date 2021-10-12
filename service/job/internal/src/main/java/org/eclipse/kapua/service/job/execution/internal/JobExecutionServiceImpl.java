@@ -30,6 +30,8 @@ import org.eclipse.kapua.service.job.execution.JobExecutionListResult;
 import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 
+import javax.inject.Inject;
+
 /**
  * {@link JobExecutionService} implementation
  *
@@ -40,8 +42,10 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    @Inject
+    private AuthorizationService authorizationService;
+    @Inject
+    private PermissionFactory permissionFactory;
 
     public JobExecutionServiceImpl() {
         super(JobEntityManagerFactory.getInstance(), null);
@@ -56,7 +60,7 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
 
         //
         // Do create
@@ -72,7 +76,7 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobExecution.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobExecution.getScopeId()));
 
         return entityManagerSession.doTransactedAction(em -> JobExecutionDAO.update(em, jobExecution));
     }
@@ -86,7 +90,7 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -101,7 +105,7 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -116,7 +120,7 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -132,7 +136,7 @@ public class JobExecutionServiceImpl extends AbstractKapuaService implements Job
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
 
         //
         // Do delete

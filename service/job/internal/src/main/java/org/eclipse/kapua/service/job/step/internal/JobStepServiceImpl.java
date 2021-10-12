@@ -21,7 +21,6 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -49,6 +48,7 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.xml.bind.DatatypeConverter;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -61,16 +61,18 @@ import java.util.regex.Pattern;
 @KapuaProvider
 public class JobStepServiceImpl extends AbstractKapuaService implements JobStepService {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    @Inject
+    private AuthorizationService authorizationService;
+    @Inject
+    private PermissionFactory permissionFactory;
 
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    @Inject
+    private JobExecutionService jobExecutionService;
+    @Inject
+    private JobExecutionFactory jobExecutionFactory;
 
-    private static final JobExecutionService JOB_EXECUTION_SERVICE = LOCATOR.getService(JobExecutionService.class);
-    private static final JobExecutionFactory JOB_EXECUTION_FACTORY = LOCATOR.getFactory(JobExecutionFactory.class);
-
-    private static final JobStepDefinitionService JOB_STEP_DEFINITION_SERVICE = LOCATOR.getService(JobStepDefinitionService.class);
-
+    @Inject
+    private JobStepDefinitionService jobStepDefinitionService;
 
     public JobStepServiceImpl() {
         super(JobEntityManagerFactory.getInstance(), null);
@@ -91,7 +93,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobStepCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobStepCreator.getScopeId()));
 
         //
         // Check job step definition
@@ -113,12 +115,12 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Job Executions
-        JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(jobStepCreator.getScopeId());
+        JobExecutionQuery jobExecutionQuery = jobExecutionFactory.newQuery(jobStepCreator.getScopeId());
         jobExecutionQuery.setPredicate(
                 jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStepCreator.getJobId())
         );
 
-        if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
+        if (jobExecutionService.count(jobExecutionQuery) > 0) {
             throw new CannotModifyJobStepsException(jobStepCreator.getJobId());
         }
 
@@ -191,7 +193,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobStep.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobStep.getScopeId()));
 
         //
         // Check existence
@@ -220,12 +222,12 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Job Executions
-        JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(jobStep.getScopeId());
+        JobExecutionQuery jobExecutionQuery = jobExecutionFactory.newQuery(jobStep.getScopeId());
         jobExecutionQuery.setPredicate(
                 jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStep.getJobId())
         );
 
-        if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
+        if (jobExecutionService.count(jobExecutionQuery) > 0) {
             throw new CannotModifyJobStepsException(jobStep.getJobId());
         }
 
@@ -299,7 +301,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
 
         //
         // Do find
@@ -314,7 +316,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -329,7 +331,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -345,7 +347,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -356,12 +358,12 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Job Executions
-        JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(scopeId);
+        JobExecutionQuery jobExecutionQuery = jobExecutionFactory.newQuery(scopeId);
         jobExecutionQuery.setPredicate(
                 jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStep.getJobId())
         );
 
-        if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
+        if (jobExecutionService.count(jobExecutionQuery) > 0) {
             throw new CannotModifyJobStepsException(jobStep.getJobId());
         }
 
@@ -397,7 +399,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
     //
     // Private methods
     private void validateJobStepProperties(JobStepCreator jobStepCreator) throws KapuaException {
-        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(jobStepCreator.getScopeId(), jobStepCreator.getJobStepDefinitionId());
+        JobStepDefinition jobStepDefinition = jobStepDefinitionService.find(jobStepCreator.getScopeId(), jobStepCreator.getJobStepDefinitionId());
         ArgumentValidator.notNull(jobStepDefinition, "jobStepCreator.jobStepDefinitionId");
 
         try {
@@ -408,7 +410,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
     }
 
     private void validateJobStepProperties(JobStep jobStep) throws KapuaException {
-        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
+        JobStepDefinition jobStepDefinition = jobStepDefinitionService.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
         ArgumentValidator.notNull(jobStepDefinition, "jobStep.jobStepDefinitionId");
 
         try {
