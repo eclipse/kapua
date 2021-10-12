@@ -428,7 +428,7 @@ public class EndpointServiceSteps extends TestBase {
     }
 
     @And("^I create endpoint with schema \"([^\"]*)\" and port (\\d+) without domain name$")
-    public void iCreateEndpointWithSchemaAndPortWithoutDomain(String schema, int port ) throws Throwable {
+    public void iCreateEndpointWithSchemaAndPortWithoutDomain(String schema, int port) throws Throwable {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setSchema(schema);
         endpointInfoCreator.setPort(port);
@@ -443,7 +443,7 @@ public class EndpointServiceSteps extends TestBase {
     }
 
     @And("^I create endpoint with domain name \"([^\"]*)\" without schema and port$")
-    public void iCreateEndpointWithDomainWithoutSchemaAndPort(String domainName) throws Throwable{
+    public void iCreateEndpointWithDomainWithoutSchemaAndPort(String domainName) throws Throwable {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setDns(domainName);
         endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
@@ -470,7 +470,7 @@ public class EndpointServiceSteps extends TestBase {
     }
 
     @And("^I create endpoint with port (\\d+) without schema and domain name$")
-    public void iCreateEndpointWithPortWithoutSchemaAndDomain(int port) throws Throwable{
+    public void iCreateEndpointWithPortWithoutSchemaAndDomain(int port) throws Throwable {
         EndpointInfoCreator endpointInfoCreator = endpointInfoFactory.newCreator(getCurrentScopeId());
         endpointInfoCreator.setPort(port);
         endpointInfoCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
