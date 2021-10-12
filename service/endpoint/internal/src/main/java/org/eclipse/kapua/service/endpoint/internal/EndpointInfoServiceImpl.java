@@ -95,7 +95,11 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, null));
+        KapuaId scopeIdPermission = endpointInfoCreator.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ?
+                endpointInfoCreator.getScopeId() : null;
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, scopeIdPermission)
+        );
 
         //
         // Check duplicate endpoint
@@ -129,7 +133,11 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, null));
+        KapuaId scopeIdPermission = endpointInfo.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS) ?
+                endpointInfo.getScopeId() : null;
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.write, scopeIdPermission)
+        );
 
         //
         // Check duplicate endpoint
@@ -152,7 +160,15 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.delete, null));
+        EndpointInfo endpointInfoToDelete = entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId));
+        KapuaId scopeIdPermission = null;
+        if (endpointInfoToDelete != null && endpointInfoToDelete.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS)) {
+            scopeIdPermission = scopeId;
+        }
+
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.delete, scopeIdPermission)
+        );
 
         //
         // Do delete
@@ -167,7 +183,15 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeId));
+        EndpointInfo endpointInfoToFind = entityManagerSession.doAction(em -> EndpointInfoDAO.find(em, scopeId, endpointInfoId));
+        KapuaId scopeIdPermission = null;
+        if (endpointInfoToFind != null && endpointInfoToFind.getEndpointType().equals(EndpointInfo.ENDPOINT_TYPE_CORS)) {
+            scopeIdPermission = scopeId;
+        }
+
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, scopeIdPermission)
+        );
 
         //
         // Do find
@@ -186,7 +210,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId())
+        );
         addSectionToPredicate(query, section);
 
         //
@@ -239,7 +265,9 @@ public class EndpointInfoServiceImpl
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId()));
+        AUTHORIZATION_SERVICE.checkPermission(
+                PERMISSION_FACTORY.newPermission(EndpointInfoDomains.ENDPOINT_INFO_DOMAIN, Actions.read, query.getScopeId())
+        );
 
         //
         // Do count
