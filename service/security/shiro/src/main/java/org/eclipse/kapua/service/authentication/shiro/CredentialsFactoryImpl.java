@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
@@ -20,13 +19,15 @@ import org.eclipse.kapua.service.authentication.JwtCredentials;
 import org.eclipse.kapua.service.authentication.RefreshTokenCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 
+import javax.inject.Singleton;
+
 /**
  * {@link CredentialsFactory} factory implementation.
  *
  * @since 1.0
  *
  */
-@KapuaProvider
+@Singleton
 public class CredentialsFactoryImpl implements CredentialsFactory {
 
     @Override

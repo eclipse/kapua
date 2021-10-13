@@ -247,6 +247,7 @@
                 <include>${pom.groupId}:kapua-locator-guice</include>
                 <include>${pom.groupId}:kapua-message-api</include>
                 <include>${pom.groupId}:kapua-message-internal</include>
+                <include>${pom.groupId}:kapua-openid-api</include>
                 <include>${pom.groupId}:kapua-rest-api-core</include>
                 <include>${pom.groupId}:kapua-security-authentication-api</include>
                 <include>${pom.groupId}:kapua-security-authorization-api</include>

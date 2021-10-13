@@ -28,7 +28,6 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -67,6 +66,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
+import javax.inject.Singleton;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -81,7 +81,7 @@ import java.util.UUID;
 /**
  * {@link MfaOptionService} implementation.
  */
-@KapuaProvider
+@Singleton
 public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOptionService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MfaOptionServiceImpl.class);

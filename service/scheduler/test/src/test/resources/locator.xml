@@ -19,7 +19,6 @@
         <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService</api>
         <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory</api>
 
-        <api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
         <api>org.eclipse.kapua.service.authentication.UsernamePasswordTokenFactory</api>
 
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
