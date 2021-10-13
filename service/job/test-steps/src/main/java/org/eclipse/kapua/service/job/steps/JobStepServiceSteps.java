@@ -68,38 +68,48 @@ public class JobStepServiceSteps extends JobServiceTestBase {
         jobStepFactory = locator.getFactory(JobStepFactory.class);
     }
 
-    @Given("A regular step creator with the name {string}")
-    public void prepareARegularStepCreator(String name) {
-        prepareARegularStepCreatorWithPropertyList(name, Collections.emptyList());
+    //
+    // Prepare
+    //
+
+    @Given("I prepare a JobStepCreator with the name {string}")
+    public void iPrepareAJobStepCreator(String name) {
+        iPrepareAJobStepCreatorWithPropertyList(name, Collections.emptyList());
     }
 
-    @Given("A regular step creator with the name {string} and the following properties")
-    public void prepareARegularStepCreatorWithPropertyList(String name, List<CucJobStepProperty> list) {
-        KapuaId currentStepDefId = (KapuaId) stepData.get(CURRENT_JOB_STEP_DEFINITION_ID);
+    @Given("I prepare a JobStepCreator with the name {string} and the following properties")
+    public void iPrepareAJobStepCreatorWithPropertyList(String name, List<CucJobStepProperty> cucJobStepProperties) {
+        KapuaId currentStepDefinitionId = (KapuaId) stepData.get(CURRENT_JOB_STEP_DEFINITION_ID);
 
         List<JobStepProperty> tmpPropLst = new ArrayList<>();
-        for (CucJobStepProperty prop : list) {
-            tmpPropLst.add(jobStepFactory.newStepProperty(prop.getName(), prop.getType(), prop.getValue()));
+        for (CucJobStepProperty cucJobStepProperty : cucJobStepProperties) {
+            tmpPropLst.add(
+                    jobStepFactory.newStepProperty(
+                            cucJobStepProperty.getName(),
+                            cucJobStepProperty.getType(),
+                            cucJobStepProperty.getValue()
+                    )
+            );
         }
 
         JobStepCreator stepCreator = prepareDefaultJobStepCreator();
         stepCreator.setName(name);
-        stepCreator.setJobStepDefinitionId(currentStepDefId);
+        stepCreator.setJobStepDefinitionId(currentStepDefinitionId);
         stepCreator.setJobStepProperties(tmpPropLst);
 
         stepData.put(JOB_STEP_CREATOR, stepCreator);
     }
 
-    @And("I create a regular step creator with the name {string} and properties")
-    public void aRegularStepCreatorWithTheNameAndProperties(String name, List<CucJobStepProperty> tmpProperty) {
+    @And("I prepare a JobStepCreator with the name {string} and properties")
+    // TODO Review implementation. These should be tested specifically for each JobStepDefinition
+    public void iPrepareAJobStepCreatorWithPropertyList1(String name, List<CucJobStepProperty> tmpProperty) {
         JobStepCreator stepCreator;
         ArrayList<JobStepDefinition> jobStepDefinitions = (ArrayList<JobStepDefinition>) stepData.get(JOB_STEP_DEFINITIONS);
         ArrayList<JobStepCreator> stepCreators = new ArrayList<>();
-        ArrayList<String> bundleIds = new ArrayList<>();
         String firstValue = tmpProperty.get(0).getValue();
         String[] values = firstValue.split(",");
-        bundleIds.addAll(Arrays.asList(values));
 
+        ArrayList<String> bundleIds = new ArrayList<>(Arrays.asList(values));
         for (String bundleId : bundleIds) {
             for (JobStepDefinition stepDefinition : jobStepDefinitions) {
                 stepCreator = prepareDefaultJobStepCreator();
@@ -128,15 +138,20 @@ public class JobStepServiceSteps extends JobServiceTestBase {
                 stepCreator.setJobStepProperties(tmpPropLst);
                 stepCreators.add(stepCreator);
                 stepData.put(JOB_STEP_CREATOR, stepCreator);
-                stepData.put("JobStepCreators", stepCreators);
+                stepData.put(JOB_STEP_CREATORS, stepCreators);
             }
         }
     }
 
-    @When("I create a new step entity from the existing creator")
-    public void createAStepFromTheCreator() throws Exception {
-        KapuaId currentJobId = (KapuaId) stepData.get(CURRENT_JOB_ID);
+    //
+    // Create
+    //
+
+    @When("I create a new JobStep from the existing creator")
+    public void iCreateAJobStepFromTheCreator() throws Exception {
         JobStepCreator stepCreator = (JobStepCreator) stepData.get(JOB_STEP_CREATOR);
+
+        KapuaId currentJobId = (KapuaId) stepData.get(CURRENT_JOB_ID);
         stepCreator.setJobId(currentJobId);
         primeException();
         try {
@@ -150,22 +165,25 @@ public class JobStepServiceSteps extends JobServiceTestBase {
         }
     }
 
-    @And("I create a new step entities from the existing creator")
+    @And("I create multiple new JobSteps from the existing creators")
     public void iCreateANewStepEntitiesFromTheExistingCreator() throws Exception {
+
         KapuaId currentJobId = (KapuaId) stepData.get(CURRENT_JOB_ID);
-        ArrayList<JobStepCreator> jobStepCreators = (ArrayList<JobStepCreator>) stepData.get("JobStepCreators");
+
         ArrayList<JobStep> jobSteps = new ArrayList<>();
+        ArrayList<JobStepCreator> jobStepCreators = (ArrayList<JobStepCreator>) stepData.get("JobStepCreators");
         for (JobStepCreator jobStepCreator : jobStepCreators) {
             jobStepCreator.setJobId(currentJobId);
             primeException();
             try {
                 stepData.remove(JOB_STEP);
-                stepData.put("JobSteps", jobSteps);
+                stepData.put(JOB_STEPS, Collections.emptyList());
                 stepData.remove(CURRENT_JOB_STEP_ID);
+
                 JobStep step = jobStepService.create(jobStepCreator);
                 jobSteps.add(step);
                 stepData.put(JOB_STEP, step);
-                stepData.put("JobSteps", jobSteps);
+                stepData.put(JOB_STEPS, jobSteps);
                 stepData.put(CURRENT_JOB_STEP_ID, step.getId());
             } catch (KapuaException ex) {
                 verifyException(ex);
@@ -173,14 +191,99 @@ public class JobStepServiceSteps extends JobServiceTestBase {
         }
     }
 
-    @When("I search the database for created job steps and I find {int}")
-    public void searchJobSteps(int count) throws Exception {
+    //
+    // Update
+    //
+    @When("I update the JobStep.name to {string}")
+    public void iUpdateJobStepName(String name) throws Exception {
+        JobStep jobStep = (JobStep) stepData.get(JOB_STEP);
+        jobStep.setName(name);
+
+        updateJobStep(jobStep);
+    }
+
+    @When("I update the JobStep.stepIndex to {int}")
+    public void iUpdateStepIndex(Integer stepIndex) throws Exception {
+        JobStep jobStep = (JobStep) stepData.get(JOB_STEP);
+        jobStep.setStepIndex(stepIndex);
+
+        updateJobStep(jobStep);
+    }
+
+    @When("I update the JobStep.jobStepDefinitionId to the current JobStepDefinition.id")
+    public void iUpdateStepDefinition() throws Exception {
+        KapuaId currentStepDefId = (KapuaId) stepData.get(CURRENT_JOB_STEP_DEFINITION_ID);
+
+        JobStep jobStep = (JobStep) stepData.get(JOB_STEP);
+        jobStep.setJobStepDefinitionId(currentStepDefId);
+
+        updateJobStep(jobStep);
+    }
+
+    //
+    // Search
+    //
+
+    @When("I look for the last JobStep")
+    public void iLookForLastJobStep() throws Exception {
+        JobStep step = (JobStep) stepData.get(JOB_STEP);
+        primeException();
+        try {
+            JobStep jobStep = jobStepService.find(step.getScopeId(), step.getId());
+            stepData.put(JOB_STEP, jobStep);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("I look for the JobStep with name {string}")
+    public void iLookForJobStepWithName(String name) throws Exception {
+        JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobStepAttributes.NAME, name));
+
+        primeException();
+        try {
+            JobStepListResult jobSteps = jobStepService.query(tmpQuery);
+            stepData.put(JOB_STEP, jobSteps.getFirstItem());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    //
+    // Query
+    //
+
+    @When("I query for a JobStep with the name {string}")
+    public void iQueryForJobStepWithName(String name) throws Exception {
+        JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobStepAttributes.NAME, name));
+
+        primeException();
+        try {
+            stepData.remove(JOB_STEPS);
+            JobStepListResult jobSteps = jobStepService.query(tmpQuery);
+            stepData.put(JOB_STEPS, jobSteps);
+            stepData.updateCount(jobSteps.getSize());
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    //
+    // Count
+    //
+
+    @When("I count the JobSteps and I find {int} JobStep")
+    public void iCountJobStepAndCheck(int count) throws Exception {
         KapuaId currentJobId = (KapuaId) stepData.get(CURRENT_JOB_ID);
         primeException();
         try {
-            JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
-            tmpQuery.setPredicate(tmpQuery.attributePredicate(JobStepAttributes.JOB_ID, currentJobId, AttributePredicate.Operator.EQUAL));
-            JobStepListResult jobStepListResult = jobStepService.query(tmpQuery);
+            JobStepQuery jobStepQuery = jobStepFactory.newQuery(getCurrentScopeId());
+            jobStepQuery.setPredicate(jobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, currentJobId, AttributePredicate.Operator.EQUAL));
+
+            JobStepListResult jobStepListResult = jobStepService.query(jobStepQuery);
+
             Assert.assertEquals(count, jobStepListResult.getSize());
         } catch (KapuaException ke) {
             verifyException(ke);
@@ -188,80 +291,36 @@ public class JobStepServiceSteps extends JobServiceTestBase {
 
     }
 
-    @When("I change the step name to {string}")
-    public void updateStepName(String name) throws Exception {
-        JobStep step = (JobStep) stepData.get(JOB_STEP);
-        step.setName(name);
-        primeException();
-        try {
-            step = jobStepService.update(step);
-            stepData.put(JOB_STEP, step);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("I update the step with a new definition")
-    public void updateStepDefinition() throws Exception {
-        JobStep step = (JobStep) stepData.get(JOB_STEP);
-        KapuaId currentStepDefId = (KapuaId) stepData.get(CURRENT_JOB_STEP_DEFINITION_ID);
-        step.setJobStepDefinitionId(currentStepDefId);
-        primeException();
-        try {
-            step = jobStepService.update(step);
-            stepData.put(JOB_STEP, step);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("I search for the last step in the database")
-    public void findLastStep() throws Exception {
-        JobStep step = (JobStep) stepData.get(JOB_STEP);
-        primeException();
-        try {
-            JobStep newStep = jobStepService.find(step.getScopeId(), step.getId());
-            stepData.put(JOB_STEP, newStep);
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("I query for a step with the name {string}")
-    public void queryForNamedStep(String name) throws Exception {
-        JobStepQuery tmpQuery = jobStepFactory.newQuery(getCurrentScopeId());
-        tmpQuery.setPredicate(tmpQuery.attributePredicate(JobStepAttributes.NAME, name, AttributePredicate.Operator.EQUAL));
-        primeException();
-        try {
-            stepData.remove("JobStepList");
-            JobStepListResult stepList = jobStepService.query(tmpQuery);
-            stepData.put("JobStepList", stepList);
-            stepData.updateCount(stepList.getSize());
-        } catch (KapuaException ex) {
-            verifyException(ex);
-        }
-    }
-
-    @When("I count the steps in the scope")
-    public void countStepsInScope() throws Exception {
+    @When("I count the JobSteps in the current scope")
+    public void iCountJobStepInCurrentScope() throws Exception {
         updateCount(() -> (int) jobStepService.count(jobStepFactory.newQuery(getCurrentScopeId())));
     }
 
-    @When("I delete the last step")
-    public void deleteLastStep() throws Exception {
-        JobStep step = (JobStep) stepData.get(JOB_STEP);
+    //
+    // Delete
+    //
+
+    @When("I delete the last JobStep")
+    public void iDeleteLastJobStep() throws Exception {
+        JobStep jobStep = (JobStep) stepData.get(JOB_STEP);
+
         primeException();
         try {
-            jobStepService.delete(step.getScopeId(), step.getId());
+            jobStepService.delete(jobStep.getScopeId(), jobStep.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
 
-    @Then("The step item matches the creator")
-    public void checkStepItemAgainstCreator() {
+    //
+    // Check
+    //
+
+    @Then("The JobStep matches the creator")
+    public void checkJobStepMatchesCreator() {
         JobStep step = (JobStep) stepData.get(JOB_STEP);
         JobStepCreator stepCreator = (JobStepCreator) stepData.get(JOB_STEP_CREATOR);
+
         Assert.assertEquals(stepCreator.getJobId(), step.getJobId());
         Assert.assertEquals(stepCreator.getJobStepDefinitionId(), step.getJobStepDefinitionId());
         Assert.assertEquals(stepCreator.getName(), step.getName());
@@ -270,12 +329,23 @@ public class JobStepServiceSteps extends JobServiceTestBase {
         Assert.assertEquals(stepCreator.getStepProperties().size(), step.getStepProperties().size());
     }
 
-    @Then("There is no such step item in the database")
-    public void checkThatNoStepWasFound() {
-        Assert.assertNull("Unexpected step item found!", stepData.get(JOB_STEP));
+    @Then("The JobStep.stepIndex is {int}")
+    public void checkJobStepMatchesCreator(int stepIndex) {
+        JobStep jobStep = (JobStep) stepData.get(JOB_STEP);
+
+        Assert.assertEquals(stepIndex, jobStep.getStepIndex());
     }
 
-    @When("I test the sanity of the step factory")
+    @Then("The JobStep is not found")
+    public void checkJobStepNotFound() {
+        Assert.assertNull(stepData.get(JOB_STEP));
+    }
+
+    //
+    // Others
+    //
+
+    @When("I test the JobStepFactory")
     public void testTheStepFactory() {
         Assert.assertNotNull(jobStepFactory.newCreator(SYS_SCOPE_ID));
         Assert.assertNotNull(jobStepFactory.newEntity(SYS_SCOPE_ID));
@@ -295,4 +365,13 @@ public class JobStepServiceSteps extends JobServiceTestBase {
         return tmpCr;
     }
 
+    private void updateJobStep(JobStep jobStep) throws Exception {
+        primeException();
+        try {
+            jobStep = jobStepService.update(jobStep);
+            stepData.put(JOB_STEP, jobStep);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
 }

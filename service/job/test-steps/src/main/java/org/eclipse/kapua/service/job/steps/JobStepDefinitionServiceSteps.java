@@ -83,7 +83,7 @@ public class JobStepDefinitionServiceSteps extends JobServiceTestBase {
     }
 
     @Given("A regular step definition creator with the name {string} and the following properties")
-    public void prepareARegularStepDefinitionCreatorWithPropertyList(String name, List<CucJobStepProperty> list) {
+    public void iPrepareARegularStepDefinitionCreatorWithPropertyList(String name, List<CucJobStepProperty> list) {
         JobStepDefinitionCreator stepDefinitionCreator = prepareDefaultJobStepDefinitionCreator();
         stepDefinitionCreator.setName(name);
         List<JobStepProperty> tmpPropLst = new ArrayList<>();
@@ -94,15 +94,18 @@ public class JobStepDefinitionServiceSteps extends JobServiceTestBase {
         stepData.put(JOB_STEP_DEFINITION_CREATOR, stepDefinitionCreator);
     }
 
-    @Given("A regular step definition with the name {string} and the following properties")
-    public void createARegularStepDefinitionWithProperties(String name, List<CucJobStepProperty> list) throws Exception {
-        prepareARegularStepDefinitionCreatorWithPropertyList(name, list);
-        JobStepDefinitionCreator stepDefinitionCreator = (JobStepDefinitionCreator) stepData.get(JOB_STEP_DEFINITION_CREATOR);
+    @Given("I create a JobStepDefinition with the name {string} and the following properties")
+    public void iCreateAJobStepDefinitionWithProperties(String name, List<CucJobStepProperty> list) throws Exception {
+        iPrepareARegularStepDefinitionCreatorWithPropertyList(name, list);
+
         primeException();
         try {
             stepData.remove(JOB_STEP_DEFINITION);
             stepData.remove(CURRENT_JOB_STEP_DEFINITION_ID);
+
+            JobStepDefinitionCreator stepDefinitionCreator = (JobStepDefinitionCreator) stepData.get(JOB_STEP_DEFINITION_CREATOR);
             JobStepDefinition stepDefinition = jobStepDefinitionService.create(stepDefinitionCreator);
+
             stepData.put(JOB_STEP_DEFINITION, stepDefinition);
             stepData.put(CURRENT_JOB_STEP_DEFINITION_ID, stepDefinition.getId());
         } catch (KapuaException ex) {

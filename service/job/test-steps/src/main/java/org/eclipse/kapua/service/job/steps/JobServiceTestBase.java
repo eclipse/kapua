@@ -36,7 +36,9 @@ public class JobServiceTestBase extends TestBase {
     // Job Step
     protected static final String CURRENT_JOB_STEP_ID = "CurrentJobStepId";
     protected static final String JOB_STEP = "JobStep";
+    protected static final String JOB_STEPS = "JobSteps";
     protected static final String JOB_STEP_CREATOR = "JobStepCreator";
+    protected static final String JOB_STEP_CREATORS = "JobStepCreators";
 
     // Job Target
     protected static final String JOB_TARGET_CREATOR = "JobTargetCreator";
