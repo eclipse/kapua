@@ -12,21 +12,32 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.client;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.model.id.KapuaId;
 
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * {@link JobStartOptions} remote client implementation.
+ *
+ * @since 1.5.0
+ */
 public class JobStartOptionsClient implements JobStartOptions {
 
-    private Set<KapuaId> targetIdSublist = new HashSet<>();
+    private static final long serialVersionUID = 7890046123237425642L;
+
+    private Set<KapuaId> targetIdSublist;
     private boolean resetStepIndex;
     private Integer fromStepIndex;
     private boolean enqueue;
 
     @Override
     public Set<KapuaId> getTargetIdSublist() {
+        if (targetIdSublist == null) {
+            this.targetIdSublist = new HashSet<>();
+        }
+
         return targetIdSublist;
     }
 
@@ -45,6 +56,7 @@ public class JobStartOptionsClient implements JobStartOptions {
         getTargetIdSublist().remove(targetId);
     }
 
+    @Override
     public boolean getResetStepIndex() {
         return resetStepIndex;
     }
@@ -64,6 +76,7 @@ public class JobStartOptionsClient implements JobStartOptions {
         this.fromStepIndex = fromStepIndex;
     }
 
+    @Override
     public boolean getEnqueue() {
         return enqueue;
     }
