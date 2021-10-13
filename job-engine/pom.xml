@@ -20,10 +20,9 @@
         <artifactId>kapua</artifactId>
         <version>1.6.0-SNAPSHOT</version>
     </parent>
-    <packaging>pom</packaging>
 
     <artifactId>kapua-job-engine</artifactId>
-    <name>${project.artifactId}</name>
+    <packaging>pom</packaging>
 
     <modules>
         <module>commons</module>
