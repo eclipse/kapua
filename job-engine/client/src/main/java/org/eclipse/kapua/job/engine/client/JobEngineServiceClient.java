@@ -35,6 +35,7 @@ import org.eclipse.kapua.app.api.core.model.job.MultipleJobIdRequest;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.job.engine.client.filter.SessionInfoFilter;
 import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSetting;
 import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSettingKeys;
 import org.eclipse.kapua.job.engine.exception.CleanJobDataException;

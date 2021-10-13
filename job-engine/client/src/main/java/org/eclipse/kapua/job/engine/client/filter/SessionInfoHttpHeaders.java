@@ -10,9 +10,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine;
+package org.eclipse.kapua.job.engine.client.filter;
 
-public interface JobEngineHttpHeaders {
+/**
+ * List of headers name used by the {@link SessionInfoFilter}
+ *
+ * @since 1.5.0
+ */
+public interface SessionInfoHttpHeaders {
 
     String SCOPE_ID_HTTP_HEADER = "X-Kapua-Scope-ID";
     String USER_ID_HTTP_HEADER = "X-Kapua-User-ID";
