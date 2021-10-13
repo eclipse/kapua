@@ -13,6 +13,7 @@
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua-job-engine</artifactId>
@@ -20,10 +21,6 @@
     </parent>
 
     <artifactId>kapua-job-engine-jbatch</artifactId>
-
-    <properties>
-        <jbatch.version>1.0.2</jbatch.version>
-    </properties>
 
     <dependencies>
         <!-- -->
@@ -44,12 +41,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-api</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-engine-commons</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-service-api</artifactId>
@@ -58,6 +53,10 @@
         <!-- -->
         <!-- External dependencies -->
         <dependency>
+            <groupId>com.ibm.jbatch</groupId>
+            <artifactId>com.ibm.jbatch.container</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
@@ -65,21 +64,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>com.ibm.jbatch</groupId>
-            <artifactId>com.ibm.jbatch.container</artifactId>
-            <version>${jbatch.version}</version>
-        </dependency>
-
-        <!-- -->
-        <!-- Test dependencies-->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-locator-guice</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
 </project>

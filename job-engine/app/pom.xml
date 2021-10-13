@@ -19,10 +19,9 @@
         <artifactId>kapua-job-engine</artifactId>
         <version>1.5.3-SNAPSHOT</version>
     </parent>
-    <packaging>pom</packaging>
 
     <artifactId>kapua-job-engine-app</artifactId>
-    <name>${project.artifactId}</name>
+    <packaging>pom</packaging>
 
     <modules>
         <module>core</module>
