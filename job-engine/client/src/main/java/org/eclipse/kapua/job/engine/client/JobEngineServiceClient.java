@@ -39,6 +39,7 @@ import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSetting;
 import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSettingKeys;
 import org.eclipse.kapua.job.engine.exception.CleanJobDataException;
 import org.eclipse.kapua.job.engine.exception.JobAlreadyRunningException;
+import org.eclipse.kapua.job.engine.exception.JobEngineException;
 import org.eclipse.kapua.job.engine.exception.JobInvalidTargetException;
 import org.eclipse.kapua.job.engine.exception.JobMissingStepException;
 import org.eclipse.kapua.job.engine.exception.JobMissingTargetException;
@@ -58,23 +59,40 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.xml.bind.JAXBException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+ * {@link JobEngineService} remote client implementation.
+ *
+ * @since 1.5.0
+ */
 @KapuaProvider
 public class JobEngineServiceClient implements JobEngineService {
 
-    private final WebTarget jobEngineTarget;
-    private final Logger log = LoggerFactory.getLogger(JobEngineServiceClient.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JobEngineServiceClient.class);
 
+    private final WebTarget jobEngineTarget;
+
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public JobEngineServiceClient() {
-        Client jobEngineClient = ClientBuilder.newClient().register(SessionInfoFilter.class).register(MoxyJsonFeature.class);
+        Client jobEngineClient =
+                ClientBuilder
+                        .newClient()
+                        .register(SessionInfoFilter.class)
+                        .register(MoxyJsonFeature.class);
+
         jobEngineTarget = jobEngineClient.target(JobEngineClientSetting.getInstance().getString(JobEngineClientSettingKeys.JOB_ENGINE_BASE_URL));
     }
 
@@ -82,17 +100,11 @@ public class JobEngineServiceClient implements JobEngineService {
     public void startJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         try {
             String path = String.format("start/%s/%s", scopeId.toCompactId(), jobId.toCompactId());
-            log.debug("JobEngine POST Call to {}", path);
-            Response response = jobEngineTarget.path(String.format("start/%s/%s", scopeId.toCompactId(), jobId.toCompactId()))
-                    .request(MediaType.APPLICATION_JSON_TYPE)
-                    .accept(MediaType.APPLICATION_JSON_TYPE)
-                    .post(null);
-            String responseText = response.readEntity(String.class);
-            log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
-            Family family = response.getStatusInfo().getFamily();
-            if (family == Family.CLIENT_ERROR || family == Family.SERVER_ERROR) {
-                handleJobEngineException(responseText, response.getStatus());
-            }
+            LOG.debug("POST {}", path);
+
+            Response response = getPreparedRequest(path).post(null);
+
+            checkResponse("POST", path, response);
         } catch (ClientErrorException clientErrorException) {
             throw KapuaException.internalError(clientErrorException);
         }
@@ -103,17 +115,11 @@ public class JobEngineServiceClient implements JobEngineService {
         try {
             String path = String.format("start-with-options/%s/%s", scopeId.toCompactId(), jobId.toCompactId());
             String jobStartOptionsJson = XmlUtil.marshalJson(jobStartOptions);
-            log.debug("JobEngine POST Call to {}, body {}", path, jobStartOptionsJson);
-            Response response = jobEngineTarget.path(path)
-                    .request(MediaType.APPLICATION_JSON_TYPE)
-                    .accept(MediaType.APPLICATION_JSON_TYPE)
-                    .post(Entity.json(jobStartOptionsJson));
-            String responseText = response.readEntity(String.class);
-            log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
-            Family family = response.getStatusInfo().getFamily();
-            if (family == Family.CLIENT_ERROR || family == Family.SERVER_ERROR) {
-                handleJobEngineException(responseText, response.getStatus());
-            }
+            LOG.debug("POST {} - Content: {}", path, jobStartOptionsJson);
+
+            Response response = getPreparedRequest(path).post(Entity.json(jobStartOptionsJson));
+
+            checkResponse("POST", path, response);
         } catch (ClientErrorException | JAXBException e) {
             throw KapuaException.internalError(e);
         }
@@ -123,17 +129,12 @@ public class JobEngineServiceClient implements JobEngineService {
     public boolean isRunning(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         try {
             String path = String.format("is-running/%s/%s", scopeId.toCompactId(), jobId.toCompactId());
-            log.debug("JobEngine GET Call to {}", path);
-            Response response = jobEngineTarget.path(path)
-                    .request(MediaType.APPLICATION_JSON_TYPE)
-                    .accept(MediaType.APPLICATION_JSON_TYPE)
-                    .get();
-            String responseText = response.readEntity(String.class);
-            log.debug("JobEngine GET Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
-            Family family = response.getStatusInfo().getFamily();
-            if (family == Family.CLIENT_ERROR || family == Family.SERVER_ERROR) {
-                handleJobEngineException(responseText, response.getStatus());
-            }
+            LOG.debug("GET {}", path);
+
+            Response response = getPreparedRequest(path).get();
+
+            String responseText = checkResponse("GET", path, response);
+
             IsJobRunningResponse isRunningJobResponse = XmlUtil.unmarshalJson(responseText, IsJobRunningResponse.class, null);
             return isRunningJobResponse.isRunning();
         } catch (ClientErrorException | JAXBException | SAXException e) {
@@ -144,29 +145,22 @@ public class JobEngineServiceClient implements JobEngineService {
     @Override
     public Map<KapuaId, Boolean> isRunning(KapuaId scopeId, Set<KapuaId> jobIds) throws KapuaException {
         try {
-            String path = String.format("is-running/%s", scopeId.toCompactId());
             MultipleJobIdRequest multipleJobIdRequest = new MultipleJobIdRequest();
             multipleJobIdRequest.setJobIds(jobIds);
             String requestBody = XmlUtil.marshalJson(multipleJobIdRequest);
-            log.debug("JobEngine POST Call to {}, body {}", path, requestBody);
-            Response response = jobEngineTarget.path(path)
-                    .request(MediaType.APPLICATION_JSON_TYPE)
-                    .accept(MediaType.APPLICATION_JSON_TYPE)
-                    .post(Entity.json(requestBody));
-            String responseText = response.readEntity(String.class);
-            log.debug("JobEngine GET Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
-            Family family = response.getStatusInfo().getFamily();
-            if (family == Family.CLIENT_ERROR || family == Family.SERVER_ERROR) {
-                handleJobEngineException(responseText, response.getStatus());
-            }
+
+            String path = String.format("is-running/%s", scopeId.toCompactId());
+            LOG.debug("POST {} - Content {}", path, requestBody);
+
+            Response response = getPreparedRequest(path).post(Entity.json(requestBody));
+
+            String responseText = checkResponse("POST", path, response);
+
             IsJobRunningMultipleResponse isJobRunningMultipleResponse = XmlUtil.unmarshalJson(responseText, IsJobRunningMultipleResponse.class);
-            isJobRunningMultipleResponse.getList().forEach(item -> {
-                System.out.println(item.getJobId());
-                System.out.println(item.isRunning());
-            });
-            Map<KapuaId, Boolean> isRunningMap = new HashMap<>();
-            isJobRunningMultipleResponse.getList().forEach(item -> isRunningMap.put(item.getJobId(), item.isRunning()));
-            return isRunningMap;
+
+            return isJobRunningMultipleResponse.getList()
+                    .stream()
+                    .collect(Collectors.toMap(IsJobRunningResponse::getJobId, IsJobRunningResponse::isRunning));
         } catch (ClientErrorException | JAXBException | SAXException e) {
             throw KapuaException.internalError(e);
         }
@@ -176,17 +170,11 @@ public class JobEngineServiceClient implements JobEngineService {
     public void stopJob(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         try {
             String path = String.format("stop/%s/%s", scopeId.toCompactId(), jobId.toCompactId());
-            log.debug("JobEngine POST Call to {}", path);
-            Response response = jobEngineTarget.path(path)
-                    .request(MediaType.APPLICATION_JSON_TYPE)
-                    .accept(MediaType.APPLICATION_JSON_TYPE)
-                    .post(null);
-            String responseText = response.readEntity(String.class);
-            log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
-            Family family = response.getStatusInfo().getFamily();
-            if (family == Family.CLIENT_ERROR || family == Family.SERVER_ERROR) {
-                handleJobEngineException(responseText, response.getStatus());
-            }
+            LOG.debug("POST {}", path);
+
+            Response response = getPreparedRequest(path).post(null);
+
+            checkResponse("POST", path, response);
         } catch (ClientErrorException clientErrorException) {
             throw KapuaException.internalError(clientErrorException);
         }
@@ -196,17 +184,11 @@ public class JobEngineServiceClient implements JobEngineService {
     public void stopJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException {
         try {
             String path = String.format("stop-execution/%s/%s/%s", scopeId.toCompactId(), jobId.toCompactId(), jobExecutionId.toCompactId());
-            log.debug("JobEngine POST Call to {}", path);
-            Response response = jobEngineTarget.path(path)
-                    .request(MediaType.APPLICATION_JSON_TYPE)
-                    .accept(MediaType.APPLICATION_JSON_TYPE)
-                    .post(null);
-            String responseText = response.readEntity(String.class);
-            log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
-            Family family = response.getStatusInfo().getFamily();
-            if (family == Family.CLIENT_ERROR || family == Family.SERVER_ERROR) {
-                handleJobEngineException(responseText, response.getStatus());
-            }
+            LOG.debug("POST {}", path);
+
+            Response response = getPreparedRequest(path).post(null);
+
+            checkResponse("POST", path, response);
         } catch (ClientErrorException clientErrorException) {
             throw KapuaException.internalError(clientErrorException);
         }
@@ -216,17 +198,11 @@ public class JobEngineServiceClient implements JobEngineService {
     public void resumeJobExecution(KapuaId scopeId, KapuaId jobId, KapuaId jobExecutionId) throws KapuaException {
         try {
             String path = String.format("resume-execution/%s/%s/%s", scopeId.toCompactId(), jobId.toCompactId(), jobExecutionId.toCompactId());
-            log.debug("JobEngine POST Call to {}", path);
-            Response response = jobEngineTarget.path(path)
-                    .request(MediaType.APPLICATION_JSON_TYPE)
-                    .accept(MediaType.APPLICATION_JSON_TYPE)
-                    .post(null);
-            String responseText = response.readEntity(String.class);
-            log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
-            Family family = response.getStatusInfo().getFamily();
-            if (family == Family.CLIENT_ERROR || family == Family.SERVER_ERROR) {
-                handleJobEngineException(responseText, response.getStatus());
-            }
+            LOG.debug("POST {}", path);
+
+            Response response = getPreparedRequest(path).post(null);
+
+            checkResponse("POST", path, response);
         } catch (ClientErrorException clientErrorException) {
             throw KapuaException.internalError(clientErrorException);
         }
@@ -236,25 +212,67 @@ public class JobEngineServiceClient implements JobEngineService {
     public void cleanJobData(KapuaId scopeId, KapuaId jobId) throws KapuaException {
         try {
             String path = String.format("clean-data/%s/%s", scopeId.toCompactId(), jobId.toCompactId());
-            log.debug("JobEngine POST Call to {}", path);
-            Response response = jobEngineTarget.path(path)
-                    .request(MediaType.APPLICATION_JSON_TYPE)
-                    .accept(MediaType.APPLICATION_JSON_TYPE)
-                    .post(null);
-            String responseText = response.readEntity(String.class);
-            log.debug("JobEngine POST Call to {} - response code {} - body {}", path, response.getStatus(), responseText);
-            Family family = response.getStatusInfo().getFamily();
-            if (family == Family.CLIENT_ERROR || family == Family.SERVER_ERROR) {
-                handleJobEngineException(responseText, response.getStatus());
-            }
+            LOG.debug("POST {}", path);
+
+            Response response = getPreparedRequest(path).post(null);
+
+            checkResponse("POST", path, response);
         } catch (ClientErrorException clientErrorException) {
             throw KapuaException.internalError(clientErrorException);
         }
     }
 
-    private void handleJobEngineException(String responseText, int statusCode) throws KapuaException {
+    //
+    // Private methods
+    //
+
+    /**
+     * Prepares the request from the {@link WebTarget} with
+     * {@link WebTarget#request(MediaType...)} set to {@link MediaType#APPLICATION_JSON_TYPE} and
+     * {@link Invocation.Builder#accept(MediaType...)} set to {@link MediaType#APPLICATION_JSON_TYPE}.
+     *
+     * @param path The path of the request.
+     * @return The {@link Invocation.Builder}.
+     * @since 1.6.0
+     */
+    private Invocation.Builder getPreparedRequest(String path) {
+        return jobEngineTarget.path(path)
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .accept(MediaType.APPLICATION_JSON_TYPE);
+    }
+
+    /**
+     * Checks the {@link Response} for errors.
+     *
+     * @param method   The request method. Used for logging purposes.
+     * @param path     The request path. Used for logging purposes.
+     * @param response The {@link Response} to check.
+     * @return The body of the request in {@link String} format.
+     * @throws KapuaException The proper {@link KapuaException} if needed.
+     * @since 1.6.0
+     */
+    private String checkResponse(String method, String path, Response response) throws KapuaException {
+        String responseText = response.readEntity(String.class);
+        LOG.debug("{} {} - Response Code: {} - Content: {}", method, path, response.getStatus(), responseText);
+        Family family = response.getStatusInfo().getFamily();
+        if (family == Family.CLIENT_ERROR || family == Family.SERVER_ERROR) {
+            LOG.error("{} {} - Response Code: {} - Content: {}", method, path, response.getStatus(), responseText);
+
+            throw buildJobEngineExceptionFromResponse(responseText);
+        }
+
+        return responseText;
+    }
+
+    /**
+     * Parses the {@link Response} content to rebuld the original {@link JobEngineException}
+     *
+     * @param responseText The {@link Response} content.
+     * @return The correct KapuaException.
+     * @since 1.5.0
+     */
+    private KapuaException buildJobEngineExceptionFromResponse(String responseText) {
         try {
-            log.error("Job Engine REST Error: {} - status code {}", responseText, statusCode);
             if (StringUtils.isBlank(responseText)) {
                 throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, "Job Engine returned an error but no message was given");
             }
@@ -263,45 +281,45 @@ public class JobEngineServiceClient implements JobEngineService {
             switch (exceptionInfo.getKapuaErrorCode()) {
                 case "ENTITY_NOT_FOUND":
                     EntityNotFoundExceptionInfo entityNotFoundExceptionInfo = XmlUtil.unmarshalJson(responseText, EntityNotFoundExceptionInfo.class, null);
-                    throw new KapuaEntityNotFoundException(entityNotFoundExceptionInfo.getEntityType(), entityNotFoundExceptionInfo.getEntityId());
+                    return new KapuaEntityNotFoundException(entityNotFoundExceptionInfo.getEntityType(), entityNotFoundExceptionInfo.getEntityId());
                 case "CANNOT_CLEANUP_JOB_DATA":
                     CleanJobDataExceptionInfo cleanJobDataExceptionInfo = XmlUtil.unmarshalJson(responseText, CleanJobDataExceptionInfo.class, null);
-                    throw new CleanJobDataException(cleanJobDataExceptionInfo.getScopeId(), cleanJobDataExceptionInfo.getJobId());
+                    return new CleanJobDataException(cleanJobDataExceptionInfo.getScopeId(), cleanJobDataExceptionInfo.getJobId());
                 case "JOB_ALREADY_RUNNING":
                     JobAlreadyRunningExceptionInfo jobAlreadyRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobAlreadyRunningExceptionInfo.class, null);
-                    throw new JobAlreadyRunningException(jobAlreadyRunningExceptionInfo.getScopeId(),
+                    return new JobAlreadyRunningException(jobAlreadyRunningExceptionInfo.getScopeId(),
                             jobAlreadyRunningExceptionInfo.getJobId(),
                             jobAlreadyRunningExceptionInfo.getExecutionId(),
                             jobAlreadyRunningExceptionInfo.getJobTargetIdSubset());
                 case "JOB_TARGET_INVALID":
                     JobInvalidTargetExceptionInfo jobInvalidTargetExceptionInfo = XmlUtil.unmarshalJson(responseText, JobInvalidTargetExceptionInfo.class, null);
-                    throw new JobInvalidTargetException(jobInvalidTargetExceptionInfo.getScopeId(), jobInvalidTargetExceptionInfo.getJobId(), jobInvalidTargetExceptionInfo.getJobTargetIdSubset());
+                    return new JobInvalidTargetException(jobInvalidTargetExceptionInfo.getScopeId(), jobInvalidTargetExceptionInfo.getJobId(), jobInvalidTargetExceptionInfo.getJobTargetIdSubset());
                 case "JOB_STEP_MISSING":
                     JobMissingStepExceptionInfo jobMissingStepExceptionInfo = XmlUtil.unmarshalJson(responseText, JobMissingStepExceptionInfo.class, null);
-                    throw new JobMissingStepException(jobMissingStepExceptionInfo.getScopeId(), jobMissingStepExceptionInfo.getJobId());
+                    return new JobMissingStepException(jobMissingStepExceptionInfo.getScopeId(), jobMissingStepExceptionInfo.getJobId());
                 case "JOB_TARGET_MISSING":
                     JobMissingTargetExceptionInfo jobMissingTargetExceptionInfo = XmlUtil.unmarshalJson(responseText, JobMissingTargetExceptionInfo.class, null);
-                    throw new JobMissingTargetException(jobMissingTargetExceptionInfo.getScopeId(), jobMissingTargetExceptionInfo.getJobId());
+                    return new JobMissingTargetException(jobMissingTargetExceptionInfo.getScopeId(), jobMissingTargetExceptionInfo.getJobId());
                 case "JOB_NOT_RUNNING":
                     JobNotRunningExceptionInfo jobNotRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobNotRunningExceptionInfo.class, null);
-                    throw new JobNotRunningException(jobNotRunningExceptionInfo.getScopeId(), jobNotRunningExceptionInfo.getJobId());
+                    return new JobNotRunningException(jobNotRunningExceptionInfo.getScopeId(), jobNotRunningExceptionInfo.getJobId());
                 case "JOB_RESUMING":
                     JobResumingExceptionInfo jobResumingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobResumingExceptionInfo.class, null);
-                    throw new JobResumingException(jobResumingExceptionInfo.getScopeId(), jobResumingExceptionInfo.getJobId(), jobResumingExceptionInfo.getExecutionId());
+                    return new JobResumingException(jobResumingExceptionInfo.getScopeId(), jobResumingExceptionInfo.getJobId(), jobResumingExceptionInfo.getExecutionId());
                 case "JOB_RUNNING":
                     JobRunningExceptionInfo jobRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobRunningExceptionInfo.class, null);
-                    throw new JobRunningException(jobRunningExceptionInfo.getScopeId(), jobRunningExceptionInfo.getJobId());
+                    return new JobRunningException(jobRunningExceptionInfo.getScopeId(), jobRunningExceptionInfo.getJobId());
                 case "JOB_STARTING":
                     JobStartingExceptionInfo jobStartingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobStartingExceptionInfo.class, null);
-                    throw new JobStartingException(jobStartingExceptionInfo.getScopeId(), jobStartingExceptionInfo.getJobId());
+                    return new JobStartingException(jobStartingExceptionInfo.getScopeId(), jobStartingExceptionInfo.getJobId());
                 case "JOB_STOPPING":
                     JobStoppingExceptionInfo jobStoppingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobStoppingExceptionInfo.class, null);
-                    throw new JobStoppingException(jobStoppingExceptionInfo.getScopeId(), jobStoppingExceptionInfo.getJobId(), jobStoppingExceptionInfo.getExecutionId());
+                    return new JobStoppingException(jobStoppingExceptionInfo.getScopeId(), jobStoppingExceptionInfo.getJobId(), jobStoppingExceptionInfo.getExecutionId());
                 default:
-                    throw KapuaException.internalError(exceptionInfo.getMessage());
+                    return KapuaException.internalError(exceptionInfo.getMessage());
             }
         } catch (JAXBException | SAXException e) {
-            throw KapuaException.internalError(e);
+            return KapuaException.internalError(e);
         }
     }
 

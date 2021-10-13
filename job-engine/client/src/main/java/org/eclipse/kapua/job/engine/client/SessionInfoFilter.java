@@ -12,19 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.client;
 
-import java.io.IOException;
-
-import javax.ws.rs.client.ClientRequestContext;
-import javax.ws.rs.client.ClientRequestFilter;
-
+import com.google.common.net.HttpHeaders;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.job.engine.JobEngineHttpHeaders;
 import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSetting;
 import org.eclipse.kapua.job.engine.client.settings.JobEngineClientSettingKeys;
 
-import com.google.common.net.HttpHeaders;
+import javax.ws.rs.client.ClientRequestContext;
+import javax.ws.rs.client.ClientRequestFilter;
+import java.io.IOException;
 
+/**
+ * {@link ClientRequestFilter} used to populate HTTP request headers with informations about the current {@link KapuaSession}.
+ *
+ * @since 1.5.0
+ */
 public class SessionInfoFilter implements ClientRequestFilter {
 
     @Override
