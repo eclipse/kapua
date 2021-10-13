@@ -293,4 +293,50 @@ public class ArgumentValidator {
         lengthRange(name, minLength, maxLength, argumentName);
         match(name, CommonsValidationRegex.NAME_SPACE_REGEXP, argumentName);
     }
+
+
+    /**
+     * Comprehensive validation method for the job names.
+     * <p>
+     * Same as {@link #validateEntityName(String, String)} but allows colon to exists in the name.
+     *
+     * @param name         The value to validate. Usually would be the {@link KapuaNamedEntity#getName()} or {@link KapuaNamedEntityCreator#getName()}, but other values could be provided
+     * @param argumentName The name of the argument to bundle with the {@link KapuaIllegalArgumentException}
+     * @throws KapuaIllegalNullArgumentException If the given value to validate is {@code null}.
+     * @throws KapuaIllegalArgumentException     If other validations fails.
+     * @see ArgumentValidator#notEmptyOrNull(String, String)
+     * @see ArgumentValidator#lengthRange(String, Integer, Integer, String)
+     * @see ArgumentValidator#match(String, ValidationRegex, String)
+     * @since 1.2.0
+     */
+    public static void validateJobName(@Nullable String name, @NotNull String argumentName) throws KapuaIllegalNullArgumentException, KapuaIllegalArgumentException {
+        validateJobName(name, 3, 255, argumentName);
+    }
+
+    /**
+     * Comprehensive validation method for the job names.
+     * <p>
+     * It invokes in sequence the three {@link ArgumentValidator} validation methods, using the provided parameters.
+     * <ul>
+     *     <li>{@link #notEmptyOrNull(String, String)}</li>
+     *     <li>{@link #lengthRange(String, Integer, Integer, String)}</li>
+     *     <li>{@link #match(String, ValidationRegex, String)} with {@link CommonsValidationRegex#NAME_SPACE_COLON_REGEXP} </li>
+     * </ul>
+     *
+     * @param name        The value to validate. Usually would be the {@link KapuaNamedEntity#getName()} or {@link KapuaNamedEntityCreator#getName()}, but other values could be provided
+     * @param minLength    The minimum length of the field. If {@code null} the minLength validation is skipped
+     * @param maxLength    The maximum length of the field. If {@code null} the maxLength validation is skipped
+     * @param argumentName The name of the argument to bundle with the {@link KapuaIllegalArgumentException}
+     * @throws KapuaIllegalNullArgumentException If the given value to validate is {@code null}.
+     * @throws KapuaIllegalArgumentException     If other validations fails.
+     * @see ArgumentValidator#notEmptyOrNull(String, String)
+     * @see ArgumentValidator#lengthRange(String, Integer, Integer, String)
+     * @see ArgumentValidator#match(String, ValidationRegex, String)
+     * @since 1.2.0
+     */
+    public static void validateJobName(@Nullable String name, @Nullable Integer minLength, @Nullable Integer maxLength, @NotNull String argumentName) throws KapuaIllegalNullArgumentException, KapuaIllegalArgumentException {
+        notEmptyOrNull(name, argumentName);
+        lengthRange(name, minLength, maxLength, argumentName);
+        match(name, CommonsValidationRegex.NAME_SPACE_COLON_REGEXP, argumentName);
+    }
 }

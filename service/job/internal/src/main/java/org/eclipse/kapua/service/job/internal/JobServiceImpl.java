@@ -83,7 +83,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         // Argument validation
         ArgumentValidator.notNull(creator, "jobCreator");
         ArgumentValidator.notNull(creator.getScopeId(), "jobCreator.scopeId");
-        ArgumentValidator.validateEntityName(creator.getName(), "jobCreator.name");
+        ArgumentValidator.validateJobName(creator.getName(), "jobCreator.name");
 
         //
         // Check access

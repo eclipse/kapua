@@ -32,6 +32,11 @@ public enum CommonsValidationRegex implements ValidationRegex {
     NAME_SPACE_REGEXP("^[a-zA-Z0-9\\ \\_\\-]{3,}$"),
 
     /**
+     * ^[a-zA-Z0-9\ \_\-\:]{3,}$
+     */
+    NAME_SPACE_COLON_REGEXP("^[a-zA-Z0-9\\ \\_\\-\\:]{3,}$"),
+
+    /**
      * ^.*(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&amp;+=!\~\|]).*$
      */
     PASSWORD_REGEXP("^.*(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!\\\"\\#$%&'()*+,\\-./:;<=>?@\\[\\]\\\\^_`{|}~]).*$"),
