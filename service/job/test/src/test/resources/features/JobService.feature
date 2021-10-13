@@ -17,13 +17,13 @@
 Feature: Job service CRUD tests
   The Job service is responsible for maintaining jobs.
 
-@setup
-@KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
-Scenario: Initialize test environment
+  @setup
+  @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
+  Scenario: Initialize test environment
     Given Init Jaxb Context
     And Init Security Context
 
-Scenario: Create a valid job entry
+  Scenario: Create a valid job entry
   Creating a role entry with specified name only. Once created, search for it - it should have been created.
   Kapua should not return any error.
 
@@ -226,17 +226,6 @@ Scenario: Create a valid job entry
     Then I find a job with description "descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondedescription"
     And No exception was thrown
 
-# Related to issue 2856
-#Scenario: Creating unique job with too long description
-#  Create a unique job with description that has 256 characters.
-#  Kapua return an error. Max length for Description is 255 characters.
-#
-#  Given I prepare a job with name "jobN" and description "ddescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondedescription"
-#  When I create a new job entity from the existing creator
-#  And I search for the job in the database
-#  Then I find a job with description "ddescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondedescription"
-#  And No exception was thrown
-
   Scenario: Changing job name to unique one
   Try to edit job name to a unique one, leave description as it is.
   Kapua should not return any errors.
@@ -362,17 +351,6 @@ Scenario: Create a valid job entry
     Then I find a job with description "descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondedescription"
     And No exception was thrown
 
-# Related to issue 2856
-#Scenario: Changing the job description to the too-long one
-#  Try to edit description on a job with description that has 256 characters.
-#  Kapua should return an error.
-#
-#  Given I prepare a job with name "jobName" and description "Ddescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondedescription"
-#  And I create a new job entity from the existing creator
-#  When I search for the job in the database
-#  Then I find a job with description "Ddescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondedescription"
-#  And No exception was thrown
-
-@teardown
-Scenario: Reset Security Context for all scenarios
+  @teardown
+  Scenario: Reset Security Context for all scenarios
     Given Reset Security Context

@@ -49,6 +49,8 @@ public class JobStepEditDialog extends JobStepAddDialog {
     public void createBody() {
         super.createBody();
 
+        jobStepIndex.setAllowBlank(false);
+
         loadJobStep();
     }
 
@@ -82,6 +84,7 @@ public class JobStepEditDialog extends JobStepAddDialog {
             public void onSuccess(GwtJobStepDefinition result) {
                 jobStepName.setValue(gwtJobStep.getUnescapedJobStepName());
                 jobStepDescription.setValue(gwtJobStep.getUnescapedDescription());
+                jobStepIndex.setValue(gwtJobStep.getStepIndex());
                 jobStepDefinitionCombo.setValue(result);
 
                 Map<String, Object> propertiesMap = new HashMap<String, Object>();
@@ -111,6 +114,7 @@ public class JobStepEditDialog extends JobStepAddDialog {
     public void submit() {
         selectedJobStep.setJobStepName(KapuaSafeHtmlUtils.htmlUnescape(jobStepName.getValue()));
         selectedJobStep.setDescription(KapuaSafeHtmlUtils.htmlUnescape(jobStepDescription.getValue()));
+        selectedJobStep.setStepIndex(jobStepIndex.getValue().intValue());
         selectedJobStep.setJobStepDefinitionId(jobStepDefinitionCombo.getValue().getId());
         selectedJobStep.setStepProperties(readStepProperties());
 

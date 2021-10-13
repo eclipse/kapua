@@ -65,6 +65,12 @@ import java.util.List;
 
 public class JobStepAddDialog extends EntityAddEditDialog {
 
+    protected static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
+    protected static final ConsoleMessages CONSOLE_MSGS = GWT.create(ConsoleMessages.class);
+
+    private static final GwtJobStepDefinitionServiceAsync JOB_STEP_DEFINITION_SERVICE = GWT.create(GwtJobStepDefinitionService.class);
+    private static final GwtJobStepServiceAsync JOB_STEP_SERVICE = GWT.create(GwtJobStepService.class);
+
     /**
      * This identifies the KapuaId fully qualified name since it is treated as a primitive type, and therefore its input is rendered as a {@link TextField}
      */
@@ -79,6 +85,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
     protected final KapuaTextField<String> jobStepName;
     protected final KapuaTextField<String> jobStepDescription;
+    protected final KapuaNumberField jobStepIndex;
     protected final ComboBox<GwtJobStepDefinition> jobStepDefinitionCombo;
     protected final FieldSet jobStepPropertiesFieldSet;
     protected final Label jobStepDefinitionDescription;
@@ -90,10 +97,6 @@ public class JobStepAddDialog extends EntityAddEditDialog {
     protected static final String PROPERTY_NAME = "propertyName";
     protected static final String PROPERTY_TYPE = "propertyType";
 
-    protected static final ConsoleJobMessages JOB_MSGS = GWT.create(ConsoleJobMessages.class);
-    protected static final ConsoleMessages CONSOLE_MSGS = GWT.create(ConsoleMessages.class);
-    private static final GwtJobStepDefinitionServiceAsync JOB_STEP_DEFINITION_SERVICE = GWT.create(GwtJobStepDefinitionService.class);
-    private static final GwtJobStepServiceAsync JOB_STEP_SERVICE = GWT.create(GwtJobStepService.class);
 
     public JobStepAddDialog(GwtSession currentSession, String jobId) {
         super(currentSession);
@@ -106,6 +109,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         jobStepName.setValidator(new TextFieldValidator(jobStepName, TextFieldValidator.FieldType.NAME_SPACE));
 
         jobStepDescription = new KapuaTextField<String>();
+        jobStepIndex = new KapuaNumberField();
         jobStepDefinitionCombo = new ComboBox<GwtJobStepDefinition>();
         jobStepPropertiesFieldSet = new FieldSet();
         jobStepDefinitionDescription = new Label();
@@ -131,6 +135,26 @@ public class JobStepAddDialog extends EntityAddEditDialog {
         jobStepDescription.setFieldLabel(JOB_MSGS.dialogAddStepJobDescriptionLabel());
         jobStepDescription.setToolTip(JOB_MSGS.dialogAddStepDescriptionTooltip());
         jobStepDescription.setMaxLength(8192);
+
+        jobStepIndex.setFieldLabel("Step Index");
+        jobStepIndex.setToolTip("The ordinal number of the Job Step, starting from 0. When changed to an existing index, it will be put in that position and existing Job Steps will be shifted accordingly.");
+        jobStepIndex.setEmptyText("Loading...");
+        jobStepIndex.setMaxLength(100);
+        jobStepIndex.setAllowDecimals(false);
+        jobStepIndex.setAllowNegative(false);
+
+        JOB_STEP_SERVICE.count(currentSession.getSelectedAccountId(), jobId, new AsyncCallback<Integer>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                FailureHandler.handle(caught);
+            }
+
+            @Override
+            public void onSuccess(Integer result) {
+                jobStepIndex.setEmptyText(String.valueOf(result != null ? result : 0));
+                jobStepIndex.setMaxValue(result != null ? result : 0);
+            }
+        });
 
         GwtJobStepDefinitionQuery query = new GwtJobStepDefinitionQuery();
         query.setScopeId(currentSession.getSelectedAccountId());
@@ -173,6 +197,7 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
         jobStepFormPanel.add(jobStepName);
         jobStepFormPanel.add(jobStepDescription);
+        jobStepFormPanel.add(jobStepIndex);
         jobStepFormPanel.add(jobStepDefinitionCombo);
         jobStepFormPanel.add(jobStepPropertiesFieldSet);
 
@@ -197,9 +222,10 @@ public class JobStepAddDialog extends EntityAddEditDialog {
 
         gwtJobStepCreator.setScopeId(currentSession.getSelectedAccountId());
 
+        gwtJobStepCreator.setJobId(jobId);
         gwtJobStepCreator.setJobName(jobStepName.getValue());
         gwtJobStepCreator.setJobDescription(jobStepDescription.getValue());
-        gwtJobStepCreator.setJobId(jobId);
+        gwtJobStepCreator.setStepIndex(jobStepIndex.getValue() != null ? jobStepIndex.getValue().intValue() : null);
         gwtJobStepCreator.setJobStepDefinitionId(jobStepDefinitionCombo.getValue().getId());
         gwtJobStepCreator.setProperties(readStepProperties());
 

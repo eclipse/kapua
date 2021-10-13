@@ -15,14 +15,13 @@ package org.eclipse.kapua.service.job.step.internal;
 import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
-import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -48,32 +47,33 @@ import org.eclipse.kapua.service.job.step.JobStepService;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
+import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.xml.bind.DatatypeConverter;
-import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * {@link JobStepService} implementation
+ * {@link JobStepService} implementation.
  *
  * @since 1.0.0
  */
 @KapuaProvider
 public class JobStepServiceImpl extends AbstractKapuaService implements JobStepService {
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    @Inject
+    private AuthorizationService authorizationService;
+    @Inject
+    private PermissionFactory permissionFactory;
 
-    private static final AuthorizationService AUTHORIZATION_SERVICE = LOCATOR.getService(AuthorizationService.class);
-    private static final PermissionFactory PERMISSION_FACTORY = LOCATOR.getFactory(PermissionFactory.class);
+    @Inject
+    private JobExecutionService jobExecutionService;
+    @Inject
+    private JobExecutionFactory jobExecutionFactory;
 
-    private static final JobExecutionService JOB_EXECUTION_SERVICE = LOCATOR.getService(JobExecutionService.class);
-    private static final JobExecutionFactory JOB_EXECUTION_FACTORY = LOCATOR.getFactory(JobExecutionFactory.class);
-
-    private static final JobStepDefinitionService JOB_STEP_DEFINITION_SERVICE = LOCATOR.getService(JobStepDefinitionService.class);
-
+    @Inject
+    private JobStepDefinitionService jobStepDefinitionService;
 
     public JobStepServiceImpl() {
         super(JobEntityManagerFactory.getInstance(), null);
@@ -94,7 +94,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobStepCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobStepCreator.getScopeId()));
 
         //
         // Check job step definition
@@ -116,17 +116,17 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Job Executions
-        JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(jobStepCreator.getScopeId());
+        JobExecutionQuery jobExecutionQuery = jobExecutionFactory.newQuery(jobStepCreator.getScopeId());
         jobExecutionQuery.setPredicate(
                 jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStepCreator.getJobId())
         );
 
-        if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
+        if (jobExecutionService.count(jobExecutionQuery) > 0) {
             throw new CannotModifyJobStepsException(jobStepCreator.getJobId());
         }
 
         //
-        // Check step index
+        // Populate JobStepCreator.stepIndex if not specified
         if (jobStepCreator.getStepIndex() == null) {
             query.setPredicate(query.attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()));
             query.setSortCriteria(query.fieldSortCriteria(JobStepAttributes.STEP_INDEX, SortOrder.DESCENDING));
@@ -136,29 +136,40 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
             JobStep lastJobStep = jobStepListResult.getFirstItem();
 
             jobStepCreator.setStepIndex(lastJobStep != null ? lastJobStep.getStepIndex() + 1 : JobStepIndex.FIRST);
-        } else {
-            query.setPredicate(
-                    query.andPredicate(
-                            query.attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()),
-                            query.attributePredicate(JobStepAttributes.STEP_INDEX, jobStepCreator.getStepIndex())
-                    )
-            );
-
-            if (count(query) > 0) {
-                List<Map.Entry<String, Object>> uniquesFieldValues = new ArrayList<>();
-
-                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobStepAttributes.SCOPE_ID, jobStepCreator.getScopeId()));
-                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()));
-                uniquesFieldValues.add(new AbstractMap.SimpleEntry<>(JobStepAttributes.STEP_INDEX, jobStepCreator.getStepIndex()));
-
-                throw new KapuaEntityUniquenessException(JobStep.TYPE, uniquesFieldValues);
-            }
         }
 
         //
         // Do create
-        return entityManagerSession.doTransactedAction(em -> JobStepDAO.create(em, jobStepCreator));
+        return entityManagerSession.doTransactedAction((em) -> {
+            // Check if JobStep.stepIndex is duplicate.
+            JobStepQuery jobStepQuery = new JobStepQueryImpl(jobStepCreator.getScopeId());
+            jobStepQuery.setPredicate(
+                    jobStepQuery.andPredicate(
+                            jobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()),
+                            jobStepQuery.attributePredicate(JobStepAttributes.STEP_INDEX, jobStepCreator.getStepIndex())
+                    )
+            );
+
+            JobStep jobStepAtIndex = JobStepDAO.query(em, jobStepQuery).getFirstItem();
+
+            if (jobStepAtIndex != null) {
+                // JobStepCreator inserted between existing JobSteps.
+                // Moving existing JobSteps + 1
+                JobStepQuery selectorJobStepQuery = new JobStepQueryImpl(jobStepAtIndex.getScopeId());
+                selectorJobStepQuery.setPredicate(
+                        selectorJobStepQuery.andPredicate(
+                                selectorJobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, jobStepAtIndex.getJobId()),
+                                selectorJobStepQuery.attributePredicate(JobStepAttributes.STEP_INDEX, jobStepAtIndex.getStepIndex(), Operator.GREATER_THAN_OR_EQUAL)
+                        )
+                );
+
+                shiftJobStepPosition(em, selectorJobStepQuery, +1);
+            }
+
+            return JobStepDAO.create(em, jobStepCreator);
+        });
     }
+
 
     @Override
     public JobStep update(JobStep jobStep) throws KapuaException {
@@ -174,7 +185,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobStep.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, jobStep.getScopeId()));
 
         //
         // Check existence
@@ -203,17 +214,54 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Job Executions
-        JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(jobStep.getScopeId());
+        JobExecutionQuery jobExecutionQuery = jobExecutionFactory.newQuery(jobStep.getScopeId());
         jobExecutionQuery.setPredicate(
                 jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStep.getJobId())
         );
 
-        if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
+        if (jobExecutionService.count(jobExecutionQuery) > 0) {
             throw new CannotModifyJobStepsException(jobStep.getJobId());
         }
 
+        //
         // Do Update
-        return entityManagerSession.doTransactedAction(em -> JobStepDAO.update(em, jobStep));
+        return entityManagerSession.doTransactedAction((em) -> {
+            // Check if JobStep.stepIndex has changed
+            JobStep currentJobStep = JobStepDAO.find(em, jobStep.getScopeId(), jobStep.getId());
+
+            if (jobStep.getStepIndex() != currentJobStep.getStepIndex()) {
+
+                if (jobStep.getStepIndex() < currentJobStep.getStepIndex()) {
+                    // Moved before current position.
+                    // Shift JobSteps +1
+                    JobStepQuery selectorJobStepQuery = new JobStepQueryImpl(jobStep.getScopeId());
+                    selectorJobStepQuery.setPredicate(
+                            selectorJobStepQuery.andPredicate(
+                                    selectorJobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, jobStep.getJobId()),
+                                    selectorJobStepQuery.attributePredicate(JobStepAttributes.STEP_INDEX, jobStep.getStepIndex(), Operator.GREATER_THAN_OR_EQUAL),
+                                    selectorJobStepQuery.attributePredicate(JobStepAttributes.STEP_INDEX, currentJobStep.getStepIndex(), Operator.LESS_THAN)
+                            )
+                    );
+
+                    shiftJobStepPosition(em, selectorJobStepQuery, +1);
+                } else {
+                    // Moved after current position.
+                    // Shift JobSteps -1
+                    JobStepQuery selectorJobStepQuery = new JobStepQueryImpl(jobStep.getScopeId());
+                    selectorJobStepQuery.setPredicate(
+                            selectorJobStepQuery.andPredicate(
+                                    selectorJobStepQuery.attributePredicate(JobStepAttributes.JOB_ID, jobStep.getJobId()),
+                                    selectorJobStepQuery.attributePredicate(JobStepAttributes.STEP_INDEX, currentJobStep.getStepIndex(), Operator.GREATER_THAN),
+                                    selectorJobStepQuery.attributePredicate(JobStepAttributes.STEP_INDEX, jobStep.getStepIndex(), Operator.LESS_THAN_OR_EQUAL)
+                            )
+                    );
+
+                    shiftJobStepPosition(em, selectorJobStepQuery, -1);
+                }
+            }
+
+            return JobStepDAO.update(em, jobStep);
+        });
     }
 
     @Override
@@ -225,7 +273,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, scopeId));
 
         //
         // Do find
@@ -240,7 +288,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -255,7 +303,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -271,7 +319,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Access
-        AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
+        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -282,12 +330,12 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check Job Executions
-        JobExecutionQuery jobExecutionQuery = JOB_EXECUTION_FACTORY.newQuery(scopeId);
+        JobExecutionQuery jobExecutionQuery = jobExecutionFactory.newQuery(scopeId);
         jobExecutionQuery.setPredicate(
                 jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobStep.getJobId())
         );
 
-        if (JOB_EXECUTION_SERVICE.count(jobExecutionQuery) > 0) {
+        if (jobExecutionService.count(jobExecutionQuery) > 0) {
             throw new CannotModifyJobStepsException(jobStep.getJobId());
         }
 
@@ -322,8 +370,34 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
     //
     // Private methods
+    //
+
+    /**
+     * Shifts {@link JobStep} matched by the given {@link JobStepQuery} according to the given increment.
+     *
+     * @param em            The {@link EntityManager} which is owning the transaction.
+     * @param selectorQuery The selector {@link JobStepQuery}.
+     * @param increment     The increment o apply to the matched {@link JobStep}s
+     * @throws KapuaException
+     * @since 1.6.0
+     */
+    private void shiftJobStepPosition(EntityManager em, JobStepQuery selectorQuery, int increment) throws KapuaException {
+        selectorQuery.setSortCriteria(selectorQuery.fieldSortCriteria(JobStepAttributes.STEP_INDEX, SortOrder.ASCENDING));
+
+        JobStepListResult followingJobStepListResult = JobStepDAO.query(em, selectorQuery);
+
+        LoggerFactory.getLogger(JobStepServiceImpl.class).warn("Got {} steps to move", followingJobStepListResult.getSize());
+
+        // Move them +1/-1 position
+        for (JobStep followingJobStep : followingJobStepListResult.getItems()) {
+            LoggerFactory.getLogger(JobStepServiceImpl.class).warn("Moving step named {} to index {}", followingJobStep.getName(), followingJobStep.getStepIndex() + increment);
+            followingJobStep.setStepIndex(followingJobStep.getStepIndex() + increment);
+            JobStepDAO.update(em, followingJobStep);
+        }
+    }
+
     private void validateJobStepProperties(JobStepCreator jobStepCreator) throws KapuaException {
-        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(jobStepCreator.getScopeId(), jobStepCreator.getJobStepDefinitionId());
+        JobStepDefinition jobStepDefinition = jobStepDefinitionService.find(jobStepCreator.getScopeId(), jobStepCreator.getJobStepDefinitionId());
         ArgumentValidator.notNull(jobStepDefinition, "jobStepCreator.jobStepDefinitionId");
 
         try {
@@ -334,7 +408,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
     }
 
     private void validateJobStepProperties(JobStep jobStep) throws KapuaException {
-        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
+        JobStepDefinition jobStepDefinition = jobStepDefinitionService.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
         ArgumentValidator.notNull(jobStepDefinition, "jobStep.jobStepDefinitionId");
 
         try {
