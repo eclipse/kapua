@@ -15,47 +15,47 @@
 @env_docker_base
 
 Feature: Job Target service CRUD tests
-    The Job service is responsible for maintaining a list of job targets.
+  The Job service is responsible for maintaining a list of job targets.
 
-@setup
-Scenario: Init Security Context for all scenarios
-  Given Init Jaxb Context
-  And Init Security Context
-  And Start base docker environment
+  @setup
+  Scenario: Init Security Context for all scenarios
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start base docker environment
 
-Scenario: Regular target creation
+  Scenario: Regular target creation
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A regular job target item
     Then No exception was thrown
     And The job target matches the creator
     Then I logout
 
-Scenario: Target with a null scope ID
+  Scenario: Target with a null scope ID
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     Given A null scope
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "scopeId"
     When I create a job with the name "TestJob"
     Then An exception was thrown
     Then I logout
 
-Scenario: Delete a job target
+  Scenario: Delete a job target
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A regular job target item
     When I delete the last job target in the database
@@ -63,13 +63,13 @@ Scenario: Delete a job target
     Then There is no such job target item in the database
     Then I logout
 
-Scenario: Delete a job target twice
+  Scenario: Delete a job target twice
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A regular job target item
     When I delete the last job target in the database
@@ -78,13 +78,13 @@ Scenario: Delete a job target twice
     Then An exception was thrown
     Then I logout
 
-Scenario: Create and count multiple job targets
+  Scenario: Create and count multiple job targets
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob"
     And A regular job target item
     And A regular job target item
@@ -94,13 +94,13 @@ Scenario: Create and count multiple job targets
     Then I count 4
     Then I logout
 
-Scenario: Query for the targets of a specific job
+  Scenario: Query for the targets of a specific job
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob1"
     And A regular job target item
     And A regular job target item
@@ -121,26 +121,26 @@ Scenario: Query for the targets of a specific job
     Then I count 4
     Then I logout
 
-Scenario: Update a job target step index
+  Scenario: Update a job target step index
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob1"
     And A regular job target item
     When I update the job target step number to 3
     Then The target step index is indeed 3
     Then I logout
 
-Scenario: Update a job target status
+  Scenario: Update a job target status
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I configure the job service
-        | type    | name                       | value |
-        | boolean | infiniteChildEntities      | true  |
-        | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     Given I create a job with the name "TestJob1"
     And A regular job target item
     When I update the job target step status to "PROCESS_OK"
@@ -149,18 +149,11 @@ Scenario: Update a job target status
     Then The target step status is indeed "PROCESS_AWAITING"
     Then I logout
 
-#Scenario: Update a job target step exception
-#
-#    Given I create a job with the name "TestJob1"
-#    And A regular job target item
-#    When I update the job target step exception message to "RandomExceptionText"
-#    Then The target step exception message is indeed "RandomExceptionText"
-
-Scenario: Job target factory sanity checks
+  Scenario: Job target factory sanity checks
 
     When I test the sanity of the job target factory
 
-@teardown
+  @teardown
   Scenario: Stop test environment
-    Given Stop base docker environment
+    Given Stop full docker environment
     And Reset Security Context

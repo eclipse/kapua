@@ -15,7 +15,7 @@
 
 Feature: JobEngineService tests for restarting job with offline device
 
-@setup
+  @setup
   Scenario: Start full docker environment
     Given Init Jaxb Context
     And Init Security Context
@@ -44,17 +44,14 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Command Execution"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name         | type                                                                   | value                                                                                                                                         |
       | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
       | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -78,17 +75,14 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Asset Write"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name    | type                                                           | value                                                                                                                                                                                                                                                   |
       | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>assetName</name><channels><channel><valueType>binary</valueType><value>EGVzdCBzdHJpbmcgdmFsdWU=</value><name>binaryTest</name></channel></channels></deviceAsset></deviceAssets> |
       | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                                   |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -112,17 +106,14 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Configuration Put"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
       | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.demo.heater.Heater</id><properties><property name="temperature.increment" array="false" encrypted="false" type="Float"><value>0.25</value></property><property name="publish.rate" array="false" encrypted="false" type="Integer"><value>60</value></property><property name="program.stopTime" array="false" encrypted="false" type="String"><value>22:00</value></property><property name="publish.retain" array="false" encrypted="false" type="Boolean"><value>false</value></property><property name="service.pid" array="false" encrypted="false" type="String"><value>org.eclipse.kura.demo.heater.Heater</value></property><property name="kura.service.pid" array="false" encrypted="false" type="String"><value>org.eclipse.kura.demo.heater.Heater</value></property><property name="program.startTime" array="false" encrypted="false" type="String"><value>06:00</value></property><property name="mode" array="false" encrypted="false" type="String"><value>Program</value></property><property name="publish.semanticTopic" array="false" encrypted="false" type="String"><value>data/210</value></property><property name="manual.setPoint" array="false" encrypted="false" type="Float"><value>30.0</value></property><property name="publish.qos" array="false" encrypted="false" type="Integer"><value>2</value></property><property name="temperature.initial" array="false" encrypted="false" type="Float"><value>13.0</value></property><property name="program.setPoint" array="false" encrypted="false" type="Float"><value>30.0</value></property></properties></configuration></configurations> |
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -146,17 +137,14 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -180,17 +168,14 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Stop"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 77    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -214,17 +199,14 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Package Download / Install"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name                   | type                                                                                             | value                                                                                                                                                                                                                                           |
       | packageDownloadRequest | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.demo.heater_1.0.300.dp</uri><name>heater</name><version>1.0.300</version><install>true</install></downloadRequest> |
       | timeout                | java.lang.Long                                                                                   | 10000                                                                                                                                                                                                                                           |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -248,17 +230,14 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name                    | type                                                                                               | value                                                                                                                                                                                                         |
       | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.ble.tisensortag</name><version>1.0.0</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
       | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                         |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -286,24 +265,21 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep2" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep2" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 77    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    And I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -327,24 +303,21 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     And Search for step definition with the name "Bundle Stop"
-    And A regular step creator with the name "TestStep2" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep2" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 77    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    And I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     Then No exception was thrown
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -368,23 +341,20 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Package Download / Install"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name                   | type                                                                                             | value                                                                                                                                                                                                                                           |
       | packageDownloadRequest | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.demo.heater_1.0.300.dp</uri><name>heater</name><version>1.0.300</version><install>true</install></downloadRequest> |
       | timeout                | java.lang.Long                                                                                   | 10000                                                                                                                                                                                                                                           |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep2" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep2" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    And I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     And I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -408,23 +378,20 @@ Feature: JobEngineService tests for restarting job with offline device
     And I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name                    | type                                                                                               | value                                                                                                                                                                                                         |
       | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>org.eclipse.kura.example.ble.tisensortag</name><version>1.0.0</version><reboot>true</reboot><rebootDelay>10000</rebootDelay></uninstallRequest> |
       | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                                                         |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep2" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep2" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    And I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     When I restart a job
-    And I wait 10 seconds
-    And I query for the job with the name "TestJob" and I find it
-    And I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     Then I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -448,23 +415,20 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Command Execution"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name         | type                                                                   | value                                                                                                                                         |
       | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
       | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     Then Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep2" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep2" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -488,23 +452,20 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Asset Write"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name    | type                                                           | value                                                                                                                                                                                                                                                   |
       | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>assetName</name><channels><channel><valueType>binary</valueType><value>EGVzdCBzdHJpbmcgdmFsdWU=</value><name>binaryTest</name></channel></channels></deviceAsset></deviceAssets> |
       | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                                   |
-    And I create a new step entity from the existing creator
+    And I create a new JobStep from the existing creator
     Then Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep2" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep2" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -528,23 +489,20 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Configuration Put"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
       | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.demo.heater.Heater</id><properties><property name="temperature.increment" array="false" encrypted="false" type="Float"><value>0.25</value></property><property name="publish.rate" array="false" encrypted="false" type="Integer"><value>60</value></property><property name="program.stopTime" array="false" encrypted="false" type="String"><value>22:00</value></property><property name="publish.retain" array="false" encrypted="false" type="Boolean"><value>false</value></property><property name="service.pid" array="false" encrypted="false" type="String"><value>org.eclipse.kura.demo.heater.Heater</value></property><property name="kura.service.pid" array="false" encrypted="false" type="String"><value>org.eclipse.kura.demo.heater.Heater</value></property><property name="program.startTime" array="false" encrypted="false" type="String"><value>06:00</value></property><property name="mode" array="false" encrypted="false" type="String"><value>Program</value></property><property name="publish.semanticTopic" array="false" encrypted="false" type="String"><value>data/210</value></property><property name="manual.setPoint" array="false" encrypted="false" type="Float"><value>30.0</value></property><property name="publish.qos" array="false" encrypted="false" type="Integer"><value>2</value></property><property name="temperature.initial" array="false" encrypted="false" type="Float"><value>13.0</value></property><property name="program.setPoint" array="false" encrypted="false" type="Float"><value>30.0</value></property></properties></configuration></configurations> |
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep2" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep2" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    And I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    And I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -574,17 +532,14 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 50000 |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -610,17 +565,14 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Bundle Stop"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 50000 |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -646,17 +598,14 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Package Download / Install"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name                   | type                                                                                             | value                                                                                                                                                                                                                                           |
       | packageDownloadRequest | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.demo.heater_1.0.300.dp</uri><name>heater</name><version>1.0.300</version><install>true</install></downloadRequest> |
       | timeout                | java.lang.Long                                                                                   | 10000                                                                                                                                                                                                                                           |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -682,17 +631,14 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name                    | type                                                                                               | value                                                                                                                                                                         |
       | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>heater</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>30000</rebootDelay></uninstallRequest> |
       | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                         |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -718,17 +664,14 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Asset Write"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name    | type                                                           | value                                                                                                                                                                                                                                                   |
       | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>assetName</name><channels><channel><valueType>binary</valueType><value>EGVzdCBzdHJpbmcgdmFsdWU=</value><name>binaryTest</name></channel></channels></deviceAsset></deviceAssets> |
       | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                                   |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -754,17 +697,14 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Configuration Put"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
       | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.demo.heater.Heater</id><properties><property name="temperature.increment" array="false" encrypted="false" type="Float"><value>0.25</value></property><property name="publish.rate" array="false" encrypted="false" type="Integer"><value>60</value></property><property name="program.stopTime" array="false" encrypted="false" type="String"><value>22:00</value></property><property name="publish.retain" array="false" encrypted="false" type="Boolean"><value>false</value></property><property name="service.pid" array="false" encrypted="false" type="String"><value>org.eclipse.kura.demo.heater.Heater</value></property><property name="kura.service.pid" array="false" encrypted="false" type="String"><value>org.eclipse.kura.demo.heater.Heater</value></property><property name="program.startTime" array="false" encrypted="false" type="String"><value>06:00</value></property><property name="mode" array="false" encrypted="false" type="String"><value>Program</value></property><property name="publish.semanticTopic" array="false" encrypted="false" type="String"><value>data/210</value></property><property name="manual.setPoint" array="false" encrypted="false" type="Float"><value>30.0</value></property><property name="publish.qos" array="false" encrypted="false" type="Integer"><value>2</value></property><property name="temperature.initial" array="false" encrypted="false" type="Float"><value>13.0</value></property><property name="program.setPoint" array="false" encrypted="false" type="Float"><value>30.0</value></property></properties></configuration></configurations> |
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -790,17 +730,14 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Command Execution"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name         | type                                                                   | value                                                                                                                                         |
       | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
       | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -830,24 +767,21 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 50000 |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 77    |
       | timeout  | java.lang.Long   | 50000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -873,24 +807,21 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Bundle Stop"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 77    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -916,24 +847,21 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Package Download / Install"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name                   | type                                                                                             | value                                                                                                                                                                                                                                           |
       | packageDownloadRequest | org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest | <?xml version="1.0" encoding="UTF-8"?><downloadRequest><uri>http://download.eclipse.org/kura/releases/3.2.0/org.eclipse.kura.demo.heater_1.0.300.dp</uri><name>heater</name><version>1.0.300</version><install>true</install></downloadRequest> |
       | timeout                | java.lang.Long                                                                                   | 10000                                                                                                                                                                                                                                           |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -959,24 +887,21 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Package Uninstall"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name                    | type                                                                                               | value                                                                                                                                                                         |
       | packageUninstallRequest | org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest | <?xml version="1.0" encoding="UTF-8"?><uninstallRequest><name>heater</name><version>1.0.300</version><reboot>true</reboot><rebootDelay>30000</rebootDelay></uninstallRequest> |
       | timeout                 | java.lang.Long                                                                                     | 10000                                                                                                                                                                         |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -1002,24 +927,21 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Asset Write"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name    | type                                                           | value                                                                                                                                                                                                                                                   |
       | assets  | org.eclipse.kapua.service.device.management.asset.DeviceAssets | <?xml version="1.0" encoding="UTF-8"?><deviceAssets><deviceAsset><name>assetName</name><channels><channel><valueType>binary</valueType><value>EGVzdCBzdHJpbmcgdmFsdWU=</value><name>binaryTest</name></channel></channels></deviceAsset></deviceAssets> |
       | timeout | java.lang.Long                                                 | 10000                                                                                                                                                                                                                                                   |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -1045,24 +967,21 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Configuration Put"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name          | type                                                                          | value                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
       | configuration | org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration | <?xml version="1.0" encoding="UTF-8"?><configurations xmlns:ns0="http://www.osgi.org/xmlns/metatype/v1.2.0"><configuration><id>org.eclipse.kura.demo.heater.Heater</id><properties><property name="temperature.increment" array="false" encrypted="false" type="Float"><value>0.25</value></property><property name="publish.rate" array="false" encrypted="false" type="Integer"><value>60</value></property><property name="program.stopTime" array="false" encrypted="false" type="String"><value>22:00</value></property><property name="publish.retain" array="false" encrypted="false" type="Boolean"><value>false</value></property><property name="service.pid" array="false" encrypted="false" type="String"><value>org.eclipse.kura.demo.heater.Heater</value></property><property name="kura.service.pid" array="false" encrypted="false" type="String"><value>org.eclipse.kura.demo.heater.Heater</value></property><property name="program.startTime" array="false" encrypted="false" type="String"><value>06:00</value></property><property name="mode" array="false" encrypted="false" type="String"><value>Program</value></property><property name="publish.semanticTopic" array="false" encrypted="false" type="String"><value>data/210</value></property><property name="manual.setPoint" array="false" encrypted="false" type="Float"><value>30.0</value></property><property name="publish.qos" array="false" encrypted="false" type="Integer"><value>2</value></property><property name="temperature.initial" array="false" encrypted="false" type="Float"><value>13.0</value></property><property name="program.setPoint" array="false" encrypted="false" type="Float"><value>30.0</value></property></properties></configuration></configurations> |
       | timeout       | java.lang.Long                                                                | 10000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
@@ -1088,28 +1007,25 @@ Feature: JobEngineService tests for restarting job with offline device
     When I count the targets in the current scope
     Then I count 2
     And Search for step definition with the name "Command Execution"
-    And A regular step creator with the name "TestStep" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep" and the following properties
       | name         | type                                                                   | value                                                                                                                                         |
       | commandInput | org.eclipse.kapua.service.device.management.command.DeviceCommandInput | <?xml version="1.0" encoding="UTF-8"?><commandInput><command>pwd</command><timeout>30000</timeout><runAsynch>false</runAsynch></commandInput> |
       | timeout      | java.lang.Long                                                         | 10000                                                                                                                                         |
-    When I create a new step entity from the existing creator
+    When I create a new JobStep from the existing creator
     And Search for step definition with the name "Bundle Start"
-    And A regular step creator with the name "TestStep1" and the following properties
+    And I prepare a JobStepCreator with the name "TestStep1" and the following properties
       | name     | type             | value |
       | bundleId | java.lang.String | 34    |
       | timeout  | java.lang.Long   | 10000 |
-    When I create a new step entity from the existing creator
-    And I search the database for created job steps and I find 2
+    When I create a new JobStep from the existing creator
+    And I count the JobSteps and I find 2 JobStep within 30 seconds
     Then No exception was thrown
     And I restart a job
-    And I wait 10 seconds
-    Given I query for the job with the name "TestJob" and I find it
-    When I query for the execution items for the current job and I count 1
-    And I confirm the executed job is finished
+    Given I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I logout
 
-@teardown
+  @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

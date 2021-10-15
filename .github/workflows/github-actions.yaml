@@ -24,13 +24,7 @@ jobs:
             ${{ runner.os }}-maven-
       - run: mvn -v
       - run: docker images -a  # used as log (should show only github environment standard docker images; if kapua images are present, something is wrong)
-      - uses: satackey/action-docker-layer-caching@v0.0.11  # docker images cache
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}  # cache is valid only for current run on the current repository
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
-      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
+      - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
       - run: bash <(curl -s https://codecov.io/bash)
   test-brokerAcl:
     needs: build-kapua
@@ -46,19 +40,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@brokerAcl" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-tag:
@@ -79,7 +67,7 @@ jobs:
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@tag" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-broker:
@@ -96,19 +84,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@broker" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-device:
@@ -125,17 +107,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
+      - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@device" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-device-management:
@@ -152,19 +130,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@deviceManagement" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-connection:
@@ -181,19 +153,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@connection" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-datastore:
@@ -210,19 +176,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@datastore" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-user:
@@ -243,7 +203,7 @@ jobs:
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@user" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-userIntegrationBase:
@@ -260,19 +220,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@userIntegrationBase" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-userIntegration:
@@ -289,19 +243,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@userIntegration" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-security:
@@ -322,7 +270,7 @@ jobs:
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@security" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobs:
@@ -343,7 +291,7 @@ jobs:
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobs" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobsIntegrationBase:
@@ -360,19 +308,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobsIntegrationBase" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobsIntegration:
@@ -389,19 +331,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobsIntegration" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-triggerService:
@@ -418,19 +354,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerService" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-triggerServiceIntegrationBase:
@@ -447,19 +377,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerServiceIntegrationBase" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-triggerServiceIntegration:
@@ -476,19 +400,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerServiceIntegration" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-account:
@@ -509,7 +427,7 @@ jobs:
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@account" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineStepDefinitions:
@@ -526,19 +444,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStepDefinitions" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineStartOfflineDevice:
@@ -555,19 +467,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStartOfflineDevice" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineStartOnlineDevice:
@@ -584,19 +490,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStartOnlineDevice" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineRestartOfflineDevice:
@@ -613,19 +513,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOfflineDevice" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineRestartOnlineDevice:
@@ -642,19 +536,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOnlineDevice" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineRestartOnlineDeviceSecondPart:
@@ -671,19 +559,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOnlineDeviceSecondPart" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineServiceStop:
@@ -700,19 +582,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-        with:
-          key: ${{ github.run_id }}-${{ github.run_number }}-docker-cache-{hash}
-          restore-keys: |
-            ${{ github.run_id }}-${{ github.run_number }}-docker-cache-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
-      - run: docker images -a
+      - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-invision/retry@v2.4.0
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineServiceStop" verify
       - run: bash <(curl -s https://codecov.io/bash)
   junit-tests:
@@ -733,7 +609,7 @@ jobs:
         with:
           timeout_minutes: 45
           retry_on: error
-          max_attempts: 3
+          max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' verify
       - run: bash <(curl -s https://codecov.io/bash)
   build-javadoc:

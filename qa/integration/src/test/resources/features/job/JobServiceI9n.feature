@@ -229,5 +229,5 @@ Feature: Job service CRUD tests
 
   @teardown
   Scenario: Stop test environment
-    Given Stop base docker environment
+    Given Stop full docker environment
     And Reset Security Context

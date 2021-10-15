@@ -49,8 +49,7 @@ Feature: Device Registry Integration
     And A birth message from device "device_1"
     When I search for the device "device_1" in account "AccountA"
     Then I find 1 device
-    When I search for events from device "device_1" in account "AccountA"
-    Then I find 1 device event
+    When I search for events from device "device_1" in account "AccountA" I find 1 event within 30 seconds
     And The type of the last event is "BIRTH"
     And I logout
 
@@ -81,8 +80,7 @@ Feature: Device Registry Integration
       | clientId | displayName | modelId         | serialNumber |
       | device_1 | testGateway | ReliaGate 10-20 | 12341234ABC  |
     And A birth message from device "device_1"
-    When I search for events from device "device_1" in account "AccountA"
-    Then I find 1 device event
+    When I search for events from device "device_1" in account "AccountA" I find 1 event within 30 seconds
     And The type of the last event is "BIRTH"
     And I logout
 
@@ -111,8 +109,7 @@ Feature: Device Registry Integration
       | integer | maxNumberChildEntities | 10    |
     And A birth message from device "device_1"
     And A birth message from device "device_1"
-    When I search for events from device "device_1" in account "AccountA"
-    Then I find 2 device events
+    When I search for events from device "device_1" in account "AccountA" I find 2 events within 30 seconds
     And The type of the last event is "BIRTH"
     And I logout
 
@@ -170,8 +167,7 @@ Feature: Device Registry Integration
       | integer | maxNumberChildEntities | 10    |
     Given A birth message from device "device_1"
     And A disconnect message from device "device_1"
-    When I search for events from device "device_1" in account "AccountA"
-    Then I find 2 device events
+    When I search for events from device "device_1" in account "AccountA" I find 2 events within 30 seconds
     And The type of the last event is "DEATH"
     And I logout
 
@@ -202,8 +198,7 @@ Feature: Device Registry Integration
       | integer | maxNumberChildEntities | 10    |
     Given A birth message from device "device_1"
     And A missing message from device "device_1"
-    When I search for events from device "device_1" in account "AccountA"
-    Then I find 2 device events
+    When I search for events from device "device_1" in account "AccountA" I find 2 events within 30 seconds
     And The type of the last event is "MISSING"
     And I logout
 
@@ -234,8 +229,7 @@ Feature: Device Registry Integration
       | integer | maxNumberChildEntities | 10    |
     Given A birth message from device "device_1"
     And An application message from device "device_1"
-    When I search for events from device "device_1" in account "AccountA"
-    Then I find 2 device events
+    When I search for events from device "device_1" in account "AccountA" I find 2 events within 30 seconds
     And The type of the last event is "APPLICATION"
     And I logout
 
