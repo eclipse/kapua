@@ -71,7 +71,7 @@ Feature: Job step definition service CRUD tests
 
     Given A regular step definition creator with the name "TestDefinition"
     When I create a new step definition entity from the existing creator
-    Given I expect the exception "KapuaDuplicateNameInAnotherAccountError" with the text "An entity with the same name TestDefinition already exist."
+    Given I expect the exception "KapuaDuplicateNameInAnotherAccountError" with the text "An entity with the same name TestDefinition already exists."
     And I create a new step definition entity from the existing creator
     Then An exception was thrown
 

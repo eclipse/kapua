@@ -38,7 +38,7 @@
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-locator-guice</artifactId>
+            <artifactId>kapua-account-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -62,11 +62,11 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-message-internal</artifactId>
+            <artifactId>kapua-locator-guice</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-account-internal</artifactId>
+            <artifactId>kapua-message-internal</artifactId>
         </dependency>
         <!-- TODO EXT-CAMEL remove datastore dependency when Domain will be fixed -->
         <dependency>
@@ -104,10 +104,6 @@
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-engine-client</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -274,8 +270,8 @@
         </dependency>
 
         <dependency>
-             <groupId>com.fasterxml.jackson.core</groupId>
-             <artifactId>jackson-annotations</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
@@ -379,6 +375,16 @@
             <classifier>agent</classifier>
         </dependency>
         <dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
         </dependency>
@@ -398,36 +404,19 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-to-slf4j</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.checkerframework</groupId>
-            <artifactId>checker-qual</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.cache</groupId>
-            <artifactId>cache-api</artifactId>
-        </dependency>
 
         <!-- TODO EXT-CAMEL only for test remove when jobs will be defined in their own container -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-management-job-internal</artifactId>
+            <artifactId>kapua-device-management-all-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-management-command-api</artifactId>
+            <artifactId>kapua-device-management-all-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-management-command-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-management-configuration-internal</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-management-packages-internal</artifactId>
+            <artifactId>kapua-device-management-all-job</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -443,7 +432,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-job-engine-jbatch</artifactId>
+            <artifactId>kapua-job-engine-client</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -453,14 +442,14 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-scheduler-quartz</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>com.ibm.jbatch</groupId>
             <artifactId>com.ibm.jbatch.container</artifactId>
-            <version>${jbatch.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
         </dependency>
         <!-- TOTP dependencies -->
         <dependency>

@@ -16,7 +16,6 @@
     <provided>
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
-        <api>org.eclipse.kapua.model.query.QueryFactory</api>
 
         <api>org.eclipse.kapua.service.generator.id.IdGeneratorService</api>
     </provided>

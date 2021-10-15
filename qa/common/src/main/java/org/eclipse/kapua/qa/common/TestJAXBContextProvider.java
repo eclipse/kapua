@@ -64,10 +64,13 @@ import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * JAXB context provided for proper (un)marshalling of interface annotated classes.
@@ -144,7 +147,10 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
                     ExceptionInfo.class
             };
             try {
-                context = JAXBContextFactory.createContext(classes, null);
+                Map<String, Object> properties = new HashMap<>(1);
+                properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+
+                context = JAXBContextFactory.createContext(classes, properties);
                 LOG.debug("Default JAXB context initialized!");
             } catch (Exception e) {
                 throw KapuaException.internalError(e, "Error creating JAXBContext!");

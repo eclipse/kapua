@@ -29,6 +29,7 @@ import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobService;
 import org.eclipse.kapua.service.job.execution.JobExecutionFactory;
@@ -94,6 +95,7 @@ public class JobLocatorConfiguration {
                 } catch (Exception e) {
                     LOG.warn("Error while setting mock AuthorizationService. This may lead to failures...", e);
                 }
+                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
 
                 // Job
                 JobEntityManagerFactory jobEntityManagerFactory = JobEntityManagerFactory.getInstance();

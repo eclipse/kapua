@@ -13,6 +13,18 @@
 package org.eclipse.kapua.consumer.lifecycle;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobScopedEngineExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
@@ -20,6 +32,7 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
@@ -43,19 +56,25 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandInput;
 import org.eclipse.kapua.service.device.management.command.DeviceCommandOutput;
+import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackages;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
+import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
+import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobListResult;
 import org.eclipse.kapua.service.job.JobXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LifecycleJAXBContextProvider implements JAXBContextProvider {
 
@@ -67,6 +86,8 @@ public class LifecycleJAXBContextProvider implements JAXBContextProvider {
     public JAXBContext getJAXBContext() throws KapuaException {
         if (context == null) {
             Class<?>[] classes = new Class<?>[]{
+
+                    // Kapua Service Configuration + Device Management Configuration
                     KapuaTmetadata.class,
                     KapuaTocd.class,
                     KapuaTad.class,
@@ -77,43 +98,75 @@ public class LifecycleJAXBContextProvider implements JAXBContextProvider {
                     KapuaTobject.class,
                     MetatypeXmlRegistry.class,
 
-                    // KapuaEvent
+                    // Kapua Service Event
                     ServiceEvent.class,
                     EventStoreRecordCreator.class,
                     EventStoreRecordListResult.class,
                     EventStoreRecordQuery.class,
                     EventStoreXmlRegistry.class,
 
-                    //TODO EXT-CAMEL only for test remove when jobs will be defined in their own container
-                    // Jobs
+                    // TODO EXT-CAMEL only for test remove when jobs will be defined in their own container
+                    // Job
                     Job.class,
                     JobListResult.class,
                     JobXmlRegistry.class,
+
+                    // Job Engine
+                    JobStartOptions.class,
                     JobTargetSublist.class,
+                    // Jobs Exception Info
+                    CleanJobDataExceptionInfo.class,
+                    JobAlreadyRunningExceptionInfo.class,
+                    JobEngineExceptionInfo.class,
+                    JobScopedEngineExceptionInfo.class,
+                    JobInvalidTargetExceptionInfo.class,
+                    JobMissingStepExceptionInfo.class,
+                    JobMissingTargetExceptionInfo.class,
+                    JobNotRunningExceptionInfo.class,
+                    JobResumingExceptionInfo.class,
+                    JobRunningExceptionInfo.class,
+                    JobStartingExceptionInfo.class,
+                    JobStoppingExceptionInfo.class,
+
+                    // Device Management Command
                     DeviceCommandInput.class,
                     DeviceCommandOutput.class,
 
+                    // Device Management Configuration
+                    DeviceConfiguration.class,
+                    DeviceComponentConfiguration.class,
                     KuraDeviceComponentConfiguration.class,
                     KuraDeviceConfiguration.class,
-                    KuraDeploymentPackage.class,
-                    KuraDeploymentPackages.class,
-                    KuraBundle.class,
-                    KuraBundles.class,
-                    KuraBundleInfo.class,
-                    KuraSnapshotIds.class,
 
+                    // Device Management Asset
                     DeviceAsset.class,
                     DeviceAssets.class,
+
+                    // Device Management Bundles
                     DeviceBundle.class,
                     DeviceBundles.class,
-                    DeviceConfiguration.class,
+                    KuraBundle.class,
+                    KuraBundles.class,
+
+                    // Device Management Packages
                     DevicePackage.class,
                     DevicePackages.class,
                     DevicePackageDownloadRequest.class,
-                    DevicePackageUninstallRequest.class
+                    DevicePackageUninstallRequest.class,
+                    KuraDeploymentPackage.class,
+                    KuraDeploymentPackages.class,
+                    KuraBundleInfo.class,
+
+                    // Device Management Snapshot
+                    DeviceSnapshots.class,
+                    DeviceSnapshot.class,
+                    KuraSnapshotIds.class,
             };
             try {
-                context = JAXBContextFactory.createContext(classes, null);
+                Map<String, Object> properties = new HashMap<>(1);
+                properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+
+                context = JAXBContextFactory.createContext(classes, properties);
                 LOG.debug("Default JAXB context initialized!");
             } catch (Exception e) {
                 throw KapuaException.internalError(e, "Error creating JAXBContext!");

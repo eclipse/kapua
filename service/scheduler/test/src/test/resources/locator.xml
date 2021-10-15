@@ -22,6 +22,6 @@
     <packages>
         <package>org.eclipse.kapua.commons</package>
         <package>org.eclipse.kapua.service.generator.id.sequence</package>
-        <package>org.eclipse.kapua.service.tag.internal</package>
+        <package>org.eclipse.kapua.service.scheduler.internal</package>
     </packages>
 </locator-config>

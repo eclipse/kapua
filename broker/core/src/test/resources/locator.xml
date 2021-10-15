@@ -30,9 +30,9 @@
             <with>Impl</with>
         </provide>
     </provided>
+
     <packages>
         <package>org.eclipse.kapua.commons</package>
-        <package>org.eclipse.kapua.job.engine</package>
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.transport</package>

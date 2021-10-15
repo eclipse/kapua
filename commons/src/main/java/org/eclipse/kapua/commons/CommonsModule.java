@@ -10,24 +10,21 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.model.query;
+package org.eclipse.kapua.commons;
 
-import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.model.query.QueryFactory;
 
-import javax.inject.Singleton;
-
 /**
- * {@link QueryFactory} implementation.
+ * {@code kapua-commons} {@link AbstractKapuaModule}.
  *
  * @since 1.6.0
  */
-@Singleton
-public class QueryFactoryImpl implements QueryFactory {
+public class CommonsModule extends AbstractKapuaModule {
 
     @Override
-    public KapuaQuery newQuery() {
-        return new AbstractKapuaQuery() {
-        };
+    protected void configureModule() {
+        bind(QueryFactory.class).to(QueryFactoryImpl.class);
     }
 }

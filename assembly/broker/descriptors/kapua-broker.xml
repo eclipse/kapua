@@ -289,7 +289,7 @@
                 <include>${pom.groupId}:kapua-job-internal</include>
                 <include>${pom.groupId}:kapua-job-engine-api</include>
                 <include>${pom.groupId}:kapua-job-engine-commons</include>
-                <include>${pom.groupId}:kapua-job-engine-jbatch</include>
+                <include>${pom.groupId}:kapua-job-engine-client</include>
                 <include>${pom.groupId}:kapua-scheduler-api</include>
                 <include>${pom.groupId}:kapua-scheduler-quartz</include>
                 <include>org.quartz-scheduler:quartz</include>

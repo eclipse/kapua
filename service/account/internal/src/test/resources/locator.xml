@@ -16,6 +16,7 @@
     <provided>
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
     </provided>
+
     <packages>
         <package>org.eclipse.kapua.commons</package>
     </packages>
