@@ -25,7 +25,6 @@ import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
@@ -55,6 +54,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import java.security.SecureRandom;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -64,7 +64,7 @@ import java.util.NoSuchElementException;
  *
  * @since 1.0
  */
-@KapuaProvider
+@Singleton
 public class CredentialServiceImpl extends AbstractKapuaConfigurableService implements CredentialService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceImpl.class);

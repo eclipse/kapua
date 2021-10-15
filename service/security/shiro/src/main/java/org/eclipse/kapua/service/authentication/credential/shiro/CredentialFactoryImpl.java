@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.authentication.credential.shiro;
 
 import org.eclipse.kapua.KapuaEntityCloneException;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
@@ -23,6 +22,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 
+import javax.inject.Singleton;
 import java.util.Date;
 
 /**
@@ -30,7 +30,7 @@ import java.util.Date;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class CredentialFactoryImpl implements CredentialFactory {
 
     @Override

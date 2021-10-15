@@ -229,6 +229,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-engine-commons</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-openid-api</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

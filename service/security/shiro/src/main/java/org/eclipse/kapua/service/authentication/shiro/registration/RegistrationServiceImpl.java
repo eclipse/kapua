@@ -13,13 +13,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.registration;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.ServiceLoader;
-
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.locator.KapuaProvider;
+import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.eclipse.kapua.security.registration.RegistrationProcessor;
 import org.eclipse.kapua.security.registration.RegistrationProcessorProvider;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
@@ -28,11 +24,16 @@ import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticatio
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.shiro.utils.JwtProcessors;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
-import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.jose4j.jwt.consumer.JwtContext;
 
-@KapuaProvider
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.ServiceLoader;
+
+import javax.inject.Singleton;
+
+@Singleton
 public class RegistrationServiceImpl implements RegistrationService, AutoCloseable {
 
     private final JwtProcessor jwtProcessor;

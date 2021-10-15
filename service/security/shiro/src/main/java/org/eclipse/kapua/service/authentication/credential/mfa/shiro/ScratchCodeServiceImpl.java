@@ -19,7 +19,6 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -42,12 +41,13 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import java.util.List;
 
 /**
  * {@link ScratchCodeService} implementation.
  */
-@KapuaProvider
+@Singleton
 public class ScratchCodeServiceImpl extends AbstractKapuaService implements ScratchCodeService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ScratchCodeServiceImpl.class);

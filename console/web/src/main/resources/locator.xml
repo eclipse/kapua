@@ -15,18 +15,6 @@
 <!DOCTYPE xml>
 <locator-config>
     <provided>
-        <api>org.eclipse.kapua.service.authentication.AuthenticationService</api>
-        <api>org.eclipse.kapua.service.authentication.CredentialsFactory</api>
-        <api>org.eclipse.kapua.service.authentication.credential.CredentialFactory</api>
-        <api>org.eclipse.kapua.service.authentication.credential.CredentialService</api>
-        <api>org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory</api>
-        <api>org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService</api>
-        <api>org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeFactory</api>
-        <api>org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeService</api>
-        <api>org.eclipse.kapua.service.authentication.registration.RegistrationService</api>
-        <api>org.eclipse.kapua.service.authentication.token.AccessTokenService</api>
-        <api>org.eclipse.kapua.service.authentication.token.AccessTokenFactory</api>
-
         <api>org.eclipse.kapua.service.certificate.CertificateService</api>
         <api>org.eclipse.kapua.service.certificate.CertificateFactory</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>

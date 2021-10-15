@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.eclipse.kapua.KapuaEntityCloneException;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCode;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeCreator;
@@ -21,10 +20,12 @@ import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeFactor
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.ScratchCodeQuery;
 
+import javax.inject.Singleton;
+
 /**
  * {@link ScratchCodeFactory} implementation.
  */
-@KapuaProvider
+@Singleton
 public class ScratchCodeFactoryImpl implements ScratchCodeFactory {
 
     @Override
