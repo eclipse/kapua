@@ -18,6 +18,7 @@
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
         <api>org.eclipse.kapua.service.generator.id.IdGeneratorService</api>
     </provided>
+
     <packages>
         <package>org.eclipse.kapua.commons</package>
         <package>org.eclipse.kapua.service.generator.id.sequence</package>

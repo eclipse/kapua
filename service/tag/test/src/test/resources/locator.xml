@@ -23,9 +23,9 @@
         <api>org.eclipse.kapua.service.tag.TagService</api>
         <api>org.eclipse.kapua.service.tag.TagFactory</api>
     </provided>
+
     <packages>
         <package>org.eclipse.kapua.commons</package>
-        <package>org.eclipse.kapua.model.query</package>
         <package>org.eclipse.kapua.service.generator.id.sequence</package>
         <package>org.eclipse.kapua.service.tag.internal</package>
     </packages>
