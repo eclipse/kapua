@@ -240,8 +240,6 @@ public class KapuaExceptionHandler {
 
         //
         // Default exception
-        else {
-            return GwtKapuaException.internalError(throwable, throwable.getMessage());
-        }
+        return GwtKapuaException.internalError(throwable, throwable.getMessage());
     }
 }
