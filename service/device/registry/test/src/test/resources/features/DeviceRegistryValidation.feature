@@ -73,7 +73,7 @@ Scenario: Validate a regular device search
     are not null. The validator should be OK with it.
 
     Given Scope with ID 15
-    And The device ID 4321
+    And The device ID "4321"
     When I search for a device with the remembered ID
     Then No exception was thrown
 
@@ -82,7 +82,7 @@ Scenario: Validate a device search with a null device ID
     is null. The validator should throw an exception.
 
     Given Scope with ID 15
-    And The device ID null
+    And The device ID "null"
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I search for a device with the remembered ID
     Then An exception was thrown
@@ -92,7 +92,7 @@ Scenario: Validate a device search with a null scope ID
     is null. The validator should throw an exception.
 
     Given A null scope
-    And The device ID 4321
+    And The device ID "4321"
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I search for a device with the remembered ID
     Then An exception was thrown
@@ -103,7 +103,7 @@ Scenario: Validate deleting a device with a null device ID
     is null. The validator should throw an exception.
 
     Given Scope with ID 15
-    And The device ID null
+    And The device ID "null"
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I delete the device with the remembered ID
     Then An exception was thrown
@@ -113,7 +113,7 @@ Scenario: Validate deleting a device with a null scope ID
     is null. The validator should throw an exception.
 
     Given A null scope
-    And The device ID 4321
+    And The device ID "4321"
     Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided"
     When I delete the device with the remembered ID
     Then An exception was thrown
