@@ -13,7 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.commons.message;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.commons.KapuaAppPropertiesImpl;
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestMessageImpl;
@@ -24,12 +23,14 @@ import org.eclipse.kapua.service.device.management.message.request.KapuaRequestM
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessageFactory;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
 
+import javax.inject.Singleton;
+
 /**
  * {@link KapuaRequestMessageFactory} implementation.
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class KapuaRequestMessageFactoryImpl implements KapuaRequestMessageFactory {
 
     @Override

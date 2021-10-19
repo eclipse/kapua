@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -8,13 +8,12 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *      Eurotech - initial API and implementation
+ *     Eurotech - initial API and implementation
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.command.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
@@ -30,6 +29,7 @@ import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagem
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
+import javax.inject.Singleton;
 import java.util.Date;
 
 /**
@@ -37,7 +37,7 @@ import java.util.Date;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceCommandManagementService {
 
     @Override

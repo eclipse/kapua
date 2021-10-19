@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,29 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.internal;
 
-import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
-import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
+import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 
-import javax.inject.Singleton;
-
-/**
- * Device bundle entity service factory implementation.
- *
- * @since 1.0
- *
- */
-@Singleton
-public class DeviceBundleFactoryImpl implements DeviceBundleFactory {
-
+public class DeviceBundleModule extends AbstractKapuaModule {
     @Override
-    public DeviceBundles newBundleListResult() {
-        return new DeviceBundlesImpl();
+    protected void configureModule() {
+        bind(DeviceBundleManagementService.class).to(DeviceBundleManagementServiceImpl.class);
+        bind(DeviceBundleFactory.class).to(DeviceBundleFactoryImpl.class);
     }
-
-    @Override
-    public DeviceBundle newDeviceBundle() {
-        return new DeviceBundleImpl();
-    }
-
 }

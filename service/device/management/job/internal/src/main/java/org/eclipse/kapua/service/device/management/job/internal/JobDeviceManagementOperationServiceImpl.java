@@ -20,7 +20,6 @@ import org.eclipse.kapua.commons.model.query.predicate.AttributePredicateImpl;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -34,6 +33,7 @@ import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperat
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService;
 import org.eclipse.kapua.service.job.JobDomains;
 
+import javax.inject.Singleton;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ import java.util.Map;
  *
  * @since 1.1.0
  */
-@KapuaProvider
+@Singleton
 public class JobDeviceManagementOperationServiceImpl extends AbstractKapuaService
         implements JobDeviceManagementOperationService {
 

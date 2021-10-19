@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.inventory.internal;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
@@ -31,12 +30,14 @@ import org.eclipse.kapua.service.device.management.inventory.model.system.Device
 import org.eclipse.kapua.service.device.management.inventory.model.system.internal.DeviceInventorySystemPackageImpl;
 import org.eclipse.kapua.service.device.management.inventory.model.system.internal.DeviceInventorySystemPackagesImpl;
 
+import javax.inject.Singleton;
+
 /**
  * {@link DeviceInventoryManagementFactory} implementation.
  *
  * @since 1.5.0
  */
-@KapuaProvider
+@Singleton
 public class DeviceInventoryManagementFactoryImpl implements DeviceInventoryManagementFactory {
 
     @Override
