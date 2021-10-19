@@ -30,25 +30,25 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ValidationMessag
 import java.util.List;
 
 /**
- * Handles GwtExceptions from RCP calls.
+ * Handles {@link Exception}s on the clinet side.
+ *
+ * @since 1.0.0
  */
 public class FailureHandler {
 
     private FailureHandler() {
     }
 
-    private static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
-    private static final ValidationMessages MSGS = GWT.create(ValidationMessages.class);
+    private static final ConsoleMessages CONSOLE_MSGS = GWT.create(ConsoleMessages.class);
+    private static final ValidationMessages VALIDATION_MSGS = GWT.create(ValidationMessages.class);
 
     public static void handle(Throwable caught) {
         if (caught instanceof GwtKapuaException) {
-
             GwtKapuaException gee = (GwtKapuaException) caught;
-            GwtKapuaErrorCode code = gee.getCode();
-            switch (code) {
 
-            case UNAUTHENTICATED:
-                ConsoleInfo.display(CMSGS.loggedOut(), caught.getLocalizedMessage());
+            GwtKapuaErrorCode code = gee.getCode();
+            if (code == GwtKapuaErrorCode.UNAUTHENTICATED) {
+                ConsoleInfo.display(CONSOLE_MSGS.loggedOut(), caught.getLocalizedMessage());
                 Timer timer = new Timer() {
 
                     @Override
@@ -57,12 +57,9 @@ public class FailureHandler {
                     }
                 };
                 timer.schedule(5000);
-                break;
-
-            default:
-                ConsoleInfo.display(CMSGS.error(), caught.getLocalizedMessage());
+            } else {
+                ConsoleInfo.display(CONSOLE_MSGS.error(), caught.getLocalizedMessage());
                 Log.error("RPC Error", caught);
-                break;
             }
         } else if (caught instanceof StatusCodeException &&
                 ((StatusCodeException) caught).getStatusCode() == 0) {
@@ -71,9 +68,7 @@ public class FailureHandler {
             // or navigated away from the page.
             // we can ignore this error and do nothing.
         } else {
-
-            ConsoleInfo.display(CMSGS.error(), caught.getLocalizedMessage());
-            caught.printStackTrace();
+            ConsoleInfo.display(CONSOLE_MSGS.error(), caught.getLocalizedMessage());
         }
     }
 
@@ -87,98 +82,96 @@ public class FailureHandler {
             GwtKapuaErrorCode code = gee.getCode();
             switch (code) {
 
-            case INVALID_XSRF_TOKEN:
-                ConsoleInfo.display(CMSGS.error(), CMSGS.securityInvalidXSRFToken());
-                Window.Location.reload();
-                break;
+                case INVALID_XSRF_TOKEN:
+                    ConsoleInfo.display(CONSOLE_MSGS.error(), CONSOLE_MSGS.securityInvalidXSRFToken());
+                    Window.Location.reload();
+                    break;
 
-            case UNAUTHENTICATED:
-                ConsoleInfo.display(CMSGS.loggedOut(), caught.getLocalizedMessage());
-                Window.Location.reload();
-                break;
+                case UNAUTHENTICATED:
+                    ConsoleInfo.display(CONSOLE_MSGS.loggedOut(), caught.getLocalizedMessage());
+                    Window.Location.reload();
+                    break;
 
-            case DUPLICATE_NAME:
-                boolean fieldFound = false;
-                String duplicateFieldName = gee.getArguments()[0];
-                for (Field<?> field : fields) {
-                    if (duplicateFieldName.equals(field.getName())) {
-                        TextField<String> textField = (TextField<String>) field;
-                        textField.markInvalid(MSGS.duplicateValue());
-                        fieldFound = true;
-                        break;
+                case DUPLICATE_NAME:
+                    boolean fieldFound = false;
+                    String duplicateFieldName = gee.getArguments()[0];
+                    for (Field<?> field : fields) {
+                        if (duplicateFieldName.equals(field.getName())) {
+                            TextField<String> textField = (TextField<String>) field;
+                            textField.markInvalid(VALIDATION_MSGS.duplicateValue());
+                            fieldFound = true;
+                            break;
+                        }
                     }
-                }
-                if (!fieldFound) {
-                    ConsoleInfo.display(CMSGS.error(), caught.getLocalizedMessage());
-                }
-                break;
-
-            case ENTITY_UNIQUENESS:
-                String errorFields = gee.getArguments()[0];
-                ConsoleInfo.display(CMSGS.error(), caught.getLocalizedMessage() + errorFields);
-                break;
-
-            case ILLEGAL_NULL_ARGUMENT:
-                String invalidFieldName = gee.getArguments()[0];
-                for (Field<?> field : fields) {
-                    if (invalidFieldName.equals(field.getName())) {
-                        TextField<String> textField = (TextField<String>) field;
-                        textField.markInvalid(MSGS.invalidNullValue());
-                        break;
+                    if (!fieldFound) {
+                        ConsoleInfo.display(CONSOLE_MSGS.error(), caught.getLocalizedMessage());
                     }
-                }
-                break;
+                    break;
 
-            case ILLEGAL_ARGUMENT:
-                String invalidFieldName1 = gee.getArguments()[0];
-                for (Field<?> field : fields) {
-                    if (invalidFieldName1.equals(field.getName())) {
-                        TextField<String> textField = (TextField<String>) field;
-                        textField.markInvalid(gee.getCause().getMessage());
-                        break;
+                case ENTITY_UNIQUENESS:
+                    String errorFields = gee.getArguments()[0];
+                    ConsoleInfo.display(CONSOLE_MSGS.error(), caught.getLocalizedMessage() + errorFields);
+                    break;
+
+                case ILLEGAL_NULL_ARGUMENT:
+                    String invalidFieldName = gee.getArguments()[0];
+                    for (Field<?> field : fields) {
+                        if (invalidFieldName.equals(field.getName())) {
+                            TextField<String> textField = (TextField<String>) field;
+                            textField.markInvalid(VALIDATION_MSGS.invalidNullValue());
+                            break;
+                        }
                     }
-                }
-                break;
+                    break;
 
-            case CANNOT_REMOVE_LAST_ADMIN:
-                String adminFieldName = gee.getArguments()[0];
-                for (Field<?> field : fields) {
-                    if (adminFieldName.equals(field.getName())) {
-                        CheckBoxGroup adminCheckBoxGroup = (CheckBoxGroup) field;
-                        adminCheckBoxGroup.markInvalid(MSGS.lastAdministrator());
-                        break;
+                case ILLEGAL_ARGUMENT:
+                    String invalidFieldName1 = gee.getArguments()[0];
+                    for (Field<?> field : fields) {
+                        if (invalidFieldName1.equals(field.getName())) {
+                            TextField<String> textField = (TextField<String>) field;
+                            textField.markInvalid(gee.getCause().getMessage());
+                            break;
+                        }
                     }
-                }
-                break;
+                    break;
 
-            case INVALID_RULE_QUERY:
-                for (Field<?> field : fields) {
-                    if ("query".equals(field.getName())) {
-                        TextArea statement = (TextArea) field;
-                        statement.markInvalid(caught.getLocalizedMessage());
-                        break;
+                case CANNOT_REMOVE_LAST_ADMIN:
+                    String adminFieldName = gee.getArguments()[0];
+                    for (Field<?> field : fields) {
+                        if (adminFieldName.equals(field.getName())) {
+                            CheckBoxGroup adminCheckBoxGroup = (CheckBoxGroup) field;
+                            adminCheckBoxGroup.markInvalid(VALIDATION_MSGS.lastAdministrator());
+                            break;
+                        }
                     }
-                }
-                break;
+                    break;
 
-            case OPERATION_NOT_ALLOWED_ON_ADMIN_USER:
-                ConsoleInfo.display(CMSGS.error(), caught.getLocalizedMessage());
-                break;
+                case INVALID_RULE_QUERY:
+                    for (Field<?> field : fields) {
+                        if ("query".equals(field.getName())) {
+                            TextArea statement = (TextArea) field;
+                            statement.markInvalid(caught.getLocalizedMessage());
+                            break;
+                        }
+                    }
+                    break;
 
-            case WARNING:
-                isWarning = true;
-                ConsoleInfo.display(CMSGS.warning(), caught.getLocalizedMessage());
-                break;
+                case OPERATION_NOT_ALLOWED_ON_ADMIN_USER:
+                    ConsoleInfo.display(CONSOLE_MSGS.error(), caught.getLocalizedMessage());
+                    break;
 
-            default:
-                ConsoleInfo.display(CMSGS.error(), caught.getLocalizedMessage());
-                caught.printStackTrace();
-                break;
+                case WARNING:
+                    isWarning = true;
+                    ConsoleInfo.display(CONSOLE_MSGS.warning(), caught.getLocalizedMessage());
+                    break;
+
+                default:
+                    ConsoleInfo.display(CONSOLE_MSGS.error(), caught.getLocalizedMessage());
+                    caught.printStackTrace();
+                    break;
             }
         } else {
-
-            ConsoleInfo.display(CMSGS.error(), caught.getLocalizedMessage());
-            caught.printStackTrace();
+            ConsoleInfo.display(CONSOLE_MSGS.error(), caught.getLocalizedMessage());
         }
 
         return isWarning;

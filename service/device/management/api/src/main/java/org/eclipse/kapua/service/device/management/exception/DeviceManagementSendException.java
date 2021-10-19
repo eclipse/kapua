@@ -25,7 +25,7 @@ public class DeviceManagementSendException extends DeviceManagementException {
 
     private static final long serialVersionUID = 8314422738805026338L;
 
-    private final KapuaRequestMessage requestMessage;
+    private final KapuaRequestMessage<?, ?> requestMessage;
 
     /**
      * Constructor.
@@ -33,8 +33,9 @@ public class DeviceManagementSendException extends DeviceManagementException {
      * @param requestMessage The {@link KapuaRequestMessage} that we tried to send.
      * @since 1.1.0
      */
-    public DeviceManagementSendException(@NotNull KapuaRequestMessage requestMessage) {
+    public DeviceManagementSendException(@NotNull KapuaRequestMessage<?, ?> requestMessage) {
         super(DeviceManagementErrorCodes.SEND_ERROR, requestMessage);
+
         this.requestMessage = requestMessage;
     }
 
@@ -45,7 +46,7 @@ public class DeviceManagementSendException extends DeviceManagementException {
      * @param requestMessage The {@link KapuaRequestMessage} that we tried to send.
      * @since 1.1.0
      */
-    public DeviceManagementSendException(@NotNull Throwable cause, @NotNull KapuaRequestMessage requestMessage) {
+    public DeviceManagementSendException(@NotNull Throwable cause, @NotNull KapuaRequestMessage<?, ?> requestMessage) {
         super(DeviceManagementErrorCodes.SEND_ERROR, cause, requestMessage);
         this.requestMessage = requestMessage;
     }
@@ -56,7 +57,7 @@ public class DeviceManagementSendException extends DeviceManagementException {
      * @return The {@link KapuaRequestMessage} that we tried to send.
      * @since 1.1.0
      */
-    public KapuaRequestMessage getRequestMessage() {
+    public KapuaRequestMessage<?, ?> getRequestMessage() {
         return requestMessage;
     }
 }

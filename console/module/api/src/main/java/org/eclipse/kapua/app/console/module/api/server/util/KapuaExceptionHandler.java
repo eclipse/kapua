@@ -30,8 +30,14 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
-import org.eclipse.kapua.service.device.management.exception.DeviceManagementErrorCodes;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseBadRequestException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseInternalErrorException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementResponseNotFoundException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementSendException;
+import org.eclipse.kapua.service.device.management.exception.DeviceManagementTimeoutException;
+import org.eclipse.kapua.service.device.management.exception.DeviceNotConnectedException;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,8 +104,11 @@ public class KapuaExceptionHandler {
     public static GwtKapuaException buildExceptionFromError(Throwable throwable) {
         LOG.error("Server side error!", throwable);
 
-        if (throwable instanceof KapuaUnauthenticatedException) {
-            // sessions has expired
+        if (throwable instanceof GwtKapuaException) {
+            // Exception already wrapped.
+            return (GwtKapuaException) throwable;
+        } else if (throwable instanceof KapuaUnauthenticatedException) {
+            // Session has expired
             return new GwtKapuaException(GwtKapuaErrorCode.UNAUTHENTICATED, throwable);
         } else if (throwable instanceof KapuaAuthenticationException) {
 
@@ -138,41 +147,39 @@ public class KapuaExceptionHandler {
             return new GwtKapuaException(GwtKapuaErrorCode.UNAUTHENTICATED, throwable);
         } else if (throwable instanceof KapuaRuntimeException && ((KapuaRuntimeException) throwable).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS) ||
                 throwable.getCause() instanceof KapuaRuntimeException && ((KapuaRuntimeException) throwable.getCause()).getCode().equals(KapuaErrorCodes.ENTITY_ALREADY_EXISTS)) {
-            return new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS, throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXISTS, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR) && throwable.getCause() instanceof ClientException) {
             if (throwable.getCause().getCause() != null) {
-                return new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, throwable, throwable.getCause().getCause().getLocalizedMessage());
+                return new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, throwable, throwable.getCause().getCause().getMessage());
             } else {
-                return new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, throwable, throwable.getCause().getLocalizedMessage());
+                return new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, throwable, throwable.getCause().getMessage());
             }
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(KapuaErrorCodes.INTERNAL_ERROR)) {
             LOG.error("internal service error", throwable);
-            return new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaException &&
                 (
                         ((KapuaException) throwable).getCode().name().equals("TRIGGER_INVALID_DATES") ||
                                 ((KapuaException) throwable).getCode().name().equals("TRIGGER_INVALID_SCHEDULE")
                 )
         ) {
-            return new GwtKapuaException(GwtKapuaErrorCode.TRIGGER_NEVER_FIRE, throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.TRIGGER_NEVER_FIRE, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.PARENT_LIMIT_EXCEEDED_IN_CONFIG.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.PARENT_LIMIT_EXCEEDED_IN_CONFIG, throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.PARENT_LIMIT_EXCEEDED_IN_CONFIG, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.ADMIN_ROLE_DELETED_ERROR.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.ADMIN_ROLE_DELETED_ERROR, throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.ADMIN_ROLE_DELETED_ERROR, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.SUBJECT_UNAUTHORIZED.name())) {
             return new GwtKapuaException(GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED, throwable, ((SubjectUnauthorizedException) throwable).getPermission().toString());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.DUPLICATE_NAME.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_NAME, throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_NAME, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.DUPLICATE_EXTERNAL_ID.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_EXTERNAL_ID, throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_EXTERNAL_ID, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaConfigurationException && ((KapuaConfigurationException) throwable).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.DOWNLOAD_PACKAGE_EXCEPTION.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.DOWNLOAD_PACKAGE_EXCEPTION, throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaEntityNotFoundException) {
             KapuaEntityNotFoundException kapuaEntityNotFoundException = (KapuaEntityNotFoundException) throwable;
             return new GwtKapuaException(GwtKapuaErrorCode.ENTITY_NOT_FOUND, throwable, kapuaEntityNotFoundException.getEntityType(), kapuaEntityNotFoundException.getEntityName());
@@ -197,37 +204,44 @@ public class KapuaExceptionHandler {
                 return new GwtKapuaException(GwtKapuaErrorCode.ILLEGAL_ARGUMENT, throwable, ((KapuaIllegalArgumentException) throwable).getArgumentName(), ((KapuaIllegalArgumentException) throwable).getArgumentValue());
             }
         }
+
         //
         // Device Management
-        else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_START_ERROR, throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.BUNDLE_START_ERROR.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_START_ERROR, throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.BUNDLE_STOP_ERROR.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.BUNDLE_STOP_ERROR, throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(KapuaErrorCodes.PACKAGE_URI_SYNTAX_ERROR)) {
-            return new GwtKapuaException(GwtKapuaErrorCode.PACKAGE_URI_SYNTAX_ERROR, throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(DeviceManagementErrorCodes.RESPONSE_NOT_FOUND)) {
-            return new GwtKapuaException(GwtKapuaErrorCode.RESPONSE_NOT_FOUND, throwable, throwable.getLocalizedMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().equals(DeviceManagementErrorCodes.TIMEOUT)) {
-            return new GwtKapuaException(GwtKapuaErrorCode.DEVICE_MANAGEMENT_TIMEOUT, throwable, throwable.getLocalizedMessage());
+        if (throwable instanceof DeviceManagementResponseException) {
+            DeviceManagementException deviceManagementException = (DeviceManagementException) throwable;
+            if (deviceManagementException instanceof DeviceManagementResponseBadRequestException) {
+                return new GwtKapuaException(GwtKapuaErrorCode.DEVICE_MANAGEMENT_RESPONSE_BAD_REQUEST, deviceManagementException, deviceManagementException.getCode().toString(), throwable.getMessage());
+            } else if (deviceManagementException instanceof DeviceManagementResponseNotFoundException) {
+                return new GwtKapuaException(GwtKapuaErrorCode.DEVICE_MANAGEMENT_RESPONSE_NOT_FOUND, deviceManagementException, deviceManagementException.getCode().toString(), throwable.getMessage());
+            } else if (deviceManagementException instanceof DeviceManagementResponseInternalErrorException) {
+                return new GwtKapuaException(GwtKapuaErrorCode.DEVICE_MANAGEMENT_RESPONSE_INTERNAL_ERROR, deviceManagementException, deviceManagementException.getCode().toString(), throwable.getMessage());
+            }
+        } else if (throwable instanceof DeviceManagementSendException) {
+            return new GwtKapuaException(GwtKapuaErrorCode.DEVICE_MANAGEMENT_SEND_ERROR, throwable, throwable.getMessage());
+        } else if (throwable instanceof DeviceManagementTimeoutException) {
+            return new GwtKapuaException(GwtKapuaErrorCode.DEVICE_MANAGEMENT_TIMEOUT, throwable, throwable.getMessage());
+        } else if (throwable instanceof DeviceNotConnectedException) {
+            return new GwtKapuaException(GwtKapuaErrorCode.DEVICE_NOT_CONNECTED, throwable, throwable.getMessage());
         } else if (throwable instanceof DeviceManagementException) {
-            return new GwtKapuaException(GwtKapuaErrorCode.valueOf(((DeviceManagementException) throwable).getCode().name()), throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.DEVICE_MANAGEMENT_ERROR, throwable, throwable.getMessage());
         }
+
         //
         // Service Limits
         else if (throwable instanceof KapuaMaxNumberOfItemsReachedException) {
             return new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, throwable, ((KapuaMaxNumberOfItemsReachedException) throwable).getArgValue());
         }
+
         //
         // Permissions
         else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.PERMISSION_DELETE_NOT_ALLOWED.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.PERMISSION_DELETE_NOT_ALLOWED, throwable, throwable.getLocalizedMessage());
+            return new GwtKapuaException(GwtKapuaErrorCode.PERMISSION_DELETE_NOT_ALLOWED, throwable, throwable.getMessage());
         }
+
         //
         // Default exception
         else {
-            return GwtKapuaException.internalError(throwable, throwable.getLocalizedMessage());
+            return GwtKapuaException.internalError(throwable, throwable.getMessage());
         }
     }
 }

@@ -17,8 +17,7 @@ import com.extjs.gxt.ui.client.data.ListLoadResult;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
-import org.eclipse.kapua.KapuaErrorCodes;
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
@@ -161,7 +160,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             }
 
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
         return gwtPkgs;
     }
@@ -178,13 +177,14 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaId scopeId = KapuaEid.parseCompactId(gwtPackageInstallRequest.getScopeId());
             KapuaId deviceId = KapuaEid.parseCompactId(gwtPackageInstallRequest.getDeviceId());
 
-            DevicePackageDownloadRequest packageDownloadRequest = DEVICE_PACKAGE_FACTORY.newPackageDownloadRequest();
             URI packageUri;
             try {
                 packageUri = new URI(gwtPackageInstallRequest.getPackageURI());
             } catch (URISyntaxException e) {
-                throw new KapuaException(KapuaErrorCodes.PACKAGE_URI_SYNTAX_ERROR);
+                throw new GwtKapuaException(GwtKapuaErrorCode.PACKAGE_URI_SYNTAX_ERROR, e, e.getLocalizedMessage());
             }
+
+            DevicePackageDownloadRequest packageDownloadRequest = DEVICE_PACKAGE_FACTORY.newPackageDownloadRequest();
             packageDownloadRequest.setUri(packageUri);
             packageDownloadRequest.setName(gwtPackageInstallRequest.getPackageName());
             packageDownloadRequest.setVersion(gwtPackageInstallRequest.getPackageVersion());
@@ -206,7 +206,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
             PACKAGE_MANAGEMENT_SERVICE.downloadExec(scopeId, deviceId, packageDownloadRequest, DEVICE_PACKAGE_FACTORY.newPackageDownloadOptions());
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
     }
 
@@ -231,7 +231,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             }
 
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
 
         return new BaseListLoadResult<GwtPackageOperation>(gwtDeviceOperations);
@@ -257,7 +257,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
             PACKAGE_MANAGEMENT_SERVICE.uninstallExec(scopeId, deviceId, packageUninstallRequest, DEVICE_PACKAGE_FACTORY.newPackageUninstallOptions());
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
     }
 
@@ -388,7 +388,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                 }
             }
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
         return gwtConfigs;
     }
@@ -442,7 +442,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             // configuration
             Thread.sleep(1000);
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
     }
 
@@ -478,7 +478,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             }
 
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
 
         return new BaseListLoadResult<GwtSnapshot>(snapshots);
@@ -497,7 +497,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
             SNAPSHOT_MANAGEMENT_SERVICE.rollback(scopeId, deviceId, String.valueOf(snapshot.getSnapshotId()), null);
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
     }
 
@@ -527,7 +527,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
                 pairs.add(pair);
             }
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
 
         return new BaseListLoadResult<GwtBundle>(pairs);
@@ -546,7 +546,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
             BUNDLE_MANAGEMENT_SERVICE.start(scopeId, deviceId, String.valueOf(gwtBundle.getId()), null);
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
     }
 
@@ -563,7 +563,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
             BUNDLE_MANAGEMENT_SERVICE.stop(scopeId, deviceId, String.valueOf(gwtBundle.getId()), null);
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
     }
 
@@ -619,7 +619,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             gwtCommandOutput.setStdout(commandOutput.getStdout());
             gwtCommandOutput.setTimedout(commandOutput.getHasTimedout());
         } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
 
         return gwtCommandOutput;

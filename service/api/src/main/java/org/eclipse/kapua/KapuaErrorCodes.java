@@ -92,27 +92,11 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      * External Id already exist in another account
      */
     EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT,
-    /**
-     * The device has returned an error when starting bundle
-     */
-    BUNDLE_START_ERROR,
-
-    /**
-     * The device has returned an error when stopping bundle
-     */
-    BUNDLE_STOP_ERROR,
-
-    /**
-     * Syntax error in Package URI
-     */
-    PACKAGE_URI_SYNTAX_ERROR,
 
     /**
      * Max number of items is reached
      */
     MAX_NUMBER_OF_ITEMS_REACHED,
-
-    DOWNLOAD_PACKAGE_EXCEPTION,
 
     DEVICE_NOT_FOUND,
 
