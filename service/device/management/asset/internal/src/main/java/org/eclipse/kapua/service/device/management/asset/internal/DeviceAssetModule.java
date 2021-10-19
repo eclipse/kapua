@@ -21,6 +21,5 @@ public class DeviceAssetModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(DeviceAssetFactory.class).to(DeviceAssetFactoryImpl.class);
         bind(DeviceAssetManagementService.class).to(DeviceAssetManagementServiceImpl.class);
-        //bind(DeviceAssetChannel.class).to(DeviceAssetChannelImpl.class);
     }
 }

@@ -31,8 +31,6 @@
 
         <api>org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleMessageFactory</api>
 
-        <api>org.eclipse.kapua.service.device.management.command.DeviceCommandInput</api>
-
         <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
         <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
 
