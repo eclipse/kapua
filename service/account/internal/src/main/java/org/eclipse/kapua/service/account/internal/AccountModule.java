@@ -12,11 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
+import com.google.inject.Module;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 
-public class AccountModule extends AbstractKapuaModule {
+/**
+ * {@code kapua-account-internal} {@link Module} implementation.
+ *
+ * @since 1.6.0
+ */
+public class AccountModule extends AbstractKapuaModule implements Module {
+
     @Override
     protected void configureModule() {
         bind(AccountService.class).to(AccountServiceImpl.class);

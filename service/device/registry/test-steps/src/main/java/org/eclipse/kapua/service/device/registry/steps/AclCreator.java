@@ -189,7 +189,7 @@ public class AclCreator {
      * @return AccessInfoCreator instance for creating user permissions
      */
     private AccessInfoCreator accessInfoCreatorCreator(List<AclPermission> permissionList,
-            User user, Account account) {
+                                                       User user, Account account) {
 
         AccessInfoCreator accessInfoCreator = accessInfoFactory.newCreator(account.getId());
         accessInfoCreator.setUserId(user.getId());
@@ -246,7 +246,9 @@ public class AclCreator {
 
     Account createAccount(String name, String orgName, String orgEmail) throws KapuaException {
         configureAccountService(ROOT_SCOPE_ID, SYS_ID);
-        AccountCreator accountCreator = accountFactory.newCreator(ROOT_SCOPE_ID, name);
+
+        AccountCreator accountCreator = accountFactory.newCreator(ROOT_SCOPE_ID);
+        accountCreator.setName(name);
         accountCreator.setOrganizationName(orgName);
         accountCreator.setOrganizationEmail(orgEmail);
 

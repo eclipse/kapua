@@ -20,12 +20,12 @@ import org.eclipse.kapua.service.KapuaNamedEntityService;
 import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
+import javax.validation.constraints.NotNull;
+
 /**
- * AccountService exposes APIs to manage Account objects.<br>
- * It includes APIs to create, update, find, list and delete Accounts.<br>
- * Instances of the AccountService can be acquired through the ServiceLocator object.
+ * {@link Account} {@link KapuaEntityService}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface AccountService extends KapuaEntityService<Account, AccountCreator>,
         KapuaUpdatableEntityService<Account>,
@@ -33,31 +33,23 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
         KapuaConfigurableService {
 
     /**
-     * Finds the account by account identifiers
+     * Finds the {@link Account} by the {@link Account#getId()}.
      *
-     * @param id
-     * @return
+     * @param id The {@link Account#getId()}.
+     * @return The {@link Account} found or {@code null}.
      * @throws KapuaException
      */
-    Account find(KapuaId id) throws KapuaException;
+    Account find(@NotNull KapuaId id) throws KapuaException;
 
-    /**
-     * Returns the {@link AccountListResult} with elements matching the provided query.
-     *
-     * @param query The {@link AccountQuery} used to filter results.
-     * @return The {@link AccountListResult} with elements matching the query parameter.
-     * @throws KapuaException
-     * @since 1.0.0
-     */
     @Override
-    AccountListResult query(KapuaQuery query) throws KapuaException;
+    AccountListResult query(@NotNull KapuaQuery query) throws KapuaException;
 
     /**
-     * Returns a List of direct child account of the provided account identifier
+     * Returns an {@link AccountListResult} of direct child {@link Account} of the given {@link Account#getId()}.
      *
-     * @param accountId the Id of the parent Account
-     * @return List of direct child account of an account
+     * @param accountId The {@link Account#getId()}.
+     * @return The {@link AccountListResult} of direct child {@link Account}.
      * @throws KapuaException
      */
-    AccountListResult findChildrenRecursively(KapuaId accountId) throws KapuaException;
+    AccountListResult findChildrenRecursively(@NotNull KapuaId accountId) throws KapuaException;
 }

@@ -13,6 +13,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.steps;
 
+import com.google.inject.Singleton;
+import io.cucumber.datatable.DataTable;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
@@ -30,27 +39,15 @@ import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.cucumber.CucAccount;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
-import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.Account;
+import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountCreator;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountListResult;
+import org.eclipse.kapua.service.account.AccountQuery;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.Organization;
 import org.junit.Assert;
-
-import com.google.inject.Singleton;
-
-import io.cucumber.datatable.DataTable;
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-
-import org.eclipse.kapua.service.account.AccountQuery;
-import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.account.AccountAttributes;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
@@ -92,7 +89,7 @@ public class AccountServiceSteps extends TestBase {
         super(stepData);
     }
 
-    @After(value="@setup")
+    @After(value = "@setup")
     public void setServices() {
         locator = KapuaLocator.getInstance();
         accountFactory = locator.getFactory(AccountFactory.class);
@@ -105,7 +102,7 @@ public class AccountServiceSteps extends TestBase {
 
     // Setup and tear-down steps
 
-    @Before(value="@env_docker or @env_docker_base or @env_none", order=10)
+    @Before(value = "@env_docker or @env_docker_base or @env_none", order = 10)
     public void beforeScenarioNone(Scenario scenario) {
         updateScenario(scenario);
     }
@@ -547,7 +544,7 @@ public class AccountServiceSteps extends TestBase {
             account.setExpirationDate(expirationDate);
             account = accountService.update(account);
             stepData.put(LAST_ACCOUNT, account);
-        } catch (KapuaException|ParseException ex) {
+        } catch (KapuaException | ParseException ex) {
             verifyException(ex);
         }
     }
@@ -716,8 +713,9 @@ public class AccountServiceSteps extends TestBase {
      * @return The newly created account creator object.
      */
     private AccountCreator prepareRegularAccountCreator(KapuaId parentId, String name) {
-        AccountCreator tmpAccCreator = accountFactory.newCreator(parentId, name);
+        AccountCreator tmpAccCreator = accountFactory.newCreator(parentId);
 
+        tmpAccCreator.setName(name);
         tmpAccCreator.setOrganizationName("org_" + name);
         tmpAccCreator.setOrganizationPersonName(String.format("person_%s", name));
         tmpAccCreator.setOrganizationCountry("home_country");
@@ -767,14 +765,15 @@ public class AccountServiceSteps extends TestBase {
      * @return
      */
     private AccountCreator accountCreatorCreator(String name, BigInteger scopeId, Date expiration) {
-        AccountCreator accountCreator;
 
-        accountCreator = accountFactory.newCreator(new KapuaEid(scopeId), name);
+        AccountCreator accountCreator = accountFactory.newCreator(new KapuaEid(scopeId));
+        accountCreator.setName(name);
+        accountCreator.setOrganizationName("ACME Inc.");
+        accountCreator.setOrganizationEmail("some@one.com");
+
         if (expiration != null) {
             accountCreator.setExpirationDate(expiration);
         }
-        accountCreator.setOrganizationName("ACME Inc.");
-        accountCreator.setOrganizationEmail("some@one.com");
 
         return accountCreator;
     }
@@ -823,21 +822,21 @@ public class AccountServiceSteps extends TestBase {
     public void findMyAccountById() throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Account selfAccount = accountService.find(account.getId());
-        stepData.put(LAST_ACCOUNT,selfAccount);
+        stepData.put(LAST_ACCOUNT, selfAccount);
     }
 
     @When("I look for my account by id and scope id")
     public void findMyAccountByIdAndScopeId() throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Account selfAccount = accountService.find(account.getId(), account.getScopeId());
-        stepData.put(LAST_ACCOUNT,selfAccount);
+        stepData.put(LAST_ACCOUNT, selfAccount);
     }
 
     @When("I look for my account by name")
     public void findMyAccountByName() throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
         Account selfAccount = accountService.findByName(account.getName());
-        stepData.put(LAST_ACCOUNT,selfAccount);
+        stepData.put(LAST_ACCOUNT, selfAccount);
     }
 
     @Then("I am able to read my account info")

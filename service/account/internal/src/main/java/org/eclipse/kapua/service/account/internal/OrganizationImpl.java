@@ -18,9 +18,9 @@ import javax.persistence.Embeddable;
 import java.io.Serializable;
 
 /**
- * Organization entity implementation
+ * {@link Organization} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @Embeddable
 public class OrganizationImpl implements Organization, Serializable {

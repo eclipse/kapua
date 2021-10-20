@@ -12,10 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
+import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModule;
 import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
@@ -24,21 +21,31 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSetting;
 import org.eclipse.kapua.service.account.internal.setting.KapuaAccountSettingKeys;
 
-//@KapuaProvider
-public class AccountServiceModule extends ServiceEventModule {
+import javax.inject.Inject;
+import java.util.List;
+
+/**
+ * {@link AccountService} {@link ServiceModule} implementation.
+ *
+ * @since 1.0.0
+ */
+public class AccountServiceModule extends ServiceEventModule implements ServiceModule {
+
+    private static final KapuaAccountSetting ACCOUNT_SETTING = KapuaAccountSetting.getInstance();
 
     @Inject
     private AccountService accountService;
 
     @Override
     protected ServiceEventModuleConfiguration initializeConfiguration() {
-        KapuaAccountSetting settings = KapuaAccountSetting.getInstance();
-        String address = settings.getString(KapuaAccountSettingKeys.ACCOUNT_EVENT_ADDRESS);
-        List<ServiceEventClientConfiguration> secc = ServiceInspector.getEventBusClients(accountService, AccountService.class);
+        String address = ACCOUNT_SETTING.getString(KapuaAccountSettingKeys.ACCOUNT_EVENT_ADDRESS);
+
+        List<ServiceEventClientConfiguration> eventBusClients = ServiceInspector.getEventBusClients(accountService, AccountService.class);
+
         return new ServiceEventModuleConfiguration(
                 address,
                 AccountEntityManagerFactory.getInstance(),
-                secc.toArray(new ServiceEventClientConfiguration[0]));
+                eventBusClients.toArray(new ServiceEventClientConfiguration[0]));
     }
 
 }

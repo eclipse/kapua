@@ -21,7 +21,6 @@ import com.google.common.collect.Sets;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.sanselan.ImageFormat;
 import org.apache.sanselan.Sanselan;
-
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
@@ -74,7 +73,6 @@ import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,8 +131,9 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         GwtAccount gwtAccount = null;
         KapuaId parentAccountId = KapuaEid.parseCompactId(gwtAccountCreator.getParentAccountId());
         try {
-            AccountCreator accountCreator = ACCOUNT_FACTORY.newCreator(parentAccountId, gwtAccountCreator.getAccountName());
+            AccountCreator accountCreator = ACCOUNT_FACTORY.newCreator(parentAccountId);
 
+            accountCreator.setName(accountCreator.getName());
             accountCreator.setOrganizationName(gwtAccountCreator.getOrganizationName());
             accountCreator.setOrganizationPersonName(gwtAccountCreator.getOrganizationPersonName());
             accountCreator.setOrganizationEmail(gwtAccountCreator.getOrganizationEmail());
@@ -494,7 +493,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                                                         strValues.add(v.toString());
                                                     }
                                                 }
-                                                gwtParam.setValues(strValues.toArray(new String[]{ }));
+                                                gwtParam.setValues(strValues.toArray(new String[]{}));
                                             }
                                         }
                                     }

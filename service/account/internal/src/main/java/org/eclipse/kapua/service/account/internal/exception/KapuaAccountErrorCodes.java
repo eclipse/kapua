@@ -10,27 +10,21 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.account.internal;
+package org.eclipse.kapua.service.account.internal.exception;
 
 import org.eclipse.kapua.KapuaErrorCode;
 
 /**
- * Account error codes
+ * {@link KapuaAccountException} {@link KapuaErrorCode} implementation.
  *
- * since 1.0
- *
+ * @since 1.0.0
  */
 public enum KapuaAccountErrorCodes implements KapuaErrorCode {
-    /**
-     * Internal error
-     */
-    INTERNAL_ERROR,
-    /**
-     * Illegal argument
-     */
-    ILLEGAL_ARGUMENT,
+
     /**
      * Operation not allowed
+     *
+     * @since 1.0.0
      */
-    OPERATION_NOT_ALLOWED;
+    OPERATION_NOT_ALLOWED
 }

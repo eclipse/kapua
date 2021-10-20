@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
@@ -38,7 +37,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Account entity implementation.
+ * {@link Account} implementation.
  *
  * @since 1.0
  */
@@ -79,11 +78,13 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     private List<AccountImpl> childAccounts;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "expiration_date", nullable = false, updatable = true)
-    protected Date expirationDate;
+    @Column(name = "expiration_date", nullable = false)
+    private Date expirationDate;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     protected AccountImpl() {
         super();
@@ -92,7 +93,7 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     /**
      * Constructor.
      *
-     * @param scopeId
+     * @param scopeId The {@link Account#getScopeId()}.
      * @since 1.0.0
      */
     public AccountImpl(KapuaId scopeId) {
@@ -102,10 +103,10 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId
-     * @param name
+     * @param scopeId The {@link Account#getScopeId()}.
+     * @param name    The {@link Account#getName()}
      * @since 1.0.0
      */
     public AccountImpl(KapuaId scopeId, String name) {
@@ -117,10 +118,9 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
     /**
      * Clone constructor.
      *
-     * @throws KapuaException
      * @since 1.1.0
      */
-    public AccountImpl(Account account) throws KapuaException {
+    public AccountImpl(Account account) {
         super(account);
 
         setOrganization(new OrganizationImpl(account.getOrganization()));
@@ -158,7 +158,7 @@ public class AccountImpl extends AbstractKapuaNamedEntity implements Account {
         return new ArrayList<>(childAccounts);
     }
 
-    private void setChildAccounts(List<Account> childAccounts) throws KapuaException {
+    private void setChildAccounts(List<Account> childAccounts) {
         List<AccountImpl> accounts = new ArrayList<>();
 
         for (Account a : childAccounts) {

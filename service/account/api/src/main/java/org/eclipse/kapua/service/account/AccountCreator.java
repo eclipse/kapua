@@ -12,8 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account;
 
+import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.KapuaNamedEntityCreator;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.service.account.xml.AccountXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -24,188 +26,214 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 
 /**
- * {@link AccountCreator} {@link org.eclipse.kapua.model.KapuaEntityCreator} definition
+ * {@link Account} {@link KapuaEntityCreator} definition.
  *
  * @since 1.0.0
  */
 @XmlRootElement(name = "accountCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = {"organizationName",
-        "organizationPersonName",
-        "organizationEmail",
-        "organizationPhoneNumber",
-        "organizationAddressLine1",
-        "organizationAddressLine2",
-        "organizationCity",
-        "organizationZipPostCode",
-        "organizationStateProvinceCounty",
-        "organizationCountry",
-        "expirationDate"}, factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccountCreator")
+@XmlType(propOrder =
+        {
+                "organizationName",
+                "organizationPersonName",
+                "organizationEmail",
+                "organizationPhoneNumber",
+                "organizationAddressLine1",
+                "organizationAddressLine2",
+                "organizationCity",
+                "organizationZipPostCode",
+                "organizationStateProvinceCounty",
+                "organizationCountry",
+                "expirationDate"
+        },
+        factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccountCreator")
 public interface AccountCreator extends KapuaNamedEntityCreator<Account> {
 
     /**
-     * Get the organization name
+     * Gets the {@link Organization#getName()}.
      *
-     * @return
+     * @return The {@link Organization#getName()}.
+     * @since 1.0.0
      */
     @XmlElement(name = "organizationName")
     String getOrganizationName();
 
     /**
-     * Set the organization name
+     * Sets the {@link Organization#getName()}.
      *
-     * @param organizationName
+     * @param organizationName The {@link Organization#getName()}.
+     * @since 1.0.0
      */
     void setOrganizationName(String organizationName);
 
     /**
-     * Get organization referent name
+     * Gets the {@link Organization#getPersonName()}.
      *
-     * @return
+     * @return The {@link Organization#getPersonName()}.
+     * @since 1.0.0
      */
     @XmlElement(name = "organizationPersonName")
     String getOrganizationPersonName();
 
     /**
-     * Set organization referent name
+     * Sets the {@link Organization#getPersonName()}.
      *
-     * @param organizationPersonName
+     * @param organizationPersonName The {@link Organization#getPersonName()}.
+     * @since 1.0.0
      */
     void setOrganizationPersonName(String organizationPersonName);
 
     /**
-     * Get the organization email
+     * Gets the {@link Organization#getEmail()}.
      *
-     * @return
+     * @return The {@link Organization#getEmail()}.
+     * @since 1.0.0
      */
     @XmlElement(name = "organizationEmail")
     String getOrganizationEmail();
 
     /**
-     * Set the organization email
+     * Sets the {@link Organization#getEmail()}.
      *
-     * @param organizationEmail
+     * @param organizationEmail The {@link Organization#getEmail()}.
+     * @since 1.0.0
      */
     void setOrganizationEmail(String organizationEmail);
 
     /**
-     * Get the organization phone number
+     * Gets the {@link Organization#getPhoneNumber()}.
      *
-     * @return
+     * @return The {@link Organization#getPhoneNumber()}.
+     * @since 1.0.0
      */
     @XmlElement(name = "organizationPhoneNumber")
     String getOrganizationPhoneNumber();
 
     /**
-     * Set the organization phone number
+     * Sets the {@link Organization#getPhoneNumber()}.
      *
-     * @param organizationPhoneNumber
+     * @param organizationPhoneNumber The {@link Organization#getPhoneNumber()}.
+     * @since 1.0.0
      */
     void setOrganizationPhoneNumber(String organizationPhoneNumber);
 
     /**
-     * Get organization address (first line)
+     * Gets the {@link Organization#getAddressLine1()}.
      *
-     * @return
+     * @return The {@link Organization#getAddressLine1()}.
+     * @since 1.0.0
      */
     @XmlElement(name = "organizationAddressLine1")
     String getOrganizationAddressLine1();
 
     /**
-     * Set organization address (first line)
+     * Sets the {@link Organization#getAddressLine1()}.
      *
-     * @param organizationAddressLine1
+     * @param organizationAddressLine1 The {@link Organization#getAddressLine1()}.
+     * @since 1.0.0
      */
     void setOrganizationAddressLine1(String organizationAddressLine1);
 
     /**
-     * Get organization address (second line)
+     * Gets the {@link Organization#getAddressLine2()}.
      *
-     * @return
+     * @return The {@link Organization#getAddressLine2()}.
+     * @since 1.0.0
      */
     @XmlElement(name = "organizationAddressLine2")
     String getOrganizationAddressLine2();
 
     /**
-     * Set organization address (second line)
+     * Sets the {@link Organization#getAddressLine2()}.
      *
-     * @param organizationAddressLine2
+     * @param organizationAddressLine2 The {@link Organization#getAddressLine2()}.
+     * @since 1.0.0
      */
     void setOrganizationAddressLine2(String organizationAddressLine2);
 
     /**
-     * Get the organization city
+     * Gets the {@link Organization#getCity()}.
      *
-     * @return
+     * @return The {@link Organization#getCity()}.
+     * @since 1.0.0
      */
     @XmlElement(name = "organizationCity")
     String getOrganizationCity();
 
     /**
-     * Set the organization city
+     * Sets the {@link Organization#getCity()}.
      *
-     * @param organizationCity
+     * @param organizationCity The {@link Organization#getCity()}.
+     * @since 1.0.0
      */
     void setOrganizationCity(String organizationCity);
 
     /**
-     * Get organization postal zip code
+     * Gets the {@link Organization#getZipPostCode()}.
      *
-     * @return
+     * @return The {@link Organization#getZipPostCode()}.
+     * @since 1.0.0
      */
     @XmlElement(name = "organizationZipPostCode")
     String getOrganizationZipPostCode();
 
     /**
-     * Set organization postal zip code
+     * Sets the {@link Organization#getZipPostCode()}.
      *
-     * @param organizationZipPostCode
+     * @param organizationZipPostCode The {@link Organization#getZipPostCode()}.
+     * @since 1.0.0
      */
     void setOrganizationZipPostCode(String organizationZipPostCode);
 
     /**
-     * Get organization province or state (if it is a federal state) within a country
+     * Gets the {@link Organization#getStateProvinceCounty()}.
      *
-     * @return
+     * @return The {@link Organization#getStateProvinceCounty()}.
+     * @since 1.0.0
      */
     @XmlElement(name = "organizationStateProvinceCounty")
     String getOrganizationStateProvinceCounty();
 
     /**
-     * Set organization province or state (if it is a federal state) within a country
+     * Sets the {@link Organization#getStateProvinceCounty()}.
      *
-     * @param organizationStateProvinceCounty
+     * @param organizationStateProvinceCounty The {@link Organization#getStateProvinceCounty()}.
+     * @since 1.0.0
      */
     void setOrganizationStateProvinceCounty(String organizationStateProvinceCounty);
 
     /**
-     * Get the organization country
+     * Gets the {@link Organization#getCountry()}.
      *
-     * @return
+     * @return The {@link Organization#getCountry()}.
+     * @since 1.0.0
      */
     @XmlElement(name = "organizationCountry")
     String getOrganizationCountry();
 
     /**
-     * Set the organization country
+     * Sets the {@link Organization#getCountry()}.
      *
-     * @param organizationCountry
+     * @param organizationCountry The {@link Organization#getCountry()}.
+     * @since 1.0.0
      */
     void setOrganizationCountry(String organizationCountry);
 
     /**
-     * Get the expiration date
+     * Gets the expiration date.
      *
-     * @return the current Account expiration date
+     * @return The expiration date.
+     * @since 1.0.0
      */
     @XmlElement(name = "expirationDate")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getExpirationDate();
 
     /**
-     * Set the expiration date
+     * Sets the expiration date.
      *
-     * @param expirationDate the current Account expiration date
+     * @param expirationDate The expiration date.
+     * @since 1.0.0
      */
     void setExpirationDate(Date expirationDate);
 }

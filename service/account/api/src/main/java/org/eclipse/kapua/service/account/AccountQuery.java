@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.account;
 
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.account.xml.AccountXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
