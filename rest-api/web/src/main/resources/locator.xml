@@ -19,15 +19,6 @@
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
 
-        <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
-        <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
-        <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
-        <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService</api>
-        <api>org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory</api>
-        <api>org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService</api>
-        <api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
-        <api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
-
         <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
 
         <api>org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessageFactory</api>

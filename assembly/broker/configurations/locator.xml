@@ -30,16 +30,6 @@
         <api>org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationService</api>
         <api>org.eclipse.kapua.service.device.management.registry.operation.notification.ManagementOperationNotificationFactory</api>
 
-        <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
-        <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
-        <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>
-        <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService</api>
-        <api>org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionFactory</api>
-        <api>org.eclipse.kapua.service.device.registry.connection.option.DeviceConnectionOptionService</api>
-        <api>org.eclipse.kapua.service.device.registry.event.DeviceEventFactory</api>
-        <api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
-        <api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService</api>
-
         <api>org.eclipse.kapua.service.storable.model.id.StorableIdFactory</api>
         <api>org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory</api>
 

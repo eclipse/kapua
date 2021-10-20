@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.event.internal;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.eclipse.kapua.service.device.registry.event.DeviceEvent;
@@ -21,6 +20,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventListResult;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventQuery;
 
+import javax.inject.Singleton;
 import java.util.Date;
 
 /**
@@ -28,7 +28,7 @@ import java.util.Date;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class DeviceEventFactoryImpl implements DeviceEventFactory {
 
     @Override
