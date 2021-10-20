@@ -15,9 +15,8 @@ package org.eclipse.kapua.commons.util.xml;
 
 import com.google.common.base.Strings;
 import org.apache.commons.lang.SystemUtils;
-import org.eclipse.kapua.KapuaException;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
@@ -418,6 +417,8 @@ public class XmlUtil {
 
         if (eventCollector.hasEvents()) {
             for (ValidationEvent valEvent : eventCollector.getEvents()) {
+                LOG.warn("Unmarshal Validation Event: {} - {}", valEvent.getSeverity(), valEvent.getMessage(), valEvent.getLinkedException());
+
                 if (valEvent.getSeverity() != ValidationEvent.WARNING) {
                     String msg = MessageFormat.format("Line {0}, Col: {1}.{2}\tError message: {3}{2}\tLinked exception message:{4}",
                             valEvent.getLocator().getLineNumber(),

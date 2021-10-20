@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.account;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
+import org.eclipse.kapua.service.account.xml.AccountParentPathXmlAdapter;
 import org.eclipse.kapua.service.account.xml.AccountXmlRegistry;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -71,6 +72,7 @@ public interface Account extends KapuaNamedEntity {
      * @since 1.0.0
      */
     @XmlElement(name = "parentAccountPath")
+    @XmlJavaTypeAdapter(AccountParentPathXmlAdapter.class)
     String getParentAccountPath();
 
     /**
