@@ -16,9 +16,9 @@
 
 Feature: User role service integration tests
 
-Scenario: Init Security Context for all scenarios
+  Scenario: Init Security Context for all scenarios
 
-  Given Init Security Context
+    Given Init Security Context
 
   Scenario: Start datastore for all scenarios
 
@@ -1086,9 +1086,9 @@ Scenario: Init Security Context for all scenarios
     And Scope with ID 1
     And I create an account with name "SubAccount", organization name "organization" and email address "organization@gmail.com"
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And The account with name "kapua-sys" has 1 subaccount
     And I find account with name "SubAccount"
     And I create role "Role1" in account "SubAccount"
@@ -1127,9 +1127,9 @@ Scenario: Init Security Context for all scenarios
     And Scope with ID 1
     And I create an account with name "SubAccount", organization name "organization" and email address "organization@gmail.com"
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And The account with name "kapua-sys" has 1 subaccount
     And I find account with name "SubAccount"
     And I create role "Role1" in account "SubAccount"
@@ -1168,9 +1168,9 @@ Scenario: Init Security Context for all scenarios
     And Scope with ID 1
     And I create an account with name "SubAccount", organization name "organization" and email address "organization@gmail.com"
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And The account with name "kapua-sys" has 1 subaccount
     And I find account with name "SubAccount"
     And I create role "Role1" in account "SubAccount"
@@ -1210,9 +1210,9 @@ Scenario: Init Security Context for all scenarios
     And Scope with ID 1
     And I create an account with name "SubAccount", organization name "organization" and email address "organization@gmail.com"
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And The account with name "kapua-sys" has 1 subaccount
     And I find account with name "SubAccount"
     And I create role "Role1" in account "SubAccount"
@@ -1236,7 +1236,7 @@ Scenario: Init Security Context for all scenarios
     And I login as user with name "SubUser" and password "User@10031995"
     And I create an account with name "TestAccount", organization name "Organization" and email address "organization@org.com"
     And I find account with name "TestAccount"
-    And I expect the exception "KapuaAccountException" with the text "An illegal value was provided for the argument"
+    And I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument"
     When I change the account "TestAccount" name to "TestAccount1"
     Then An exception was thrown
     When I delete account "TestAccount"
@@ -1254,9 +1254,9 @@ Scenario: Init Security Context for all scenarios
     And I create endpoint with schema "TestEndpoint", domain "com" and port 8000
     And I create an account with name "SubAccount", organization name "organization" and email address "organization@gmail.com"
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And The account with name "kapua-sys" has 1 subaccount
     And I find account with name "SubAccount"
     And I create role "Role1" in account "SubAccount"
@@ -1298,9 +1298,9 @@ Scenario: Init Security Context for all scenarios
     And Scope with ID 1
     And I create an account with name "SubAccount", organization name "organization" and email address "organization@gmail.com"
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And The account with name "kapua-sys" has 1 subaccount
     And I find account with name "SubAccount"
     And I create role "Role1" in account "SubAccount"
@@ -1339,9 +1339,9 @@ Scenario: Init Security Context for all scenarios
     And Scope with ID 1
     And I create an account with name "SubAccount", organization name "organization" and email address "organization@gmail.com"
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And The account with name "kapua-sys" has 1 subaccount
     And I find account with name "SubAccount"
     And I create role "Role1" in account "SubAccount"
@@ -1383,9 +1383,9 @@ Scenario: Init Security Context for all scenarios
     And Scope with ID 1
     And I create an account with name "SubAccount", organization name "organization" and email address "organization@gmail.com"
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And The account with name "kapua-sys" has 1 subaccount
     And I find account with name "SubAccount"
     And I create role "Role1" in account "SubAccount"
@@ -1440,9 +1440,9 @@ Scenario: Init Security Context for all scenarios
     And Scope with ID 1
     And I create an account with name "SubAccount", organization name "organization" and email address "organization@gmail.com"
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And The account with name "kapua-sys" has 1 subaccount
     And I find account with name "SubAccount"
     And I create role "Role1" in account "SubAccount"
