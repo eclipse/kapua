@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account;
 
+import org.eclipse.kapua.service.account.xml.AccountXmlRegistry;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -74,7 +76,7 @@ public interface Organization {
     void setEmail(String email);
 
     /**
-     * Gets the  phone number.
+     * Gets the phone number.
      *
      * @return The phone number.
      * @since 1.0.0

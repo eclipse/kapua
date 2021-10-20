@@ -44,6 +44,8 @@ import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.account.internal.exception.KapuaAccountErrorCodes;
+import org.eclipse.kapua.service.account.internal.exception.KapuaAccountException;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
@@ -208,13 +210,13 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Verify unchanged parent account ID and parent account path
         if (!Objects.equals(oldAccount.getScopeId(), account.getScopeId())) {
-            throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.scopeId");
+            throw new KapuaIllegalArgumentException("account.scopeId", account.getScopeId().toStringId());
         }
         if (!oldAccount.getParentAccountPath().equals(account.getParentAccountPath())) {
-            throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.parentAccountPath");
+            throw new KapuaIllegalArgumentException("account.parentAccountPath", account.getParentAccountPath());
         }
         if (!oldAccount.getName().equals(account.getName())) {
-            throw new KapuaAccountException(KapuaAccountErrorCodes.ILLEGAL_ARGUMENT, null, "account.name");
+            throw new KapuaIllegalArgumentException("account.name", account.getName());
         }
 
         //

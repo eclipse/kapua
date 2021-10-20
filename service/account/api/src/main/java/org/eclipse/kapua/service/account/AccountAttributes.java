@@ -12,41 +12,84 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account;
 
+import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 
 /**
- * {@link AccountAttributes} attributes.
+ * {@link Account} {@link KapuaEntityAttributes}.
  *
- * @see org.eclipse.kapua.model.KapuaEntityAttributes
+ * @see KapuaEntityAttributes
  * @since 1.0.0
  */
 public class AccountAttributes extends KapuaNamedEntityAttributes {
 
+    /**
+     * @since 1.0.0
+     */
     public static final String PARENT_ACCOUNT_PATH = "parentAccountPath";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String CHILD_ACCOUNTS = "childAccounts";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String ORGANIZATION = "organization";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String ORGANIZATION_NAME = ORGANIZATION + ".name";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String ORGANIZATION_EMAIL = ORGANIZATION + ".email";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String EXPIRATION_DATE = "expirationDate";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String CONTACT_NAME = ORGANIZATION + ".personName";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String PHONE_NUMBER = ORGANIZATION + ".phoneNumber";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String ADDRESS_1 = ORGANIZATION + ".addressLine1";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String ADDRESS_2 = ORGANIZATION + ".addressLine2";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String ZIP_POST_CODE = ORGANIZATION + ".zipPostCode";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String ORGANIZATION_CITY = ORGANIZATION + ".city";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String STATE_PROVINCE = ORGANIZATION + ".stateProvinceCounty";
 
+    /**
+     * @since 1.0.0
+     */
     public static final String ORGANIZATION_COUNTRY = ORGANIZATION + ".country";
 }

@@ -215,7 +215,8 @@ public class SimpleRegistrationProcessor implements RegistrationProcessor {
 
         // define account
 
-        AccountCreator accountCreator = accountFactory.newCreator(settings.getRootAccount(), name);
+        AccountCreator accountCreator = accountFactory.newCreator(settings.getRootAccount());
+        accountCreator.setName(name);
         accountCreator.setOrganizationEmail(email);
         accountCreator.setOrganizationName(name);
         accountCreator.setExpirationDate(Date.from(Instant.now().plus(SimpleSetting.getInstance().getInt(SimpleSettingKeys.ACCOUNT_EXPIRATION_DATE_DAYS, 30), ChronoUnit.DAYS)));

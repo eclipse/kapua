@@ -648,7 +648,7 @@ public class AccountServiceSteps extends TestBase {
             account.setExpirationDate(expirationDate);
             account = accountService.update(account);
             stepData.put(LAST_ACCOUNT, account);
-        } catch (KapuaException|ParseException ex) {
+        } catch (KapuaException | ParseException ex) {
             verifyException(ex);
         }
     }
