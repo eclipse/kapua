@@ -15,12 +15,12 @@ package org.eclipse.kapua.service.device.registry.lifecycle.internal;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaOptimisticLockingException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.message.KapuaPosition;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthChannel;
@@ -49,7 +49,7 @@ import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleServic
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import javax.inject.Singleton;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +61,7 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class DeviceLifeCycleServiceImpl implements DeviceLifeCycleService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceLifeCycleServiceImpl.class);

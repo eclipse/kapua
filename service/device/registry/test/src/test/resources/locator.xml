@@ -14,11 +14,6 @@
 <!DOCTYPE xml>
 <locator-config>
     <provided>
-        <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
-        <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
-
-        <api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
-
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
         <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
     </provided>

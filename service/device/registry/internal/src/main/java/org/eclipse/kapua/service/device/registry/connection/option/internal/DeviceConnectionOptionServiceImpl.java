@@ -19,7 +19,6 @@ import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -39,13 +38,15 @@ import org.eclipse.kapua.service.device.registry.connection.option.DeviceConnect
 import org.eclipse.kapua.service.device.registry.connection.option.UserAlreadyReservedException;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 
+import javax.inject.Singleton;
+
 /**
  * DeviceConnectionService exposes APIs to retrieve Device connections under a scope.
  * It includes APIs to find, list, and update devices connections associated with a scope.
  *
  * @since 1.0
  */
-@KapuaProvider
+@Singleton
 public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService implements DeviceConnectionOptionService {
 
     public DeviceConnectionOptionServiceImpl() {
