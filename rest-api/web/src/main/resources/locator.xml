@@ -95,8 +95,6 @@
         <api>org.eclipse.kapua.service.storable.model.id.StorableIdFactory</api>
         <api>org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory</api>
 
-        <api>org.eclipse.kapua.service.stream.StreamService</api>
-
         <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
         <api>org.eclipse.kapua.message.device.data.KapuaDataMessageFactory</api>
 
