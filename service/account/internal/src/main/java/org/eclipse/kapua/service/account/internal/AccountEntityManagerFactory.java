@@ -12,18 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account.internal;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Entity manager factory for the account module.
+ * {@link AccountServiceImpl} {@link EntityManagerFactory} implementation.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class AccountEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
@@ -31,10 +30,12 @@ public class AccountEntityManagerFactory extends AbstractEntityManagerFactory im
     private static final String DATASOURCE_NAME = "kapua-dbpool";
     private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
 
-    private static AccountEntityManagerFactory instance = new AccountEntityManagerFactory();
+    private static final AccountEntityManagerFactory INSTANCE = new AccountEntityManagerFactory();
 
     /**
-     * Constructs a new entity manager factory and configure it to use the account persistence unit.
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     private AccountEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME,
@@ -43,11 +44,12 @@ public class AccountEntityManagerFactory extends AbstractEntityManagerFactory im
     }
 
     /**
-     * Return the {@link EntityManager} singleton instance
+     * Returns the {@link EntityManager} instance
      *
-     * @return
+     * @return The {@link EntityManager} instance.
+     * @since 1.0.0
      */
     public static AccountEntityManagerFactory getInstance() {
-        return instance;
+        return INSTANCE;
     }
 }

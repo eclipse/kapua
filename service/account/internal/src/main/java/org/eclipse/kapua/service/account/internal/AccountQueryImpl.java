@@ -35,11 +35,12 @@ public class AccountQueryImpl extends AbstractKapuaNamedQuery implements Account
     /**
      * Constructor.
      *
-     * @param scopeId The {@link #getScopeId()}.
+     * @param scopeId The {@link AccountQuery#getScopeId()}.
      * @since 1.0.0
      */
     public AccountQueryImpl(KapuaId scopeId) {
         this();
+
         setScopeId(scopeId);
     }
 }

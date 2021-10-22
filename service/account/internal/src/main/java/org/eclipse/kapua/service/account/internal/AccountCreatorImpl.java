@@ -42,10 +42,10 @@ public class AccountCreatorImpl extends AbstractKapuaNamedEntityCreator<Account>
     private Date expirationDate;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param scopeId the scope {@link KapuaId}
-     * @param name    the name
+     * @param scopeId The {@link AccountCreator#getScopeId()}.
+     * @param name    The {@link AccountCreator#getName()}.
      * @since 1.0.0
      */
     public AccountCreatorImpl(KapuaId scopeId, String name) {

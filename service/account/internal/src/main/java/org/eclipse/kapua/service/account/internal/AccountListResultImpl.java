@@ -17,9 +17,9 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountListResult;
 
 /**
- * Account list result implementation.
+ * {@link AccountListResult} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class AccountListResultImpl extends KapuaListResultImpl<Account> implements AccountListResult {
 

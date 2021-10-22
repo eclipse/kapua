@@ -12,9 +12,27 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account;
 
+import org.eclipse.kapua.model.domain.Domain;
+
+/**
+ * The {@code kapua-account-api} module {@link Domain} list.
+ *
+ * @since 1.0.0
+ */
 public class AccountDomains {
 
-    private AccountDomains() { }
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
+    private AccountDomains() {
+    }
 
+    /**
+     * The {@link Account} {@link Domain}
+     *
+     * @since 1.0.0
+     */
     public static final AccountDomain ACCOUNT_DOMAIN = new AccountDomain();
 }

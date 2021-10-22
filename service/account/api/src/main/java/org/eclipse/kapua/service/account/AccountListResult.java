@@ -12,22 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.account;
 
+import org.eclipse.kapua.model.query.KapuaListResult;
+import org.eclipse.kapua.service.account.xml.AccountXmlRegistry;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.eclipse.kapua.model.query.KapuaListResult;
-
 /**
- * Account result list definition.
+ * {@link Account} {@link KapuaListResult} definition.
  *
- * @since 1.0
- *
+ * @see KapuaListResult
+ * @since 1.0.0
  */
 @XmlRootElement(name = "accountListResult")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(factoryClass = AccountXmlRegistry.class,factoryMethod = "newAccountListResult")
+@XmlType(factoryClass = AccountXmlRegistry.class, factoryMethod = "newAccountListResult")
 public interface AccountListResult extends KapuaListResult<Account> {
 
 }
