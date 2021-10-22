@@ -89,8 +89,6 @@
         <api>org.eclipse.kapua.service.job.targets.JobTargetService</api>
         <api>org.eclipse.kapua.service.job.targets.JobTargetFactory</api>
 
-        <api>org.eclipse.kapua.service.stream.StreamService</api>
-
         <api>org.eclipse.kapua.service.job.JobFactory</api>
         <api>org.eclipse.kapua.service.job.JobService</api>
 

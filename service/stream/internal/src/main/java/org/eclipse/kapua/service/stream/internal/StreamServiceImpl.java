@@ -19,7 +19,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.message.Message;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.domain.Actions;
@@ -46,6 +45,7 @@ import org.eclipse.kapua.transport.TransportFacade;
 import org.eclipse.kapua.transport.exception.TransportClientGetException;
 import org.eclipse.kapua.transport.message.TransportMessage;
 
+import javax.inject.Singleton;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,7 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class StreamServiceImpl implements StreamService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
