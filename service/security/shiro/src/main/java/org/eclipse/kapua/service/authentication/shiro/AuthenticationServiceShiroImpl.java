@@ -28,6 +28,7 @@ import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.logging.LoggingMdcKeys;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -52,6 +53,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
+import org.eclipse.kapua.service.authentication.shiro.session.ShiroSessionKeys;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -203,8 +205,6 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 accessToken.setTrustKey(trustKey);
             }
 
-            // Set some logging
-            MDC.put(KapuaSecurityUtils.MDC_USER_ID, accessToken.getUserId().toCompactId());
             LOG.info("Login for thread '{}' - '{}' - '{}'", Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject);
 
         } catch (ShiroException se) {
@@ -256,7 +256,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
             // Set some logging
             Subject shiroSubject = SecurityUtils.getSubject();
-            MDC.put(KapuaSecurityUtils.MDC_USER_ID, accessToken.getUserId().toCompactId());
+            MDC.put(LoggingMdcKeys.USER_ID, accessToken.getUserId().toCompactId());
 
             LOG.info("Login for thread '{}' - '{}' - '{}'", Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject);
         } catch (ShiroException se) {
@@ -523,11 +523,11 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
      * @since 1.0
      */
     private AccessToken createAccessToken(KapuaEid scopeId, KapuaEid userId) throws KapuaException {
-
         // Retrieve TTL access token
         KapuaAuthenticationSetting settings = KapuaAuthenticationSetting.getInstance();
         long tokenTtl = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_TOKEN_EXPIRE_AFTER);
         long refreshTokenTtl = settings.getLong(KapuaAuthenticationSettingKeys.AUTHENTICATION_REFRESH_TOKEN_EXPIRE_AFTER);
+
         // Generate token
         Date now = new Date();
         String jwt = generateJwt(scopeId, userId, now, tokenTtl);
@@ -539,6 +539,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
                 new Date(now.getTime() + tokenTtl),
                 UUID.randomUUID().toString(),
                 new Date(now.getTime() + refreshTokenTtl));
+
         AccessToken accessToken;
         try {
             accessToken = KapuaSecurityUtils.doPrivileged(() -> accessTokenService.create(accessTokenCreator));
@@ -552,7 +553,15 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     private void establishSession(Subject subject, AccessToken accessToken, String openIDidToken) {
         KapuaSession kapuaSession = new KapuaSession(accessToken, accessToken.getScopeId(), accessToken.getUserId(), openIDidToken);
         KapuaSecurityUtils.setSession(kapuaSession);
-        subject.getSession().setAttribute(KapuaSession.KAPUA_SESSION_KEY, kapuaSession);
+
+        Session subjectSession = subject.getSession();
+        subjectSession.setAttribute(KapuaSession.KAPUA_SESSION_KEY, kapuaSession);
+
+        // Set some logging stuff
+        MDC.put(LoggingMdcKeys.SCOPE_ID, accessToken.getScopeId().toCompactId());
+        MDC.put(LoggingMdcKeys.ACCOUNT_NAME, (String) subjectSession.getAttribute(ShiroSessionKeys.ACCOUNT_NAME));
+        MDC.put(LoggingMdcKeys.USER_ID, accessToken.getUserId().toCompactId());
+        MDC.put(LoggingMdcKeys.USER_NAME, (String) subjectSession.getAttribute(ShiroSessionKeys.USER_NAME));
     }
 
     private String generateJwt(KapuaEid scopeId, KapuaEid userId, Date now, long ttl) {

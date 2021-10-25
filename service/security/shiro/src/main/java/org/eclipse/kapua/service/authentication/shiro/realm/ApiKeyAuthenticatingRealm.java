@@ -17,30 +17,20 @@ import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.DisabledAccountException;
-import org.apache.shiro.authc.ExpiredCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
-import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.shiro.ApiKeyCredentialsImpl;
-import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccountException;
-import org.eclipse.kapua.service.authentication.shiro.exceptions.TemporaryLockedAccountException;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.UserStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,26 +40,25 @@ import java.util.Map;
 /**
  * {@link ApiKeyCredentials} based {@link AuthenticatingRealm} implementation.
  *
- * since 1.0
- *
+ * @since 1.0.0
  */
-public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
+public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApiKeyAuthenticatingRealm.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ApiKeyAuthenticatingRealm.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
     /**
-     * Realm name
+     * Realm name.
      */
     public static final String REALM_NAME = "apiKeyAuthenticatingRealm";
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @throws KapuaException
+     * @since 1.0.0
      */
-    public ApiKeyAuthenticatingRealm() throws KapuaException {
+    public ApiKeyAuthenticatingRealm() {
         setName(REALM_NAME);
 
         CredentialsMatcher credentialsMather = new ApiKeyCredentialsMatcher();
@@ -87,49 +76,44 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
         //
         // Get Services
         UserService userService;
-        AccountService accountService;
         CredentialService credentialService;
 
         try {
             userService = LOCATOR.getService(UserService.class);
-            accountService = LOCATOR.getService(AccountService.class);
             credentialService = LOCATOR.getService(CredentialService.class);
         } catch (KapuaRuntimeException kre) {
             throw new ShiroException("Error while getting services!", kre);
         }
 
         //
-        // Find credentials
-        // FIXME: manage multiple credentials and multiple credentials type
+        // Find credential
         Credential credential = null;
         try {
             credential = KapuaSecurityUtils.doPrivileged(() -> credentialService.findByApiKey(tokenApiKey));
         } catch (AuthenticationException ae) {
             throw ae;
-        } catch (KapuaIllegalArgumentException kiae) {
-            logger.warn("Api Key value is not valid");
+        } catch (KapuaIllegalArgumentException ae) {
+            LOG.warn("The given Api Key is not valid. Subsequent UnknownAccountException expected! Given ApiKey: {}", tokenApiKey);
         } catch (Exception e) {
+
             throw new ShiroException("Error while find credentials!", e);
         }
 
-        // Check existence
-        if (credential == null) {
-            throw new UnknownAccountException();
-        }
+        //
+        // Check credential
+        checkCredential(credential);
 
-        // Check credential disabled
-        if (CredentialStatus.DISABLED.equals(credential.getStatus())) {
-            throw new DisabledAccountException();
-        }
+        //
+        // Get CredentialService config
+        Map<String, Object> credentialServiceConfig = getCredentialServiceConfig(credential.getScopeId());
 
-        // Check if credential expired
-        if (credential.getExpirationDate() != null && !credential.getExpirationDate().after(new Date())) {
-            throw new ExpiredCredentialsException();
-        }
+        //
+        // Check credential lockout
+        checkCredentialLockout(credential, credentialServiceConfig);
 
         //
         // Get the associated user by name
-        final User user;
+        User user;
         try {
             Credential finalCredential = credential;
             user = KapuaSecurityUtils.doPrivileged(() -> userService.find(finalCredential.getScopeId(), finalCredential.getUserId()));
@@ -139,66 +123,13 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
             throw new ShiroException("Error while find user!", e);
         }
 
-        // Check existence
-        if (user == null) {
-            throw new UnknownAccountException();
-        }
-
-        // Check disabled
-        if (UserStatus.DISABLED.equals(user.getStatus())) {
-            throw new DisabledAccountException();
-        }
-
-        // Check if expired
-        if (user.getExpirationDate() != null && !user.getExpirationDate().after(new Date())) {
-            throw new ExpiredCredentialsException();
-        }
+        //
+        // Check user
+        checkUser(user);
 
         //
-        // Find account
-        final Account account;
-        try {
-            account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(user.getScopeId()));
-        } catch (AuthenticationException ae) {
-            throw ae;
-        } catch (Exception e) {
-            throw new ShiroException("Error while find account!", e);
-        }
-
-        // Check existence
-        if (account == null) {
-            throw new UnknownAccountException();
-        }
-
-        // Check account expired
-        if (account.getExpirationDate() != null && !account.getExpirationDate().after(new Date())) {
-            throw new ExpiredAccountException(account.getExpirationDate());
-        }
-
-        // Check credential disabled
-        if (CredentialStatus.DISABLED.equals(credential.getStatus())) {
-            throw new DisabledAccountException();
-        }
-
-        // Check if credential expired
-        if (credential.getExpirationDate() != null && !credential.getExpirationDate().after(new Date())) {
-            throw new ExpiredCredentialsException();
-        }
-
-        // Check if lockout policy is blocking credential
-        Map<String, Object> credentialServiceConfig;
-        try {
-            credentialServiceConfig = KapuaSecurityUtils.doPrivileged(() -> credentialService.getConfigValues(account.getId()));
-            boolean lockoutPolicyEnabled = (boolean) credentialServiceConfig.get("lockoutPolicy.enabled");
-            if (lockoutPolicyEnabled) {
-                Date now = new Date();
-                if (credential.getLockoutReset() != null && now.before(credential.getLockoutReset())) {
-                    throw new TemporaryLockedAccountException(credential.getLockoutReset());
-                }
-            }
-        } catch (KapuaException kex) {
-            throw new ShiroException("Error while checking lockout policy", kex);
-        }
+        // Check account
+        Account account = checkAccount(user.getScopeId());
 
         //
         // BuildAuthenticationInfo
@@ -224,7 +155,8 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
                     boolean lockoutPolicyEnabled = (boolean) credentialServiceConfig.get("lockoutPolicy.enabled");
                     if (lockoutPolicyEnabled) {
                         Date now = new Date();
-                        int resetAfterSeconds = (int)credentialServiceConfig.get("lockoutPolicy.resetAfter");
+                        int resetAfterSeconds = (int) credentialServiceConfig.get("lockoutPolicy.resetAfter");
+
                         Date firstLoginFailure;
                         boolean resetAttempts = failedCredential.getFirstLoginFailure() == null || now.after(failedCredential.getLoginFailuresReset());
                         if (resetAttempts) {
@@ -234,12 +166,13 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
                             firstLoginFailure = failedCredential.getFirstLoginFailure();
                             failedCredential.setLoginFailures(failedCredential.getLoginFailures() + 1);
                         }
-                        Date loginFailureWindowExpiration = new Date(firstLoginFailure.getTime() + (resetAfterSeconds * 1000));
+
+                        Date loginFailureWindowExpiration = new Date(firstLoginFailure.getTime() + (resetAfterSeconds * 1000L));
                         failedCredential.setFirstLoginFailure(firstLoginFailure);
                         failedCredential.setLoginFailuresReset(loginFailureWindowExpiration);
-                        int maxLoginFailures = (int)credentialServiceConfig.get("lockoutPolicy.maxFailures");
+                        int maxLoginFailures = (int) credentialServiceConfig.get("lockoutPolicy.maxFailures");
                         if (failedCredential.getLoginFailures() >= maxLoginFailures) {
-                            long lockoutDuration = (int)credentialServiceConfig.get("lockoutPolicy.lockDuration");
+                            long lockoutDuration = (int) credentialServiceConfig.get("lockoutPolicy.lockDuration");
                             Date resetDate = new Date(now.getTime() + (lockoutDuration * 1000));
                             failedCredential.setLockoutReset(resetDate);
                         }
@@ -252,20 +185,14 @@ public class ApiKeyAuthenticatingRealm extends AuthenticatingRealm {
             }
             throw authenticationEx;
         }
-        Credential credential = (Credential) kapuaInfo.getCredentials();
-        credential.setFirstLoginFailure(null);
-        credential.setLoginFailuresReset(null);
-        credential.setLockoutReset(null);
-        credential.setLoginFailures(0);
-        try {
-            KapuaSecurityUtils.doPrivileged(() -> credentialService.update(credential));
-        } catch (KapuaException kex) {
-            throw new ShiroException("Error while updating lockout policy", kex);
-        }
-        Subject currentSubject = SecurityUtils.getSubject();
-        Session session = currentSubject.getSession();
-        session.setAttribute("scopeId", kapuaInfo.getUser().getScopeId());
-        session.setAttribute("userId", kapuaInfo.getUser().getId());
+
+        //
+        // Reset Credential lockout policy after successful login
+        resetCredentialLockout((Credential) kapuaInfo.getCredentials());
+
+        //
+        // Populate Session with info
+        populateSession(SecurityUtils.getSubject(), kapuaInfo);
     }
 
     @Override
