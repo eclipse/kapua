@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
         features = { "classpath:features/endpoint/EndpointServiceI9n.feature" },
         glue = {
                 "org.eclipse.kapua.service.user.steps",
+                "org.eclipse.kapua.qa.integration.steps",
                 "org.eclipse.kapua.service.endpoint.steps",
                 "org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.account.steps",

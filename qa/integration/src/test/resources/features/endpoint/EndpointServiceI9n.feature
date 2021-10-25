@@ -17,9 +17,10 @@ Feature: Endpoint Info Service Integration Tests
   Integration test scenarios for Endpoint Info service
 
 @setup
-Scenario: Init Security Context for all scenarios
-  Given Init Jaxb Context
-  And Init Security Context
+  Scenario: Start full docker environment
+    Given Init Jaxb Context
+    And Init Security Context
+    And Start full docker environment
 
   Scenario: Creating Valid Endpoint
   Login as kapua-sys
@@ -892,5 +893,5 @@ Scenario: Init Security Context for all scenarios
     And I logout
 
 @teardown
-Scenario: Reset Security Context for all scenarios
-    Given Reset Security Context
+  Scenario: Stop full docker environment
+    Given Stop full docker environment
