@@ -23,9 +23,6 @@
         <api>org.eclipse.kapua.service.storable.model.id.StorableIdFactory</api>
         <api>org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory</api>
 
-        <api>org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService</api>
-        <api>org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory</api>
-
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
 
         <api>org.eclipse.kapua.message.KapuaMessageFactory</api>

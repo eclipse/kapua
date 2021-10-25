@@ -12,10 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.bundle.internal;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
+
+import javax.inject.Singleton;
 
 /**
  * Device bundle entity service factory implementation.
@@ -23,7 +24,7 @@ import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
  * @since 1.0
  *
  */
-@KapuaProvider
+@Singleton
 public class DeviceBundleFactoryImpl implements DeviceBundleFactory {
 
     @Override

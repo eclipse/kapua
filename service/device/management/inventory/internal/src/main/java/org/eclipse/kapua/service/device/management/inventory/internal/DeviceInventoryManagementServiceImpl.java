@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.device.management.inventory.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
@@ -39,6 +38,7 @@ import org.eclipse.kapua.service.device.management.inventory.model.packages.Devi
 import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
+import javax.inject.Singleton;
 import java.util.Date;
 
 /**
@@ -46,7 +46,7 @@ import java.util.Date;
  *
  * @since 1.5.0
  */
-@KapuaProvider
+@Singleton
 public class DeviceInventoryManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceInventoryManagementService {
 
     private static final String SCOPE_ID = "scopeId";

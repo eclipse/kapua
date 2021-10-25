@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
@@ -36,6 +35,7 @@ import org.eclipse.kapua.service.device.management.exception.DeviceManagementReq
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.xml.sax.SAXException;
 
+import javax.inject.Singleton;
 import javax.xml.bind.JAXBException;
 import java.util.Date;
 
@@ -44,7 +44,7 @@ import java.util.Date;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceConfigurationManagementService {
 
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);

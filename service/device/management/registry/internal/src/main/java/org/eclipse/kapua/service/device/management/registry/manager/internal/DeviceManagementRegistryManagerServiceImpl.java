@@ -12,9 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.manager.internal;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService;
 
-@KapuaProvider
+import javax.inject.Singleton;
+
+@Singleton
 public class DeviceManagementRegistryManagerServiceImpl implements DeviceManagementRegistryManagerService {
 }

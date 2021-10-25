@@ -16,7 +16,6 @@ package org.eclipse.kapua.service.device.management.request.internal;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
@@ -30,6 +29,7 @@ import org.eclipse.kapua.service.device.management.request.message.request.Gener
 import org.eclipse.kapua.service.device.management.request.message.request.GenericRequestPayload;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
 
+import javax.inject.Singleton;
 import java.util.Date;
 
 /**
@@ -37,7 +37,7 @@ import java.util.Date;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class DeviceRequestManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceRequestManagementService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();

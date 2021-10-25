@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.packages.internal;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackageBundleInfo;
@@ -43,12 +42,14 @@ import org.eclipse.kapua.service.device.management.packages.model.uninstall.inte
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.internal.DevicePackageUninstallOptionsImpl;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.internal.DevicePackageUninstallRequestImpl;
 
+import javax.inject.Singleton;
+
 /**
  * {@link DevicePackageFactory} implementation.
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class DevicePackageFactoryImpl implements DevicePackageFactory {
 
     @Override
