@@ -77,6 +77,12 @@ paths:
       parameters:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: './job.yaml#/components/parameters/jobId'
+        - name: forced
+          in: query
+          description: Delete the Job forcibly. It can only be used by the system administrator.
+          schema:
+            type: boolean
+            default: false
       responses:
         204:
           description: The Job has been deleted
