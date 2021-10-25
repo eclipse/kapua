@@ -75,7 +75,7 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
             jwtProcessor = JwtProcessors.createDefault();
             setCredentialsMatcher(new JwtCredentialsMatcher(jwtProcessor));
         } catch (OpenIDException se) {
-            throw new ShiroException("Error while creating Jwt Processor!", se);
+            throw new ShiroException("Unexpected error while creating Jwt Processor!", se);
         }
     }
 
@@ -102,7 +102,7 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
             locator = KapuaLocator.getInstance();
             userService = locator.getService(UserService.class);
         } catch (KapuaRuntimeException kre) {
-            throw new ShiroException("Error while getting services!", kre);
+            throw new ShiroException("Unexpected error while loading KapuaServices!", kre);
         }
 
         String id = extractExternalId(idToken);
@@ -116,7 +116,7 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
-            throw new ShiroException("Error looking up the user", e);
+            throw new ShiroException("Unexpected error while looking for the user", e);
         }
 
         //
@@ -151,7 +151,7 @@ public class JwtAuthenticatingRealm extends KapuaAuthenticatingRealm implements 
         try {
             final JwtContext ctx = jwtProcessor.process(jwt);
             id = ctx.getJwtClaims().getClaimValueAsString(jwtProcessor.getExternalIdClaimName());
-        } catch (final Exception e) {
+        } catch (Exception e) {
             throw new ShiroException("Failed to parse JWT", e);
         }
 

@@ -82,7 +82,7 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
             userService = LOCATOR.getService(UserService.class);
             credentialService = LOCATOR.getService(CredentialService.class);
         } catch (KapuaRuntimeException kre) {
-            throw new ShiroException("Error while getting services!", kre);
+            throw new ShiroException("Unexpected error while loading KapuaServices!", kre);
         }
 
         //
@@ -95,8 +95,7 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (KapuaIllegalArgumentException ae) {
             LOG.warn("The given Api Key is not valid. Subsequent UnknownAccountException expected! Given ApiKey: {}", tokenApiKey);
         } catch (Exception e) {
-
-            throw new ShiroException("Error while find credentials!", e);
+            throw new ShiroException("Unexpected error while looking for the credentials!", e);
         }
 
         //
@@ -120,7 +119,7 @@ public class ApiKeyAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
-            throw new ShiroException("Error while find user!", e);
+            throw new ShiroException("Unexpected error while looking for the user!", e);
         }
 
         //
