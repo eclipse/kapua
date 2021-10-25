@@ -93,7 +93,7 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
-            throw new ShiroException("Internal error while looking for the account!", e);
+            throw new ShiroException("Unexpected error while looking for the account!", e);
         }
 
         // Check existence
@@ -177,7 +177,7 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
             CredentialService credentialService = LOCATOR.getService(CredentialService.class);
             return KapuaSecurityUtils.doPrivileged(() -> credentialService.getConfigValues(scopeId));
         } catch (KapuaException e) {
-            throw new ShiroException("Error while find credentials!", e);
+            throw new ShiroException("Unexpected error while looking for the CredentialService!", e);
         }
     }
 
@@ -198,7 +198,7 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
         try {
             KapuaSecurityUtils.doPrivileged(() -> credentialService.update(credential));
         } catch (KapuaException kex) {
-            throw new ShiroException("Error while updating lockout policy", kex);
+            throw new ShiroException("Unexpected error while looking for the lockout policy", kex);
         }
     }
 

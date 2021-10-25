@@ -87,7 +87,7 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
             userService = LOCATOR.getService(UserService.class);
             credentialService = LOCATOR.getService(CredentialService.class);
         } catch (KapuaRuntimeException kre) {
-            throw new ShiroException("Error while getting services!", kre);
+            throw new ShiroException("Unexpected error while loading KapuaServices!", kre);
         }
 
         //
@@ -98,7 +98,7 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
-            throw new ShiroException("Error while find user!", e);
+            throw new ShiroException("Unexpected error while looking for the user!", e);
         }
 
         //
@@ -124,7 +124,7 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
-            throw new ShiroException("Error while find credentials!", e);
+            throw new ShiroException("Unexpected error while looking for the credentials!", e);
         }
 
         //
@@ -164,8 +164,8 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
                 hasMfa = true;
             }
         } catch (KapuaException e) {
-            LOG.warn("Error while finding User. Error: {}", e.getMessage());
-            throw new ShiroException("Error while finding user!", e);
+            LOG.warn("Unexpected error while looking for the User. Error: {}", e.getMessage());
+            throw new ShiroException("Unexpected error while looking for the user!", e);
         }
 
         try {
@@ -218,7 +218,7 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
                     credentialService.update(failedCredential);
                 });
             } catch (KapuaException kex) {
-                throw new ShiroException("Error while updating lockout policy", kex);
+                throw new ShiroException("Unexpected error while updating the lockout policy", kex);
             }
             throw authenticationEx;
         }
