@@ -21,7 +21,6 @@ import org.eclipse.kapua.app.api.core.KapuaSerializableBodyWriter;
 import org.eclipse.kapua.app.api.core.ListBodyWriter;
 import org.eclipse.kapua.app.api.core.MoxyJsonConfigContextResolver;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;

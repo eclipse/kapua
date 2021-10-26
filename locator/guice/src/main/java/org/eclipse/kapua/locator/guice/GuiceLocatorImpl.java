@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,9 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.core.ServiceModuleConfiguration;
+import org.eclipse.kapua.commons.core.ServiceModuleJaxbClassConfig;
 import org.eclipse.kapua.commons.core.ServiceModuleProvider;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -58,10 +64,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
 
     public GuiceLocatorImpl(String resourceName) {
         try {
-            injector = init(resourceName);
-            ServiceModuleConfiguration.setConfigurationProvider(() -> {
-                return injector.getInstance(ServiceModuleProvider.class);
-            });
+            init(resourceName);
         } catch (Exception exc) {
             throw new KapuaRuntimeException(KapuaLocatorErrorCodes.INVALID_CONFIGURATION, exc);
         }
@@ -106,7 +109,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         return servicesList;
     }
 
-    private Injector init(String resourceName) throws Exception {
+    private void init(String resourceName) throws Exception {
         // Find locator configuration file. Exactly one non empty is expected.
         List<URL> locatorConfigurations = Arrays.asList(ResourceUtils.getResource(resourceName));
         if (locatorConfigurations.isEmpty()) {
@@ -138,10 +141,33 @@ public class GuiceLocatorImpl extends KapuaLocator {
         modules.add(new KapuaModule(resourceName));
         LOGGER.info("Module: {}, load DONE", KapuaModule.class.getSimpleName());
         LOGGER.info("==================================");
-        return Guice.createInjector(modules);
-    }
 
-    private boolean isExcluded(String className, Collection<String> excludedPkgs) {
+        List<Class<?>> xmlSerializables = new ArrayList<>();
+        Set<Class<?>> xmlSerializableClazzes = reflections.getTypesAnnotatedWith(XmlRootElement.class);
+        int collectedClasses = 0;
+        LOGGER.info("======= Finding Kapua Serializables ======");
+        for(Class<?> xmlSerializableClazz:xmlSerializableClazzes) {
+            if (isExcluded(xmlSerializableClazz.getName(), locatorConfig.getExcludedPackageNames()) || 
+                    xmlSerializableClazz.getAnnotation(XmlRootElement.class) == null) {
+                LOGGER.debug("Serializable class: {}, found .... EXCLUDED", xmlSerializableClazz.getSimpleName());
+                continue;
+            }
+            xmlSerializables.add(xmlSerializableClazz);
+            LOGGER.debug("JAXB Serializable class: {}, found .... COLLECTED", xmlSerializableClazz.getSimpleName());
+            collectedClasses++;
+        }
+        LOGGER.info("JAXB Serializable classes: {} COLLECTED", collectedClasses);
+        LOGGER.info("===========================================");
+
+        ServiceModuleJaxbClassConfig.setSerializables(xmlSerializables);
+
+        injector = Guice.createInjector(modules);
+        ServiceModuleConfiguration.setConfigurationProvider(() -> {
+            return injector.getInstance(ServiceModuleProvider.class);
+        });
+   }
+
+    private boolean isExcluded( String className, Collection<String> excludedPkgs) {
         if (className == null || className.isEmpty()) {
             return true;
         }
@@ -155,5 +181,16 @@ public class GuiceLocatorImpl extends KapuaLocator {
             }
         }
         return false;
+    }
+
+    private List<Class<? extends XmlAdapter>> getXmlTypeAdapters(Class<?> clazz) {
+        List<Class<? extends XmlAdapter>> list = new ArrayList<>();
+        for(Method method:clazz.getMethods()) {
+            XmlJavaTypeAdapter xmlJavaTypeAdatper = method.getDeclaredAnnotation(XmlJavaTypeAdapter.class);
+            if (xmlJavaTypeAdatper != null && xmlJavaTypeAdatper.value() != null) {
+                list.add(xmlJavaTypeAdatper.value());
+            }
+        }
+        return list;
     }
 }
