@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.call.DeviceMessageFactory;
 import org.eclipse.kapua.service.device.call.message.DeviceMessage;
 import org.eclipse.kapua.service.device.call.message.DevicePayload;
@@ -25,12 +24,14 @@ import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraReques
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 
+import javax.inject.Singleton;
+
 /**
  * {@link DeviceMessageFactory} {@link Kura} implementation.
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class KuraMessageFactoryImpl implements DeviceMessageFactory {
 
     @Override

@@ -12,20 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.call.DeviceCallFactory;
+
+import javax.inject.Singleton;
 
 /**
  * {@link DeviceCallFactory} {@link Kura} implementation.
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class KuraDeviceCallFactoryImpl implements DeviceCallFactory {
-
     @Override
     public KuraDeviceCallImpl newDeviceCall() {
         return new KuraDeviceCallImpl();
     }
-
 }
