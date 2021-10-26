@@ -42,7 +42,7 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Ddevice.management.response.stacktrace.show=\${DEVICE_MANAGEMENT_RESPONSE_STACKTRACE_SHOW:-false} \
                -Djavax.xml.bind.context.factory=org.eclipse.persistence.jaxb.JAXBContextFactory \
                -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR} \
-               -Djob.engine.client.auth.mode=trusted \
+               -Djob.engine.client.auth.mode=access_token \
                \${JETTY_DEBUG_OPTS}"
 
 USER 0
