@@ -34,8 +34,6 @@
         <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
         <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
 
-        <api>org.eclipse.kapua.service.device.management.message.request.KapuaRequestMessageFactory</api>
-
         <api>org.eclipse.kapua.service.device.management.job.scheduler.manager.JobDeviceManagementTriggerManagerService</api>
 
         <api>org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService</api>
