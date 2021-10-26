@@ -13,12 +13,12 @@
 package org.eclipse.kapua.service.job.step.internal;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.step.JobStep;
 import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class JobStepCreatorImpl extends AbstractKapuaNamedEntityCreator<JobStep> implements JobStepCreator {
 
     private static final long serialVersionUID = 3119071638220738358L;

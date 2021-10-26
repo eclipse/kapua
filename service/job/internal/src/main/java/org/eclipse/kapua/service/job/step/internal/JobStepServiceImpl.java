@@ -22,7 +22,6 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -50,6 +49,7 @@ import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.xml.bind.DatatypeConverter;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -59,7 +59,7 @@ import java.util.regex.Pattern;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class JobStepServiceImpl extends AbstractKapuaService implements JobStepService {
 
     @Inject

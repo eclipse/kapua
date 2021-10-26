@@ -17,7 +17,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -31,13 +30,14 @@ import org.eclipse.kapua.service.job.execution.JobExecutionService;
 import org.eclipse.kapua.service.job.internal.JobEntityManagerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * {@link JobExecutionService} implementation
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class JobExecutionServiceImpl extends AbstractKapuaService implements JobExecutionService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
