@@ -133,7 +133,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
         try {
             AccountCreator accountCreator = ACCOUNT_FACTORY.newCreator(parentAccountId);
 
-            accountCreator.setName(accountCreator.getName());
+            accountCreator.setName(gwtAccountCreator.getAccountName());
             accountCreator.setOrganizationName(gwtAccountCreator.getOrganizationName());
             accountCreator.setOrganizationPersonName(gwtAccountCreator.getOrganizationPersonName());
             accountCreator.setOrganizationEmail(gwtAccountCreator.getOrganizationEmail());
