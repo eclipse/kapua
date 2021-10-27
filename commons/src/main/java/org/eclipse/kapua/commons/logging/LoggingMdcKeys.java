@@ -47,14 +47,14 @@ public class LoggingMdcKeys {
     public static final String ACCOUNT_NAME = "scopeName";
 
     /**
-     * The {@link User#getId()}
+     * The {@link User#getId()}.
      *
      * @since 1.0.0
      */
     public static final String USER_ID = "userId";
 
     /**
-     * The {@link User#getName()} ()}
+     * The {@link User#getName()}.
      *
      * @since 1.6.0
      */
