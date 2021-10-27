@@ -20,23 +20,22 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.KapuaFileUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.certificate.Certificate;
+import org.eclipse.kapua.service.certificate.CertificateCreator;
 import org.eclipse.kapua.service.certificate.CertificateDomains;
+import org.eclipse.kapua.service.certificate.CertificateFactory;
 import org.eclipse.kapua.service.certificate.CertificateGenerator;
+import org.eclipse.kapua.service.certificate.CertificateListResult;
+import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.CertificateUsage;
 import org.eclipse.kapua.service.certificate.KeyUsage;
 import org.eclipse.kapua.service.certificate.KeyUsageSetting;
-import org.eclipse.kapua.service.certificate.Certificate;
-import org.eclipse.kapua.service.certificate.CertificateCreator;
-import org.eclipse.kapua.service.certificate.CertificateFactory;
-import org.eclipse.kapua.service.certificate.CertificateListResult;
-import org.eclipse.kapua.service.certificate.CertificateService;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateErrorCodes;
 import org.eclipse.kapua.service.certificate.exception.KapuaCertificateException;
 import org.eclipse.kapua.service.certificate.internal.setting.KapuaCertificateSetting;
@@ -45,12 +44,13 @@ import org.eclipse.kapua.service.certificate.util.CertificateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-@KapuaProvider
+@Singleton
 public class CertificateServiceImpl implements CertificateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(CertificateServiceImpl.class);

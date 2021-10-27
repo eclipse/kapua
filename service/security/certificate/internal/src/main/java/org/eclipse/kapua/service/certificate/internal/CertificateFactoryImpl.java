@@ -13,24 +13,25 @@
 package org.eclipse.kapua.service.certificate.internal;
 
 import org.eclipse.kapua.KapuaEntityCloneException;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.certificate.CertificateGenerator;
-import org.eclipse.kapua.service.certificate.CertificateUsage;
-import org.eclipse.kapua.service.certificate.KeyUsage;
-import org.eclipse.kapua.service.certificate.KeyUsageSetting;
 import org.eclipse.kapua.service.certificate.Certificate;
 import org.eclipse.kapua.service.certificate.CertificateCreator;
 import org.eclipse.kapua.service.certificate.CertificateFactory;
+import org.eclipse.kapua.service.certificate.CertificateGenerator;
 import org.eclipse.kapua.service.certificate.CertificateListResult;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
+import org.eclipse.kapua.service.certificate.CertificateUsage;
+import org.eclipse.kapua.service.certificate.KeyUsage;
+import org.eclipse.kapua.service.certificate.KeyUsageSetting;
+
+import javax.inject.Singleton;
 
 /**
  * {@link CertificateFactory} implementation.
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class CertificateFactoryImpl implements CertificateFactory {
 
     @Override

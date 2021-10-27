@@ -14,15 +14,10 @@
 <!DOCTYPE xml>
 <locator-config>
     <provided>
-        <api>org.eclipse.kapua.service.certificate.CertificateService</api>
-        <api>org.eclipse.kapua.service.certificate.CertificateFactory</api>
-        <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
-        <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
         <provide>
             <interceptor>annotation</interceptor>
             <with>Impl</with>
         </provide>
-
     </provided>
     <packages>
         <package>org.eclipse.kapua.commons</package>
