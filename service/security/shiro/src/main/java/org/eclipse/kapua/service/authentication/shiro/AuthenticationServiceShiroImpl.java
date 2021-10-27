@@ -206,7 +206,6 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             }
 
             LOG.info("Login for thread '{}' - '{}' - '{}'", Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject);
-
         } catch (ShiroException se) {
             handleTokenLoginException(se, currentUser, shiroAuthenticationToken);
         }
@@ -254,11 +253,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             // Enstablish session
             establishSession(currentUser, accessToken, null);
 
-            // Set some logging
-            Subject shiroSubject = SecurityUtils.getSubject();
-            MDC.put(LoggingMdcKeys.USER_ID, accessToken.getUserId().toCompactId());
-
-            LOG.info("Login for thread '{}' - '{}' - '{}'", Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject);
+            LOG.info("Login for thread '{}' - '{}' - '{}'", Thread.currentThread().getId(), Thread.currentThread().getName(), SecurityUtils.getSubject());
         } catch (ShiroException se) {
 
             KapuaAuthenticationException kae;
