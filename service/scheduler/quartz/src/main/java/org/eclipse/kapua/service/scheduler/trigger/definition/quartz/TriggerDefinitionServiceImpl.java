@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -31,13 +30,14 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionL
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * {@link TriggerDefinitionService} implementation.
  *
  * @since 1.1.0
  */
-@KapuaProvider
+@Singleton
 public class TriggerDefinitionServiceImpl extends AbstractKapuaService implements TriggerDefinitionService {
 
     @Inject

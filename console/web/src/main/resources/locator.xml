@@ -20,13 +20,6 @@
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
 
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerService</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerFactory</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory</api>
-
         <api>org.eclipse.kapua.service.storable.model.id.StorableIdFactory</api>
         <api>org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory</api>
 

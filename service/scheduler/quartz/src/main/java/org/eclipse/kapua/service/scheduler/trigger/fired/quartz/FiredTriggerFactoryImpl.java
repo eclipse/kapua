@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.scheduler.trigger.fired.quartz;
 
 import org.eclipse.kapua.KapuaEntityCloneException;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTrigger;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerCreator;
@@ -21,12 +20,14 @@ import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerQuery;
 
+import javax.inject.Singleton;
+
 /**
  * {@link FiredTriggerFactory} implementation.
  *
  * @since 1.5.0
  */
-@KapuaProvider
+@Singleton
 public class FiredTriggerFactoryImpl implements FiredTriggerFactory {
 
     @Override

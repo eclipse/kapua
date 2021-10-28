@@ -24,13 +24,7 @@
 
         <api>org.eclipse.kapua.job.engine.JobEngineService</api>
         <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
-
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
-
-        <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory</api>
-
+        
         <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
         <api>org.eclipse.kapua.message.device.data.KapuaDataMessageFactory</api>
 

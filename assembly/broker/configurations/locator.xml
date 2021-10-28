@@ -39,11 +39,7 @@
 
         <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService</api>
         <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory</api>
-
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory</api>
+        
         <api>org.eclipse.kapua.transport.TransportClientFactory</api>
         <provide>
             <interceptor>annotation</interceptor>
