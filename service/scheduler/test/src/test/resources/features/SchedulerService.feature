@@ -105,7 +105,7 @@ Feature: Scheduler Service
     Then I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "triggerExample" is created
     And The trigger is set to start on "10-10-2018" at "6:00"
-    And The trigger is set to end on "12-10-2018" at "6:00"
+    And The trigger is set to end tomorrow at "6:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And No exception was thrown
 
@@ -218,7 +218,7 @@ Feature: Scheduler Service
     And The trigger is set to start on "12-12-2020" at "10:10"
     And The trigger is set to end on "09-10-2018" at "6:00"
     And I try to create a new trigger entity from the existing creator
-    And I try to edit end date to "13-12-2020" at "10:00"
+    And I try to edit end date to tomorrow at "10:00"
     Then No exception was thrown
 
   Scenario: Update schedule which doesn't exist
