@@ -10,16 +10,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.keystore;
+package org.eclipse.kapua.service.device.management.job.manager.internal;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.service.device.management.keystore.internal.DeviceKeystoreManagementFactoryImpl;
-import org.eclipse.kapua.service.device.management.keystore.internal.DeviceKeystoreManagementServiceImpl;
+import org.eclipse.kapua.service.device.management.job.manager.JobDeviceManagementOperationManagerService;
 
-public class DeviceManagementKeystoreModule extends AbstractKapuaModule {
+public class DeviceManagementJobManagerModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(DeviceKeystoreManagementFactory.class).to(DeviceKeystoreManagementFactoryImpl.class);
-        bind(DeviceKeystoreManagementService.class).to(DeviceKeystoreManagementServiceImpl.class);
+        bind(JobDeviceManagementOperationManagerService.class).to(JobDeviceManagementOperationManagerServiceImpl.class);
     }
 }

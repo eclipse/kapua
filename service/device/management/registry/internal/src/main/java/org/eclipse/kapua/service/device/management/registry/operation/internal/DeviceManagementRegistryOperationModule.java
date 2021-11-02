@@ -10,16 +10,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management.inventory;
+package org.eclipse.kapua.service.device.management.registry.operation.internal;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.service.device.management.inventory.internal.DeviceInventoryManagementFactoryImpl;
-import org.eclipse.kapua.service.device.management.inventory.internal.DeviceInventoryManagementServiceImpl;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
+import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 
-public class DeviceManagementInventoryModule extends AbstractKapuaModule {
+public class DeviceManagementRegistryOperationModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(DeviceInventoryManagementFactory.class).to(DeviceInventoryManagementFactoryImpl.class);
-        bind(DeviceInventoryManagementService.class).to(DeviceInventoryManagementServiceImpl.class);
+        bind(DeviceManagementOperationFactory.class).to(DeviceManagementOperationFactoryImpl.class);
+        bind(DeviceManagementOperationRegistryService.class).to(DeviceManagementOperationRegistryServiceImpl.class);
     }
 }

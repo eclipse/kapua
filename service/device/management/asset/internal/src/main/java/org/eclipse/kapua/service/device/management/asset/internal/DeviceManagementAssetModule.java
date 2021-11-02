@@ -10,13 +10,11 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management;
+package org.eclipse.kapua.service.device.management.asset.internal;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
-import org.eclipse.kapua.service.device.management.asset.internal.DeviceAssetFactoryImpl;
-import org.eclipse.kapua.service.device.management.asset.internal.DeviceAssetManagementServiceImpl;
 
 public class DeviceManagementAssetModule extends AbstractKapuaModule {
     @Override

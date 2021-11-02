@@ -10,24 +10,15 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.management;
+package org.eclipse.kapua.service.device.management.snapshot.internal;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
-import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
-import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationFactoryImpl;
-import org.eclipse.kapua.service.device.management.configuration.internal.DeviceConfigurationManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
-import org.eclipse.kapua.service.device.management.snapshot.internal.DeviceSnapshotFactoryImpl;
-import org.eclipse.kapua.service.device.management.snapshot.internal.DeviceSnapshotManagementServiceImpl;
 
-public class DeviceManagementConfigurationModule extends AbstractKapuaModule {
+public class DeviceManagementSnapshotModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(DeviceConfigurationFactory.class).to(DeviceConfigurationFactoryImpl.class);
-        bind(DeviceConfigurationManagementService.class).to(DeviceConfigurationManagementServiceImpl.class);
-
         bind(DeviceSnapshotFactory.class).to(DeviceSnapshotFactoryImpl.class);
         bind(DeviceSnapshotManagementService.class).to(DeviceSnapshotManagementServiceImpl.class);
     }
