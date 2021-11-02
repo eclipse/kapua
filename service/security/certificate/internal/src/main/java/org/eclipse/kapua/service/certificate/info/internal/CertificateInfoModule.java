@@ -10,23 +10,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.certificate;
+package org.eclipse.kapua.service.certificate.info.internal;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoFactory;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
-import org.eclipse.kapua.service.certificate.info.internal.CertificateInfoFactoryImpl;
-import org.eclipse.kapua.service.certificate.info.internal.CertificateInfoServiceImpl;
-import org.eclipse.kapua.service.certificate.internal.CertificateFactoryImpl;
-import org.eclipse.kapua.service.certificate.internal.CertificateServiceImpl;
 
-public class CertificateModule extends AbstractKapuaModule {
+public class CertificateInfoModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(CertificateInfoFactory.class).to(CertificateInfoFactoryImpl.class);
         bind(CertificateInfoService.class).to(CertificateInfoServiceImpl.class);
-
-        bind(CertificateFactory.class).to(CertificateFactoryImpl.class);
-        bind(CertificateService.class).to(CertificateServiceImpl.class);
     }
 }
