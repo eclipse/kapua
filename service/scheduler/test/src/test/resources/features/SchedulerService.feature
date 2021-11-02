@@ -153,17 +153,6 @@ Feature: Scheduler Service
     And I set retry interval to 2
     And I try to create a new trigger entity from the existing creator
 
-  Scenario: Create scheduler with invalid Retry Interval property
-  Creating scheduler with Interval Job scheduler property and invalid retry interval expression.
-
-    Given I create a job with the name "job1"
-    When I find scheduler properties with name "Interval Job"
-    And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at "10:00"
-    And I set retry interval to 2222222222222
-    And I try to create a new trigger entity from the existing creator
-    Then An exception was thrown
-
   Scenario: Create scheduler without Retry Interval property
   Creating scheduler with Interval Job scheduler property and empty retry interval expression.
 
