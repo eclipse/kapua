@@ -183,6 +183,7 @@ Feature: Scheduler Service
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
     And The trigger is set to start today at "10:00"
+    And I set cron expression to "* * * ? * *"
     And I try to create a new trigger entity from the existing creator
     And I try to edit trigger definition to "Cron Job"
     Then No exception was thrown
