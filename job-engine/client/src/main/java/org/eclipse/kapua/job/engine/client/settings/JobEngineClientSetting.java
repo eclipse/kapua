@@ -13,24 +13,27 @@
 package org.eclipse.kapua.job.engine.client.settings;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
+import org.eclipse.kapua.job.engine.client.JobEngineServiceClient;
 
+/**
+ * {@link JobEngineServiceClient} {@link AbstractKapuaSetting}s
+ *
+ * @since 1.5.0
+ */
 public class JobEngineClientSetting extends AbstractKapuaSetting<JobEngineClientSettingKeys> {
 
     /**
      * Resource file from which source properties.
-     *
      */
     private static final String JOB_ENGINE_SETTING_RESOURCE = "job-engine-client-setting.properties";
 
     /**
      * Singleton instance of this {@link Class}.
-     *
      */
     private static final JobEngineClientSetting INSTANCE = new JobEngineClientSetting();
 
     /**
      * Initialize the {@link AbstractKapuaSetting} with the {@link JobEngineClientSetting#JOB_ENGINE_SETTING_RESOURCE} value.
-     *
      */
     private JobEngineClientSetting() {
         super(JOB_ENGINE_SETTING_RESOURCE);

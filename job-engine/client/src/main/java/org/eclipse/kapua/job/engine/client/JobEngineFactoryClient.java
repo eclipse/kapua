@@ -16,9 +16,13 @@ import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaProvider;
 
+/**
+ * {@link JobEngineFactory} remote client implementation
+ *
+ * @since 1.5.0
+ */
 @KapuaProvider
 public class JobEngineFactoryClient implements JobEngineFactory {
-
 
     @Override
     public JobStartOptions newJobStartOptions() {

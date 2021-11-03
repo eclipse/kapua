@@ -13,24 +13,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.security;
 
-import java.util.concurrent.Callable;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.Callable;
+
 /**
- * Kapua security utility to handle the bind/unbind operation of the Kapua session into the thread context.
+ * Security utilities to handle the {@link KapuaSession}.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class KapuaSecurityUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(KapuaSecurityUtils.class);
-
-    public static final String MDC_USER_ID = "userId";
+    private static final Logger LOG = LoggerFactory.getLogger(KapuaSecurityUtils.class);
 
     private static final ThreadLocal<KapuaSession> THREAD_SESSION = new ThreadLocal<>();
 
@@ -38,47 +36,47 @@ public class KapuaSecurityUtils {
     }
 
     /**
-     * Return the {@link KapuaSession} associated to the current thread session.
+     * Returns the {@link KapuaSession} associated to the current {@link ThreadLocal}.
      *
-     * @return
+     * @return The {@link KapuaSession} associated to the current {@link ThreadLocal}.
+     * @since 1.0.0
      */
     public static KapuaSession getSession() {
         return THREAD_SESSION.get();
     }
 
     /**
-     * Bound the {@link KapuaSession} to the current thread session.
+     * Bounds the {@link KapuaSession} to the current {@link ThreadLocal}.
      *
-     * @param session
+     * @param session The {@link KapuaSession} to the current {@link ThreadLocal}.
+     * @since 1.0.0
      */
     public static void setSession(KapuaSession session) {
         THREAD_SESSION.set(session);
     }
 
     /**
-     * Clear the {@link KapuaSession} from the current thread session.
+     * Clears the {@link KapuaSession} from the current {@link ThreadLocal}.
+     *
+     * @since 1.0.0
      */
     public static void clearSession() {
         THREAD_SESSION.remove();
     }
 
     /**
-     * Execute the {@link Runnable} in a privileged context.<br>
-     * Trusted mode means that checks for permissions and role will pass.
+     * Executes the {@link Runnable} in a privileged context.
+     * <p>
+     * Trusted mode means that checks for permissions and role will be skipped.
      *
-     * @param runnable
-     *            The {@link ThrowingRunnable} action to be executed.
+     * @param runnable The {@link ThrowingRunnable} action to be executed.
      * @throws KapuaException
+     * @since 1.0.0
      */
     public static void doPrivileged(final ThrowingRunnable runnable) throws KapuaException {
-        doPrivileged(new Callable<Void>() {
-
-            @Override
-            public Void call() throws Exception {
-                runnable.run();
-                return null;
-            }
-
+        doPrivileged((Callable<Void>) () -> {
+            runnable.run();
+            return null;
         });
     }
 
@@ -86,8 +84,7 @@ public class KapuaSecurityUtils {
      * Execute the {@link Callable} in a privileged context.<br>
      * Trusted mode means that checks for permissions and role will pass.
      *
-     * @param privilegedAction
-     *            The {@link Callable} action to be executed.
+     * @param privilegedAction The {@link Callable} action to be executed.
      * @return The result of the {@link Callable} action.
      * @throws KapuaException
      * @since 1.0.0
@@ -95,15 +92,23 @@ public class KapuaSecurityUtils {
     public static <T> T doPrivileged(Callable<T> privilegedAction) throws KapuaException {
         // get (and keep) the current session
         KapuaSession previousSession = getSession();
-        KapuaSession currentSession = null;
 
+        KapuaSession currentSession;
         if (previousSession == null) {
-            logger.debug("==> create new session");
             currentSession = new KapuaSession(null, KapuaId.ONE, KapuaId.ONE);
             currentSession.setTrustedMode(true);
+            LOG.debug("Created a new KapuaSession as ScopeId: {} - UserId: {} - Trusted: {} - Token: {}",
+                    currentSession.getScopeId(),
+                    currentSession.getUserId(),
+                    currentSession.isTrustedMode(),
+                    currentSession.getAccessToken() != null ? currentSession.getAccessToken().getTokenId() : null);
         } else {
-            logger.debug("==> clone from previous session");
             currentSession = KapuaSession.createFrom();
+            LOG.debug("Cloning KapuaSession as ScopeId: {} - UserId: {} - Trusted: {} - Token: {}",
+                    currentSession.getScopeId(),
+                    currentSession.getUserId(),
+                    currentSession.isTrustedMode(),
+                    currentSession.getAccessToken() != null ? currentSession.getAccessToken().getTokenId() : null);
         }
         setSession(currentSession);
 
@@ -114,7 +119,7 @@ public class KapuaSecurityUtils {
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         } finally {
-            // restore the original session
+            // Restore the original session.
             setSession(previousSession);
         }
     }

@@ -12,17 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.core.filter;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.kapua.app.api.core.auth.KapuaTokenAuthenticationFilter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.job.engine.JobEngineHttpHeaders;
+import org.eclipse.kapua.job.engine.client.filter.SessionInfoHttpHeaders;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
+
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 public class RebuildSessionFilter extends KapuaTokenAuthenticationFilter {
 
@@ -31,11 +31,11 @@ public class RebuildSessionFilter extends KapuaTokenAuthenticationFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String authMode = httpRequest.getHeader(JobEngineHttpHeaders.AUTH_MODE);
+        String authMode = httpRequest.getHeader(SessionInfoHttpHeaders.AUTH_MODE);
         switch (authMode) {
             case "trusted":
-                KapuaId scopeId = kapuaIdFactory.newKapuaId(httpRequest.getHeader(JobEngineHttpHeaders.SCOPE_ID_HTTP_HEADER));
-                KapuaId userId = kapuaIdFactory.newKapuaId(httpRequest.getHeader(JobEngineHttpHeaders.USER_ID_HTTP_HEADER));
+                KapuaId scopeId = kapuaIdFactory.newKapuaId(httpRequest.getHeader(SessionInfoHttpHeaders.SCOPE_ID_HTTP_HEADER));
+                KapuaId userId = kapuaIdFactory.newKapuaId(httpRequest.getHeader(SessionInfoHttpHeaders.USER_ID_HTTP_HEADER));
                 KapuaSecurityUtils.setSession(KapuaSession.createFrom(scopeId, userId));
                 return true;
             case "access_token":

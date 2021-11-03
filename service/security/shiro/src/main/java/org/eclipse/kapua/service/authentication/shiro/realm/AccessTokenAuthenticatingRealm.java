@@ -12,30 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.realm;
 
-import java.util.Date;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.DisabledAccountException;
 import org.apache.shiro.authc.ExpiredCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.apache.shiro.subject.Subject;
-
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AccessTokenCredentials;
 import org.eclipse.kapua.service.authentication.shiro.AccessTokenCredentialsImpl;
-import org.eclipse.kapua.service.authentication.shiro.exceptions.ExpiredAccountException;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.AccessTokenAttributes;
 import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
@@ -43,17 +37,18 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenQuery;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
-import org.eclipse.kapua.service.user.UserStatus;
+
+import java.util.Date;
 
 /**
  * {@link AccessTokenCredentials} based {@link AuthenticatingRealm} implementation.
- * <p>
- * since 1.0
+ *
+ * @since 1.0.0
  */
-public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
+public class AccessTokenAuthenticatingRealm extends KapuaAuthenticatingRealm {
 
     /**
-     * Realm name
+     * Realm name.
      */
     public static final String REALM_NAME = "accessTokenAuthenticatingRealm";
 
@@ -61,19 +56,18 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
 
     private static final AccessTokenService ACCESS_TOKEN_SERVICE = LOCATOR.getService(AccessTokenService.class);
     private static final AccessTokenFactory ACCESS_TOKEN_FACTORY = LOCATOR.getFactory(AccessTokenFactory.class);
-    private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
     private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
 
     /**
      * Constructor
      *
-     * @throws KapuaException
+     * @since 1.0.0
      */
-    public AccessTokenAuthenticatingRealm() throws KapuaException {
+    public AccessTokenAuthenticatingRealm() {
         setName(REALM_NAME);
 
-        // Credential matcher for access tokens
-        setCredentialsMatcher(new AccessTokenCredentialsMatcher());
+        CredentialsMatcher credentialsMatcher = new AccessTokenCredentialsMatcher();
+        setCredentialsMatcher(credentialsMatcher);
     }
 
     @Override
@@ -101,7 +95,7 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
-            throw new ShiroException("Error while find access token!", e);
+            throw new ShiroException("Unexpected error while looking for the access token!", e);
         }
 
         // Check existence
@@ -123,44 +117,16 @@ public class AccessTokenAuthenticatingRealm extends AuthenticatingRealm {
         } catch (AuthenticationException ae) {
             throw ae;
         } catch (Exception e) {
-            throw new ShiroException("Error while find user!", e);
-        }
-
-        // Check existence
-        if (user == null) {
-            throw new UnknownAccountException();
-        }
-
-        // Check disabled
-        if (UserStatus.DISABLED.equals(user.getStatus())) {
-            throw new DisabledAccountException();
-        }
-
-        // Check if expired
-        if (user.getExpirationDate() != null && !user.getExpirationDate().after(now)) {
-            throw new ExpiredCredentialsException();
+            throw new ShiroException("Unexpected error while looking for the user!", e);
         }
 
         //
-        // Find account
-        final Account account;
-        try {
-            account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(user.getScopeId()));
-        } catch (AuthenticationException ae) {
-            throw ae;
-        } catch (Exception e) {
-            throw new ShiroException("Error while find account!", e);
-        }
+        // Check user
+        checkUser(user);
 
-        // Check existence
-        if (account == null) {
-            throw new UnknownAccountException();
-        }
-
-        // Check account expired
-        if (account.getExpirationDate() != null && !account.getExpirationDate().after(now)) {
-            throw new ExpiredAccountException(account.getExpirationDate());
-        }
+        //
+        // Check account
+        Account account = checkAccount(user.getScopeId());
 
         //
         // BuildAuthenticationInfo
