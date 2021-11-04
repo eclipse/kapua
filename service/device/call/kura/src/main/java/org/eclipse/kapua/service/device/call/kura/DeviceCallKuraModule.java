@@ -10,13 +10,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.device.call;
+package org.eclipse.kapua.service.device.call.kura;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.service.device.call.kura.KuraDeviceCallFactoryImpl;
-import org.eclipse.kapua.service.device.call.kura.KuraMessageFactoryImpl;
+import org.eclipse.kapua.service.device.call.DeviceCallFactory;
+import org.eclipse.kapua.service.device.call.DeviceMessageFactory;
 
-public class DeviceCallModule extends AbstractKapuaModule {
+public class DeviceCallKuraModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(DeviceCallFactory.class).to(KuraDeviceCallFactoryImpl.class);
