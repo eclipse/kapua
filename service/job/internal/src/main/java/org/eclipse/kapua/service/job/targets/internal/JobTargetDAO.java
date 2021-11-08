@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
-import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.job.targets.JobTarget;
@@ -28,7 +27,6 @@ import org.eclipse.kapua.service.job.targets.JobTargetStatus;
  * JobTarget DAO
  *
  * @since 1.0
- *
  */
 public class JobTargetDAO {
 
@@ -87,17 +85,6 @@ public class JobTargetDAO {
     }
 
     /**
-     * Finds the jobTarget by name
-     *
-     * @param em
-     * @param name
-     * @return
-     */
-    public static JobTarget findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, JobTargetImpl.class, KapuaNamedEntityAttributes.NAME, name);
-    }
-
-    /**
      * Returns the jobTarget list matching the provided query
      *
      * @param em
@@ -130,8 +117,7 @@ public class JobTargetDAO {
      * @param scopeId
      * @param jobTargetId
      * @return deleted entity
-     * @throws KapuaEntityNotFoundException
-     *             If the {@link JobTarget} is not found
+     * @throws KapuaEntityNotFoundException If the {@link JobTarget} is not found
      */
     public static JobTarget delete(EntityManager em, KapuaId scopeId, KapuaId jobTargetId) throws KapuaEntityNotFoundException {
         return ServiceDAO.delete(em, JobTargetImpl.class, scopeId, jobTargetId);

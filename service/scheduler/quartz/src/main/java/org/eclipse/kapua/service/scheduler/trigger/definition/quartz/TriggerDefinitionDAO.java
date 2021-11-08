@@ -19,7 +19,6 @@ import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
-import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionCreator;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionListResult;
 
@@ -101,7 +100,7 @@ public class TriggerDefinitionDAO {
      * @since 1.1.0
      */
     public static TriggerDefinition findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, TriggerDefinitionImpl.class, TriggerDefinitionAttributes.NAME, name);
+        return ServiceDAO.findByName(em, TriggerDefinitionImpl.class, name);
     }
 
     /**

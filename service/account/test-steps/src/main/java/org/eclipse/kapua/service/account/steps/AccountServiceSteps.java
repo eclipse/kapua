@@ -34,7 +34,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
 import org.eclipse.kapua.qa.common.cucumber.CucAccount;
@@ -781,7 +780,7 @@ public class AccountServiceSteps extends TestBase {
     @And("I find account with name {string}")
     public void iFindAccountWithName(String accountName) throws Exception {
         AccountQuery accountQuery = accountFactory.newQuery(getCurrentScopeId());
-        accountQuery.setPredicate(accountQuery.attributePredicate(AccountAttributes.NAME, accountName, AttributePredicate.Operator.EQUAL));
+        accountQuery.setPredicate(accountQuery.attributePredicate(AccountAttributes.NAME, accountName));
         AccountListResult accountListResult = accountService.query(accountQuery);
         Assert.assertTrue(accountListResult.getSize() > 0);
     }

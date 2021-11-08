@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
-import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
@@ -82,6 +81,10 @@ public class JobStepDefinitionDAO {
         return ServiceDAO.find(em, JobStepDefinitionImpl.class, scopeId, stepDefinitionId);
     }
 
+    public static JobStepDefinition findByName(EntityManager em, String name) {
+        return ServiceDAO.findByName(em, JobStepDefinitionImpl.class, name);
+    }
+
     /**
      * Returns the stepDefinition list matching the provided query
      *
@@ -119,10 +122,6 @@ public class JobStepDefinitionDAO {
      */
     public static JobStepDefinition delete(EntityManager em, KapuaId scopeId, KapuaId stepDefinitionId) throws KapuaEntityNotFoundException {
         return ServiceDAO.delete(em, JobStepDefinitionImpl.class, scopeId, stepDefinitionId);
-    }
-
-    public static JobStepDefinition findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, JobStepDefinitionImpl.class, KapuaNamedEntityAttributes.NAME, name);
     }
 
 }
