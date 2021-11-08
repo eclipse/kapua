@@ -14,6 +14,8 @@ package org.eclipse.kapua.commons.service.internal;
 
 import com.google.common.base.MoreObjects;
 import org.apache.commons.lang.ArrayUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.KapuaEntityExistsException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
@@ -30,6 +32,8 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
+import org.eclipse.kapua.model.KapuaNamedEntity;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
@@ -61,9 +65,6 @@ import org.eclipse.kapua.service.authorization.role.RolePermission;
 import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +84,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -150,15 +150,21 @@ public class ServiceDAO {
         }
     }
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     protected ServiceDAO() {
     }
 
     /**
-     * Create {@link KapuaEntity} utility method.<br>
+     * Persists the {@link KapuaEntity}.
+     * <p>
      * This method checks for the constraint violation and, in this case, it throws a specific exception ({@link KapuaEntityExistsException}).
      *
      * @param em     The {@link EntityManager} that holds the transaction.
-     * @param entity The {@link KapuaEntity} to be created.
+     * @param entity The {@link KapuaEntity} to be persisted.
      * @return The persisted {@link KapuaEntity}.
      * @since 1.0.0
      */
@@ -185,12 +191,12 @@ public class ServiceDAO {
     }
 
     /**
-     * Find {@link KapuaEntity} utility method
+     * Finds a {@link KapuaEntity}.
      *
      * @param em       The {@link EntityManager} that holds the transaction.
      * @param clazz    The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param scopeId  The {@link KapuaEntity} scopeId of the entity to be found.
-     * @param entityId The {@link KapuaEntity} {@link KapuaId} of the entity to be found.
+     * @param scopeId  The {@link KapuaEntity#getScopeId()} the entity to be found.
+     * @param entityId The {@link KapuaEntity#getId()} of the entity to be found.
      * @since 1.0.0
      */
     public static <E extends KapuaEntity> E find(@NonNull EntityManager em, @NonNull Class<E> clazz, @Nullable KapuaId scopeId, @NonNull KapuaId entityId) {
@@ -216,13 +222,13 @@ public class ServiceDAO {
     }
 
     /**
-     * Update {@link KapuaUpdatableEntity} utility method.
+     * Updates the {@link KapuaUpdatableEntity}.
      *
      * @param em     The {@link EntityManager} that holds the transaction.
      * @param clazz  The {@link KapuaUpdatableEntity} class. This must be the implementing {@code class}.
-     * @param entity The {@link KapuaUpdatableEntity} to be updated
+     * @param entity The {@link KapuaUpdatableEntity} to be updated.
      * @return The updated {@link KapuaUpdatableEntity}.
-     * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
+     * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exist.
      * @since 1.0.0
      */
     public static <E extends KapuaUpdatableEntity> E update(@NonNull EntityManager em, @NonNull Class<E> clazz, @NonNull E entity) throws KapuaEntityNotFoundException {
@@ -248,12 +254,12 @@ public class ServiceDAO {
     }
 
     /**
-     * Delete {@link KapuaEntity} utility method
+     * Deletes a {@link KapuaEntity}.
      *
      * @param em       The {@link EntityManager} that holds the transaction.
      * @param clazz    The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param scopeId  The {@link KapuaEntity} scopeId of the entity to be deleted.
-     * @param entityId The {@link KapuaEntity} {@link KapuaId} of the entity to be deleted.
+     * @param scopeId  The {@link KapuaEntity#getScopeId()} of the entity to be deleted.
+     * @param entityId The {@link KapuaEntity#getId()} of the entity to be deleted.
      * @return The deleted {@link KapuaEntity}.
      * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
      * @since 1.0.0
@@ -276,14 +282,50 @@ public class ServiceDAO {
     }
 
     /**
-     * Find by fields {@link KapuaEntity} utility method
+     * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
+     *
+     * @param em    The {@link EntityManager} that holds the transaction.
+     * @param clazz The {@link KapuaNamedEntity} class. This must be the implementing {@code class}.
+     * @param value The value of the {@link KapuaNamedEntity#getName()} to search.
+     * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
+     * @throws NonUniqueResultException When more than one result is returned
+     * @since 1.6.0
+     */
+    @Nullable
+    public static <E extends KapuaNamedEntity> E findByName(@NonNull EntityManager em,
+                                                            @NonNull Class<E> clazz,
+                                                            @NonNull Object value) {
+        return findByName(em, clazz, null, value);
+    }
+
+    /**
+     * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
+     *
+     * @param em      The {@link EntityManager} that holds the transaction.
+     * @param clazz   The {@link KapuaNamedEntity} class. This must be the implementing {@code class}.
+     * @param scopeId The {@link KapuaNamedEntity#getScopeId()} in which to look for results.
+     * @param value   The value of the field from which to search.
+     * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
+     * @throws NonUniqueResultException When more than one result is returned.
+     * @since 1.0.0
+     */
+    @Nullable
+    public static <E extends KapuaNamedEntity> E findByName(@NonNull EntityManager em,
+                                                            @NonNull Class<E> clazz,
+                                                            @Nullable KapuaId scopeId,
+                                                            @NonNull Object value) {
+        return findByField(em, clazz, scopeId, KapuaNamedEntityAttributes.NAME, value);
+    }
+
+    /**
+     * Find a {@link KapuaEntity} by one of its fields.
      *
      * @param em    The {@link EntityManager} that holds the transaction.
      * @param clazz The {@link KapuaEntity} class. This must be the implementing {@code class}.
      * @param name  The {@link KapuaEntity} name of the field from which to search.
      * @param value The value of the field from which to search.
      * @return The {@link KapuaEntity} found, or {@code null} if not found.
-     * @throws NonUniqueResultException When more than one result is returned
+     * @throws NonUniqueResultException When more than one result is returned.
      * @since 1.0.0
      */
     @Nullable
@@ -295,15 +337,15 @@ public class ServiceDAO {
     }
 
     /**
-     * Find by fields {@link KapuaEntity} utility method
+     * Find a {@link KapuaEntity} by one of its fields.
      *
      * @param em      The {@link EntityManager} that holds the transaction.
      * @param clazz   The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param scopeId The Scope ID in which to look for results.
+     * @param scopeId The {@link KapuaEntity#getScopeId()} in which to look for results.
      * @param name    The {@link KapuaEntity} name of the field from which to search.
      * @param value   The value of the field from which to search.
      * @return The {@link KapuaEntity} found, or {@code null} if not found.
-     * @throws NonUniqueResultException When more than one result is returned
+     * @throws NonUniqueResultException When more than one result is returned.
      * @since 1.0.0
      */
     @Nullable
@@ -349,23 +391,18 @@ public class ServiceDAO {
         //
         // QUERY!
         List<E> result = query.getResultList();
-        E entity;
         switch (result.size()) {
             case 0:
-                entity = null;
-                break;
+                return null;
             case 1:
-                entity = result.get(0);
-                break;
+                return result.get(0);
             default:
                 throw new NonUniqueResultException(String.format("Multiple %s results found for field %s with value %s", clazz.getName(), pName, value.toString()));
         }
-
-        return entity;
     }
 
     /**
-     * Query {@link KapuaEntity} utility method.
+     * Queries the {@link KapuaEntity}es.
      *
      * @param em                The {@link EntityManager} that holds the transaction.
      * @param interfaceClass    {@link KapuaQuery} result entity interface class
@@ -486,7 +523,7 @@ public class ServiceDAO {
     }
 
     /**
-     * Count {@link KapuaEntity} utility method.
+     * Counts the {@link KapuaEntity}es.
      *
      * @param em                The {@link EntityManager} that holds the transaction.
      * @param interfaceClass    {@link KapuaQuery} result entity interface class
@@ -545,7 +582,7 @@ public class ServiceDAO {
         TypedQuery<Long> query = em.createQuery(criteriaSelectQuery);
 
         // Populate query parameters
-        binds.forEach(query::setParameter); // Whoah! This is very magic!
+        binds.forEach(query::setParameter);
 
         return query.getSingleResult();
     }
@@ -778,8 +815,9 @@ public class ServiceDAO {
     }
 
     /**
-     * Utility method that selects the correct {@link Root} attribute.<br>
-     * This method handles {@link Embedded} attributes and nested {@link KapuaEntity}es up to one level of nesting<br>
+     * Utility method that selects the correct {@link Root} attribute.
+     * <p>
+     * This method handles {@link Embedded} attributes and nested {@link KapuaEntity}es up to one level of nesting.
      * <p>
      * Filter predicates takes advantage of the dot notation to access {@link Embedded} attributes and nested {@link KapuaEntity}es.
      *
@@ -818,6 +856,14 @@ public class ServiceDAO {
         }
     }
 
+    /**
+     * @param kapuaSession
+     * @param query
+     * @param domain
+     * @param groupPredicateName
+     * @throws KapuaException
+     * @since 1.0.0
+     */
     private static void handleKapuaQueryGroupPredicate(KapuaSession kapuaSession, KapuaQuery query, Domain domain, String groupPredicateName) throws KapuaException {
         try {
             KapuaId userId = kapuaSession.getUserId();
@@ -872,21 +918,35 @@ public class ServiceDAO {
         }
     }
 
-    private static boolean checkGroupPermission(@NonNull Domain domain, @NonNull List<Permission> groupPermissions, @NonNull Permission p) {
-        if ((p.getDomain() == null || domain.getName().equals(p.getDomain())) &&
-                (p.getAction() == null || Actions.read.equals(p.getAction()))) {
-            if (p.getGroupId() == null) {
+    /**
+     * @param domain
+     * @param groupPermissions
+     * @param permission
+     * @return
+     * @since 1.0.0
+     */
+    private static boolean checkGroupPermission(@NonNull Domain domain, @NonNull List<Permission> groupPermissions, @NonNull Permission permission) {
+        if ((permission.getDomain() == null || domain.getName().equals(permission.getDomain())) &&
+                (permission.getAction() == null || Actions.read.equals(permission.getAction()))) {
+            if (permission.getGroupId() == null) {
                 groupPermissions.clear();
                 return true;
             } else {
-                groupPermissions.add(p);
+                groupPermissions.add(permission);
             }
         }
         return false;
     }
 
-    private static boolean isInsertConstraintViolation(@NonNull PersistenceException e) {
-        Throwable cause = e.getCause();
+    /**
+     * Check if the given {@link PersistenceException} is a SQL constraint violation error.
+     *
+     * @param persistenceException {@link PersistenceException} to check.
+     * @return {@code true} if it is a constraint validation error, {@code false} otherwise.
+     * @since 1.0.0
+     */
+    private static boolean isInsertConstraintViolation(@NonNull PersistenceException persistenceException) {
+        Throwable cause = persistenceException.getCause();
         while (cause != null && !(cause instanceof SQLException)) {
             cause = cause.getCause();
         }
