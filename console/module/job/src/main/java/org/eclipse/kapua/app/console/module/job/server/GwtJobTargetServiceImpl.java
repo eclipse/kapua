@@ -51,6 +51,8 @@ import java.util.Map;
 
 public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implements GwtJobTargetService {
 
+    private static final long serialVersionUID = -4365251346832037608L;
+
     private static final String NOT_AVAILABLE = "Not available";
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
@@ -82,7 +84,7 @@ public class GwtJobTargetServiceImpl extends KapuaRemoteServiceServlet implement
             }
 
             DeviceQuery query = DEVICE_FACTORY.newQuery(jobTargetQuery.getScopeId());
-            query.setPredicate(query.attributePredicate(DeviceAttributes.ENTITY_ID, deviceIds.toArray(new KapuaId[0])));
+            query.setPredicate(query.attributePredicate(DeviceAttributes.ENTITY_ID, deviceIds));
             DeviceListResult deviceListResult = DEVICE_REGISTRY_SERVICE.query(query);
 
             Map<KapuaId, Device> deviceMap = new HashMap<KapuaId, Device>();

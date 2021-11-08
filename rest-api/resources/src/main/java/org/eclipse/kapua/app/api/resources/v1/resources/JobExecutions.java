@@ -12,25 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.job.Job;
@@ -45,7 +35,15 @@ import org.eclipse.kapua.service.job.targets.JobTargetListResult;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 
-import com.google.common.base.Strings;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 @Path("{scopeId}/jobs/{jobId}/executions")
 public class JobExecutions extends AbstractKapuaResource {
@@ -59,13 +57,13 @@ public class JobExecutions extends AbstractKapuaResource {
     /**
      * Gets the {@link JobExecution} list for a given {@link Job}.
      *
-     * @param scopeId The {@link ScopeId} in which to search results.
-     * @param jobId   The {@link Job} id to filter results
+     * @param scopeId       The {@link ScopeId} in which to search results.
+     * @param jobId         The {@link Job} id to filter results
      * @param askTotalCount Ask for the total count of the matched entities in the result
-     * @param sortParam The name of the parameter that will be used as a sorting key
-     * @param sortDir   The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
-     * @param offset  The result set offset.
-     * @param limit   The result set limit.
+     * @param sortParam     The name of the parameter that will be used as a sorting key
+     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
+     * @param offset        The result set offset.
+     * @param limit         The result set limit.
      * @return The {@link JobExecutionListResult} of all the jobs executions associated to the current selected job.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
@@ -143,8 +141,8 @@ public class JobExecutions extends AbstractKapuaResource {
     /**
      * Returns the Job specified by the "jobId" path parameter.
      *
-     * @param scopeId The {@link ScopeId} of the requested {@link Job}.
-     * @param jobId The id of the requested Job.
+     * @param scopeId     The {@link ScopeId} of the requested {@link Job}.
+     * @param jobId       The id of the requested Job.
      * @param executionId The id of the requested JobExecution.
      * @return The requested Job object.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
@@ -184,7 +182,7 @@ public class JobExecutions extends AbstractKapuaResource {
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
         JobExecution jobExecution = jobExecutionService.find(scopeId, executionId);
         JobTargetQuery jobTargetQuery = jobTargetFactory.newQuery(scopeId);
-        jobTargetQuery.setPredicate(jobTargetQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, jobExecution.getTargetIds().toArray(new KapuaId[0])));
+        jobTargetQuery.setPredicate(jobTargetQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, jobExecution.getTargetIds()));
         jobTargetQuery.setLimit(limit);
         jobTargetQuery.setOffset(offset);
 

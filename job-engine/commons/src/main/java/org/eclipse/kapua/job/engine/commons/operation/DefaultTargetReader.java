@@ -165,7 +165,7 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
      */
     protected void targetSublistFiltering(JobContextWrapper jobContextWrapper, KapuaQuery query, AndPredicate andPredicate) {
         if (!jobContextWrapper.getTargetSublist().isEmpty()) {
-            andPredicate.and(query.attributePredicate(JobTargetAttributes.ENTITY_ID, jobContextWrapper.getTargetSublist().toArray()));
+            andPredicate.and(query.attributePredicate(JobTargetAttributes.ENTITY_ID, jobContextWrapper.getTargetSublist()));
         }
     }
 

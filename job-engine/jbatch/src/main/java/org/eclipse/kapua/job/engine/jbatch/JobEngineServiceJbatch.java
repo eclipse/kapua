@@ -112,7 +112,7 @@ public class JobEngineServiceJbatch implements JobEngineService {
             jobTargetQuery.setPredicate(
                     jobTargetQuery.andPredicate(
                             jobTargetQuery.getPredicate(),
-                            jobTargetQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, jobStartOptions.getTargetIdSublist().toArray())
+                            jobTargetQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, jobStartOptions.getTargetIdSublist())
                     )
             );
 

@@ -317,7 +317,7 @@ public class KapuaJobListener extends AbstractJobListener implements JobListener
                             jobExecutionQuery.attributePredicate(JobExecutionAttributes.JOB_ID, jobId),
                             jobExecutionQuery.attributePredicate(JobExecutionAttributes.ENTITY_ID, currentJobExecutionId, AttributePredicate.Operator.NOT_EQUAL),
                             jobExecutionQuery.attributePredicate(JobExecutionAttributes.ENDED_ON, null),
-                            jobExecutionQuery.attributePredicate(JobExecutionAttributes.TARGET_IDS, jobTargetIdSubset.toArray())
+                            jobExecutionQuery.attributePredicate(JobExecutionAttributes.TARGET_IDS, jobTargetIdSubset)
                     )
             );
 
