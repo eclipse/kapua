@@ -12,19 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.model.query.predicate;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.datastore.model.query.predicate.ChannelMatchPredicate;
 import org.eclipse.kapua.service.datastore.model.query.predicate.DatastorePredicateFactory;
 import org.eclipse.kapua.service.datastore.model.query.predicate.MetricExistsPredicate;
 import org.eclipse.kapua.service.datastore.model.query.predicate.MetricPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactoryImpl;
 
+import javax.inject.Singleton;
+
 /**
  * {@link DatastorePredicateFactory} implementation.
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class DatastorePredicateFactoryImpl extends StorablePredicateFactoryImpl implements DatastorePredicateFactory {
 
     @Override

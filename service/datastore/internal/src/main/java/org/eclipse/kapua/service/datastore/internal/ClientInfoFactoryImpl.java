@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.ClientInfoFactory;
 import org.eclipse.kapua.service.datastore.internal.model.ClientInfoImpl;
@@ -22,12 +21,14 @@ import org.eclipse.kapua.service.datastore.model.ClientInfo;
 import org.eclipse.kapua.service.datastore.model.ClientInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ClientInfoQuery;
 
+import javax.inject.Singleton;
+
 /**
  * {@link ClientInfoFactory} implementation.
  *
  * @since 1.3.0
  */
-@KapuaProvider
+@Singleton
 public class ClientInfoFactoryImpl implements ClientInfoFactory {
 
     @Override

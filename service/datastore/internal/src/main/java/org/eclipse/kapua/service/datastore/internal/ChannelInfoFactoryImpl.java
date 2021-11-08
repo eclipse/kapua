@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.ChannelInfoFactory;
 import org.eclipse.kapua.service.datastore.internal.model.ChannelInfoImpl;
@@ -22,12 +21,14 @@ import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.ChannelInfoQuery;
 
+import javax.inject.Singleton;
+
 /**
  * {@link ChannelInfoFactory} implementation.
  *
  * @since 1.3.0
  */
-@KapuaProvider
+@Singleton
 public class ChannelInfoFactoryImpl implements ChannelInfoFactory {
 
     @Override

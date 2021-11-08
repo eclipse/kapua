@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.internal.model.MetricInfoImpl;
@@ -22,12 +21,14 @@ import org.eclipse.kapua.service.datastore.model.MetricInfo;
 import org.eclipse.kapua.service.datastore.model.MetricInfoListResult;
 import org.eclipse.kapua.service.datastore.model.query.MetricInfoQuery;
 
+import javax.inject.Singleton;
+
 /**
  * {@link MetricInfoFactory} implementation.
  *
  * @since 1.3.0
  */
-@KapuaProvider
+@Singleton
 public class MetricInfoFactoryImpl implements MetricInfoFactory {
 
     @Override
