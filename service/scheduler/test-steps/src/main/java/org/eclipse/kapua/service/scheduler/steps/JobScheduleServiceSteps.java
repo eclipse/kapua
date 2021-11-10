@@ -470,4 +470,18 @@ public class JobScheduleServiceSteps extends TestBase {
         }
     }
 
+    @And("I try to edit end date to tomorrow at {string}")
+    public void iTryToEditEndDateToTomorrowAt(String endTime) throws Exception {
+        Trigger trigger = (Trigger) stepData.get(TRIGGER);
+        Date newTriggerEndsOnDate = setTomorrowAsDateValue(endTime);
+        trigger.setEndsOn(newTriggerEndsOnDate);
+        try {
+            primeException();
+            Trigger updatedTrigger = triggerService.update(trigger);
+            stepData.put(UPDATED_TRIGGER, updatedTrigger);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
 }

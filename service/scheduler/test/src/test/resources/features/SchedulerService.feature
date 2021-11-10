@@ -29,7 +29,7 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     Then I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "triggerExample" is created
-    And The trigger is set to start today at 00:00.
+    And The trigger is set to start today at "00:00"
     Then I create a new trigger from the existing creator with previously defined date properties
 
   Scenario: Create scheduler with invalid schedule name
@@ -38,7 +38,7 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     Then I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "triggerExample?" is created
-    And The trigger is set to start today at 00:00.
+    And The trigger is set to start today at "00:00"
     And I expect the exception "KapuaIllegalArgumentException" with the text "*"
     Then I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
@@ -49,7 +49,7 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     Then I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "" is created
-    And The trigger is set to start today at 00:00.
+    And The trigger is set to start today at "00:00"
     And I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
     Then I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
@@ -60,7 +60,7 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     Then I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "tr" is created
-    And The trigger is set to start today at 00:00.
+    And The trigger is set to start today at "00:00"
     And I expect the exception "KapuaIllegalArgumentException" with the text "*"
     Then I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
@@ -71,7 +71,7 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     Then I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "trigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigerExampletrigertrigerExampletri" is created
-    And The trigger is set to start today at 00:00.
+    And The trigger is set to start today at "00:00"
     And I expect the exception "KapuaIllegalArgumentException" with the text "*"
     Then I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
@@ -92,9 +92,9 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     Then I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "triggerExample" is created
-    And The trigger is set to start on 10-10-2018 at 6:00.
-    And The trigger is set to end on 09-10-2018 at 6:00.
-    And I expect the exception "KapuaEndBeforeStartTimeException" with the text "*"
+    And The trigger is set to start on "10-10-2018" at "6:00"
+    And The trigger is set to end on "09-10-2018" at "6:00"
+    And I expect the exception "TriggerInvalidDatesException" with the text "*"
     Then I create a new trigger from the existing creator with previously defined date properties
     And An exception was thrown
 
@@ -104,8 +104,8 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     Then I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "triggerExample" is created
-    And The trigger is set to start on 10-10-2018 at 6:00.
-    And The trigger is set to end on 12-10-2018 at 6:00.
+    And The trigger is set to start on "10-10-2018" at "6:00"
+    And The trigger is set to end tomorrow at "6:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And No exception was thrown
 
@@ -115,7 +115,7 @@ Feature: Scheduler Service
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     Then I set cron expression to "0 12 1 * * ?"
     And I create a new trigger from the existing creator with previously defined date properties
 
@@ -125,7 +125,7 @@ Feature: Scheduler Service
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     Then I set cron expression to "12 1 ? ? *"
     And I expect the exception "KapuaException" with the text "*"
     And I create a new trigger from the existing creator with previously defined date properties
@@ -137,7 +137,7 @@ Feature: Scheduler Service
     And I create a job with the name "job0"
     When I find scheduler properties with name "Cron Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     Then I set cron expression to ""
     And I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
     And I create a new trigger from the existing creator with previously defined date properties
@@ -149,21 +149,9 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I set retry interval to 2
     And I try to create a new trigger entity from the existing creator
-
-  Scenario: Create scheduler with invalid Retry Interval property
-  Creating scheduler with Interval Job scheduler property and invalid retry interval expression.
-
-    Given I create a job with the name "job1"
-    When I find scheduler properties with name "Interval Job"
-    And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
-    And I set retry interval to 2222222222222
-    And I expect the exception "KapuaException" with the text "*"
-    And I try to create a new trigger entity from the existing creator
-    Then An exception was thrown
 
   Scenario: Create scheduler without Retry Interval property
   Creating scheduler with Interval Job scheduler property and empty retry interval expression.
@@ -171,7 +159,7 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     When I find scheduler properties with name "Interval Job"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I set retry interval to null
     And I expect the exception "KapuaIllegalNullArgumentException" with the text "*"
     And I try to create a new trigger entity from the existing creator
@@ -183,7 +171,7 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
     And I try to create a new trigger entity from the existing creator
     And I try to edit trigger name "schedule1"
     Then No exception was thrown
@@ -194,7 +182,8 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start today at 10:00.
+    And The trigger is set to start today at "10:00"
+    And I set cron expression to "* * * ? * *"
     And I try to create a new trigger entity from the existing creator
     And I try to edit trigger definition to "Cron Job"
     Then No exception was thrown
@@ -205,9 +194,9 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
+    And The trigger is set to start on "12-12-2020" at "10:10"
     And I try to create a new trigger entity from the existing creator
-    And I try to edit start date to 13-12-2020 at 10:00
+    And I try to edit start date to "13-12-2020" at "10:00"
     Then No exception was thrown
 
   Scenario: Update scheduler end date
@@ -216,10 +205,10 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
-    And The trigger is set to end on 09-10-2018 at 6:00
+    And The trigger is set to start on "12-12-2020" at "10:10"
+    And The trigger is set to end on "09-10-2018" at "6:00"
     And I try to create a new trigger entity from the existing creator
-    And I try to edit end date to 13-12-2020 at 10:00
+    And I try to edit end date to tomorrow at "10:00"
     Then No exception was thrown
 
   Scenario: Update schedule which doesn't exist
@@ -236,7 +225,7 @@ Feature: Scheduler Service
     Given I create a job with the name "job1"
     When I find scheduler properties with name "Device Connect"
     And A regular trigger creator with the name "schedule0" is created
-    And The trigger is set to start on 12-12-2020 at 10:10.
+    And The trigger is set to start on "12-12-2020" at "10:10"
     And I try to create a new trigger entity from the existing creator
     And I try to delete last created trigger
     Then No exception was thrown
