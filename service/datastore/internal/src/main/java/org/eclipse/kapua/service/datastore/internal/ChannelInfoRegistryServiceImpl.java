@@ -18,7 +18,6 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
@@ -50,6 +49,7 @@ import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +59,7 @@ import java.util.List;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService implements ChannelInfoRegistryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ChannelInfoRegistryServiceImpl.class);

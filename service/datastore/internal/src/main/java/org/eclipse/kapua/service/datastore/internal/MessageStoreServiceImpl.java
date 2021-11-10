@@ -23,7 +23,6 @@ import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -46,6 +45,7 @@ import org.eclipse.kapua.service.elasticsearch.client.exception.ClientCommunicat
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 
+import javax.inject.Singleton;
 import java.util.UUID;
 
 /**
@@ -53,7 +53,7 @@ import java.util.UUID;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService implements MessageStoreService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
