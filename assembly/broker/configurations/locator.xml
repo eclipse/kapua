@@ -21,8 +21,6 @@
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
 
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
-        <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
-        <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
 
         <api>org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService</api>
         <api>org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService</api>
