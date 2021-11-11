@@ -15,7 +15,6 @@ package org.eclipse.kapua.broker.core.plugin;
 import java.math.BigInteger;
 import java.security.Principal;
 import java.security.cert.Certificate;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -177,11 +176,11 @@ public class KapuaSecurityContext extends SecurityContext {
     }
 
     private void updateFullClientId() {
-        fullClientId = MessageFormat.format(KapuaSecurityBrokerFilter.MULTI_ACCOUNT_CLIENT_ID, scopeId.getId().longValue(), clientId);
+        fullClientId = String.format(KapuaSecurityBrokerFilter.MULTI_ACCOUNT_CLIENT_ID, scopeId.getId().longValue(), clientId);
     }
 
     private void updateFullClientId(Long scopeId) {
-        fullClientId = MessageFormat.format(KapuaSecurityBrokerFilter.MULTI_ACCOUNT_CLIENT_ID, scopeId, clientId);
+        fullClientId = String.format(KapuaSecurityBrokerFilter.MULTI_ACCOUNT_CLIENT_ID, scopeId, clientId);
     }
 
     public String getFullClientId() {

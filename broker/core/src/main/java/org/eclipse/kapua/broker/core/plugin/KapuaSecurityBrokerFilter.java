@@ -108,7 +108,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     protected static final String VT_CONSUMER_PREFIX = "Consumer";
 
     // full client id, with account prepended
-    protected static final String MULTI_ACCOUNT_CLIENT_ID = "{0}:{1}";
+    protected static final String MULTI_ACCOUNT_CLIENT_ID = "%s:%s";
 
     private static final String CONNECT_MESSAGE_TOPIC_PATTERN = "VirtualTopic.%s.%s.%s.MQTT.CONNECT";
     private static final String DISCONNECT_MESSAGE_TOPIC_PATTERN = "VirtualTopic.%s.%s.%s.MQTT.DISCONNECT";
