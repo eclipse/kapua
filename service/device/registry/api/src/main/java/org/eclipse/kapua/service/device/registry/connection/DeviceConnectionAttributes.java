@@ -52,9 +52,19 @@ public class DeviceConnectionAttributes extends KapuaUpdatableEntityAttributes {
     public static final String USER_COUPLING_MODE = "userCouplingMode";
 
     /**
+     * Allow user change
+     */
+    public static final String ALLOW_USER_CHANGE = "allowUserChange";
+
+    /**
      * Client IP
      */
     public static final String CLIENT_IP = "clientIp";
+
+    /**
+     * Server IP
+     */
+    public static final String SERVER_IP = "serverIp";
 
     /**
      * Protocol
