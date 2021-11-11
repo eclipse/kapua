@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.keystore.internal;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementFactory;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystore;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCSR;
@@ -35,12 +34,14 @@ import org.eclipse.kapua.service.device.management.keystore.model.internal.Devic
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoreSubjectANImpl;
 import org.eclipse.kapua.service.device.management.keystore.model.internal.DeviceKeystoresImpl;
 
+import javax.inject.Singleton;
+
 /**
  * {@link DeviceKeystoreManagementFactory} implementation.
  *
  * @since 1.5.0
  */
-@KapuaProvider
+@Singleton
 public class DeviceKeystoreManagementFactoryImpl implements DeviceKeystoreManagementFactory {
 
     @Override

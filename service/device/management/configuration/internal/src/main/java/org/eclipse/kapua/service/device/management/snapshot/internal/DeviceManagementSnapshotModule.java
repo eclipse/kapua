@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,28 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.snapshot.internal;
 
-import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
-import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
+import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotManagementService;
 
-import javax.inject.Singleton;
-
-/**
- * {@link DeviceSnapshotFactory} implementation.
- *
- * @since 1.0.0
- */
-@Singleton
-public class DeviceSnapshotFactoryImpl implements DeviceSnapshotFactory {
-
+public class DeviceManagementSnapshotModule extends AbstractKapuaModule {
     @Override
-    public DeviceSnapshot newDeviceSnapshot() {
-        return new DeviceSnapshotImpl();
+    protected void configureModule() {
+        bind(DeviceSnapshotFactory.class).to(DeviceSnapshotFactoryImpl.class);
+        bind(DeviceSnapshotManagementService.class).to(DeviceSnapshotManagementServiceImpl.class);
     }
-
-    @Override
-    public DeviceSnapshots newDeviceSnapshots() {
-        return new DeviceSnapshotsImpl();
-    }
-
 }

@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.device.management.command.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
@@ -30,6 +29,7 @@ import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagem
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
+import javax.inject.Singleton;
 import java.util.Date;
 
 /**
@@ -37,7 +37,7 @@ import java.util.Date;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class DeviceCommandManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceCommandManagementService {
 
     @Override

@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.certificate.info.CertificateInfo;
@@ -55,6 +54,7 @@ import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import java.util.Date;
 
 /**
@@ -62,7 +62,7 @@ import java.util.Date;
  *
  * @since 1.5.0
  */
-@KapuaProvider
+@Singleton
 public class DeviceKeystoreManagementServiceImpl extends AbstractDeviceManagementServiceImpl implements DeviceKeystoreManagementService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceKeystoreManagementServiceImpl.class);

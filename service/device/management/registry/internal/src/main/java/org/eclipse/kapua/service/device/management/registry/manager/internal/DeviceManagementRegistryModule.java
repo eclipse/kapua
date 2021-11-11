@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,10 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.registry.manager.internal;
 
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.service.device.management.registry.manager.DeviceManagementRegistryManagerService;
 
-import javax.inject.Singleton;
-
-@Singleton
-public class DeviceManagementRegistryManagerServiceImpl implements DeviceManagementRegistryManagerService {
+public class DeviceManagementRegistryModule extends AbstractKapuaModule {
+    @Override
+    protected void configureModule() {
+        bind(DeviceManagementRegistryManagerService.class).to(DeviceManagementRegistryManagerServiceImpl.class);
+    }
 }

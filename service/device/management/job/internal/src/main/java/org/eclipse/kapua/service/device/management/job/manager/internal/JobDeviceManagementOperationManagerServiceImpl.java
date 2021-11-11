@@ -18,7 +18,6 @@ import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationAttributes;
@@ -43,6 +42,7 @@ import org.eclipse.kapua.service.job.targets.JobTargetStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Singleton;
 import java.util.Date;
 
 /**
@@ -50,7 +50,7 @@ import java.util.Date;
  *
  * @since 1.1.0
  */
-@KapuaProvider
+@Singleton
 public class JobDeviceManagementOperationManagerServiceImpl implements JobDeviceManagementOperationManagerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JobDeviceManagementOperationManagerService.class);

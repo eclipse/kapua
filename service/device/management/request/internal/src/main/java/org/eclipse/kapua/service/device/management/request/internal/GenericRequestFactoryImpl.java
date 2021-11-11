@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.request.internal;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.request.GenericRequestFactory;
 import org.eclipse.kapua.service.device.management.request.internal.message.request.GenericRequestChannelImpl;
 import org.eclipse.kapua.service.device.management.request.internal.message.request.GenericRequestMessageImpl;
@@ -27,7 +26,9 @@ import org.eclipse.kapua.service.device.management.request.message.response.Gene
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponseMessage;
 import org.eclipse.kapua.service.device.management.request.message.response.GenericResponsePayload;
 
-@KapuaProvider
+import javax.inject.Singleton;
+
+@Singleton
 public class GenericRequestFactoryImpl implements GenericRequestFactory {
 
     @Override
