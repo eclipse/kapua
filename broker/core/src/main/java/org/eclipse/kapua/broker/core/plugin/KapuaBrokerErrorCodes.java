@@ -19,6 +19,16 @@ public enum KapuaBrokerErrorCodes implements KapuaErrorCode {
     /**
      * Duplicated client id on connection (stealing link detected)
      */
-    DUPLICATED_CLIENT_ID
+    DUPLICATE_CLIENT_ID,
+
+    /**
+     * An illegal connection was detected
+     */
+    ILLEGAL_CONNECTION,
+
+    /**
+     * An unexpected device status was detected
+     */
+    UNEXPECTED_STATUS
 
 }

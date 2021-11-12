@@ -44,7 +44,7 @@ public class AdminAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public boolean disconnect(KapuaSecurityContext kapuaSecurityContext, Throwable error) {
-        boolean stealingLinkDetected = isStealingLink(kapuaSecurityContext, error);
+        boolean stealingLinkDetected = isIllegalState(kapuaSecurityContext, error);
         logger.debug("Old connection id: {} - new connection id: {} - error: {} - error cause: {}", kapuaSecurityContext.getOldConnectionId(), kapuaSecurityContext.getConnectionId(), error, (error!=null ? error.getCause() : "null"), error);
         if (stealingLinkDetected) {
             loginMetric.getAdminStealingLinkDisconnect().inc();

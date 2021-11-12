@@ -15,8 +15,9 @@ package org.eclipse.kapua.broker.core.plugin.authentication;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.broker.core.plugin.Acl;
+import org.eclipse.kapua.broker.core.plugin.KapuaBrokerErrorCodes;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
-import org.eclipse.kapua.broker.core.plugin.KapuaDuplicateClientIdException;
+import org.eclipse.kapua.broker.core.plugin.KapuaIllegalDeviceStateException;
 import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.PublishMetric;
@@ -262,9 +263,24 @@ public abstract class AuthenticationLogic {
     }
 
     protected boolean isStealingLink(KapuaSecurityContext kapuaSecurityContext, Throwable error) {
-        boolean stealingLinkDetected = false;
+        if(!isIllegalState(kapuaSecurityContext, error) || error == null) {
+            return false;
+        }
+
+        KapuaIllegalDeviceStateException illegalStateException = null;
+        if(error instanceof KapuaIllegalDeviceStateException) {
+            illegalStateException = (KapuaIllegalDeviceStateException) error;
+        } else if (error.getCause() != null && error.getCause() instanceof KapuaIllegalDeviceStateException) {
+            illegalStateException = (KapuaIllegalDeviceStateException) error.getCause();
+        }
+
+        return illegalStateException != null && illegalStateException.getCode() == KapuaBrokerErrorCodes.DUPLICATE_CLIENT_ID;
+    }
+
+    protected boolean isIllegalState(KapuaSecurityContext kapuaSecurityContext, Throwable error) {
+        boolean isIllegalState = false;
         if (kapuaSecurityContext.getOldConnectionId() != null) {
-            stealingLinkDetected = !kapuaSecurityContext.getOldConnectionId().equals(kapuaSecurityContext.getConnectionId());
+            isIllegalState = !kapuaSecurityContext.getOldConnectionId().equals(kapuaSecurityContext.getConnectionId());
         }
         else {
             logger.error("Cannot find connection id for client id {} on connection map. Correct connection id is {} - IP: {}",
@@ -272,8 +288,8 @@ public abstract class AuthenticationLogic {
                     kapuaSecurityContext.getConnectionId(),
                     kapuaSecurityContext.getClientIp());
         }
-        if (!stealingLinkDetected && (error instanceof KapuaDuplicateClientIdException || (error!=null && error.getCause() instanceof KapuaDuplicateClientIdException))) {
-            stealingLinkDetected = true;
+        if (!isIllegalState && (error instanceof KapuaIllegalDeviceStateException || (error!=null && error.getCause() instanceof KapuaIllegalDeviceStateException))) {
+            isIllegalState = true;
             logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
                     kapuaSecurityContext.getClientId(),
                     kapuaSecurityContext.getScopeId(),
@@ -281,7 +297,7 @@ public abstract class AuthenticationLogic {
                     kapuaSecurityContext.getConnectionId(),
                     kapuaSecurityContext.getClientIp());
         }
-        return stealingLinkDetected;
+        return isIllegalState;
     }
 
 }

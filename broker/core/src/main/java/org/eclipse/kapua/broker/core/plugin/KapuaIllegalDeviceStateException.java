@@ -14,12 +14,12 @@ package org.eclipse.kapua.broker.core.plugin;
 
 import org.eclipse.kapua.KapuaException;
 
-public class KapuaDuplicateClientIdException extends KapuaException {
+public class KapuaIllegalDeviceStateException extends KapuaException {
 
     private static final long serialVersionUID = 1751650664486096457L;
 
-    public KapuaDuplicateClientIdException(String clientId) {
-        super(KapuaBrokerErrorCodes.DUPLICATED_CLIENT_ID, clientId);
+    public KapuaIllegalDeviceStateException(KapuaBrokerErrorCodes errorCode, String clientId) {
+        super(errorCode, clientId);
     }
 
 }
