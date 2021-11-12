@@ -67,12 +67,6 @@
             deadLetterUri="amqp:queue:notProcessableMessage"
             useOriginalMessage="true">
         </camel:errorHandler>
-        <camel:errorHandler id="messageErrorHandler" redeliveryPolicyRef="kapuaErrorRedeliveryPolicy"
-            type="DeadLetterChannel"
-            deadLetterUri="amqp:queue:notProcessableMessage"
-            useOriginalMessage="true">
-        </camel:errorHandler>
         <camel:redeliveryPolicyProfile id="kapuaRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true"/>
-        <camel:redeliveryPolicyProfile id="kapuaErrorRedeliveryPolicy" maximumRedeliveries="0" redeliveryDelay="0" retryAttemptedLogLevel="WARN" logRetryAttempted="true"/>
     </camel:camelContext>
 </beans>
