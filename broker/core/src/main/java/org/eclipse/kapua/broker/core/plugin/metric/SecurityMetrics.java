@@ -37,6 +37,7 @@ public class SecurityMetrics {
     public static final String METRIC_STEALING_LINK = "stealing_link";
     public static final String METRIC_ADMIN_STEALING_LINK = "admin_" + METRIC_STEALING_LINK;
     public static final String METRIC_REMOTE_STEALING_LINK = "remote_" + METRIC_STEALING_LINK;
+    public static final String METRIC_ILLEGAL_STATE = "illegal_state";
     public static final String METRIC_ADD_CONNECTION = "add_connection";
     public static final String METRIC_USER = "user";
     public static final String METRIC_SHIRO = "shiro";

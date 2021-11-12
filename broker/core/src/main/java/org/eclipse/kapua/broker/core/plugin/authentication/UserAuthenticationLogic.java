@@ -103,6 +103,12 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
                     kapuaSecurityContext.getClientId(),
                     kapuaSecurityContext.getConnectionId());
         }
+        else if (isIllegalState(kapuaSecurityContext, error)) {
+            loginMetric.getIllegalStateDisconnect().inc();
+            logger.debug("Skip device connection status update from illegal device status disconnection. Client id: {} - Connection id: {}",
+                    kapuaSecurityContext.getClientId(),
+                    kapuaSecurityContext.getConnectionId());
+        }
         else {
             // update device connection (if the disconnection wasn't caused by a stealing link)
             DeviceConnection deviceConnection;

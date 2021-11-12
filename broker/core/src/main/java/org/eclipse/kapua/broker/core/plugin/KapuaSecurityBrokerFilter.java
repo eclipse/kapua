@@ -282,7 +282,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                 // Include Exception to notify the security broker filter
                 logger.info("New connection detected for {} on another broker.  Stopping the current connection...", kapuaSecurityContext.getFullClientId());
                 loginMetric.getRemoteStealingLinkDisconnect().inc();
-                conn.serviceExceptionAsync(new IOException(new KapuaDuplicateClientIdException(kapuaSecurityContext.getFullClientId())));
+                conn.serviceExceptionAsync(new IOException(new KapuaIllegalDeviceStateException(KapuaBrokerErrorCodes.DUPLICATE_CLIENT_ID, kapuaSecurityContext.getFullClientId())));
                 // assume only one connection since this broker should have already handled any duplicates
                 return;
             }

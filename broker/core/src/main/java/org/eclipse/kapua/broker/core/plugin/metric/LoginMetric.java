@@ -34,6 +34,7 @@ public class LoginMetric {
     private Counter adminStealingLinkDisconnect;
     private Counter remoteStealingLinkDisconnect;
     private Counter internalConnectorDisconnected;
+    private Counter illegalStateDisconnect;
     private Timer addConnectionTime;
     private Timer normalUserTime;
     private Timer shiroLoginTime;
@@ -64,6 +65,7 @@ public class LoginMetric {
         stealingLinkDisconnect = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_STEALING_LINK, SecurityMetrics.METRIC_DISCONNECT, SecurityMetrics.METRIC_COUNT);
         adminStealingLinkDisconnect = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_ADMIN_STEALING_LINK, SecurityMetrics.METRIC_DISCONNECT, SecurityMetrics.METRIC_COUNT);
         remoteStealingLinkDisconnect = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_REMOTE_STEALING_LINK, SecurityMetrics.METRIC_DISCONNECT, SecurityMetrics.METRIC_COUNT);
+        illegalStateDisconnect = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_ILLEGAL_STATE, SecurityMetrics.METRIC_DISCONNECT, SecurityMetrics.METRIC_COUNT);
         // login time
         addConnectionTime = metricsService.getTimer(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_ADD_CONNECTION, SecurityMetrics.METRIC_TIME, SecurityMetrics.METRIC_S);
         normalUserTime = metricsService.getTimer(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_USER, SecurityMetrics.METRIC_TIME, SecurityMetrics.METRIC_S);
@@ -118,6 +120,10 @@ public class LoginMetric {
 
     public Counter getAdminStealingLinkDisconnect() {
         return adminStealingLinkDisconnect;
+    }
+
+    public Counter getIllegalStateDisconnect() {
+        return illegalStateDisconnect;
     }
 
     public Counter getInternalConnectorConnected() {
