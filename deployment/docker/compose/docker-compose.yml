@@ -21,7 +21,7 @@ services:
     image: kapua/kapua-events-broker:${IMAGE_VERSION}
     ports:
       - 5672:5672
-  broker:
+  message-broker:
     image: kapua/kapua-broker:${IMAGE_VERSION}
     expose:
       - 1893
@@ -52,7 +52,7 @@ services:
       - db
       - es
       - events-broker
-      - broker
+      - message-broker
     environment:
       - BROKER_URL
       - LOGBACK_LOG_LEVEL
@@ -64,7 +64,7 @@ services:
     depends_on:
       - db
       - events-broker
-      - broker
+      - message-broker
     environment:
       - BROKER_URL
       - LOGBACK_LOG_LEVEL
@@ -74,10 +74,10 @@ services:
       - 8080:8080
       - 8443:8443
     depends_on:
-      - broker
       - db
       - es
       - events-broker
+      - message-broker
     environment:
       - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
@@ -105,10 +105,10 @@ services:
       - 8081:8080
       - 8444:8443
     depends_on:
-      - broker
       - db
       - es
       - events-broker
+      - message-broker
     environment:
       - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
@@ -124,9 +124,9 @@ services:
     expose:
       - 8080
     depends_on:
-      - broker
       - db
       - events-broker
+      - message-broker
     environment:
       - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
