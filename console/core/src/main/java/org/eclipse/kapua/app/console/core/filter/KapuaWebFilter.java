@@ -92,7 +92,6 @@ public class KapuaWebFilter extends ShiroFilter {
      * @since 1.6.0
      */
     protected void checkAndRefreshAccessTokenIfExpired(AccessToken accessToken) throws KapuaException {
-        LoggerFactory.getLogger(KapuaWebFilter.class).info("Access Token is: {}", accessToken);
         if (accessToken == null) {
             return;
         }
