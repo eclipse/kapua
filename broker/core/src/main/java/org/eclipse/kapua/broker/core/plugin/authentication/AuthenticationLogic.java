@@ -263,14 +263,14 @@ public abstract class AuthenticationLogic {
     }
 
     protected boolean isStealingLink(KapuaSecurityContext kapuaSecurityContext, Throwable error) {
-        if(!isIllegalState(kapuaSecurityContext, error) || error == null) {
-            return false;
+        if(isIllegalState(kapuaSecurityContext, error)) {
+            return true;
         }
 
         KapuaIllegalDeviceStateException illegalStateException = null;
         if(error instanceof KapuaIllegalDeviceStateException) {
             illegalStateException = (KapuaIllegalDeviceStateException) error;
-        } else if (error.getCause() != null && error.getCause() instanceof KapuaIllegalDeviceStateException) {
+        } else if (error != null && error.getCause() != null && error.getCause() instanceof KapuaIllegalDeviceStateException) {
             illegalStateException = (KapuaIllegalDeviceStateException) error.getCause();
         }
 
