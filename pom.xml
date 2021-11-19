@@ -86,7 +86,7 @@
         <log4j2-mock.version>0.0.2</log4j2-mock.version>
         <logback.version>1.2.3</logback.version>
         <mockito.version>1.10.19</mockito.version>
-        <netty.version>4.1.60.Final</netty.version>
+        <netty.version>4.1.68.Final</netty.version>
         <netty3.version>3.10.6.Final</netty3.version>
         <opencsv.version>3.7</opencsv.version>
         <paho.version>1.2.1</paho.version>
