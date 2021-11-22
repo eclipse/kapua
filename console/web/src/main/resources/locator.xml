@@ -20,9 +20,6 @@
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
 
-        <api>org.eclipse.kapua.service.endpoint.EndpointInfoService</api>
-        <api>org.eclipse.kapua.service.endpoint.EndpointInfoFactory</api>
-
         <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
         <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
         <api>org.eclipse.kapua.service.scheduler.trigger.fired.FiredTriggerService</api>
