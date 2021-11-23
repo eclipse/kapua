@@ -12,16 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-
-import com.zaxxer.hikari.HikariDataSource;
 
 public final class DataSource {
 
     private static HikariDataSource hikariDataSource;
 
-    private DataSource() {}
+    private DataSource() {
+    }
 
     public static HikariDataSource getDataSource() {
         if (hikariDataSource == null) {
@@ -42,6 +42,12 @@ public final class DataSource {
 
             hikariDataSource.setLeakDetectionThreshold(config.getInt(SystemSettingKey.DB_POOL_LEAKDETECTION_THRESHOLD, 0));
         }
+
         return hikariDataSource;
+    }
+
+    @Override
+    public String toString() {
+        return hikariDataSource.getDriverClassName() + "@" + hikariDataSource.toString();
     }
 }
