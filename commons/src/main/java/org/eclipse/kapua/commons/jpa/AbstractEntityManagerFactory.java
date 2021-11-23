@@ -12,8 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
-
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.persistence.config.PersistenceUnitProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +35,8 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityManagerFactory.class);
 
+    private static final SystemSetting SYSTEM_SETTING = SystemSetting.getInstance();
+
     private static final Map<String, String> UNIQUE_CONTRAINTS = new HashMap<>();
     private final EntityManagerFactory entityManagerFactory;
 
@@ -46,12 +51,17 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
         //
         // Initialize the EntityManagerFactory
         try {
+
             // JPA configuration overrides
-            // Other initialization code moved to org.eclipse.kapua.commons.jpa.JpaSessionCustomizer
             Map<String, Object> configOverrides = new HashMap<>();
 
-            configOverrides.put("eclipselink.cache.shared.default", "false"); // This has to be set to false in order to disable the local object cache of EclipseLink.
-            configOverrides.put("javax.persistence.nonJtaDataSource", DataSource.getDataSource());
+            configOverrides.put(PersistenceUnitProperties.CACHE_SHARED_DEFAULT, "false"); // This has to be set to false in order to disable the local object cache of EclipseLink.
+            configOverrides.put(PersistenceUnitProperties.NON_JTA_DATASOURCE, DataSource.getDataSource());
+
+            String targetDatabase = SYSTEM_SETTING.getString(SystemSettingKey.DB_JDBC_DATABASE_TARGET);
+            if (!Strings.isNullOrEmpty(targetDatabase)) {
+                configOverrides.put(PersistenceUnitProperties.TARGET_DATABASE, targetDatabase);
+            }
 
             // Standalone JPA
             entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName, configOverrides);
@@ -69,6 +79,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
     }
 
     // Entity manager factory methods
+
     /**
      * Returns an EntityManager instance.
      *
@@ -76,8 +87,8 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
      * @throws KapuaException If {@link EntityManagerFactory#createEntityManager()} cannot create the {@link EntityManager}
      * @since 1.0.0
      */
-    public EntityManager createEntityManager()
-            throws KapuaException {
+    @Override
+    public EntityManager createEntityManager() throws KapuaException {
         return new EntityManager(entityManagerFactory.createEntityManager());
     }
 
