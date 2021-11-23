@@ -50,7 +50,7 @@ import javax.inject.Singleton;
 public class DeviceConnectionOptionServiceImpl extends AbstractKapuaService implements DeviceConnectionOptionService {
 
     public DeviceConnectionOptionServiceImpl() {
-        super(DeviceEntityManagerFactory.instance());
+        super(DeviceEntityManagerFactory.getInstance());
     }
 
     @Override

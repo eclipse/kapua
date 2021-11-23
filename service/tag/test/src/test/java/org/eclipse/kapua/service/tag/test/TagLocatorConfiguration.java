@@ -16,9 +16,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-
 import io.cucumber.java.Before;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -62,7 +60,7 @@ public class TagLocatorConfiguration {
      * Create mocked and non mocked service under test and bind them with Guice.
      * It is based on custom MockedLocator locator that is meant for sevice unit tests.
      */
-    @Before(value="@setup", order=1)
+    @Before(value = "@setup", order = 1)
     public void setupDI() {
         MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
 
@@ -95,7 +93,7 @@ public class TagLocatorConfiguration {
                 bind(TagFactory.class).toInstance(new TagFactoryImpl());
 
                 //Inject actual Device service related services
-                DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.instance();
+                DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
                 bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
 
                 bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl());

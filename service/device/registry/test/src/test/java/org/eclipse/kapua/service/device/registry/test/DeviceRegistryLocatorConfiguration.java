@@ -16,9 +16,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-
 import io.cucumber.java.Before;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -48,7 +46,7 @@ import org.mockito.Mockito;
 @Singleton
 public class DeviceRegistryLocatorConfiguration {
 
-    @Before(value="@setup", order=1)
+    @Before(value = "@setup", order = 1)
     public void setupDI() {
         System.setProperty("locator.class.impl", "org.eclipse.kapua.qa.common.MockedLocator");
         MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
@@ -72,7 +70,7 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // Inject actual Device registry service related services
-                DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.instance();
+                DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
                 bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
 
                 bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl());

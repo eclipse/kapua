@@ -62,7 +62,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
      * Constructor
      */
     public DeviceRegistryServiceImpl() {
-        this(DeviceEntityManagerFactory.instance());
+        this(DeviceEntityManagerFactory.getInstance());
     }
 
     // Operations implementation
@@ -103,7 +103,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
                     entityCache.remove(device.getScopeId(), device);
                     return null;
                 }
-            ));
+        ));
     }
 
     @Override
@@ -141,7 +141,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     public Device findByClientId(KapuaId scopeId, String clientId) throws KapuaException {
         DeviceValidation.validateFindByClientIdPreconditions(scopeId, clientId);
         Device device = (Device) ((DeviceRegistryCache) entityCache).getByClientId(scopeId, clientId);
-        if (device==null) {
+        if (device == null) {
             DeviceQueryImpl query = new DeviceQueryImpl(scopeId);
             query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, clientId));
             query.setFetchAttributes(Lists.newArrayList(DeviceAttributes.CONNECTION, DeviceAttributes.LAST_EVENT));
