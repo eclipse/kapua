@@ -99,7 +99,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
     private final int trustKeyDuration = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
 
     public MfaOptionServiceImpl() {
-        super(MfaOptionEntityManagerFactory.getInstance());
+        super(AuthenticationEntityManagerFactory.getInstance());
     }
 
     @Override
@@ -396,9 +396,9 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
      * This QR code generator follows the spec detailed here for the URI format: https://github.com/google/google-authenticator/wiki/Key-Uri-Format
      *
      * @param organizationName the organization name to be used as issuer in the QR code
-     * @param accountName the account name of the account to which the user belongs
-     * @param username    the username
-     * @param key         the Mfa secret key in plain text
+     * @param accountName      the account name of the account to which the user belongs
+     * @param username         the username
+     * @param key              the Mfa secret key in plain text
      * @return the QR code image in base64 format
      */
     private String generateQRCode(String organizationName, String accountName, String username, String key)
