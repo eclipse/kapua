@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.job.step.definition.internal;
 
 import org.eclipse.kapua.KapuaEntityCloneException;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinition;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionCreator;
@@ -22,12 +21,14 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
+import javax.inject.Singleton;
+
 /**
  * {@link JobStepDefinitionFactory} implementation.
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class JobStepDefinitionFactoryImpl implements JobStepDefinitionFactory {
 
     @Override

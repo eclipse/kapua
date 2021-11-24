@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.job.internal;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaNamedEntityCreator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobCreator;
@@ -27,7 +26,6 @@ import java.util.List;
  *
  * @since 1.0.0
  */
-@KapuaProvider
 public class JobCreatorImpl extends AbstractKapuaNamedEntityCreator<Job> implements JobCreator {
 
     private static final long serialVersionUID = 3119071638220738358L;

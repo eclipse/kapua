@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -30,6 +29,7 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * {@link JobStepDefinitionService} exposes APIs to manage JobStepDefinition objects.<br>
@@ -38,7 +38,7 @@ import javax.inject.Inject;
  *
  * @since 1.0
  */
-@KapuaProvider
+@Singleton
 public class JobStepDefinitionServiceImpl extends AbstractKapuaService implements JobStepDefinitionService {
 
     @Inject
