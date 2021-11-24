@@ -21,12 +21,6 @@
 
         <api>org.eclipse.kapua.message.device.lifecycle.KapuaLifecycleMessageFactory</api>
 
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
-
-        <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionService</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory</api>
-
         <api>org.eclipse.kapua.service.storable.model.id.StorableIdFactory</api>
         <api>org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory</api>
 
@@ -35,9 +29,6 @@
 
         <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService</api>
         <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory</api>
-
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerFactory</api>
-        <api>org.eclipse.kapua.service.scheduler.trigger.TriggerService</api>
 
         <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
 
