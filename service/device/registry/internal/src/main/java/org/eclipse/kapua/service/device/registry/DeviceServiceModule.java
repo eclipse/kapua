@@ -12,17 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModule;
 import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
 import org.eclipse.kapua.commons.event.ServiceInspector;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 //@KapuaProvider
 public class DeviceServiceModule extends ServiceEventModule {
@@ -40,7 +39,7 @@ public class DeviceServiceModule extends ServiceEventModule {
         selc.addAll(ServiceInspector.getEventBusClients(deviceConnectionService, DeviceConnectionService.class));
         return new ServiceEventModuleConfiguration(
                 kds.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS),
-                DeviceEntityManagerFactory.instance(),
+                DeviceEntityManagerFactory.getInstance(),
                 selc.toArray(new ServiceEventClientConfiguration[0]));
     }
 
