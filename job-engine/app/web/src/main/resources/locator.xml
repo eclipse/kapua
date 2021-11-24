@@ -19,9 +19,6 @@
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
 
-        <api>org.eclipse.kapua.service.endpoint.EndpointInfoFactory</api>
-        <api>org.eclipse.kapua.service.endpoint.EndpointInfoService</api>
-
         <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService</api>
         <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory</api>
 

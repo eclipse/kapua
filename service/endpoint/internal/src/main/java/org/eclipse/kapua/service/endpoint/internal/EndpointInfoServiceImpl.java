@@ -21,7 +21,6 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -42,6 +41,7 @@ import org.eclipse.kapua.service.endpoint.EndpointInfoListResult;
 import org.eclipse.kapua.service.endpoint.EndpointInfoQuery;
 import org.eclipse.kapua.service.endpoint.EndpointInfoService;
 
+import javax.inject.Singleton;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ import java.util.Map;
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class EndpointInfoServiceImpl
         extends AbstractKapuaService
         implements EndpointInfoService {
