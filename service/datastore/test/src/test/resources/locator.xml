@@ -14,8 +14,6 @@
 <!DOCTYPE xml>
 <locator-config>
     <provided>
-        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
-
         <api>org.eclipse.kapua.service.generator.id.IdGeneratorService</api>
     </provided>
 

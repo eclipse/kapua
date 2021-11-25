@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration.metatype;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
@@ -23,12 +22,14 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.model.config.metatype.KapuaTscalar;
 
+import javax.inject.Singleton;
+
 /**
  * Kapua metatype objects factory service implementation.
  *
  * @since 1.0
  */
-@KapuaProvider
+@Singleton
 public class KapuaMetatypeFactoryImpl implements KapuaMetatypeFactory {
 
     @Override
