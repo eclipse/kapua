@@ -18,15 +18,16 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecord;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
+
+import javax.inject.Singleton;
 
 /**
  * {@link EventStoreFactory} implementation
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class EventStoreFactoryImpl implements EventStoreFactory {
 
     @Override
