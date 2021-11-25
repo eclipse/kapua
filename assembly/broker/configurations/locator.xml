@@ -22,9 +22,6 @@
 
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
 
-        <api>org.eclipse.kapua.service.storable.model.id.StorableIdFactory</api>
-        <api>org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicateFactory</api>
-
         <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
 
         <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
