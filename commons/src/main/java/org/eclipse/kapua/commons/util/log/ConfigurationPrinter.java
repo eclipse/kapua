@@ -358,7 +358,7 @@ public class ConfigurationPrinter {
 
         //
         // End Line - Same length of Title
-        String footerLog = new String(new char[alignedTitleFormat.length()]).replace('\0', '=');
+        String footerLog = new String(new char[alignedTitleFormat.length()]).replace('\0', '=').concat("========================================");
         printLogLeveled(footerLog);
     }
 
