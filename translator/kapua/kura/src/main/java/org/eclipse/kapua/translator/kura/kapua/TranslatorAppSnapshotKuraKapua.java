@@ -19,27 +19,24 @@ import org.eclipse.kapua.service.device.call.kura.model.snapshot.SnapshotMetrics
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponsePayload;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
-import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshot;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshotFactory;
 import org.eclipse.kapua.service.device.management.snapshot.DeviceSnapshots;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponseChannel;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponseMessage;
 import org.eclipse.kapua.service.device.management.snapshot.message.internal.SnapshotResponsePayload;
+import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
 
 import java.util.List;
 
 /**
- * {@link org.eclipse.kapua.translator.Translator} implementation from {@link KuraResponseMessage} to {@link SnapshotResponseMessage}
+ * {@link Translator} implementation from {@link KuraResponseMessage} to {@link SnapshotResponseMessage}
  *
  * @since 1.0.0
  */
 public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResponseKuraKapua<SnapshotResponseChannel, SnapshotResponsePayload, SnapshotResponseMessage> {
-
-    private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -63,8 +60,11 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
         SnapshotResponsePayload snapshotResponsePayload = super.translatePayload(kuraResponsePayload);
 
         try {
-            KuraSnapshotIds kuraSnapshotIds = readXmlBodyAs(kuraResponsePayload.getBody(), KuraSnapshotIds.class);
-            snapshotResponsePayload.setDeviceSnapshots(translate(kuraSnapshotIds));
+
+            if (kuraResponsePayload.hasBody()) {
+                KuraSnapshotIds kuraSnapshotIds = readXmlBodyAs(kuraResponsePayload.getBody(), KuraSnapshotIds.class);
+                snapshotResponsePayload.setDeviceSnapshots(translate(kuraSnapshotIds));
+            }
 
             return snapshotResponsePayload;
         } catch (InvalidPayloadException ipe) {
@@ -79,7 +79,7 @@ public class TranslatorAppSnapshotKuraKapua extends AbstractSimpleTranslatorResp
      *
      * @param kuraSnapshotIdResult The {@link KuraSnapshotIds} to translate.
      * @return The translated {@link DeviceSnapshots}
-     * @since 1.0.
+     * @since 1.0.0
      */
     private DeviceSnapshots translate(KuraSnapshotIds kuraSnapshotIdResult) {
         DeviceSnapshotFactory deviceSnapshotFactory = LOCATOR.getFactory(DeviceSnapshotFactory.class);
