@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,20 +10,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.storable.model.id;
+package org.eclipse.kapua.service.storable.model.query.predicate;
 
-import javax.inject.Singleton;
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 
-/**
- * {@link StorableIdFactory} implementation.
- *
- * @since 1.0.0
- */
-@Singleton
-public class StorableIdFactoryImpl implements StorableIdFactory {
-
+public class StorableQueryPredicateModule extends AbstractKapuaModule {
     @Override
-    public StorableId newStorableId(String stringId) {
-        return new StorableIdImpl(stringId);
+    protected void configureModule() {
+        bind(StorablePredicateFactory.class).to(StorablePredicateFactoryImpl.class);
     }
 }
