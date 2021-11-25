@@ -26,8 +26,6 @@
         <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
         <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService</api>
         <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory</api>
-
-        <api>org.eclipse.kapua.transport.TransportClientFactory</api>
         <provide>
             <interceptor>annotation</interceptor>
             <with>Impl</with>

@@ -25,7 +25,6 @@
         <api>org.eclipse.kapua.job.engine.JobEngineService</api>
         <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
 
-        <api>org.eclipse.kapua.transport.TransportClientFactory</api>
     </provided>
 
     <packages>
