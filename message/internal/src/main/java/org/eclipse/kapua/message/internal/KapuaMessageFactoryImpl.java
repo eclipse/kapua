@@ -13,19 +13,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.message.KapuaChannel;
 import org.eclipse.kapua.message.KapuaMessage;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.message.KapuaPosition;
 
+import javax.inject.Singleton;
+
 /**
  * {@link KapuaMessageFactory} implementation
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class KapuaMessageFactoryImpl implements KapuaMessageFactory {
 
     @Override
