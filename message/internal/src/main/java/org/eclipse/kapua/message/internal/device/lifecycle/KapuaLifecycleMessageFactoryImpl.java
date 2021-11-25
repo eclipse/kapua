@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.lifecycle;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
@@ -28,12 +27,14 @@ import org.eclipse.kapua.message.device.lifecycle.KapuaMissingChannel;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaMissingPayload;
 
+import javax.inject.Singleton;
+
 /**
  * {@link KapuaMessageFactory} implementation.
  *
  * @since 1.1.0
  */
-@KapuaProvider
+@Singleton
 public class KapuaLifecycleMessageFactoryImpl implements KapuaLifecycleMessageFactory {
     @Override
     public KapuaAppsMessage newKapuaAppsMessage() {

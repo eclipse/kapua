@@ -22,9 +22,6 @@
 
         <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
 
-        <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
-        <api>org.eclipse.kapua.message.device.data.KapuaDataMessageFactory</api>
-
         <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
 
         <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>

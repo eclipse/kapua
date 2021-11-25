@@ -13,18 +13,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.message.internal.device.data;
 
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.message.device.data.KapuaDataChannel;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.message.device.data.KapuaDataMessageFactory;
 import org.eclipse.kapua.message.device.data.KapuaDataPayload;
+
+import javax.inject.Singleton;
 
 /**
  * {@link KapuaDataMessageFactory} implementation
  *
  * @since 1.0.0
  */
-@KapuaProvider
+@Singleton
 public class KapuaDataMessageFactoryImpl implements KapuaDataMessageFactory {
 
     @Override
