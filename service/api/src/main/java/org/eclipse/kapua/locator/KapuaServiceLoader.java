@@ -17,37 +17,40 @@ import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * Kapua service loader definition.<br>
- * Each service loader must provide the proper implementation for these methods.
+ * {@link KapuaService} loader definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface KapuaServiceLoader {
 
     /**
-     * Returns an instance of a KapuaService implementing the provided KapuaService class.
+     * Returns an implementing instance the requested {@link KapuaService}.
      *
-     * @param serviceClass - class of the service whose instance is required.
-     * @return service instance
+     * @param serviceClass The {@link KapuaService} class to retrieve.
+     * @return The requested {@link KapuaService} implementation.
      * @throws KapuaRuntimeException with KapuaLocatorErrorCodes.SERVICE_UNAVAILABLE code if service is not available
+     * @since 1.0.0
      */
-    <S extends KapuaService> S getService(Class<S> serviceClass);
+    <S extends KapuaService> S getService(@NotNull Class<S> serviceClass);
 
     /**
-     * Returns an instance of a KapuaEntityFactory implementing the provided KapuaFactory class.
+     * Returns an implementing instance the requested {@link KapuaObjectFactory}.
      *
-     * @param factoryClass - class of the factory whose instance is required.
-     * @return
+     * @param factoryClass The {@link KapuaObjectFactory}to retrieve.
+     * @return The requested {@link KapuaObjectFactory} implementation.
+     * @since 1.0.0
      */
-    <F extends KapuaObjectFactory> F getFactory(Class<F> factoryClass);
+    <F extends KapuaObjectFactory> F getFactory(@NotNull Class<F> factoryClass);
 
     /**
-     * Returns a list of all the classes implementing KapuaServices
+     * Returns the {@link List} of all the available {@link KapuaService} implementations.
      *
-     * @return a list of all the classes implementing KapuaServices
+     * @return The {@link List} of all the available {@link KapuaService} implementations.
+     * @since 1.0.0
      */
     List<KapuaService> getServices();
 }

@@ -12,9 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.log;
 
-import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -227,6 +226,23 @@ public class ConfigurationPrinter {
     }
 
     /**
+     * Adds a {@link SimpleConfigurationParameter}.
+     * <p>
+     * It will be printed as:
+     * <pre>
+     * |\t{value}
+     * </pre>
+     *
+     * @param value The value of the {@link ConfigurationParameter}
+     * @return Itself, to chain method invocation.
+     * @since 1.3.0
+     */
+    public ConfigurationPrinter addSimpleParameter(@Nullable Object value) {
+        getConfigurations().add(new SimpleConfigurationParameter(currentIndentation, value));
+        return this;
+    }
+
+    /**
      * Adds a {@link ConfigurationParameter}.
      * <p>
      * It will be printed as:
@@ -342,7 +358,7 @@ public class ConfigurationPrinter {
 
         //
         // End Line - Same length of Title
-        String footerLog = new String(new char[alignedTitleFormat.length()]).replace('\0', '=');
+        String footerLog = new String(new char[alignedTitleFormat.length()]).replace('\0', '=').concat("========================================");
         printLogLeveled(footerLog);
     }
 
@@ -463,9 +479,23 @@ public class ConfigurationPrinter {
     }
 
     /**
+     * Parameter {@link Configuration} which handles {@link #indentation} and value.
+     * <p>
+     * Used to create the list of parameters (value) to print.
+     *
+     * @since 1.6.0
+     */
+    private static class SimpleConfigurationParameter extends ConfigurationHeader {
+
+        public SimpleConfigurationParameter(int indentation, Object value) {
+            super(indentation, value != null ? value.toString() : "N/A");
+        }
+    }
+
+    /**
      * Parameter {@link Configuration} which handles {@link #indentation}, {@link #name} and {@link #value}.
      * <p>
-     * Used to create the list of parameters to print.
+     * Used to create the list of parameters (key: value) to print.
      *
      * @since 1.3.0
      */

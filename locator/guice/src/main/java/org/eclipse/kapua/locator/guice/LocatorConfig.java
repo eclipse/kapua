@@ -13,17 +13,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.XMLConfiguration;
+import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
+import org.eclipse.kapua.locator.KapuaLocatorException;
+import org.eclipse.kapua.locator.guice.GuiceLocatorImpl;
+
+import javax.validation.constraints.NotNull;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.eclipse.kapua.locator.KapuaLocatorErrorCodes;
-import org.eclipse.kapua.locator.KapuaLocatorException;
-
+/**
+ * {@link GuiceLocatorImpl} configutation parser.
+ *
+ * @since 1.0.0
+ */
 public class LocatorConfig {
 
     private static final String SERVICE_RESOURCE_INTERFACES = "provided.api";
@@ -35,24 +42,35 @@ public class LocatorConfig {
     private final List<String> excludedPkgNames;
     private final List<String> providedInterfaceNames;
 
-    private LocatorConfig(final URL url, final List<String> includedPkgNames, final List<String> excludedPkgNames, final List<String> providedInterfaceNames) {
+    /**
+     * Constructor.
+     *
+     * @param url                    The configuration resource {@link URL}.
+     * @param includedPkgNames       The {@link List} of included package names from configuration.
+     * @param excludedPkgNames       The {@link List} of excluded package names from configuration.
+     * @param providedInterfaceNames The {@link List} of interfaces to map from configuration.
+     * @since 1.0.0
+     */
+    private LocatorConfig(URL url, List<String> includedPkgNames, List<String> excludedPkgNames, List<String> providedInterfaceNames) {
         this.url = url;
         this.includedPkgNames = includedPkgNames;
         this.excludedPkgNames = excludedPkgNames;
         this.providedInterfaceNames = providedInterfaceNames;
     }
 
-    public static LocatorConfig fromURL(final URL url) throws KapuaLocatorException {
+    /**
+     * Loads the locator configuration from the given {@link URL}.
+     *
+     * @param url The {@link URL} of the locator configuration.
+     * @return The {@link LocatorConfig}.
+     * @throws KapuaLocatorException if the configuration is invalid.
+     */
+    public static LocatorConfig fromURL(@NotNull URL url) throws KapuaLocatorException {
+        List<String> includedPkgNames = new ArrayList<>();
+        List<String> excludedPkgNames = new ArrayList<>();
+        List<String> providedInterfaceNames = new ArrayList<>();
 
-        if (url == null) {
-            throw new IllegalArgumentException("'url' must not be null");
-        }
-
-        final List<String> includedPkgNames = new ArrayList<>();
-        final List<String> excludedPkgNames = new ArrayList<>();
-        final List<String> providedInterfaceNames = new ArrayList<>();
-
-        final XMLConfiguration xmlConfig;
+        XMLConfiguration xmlConfig;
         try {
             xmlConfig = new XMLConfiguration(url);
         } catch (ConfigurationException e) {
@@ -86,7 +104,12 @@ public class LocatorConfig {
         return new LocatorConfig(url, Collections.unmodifiableList(includedPkgNames), Collections.unmodifiableList(excludedPkgNames), Collections.unmodifiableList(providedInterfaceNames));
     }
 
-    private static void addAllStrings(final List<String> list, Collection<?> other) {
+    /**
+     * @param list
+     * @param other
+     * @since 1.0.0
+     */
+    private static void addAllStrings(List<String> list, Collection<?> other) {
         for (Object entry : other) {
             if (entry instanceof String) {
                 list.add((String) entry);
@@ -94,18 +117,42 @@ public class LocatorConfig {
         }
     }
 
+    /**
+     * Gets the configuration resource {@link URL}.
+     *
+     * @return The configuration resource {@link URL}.
+     * @since 1.0.0
+     */
     public URL getURL() {
         return url;
     }
 
+    /**
+     * Gets the {@link Collection} of included package names.
+     *
+     * @return The {@link Collection} of included package names.
+     * @since 1.0.0
+     */
     public Collection<String> getIncludedPackageNames() {
         return includedPkgNames;
     }
 
+    /**
+     * Gets the {@link Collection} of excluded package names.
+     *
+     * @return The {@link Collection} of excluded package names.
+     * @since 1.0.0
+     */
     public Collection<String> getExcludedPackageNames() {
         return excludedPkgNames;
     }
 
+    /**
+     * Gets the {@link Collection} of mapped interfaces.
+     *
+     * @return The {@link Collection} of mapped interfaces.
+     * @since 1.0.0
+     */
     public Collection<String> getProvidedInterfaceNames() {
         return providedInterfaceNames;
     }

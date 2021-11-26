@@ -16,7 +16,8 @@ import com.google.inject.AbstractModule;
 
 public abstract class AbstractKapuaModule extends AbstractModule {
 
-    public AbstractKapuaModule() {}
+    public AbstractKapuaModule() {
+    }
 
     @Override
     protected final void configure() {
