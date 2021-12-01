@@ -12,22 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.client;
 
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.job.engine.JobEngineFactory;
-import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.job.engine.JobEngineService;
 
-import javax.inject.Singleton;
-
-/**
- * {@link JobEngineFactory} remote client implementation
- *
- * @since 1.5.0
- */
-@Singleton
-public class JobEngineFactoryClient implements JobEngineFactory {
-
+public class JobEngineClientModule extends AbstractKapuaModule {
     @Override
-    public JobStartOptions newJobStartOptions() {
-        return new JobStartOptionsClient();
+    protected void configureModule() {
+        bind(JobEngineFactory.class).to(JobEngineFactoryClient.class);
+        bind(JobEngineService.class).to(JobEngineServiceClient.class);
     }
-
 }

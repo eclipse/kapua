@@ -20,7 +20,7 @@
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
 
-        <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
+
         <provide>
             <interceptor>annotation</interceptor>
             <with>Impl</with>

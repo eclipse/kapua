@@ -14,9 +14,10 @@ package org.eclipse.kapua.job.engine.jbatch;
 
 import org.eclipse.kapua.job.engine.JobEngineFactory;
 import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.locator.KapuaProvider;
 
-@KapuaProvider
+import javax.inject.Singleton;
+
+@Singleton
 public class JobEngineFactoryJbatch implements JobEngineFactory {
 
     @Override

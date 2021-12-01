@@ -18,15 +18,16 @@ import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionCreator;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionListResult;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionQuery;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
+
+import javax.inject.Singleton;
 
 /**
  * {@link QueuedJobExecutionFactory} implementation.
  *
  * @since 1.1.0
  */
-@KapuaProvider
+@Singleton
 public class QueuedJobExecutionFactoryImpl implements QueuedJobExecutionFactory {
 
     @Override
