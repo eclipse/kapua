@@ -65,6 +65,10 @@ public class DomainDAO extends ServiceDAO {
         return ServiceDAO.find(em, DomainImpl.class, scopeId, domainId);
     }
 
+    public static Domain findByName(EntityManager em, String name) {
+        return ServiceDAO.findByField(em, DomainImpl.class, KapuaNamedEntityAttributes.NAME, name);
+    }
+
     /**
      * Returns the {@link Domain} list matching the provided query.
      *
@@ -107,10 +111,6 @@ public class DomainDAO extends ServiceDAO {
      */
     public static Domain delete(EntityManager em, KapuaId scopeId, KapuaId domainId) throws KapuaEntityNotFoundException {
         return ServiceDAO.delete(em, DomainImpl.class, scopeId, domainId);
-    }
-
-    public static Domain findByName(EntityManager em, String name) {
-        return ServiceDAO.findByField(em, DomainImpl.class, KapuaNamedEntityAttributes.NAME, name);
     }
 
 }

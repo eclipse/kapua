@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
-import java.util.Arrays;
-
 import org.eclipse.kapua.commons.model.query.predicate.AbstractMatchPredicate;
-import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.service.user.UserAttributes;
 import org.eclipse.kapua.service.user.UserMatchPredicate;
+
+import java.util.Arrays;
 
 public class UserMatchPredicateImpl<T> extends AbstractMatchPredicate<T> implements UserMatchPredicate<T> {
 
@@ -29,12 +28,12 @@ public class UserMatchPredicateImpl<T> extends AbstractMatchPredicate<T> impleme
      */
     public UserMatchPredicateImpl(T matchTerm) {
         this.attributeNames = Arrays.asList(
-                KapuaNamedEntityAttributes.NAME,
+                UserAttributes.NAME,
                 UserAttributes.EMAIL,
                 UserAttributes.PHONE_NUMBER,
                 UserAttributes.DISPLAY_NAME,
                 UserAttributes.EXTERNAL_ID,
-                KapuaNamedEntityAttributes.DESCRIPTION
+                UserAttributes.DESCRIPTION
         );
         this.matchTerm = matchTerm;
     }
