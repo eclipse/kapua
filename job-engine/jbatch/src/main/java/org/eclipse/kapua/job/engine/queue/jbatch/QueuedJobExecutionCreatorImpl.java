@@ -18,14 +18,11 @@ import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionCreator;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionStatus;
 import org.eclipse.kapua.model.id.KapuaId;
 
-import javax.inject.Singleton;
-
 /**
  * {@link QueuedJobExecutionCreator} implementation
  *
  * @since 1.0.0
  */
-@Singleton
 public class QueuedJobExecutionCreatorImpl extends AbstractKapuaUpdatableEntityCreator<QueuedJobExecution> implements QueuedJobExecutionCreator {
 
     private static final long serialVersionUID = 3119071638220738358L;

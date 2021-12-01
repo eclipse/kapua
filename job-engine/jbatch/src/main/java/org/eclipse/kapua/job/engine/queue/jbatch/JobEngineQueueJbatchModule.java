@@ -13,14 +13,12 @@
 package org.eclipse.kapua.job.engine.queue.jbatch;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionCreator;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService;
 
 public class JobEngineQueueJbatchModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(QueuedJobExecutionCreator.class).to(QueuedJobExecutionCreatorImpl.class);
         bind(QueuedJobExecutionFactory.class).to(QueuedJobExecutionFactoryImpl.class);
         bind(QueuedJobExecutionService.class).to(QueuedJobExecutionServiceImpl.class);
     }
