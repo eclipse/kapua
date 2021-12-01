@@ -12,15 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.scheduler.trigger.quartz;
 
-import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.scheduler.SchedulerDomains;
@@ -30,10 +29,8 @@ import org.eclipse.kapua.service.scheduler.quartz.SchedulerEntityManagerFactory;
 import org.eclipse.kapua.service.scheduler.quartz.driver.QuartzTriggerDriver;
 import org.eclipse.kapua.service.scheduler.quartz.driver.exception.TriggerNeverFiresException;
 import org.eclipse.kapua.service.scheduler.trigger.Trigger;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerAttributes;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerCreator;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
-import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinition;
 import org.eclipse.kapua.service.scheduler.trigger.definition.TriggerDefinitionFactory;
@@ -59,6 +56,20 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
     private static final Logger LOG = LoggerFactory.getLogger(TriggerServiceImpl.class);
 
+    /**
+     * Lazy {@code static} reference to {@link TriggerDefinition} named "Inteval Job".
+     *
+     * @since 1.2.0
+     */
+    private static TriggerDefinition intervalJobTriggerDefinition;
+
+    /**
+     * Lazy {@code static} reference to {@link TriggerDefinition} named "Cron Job".
+     *
+     * @since 1.2.0
+     */
+    private static TriggerDefinition cronJobTriggerDefinition;
+
     @Inject
     private AuthorizationService authorizationService;
     @Inject
@@ -68,9 +79,6 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
     private TriggerDefinitionService triggerDefinitionService;
     @Inject
     private TriggerDefinitionFactory triggerDefinitionFactory;
-
-    private static TriggerDefinition intervalJobTriggerDefinition;
-    private static TriggerDefinition cronJobTriggerDefinition;
 
     /**
      * Constructor.
@@ -118,13 +126,10 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         //
         // Check duplicate name
-        TriggerQuery query = new TriggerQueryImpl(triggerCreator.getScopeId());
-        query.setPredicate(query.attributePredicate(TriggerAttributes.NAME, triggerCreator.getName()));
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, triggerCreator);
 
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(triggerCreator.getName());
-        }
-
+        //
+        // Check dates
         if (triggerCreator.getEndsOn() != null) {
             Date startTime = triggerCreator.getStartsOn();
             Date endTime = triggerCreator.getEndsOn();
@@ -211,18 +216,10 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
 
         //
         // Check duplicate name
-        TriggerQuery query = new TriggerQueryImpl(trigger.getScopeId());
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(TriggerAttributes.NAME, trigger.getName()),
-                        query.attributePredicate(TriggerAttributes.ENTITY_ID, trigger.getId(), AttributePredicate.Operator.NOT_EQUAL)
-                )
-        );
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, trigger);
 
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(trigger.getName());
-        }
-
+        //
+        // Check dates
         if (trigger.getEndsOn() != null) {
             Date startTime = new Date(trigger.getStartsOn().getTime());
             Date endTime = new Date(trigger.getEndsOn().getTime());
@@ -369,7 +366,7 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
      * @throws KapuaException In case is not found.
      * @since 1.1.0
      */
-    private TriggerDefinition getIntervalJobTriggerDefinition() throws KapuaException {
+    private synchronized TriggerDefinition getIntervalJobTriggerDefinition() throws KapuaException {
         if (intervalJobTriggerDefinition == null) {
             intervalJobTriggerDefinition = getTriggerDefinition("Interval Job");
         }
@@ -384,7 +381,7 @@ public class TriggerServiceImpl extends AbstractKapuaService implements TriggerS
      * @throws KapuaException In case is not found.
      * @since 1.1.0
      */
-    private TriggerDefinition getCronJobTriggerDefinition() throws KapuaException {
+    private synchronized TriggerDefinition getCronJobTriggerDefinition() throws KapuaException {
         if (cronJobTriggerDefinition == null) {
             cronJobTriggerDefinition = getTriggerDefinition("Cron Job");
         }

@@ -30,11 +30,12 @@
 
         <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
     </provided>
+
     <packages>
         <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.job.engine.client</package>
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.transport</package>
-        <package>org.eclipse.kapua.job.engine.client</package>
     </packages>
 </locator-config>

@@ -12,22 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.internal;
 
-import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
-import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
@@ -61,12 +59,12 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
+    private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
+
     @Inject
     private AuthorizationService authorizationService;
     @Inject
     private PermissionFactory permissionFactory;
-
-    private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
 
     @Inject
     private TriggerService triggerService;
@@ -74,7 +72,11 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     private TriggerFactory triggerFactory;
 
     public JobServiceImpl() {
-        super(JobService.class.getName(), JobDomains.JOB_DOMAIN, JobEntityManagerFactory.getInstance(), JobService.class, JobFactory.class);
+        super(JobService.class.getName(),
+                JobDomains.JOB_DOMAIN,
+                JobEntityManagerFactory.getInstance(),
+                JobService.class,
+                JobFactory.class);
     }
 
     @Override
@@ -97,11 +99,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check duplicate name
-        JobQuery query = new JobQueryImpl(creator.getScopeId());
-        query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, creator.getName()));
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(creator.getName());
-        }
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, creator);
 
         //
         // Do create
@@ -128,17 +126,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check duplicate name
-        JobQuery query = new JobQueryImpl(job.getScopeId());
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(KapuaNamedEntityAttributes.NAME, job.getName()),
-                        query.attributePredicate(KapuaEntityAttributes.ENTITY_ID, job.getId(), Operator.NOT_EQUAL)
-                )
-        );
-
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(job.getName());
-        }
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, job);
 
         //
         // Do update

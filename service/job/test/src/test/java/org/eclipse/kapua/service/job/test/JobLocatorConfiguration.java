@@ -18,8 +18,10 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
+import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
@@ -78,6 +80,7 @@ public class JobLocatorConfiguration {
 
                 // Commons
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
+                bind(QueryFactory.class).toInstance(new QueryFactoryImpl());
 
                 // Account
                 bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));

@@ -14,8 +14,6 @@
 package org.eclipse.kapua.service.user.internal;
 
 import org.eclipse.kapua.KapuaDuplicateExternalIdException;
-import org.eclipse.kapua.KapuaDuplicateNameException;
-import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -23,6 +21,7 @@ import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -35,7 +34,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserAttributes;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
@@ -53,6 +51,8 @@ import java.util.Objects;
 
 /**
  * {@link UserService} implementation.
+ *
+ * @since 1.0.0
  */
 @Singleton
 public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<User, UserCreator, UserService, UserListResult, UserQuery, UserFactory> implements UserService {
@@ -61,16 +61,21 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Inject
     private AuthorizationService authorizationService;
-
     @Inject
     private PermissionFactory permissionFactory;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public UserServiceImpl() {
-        super(UserService.class.getName(), UserDomains.USER_DOMAIN, UserEntityManagerFactory.getInstance(),
-                UserCacheFactory.getInstance(), UserService.class, UserFactory.class);
+        super(UserService.class.getName(),
+                UserDomains.USER_DOMAIN,
+                UserEntityManagerFactory.getInstance(),
+                UserCacheFactory.getInstance(),
+                UserService.class,
+                UserFactory.class);
     }
 
     @Override
@@ -102,17 +107,11 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check duplicate name
-        UserQuery query = new UserQueryImpl(userCreator.getScopeId());
-        query.setPredicate(query.attributePredicate(UserAttributes.NAME, userCreator.getName()));
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(userCreator.getName());
-        }
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, userCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, userCreator);
 
-        User userByName = KapuaSecurityUtils.doPrivileged(() -> findByName(userCreator.getName()));
-        if (userByName != null) {
-            throw new KapuaDuplicateNameInAnotherAccountError(userCreator.getName());
-        }
-
+        //
+        // Check User.userType
         if (userCreator.getUserType() == UserType.EXTERNAL) {
             // Check duplicate externalId
             User userByExternalId = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(userCreator.getExternalId()));
@@ -123,8 +122,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Do create
-        return entityManagerSession.doTransactedAction(EntityManagerContainer.<User>create().onResultHandler(em -> UserDAO.create(em,
-                userCreator)));
+        return entityManagerSession.doTransactedAction(EntityManagerContainer.<User>create().onResultHandler(em -> UserDAO.create(em, userCreator)));
     }
 
     @Override
@@ -156,23 +154,35 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             throw new KapuaEntityNotFoundException(User.TYPE, user.getId());
         }
 
+        //
+        // Check action on Sys admin user
         if (user.getExpirationDate() != null || !currentUser.getName().equals(user.getName())) {
             //
             // Check not deleting environment admin
             validateSystemUser(user.getName());
         }
+
+        //
+        // Check disabling on logged user
         if (user.getId().equals(KapuaSecurityUtils.getSession().getUserId())) {
             if (user.getStatus().equals(UserStatus.DISABLED)) {
                 throw new KapuaIllegalArgumentException("status", user.getStatus().name());
             }
         }
+
+        //
+        // Check not updatable fields
+        // User.userType
         if (!Objects.equals(currentUser.getUserType(), user.getUserType())) {
             throw new KapuaIllegalArgumentException("userType", user.getUserType().toString());
         }
+
+        // User.externalId
         if (!Objects.equals(currentUser.getExternalId(), user.getExternalId())) {
             throw new KapuaIllegalArgumentException("externalId", user.getExternalId());
         }
-        // Prevent username change
+
+        // User.name
         if (!Objects.equals(currentUser.getName(), user.getName())) {
             throw new KapuaIllegalArgumentException("name", user.getName());
         }

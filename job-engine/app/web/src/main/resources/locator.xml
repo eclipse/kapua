@@ -32,6 +32,7 @@
 
         <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
     </provided>
+
     <packages>
         <package>org.eclipse.kapua.commons</package>
         <package>org.eclipse.kapua.job.engine.jbatch</package>

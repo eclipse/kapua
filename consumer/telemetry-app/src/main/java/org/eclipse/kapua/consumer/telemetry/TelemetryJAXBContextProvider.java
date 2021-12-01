@@ -29,10 +29,13 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.model.config.metatype.MetatypeXmlRegistry;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
+import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.JAXBContext;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TelemetryJAXBContextProvider implements JAXBContextProvider {
 
@@ -62,7 +65,10 @@ public class TelemetryJAXBContextProvider implements JAXBContextProvider {
                     EventStoreXmlRegistry.class
             };
             try {
-                context = JAXBContextFactory.createContext(classes, null);
+                Map<String, Object> properties = new HashMap<>(1);
+                properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
+
+                context = JAXBContextFactory.createContext(classes, properties);
                 LOG.debug("Default JAXB context initialized!");
             } catch (Exception e) {
                 throw KapuaException.internalError(e, "Error creating JAXBContext!");

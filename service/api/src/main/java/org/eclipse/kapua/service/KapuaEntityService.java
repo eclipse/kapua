@@ -19,58 +19,65 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 
+import javax.validation.constraints.NotNull;
+
 /**
- * Common interface for all KapuaService that are managing identifiable entities.
+ * Base {@code interface} for all {@link KapuaService}s that are managing {@link KapuaEntity}es.
  *
- * @param <E> - Class of the KapuaEntity being managed by this Service
- * @param <C> - Creator Class of the KapuaEntity being managed by this Service
- * @since 1.0
+ * @param <E> Type of the {@link KapuaEntity} being managed.
+ * @param <C> Type of the {@link KapuaEntityCreator} being managed.
+ * @since 1.0.0
  */
 public interface KapuaEntityService<E extends KapuaEntity, C extends KapuaEntityCreator<E>> extends KapuaService {
 
     /**
-     * Creates the entity using information provided via entity creator
+     * Creates a {@link KapuaEntity} using information provided in the given {@link KapuaEntityCreator}.
      *
-     * @param creator
-     * @return
+     * @param creator The {@link KapuaEntityCreator}.
+     * @return The newly created {@link KapuaEntity}.
      * @throws KapuaException
+     * @since 1.0.0
      */
-    E create(C creator) throws KapuaException;
+    E create(@NotNull C creator) throws KapuaException;
 
     /**
-     * Find the entity identified by entity and scope identifiers
+     * Finds a {@link KapuaEntity} identified by its {@link KapuaEntity#getScopeId()} and {@link KapuaEntity#getId()}.
      *
-     * @param scopeId
-     * @param entityId
-     * @return
+     * @param scopeId  The {@link KapuaEntity#getScopeId()}.
+     * @param entityId The {@link KapuaEntity#getId()}.
+     * @return The found {@link KapuaEntity}, or {@code null}.
      * @throws KapuaException
+     * @since 1.0.0
      */
-    E find(KapuaId scopeId, KapuaId entityId) throws KapuaException;
+    E find(KapuaId scopeId, @NotNull KapuaId entityId) throws KapuaException;
 
     /**
-     * Returns the entity list matching the provided query
+     * Queries the {@link KapuaEntity}es with the criteria in the given {@link KapuaQuery}.
      *
-     * @param query
-     * @return
+     * @param query The {@link KapuaQuery} to filter results.
+     * @return The {@link KapuaListResult} matching the {@link KapuaQuery}.
      * @throws KapuaException
+     * @since 1.0.0
      */
-    KapuaListResult<E> query(KapuaQuery query) throws KapuaException;
+    KapuaListResult<E> query(@NotNull KapuaQuery query) throws KapuaException;
 
     /**
-     * Returns the entity count matching the provided query
+     * Counts the {@link KapuaEntity}es with the criteria in the given {@link KapuaQuery}.
      *
-     * @param query
-     * @return
+     * @param query The {@link KapuaQuery} to filter the count.
+     * @return The count of {@link KapuaEntity}es matching the {@link KapuaQuery}.
      * @throws KapuaException
+     * @since 1.0.0
      */
     long count(KapuaQuery query) throws KapuaException;
 
     /**
-     * Delete the entity identified by the entity and scope identifiers
+     * Deletes a {@link KapuaEntity} identified by its {@link KapuaEntity#getScopeId()} and {@link KapuaEntity#getId()}.
      *
-     * @param scopeId
-     * @param entityId
+     * @param scopeId  The {@link KapuaEntity#getScopeId()}.
+     * @param entityId The {@link KapuaEntity#getId()}.
      * @throws KapuaException
+     * @since 1.0.0
      */
     void delete(KapuaId scopeId, KapuaId entityId) throws KapuaException;
 }

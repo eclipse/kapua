@@ -22,7 +22,7 @@ import org.eclipse.kapua.model.query.SortOrder;
 /**
  * {@link KapuaQuery} {@code abstract} implementation for {@link KapuaNamedEntity}.
  * <p>
- * It default the {@link #getSortCriteria()} on the {@link KapuaNamedEntityAttributes#NAME}
+ * It defaults the {@link #getSortCriteria()} on the {@link KapuaNamedEntityAttributes#NAME}
  *
  * @since 1.5.0
  */

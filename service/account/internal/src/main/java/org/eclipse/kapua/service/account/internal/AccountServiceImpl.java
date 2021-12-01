@@ -14,8 +14,6 @@
 package org.eclipse.kapua.service.account.internal;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.kapua.KapuaDuplicateNameException;
-import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
@@ -24,13 +22,13 @@ import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
-import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -63,13 +61,13 @@ import java.util.Objects;
 public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Account, AccountCreator, AccountService, AccountListResult, AccountQuery, AccountFactory>
         implements AccountService {
 
+    private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
+
     @Inject
     private AuthorizationService authorizationService;
 
     @Inject
     private PermissionFactory permissionFactory;
-
-    private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
 
     /**
      * Constructor.
@@ -77,11 +75,15 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
      * @since 1.0.0
      */
     public AccountServiceImpl() {
-        super(AccountService.class.getName(), AccountDomains.ACCOUNT_DOMAIN, AccountEntityManagerFactory.getInstance(), AccountCacheFactory.getInstance(), AccountService.class, AccountFactory.class);
+        super(AccountService.class.getName(),
+                AccountDomains.ACCOUNT_DOMAIN,
+                AccountEntityManagerFactory.getInstance(),
+                AccountCacheFactory.getInstance(),
+                AccountService.class,
+                AccountFactory.class);
     }
 
     @Override
-    //@RaiseServiceEvent
     public Account create(AccountCreator accountCreator) throws KapuaException {
         //
         // Argument validation
@@ -119,18 +121,11 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check duplicate name
-        AccountQuery query = new AccountQueryImpl(accountCreator.getScopeId());
-        query.setPredicate(query.attributePredicate(KapuaNamedEntityAttributes.NAME, accountCreator.getName()));
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, accountCreator);
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, accountCreator);
 
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(accountCreator.getName());
-        }
-
-        if (findByName(accountCreator.getName()) != null) {
-            throw new KapuaDuplicateNameInAnotherAccountError(accountCreator.getName());
-        }
-
-        // check that expiration date is no later than parent expiration date
+        //
+        // Check that expiration date is no later than parent expiration date
         Account parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(accountCreator.getScopeId()));
         if (parentAccount != null && parentAccount.getExpirationDate() != null) {
             // parent account never expires no check is needed
@@ -140,6 +135,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             }
         }
 
+        //
+        // Do create
         return entityManagerSession.doTransactedAction(EntityManagerContainer.<Account>create().onResultHandler(em -> {
             Account account = AccountDAO.create(em, accountCreator);
             em.persist(account);
@@ -152,7 +149,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     }
 
     @Override
-    //@RaiseServiceEvent
     public Account update(Account account) throws KapuaException {
         //
         // Argument validation
@@ -178,7 +174,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             throw new KapuaEntityNotFoundException(Account.TYPE, account.getId());
         }
 
-        // check that expiration date is no later than parent expiration date
+        //
+        // Check that expiration date is no later than parent expiration date
         Account parentAccount = null;
         if (oldAccount.getScopeId() != null) {
             parentAccount = KapuaSecurityUtils.doPrivileged(() -> find(oldAccount.getScopeId()));

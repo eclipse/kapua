@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.job.step.definition.internal;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -32,20 +33,24 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * {@link JobStepDefinitionService} exposes APIs to manage JobStepDefinition objects.<br>
- * It includes APIs to create, update, find, list and delete StepDefinitions.<br>
- * Instances of the JobStepDefinitionService can be acquired through the ServiceLocator object.
+ * {@link JobStepDefinitionService} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @Singleton
 public class JobStepDefinitionServiceImpl extends AbstractKapuaService implements JobStepDefinitionService {
 
     @Inject
     private AuthorizationService authorizationService;
+
     @Inject
     private PermissionFactory permissionFactory;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     public JobStepDefinitionServiceImpl() {
         super(JobEntityManagerFactory.getInstance(), null);
     }
@@ -63,6 +68,10 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
         //
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
+
+        //
+        // Check duplicate name
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, creator);
 
         //
         // Do create
@@ -83,6 +92,12 @@ public class JobStepDefinitionServiceImpl extends AbstractKapuaService implement
         // Check access
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, null));
 
+        //
+        // Check duplicate name
+        KapuaNamedEntityServiceUtils.checkEntityNameUniquenessInAllScopes(this, jobStepDefinition);
+
+        //
+        // Do Update
         return entityManagerSession.doTransactedAction(em -> JobStepDefinitionDAO.update(em, jobStepDefinition));
     }
 

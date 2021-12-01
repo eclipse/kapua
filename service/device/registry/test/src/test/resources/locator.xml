@@ -18,15 +18,13 @@
     </provided>
 
     <packages>
-        <package>org.eclipse.kapua.service.device.registry.internal</package>
-        <package>org.eclipse.kapua.service.device.registry.event.internal</package>
+        <package>org.eclipse.kapua.commons.model.id</package>
+        <package>org.eclipse.kapua.commons.model.query</package>
 
         <package>org.eclipse.kapua.test.steps</package>
         <package>org.eclipse.kapua.test.user</package>
         <package>org.eclipse.kapua.test.account</package>
         <package>org.eclipse.kapua.test.authentication</package>
         <package>org.eclipse.kapua.test.authorization</package>
-
-        <package>org.eclipse.kapua.commons.model.id</package>
     </packages>
 </locator-config>

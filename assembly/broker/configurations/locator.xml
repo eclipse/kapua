@@ -31,22 +31,21 @@
         <!-- job services -->
         <api>org.eclipse.kapua.job.engine.JobEngineService</api>
         <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
-
         <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService</api>
         <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory</api>
-        
+
         <api>org.eclipse.kapua.transport.TransportClientFactory</api>
         <provide>
             <interceptor>annotation</interceptor>
             <with>Impl</with>
         </provide>
     </provided>
+
     <packages>
         <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.job.engine.client</package>
         <package>org.eclipse.kapua.message</package>
-        <package>org.eclipse.kapua.model.config</package>
         <package>org.eclipse.kapua.service</package>
         <package>org.eclipse.kapua.transport</package>
-        <package>org.eclipse.kapua.job.engine</package>
     </packages>
 </locator-config>

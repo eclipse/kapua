@@ -20,10 +20,9 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
- * DeviceConnectionService exposes APIs to retrieve Device connections under a scope.
- * It includes APIs to find, list, and update devices connections associated with a scope.
+ * {@link DeviceConnection} {@link KapuaEntityService} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface DeviceConnectionService extends KapuaEntityService<DeviceConnection, DeviceConnectionCreator>,
         KapuaUpdatableEntityService<DeviceConnection>,
@@ -36,9 +35,9 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @param clientId
      * @return
      * @throws KapuaException
+     * @since 1.0.0
      */
-    DeviceConnection findByClientId(KapuaId scopeId, String clientId)
-            throws KapuaException;
+    DeviceConnection findByClientId(KapuaId scopeId, String clientId) throws KapuaException;
 
     /**
      * Returns the {@link DeviceConnectionListResult} with elements matching the provided query.
@@ -49,27 +48,30 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      * @since 1.0.0
      */
     @Override
-    DeviceConnectionListResult query(KapuaQuery query)
-            throws KapuaException;
+    DeviceConnectionListResult query(KapuaQuery query) throws KapuaException;
 
     /**
      * Updated the status of provided device connection to connected;
      * if a device connection for the provided clientId is not found,
      * a new device connection is created and updated.
      *
-     * @param creator
-     * @throws KapuaException
+     * @param creator The {@link DeviceConnectionCreator} from which to create the {@link DeviceConnection}.
+     * @throws KapuaException In case of errors.
+     * @since 1.0.0
+     * @deprecated Since 1.6.0. It has never been implemented.
      */
-    void connect(DeviceConnectionCreator creator)
-            throws KapuaException;
+    @Deprecated
+    void connect(DeviceConnectionCreator creator) throws KapuaException;
 
     /**
      * Register a device message when a client disconnects from the broker
      *
-     * @param scopeId
-     * @param clientId
-     * @throws KapuaException
+     * @param scopeId  The {@link DeviceConnection#getScopeId()}.
+     * @param clientId TThe {@link DeviceConnection#getClientId()}.
+     * @throws KapuaException In case of errors.
+     * @since 1.0.0
+     * @deprecated Since 1.6.0. It has never been implemented.
      */
-    void disconnect(KapuaId scopeId, String clientId)
-            throws KapuaException;
+    @Deprecated
+    void disconnect(KapuaId scopeId, String clientId) throws KapuaException;
 }

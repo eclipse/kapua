@@ -13,7 +13,7 @@
 package org.eclipse.kapua.service;
 
 /**
- * Kapua service definition. (Marker interface)
+ * {@link KapuaService} definition.
  *
  * @since 1.0.0
  */

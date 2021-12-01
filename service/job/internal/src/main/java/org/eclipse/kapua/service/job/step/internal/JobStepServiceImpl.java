@@ -13,18 +13,19 @@
 package org.eclipse.kapua.service.job.step.internal;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
+import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -51,6 +52,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.xml.bind.DatatypeConverter;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -74,6 +76,9 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
     @Inject
     private JobStepDefinitionService jobStepDefinitionService;
+
+    @Inject
+    QueryFactory queryFactory;
 
     public JobStepServiceImpl() {
         super(JobEntityManagerFactory.getInstance(), null);
@@ -102,17 +107,11 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check duplicate name
-        JobStepQuery query = new JobStepQueryImpl(jobStepCreator.getScopeId());
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()),
-                        query.attributePredicate(JobStepAttributes.NAME, jobStepCreator.getName())
-                )
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(
+                this,
+                jobStepCreator,
+                Collections.singletonList(queryFactory.newQuery().attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()))
         );
-
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(jobStepCreator.getName());
-        }
 
         //
         // Check Job Executions
@@ -127,6 +126,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Populate JobStepCreator.stepIndex if not specified
+        JobStepQuery query = new JobStepQueryImpl(jobStepCreator.getScopeId());
         if (jobStepCreator.getStepIndex() == null) {
             query.setPredicate(query.attributePredicate(JobStepAttributes.JOB_ID, jobStepCreator.getJobId()));
             query.setSortCriteria(query.fieldSortCriteria(JobStepAttributes.STEP_INDEX, SortOrder.DESCENDING));
@@ -199,18 +199,11 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
 
         //
         // Check duplicate name
-        JobStepQuery query = new JobStepQueryImpl(jobStep.getScopeId());
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(JobStepAttributes.JOB_ID, jobStep.getJobId()),
-                        query.attributePredicate(JobStepAttributes.NAME, jobStep.getName()),
-                        query.attributePredicate(JobStepAttributes.ENTITY_ID, jobStep.getId(), Operator.NOT_EQUAL)
-                )
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(
+                this,
+                jobStep,
+                Collections.singletonList(queryFactory.newQuery().attributePredicate(JobStepAttributes.JOB_ID, jobStep.getJobId()))
         );
-
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(jobStep.getName());
-        }
 
         //
         // Check Job Executions

@@ -12,22 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.group.shiro;
 
-import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
-import org.eclipse.kapua.service.authorization.group.GroupAttributes;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
@@ -51,14 +48,17 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
     private static final Logger LOG = LoggerFactory.getLogger(GroupServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     @Inject
     private AuthorizationService authorizationService;
     @Inject
     private PermissionFactory permissionFactory;
 
     public GroupServiceImpl() {
-        super(GroupService.class.getName(), AuthorizationDomains.GROUP_DOMAIN, AuthorizationEntityManagerFactory.getInstance(), GroupService.class, GroupFactory.class);
+        super(GroupService.class.getName(),
+                AuthorizationDomains.GROUP_DOMAIN,
+                AuthorizationEntityManagerFactory.getInstance(),
+                GroupService.class,
+                GroupFactory.class);
     }
 
     @Override
@@ -81,12 +81,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check duplicate name
-        GroupQuery query = new GroupQueryImpl(groupCreator.getScopeId());
-        query.setPredicate(query.attributePredicate(GroupAttributes.NAME, groupCreator.getName()));
-
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(groupCreator.getName());
-        }
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, groupCreator);
 
         //
         // Do create
@@ -114,17 +109,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
 
         //
         // Check duplicate name
-        GroupQuery query = new GroupQueryImpl(group.getScopeId());
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(GroupAttributes.NAME, group.getName()),
-                        query.attributePredicate(GroupAttributes.ENTITY_ID, group.getId(), Operator.NOT_EQUAL)
-                )
-        );
-
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(group.getName());
-        }
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, group);
 
         //
         // Do update

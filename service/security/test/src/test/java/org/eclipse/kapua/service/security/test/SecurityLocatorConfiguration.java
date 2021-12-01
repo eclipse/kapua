@@ -16,13 +16,13 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
-
 import io.cucumber.java.Before;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
+import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
@@ -46,14 +46,13 @@ import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UserServiceImpl;
-
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 @Singleton
 public class SecurityLocatorConfiguration {
 
-    @Before(value="@setup", order=1)
+    @Before(value = "@setup", order = 1)
     public void setupDI() {
         MockedLocator mockedLocator = (MockedLocator) KapuaLocator.getInstance();
 
@@ -69,6 +68,9 @@ public class SecurityLocatorConfiguration {
                 } catch (KapuaException e) {
                     // skip
                 }
+
+                bind(QueryFactory.class).toInstance(new QueryFactoryImpl());
+
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
                 bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));

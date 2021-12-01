@@ -12,27 +12,24 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authorization.role.shiro;
 
-import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
+import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
 import org.eclipse.kapua.service.authorization.role.Role;
-import org.eclipse.kapua.service.authorization.role.RoleAttributes;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleListResult;
@@ -57,18 +54,20 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private static final Logger LOG = LoggerFactory.getLogger(RoleServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
     @Inject
     private AuthorizationService authorizationService;
     @Inject
     private PermissionFactory permissionFactory;
+
     @Inject
     private RolePermissionFactory rolePermissionFactory;
 
     public RoleServiceImpl() {
-        super(RoleService.class.getName(), AuthorizationDomains.ROLE_DOMAIN,
-                AuthorizationEntityManagerFactory.getInstance(), RoleCacheFactory.getInstance(), RoleService.class,
+        super(RoleService.class.getName(),
+                AuthorizationDomains.ROLE_DOMAIN,
+                AuthorizationEntityManagerFactory.getInstance(),
+                RoleCacheFactory.getInstance(),
+                RoleService.class,
                 RoleFactory.class);
     }
 
@@ -80,6 +79,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         ArgumentValidator.notNull(roleCreator.getScopeId(), "roleCreator.scopeId");
         ArgumentValidator.validateEntityName(roleCreator.getName(), "roleCreator.name");
         ArgumentValidator.notNull(roleCreator.getPermissions(), "roleCreator.permissions");
+
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
@@ -92,12 +92,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check duplicate name
-        RoleQuery query = new RoleQueryImpl(roleCreator.getScopeId());
-        query.setPredicate(query.attributePredicate(RoleAttributes.NAME, roleCreator.getName()));
-
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(roleCreator.getName());
-        }
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, roleCreator);
 
         //
         // If permission are created out of the role scope, check that the current user has the permission on the external scopeId.
@@ -155,17 +150,7 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check duplicate name
-        RoleQuery query = new RoleQueryImpl(role.getScopeId());
-        query.setPredicate(
-                query.andPredicate(
-                        query.attributePredicate(RoleAttributes.NAME, role.getName()),
-                        query.attributePredicate(RoleAttributes.ENTITY_ID, role.getId(), Operator.NOT_EQUAL)
-                )
-        );
-
-        if (count(query) > 0) {
-            throw new KapuaDuplicateNameException(role.getName());
-        }
+        KapuaNamedEntityServiceUtils.checkEntityNameUniqueness(this, role);
 
         //
         // Do update
