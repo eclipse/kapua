@@ -19,7 +19,7 @@
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
 
-        <api>org.eclipse.kapua.service.config.ServiceConfigurationFactory</api>
+        </api>
     </provided>
     <packages>
         <package>org.eclipse.kapua.commons</package>

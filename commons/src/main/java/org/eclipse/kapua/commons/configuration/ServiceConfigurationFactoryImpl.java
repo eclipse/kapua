@@ -15,14 +15,15 @@ package org.eclipse.kapua.commons.configuration;
 import org.eclipse.kapua.service.config.ServiceComponentConfiguration;
 import org.eclipse.kapua.service.config.ServiceConfiguration;
 import org.eclipse.kapua.service.config.ServiceConfigurationFactory;
-import org.eclipse.kapua.locator.KapuaProvider;
+
+import javax.inject.Singleton;
 
 /**
  * Service configuration entity service factory implementation.
  *
  * @since 1.0
  */
-@KapuaProvider
+@Singleton
 public class ServiceConfigurationFactoryImpl implements ServiceConfigurationFactory {
 
     @Override
