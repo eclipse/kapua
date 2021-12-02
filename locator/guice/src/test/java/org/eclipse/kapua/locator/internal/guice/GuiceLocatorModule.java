@@ -21,6 +21,8 @@ public class GuiceLocatorModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(ServiceA.class).to(ServiceAImpl.class);
         bind(FactoryA.class).to(FactoryAImpl.class);
+        bind(FactoryB.class).to(FactoryBImpl.class);
+        bind(ServiceB.class).to(ServiceBImpl.class);
     }
 
 }

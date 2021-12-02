@@ -12,8 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.internal.guice;
 
-import org.eclipse.kapua.locator.KapuaProvider;
+import javax.inject.Singleton;
 
-@KapuaProvider
+@Singleton
 public class ServiceBImpl implements ServiceB {
 }
