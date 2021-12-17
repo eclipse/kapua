@@ -13,6 +13,7 @@
 package org.eclipse.kapua.consumer.lifecycle;
 
 import org.eclipse.kapua.consumer.commons.setting.ConsumerSettingKey;
+import org.eclipse.kapua.service.security.SecurityUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ImportResource;
@@ -28,6 +29,7 @@ import org.springframework.context.annotation.PropertySource;
 public class LifecycleApplication {
 
     public LifecycleApplication() {
+        SecurityUtil.initSecurityManager();
     }
 
     public void doNothing() {
