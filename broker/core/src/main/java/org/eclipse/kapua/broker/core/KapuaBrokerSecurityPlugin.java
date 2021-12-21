@@ -13,17 +13,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core;
 
-import java.io.InputStream;
-import java.net.URL;
-
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
-
+import org.eclipse.kapua.service.security.SecurityUtil;
 import org.apache.activemq.broker.Broker;
 import org.apache.activemq.broker.BrokerPlugin;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.config.Ini;
-import org.apache.shiro.config.IniSecurityManagerFactory;
-import org.apache.shiro.mgt.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,18 +42,8 @@ public class KapuaBrokerSecurityPlugin implements BrokerPlugin {
     @Override
     public Broker installPlugin(final Broker broker) throws Exception {
         logger.info("Installing Kapua broker plugin...");
-
         try {
-            // initialize shiro context for broker plugin from shiro ini file
-            final URL shiroIniUrl = getClass().getResource("/shiro.ini");
-            Ini shiroIni = new Ini();
-            try (final InputStream input = shiroIniUrl.openStream()) {
-                shiroIni.load(input);
-            }
-
-            SecurityManager securityManager = new IniSecurityManagerFactory(shiroIni).getInstance();
-            SecurityUtils.setSecurityManager(securityManager);
-
+            SecurityUtil.initSecurityManager();
             // install the filters
             return new KapuaSecurityBrokerFilter(broker);
         } catch (Exception e) {

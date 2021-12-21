@@ -38,7 +38,9 @@ ENV JAVA_OPTS -Dcommons.db.schema.update=true \
               -Ddatastore.client.class=${DATASTORE_CLIENT} \
               -Dbroker.host=${BROKER_ADDR} \
               -Dbroker.port=${BROKER_PORT} \
-              -Dcommons.eventbus.url="${SERVICE_BROKER_ADDR}"
+              -Dcommons.eventbus.url="${SERVICE_BROKER_ADDR}" \
+              -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
+              -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem
 
 EXPOSE 8080
 

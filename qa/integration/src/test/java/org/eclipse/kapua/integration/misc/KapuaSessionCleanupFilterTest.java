@@ -13,13 +13,12 @@
 package org.eclipse.kapua.integration.misc;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.config.Ini;
-import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
 import org.eclipse.kapua.app.api.core.filter.KapuaSessionCleanupFilter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.security.SecurityUtil;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,16 +30,11 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletRequest;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 @Category(JUnitTests.class)
 public class KapuaSessionCleanupFilterTest extends Assert {
 
     KapuaSessionCleanupFilter kapuaSessionCleanupFilter;
-    URL shiroIniUrl;
-    Ini shiroIni;
-    InputStream input;
     SecurityManager securityManager;
     ServletRequest request;
     ServletResponse response;
@@ -50,11 +44,8 @@ public class KapuaSessionCleanupFilterTest extends Assert {
     @Before
     public void initialize() throws IOException {
         kapuaSessionCleanupFilter = new KapuaSessionCleanupFilter();
-        shiroIniUrl = getClass().getResource("/shiro.ini");
-        shiroIni = new Ini();
-        input = shiroIniUrl.openStream();
-        shiroIni.load(input);
-        securityManager = new IniSecurityManagerFactory(shiroIni).getInstance();
+        SecurityUtil.initSecurityManager();
+        securityManager = SecurityUtils.getSecurityManager();
 
         request = Mockito.mock(ServletRequest.class);
         response = Mockito.mock(ServletResponse.class);

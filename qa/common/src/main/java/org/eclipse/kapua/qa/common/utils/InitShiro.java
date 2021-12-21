@@ -13,14 +13,11 @@
 package org.eclipse.kapua.qa.common.utils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.UnavailableSecurityManagerException;
-import org.apache.shiro.config.Ini;
-import org.apache.shiro.config.IniSecurityManagerFactory;
 import org.apache.shiro.mgt.SecurityManager;
+import org.eclipse.kapua.service.security.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,13 +38,7 @@ public class InitShiro {
         }
         catch (UnavailableSecurityManagerException e) {
             logger.info("Init shiro security manager...");
-            final URL shiroIniUrl = getClass().getResource("/shiro.ini");
-            Ini shiroIni = new Ini();
-            try (final InputStream input = shiroIniUrl.openStream()) {
-                shiroIni.load(input);
-            }
-            SecurityManager securityManager = new IniSecurityManagerFactory(shiroIni).getInstance();
-            SecurityUtils.setSecurityManager(securityManager);
+            SecurityUtil.initSecurityManager();
         }
         logger.info("Init shiro security manager... DONE");
     }

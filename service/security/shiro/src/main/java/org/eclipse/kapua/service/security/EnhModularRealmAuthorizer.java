@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.broker.core.security;
+package org.eclipse.kapua.service.security;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
  * Without these changes this Authorizer will not have any realm configured. (see shiro.ini for explanation)
  * This authorizer takes the first valid configured realm and return the isPermitted evaluation skipping any aggregation strategy if more than one valid aggregator is defined.
  *
+ * NOTE this class is replicated also in broker-core module
  */
 public class EnhModularRealmAuthorizer extends ModularRealmAuthorizer {
 
