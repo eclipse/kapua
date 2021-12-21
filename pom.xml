@@ -59,6 +59,7 @@
         <guava-failureaccess.version>1.0.1</guava-failureaccess.version>
         <guava-listenablefuture.version>9999.0-empty-to-avoid-conflict-with-guava</guava-listenablefuture.version>
         <guice.version>4.1.0</guice.version>
+        <hamcrest-core.version>2.2</hamcrest-core.version>
         <h2.version>1.4.199</h2.version>
         <hikaricp.version>4.0.3</hikaricp.version>
         <hk2-api.version>2.5.0-b05</hk2-api.version>
@@ -1543,6 +1544,13 @@
                 <groupId>org.webjars</groupId>
                 <artifactId>swagger-ui</artifactId>
                 <version>${swagger-ui.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>${hamcrest-core.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- -->
