@@ -12,10 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModule;
 import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
@@ -24,7 +20,9 @@ import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSetting;
 import org.eclipse.kapua.service.user.internal.setting.KapuaUserSettingKeys;
 
-//@KapuaProvider
+import javax.inject.Inject;
+import java.util.List;
+
 public class UserServiceModule extends ServiceEventModule {
 
     @Inject
