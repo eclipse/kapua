@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event;
 
+import com.codahale.metrics.Counter;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.eclipse.kapua.commons.core.InterceptorBind;
@@ -29,14 +30,11 @@ import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent.EventStatus;
 import org.eclipse.kapua.event.ServiceEventBusException;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.codahale.metrics.Counter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -50,7 +48,6 @@ import java.util.List;
  *
  * @since 1.0
  */
-@KapuaProvider
 @InterceptorBind(matchSubclassOf = KapuaService.class, matchAnnotatedWith = RaiseServiceEvent.class)
 public class RaiseServiceEventInterceptor implements MethodInterceptor {
 

@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.device.management.job.internal;
 
 import org.eclipse.kapua.commons.model.AbstractKapuaEntityCreator;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationCreator;
@@ -24,7 +23,6 @@ import org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperat
  *
  * @since 1.1.0
  */
-@KapuaProvider
 public class JobDeviceManagementOperationCreatorImpl extends AbstractKapuaEntityCreator<JobDeviceManagementOperation> implements JobDeviceManagementOperationCreator {
 
     private KapuaId jobId;
