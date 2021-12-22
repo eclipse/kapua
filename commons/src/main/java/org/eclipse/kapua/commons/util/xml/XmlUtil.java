@@ -17,6 +17,7 @@ import com.google.common.base.Strings;
 import org.apache.commons.lang.SystemUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalStateException;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.jaxb.MarshallerProperties;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Xml utilities
+ * Xml/Json serialization utilities.
  *
  * @since 1.0.0
  */
@@ -74,8 +75,23 @@ public class XmlUtil {
      * @param provider The {@link JAXBContextProvider} to use.
      * @since 1.0.0
      */
-    public static void setContextProvider(@NotNull JAXBContextProvider provider) {
+    public static void setContextProvider(JAXBContextProvider provider) {
         jaxbContextProvider = provider;
+    }
+
+    /**
+     * Gets the {@link JAXBContextProvider} if configured or throws {@link KapuaIllegalStateException}.
+     *
+     * @return The configured {@link JAXBContextProvider}.
+     * @throws KapuaIllegalStateException if {@link JAXBContextProvider} is not configured.
+     * @since 1.6.0
+     */
+    public static JAXBContextProvider getContextProvider() {
+        if (jaxbContextProvider == null) {
+            throw new KapuaIllegalStateException("JaxbContextProvider not set! Please provide a JaxbContextProvider before using XmlUtils");
+        }
+
+        return jaxbContextProvider;
     }
 
     /**
@@ -88,14 +104,14 @@ public class XmlUtil {
     private static JAXBContext getContext() throws JAXBException {
         JAXBContext context;
         try {
-            context = jaxbContextProvider.getJAXBContext();
+            context = getContextProvider().getJAXBContext();
 
             if (context == null) {
-                LOG.warn("No JAXBContext found! Creating one using JAXBContextFactory.createContext(...).");
+                LOG.warn("No JAXBContext found! Creating one using JAXBContextFactory.createContext(...)");
                 context = JAXBContextFactory.createContext(new Class[]{}, null);
             }
-        } catch (KapuaException | NullPointerException ex) {
-            LOG.warn("No JAXBContextProvider provided or error while getting one! Creating one using JAXBContextFactory.createContext(...).", ex);
+        } catch (KapuaException ex) {
+            LOG.warn("No JAXBContextProvider provided or error while getting one! Creating one using JAXBContextFactory.createContext(...)", ex);
             context = JAXBContextFactory.createContext(new Class[]{}, null);
         }
         return context;
@@ -340,6 +356,26 @@ public class XmlUtil {
             // Therefore if this IOException occurs, something really bad happened.
             throw new IllegalStateException("XmlUtil.unmarshalJson(String, Class, String) Reader was found unexpectedly closed!", ioe);
         }
+    }
+
+    /**
+     * Unmarshals the given JSON {@link Reader} as the given {@link Class type}.
+     *
+     * @param reader The {@link Reader} serialized.
+     * @param type   The {@link Class} type to unmarshal to.
+     * @return The unmarshalled {@link Object}.
+     * @throws JAXBException See {@link #getContext()}.
+     * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
+     * @since 1.6.0
+     */
+    public static <T> T unmarshalJson(@NotNull Reader reader, @NotNull Class<T> type)
+            throws JAXBException, SAXException {
+
+        Map<String, Object> jsonProperties = new HashMap<>();
+        jsonProperties.put(MarshallerProperties.MEDIA_TYPE, "application/json");
+        jsonProperties.put(MarshallerProperties.JSON_INCLUDE_ROOT, false);
+
+        return unmarshal(reader, type, null, jsonProperties);
     }
 
     /**
