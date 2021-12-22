@@ -37,7 +37,7 @@ public class JsonServiceEventMarshaler implements ServiceEventMarshaler {
     @Override
     public ServiceEvent unmarshal(String message) throws KapuaException {
         try {
-            return XmlUtil.unmarshalJson(message, ServiceEvent.class, null);
+            return XmlUtil.unmarshalJson(message, ServiceEvent.class);
         } catch (JAXBException | SAXException e) {
             throw new ServiceEventBusException(e);
         }

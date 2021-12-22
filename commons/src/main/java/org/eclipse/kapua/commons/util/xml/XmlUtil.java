@@ -332,7 +332,14 @@ public class XmlUtil {
      * @since 1.5.0
      */
     public static <T> T unmarshalJson(@NotNull String objectString, @NotNull Class<T> type) throws JAXBException, SAXException {
-        return unmarshalJson(objectString, type, null);
+        try (Reader reader = new StringReader(objectString)) {
+            return unmarshalJson(reader, type);
+        } catch (IOException ioe) {
+            // This exception is thrown when operations are performed on a closed Reader.
+            // This Reader is self-contained in this XmlUtil class and .unmarshal(...) is not closing it.
+            // Therefore if this IOException occurs, something really bad happened.
+            throw new IllegalStateException("XmlUtil.unmarshalJson(String, Class, String) Reader was found unexpectedly closed!", ioe);
+        }
     }
 
     /**
@@ -345,7 +352,9 @@ public class XmlUtil {
      * @throws JAXBException See {@link #getContext()}.
      * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
      * @since 1.0.0
+     * @deprecated Since 1.6.0. It is always used with {@code null} namespaceUri. Please make use of {@link #unmarshal(Reader, Class)}
      */
+    @Deprecated
     public static <T> T unmarshalJson(@NotNull String objectString, @NotNull Class<T> type, @Nullable String namespaceUri)
             throws JAXBException, SAXException {
         try (Reader reader = new StringReader(objectString)) {
