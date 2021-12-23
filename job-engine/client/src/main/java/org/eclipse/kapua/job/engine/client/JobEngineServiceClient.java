@@ -136,7 +136,7 @@ public class JobEngineServiceClient implements JobEngineService {
 
             String responseText = checkResponse("GET", path, response);
 
-            IsJobRunningResponse isRunningJobResponse = XmlUtil.unmarshalJson(responseText, IsJobRunningResponse.class, null);
+            IsJobRunningResponse isRunningJobResponse = XmlUtil.unmarshalJson(responseText, IsJobRunningResponse.class);
             return isRunningJobResponse.isRunning();
         } catch (ClientErrorException | JAXBException | SAXException e) {
             throw KapuaException.internalError(e);
@@ -278,43 +278,43 @@ public class JobEngineServiceClient implements JobEngineService {
                 throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, "Job Engine returned an error but no message was given");
             }
 
-            ExceptionInfo exceptionInfo = XmlUtil.unmarshalJson(responseText, ExceptionInfo.class, null);
+            ExceptionInfo exceptionInfo = XmlUtil.unmarshalJson(responseText, ExceptionInfo.class);
             switch (exceptionInfo.getKapuaErrorCode()) {
                 case "ENTITY_NOT_FOUND":
-                    EntityNotFoundExceptionInfo entityNotFoundExceptionInfo = XmlUtil.unmarshalJson(responseText, EntityNotFoundExceptionInfo.class, null);
+                    EntityNotFoundExceptionInfo entityNotFoundExceptionInfo = XmlUtil.unmarshalJson(responseText, EntityNotFoundExceptionInfo.class);
                     return new KapuaEntityNotFoundException(entityNotFoundExceptionInfo.getEntityType(), entityNotFoundExceptionInfo.getEntityId());
                 case "CANNOT_CLEANUP_JOB_DATA":
-                    CleanJobDataExceptionInfo cleanJobDataExceptionInfo = XmlUtil.unmarshalJson(responseText, CleanJobDataExceptionInfo.class, null);
+                    CleanJobDataExceptionInfo cleanJobDataExceptionInfo = XmlUtil.unmarshalJson(responseText, CleanJobDataExceptionInfo.class);
                     return new CleanJobDataException(cleanJobDataExceptionInfo.getScopeId(), cleanJobDataExceptionInfo.getJobId());
                 case "JOB_ALREADY_RUNNING":
-                    JobAlreadyRunningExceptionInfo jobAlreadyRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobAlreadyRunningExceptionInfo.class, null);
+                    JobAlreadyRunningExceptionInfo jobAlreadyRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobAlreadyRunningExceptionInfo.class);
                     return new JobAlreadyRunningException(jobAlreadyRunningExceptionInfo.getScopeId(),
                             jobAlreadyRunningExceptionInfo.getJobId(),
                             jobAlreadyRunningExceptionInfo.getExecutionId(),
                             jobAlreadyRunningExceptionInfo.getJobTargetIdSubset());
                 case "JOB_TARGET_INVALID":
-                    JobInvalidTargetExceptionInfo jobInvalidTargetExceptionInfo = XmlUtil.unmarshalJson(responseText, JobInvalidTargetExceptionInfo.class, null);
+                    JobInvalidTargetExceptionInfo jobInvalidTargetExceptionInfo = XmlUtil.unmarshalJson(responseText, JobInvalidTargetExceptionInfo.class);
                     return new JobInvalidTargetException(jobInvalidTargetExceptionInfo.getScopeId(), jobInvalidTargetExceptionInfo.getJobId(), jobInvalidTargetExceptionInfo.getJobTargetIdSubset());
                 case "JOB_STEP_MISSING":
-                    JobMissingStepExceptionInfo jobMissingStepExceptionInfo = XmlUtil.unmarshalJson(responseText, JobMissingStepExceptionInfo.class, null);
+                    JobMissingStepExceptionInfo jobMissingStepExceptionInfo = XmlUtil.unmarshalJson(responseText, JobMissingStepExceptionInfo.class);
                     return new JobMissingStepException(jobMissingStepExceptionInfo.getScopeId(), jobMissingStepExceptionInfo.getJobId());
                 case "JOB_TARGET_MISSING":
-                    JobMissingTargetExceptionInfo jobMissingTargetExceptionInfo = XmlUtil.unmarshalJson(responseText, JobMissingTargetExceptionInfo.class, null);
+                    JobMissingTargetExceptionInfo jobMissingTargetExceptionInfo = XmlUtil.unmarshalJson(responseText, JobMissingTargetExceptionInfo.class);
                     return new JobMissingTargetException(jobMissingTargetExceptionInfo.getScopeId(), jobMissingTargetExceptionInfo.getJobId());
                 case "JOB_NOT_RUNNING":
-                    JobNotRunningExceptionInfo jobNotRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobNotRunningExceptionInfo.class, null);
+                    JobNotRunningExceptionInfo jobNotRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobNotRunningExceptionInfo.class);
                     return new JobNotRunningException(jobNotRunningExceptionInfo.getScopeId(), jobNotRunningExceptionInfo.getJobId());
                 case "JOB_RESUMING":
-                    JobResumingExceptionInfo jobResumingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobResumingExceptionInfo.class, null);
+                    JobResumingExceptionInfo jobResumingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobResumingExceptionInfo.class);
                     return new JobResumingException(jobResumingExceptionInfo.getScopeId(), jobResumingExceptionInfo.getJobId(), jobResumingExceptionInfo.getExecutionId());
                 case "JOB_RUNNING":
-                    JobRunningExceptionInfo jobRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobRunningExceptionInfo.class, null);
+                    JobRunningExceptionInfo jobRunningExceptionInfo = XmlUtil.unmarshalJson(responseText, JobRunningExceptionInfo.class);
                     return new JobRunningException(jobRunningExceptionInfo.getScopeId(), jobRunningExceptionInfo.getJobId());
                 case "JOB_STARTING":
-                    JobStartingExceptionInfo jobStartingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobStartingExceptionInfo.class, null);
+                    JobStartingExceptionInfo jobStartingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobStartingExceptionInfo.class);
                     return new JobStartingException(jobStartingExceptionInfo.getScopeId(), jobStartingExceptionInfo.getJobId());
                 case "JOB_STOPPING":
-                    JobStoppingExceptionInfo jobStoppingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobStoppingExceptionInfo.class, null);
+                    JobStoppingExceptionInfo jobStoppingExceptionInfo = XmlUtil.unmarshalJson(responseText, JobStoppingExceptionInfo.class);
                     return new JobStoppingException(jobStoppingExceptionInfo.getScopeId(), jobStoppingExceptionInfo.getJobId(), jobStoppingExceptionInfo.getExecutionId());
                 default:
                     return KapuaException.internalError(exceptionInfo.getMessage());

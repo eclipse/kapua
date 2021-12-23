@@ -12,164 +12,183 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
+import org.eclipse.kapua.KapuaIllegalStateException;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBException;
-import java.lang.reflect.Constructor;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 @Category(JUnitTests.class)
-public class XmlUtilTest extends Assert {
-
-    @Test
-    public void constructorTest() throws Exception {
-        Constructor<XmlUtil> xmlUtilConstruct = XmlUtil.class.getDeclaredConstructor();
-        xmlUtilConstruct.setAccessible(true);
-        xmlUtilConstruct.newInstance();
-    }
+public class XmlUtilTest {
 
     @Test
     public void setContextProviderTest() {
-        JAXBContextProvider provider = null;
-        XmlUtil.setContextProvider(provider);
+        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+
+        Assert.assertNotNull(XmlUtil.getContextProvider());
+    }
+
+    @Test(expected = KapuaIllegalStateException.class)
+    public void setContextProviderTestNull() {
+        XmlUtil.setContextProvider(null);
+
+        XmlUtil.getContextProvider();
     }
 
     @Test
-    public void marshalTest() throws Exception {
-        Object[] jaxbElements = new Object[]{123, "string", "s"};
+    public void marshalTest() throws JAXBException {
+        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        XmlUtilTestObject object = XmlUtilTestObject.create();
+        String xmlObject = XmlUtil.marshal(object);
 
-        // JAXBException
-        for (int i = 0; i < jaxbElements.length; i++) {
-            try {
-                assertNotNull(XmlUtil.marshal(jaxbElements[i]));
-                fail("Exception expected for: " + jaxbElements[i]);
-            } catch (JAXBException ex) {
-                // Expected
-            }
-        }
-        // Exception
-        try {
-            XmlUtil.marshal(null);
-            fail("Exception expected for null");
-        } catch (Exception ex) {
-            // Expected
-        }
+        Assert.assertNotNull(xmlObject);
+        Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<xmlUtilTestObject>\n" +
+                "   <string>test</string>\n" +
+                "   <integers>\n" +
+                "      <integer>1</integer>\n" +
+                "      <integer>2</integer>\n" +
+                "   </integers>\n" +
+                "</xmlUtilTestObject>\n", xmlObject);
     }
 
     @Test
-    public void marshalJsonTest() throws Exception {
-        Object[] jaxbElements = new Object[]{123, "string", "s"};
+    public void marshalWriterTest() throws JAXBException, IOException {
+        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        XmlUtilTestObject object = XmlUtilTestObject.create();
 
-        // JAXBException
-        for (int i = 0; i < jaxbElements.length; i++) {
-            try {
-                assertNotNull(XmlUtil.marshalJson(jaxbElements[i]));
-                fail("Exception expected for: " + jaxbElements[i]);
-            } catch (JAXBException ex) {
-                // Expected
-            }
-        }
-        // Exception
-        try {
-            XmlUtil.marshalJson(null);
-            fail("Exception expected for null");
-        } catch (Exception ex) {
-            // Expected
-        }
-    }
+        try (StringWriter stringWriter = new StringWriter()) {
+            XmlUtil.marshal(object, stringWriter);
+            String xmlObject = stringWriter.toString();
 
-    @Test
-    public void unmarshalTest() throws JAXBException {
-        String[] listOfStrings = new String[]{"string", "s123@#", null};
-        Class[] listOfClasses = new Class[]{Integer.class, Character.class, String.class, Long.class, Short.class, Float.class, Double.class, Byte.class, Boolean.class};
-
-        for (int i = 0; i < listOfClasses.length; i++) {
-            for (int j = 0; j < listOfStrings.length; j++) {
-                try {
-                    assertNotNull(XmlUtil.unmarshal(listOfStrings[j], listOfClasses[i]));
-                    fail("Exception expected for: " + listOfStrings[j]);
-                } catch (Exception ex) {
-                    // Expected
-                }
-            }
-        }
-        for (int i = 0; i < listOfStrings.length; i++) {
-            try {
-                assertNotNull(XmlUtil.unmarshal(listOfStrings[i], null));
-                fail("Exception expected for: " + listOfStrings[i]);
-            } catch (Exception ex) {
-                // Expected
-            }
+            Assert.assertNotNull(xmlObject);
+            Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                    "<xmlUtilTestObject>\n" +
+                    "   <string>test</string>\n" +
+                    "   <integers>\n" +
+                    "      <integer>1</integer>\n" +
+                    "      <integer>2</integer>\n" +
+                    "   </integers>\n" +
+                    "</xmlUtilTestObject>\n", xmlObject);
         }
     }
 
     @Test
-    public void unmarshalWithUriTest() {
-        String[] listOfStrings = new String[]{"string", "s123@#", null};
-        Class[] listOfClasses = new Class[]{Integer.class, Character.class, String.class, Long.class, Short.class, Float.class, Double.class, Byte.class, Boolean.class};
+    public void unmarshalTest() throws JAXBException, SAXException {
+        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        String xmlObject = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<xmlUtilTestObject>\n" +
+                "   <string>test</string>\n" +
+                "   <integers>\n" +
+                "      <integer>1</integer>\n" +
+                "      <integer>2</integer>\n" +
+                "   </integers>\n" +
+                "</xmlUtilTestObject>\n";
+        XmlUtilTestObject object = XmlUtil.unmarshal(xmlObject, XmlUtilTestObject.class);
 
-        for (int i = 0; i < listOfClasses.length; i++) {
-            for (int j = 0; j < listOfStrings.length; j++) {
-                try {
-                    assertNotNull(XmlUtil.unmarshal(listOfStrings[j], listOfClasses[i], "String"));
-                    fail("Exception expected for: " + listOfStrings[j]);
-                } catch (Exception ex) {
-                    // Expected
-                }
-            }
+        Assert.assertNotNull(object);
+        Assert.assertEquals("test", object.getString());
+        Assert.assertNotNull(object.getIntegers());
+        Assert.assertEquals(2, object.getIntegers().size());
+        Assert.assertEquals(new Integer(1), object.getIntegers().get(0));
+        Assert.assertEquals(new Integer(2), object.getIntegers().get(1));
+    }
+
+    @Test
+    public void unmarshalReaderTest() throws JAXBException, SAXException {
+        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        String xmlObject = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<xmlUtilTestObject>\n" +
+                "   <string>test</string>\n" +
+                "   <integers>\n" +
+                "      <integer>1</integer>\n" +
+                "      <integer>2</integer>\n" +
+                "   </integers>\n" +
+                "</xmlUtilTestObject>\n";
+
+        try (StringReader stringReader = new StringReader(xmlObject)) {
+            XmlUtilTestObject object = XmlUtil.unmarshal(stringReader, XmlUtilTestObject.class);
+
+            Assert.assertNotNull(object);
+            Assert.assertEquals("test", object.getString());
+            Assert.assertNotNull(object.getIntegers());
+            Assert.assertEquals(2, object.getIntegers().size());
+            Assert.assertEquals(new Integer(1), object.getIntegers().get(0));
+            Assert.assertEquals(new Integer(2), object.getIntegers().get(1));
         }
-        for (int i = 0; i < listOfStrings.length; i++) {
-            try {
-                assertNotNull(XmlUtil.unmarshal(listOfStrings[i], null, "String"));
-                fail("Exception expected for: " + listOfStrings[i]);
-            } catch (Exception ex) {
-                // Expected
-            }
+    }
+
+
+    @Test
+    public void marshalJsonTest() throws JAXBException {
+        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        XmlUtilTestObject object = XmlUtilTestObject.create();
+        String jsonObject = XmlUtil.marshalJson(object);
+
+        Assert.assertNotNull(jsonObject);
+        Assert.assertEquals("{\n" +
+                "   \"string\" : \"test\",\n" +
+                "   \"integers\" : [ 1, 2 ]\n" +
+                "}", jsonObject);
+    }
+
+    @Test
+    public void marshalWriterJsonTest() throws JAXBException, IOException {
+        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        XmlUtilTestObject object = XmlUtilTestObject.create();
+
+        try (StringWriter stringWriter = new StringWriter()) {
+            XmlUtil.marshalJson(object, stringWriter);
+            String jsonObject = stringWriter.toString();
+
+            Assert.assertNotNull(jsonObject);
+            Assert.assertEquals("{\n" +
+                    "   \"string\" : \"test\",\n" +
+                    "   \"integers\" : [ 1, 2 ]\n" +
+                    "}", jsonObject);
         }
     }
 
     @Test
-    public void unmarshalJsonTest() throws JAXBException {
-        String[] listOfStrings = new String[]{"string", "s123@#", null};
-        Class[] listOfClasses = new Class[]{Integer.class, Character.class, String.class, Long.class, Short.class, Float.class, Double.class, Byte.class, Boolean.class};
+    public void unmarshalJsonTest() throws JAXBException, SAXException {
+        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        String jsonObject = "{\n" +
+                "   \"string\" : \"test\",\n" +
+                "   \"integers\" : [ 1, 2 ]\n" +
+                "}";
+        XmlUtilTestObject object = XmlUtil.unmarshalJson(jsonObject, XmlUtilTestObject.class);
 
-        for (int i = 0; i < listOfClasses.length; i++) {
-            for (int j = 0; j < listOfStrings.length; j++) {
-                try {
-                    assertNotNull(XmlUtil.unmarshalJson(listOfStrings[j], listOfClasses[i], "String"));
-                    fail("Exception expected for: " + listOfStrings[j]);
-                } catch (Exception ex) {
-                    // Expected
-                }
-            }
-        }
-        for (int i = 0; i < listOfClasses.length; i++) {
-            for (int j = 0; j < listOfStrings.length; j++) {
-                try {
-                    assertNotNull(XmlUtil.unmarshalJson(listOfStrings[j], listOfClasses[i], null));
-                    fail("Exception expected for: " + listOfStrings[j]);
-                } catch (Exception ex) {
-                    // Expected
-                }
-            }
-        }
-        for (int i = 0; i < listOfStrings.length; i++) {
-            try {
-                assertNotNull(XmlUtil.unmarshalJson(listOfStrings[i], null, "String"));
-                fail("Exception expected for: " + listOfStrings[i]);
-            } catch (Exception ex) {
-                // Expected
-            }
-        }
-        for (int i = 0; i < listOfStrings.length; i++) {
-            try {
-                assertNotNull(XmlUtil.unmarshalJson(listOfStrings[i], null, null));
-                fail("Exception expected for: " + listOfStrings[i]);
-            } catch (Exception ex) {
-                // Expected
-            }
+        Assert.assertNotNull(object);
+        Assert.assertEquals("test", object.getString());
+        Assert.assertNotNull(object.getIntegers());
+        Assert.assertEquals(2, object.getIntegers().size());
+        Assert.assertEquals(new Integer(1), object.getIntegers().get(0));
+        Assert.assertEquals(new Integer(2), object.getIntegers().get(1));
+    }
+
+    @Test
+    public void unmarshalReaderJsonTest() throws JAXBException, SAXException {
+        XmlUtil.setContextProvider(new XmlUtilTestJAXBContextProvider());
+        String jsonObject = "{\n" +
+                "   \"string\" : \"test\",\n" +
+                "   \"integers\" : [ 1, 2 ]\n" +
+                "}";
+
+        try (StringReader stringReader = new StringReader(jsonObject)) {
+            XmlUtilTestObject object = XmlUtil.unmarshalJson(stringReader, XmlUtilTestObject.class);
+
+            Assert.assertNotNull(object);
+            Assert.assertEquals("test", object.getString());
+            Assert.assertNotNull(object.getIntegers());
+            Assert.assertEquals(2, object.getIntegers().size());
+            Assert.assertEquals(new Integer(1), object.getIntegers().get(0));
+            Assert.assertEquals(new Integer(2), object.getIntegers().get(1));
         }
     }
 }

@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.integration.steps;
 
+import io.cucumber.guice.ScenarioScoped;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.qa.common.StepData;
@@ -24,12 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-
-import io.cucumber.guice.ScenarioScoped;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -85,7 +83,7 @@ public class RestClientSteps extends Assert {
                 stepData.put(REST_RESPONSE, sb.toString());
             }
             stepData.put(REST_RESPONSE_CODE, httpRespCode);
-        } catch ( IOException ioe) {
+        } catch (IOException ioe) {
             logger.error("Exception on REST GET call execution: " + resource);
             throw ioe;
         }
@@ -142,7 +140,7 @@ public class RestClientSteps extends Assert {
     @Then("REST response containing Account")
     public void restResponseContainingAccount() throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        Account account = XmlUtil.unmarshalJson(restResponse, Account.class, null);
+        Account account = XmlUtil.unmarshalJson(restResponse, Account.class);
         KapuaId accId = account.getId();
         System.out.println("Account Id = " + accId);
         stepData.put("lastAccountId", accId.toStringId());
@@ -160,7 +158,7 @@ public class RestClientSteps extends Assert {
     @Then("REST response containing AccessToken")
     public void restResponseContainingAccessToken() throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        AccessToken token = XmlUtil.unmarshalJson(restResponse, AccessToken.class, null);
+        AccessToken token = XmlUtil.unmarshalJson(restResponse, AccessToken.class);
         assertTrue("Token is null.", token.getTokenId() != null);
         stepData.put(TOKEN_ID, token.getTokenId());
     }
@@ -168,21 +166,21 @@ public class RestClientSteps extends Assert {
     @Then("REST response containing User")
     public void restResponseContainingUser() throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        User user = XmlUtil.unmarshalJson(restResponse, User.class, null);
+        User user = XmlUtil.unmarshalJson(restResponse, User.class);
         stepData.put("lastUserCompactId", user.getId().toCompactId());
     }
 
     @Then("REST response contains list of Users")
     public void restResponseContainsUsers() throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        UserListResult userList = XmlUtil.unmarshalJson(restResponse, UserListResult.class, null);
+        UserListResult userList = XmlUtil.unmarshalJson(restResponse, UserListResult.class);
         Assert.assertFalse("Retrieved user list should NOT be empty.", userList.isEmpty());
     }
 
     @Then("REST response doesn't contain User")
     public void restResponseDoesntContainUser() throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        User user = XmlUtil.unmarshalJson(restResponse, User.class, null);
+        User user = XmlUtil.unmarshalJson(restResponse, User.class);
         Assert.assertTrue("There should be NO User retrieved.", user == null);
     }
 
@@ -195,7 +193,7 @@ public class RestClientSteps extends Assert {
     @Then("^REST response contains limitExceed field with value (true|false)$")
     public void restResponseContainsLimitExceedValueWithValue(String value) throws Exception {
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        UserListResult userList = XmlUtil.unmarshalJson(restResponse, UserListResult.class, null);
+        UserListResult userList = XmlUtil.unmarshalJson(restResponse, UserListResult.class);
         Assert.assertEquals(Boolean.parseBoolean(value), userList.isLimitExceeded());
     }
 
@@ -222,7 +220,7 @@ public class RestClientSteps extends Assert {
      */
     private String insertStepData(String template) {
         List<String> keys = stepData.getKeys();
-        for (String key: keys) {
+        for (String key : keys) {
             Object oValue = stepData.get(key);
             if (oValue instanceof String) {
                 String value = (String) oValue;
