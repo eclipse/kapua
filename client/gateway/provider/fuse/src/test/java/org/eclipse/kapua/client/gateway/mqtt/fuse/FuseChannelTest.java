@@ -55,13 +55,13 @@ public class FuseChannelTest extends Assert {
         assertEquals("Actual and expected values should be the same.", builderExpected, builderExpected.builder());
     }
 
-    @Test(expected = NoClassDefFoundError.class)
+    @Test
     public void builderBuildTest() throws Exception {
         builder.credentials(Credentials.userAndPassword("kapua-sys", new char[]{'a', 'b', 'c'}));
         assertThat("Instance of FuseChannel expected.", builder.build(), IsInstanceOf.instanceOf(FuseChannel.class));
     }
 
-    @Test(expected = NoClassDefFoundError.class)
+    @Test
     public void builderBuildCredentialsNullTest() throws Exception {
         builder.credentials(null);
         assertThat("Instance of FuseChannel expected.", builder.build(), IsInstanceOf.instanceOf(FuseChannel.class));
