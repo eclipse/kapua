@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.camel;
+package org.eclipse.kapua.service.client;
 
 import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;

@@ -245,7 +245,6 @@
                 <include>${pom.groupId}:kapua-broker-api</include>
                 <include>${pom.groupId}:kapua-broker-activemq-plugin</include>
                 <include>${pom.groupId}:kapua-service-client</include>
-                <include>${pom.groupId}:kapua-consumer-commons</include>
                 <include>${pom.groupId}:kapua-commons</include>
                 <include>${pom.groupId}:kapua-datastore-api</include>
                 <include>${pom.groupId}:kapua-device-api</include>

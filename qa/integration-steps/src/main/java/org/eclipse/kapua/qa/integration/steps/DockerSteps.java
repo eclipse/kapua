@@ -711,7 +711,8 @@ public class DockerSteps {
         }
 
         if (debug) {
-            envVars.add(String.format("ACTIVEMQ_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=%s", debugPort));
+//            envVars.add(String.format("ACTIVEMQ_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=%s", debugPort));
+            envVars.add(String.format("DEBUG_ARGS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=%s", debugPort));
         }
 
         String[] ports = {

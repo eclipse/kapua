@@ -35,8 +35,9 @@ public class ConnectTest {
 
     public static void main(String argv[]) throws Exception {
         ConnectTest connectTest = new ConnectTest();
+        connectTest.testConnection();
 //        connectTest.testBase();
-        connectTest.testStealingLink();
+//        connectTest.testStealingLink();
 //        connectTest.testLifecycleAndTelemetry();
     }
 
@@ -46,6 +47,12 @@ public class ConnectTest {
         step("kapua-broker", "kapua-password", "client", new String[] {"topic1/topic2", "kapua-sys/client"}, 2);
         step("kapua-broker", "kapua-password-wrong", "client", new String[] {"topic1/topic2", "kapua-sys/client"}, 0);
         step("kapua-broker-wrong", "kapua-password", "client", new String[] {"topic1/topic2", "kapua-sys/client"}, 0);
+        Thread.sleep(3600);
+    }
+
+    private void testConnection() throws MqttException, InterruptedException {
+        MqttClient client2 = connect("kapua-sys", "kapua-password", "client2");
+        MqttClient client1 = connect("kapua-broker", "kapua-password", "client1");
         Thread.sleep(3600);
     }
 

@@ -33,6 +33,7 @@ import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEvent.EventT
 import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEventHanldler;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
+import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdentity;
 import org.eclipse.kapua.client.security.ServiceClient;
 import org.eclipse.kapua.client.security.ServiceClientMessagingImpl;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
@@ -44,6 +45,7 @@ import org.eclipse.kapua.client.security.metric.PublishMetric;
 import org.eclipse.kapua.client.security.metric.SubscribeMetric;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.client.DatabaseCheckUpdate;
 import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,21 +66,25 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     private PublishMetric publishMetric = PublishMetric.getInstance();
     private SubscribeMetric subscribeMetric = SubscribeMetric.getInstance();
 
-    private BrokerEventHanldler brokerEventHanldler;
-    private AcceptorHandler acceptorHandler;
-    private ActiveMQServer server;
-    private String version;
+    protected BrokerEventHanldler brokerEventHanldler;
+    protected AcceptorHandler acceptorHandler;
+    protected ActiveMQServer server;
+    protected String version;
 
     //TODO provide client pluggability once the rest one will be implemented (now just the AMQP client is available)
     //TODO manage through injection if possible
-    private ServiceClient authServiceClient;
-    private SecurityContextHandler securityContextHandler;
+    protected ServiceClient authServiceClient;
+    protected SecurityContextHandler securityContextHandler;
+    protected BrokerIdentity brokerIdentity;
 
     public ServerPlugin() {
         publishInfoMessageSizeLimit = BrokerSetting.getInstance().getInt(BrokerSettingKey.PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD, DEFAULT_PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD);
-        securityContextHandler = SecurityContextHandler.getInstance();
+        //TODO find a proper way to initialize database
+        DatabaseCheckUpdate databaseCheckUpdate = new DatabaseCheckUpdate();
         //TODO see comment above
         authServiceClient = new ServiceClientMessagingImpl();
+        securityContextHandler = SecurityContextHandler.getInstance();
+        brokerIdentity = BrokerIdentity.getInstance();
         brokerEventHanldler = BrokerEventHanldler.getInstance();
         brokerEventHanldler.registerConsumer((brokerEvent) -> disconnectClient(brokerEvent));
         brokerEventHanldler.start();
@@ -89,6 +95,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         logger.info("registering plugin {}...", this.getClass().getName());
         try {
             this.server = server;
+            brokerIdentity.init(server);
             acceptorHandler = new AcceptorHandler(server,
                 BrokerSetting.getInstance().getMap(String.class, BrokerSettingKey.ACCEPTORS));
             //init acceptors

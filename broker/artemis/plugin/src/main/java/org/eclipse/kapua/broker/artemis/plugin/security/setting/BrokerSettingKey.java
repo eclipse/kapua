@@ -19,6 +19,14 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  */
 public enum BrokerSettingKey implements SettingKey {
     /**
+     * Broker host resolver implementation (if not evaluated, the default resolver will be used).
+     */
+    BROKER_HOST_RESOLVER_CLASS_NAME("broker.host_resolver_class_name"),
+    /**
+     * Broker id resolver implementation
+     */
+    BROKER_ID_RESOLVER_CLASS_NAME("broker.id_resolver_class_name"),
+    /**
      * Broker Host
      */
     BROKER_HOST("broker.host"),
