@@ -33,6 +33,7 @@ import org.apache.activemq.artemis.spi.core.security.ActiveMQSecurityManager5;
 import org.eclipse.kapua.broker.artemis.plugin.security.context.SecurityContextHandler;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
+import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdentity;
 import org.eclipse.kapua.client.security.ServiceClient;
 import org.eclipse.kapua.client.security.ServiceClientMessagingImpl;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
@@ -76,22 +77,26 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     private String amqpInternalConectorPort;
     private String amqpInternalConnectorName;
 
-    private String brokerId;
-    private String brokerHost;
-    //TODO provide client pluggability once the rest one will be implemented (now just the AMQP client is available)
+    //TODO provide client pluggability once the Rest one will be implemented (now just the AMQP client is available)
     //TODO manage through injection if possible
     private ServiceClient authServiceClient;
     private SecurityContextHandler securityContextHandler;
+    private BrokerIdentity brokerIdentity;
 
     public SecurityPlugin() {
+        logger.info("Initializing SecurityPlugin...");
         //TOOD see comment above
         authServiceClient = new ServiceClientMessagingImpl();
         securityContextHandler = SecurityContextHandler.getInstance();
+        brokerIdentity = BrokerIdentity.getInstance();
         BrokerSetting brokerSetting = BrokerSetting.getInstance();
-        brokerId = brokerSetting.getString(BrokerSettingKey.BROKER_ID);
-        brokerHost = brokerSetting.getString(BrokerSettingKey.BROKER_HOST);
         amqpInternalConectorPort = ":" + brokerSetting.getString(BrokerSettingKey.INTERNAL_ACCEPTOR_PORT);
         amqpInternalConnectorName = brokerSetting.getString(BrokerSettingKey.INTERNAL_ACCEPTOR_NAME);
+        logger.info("Initializing SecurityPlugin... DONE");
+    }
+
+    public void setBrokerIdentity(BrokerIdentity brokerIdentity) {
+        this.brokerIdentity = brokerIdentity;
     }
 
     @Override
@@ -135,7 +140,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(
                  connectionInfo.getClientId()!=null ? connectionInfo.getClientId() : connectionInfo.getClientIp());
             Subject subject = buildInternalSubject(kapuaPrincipal);
-            SessionContext sessionContext = new SessionContext(kapuaPrincipal, connectionInfo, brokerId, brokerHost);
+            SessionContext sessionContext = new SessionContext(kapuaPrincipal, connectionInfo, brokerIdentity.getBrokerId(), brokerIdentity.getBrokerHost());
             securityContextHandler.setSessionContext(sessionContext);
             return subject;
         }
@@ -152,11 +157,11 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             String fullClientId = Utils.getFullClientId(getScopeId(username), connectionInfo.getClientId());
             Context loginShiroLoginTimeContext = loginMetric.getShiroLoginTime().time();
             AuthRequest authRequest = new AuthRequest(SecurityAction.brokerConnect.name(), username, password, connectionInfo, getOldConnectionId(fullClientId),
-                brokerHost, brokerId);
+                brokerIdentity.getBrokerHost(), brokerIdentity.getBrokerId());
             AuthResponse authResponse = authServiceClient.brokerConnect(authRequest);
             validateAuthResponse(authResponse);
             KapuaPrincipal principal = new KapuaPrincipalImpl(authResponse);
-            SessionContext sessionContext = new SessionContext(principal, connectionInfo, authResponse.getKapuaConnectionId(), brokerId, brokerHost);
+            SessionContext sessionContext = new SessionContext(principal, connectionInfo, authResponse.getKapuaConnectionId(), brokerIdentity.getBrokerId(), brokerIdentity.getBrokerHost());
             loginShiroLoginTimeContext.stop();
 
             //update client id with account|clientId (see pattern)

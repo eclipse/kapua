@@ -38,7 +38,7 @@
         init-method="init"/>
     <bean xmlns="http://www.springframework.org/schema/beans"
         id="databaseCheckUpdate"
-        class="org.eclipse.kapua.broker.core.KapuaDatabaseCheckUpdate"
+        class="org.eclipse.kapua.service.client.DatabaseCheckUpdate"
         depends-on="jaxbContextLoader"/>
     <bean xmlns="http://www.springframework.org/schema/beans"
         id="applicationPlugin"

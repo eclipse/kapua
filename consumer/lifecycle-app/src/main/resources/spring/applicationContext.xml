@@ -62,7 +62,7 @@
     <bean id="jaxbContextLoader" class="org.eclipse.kapua.service.camel.xml.ServiceJAXBContextLoader"
         init-method="init"/>
 
-    <bean id="databaseCheckUpdate" class="org.eclipse.kapua.service.camel.DatabaseCheckUpdate"
+    <bean id="databaseCheckUpdate" class="org.eclipse.kapua.service.client.DatabaseCheckUpdate"
         depends-on="jaxbContextLoader"/>
 
     <!-- starts event bus and other components with a lifecycle -->
