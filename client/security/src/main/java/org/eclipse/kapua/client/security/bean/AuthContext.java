@@ -12,6 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.bean;
 
+import java.security.cert.Certificate;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.kapua.client.security.AuthErrorCodes;
 import org.eclipse.kapua.model.id.KapuaId;
 
@@ -28,6 +32,7 @@ public class AuthContext {
     private String brokerId;
     private String brokerHost;
     private String transportProtocol;
+    private Certificate[] clientCertificates;
 
     private String exceptionClass;
     private AuthErrorCodes authErrorCode;
@@ -36,11 +41,14 @@ public class AuthContext {
     private boolean missing;
     private String kapuaConnectionId;
 
+    private Map<String, Object> property;
+
     public AuthContext(AuthRequest authRequest) {
         initCommonFields(authRequest);
         accountName = authRequest.getAccountName();
         scopeId = authRequest.getScopeId();
         userId = authRequest.getUserId();
+        clientCertificates = authRequest.getCertificates();
     }
 
     public AuthContext(AuthRequest authRequest, AuthResponse authResponse) {
@@ -48,9 +56,11 @@ public class AuthContext {
         accountName = authResponse.getAccountName();
         scopeId = authResponse.getScopeId();
         userId = authResponse.getUserId();
+        clientCertificates = authRequest.getCertificates();
     }
 
     private void initCommonFields(AuthRequest authRequest) {
+        property = new HashMap<>();
         username = authRequest.getUsername();
         clientId = authRequest.getClientId();
         clientIp = authRequest.getClientIp();
@@ -83,6 +93,10 @@ public class AuthContext {
 
     public String getClientIp() {
         return clientIp;
+    }
+
+    public Certificate[] getClientCertificates() {
+        return clientCertificates;
     }
 
     public String getConnectionId() {
@@ -145,4 +159,23 @@ public class AuthContext {
         this.admin = admin;
     }
 
+    public <T> void setProperty(String key, T value) {
+        property.put(key, value);
+    }
+
+    public <T> T getProperty(String key, T defaultValue) {
+        try {
+            @SuppressWarnings("unchecked")
+            T value = (T)property.get(key);
+            if (value==null) {
+                return defaultValue;
+            }
+            else {
+                return value;
+            }
+        }
+        catch (ClassCastException e) {
+            return defaultValue;
+        }
+    }
 }

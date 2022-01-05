@@ -20,10 +20,14 @@ public class UserPermissions {
     public static final int DATA_VIEW_IDX = 3;
     public static final int DATA_MANAGE_IDX = 4;
 
-    private boolean[] hasPermissions;
+    protected boolean[] hasPermissions;
 
     public UserPermissions(boolean[] hasPermissions) {
         this.hasPermissions = hasPermissions;
+    }
+
+    public boolean hasPermission(int index) {
+        return hasPermissions[index];
     }
 
     public boolean[] hasPermissions() {
