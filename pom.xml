@@ -84,6 +84,7 @@
         <netty.version>4.1.60.Final</netty.version>
         <netty3.version>3.10.6.Final</netty3.version>
         <opencsv.version>3.7</opencsv.version>
+        <owasp-encoder.version>1.2.3</owasp-encoder.version>
         <paho.version>1.2.1</paho.version>
         <protobuf.version>3.8.0</protobuf.version>
         <qpid-jms-client.version>0.40.0</qpid-jms-client.version>
@@ -1393,6 +1394,11 @@
                         <artifactId>logback-classic</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.owasp.encoder</groupId>
+                <artifactId>encoder</artifactId>
+                <version>${owasp-encoder.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.neoscada.utils</groupId>
