@@ -172,7 +172,7 @@ public class TranslatorSteps extends TestBase {
 
     }
 
-    @Then("I get mqtt message with channel with scope {string}, client id {string} and (empty body/non empty body)")
+    @Then("I get mqtt message with channel with scope {string}, client id {string} and (empty body|non empty body)")
     public void mqttMessageWithChanneScopeClienIDandBody(String scope, String clientId) {
         MqttMessage mqttMessage = (MqttMessage) stepData.get("MqttMessage");
         String requestTopic = scope.concat("/" + clientId);
@@ -260,7 +260,7 @@ public class TranslatorSteps extends TestBase {
         Assert.assertEquals(null, kuraDataMessage.getPayload().getBody());
     }
 
-    @Given("I create jms message with (valid/invalid/empty) payload {string} and (valid/invalid) topic {string}")
+    @Given("I create jms message with (valid|invalid|empty) payload {string} and (valid|invalid) topic {string}")
     public void iCreateJmsMessageWithInvalidPayloadAndInvalidTopic(String payload, String topic) throws Exception {
         try {
             Date date = new Date();
@@ -311,7 +311,7 @@ public class TranslatorSteps extends TestBase {
         }
     }
 
-    @Then("I got jms message with topic {string} and (?:empty body|non empty body)")
+    @Then("I got jms message with topic {string} and (empty body|non empty body)")
     public void iGotJmsMessageWithTopicAndEmptyPayload(String topic) {
         JmsMessage jmsMessage = (JmsMessage) stepData.get("JmsMessage");
         Assert.assertEquals(new JmsTopic(topic).getTopic(), jmsMessage.getTopic().getTopic());
