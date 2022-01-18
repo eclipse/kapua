@@ -89,6 +89,7 @@
         <mockito.version>1.10.19</mockito.version>
         <netty.version>4.1.60.Final</netty.version>
         <netty3.version>3.10.6.Final</netty3.version>
+        <owasp-encoder.version>1.2.3</owasp-encoder.version>
         <opencsv.version>3.7</opencsv.version>
         <paho.version>1.2.1</paho.version>
         <protobuf.version>3.8.0</protobuf.version>
@@ -1179,6 +1180,7 @@
                 <version>${project.version}</version>
                 <type>war</type>
             </dependency>
+
             <!-- -->
             <!-- External dependencies -->
             <dependency>
@@ -1516,6 +1518,11 @@
                         <artifactId>logback-classic</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.owasp.encoder</groupId>
+                <artifactId>encoder</artifactId>
+                <version>${owasp-encoder.version}</version>
             </dependency>
             <dependency>
                 <!-- Used to parse the Cron expression-->
