@@ -173,7 +173,7 @@ public class TranslatorSteps extends TestBase {
     }
 
     @Then("I get mqtt message with channel with scope {string}, client id {string} and (empty body|non empty body)")
-    public void mqttMessageWithChanneScopeClienIDandBody(String scope, String clientId) {
+    public void mqttMessageWithChannelScopeClientIDAndBody(String scope, String clientId) {
         MqttMessage mqttMessage = (MqttMessage) stepData.get("MqttMessage");
         String requestTopic = scope.concat("/" + clientId);
         Assert.assertEquals(requestTopic, mqttMessage.getRequestTopic().getTopic());
