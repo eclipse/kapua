@@ -1982,22 +1982,22 @@
             <!-- Jetty-->
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-server</artifactId>
+                <artifactId>jetty-annotations</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-webapp</artifactId>
-                <version>${jetty.version}</version>
+                <artifactId>jetty-continuation</artifactId>
+                <version>${jetty-activemq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-jaas</artifactId>
+                <version>${jetty-activemq.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-jmx</artifactId>
-                <version>${jetty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-annotations</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
             <dependency>
@@ -2010,12 +2010,6 @@
                 <artifactId>apache-jstl</artifactId>
                 <version>${jetty.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-security</artifactId>
-                <version>${jetty-activemq.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-rewrite</artifactId>
@@ -2023,13 +2017,18 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-jaas</artifactId>
+                <artifactId>jetty-security</artifactId>
                 <version>${jetty-activemq.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-continuation</artifactId>
-                <version>${jetty-activemq.version}</version>
+                <artifactId>jetty-server</artifactId>
+                <version>${jetty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-webapp</artifactId>
+                <version>${jetty.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty.aggregate</groupId>
@@ -2042,6 +2041,7 @@
                 <version>${jetty-activemq.version}</version>
             </dependency>
 
+            <!-- -->
             <!-- Active MQ Artemis-->
             <dependency>
                 <groupId>org.apache.activemq</groupId>
