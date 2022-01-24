@@ -25,7 +25,7 @@ RUN useradd -u 1002 -g 0 -d '/opt/artemis' -s '/sbin/nologin' artemis && \
 ENV BROKER_HOST=message-broker
 ENV BROKER_ID=broker-id
 
-EXPOSE 1883 8883
+EXPOSE 1883 1893 8883
 
 USER 1002
 

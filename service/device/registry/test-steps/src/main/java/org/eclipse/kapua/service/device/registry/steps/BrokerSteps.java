@@ -21,7 +21,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.core.setting.BrokerSetting;
+import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
@@ -47,6 +47,7 @@ import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -232,10 +233,27 @@ public class BrokerSteps extends TestBase {
         }
     }
 
-    @When("Device(s) (is/are) connected")
-    public void deviceConnected() throws Exception {
+    @When("Device(s) (is/are) connected within {int} second(s)")
+    public void deviceConnected(int timeout) throws Exception {
         try {
             deviceBirthMessage();
+            boolean checkDone = false;
+            while(!checkDone && timeout-->0) {
+                checkDone = true;
+                logger.info("Device(s) status countdown check: {}", timeout);
+                for (KuraDevice kuraDevice : kuraDevices) {
+                    Device device = deviceRegistryService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+                    boolean deviceStatusCheck = device!=null &&
+                        device.getConnection()!=null &&
+                        DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus());
+                    checkDone = checkDone && deviceStatusCheck;
+                }
+                if (!checkDone) {
+                    Thread.sleep(1000);
+                }
+            }
+            Assert.assertTrue("Bad Device(s) status (expected CONNECTED)", checkDone);
+            logger.info("Device(s) status check: {} DONE", timeout);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -493,21 +511,25 @@ public class BrokerSteps extends TestBase {
         }
     }
 
-    @Then("Device(s) status is {string}")
-    public void deviceStatusIs(String deviceConnectionStatus) throws Exception {
-        DeviceConnection deviceConnection = null;
-        List<DeviceConnection> deviceConnections = new ArrayList<>();
-        for (KuraDevice kuraDevice : kuraDevices) {
-            deviceConnection = deviceConnectionService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
-
-            deviceConnections.add(deviceConnection);
+    @Then("Device(s) status is {string} within {int} second(s)")
+    public void deviceStatusIs(String deviceStatus, int timeout) throws Exception {
+        boolean checkDone = false;
+        while(!checkDone && timeout-->0) {
+            checkDone = true;
+            logger.info("Device(s) status countdown check: {}", timeout);
+            for (KuraDevice kuraDevice : kuraDevices) {
+                DeviceConnection deviceConn = deviceConnectionService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+                boolean deviceStatusCheck = deviceStatus.equals(deviceConn.getStatus().toString());
+                checkDone = checkDone && deviceStatusCheck;
+            }
+            if (!checkDone) {
+                Thread.sleep(1000);
+            }
         }
-
-        Assert.assertNotNull(deviceConnection);
-        Assert.assertEquals(deviceConnectionStatus, deviceConnection.getStatus().toString());
-
+        Assert.assertTrue("Bad Device(s) status (expected " + deviceStatus + ")", checkDone);
         stepData.put(DEVICE_CONNECTION, deviceConnection);
         stepData.put(DEVICE_CONNECTIONS, deviceConnections);
+        logger.info("Device(s) status check: {} DONE", timeout);
     }
 
     @And("I add {int} devices to Kura Mock")

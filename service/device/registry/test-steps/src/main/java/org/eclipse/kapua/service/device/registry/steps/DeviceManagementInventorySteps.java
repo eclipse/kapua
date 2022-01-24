@@ -19,7 +19,7 @@ import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.core.setting.BrokerSetting;
+import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.StepData;
@@ -59,15 +59,12 @@ public class DeviceManagementInventorySteps extends TestBase {
     private DeviceInventoryManagementService deviceInventoryManagementService;
     private DeviceInventoryManagementFactory deviceInventoryManagementFactory;
 
-    /**
-     * Scenario scoped step data.
-     */
     @Inject
     public DeviceManagementInventorySteps(StepData stepData) {
         super(stepData);
     }
 
-    @Before
+    @After(value = "@setup")
     public void beforeScenario(Scenario scenario) {
 
         this.scenario = scenario;
@@ -78,6 +75,11 @@ public class DeviceManagementInventorySteps extends TestBase {
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceInventoryManagementService = locator.getService(DeviceInventoryManagementService.class);
         deviceInventoryManagementFactory = locator.getFactory(DeviceInventoryManagementFactory.class);
+    }
+
+    @Before(value = "@env_docker or @env_docker_base or @env_none", order = 10)
+    public void beforeScenarioNone(Scenario scenario) {
+        updateScenario(scenario);
     }
 
     @After

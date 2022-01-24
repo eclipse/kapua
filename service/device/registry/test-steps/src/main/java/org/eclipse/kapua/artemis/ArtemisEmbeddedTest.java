@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.activemq.artemis.core.server.embedded.EmbeddedActiveMQ;
 import org.eclipse.kapua.qa.common.Suppressed;
@@ -23,7 +24,6 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.elasticsearch.common.UUIDs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +32,7 @@ public class ArtemisEmbeddedTest {
     private static final Logger logger = LoggerFactory.getLogger(ArtemisEmbeddedTest.class);
 
     private static final String CONFIGURATION_FILE = "file:///Users/riccardomodanese/dev/git/kapua_riccardo/assembly/broker-artemis/configurations/broker.xml";
-    private static final String DEFAULT_DATA_DIRECTORY_PREFIX = "target/artemis" + UUIDs.randomBase64UUID();
+    private static final String DEFAULT_DATA_DIRECTORY_PREFIX = "target/artemis" + UUID.randomUUID().toString();
     private static final String DEFAULT_DATA_DIRECTORY = DEFAULT_DATA_DIRECTORY_PREFIX + "/data/journal";
 
     private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.broker.extraStartupDelay", 0);

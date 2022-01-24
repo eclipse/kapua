@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -23,6 +23,7 @@ import javax.security.cert.X509Certificate;
 
 import org.apache.activemq.artemis.api.core.ActiveMQException;
 import org.apache.activemq.artemis.api.core.ActiveMQExceptionType;
+import org.apache.activemq.artemis.core.protocol.mqtt.MQTTConnection;
 import org.apache.activemq.artemis.core.remoting.impl.netty.NettyServerConnection;
 import org.apache.activemq.artemis.core.security.CheckType;
 import org.apache.activemq.artemis.core.security.Role;
@@ -76,6 +77,8 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
 
     private String amqpInternalConectorPort;
     private String amqpInternalConnectorName;
+    private String mqttInternalConectorPort;
+    private String mqttInternalConnectorName;
 
     //TODO provide client pluggability once the Rest one will be implemented (now just the AMQP client is available)
     //TODO manage through injection if possible
@@ -90,8 +93,10 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         securityContextHandler = SecurityContextHandler.getInstance();
         brokerIdentity = BrokerIdentity.getInstance();
         BrokerSetting brokerSetting = BrokerSetting.getInstance();
-        amqpInternalConectorPort = ":" + brokerSetting.getString(BrokerSettingKey.INTERNAL_ACCEPTOR_PORT);
-        amqpInternalConnectorName = brokerSetting.getString(BrokerSettingKey.INTERNAL_ACCEPTOR_NAME);
+        amqpInternalConectorPort = ":" + brokerSetting.getString(BrokerSettingKey.INTERNAL_AMQP_ACCEPTOR_PORT);
+        amqpInternalConnectorName = brokerSetting.getString(BrokerSettingKey.INTERNAL_AMQP_ACCEPTOR_NAME);
+        mqttInternalConectorPort = ":" + brokerSetting.getString(BrokerSettingKey.INTERNAL_MQTT_ACCEPTOR_PORT);
+        mqttInternalConnectorName = brokerSetting.getString(BrokerSettingKey.INTERNAL_MQTT_ACCEPTOR_NAME);
         logger.info("Initializing SecurityPlugin... DONE");
     }
 
@@ -274,13 +279,35 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 logger.debug("Protocol: {} - Remote container: {} - connection id: {} - local address: {}",
                     protocolName, ((ActiveMQProtonRemotingConnection)remotingConnection).getAmqpConnection().getRemoteContainer(), connection.getID(), connection.getLocalAddress());
             }
-            //are the first check redundant? If the connector name is what is expected should be enough?
-            return connection.getLocalAddress().endsWith(amqpInternalConectorPort) && //local port
-                amqpInternalConnectorName.equalsIgnoreCase(protocolName);//and connector name as expected
+            return isAmqpInternal(connection.getLocalAddress(), protocolName);//and connector name as expected
+        }
+        else if(remotingConnection instanceof MQTTConnection) {
+            Connection connection = ((MQTTConnection)remotingConnection).getTransportConnection();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Protocol: {} - Remote address: {} - connection id: {} - local address: {}",
+                    protocolName, connection.getRemoteAddress(), connection.getID(), connection.getLocalAddress());
+            }
+            return isMqttInternal(connection.getLocalAddress(), protocolName);//and connector name as expected
         }
         else {
             return false;
         }
+    }
+
+    private boolean isAmqpInternal(String localAddress, String protocolName) {
+        //is internal if the inbound connection is coming from the amqp connector
+        //are the first check redundant? If the connector name is what is expected should be enough?
+        return
+            (localAddress.endsWith(amqpInternalConectorPort) && //local port amqp
+                amqpInternalConnectorName.equalsIgnoreCase(protocolName));
+    }
+
+    private boolean isMqttInternal(String localAddress, String protocolName) {
+        //is internal if the inbound connection is coming from the mqtt internal connector
+        //are the first check redundant? If the connector name is what is expected should be enough?
+        return
+            (localAddress.endsWith(mqttInternalConectorPort) && //local port internal mqtt
+                mqttInternalConnectorName.equalsIgnoreCase(protocolName));
     }
 
     private String getOldConnectionId(String fullClientId) {
