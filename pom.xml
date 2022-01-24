@@ -1531,9 +1531,19 @@
                 <version>${quartz-scheduler.version}</version>
                 <exclusions>
                     <exclusion>
-                        <!-- This is not required. We are using EclipseLink connection pooling. -->
+                        <!-- This is not required. We are using directly HikariCP connection pooling. -->
                         <groupId>com.zaxxer</groupId>
                         <artifactId>HikariCP-java7</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <!-- This is not required. We are using HikariCP connection pooling. -->
+                        <groupId>com.mchange</groupId>
+                        <artifactId>c3p0</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <!-- This is not required. We are using HikariCP connection pooling. -->
+                        <groupId>com.mchange</groupId>
+                        <artifactId>mchange-commons-java</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
