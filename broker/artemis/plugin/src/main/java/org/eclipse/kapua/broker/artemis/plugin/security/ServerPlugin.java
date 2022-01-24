@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2019, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -202,6 +202,10 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         logger.info("Publishing message on address {}", address);
         int messageSize = message.getEncodeSize();
         SessionContext sessionContext = securityContextHandler.getSessionContextByConnectionId(session);
+        message.putStringProperty(MessageConstants.HEADER_KAPUA_CLIENT_ID, sessionContext.getClientId());
+        message.putStringProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_NAME, sessionContext.getConnectorName());
+        message.putStringProperty(MessageConstants.HEADER_KAPUA_SESSION, Base64.getEncoder().encodeToString(SerializationUtils.serialize(sessionContext.getKapuaSession())));
+        message.putLongProperty(MessageConstants.HEADER_KAPUA_RECEIVED_TIMESTAMP, KapuaDateUtils.getKapuaSysDate().getEpochSecond());
         if (!sessionContext.isInternal()) {
             if (isLwt(address)) {
                 //handle the missing message case
@@ -210,11 +214,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             }
             // FIX #164
             message.putStringProperty(MessageConstants.HEADER_KAPUA_CONNECTION_ID, Base64.getEncoder().encodeToString(SerializationUtils.serialize(sessionContext.getKapuaConnectionId())));
-            message.putStringProperty(MessageConstants.HEADER_KAPUA_CLIENT_ID, sessionContext.getClientId());
-            message.putStringProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_NAME, sessionContext.getConnectorName());
-            message.putStringProperty(MessageConstants.HEADER_KAPUA_SESSION, Base64.getEncoder().encodeToString(SerializationUtils.serialize(sessionContext.getKapuaSession())));
             message.putBooleanProperty(MessageConstants.HEADER_KAPUA_BROKER_CONTEXT, false);
-            message.putLongProperty(MessageConstants.HEADER_KAPUA_RECEIVED_TIMESTAMP, KapuaDateUtils.getKapuaSysDate().getEpochSecond());
             if (publishInfoMessageSizeLimit < messageSize) {
                 logger.info("Published message size over threshold. size: {} - destination: {} - account id: {} - username: {} - clientId: {}",
                         messageSize, address, sessionContext.getAccountName(), sessionContext.getUsername(), sessionContext.getClientId());
@@ -320,8 +320,9 @@ public class ServerPlugin implements ActiveMQServerPlugin {
                     //so if the current connection id and that from sessionContet get by clientId are equals -> no stealing link
                     String fullClientId = Utils.getFullClientId(sessionContext);
                     SessionContext oldSessionContext = securityContextHandler.getSessionContextByClientId(fullClientId);
-                    logger.info("Checking stealing link for clientId: {} old connection: {} new connection: {}", fullClientId, oldSessionContext.getConnectionId(), connectionId);
-                    authServiceClient.brokerDisconnect(new AuthRequest(SecurityAction.brokerDisconnect.name(), sessionContext, oldSessionContext.getConnectionId()));
+                    String oldConnectionId = oldSessionContext != null ? oldSessionContext.getConnectionId() : null;
+                    logger.info("Checking stealing link for clientId: {} old connection: {} new connection: {}", fullClientId, oldConnectionId, connectionId);
+                    authServiceClient.brokerDisconnect(new AuthRequest(SecurityAction.brokerDisconnect.name(), sessionContext, oldConnectionId));
                 }
             }
             else {
@@ -331,13 +332,13 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         }
         catch (Exception e) {
             loginMetric.getFailure().inc();
-            logger.error("Cleanup connection data error: {}", e);
+            logger.error("Cleanup connection data error: {}", e.getMessage(), e);
 //            throw new ActiveMQException(ActiveMQExceptionType.SECURITY_EXCEPTION, "User not authorized!", e);
         }
         finally {
             securityContextHandler.cleanSessionContext(sessionContext);
         }
-        securityContextHandler.printContent("cleanUpConnectionData after stealing link", null);
+        securityContextHandler.printContent("cleanUpConnectionData after", null);
     }
 
 }

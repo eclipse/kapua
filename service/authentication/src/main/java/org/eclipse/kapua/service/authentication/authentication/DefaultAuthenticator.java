@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2018, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -67,7 +67,6 @@ public class DefaultAuthenticator implements Authenticator {
     /**
      * Default constructor
      *
-     * @param options thread safe options used to customize the authenticator behavior (please don't change the signature since the class is instantiated by reflection)
      * @throws KapuaException
      */
     public DefaultAuthenticator() throws KapuaException {

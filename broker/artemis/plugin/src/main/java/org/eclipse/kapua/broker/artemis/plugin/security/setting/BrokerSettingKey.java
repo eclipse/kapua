@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 Red Hat Inc and others
+ * Copyright (c) 2017, 2022 Red Hat Inc and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -35,15 +35,25 @@ public enum BrokerSettingKey implements SettingKey {
      */
     BROKER_ID("broker.id"),
     /**
-     * Acceptor port for "internal use acceptor" (used by the external consumers, console and rest-api)
+     * AMQP acceptor port for "internal use acceptor" (used by the external consumers, console and rest-api)
      * default value should be 5672 (AMQP)
      */
-    INTERNAL_ACCEPTOR_PORT("broker.internal_acceptor.port"),
+    INTERNAL_AMQP_ACCEPTOR_PORT("broker.amqp_internal_acceptor.port"),
     /**
-     * Acceptor name for "internal use acceptor" connector (used by the external consumers, console and rest-api)
+     * AMQP acceptor name for "internal use acceptor" connector (used by the external consumers, console and rest-api)
      * default value should be amqp
      */
-    INTERNAL_ACCEPTOR_NAME("broker.internal_acceptor.name"),
+    INTERNAL_AMQP_ACCEPTOR_NAME("broker.amqp_internal_acceptor.name"),
+    /**
+     * MQTT acceptor port for "internal use acceptor" (used by the external consumers, console and rest-api)
+     * default value should be 1893 (MQTT)
+     */
+    INTERNAL_MQTT_ACCEPTOR_PORT("broker.mqtt_internal_acceptor.port"),
+    /**
+     * MQTT acceptor name for "internal use acceptor" connector (used by the external consumers, console and rest-api)
+     * default value should be mqttInternal
+     */
+    INTERNAL_MQTT_ACCEPTOR_NAME("broker.mqtt_internal_acceptor.name"),
     /**
      * Broker acceptors prefix (used to read the acceptor map
      */

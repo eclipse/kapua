@@ -111,6 +111,9 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     IllegalArgumentExceptionInfo.class,
                     IllegalNullArgumentExceptionInfo.class,
 
+                    // Job Engine
+                    JobStartOptions.class,
+                    JobTargetSublist.class,
                     // Jobs Exception Info
                     CleanJobDataExceptionInfo.class,
                     JobAlreadyRunningExceptionInfo.class,

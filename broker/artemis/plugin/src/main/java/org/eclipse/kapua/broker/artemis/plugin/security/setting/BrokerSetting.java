@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 Red Hat Inc and others
+ * Copyright (c) 2017, 2022 Red Hat Inc and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
