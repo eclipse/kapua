@@ -273,7 +273,7 @@ jobs:
           max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@security" verify
       - run: bash <(curl -s https://codecov.io/bash)
-  test-jobs:
+  test-jobsAndScheduler:
     needs: build-kapua
     runs-on: ubuntu-latest
     steps:
@@ -292,7 +292,7 @@ jobs:
           timeout_minutes: 45
           retry_on: error
           max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobs" verify
+          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobs or @scheduler" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobsIntegrationBase:
     needs: build-kapua
@@ -409,7 +409,7 @@ jobs:
           max_attempts: 1
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerServiceIntegration" verify
       - run: bash <(curl -s https://codecov.io/bash)
-  test-account:
+  test-accountAndTranslator:
     needs: build-kapua
     runs-on: ubuntu-latest
     steps:
@@ -428,7 +428,7 @@ jobs:
           timeout_minutes: 45
           retry_on: error
           max_attempts: 1
-          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@account" verify
+          command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@account or @translator" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineStepDefinitions:
     needs: build-kapua
