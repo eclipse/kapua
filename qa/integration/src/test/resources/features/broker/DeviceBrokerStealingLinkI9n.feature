@@ -43,40 +43,42 @@ Feature: Device Broker Cluster tests
         And Disconnect client with name "client-2"
         And Disconnect client with name "client-3"
 
-    Scenario: Stealing link scenario
-        Connect first client and send BIRTH message. Then connect two more
-        clients with different client ids.After that all clients should be connected.
-        then connect another client under admin account for simulating other broker and
-        send CONNECT messages for all three clients with their client ids. This disconnects
-        all clients locally. This emulates that those clients were connected on another broker.
+#TODO look for a different implementation since the CONNECT message is no more used by the broker to detect the stealing link
+#may be this test is no more needed?
+#    Scenario: Stealing link scenario
+#        Connect first client and send BIRTH message. Then connect two more
+#        clients with different client ids.After that all clients should be connected.
+#        then connect another client under admin account for simulating other broker and
+#        send CONNECT messages for all three clients with their client ids. This disconnects
+#        all clients locally. This emulates that those clients were connected on another broker.
 
-    Given Client with name "client-1" with client id "client-1" user "kapua-broker" password "kapua-password" is connected
-        And Client with name "client-sys" with client id "client-sys" user "kapua-sys" password "kapua-password" is connected
-        And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1"
-        And I wait 2 seconds
-        And Client with name "client-2" with client id "client-2" user "kapua-broker" password "kapua-password" is connected
-        And Client with name "client-3" with client id "client-3" user "kapua-broker" password "kapua-password" is connected
-    Then Client named "client-1" is connected
-        And Client named "client-2" is connected
-        And Client named "client-3" is connected
-    Given topic "$EDC/kapua-sys/client-2/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
-        And I wait 2 seconds
-    Then Client named "client-1" is connected
-        And Client named "client-2" is not connected
-        And Client named "client-3" is connected
-    Given topic "$EDC/kapua-sys/client-1/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
-        And I wait 2 seconds
-    Then Client named "client-1" is not connected
-        And Client named "client-2" is not connected
-        And Client named "client-3" is connected
-    Given topic "$EDC/kapua-sys/client-3/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
-        And I wait 2 seconds
-    Then Client named "client-1" is not connected
-        And Client named "client-2" is not connected
-        And Client named "client-3" is not connected
-    Then Disconnect client with name "client-1"
-        And Disconnect client with name "client-2"
-        And Disconnect client with name "client-3"
+#    Given Client with name "client-1" with client id "client-1" user "kapua-broker" password "kapua-password" is connected
+#        And Client with name "client-sys" with client id "client-sys" user "kapua-sys" password "kapua-password" is connected
+#        And topic "$EDC/kapua-sys/client-1/MQTT/BIRTH" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-1"
+#        And I wait 2 seconds
+#        And Client with name "client-2" with client id "client-2" user "kapua-broker" password "kapua-password" is connected
+#        And Client with name "client-3" with client id "client-3" user "kapua-broker" password "kapua-password" is connected
+#    Then Client named "client-1" is connected
+#        And Client named "client-2" is connected
+#        And Client named "client-3" is connected
+#    Given topic "$EDC/kapua-sys/client-2/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
+#        And I wait 2 seconds
+#    Then Client named "client-1" is connected
+#        And Client named "client-2" is not connected
+#        And Client named "client-3" is connected
+#    Given topic "$EDC/kapua-sys/client-1/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
+#        And I wait 2 seconds
+#    Then Client named "client-1" is not connected
+#        And Client named "client-2" is not connected
+#        And Client named "client-3" is connected
+#    Given topic "$EDC/kapua-sys/client-3/MQTT/CONNECT" content "/mqtt/rpione3_MQTT_BIRTH.mqtt" is published by client named "client-sys"
+#        And I wait 2 seconds
+#    Then Client named "client-1" is not connected
+#        And Client named "client-2" is not connected
+#        And Client named "client-3" is not connected
+#    Then Disconnect client with name "client-1"
+#        And Disconnect client with name "client-2"
+#        And Disconnect client with name "client-3"
 
     Scenario: Negative scenario when client connects twice with same client id
         Connect first client and send BIRTH message and CONNECT message. Then

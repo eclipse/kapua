@@ -231,6 +231,7 @@ public final class Topic {
         s.add(Segment.plain(requesterClientId));
         s.add(Segment.replace(APPLICATION_ID));
         s.add(Segment.plain("NOTIFY"));
+        s.add(Segment.clientId());
         s.addAll(Segment.plain(resource));
         return new Topic(s);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,6 +14,7 @@ package org.eclipse.kapua.broker.artemis.plugin.security.context;
 
 import java.util.List;
 
+import org.apache.activemq.artemis.core.config.WildcardConfiguration;
 import org.apache.activemq.artemis.core.settings.HierarchicalRepository;
 import org.apache.activemq.artemis.core.settings.impl.HierarchicalObjectRepository;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -28,6 +29,15 @@ public class Acl {
 
     private static Logger logger = LoggerFactory.getLogger(Acl.class);
 
+    private static final WildcardConfiguration WILDCARD_CONFIGURATION;
+
+    static {
+        WILDCARD_CONFIGURATION = new WildcardConfiguration();
+        WILDCARD_CONFIGURATION.setSingleWord('+');
+        WILDCARD_CONFIGURATION.setAnyWords('#');
+        WILDCARD_CONFIGURATION.setDelimiter('/');
+    }
+
     private HierarchicalRepository<KapuaPrincipal> read;
     private HierarchicalRepository<KapuaPrincipal> write;
     private HierarchicalRepository<KapuaPrincipal> admin;
@@ -36,11 +46,11 @@ public class Acl {
         if (principal==null) {
             throw new KapuaIllegalArgumentException("principal", null);
         }
-        read = new HierarchicalObjectRepository<>();
+        read = new HierarchicalObjectRepository<>(WILDCARD_CONFIGURATION);
         read.setDefault(null);
-        write = new HierarchicalObjectRepository<>();
+        write = new HierarchicalObjectRepository<>(WILDCARD_CONFIGURATION);
         write.setDefault(null);
-        admin = new HierarchicalObjectRepository<>();
+        admin = new HierarchicalObjectRepository<>(WILDCARD_CONFIGURATION);
         admin.setDefault(null);
         List<AuthAcl> authAcls = authResponse.getAcls();
         StringBuilder aclLog = new StringBuilder();

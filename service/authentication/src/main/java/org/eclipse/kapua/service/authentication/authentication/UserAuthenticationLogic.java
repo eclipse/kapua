@@ -49,18 +49,17 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
     /**
      * Default constructor
      *
-     * @param options
      */
     public UserAuthenticationLogic() {
         String addressClassifier = "\\" + SystemSetting.getInstance().getMessageClassifier();
 
-        aclCtrlAccReply = addressClassifier + ".{0}.*.*.REPLY.#";
-        aclCtrlAccCliMqttLifeCycle = addressClassifier + ".{0}.{1}.MQTT.#";
-        aclCtrlAcc = addressClassifier + ".{0}.#";
-        aclCtrlAccCli = addressClassifier + ".{0}.{1}.#";
-        aclDataAcc = "{0}.#";
-        aclDataAccCli = "{0}.{1}.#";
-        aclCtrlAccNotify = addressClassifier + ".{0}.*.*.NOTIFY.{1}.#";
+        aclCtrlAccReply = addressClassifier + "/{0}/+/+/REPLY/#";
+        aclCtrlAccCliMqttLifeCycle = addressClassifier + "/{0}/{1}/MQTT/#";
+        aclCtrlAcc = addressClassifier + "/{0}/#";
+        aclCtrlAccCli = addressClassifier + "/{0}/{1}/#";
+        aclDataAcc = "{0}/#";
+        aclDataAccCli = "{0}/{1}/#";
+        aclCtrlAccNotify = addressClassifier + "/{0}/+/+/NOTIFY/{1}/#";
     }
 
     @Override

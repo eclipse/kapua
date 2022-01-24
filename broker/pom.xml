@@ -27,7 +27,6 @@
 
     <modules>
         <module>api</module>
-        <module>activemq</module>
         <module>artemis</module>
     </modules>
 </project>

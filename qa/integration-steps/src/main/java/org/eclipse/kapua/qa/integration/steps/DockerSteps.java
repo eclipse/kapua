@@ -111,6 +111,7 @@ public class DockerSteps {
     }
 
     private boolean printContainerLogOnContainerExit;
+    private boolean printImages;
     private NetworkConfig networkConfig;
     private String networkId;
     private boolean debug;
@@ -417,22 +418,24 @@ public class DockerSteps {
     }
 
     private void listAllImages(String description) throws DockerException, InterruptedException {
-        logger.info("Print images - {}", description);
-        List<Image> images = DockerUtil.getDockerClient().listImages(DockerClient.ListImagesParam.allImages());
-        int count = 0;
-        if ((images != null) && (images.size() > 0)) {
-            count = images.size();
-            logger.info("ids:");
-            for (Image image : images) {
-                if (filterImageToPrint(image)) {
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(image.id());
-                    image.repoTags().forEach(value -> builder.append("\t").append(value));
-                    logger.info("{}", builder.toString());
+        if (printImages) {
+            logger.info("Print images - {}", description);
+            List<Image> images = DockerUtil.getDockerClient().listImages(DockerClient.ListImagesParam.allImages());
+            int count = 0;
+            if ((images != null) && (images.size() > 0)) {
+                count = images.size();
+                logger.info("ids:");
+                for (Image image : images) {
+                    if (filterImageToPrint(image)) {
+                        StringBuilder builder = new StringBuilder();
+                        builder.append(image.id());
+                        image.repoTags().forEach(value -> builder.append("\t").append(value));
+                        logger.info("{}", builder.toString());
+                    }
                 }
             }
+            logger.info("Print images ({}) DONE - {}", count, description);
         }
-        logger.info("Print images ({}) DONE - {}", count, description);
     }
 
     private boolean filterImageToPrint(Image image) {
@@ -515,7 +518,7 @@ public class DockerSteps {
     @And("Start MessageBroker container with name {string}")
     public void startMessageBrokerContainer(String name) throws DockerException, InterruptedException {
         logger.info("Starting Message Broker container {}...", name);
-        ContainerConfig mbConfig = getBrokerContainerConfig("message-broker-artemis", 1883, 1883, 8883, 8883, 8161, 8161, 5672, AMQP_EXTERNAL_PORT, 5005, 5005, "kapua/" + BROKER_IMAGE + ":" + KAPUA_VERSION);
+        ContainerConfig mbConfig = getBrokerContainerConfig("message-broker", 1883, 1883, 1893, 1893, 8883, 8883, 8161, 8161, 5005, 5005, "kapua/" + BROKER_IMAGE + ":" + KAPUA_VERSION);
         ContainerCreation mbContainerCreation = DockerUtil.getDockerClient().createContainer(mbConfig, name);
         String containerId = mbContainerCreation.id();
 
@@ -756,6 +759,8 @@ public class DockerSteps {
                         "DATABASE=kapuadb",
                         "DB_USER=kapua",
                         "DB_PASSWORD=kapua",
+                        //uncomment this line to enable the H@ web console (WARNING enable it only for test and then disable it again!)
+//                        "H2_WEB_OPTS=-web -webAllowOthers -webPort 8181",
                         "DB_PORT_3306_TCP_PORT=3306"
                 )
                 .image("kapua/kapua-sql:" + KAPUA_VERSION)
@@ -810,7 +815,7 @@ public class DockerSteps {
                 .exposedPorts(ports)
                 .env(
                         "commons.db.schema.update=true",
-                        "BROKER_HOST=message-broker-artemis",
+                        "BROKER_HOST=message-broker",
                         "CRYPTO_SECRET_KEY=kapuaTestsKey!!!"
                 )
                 .image("kapua/" + imageName + ":" + KAPUA_VERSION)

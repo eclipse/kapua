@@ -33,12 +33,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -64,12 +64,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -95,16 +95,16 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
@@ -119,12 +119,12 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    And Device status is "DISCONNECTED"
+    And Device status is "DISCONNECTED" within 10 seconds
     And I logout
 
   Scenario: Starting a job with Bundle Stop step
@@ -135,17 +135,17 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Stop"
@@ -160,12 +160,12 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
     When KuraMock is disconnected
     And I wait 1 second
-    And Device status is "DISCONNECTED"
+    And Device status is "DISCONNECTED" within 10 seconds
     And I logout
 
   Scenario: Starting a job with Configuration Put step
@@ -176,12 +176,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 1 seconds
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -207,15 +207,15 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Package Download / Install"
@@ -230,11 +230,11 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And Packages are requested and 1 package is received
     When KuraMock is disconnected
     And I wait 1 second
-    And Device status is "DISCONNECTED"
+    And Device status is "DISCONNECTED" within 10 seconds
     And I logout
 
   Scenario: Starting a job with Package Uninstall step
@@ -245,16 +245,16 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
     And Package named "org.eclipse.kura.example.beacon" with version "1.0.300" is received
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Package Uninstall"
@@ -269,11 +269,11 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And Packages are requested and 1 package is received
     When KuraMock is disconnected
     And I wait 1 second
-    And Device status is "DISCONNECTED"
+    And Device status is "DISCONNECTED" within 10 seconds
     And I logout
 
     # *****************************************************
@@ -288,16 +288,16 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Command Execution"
@@ -318,12 +318,12 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    And Device status is "DISCONNECTED"
+    And Device status is "DISCONNECTED" within 10 seconds
     And I logout
 
   Scenario: Starting a job with Asset Write and Bundle Start steps
@@ -334,16 +334,16 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Asset Write"
@@ -368,7 +368,7 @@ Feature: JobEngineService tests for starting job with offline device
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    And Device status is "DISCONNECTED"
+    And Device status is "DISCONNECTED" within 10 seconds
     And I logout
 
   Scenario: Starting a job with two Bundle Start steps
@@ -379,9 +379,9 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
@@ -389,7 +389,7 @@ Feature: JobEngineService tests for starting job with offline device
     And A bundle named "com.google.guava" with id 95 and version "19.0.0" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Start"
@@ -411,13 +411,13 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And Bundles are requested
     Then A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     And A bundle named "com.google.guava" with id 95 and version "19.0.0" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    And Device status is "DISCONNECTED"
+    And Device status is "DISCONNECTED" within 10 seconds
     And I logout
 
   Scenario: Starting a job with Bundle Stop and Bundle Start steps
@@ -428,9 +428,9 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
@@ -438,7 +438,7 @@ Feature: JobEngineService tests for starting job with offline device
     And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Bundle Stop"
@@ -459,13 +459,13 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And Bundles are requested
     And A bundle named "org.eclipse.kura.linux.bluetooth" with id 77 and version "1.0.300" is present and "ACTIVE"
     And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    And Device status is "DISCONNECTED"
+    And Device status is "DISCONNECTED" within 10 seconds
     And I logout
 
   Scenario: Starting a job with Configuration Put and Bundle Start steps
@@ -476,16 +476,16 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Bundles are requested
     And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Configuration Put"
@@ -506,12 +506,12 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And Bundles are requested
     And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    And Device status is "DISCONNECTED"
+    And Device status is "DISCONNECTED" within 10 seconds
     And I logout
 
   Scenario: Starting a job with Package Install and Bundle Start steps
@@ -522,9 +522,9 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
@@ -532,7 +532,7 @@ Feature: JobEngineService tests for starting job with offline device
     And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Package Download / Install"
@@ -553,13 +553,13 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And Packages are requested and 1 package is received
     And Bundles are requested
     And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    And Device status is "DISCONNECTED"
+    And Device status is "DISCONNECTED" within 10 seconds
     And I logout
 
   Scenario: Starting a job with Package Uninstall and Bundle Start steps
@@ -570,9 +570,9 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
@@ -581,7 +581,7 @@ Feature: JobEngineService tests for starting job with offline device
     And A bundle named "slf4j.api" with id 34 and version "1.7.21" is present and "RESOLVED"
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And A new job target item
     And Search for step definition with the name "Package Uninstall"
@@ -602,7 +602,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     When I start the Kura Mock
-    And Device is connected
+    And Device is connected within 10 seconds
     And Packages are requested and 1 package is received
     And KuraMock is disconnected
     And I logout
@@ -619,12 +619,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -652,12 +652,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -685,15 +685,15 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And I add targets to job
     When I count the targets in the current scope
@@ -710,7 +710,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I add 2 devices to Kura Mock
-    And Devices are connected
+    And Devices are connected within 10 seconds
     And Packages are requested
     Then Number of received packages is 1
     And KuraMock is disconnected
@@ -724,12 +724,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -757,12 +757,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -790,12 +790,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -823,12 +823,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -860,12 +860,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -900,13 +900,13 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I wait 1 second
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -941,15 +941,15 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Packages are requested and 1 package is received
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     Given I create a job with the name "TestJob"
     And I add targets to job
     When I count the targets in the current scope
@@ -973,7 +973,7 @@ Feature: JobEngineService tests for starting job with offline device
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_FAILED"
     And I add 2 devices to Kura Mock
-    And Device are connected
+    And Devices are connected within 10 seconds
     And Packages are requested
     Then Number of received packages is 1
     And Bundles are requested
@@ -987,12 +987,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -1027,12 +1027,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -1067,12 +1067,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"
@@ -1107,12 +1107,12 @@ Feature: JobEngineService tests for starting job with offline device
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I add 2 devices to Kura Mock
-    When Devices are connected
+    When Devices are connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     Given I create a job with the name "TestJob"

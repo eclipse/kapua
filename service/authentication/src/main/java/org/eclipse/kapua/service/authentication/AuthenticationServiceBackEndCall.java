@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021, 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -16,7 +16,6 @@ import org.apache.shiro.util.ThreadContext;
 
 import javax.inject.Inject;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.client.security.ServiceClient.ResultCode;
 import org.eclipse.kapua.client.security.bean.AccountRequest;
 import org.eclipse.kapua.client.security.bean.AccountResponse;
@@ -74,7 +73,7 @@ public class AuthenticationServiceBackEndCall {
             authResponse.setAcls(authenticator.connect(authContext));
             authResponse.update(authContext);
             return authResponse;
-        } catch (KapuaException e) {
+        } catch (Exception e) {
             //TODO add metric
             logger.warn("Login error: {}", e.getMessage(), e);
             return buildLoginResponseNotAuthorized(authRequest);
@@ -83,7 +82,7 @@ public class AuthenticationServiceBackEndCall {
             Context loginShiroLogoutTimeContext = loginMetric.getShiroLogoutTime().time();
             try {
                 authenticationService.logout();
-            } catch (KapuaException e) {
+            } catch (Exception e) {
                 //error while cleaning up the logged user
                 //do nothing
                 //TODO add metric?
@@ -99,7 +98,7 @@ public class AuthenticationServiceBackEndCall {
             logger.info("Logout for user: {} - clientId: {}", authRequest.getUsername(), authRequest.getClientId());
             authenticator.disconnect(new AuthContext(authRequest));
             return buildLogoutResponse(authRequest, ResultCode.authorized);
-        } catch (KapuaException e) {
+        } catch (Exception e) {
             //TODO add metric
             logger.warn("Login error: {}", e.getMessage(), e);
             return buildLogoutResponseNotAuthorized(authRequest);
@@ -111,7 +110,7 @@ public class AuthenticationServiceBackEndCall {
         try {
             User user = KapuaSecurityUtils.doPrivileged(()-> userService.findByName(accountRequest.getUsername()));
             return buildGetAccountResponseAuthorized(accountRequest, user);
-        } catch (KapuaException e) {
+        } catch (Exception e) {
             return buildGetAccountResponseNotAuthorized(accountRequest, e);
         }
     }

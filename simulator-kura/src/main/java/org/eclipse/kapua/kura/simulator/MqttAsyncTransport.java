@@ -162,9 +162,16 @@ public class MqttAsyncTransport extends AbstractMqttTransport implements AutoClo
     }
 
     protected void handleConnected() {
-        final Runnable runnable = this.onConnected;
-        if (runnable != null) {
-            runnable.run();
+        //double check the connection
+        //in case of stealing link very close to each other the old device can try to execute the onConnected while the connection is dropped
+        if (client.isConnected()) {
+            final Runnable runnable = this.onConnected;
+            if (runnable != null) {
+                runnable.run();
+            }
+        }
+        else {
+            logger.warn("Device not still connected. Skip onConnected code execution");
         }
     }
 

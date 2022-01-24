@@ -33,13 +33,10 @@ Feature: JobEngineService execute job on device connect
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    When Device is connected
-    And I wait 1 second
-    Then Device status is "CONNECTED"
-    And I wait 5 second
+    When Device is connected within 10 seconds
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
-    And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
@@ -59,7 +56,7 @@ Feature: JobEngineService execute job on device connect
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     And I wait 3 seconds
-    When Device is connected
+    When Device is connected within 10 seconds
     And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
@@ -78,12 +75,12 @@ Feature: JobEngineService execute job on device connect
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
@@ -103,7 +100,7 @@ Feature: JobEngineService execute job on device connect
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     And I wait 3 seconds
-    When Device is connected
+    When Device is connected within 10 seconds
     And I query for the job with the name "TestJob" and I count 0 execution item after 10 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_AWAITING"
@@ -122,12 +119,12 @@ Feature: JobEngineService execute job on device connect
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
@@ -148,7 +145,7 @@ Feature: JobEngineService execute job on device connect
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
     And I wait 3 seconds
-    When Device is connected
+    When Device is connected within 10 seconds
     And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
@@ -167,12 +164,12 @@ Feature: JobEngineService execute job on device connect
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
@@ -194,7 +191,7 @@ Feature: JobEngineService execute job on device connect
     And I wait 11 seconds
     And I restart the Kura Mock
     And I wait 3 seconds
-    When Device is connected
+    When Device is connected within 10 seconds
     And I query for the job with the name "TestJob" and I count 0 execution item after 10 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_AWAITING"
@@ -214,12 +211,12 @@ Feature: JobEngineService execute job on device connect
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
@@ -238,14 +235,14 @@ Feature: JobEngineService execute job on device connect
     And The trigger is set to start today at "00:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 14 seconds
     When I search for events from device "rpione3" in account "kapua-sys" I find 4 events within 30 seconds
     And The type of the last event is "COMMAND"
     Then KuraMock is disconnected
     And I wait 3 seconds
     When I restart the Kura Mock
-    Then Device is connected
+    Then Device is connected within 10 seconds
     And I query for the job with the name "TestJob" and I count 1 execution item and I confirm the executed job is finished within 20 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_OK"
@@ -264,12 +261,12 @@ Feature: JobEngineService execute job on device connect
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 1 second
-    Then Device status is "CONNECTED"
+    Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
-    Then Device status is "DISCONNECTED"
+    Then Device status is "DISCONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     When I search for events from device "rpione3" in account "kapua-sys" I find 2 events within 30 seconds
@@ -281,14 +278,14 @@ Feature: JobEngineService execute job on device connect
     And The trigger is set to start today at "00:00"
     Then I create a new trigger from the existing creator with previously defined date properties
     And I restart the Kura Mock
-    When Device is connected
+    When Device is connected within 10 seconds
     And I wait 3 seconds
     When I search for events from device "rpione3" in account "kapua-sys" I find 3 events within 30 seconds
     And The type of the last event is "BIRTH"
     Then KuraMock is disconnected
     And I wait 3 seconds
     When I restart the Kura Mock
-    Then Device is connected
+    Then Device is connected within 10 seconds
     And I query for the job with the name "TestJob" and I count 0 execution item after 10 seconds
     And I search for the last job target in the database
     And I confirm the step index is 0 and status is "PROCESS_AWAITING"

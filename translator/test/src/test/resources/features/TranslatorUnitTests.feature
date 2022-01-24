@@ -218,7 +218,7 @@ Feature: Translator Service
   Creating jms message with invalid payload and valid topic. Trying to translate it into kura data message.
   Check if jms message with valid topic and encoded payload body is received.
 
-    Given I create jms message with invalid payload "invalidPayload" and valid topic "kapua-sys.rpione3.DEPLOY-V2.GET.packages"
+    Given I create jms message with invalid payload "invalidPayload" and valid topic "kapua-sys/rpione3/DEPLOY-V2/GET/packages"
     When I try to translate jms message to kura data message
     Then I got kura data message channel with "kapua-sys" scope, "rpione3" client id and proper semanticPart
       | DEPLOY-V2    |
@@ -231,7 +231,7 @@ Feature: Translator Service
   Creating jms message with valid payload and valid topic. Trying to translate it into kura data message.
   Check if jms message with valid topic and encoded payload body is received.
 
-    Given I create jms message with valid payload "response.code" and valid topic "kapua-sys.rpione3.DEPLOY-V2.GET.packages"
+    Given I create jms message with valid payload "response.code" and valid topic "kapua-sys/rpione3/DEPLOY-V2/GET/packages"
     When I try to translate jms message to kura data message
     Then I got kura data message channel with "kapua-sys" scope, "rpione3" client id and proper semanticPart
       | DEPLOY-V2    |
@@ -244,7 +244,7 @@ Feature: Translator Service
   Creating jms message with empty payload and valid topic. Trying to translate it into kura data message.
   Check if jms message with valid topic and empty payload body is received.
 
-    Given I create jms message with empty payload "" and valid topic "kapua-sys.rpione3.DEPLOY-V2.GET.packages"
+    Given I create jms message with empty payload "" and valid topic "kapua-sys/rpione3/DEPLOY-V2/GET/packages"
     And I try to translate jms message to kura data message
     And I got kura data message channel with "kapua-sys" scope, "rpione3" client id and proper semanticPart
       | DEPLOY-V2    |
@@ -267,7 +267,7 @@ Feature: Translator Service
   Check if mqtt message with valid topic and encoded body is received.
   Invalid message exception should be thrown
 
-    Given I create jms message with valid payload "response.code" and valid topic "kapua-sys.rpione3.DEPLOY-V2.GET.packages"
+    Given I create jms message with valid payload "response.code" and valid topic "kapua-sys/rpione3/DEPLOY-V2/GET/packages"
     Then I expect the exception "InvalidMessageException" with the text "Invalid message: null"
     When I try to translate invalid jms message to kura data message
     And An exception was thrown
@@ -280,7 +280,7 @@ Feature: Translator Service
 
     Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and payload without body and metrics
     When I try to translate kura data message to jms message
-    Then I got jms message with topic "kapua-sys.rpione3" and empty body
+    Then I got jms message with topic "kapua-sys/rpione3" and empty body
     And No exception was thrown
 
   Scenario: Translating kura data message with valid channel, metrics and without body into jms message
@@ -289,7 +289,7 @@ Feature: Translator Service
 
     Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and payload without body and metrics
     When I try to translate kura data message to jms message
-    Then I got jms message with topic "kapua-sys.rpione3" and non empty body
+    Then I got jms message with topic "kapua-sys/rpione3" and non empty body
     And No exception was thrown
 
   Scenario: Translating kura data message with valid channel, body and metrics into jms message
@@ -298,7 +298,7 @@ Feature: Translator Service
 
     Given I create kura data message with channel with scope "kapua-sys", client id "rpione3" and payload with body and metrics
     When I try to translate kura data message to jms message
-    Then I got jms message with topic "kapua-sys.rpione3" and non empty body
+    Then I got jms message with topic "kapua-sys/rpione3" and non empty body
     And No exception was thrown
 
   Scenario: Translating kura data message with valid channel, and with null payload

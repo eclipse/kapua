@@ -55,7 +55,7 @@ public class KapuaPrincipalImpl implements KapuaPrincipal {
     /**
      * Create a KapuaPrincipal for internal connectors
      *
-     * @param name
+     * @param clientId
      */
     public KapuaPrincipalImpl(String clientId) {
         internal = true;

@@ -29,11 +29,11 @@ services:
   message-broker:
     image: kapua/kapua-broker-artemis:${IMAGE_VERSION}
     container_name: message-broker
-    image: kapua/kapua-broker:${IMAGE_VERSION}
     expose:
       - 1893
     ports:
       - "1883:1883"
+      - "1893:1893"
       - "8883:8883"
       - "5682:5672"
       - "61616:61616"

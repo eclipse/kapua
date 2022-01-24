@@ -83,7 +83,6 @@ public abstract class AuthenticationLogic {
     /**
      * Default constructor
      *
-     * @param addressClassifier address classifier used by the platform messages (not telemetry messages) (if defined by the platform)
      */
     protected AuthenticationLogic() {
         aclHash = "#";
@@ -109,7 +108,8 @@ public abstract class AuthenticationLogic {
     public abstract boolean disconnect(AuthContext authContext);
 
     /**
-     * @param authResponse
+     * @param userPermissions
+     * @param authContext
      * @return
      */
     protected abstract List<AuthAcl> buildAuthorizationMap(UserPermissions userPermissions, AuthContext authContext);
@@ -118,7 +118,7 @@ public abstract class AuthenticationLogic {
      * Format the ACL resource based on the pattern and the account name looking into the connection context property
      *
      * @param pattern
-     * @param authResponse
+     * @param authContext
      * @return
      */
     protected String formatAcl(String pattern, AuthContext authContext) {
@@ -129,7 +129,7 @@ public abstract class AuthenticationLogic {
      * Format the ACL resource based on the pattern and the account name and client id looking into the connection context property
      *
      * @param pattern
-     * @param authResponse
+     * @param authContext
      * @return
      */
     protected String formatAclFull(String pattern, AuthContext authContext) {
@@ -139,9 +139,9 @@ public abstract class AuthenticationLogic {
     /**
      * Create the authorization entry base on the ACL and the resource address
      *
-     * @param authResponse
-     * @param acl
+     * @param action
      * @param address
+     * @param aclDestinationsLog
      * @return
      */
     protected AuthAcl createAuthorizationEntry(Action action, String address, StringBuilder aclDestinationsLog) {
@@ -276,17 +276,15 @@ public abstract class AuthenticationLogic {
         }
         if(!stealingLink && isIllegalState(authContext)) {
             stealingLink = true;
-            logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
-                    authContext.getClientId(),
-                    authContext.getScopeId(),
-                    authContext.getOldConnectionId(),
-                    authContext.getConnectionId(),
-                    authContext.getClientIp());
         }
         if (stealingLink) {
             loginMetric.getStealingLinkDisconnect().inc();
-            logger.warn("Stealing link detected for clientId: {} old connection: {} new connection: {}",
-                authContext.getClientId(), authContext.getOldConnectionId(), authContext.getConnectionId());
+            logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
+                authContext.getClientId(),
+                authContext.getScopeId(),
+                authContext.getOldConnectionId(),
+                authContext.getConnectionId(),
+                authContext.getClientIp());
         }
         return stealingLink;
     }
@@ -300,8 +298,7 @@ public abstract class AuthenticationLogic {
     /**
      * Create a new {@link DeviceConnection} or updates the existing one using the info provided.
      *
-     * @param authRequest
-     * @param authResponse
+     * @param authContext
      * @param deviceConnection The {@link DeviceConnection} to update, or null if it needs to be created
      * @return The created/updated {@link DeviceConnection}
      * @throws KapuaException

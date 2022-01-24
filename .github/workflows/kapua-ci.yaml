@@ -44,6 +44,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -92,6 +93,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -117,6 +119,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -142,6 +145,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -167,6 +171,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -192,6 +197,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -240,6 +246,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -265,6 +272,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -336,6 +344,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -361,6 +370,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -386,6 +396,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -411,6 +422,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -436,6 +448,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -484,6 +497,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -509,6 +523,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -534,6 +549,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -559,6 +575,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -584,6 +601,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -609,6 +627,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
@@ -634,6 +653,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - run: echo "127.0.0.1       message-broker" | sudo tee -a /etc/hosts
+      - run: echo "127.0.0.1       job-engine" | sudo tee -a /etc/hosts
       - run: mvn -B ${BUILD_OPTS} -Pdocker -DskipTests clean install
       - uses: nick-fields/retry@v2.8.1
         with:
