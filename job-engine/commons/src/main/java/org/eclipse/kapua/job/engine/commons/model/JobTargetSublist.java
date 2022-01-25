@@ -62,10 +62,6 @@ public class JobTargetSublist implements Iterable<KapuaId> {
         return getTargetIds().isEmpty();
     }
 
-    public KapuaId[] toArray() {
-        return getTargetIds().toArray(new KapuaId[targetIds.size()]);
-    }
-
     public int size() {
         return getTargetIds().size();
     }
