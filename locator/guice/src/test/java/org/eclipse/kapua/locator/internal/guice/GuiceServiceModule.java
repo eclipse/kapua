@@ -15,9 +15,10 @@ package org.eclipse.kapua.locator.internal.guice;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.core.ServiceModule;
-import org.eclipse.kapua.locator.KapuaProvider;
 
-@KapuaProvider
+import javax.inject.Singleton;
+
+@Singleton
 public class GuiceServiceModule implements ServiceModule {
 
     @Override

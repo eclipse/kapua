@@ -30,7 +30,6 @@ import org.eclipse.kapua.job.engine.exception.JobStartingException;
 import org.eclipse.kapua.job.engine.exception.JobStoppingException;
 import org.eclipse.kapua.job.engine.jbatch.driver.JbatchDriver;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -50,11 +49,12 @@ import org.eclipse.kapua.service.job.targets.JobTargetFactory;
 import org.eclipse.kapua.service.job.targets.JobTargetQuery;
 import org.eclipse.kapua.service.job.targets.JobTargetService;
 
+import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-@KapuaProvider
+@Singleton
 public class JobEngineServiceJbatch implements JobEngineService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();

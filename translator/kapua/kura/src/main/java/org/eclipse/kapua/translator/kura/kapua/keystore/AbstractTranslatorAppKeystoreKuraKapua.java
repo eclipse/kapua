@@ -36,6 +36,7 @@ import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.stream.Collectors;
@@ -51,6 +52,7 @@ public abstract class AbstractTranslatorAppKeystoreKuraKapua<M extends KeystoreR
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
+    @Inject
     private final static DeviceKeystoreManagementFactory DEVICE_KEYSTORE_MANAGEMENT_FACTORY = LOCATOR.getFactory(DeviceKeystoreManagementFactory.class);
 
     /**

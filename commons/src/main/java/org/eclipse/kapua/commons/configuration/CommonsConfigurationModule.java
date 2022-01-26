@@ -10,24 +10,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.client;
+package org.eclipse.kapua.commons.configuration;
 
-import org.eclipse.kapua.job.engine.JobEngineFactory;
-import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.service.config.ServiceConfigurationFactory;
 
-import javax.inject.Singleton;
-
-/**
- * {@link JobEngineFactory} remote client implementation
- *
- * @since 1.5.0
- */
-@Singleton
-public class JobEngineFactoryClient implements JobEngineFactory {
-
+public class CommonsConfigurationModule extends AbstractKapuaModule {
     @Override
-    public JobStartOptions newJobStartOptions() {
-        return new JobStartOptionsClient();
+    protected void configureModule() {
+        bind(ServiceConfigurationFactory.class).to(ServiceConfigurationFactoryImpl.class);
     }
-
 }

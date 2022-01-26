@@ -49,13 +49,13 @@ import org.eclipse.kapua.job.engine.exception.JobResumingException;
 import org.eclipse.kapua.job.engine.exception.JobRunningException;
 import org.eclipse.kapua.job.engine.exception.JobStartingException;
 import org.eclipse.kapua.job.engine.exception.JobStoppingException;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import javax.inject.Singleton;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -75,7 +75,7 @@ import java.util.stream.Collectors;
  *
  * @since 1.5.0
  */
-@KapuaProvider
+@Singleton
 public class JobEngineServiceClient implements JobEngineService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JobEngineServiceClient.class);

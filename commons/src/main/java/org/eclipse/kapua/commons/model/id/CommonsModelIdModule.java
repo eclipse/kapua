@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 Eurotech and/or its affiliates and others
+ * Copyright (c) 2021 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,28 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.model.id;
 
-import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.model.id.KapuaIdFactory;
 
-import javax.inject.Singleton;
-import java.math.BigInteger;
-
-/**
- * Kapua identifier factory reference implementation.
- *
- * @since 1.0
- *
- */
-@Singleton
-public class KapuaIdFactoryImpl implements KapuaIdFactory {
-
+public class CommonsModelIdModule extends AbstractKapuaModule {
     @Override
-    public KapuaId newKapuaId(String shortId) {
-        return KapuaEid.parseCompactId(shortId);
-    }
-
-    @Override
-    public KapuaId newKapuaId(BigInteger bigInteger) {
-        return new KapuaEid(bigInteger);
+    protected void configureModule() {
+        bind(KapuaIdFactory.class).to(KapuaIdFactoryImpl.class);
     }
 }

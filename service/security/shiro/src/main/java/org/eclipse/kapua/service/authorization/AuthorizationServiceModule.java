@@ -28,7 +28,6 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-//@KapuaProvider
 public class AuthorizationServiceModule extends ServiceEventModule {
 
     @Inject

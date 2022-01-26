@@ -18,21 +18,6 @@
         <api>org.eclipse.kapua.service.certificate.CertificateFactory</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
-
-        <api>org.eclipse.kapua.job.engine.JobEngineService</api>
-        <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
-
-        <api>org.eclipse.kapua.message.KapuaMessageFactory</api>
-        <api>org.eclipse.kapua.message.device.data.KapuaDataMessageFactory</api>
-
-        <api>org.eclipse.kapua.transport.TransportClientFactory</api>
-
-        <api>org.eclipse.kapua.service.config.ServiceConfigurationFactory</api>
-
-        <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
-        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
-
-        <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
     </provided>
     <packages>
         <package>org.eclipse.kapua.commons</package>

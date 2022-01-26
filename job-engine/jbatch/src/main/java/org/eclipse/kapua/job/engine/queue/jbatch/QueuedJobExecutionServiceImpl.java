@@ -22,7 +22,6 @@ import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionCreator;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionListResult;
 import org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -31,10 +30,12 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.execution.JobExecution;
 
+import javax.inject.Singleton;
+
 /**
  * {@link QueuedJobExecutionService} implementation
  */
-@KapuaProvider
+@Singleton
 public class QueuedJobExecutionServiceImpl extends AbstractKapuaService implements QueuedJobExecutionService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();

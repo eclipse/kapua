@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-//@KapuaProvider
 public class DeviceServiceModule extends ServiceEventModule {
 
     @Inject

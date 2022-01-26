@@ -10,24 +10,14 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.job.engine.client;
+package org.eclipse.kapua.commons.service.event.store.internal;
 
-import org.eclipse.kapua.job.engine.JobEngineFactory;
-import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory;
 
-import javax.inject.Singleton;
-
-/**
- * {@link JobEngineFactory} remote client implementation
- *
- * @since 1.5.0
- */
-@Singleton
-public class JobEngineFactoryClient implements JobEngineFactory {
-
+public class CommonsServiceEventModule extends AbstractKapuaModule {
     @Override
-    public JobStartOptions newJobStartOptions() {
-        return new JobStartOptionsClient();
+    protected void configureModule() {
+        bind(EventStoreFactory.class).to(EventStoreFactoryImpl.class);
     }
-
 }

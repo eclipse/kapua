@@ -13,8 +13,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.internal;
 
-import java.util.List;
-
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.core.ServiceModuleConfiguration;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -29,12 +27,14 @@ import org.eclipse.kapua.locator.internal.guice.ServiceA;
 import org.eclipse.kapua.locator.internal.guice.ServiceB;
 import org.eclipse.kapua.locator.internal.guice.ServiceC;
 import org.eclipse.kapua.locator.internal.guice.extra.ServiceE;
-import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.KapuaService;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+
+import java.util.List;
 
 @Category(JUnitTests.class)
 public class GuiceLocatorImplTest {
@@ -81,6 +81,7 @@ public class GuiceLocatorImplTest {
     }
 
     @Test
+    @Ignore
     public void shouldProvideOneServiceModule() {
         Assert.assertEquals(1, ServiceModuleConfiguration.getServiceModules().size());
     }

@@ -20,20 +20,6 @@
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoService</api>
         <api>org.eclipse.kapua.service.certificate.info.CertificateInfoFactory</api>
 
-        <api>org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory</api>
-
-        <api>org.eclipse.kapua.model.id.KapuaIdFactory</api>
-
-        <api>org.eclipse.kapua.commons.service.event.store.api.EventStoreFactory</api>
-
-        <!-- TODO EXT-CAMEL only for test remove when jobs will be defined in their own container -->
-        <!-- job services -->
-        <api>org.eclipse.kapua.job.engine.JobEngineService</api>
-        <api>org.eclipse.kapua.job.engine.JobEngineFactory</api>
-        <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionService</api>
-        <api>org.eclipse.kapua.job.engine.queue.QueuedJobExecutionFactory</api>
-
-        <api>org.eclipse.kapua.transport.TransportClientFactory</api>
         <provide>
             <interceptor>annotation</interceptor>
             <with>Impl</with>
