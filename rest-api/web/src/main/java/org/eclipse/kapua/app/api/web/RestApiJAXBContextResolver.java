@@ -330,415 +330,416 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
 public class RestApiJAXBContextResolver extends JaxRSJAXBContextResolver {
 
+    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+            // REST API utility models
+            CountResult.class,
+
+            // REST API exception models
+            ThrowableInfo.class,
+            ExceptionInfo.class,
+
+            InternalUserOnlyExceptionInfo.class,
+            SelfManagedOnlyExceptionInfo.class,
+            SubjectUnauthorizedExceptionInfo.class,
+
+            EntityNotFoundExceptionInfo.class,
+            IllegalArgumentExceptionInfo.class,
+            IllegalNullArgumentExceptionInfo.class,
+            MfaRequiredExceptionInfo.class,
+
+            // Jobs Exception Info
+            CleanJobDataExceptionInfo.class,
+            JobAlreadyRunningExceptionInfo.class,
+            JobEngineExceptionInfo.class,
+            JobScopedEngineExceptionInfo.class,
+            JobInvalidTargetExceptionInfo.class,
+            JobMissingStepExceptionInfo.class,
+            JobMissingTargetExceptionInfo.class,
+            JobNotRunningExceptionInfo.class,
+            JobResumingExceptionInfo.class,
+            JobRunningExceptionInfo.class,
+            JobStartingExceptionInfo.class,
+            JobStoppingExceptionInfo.class,
+
+            // Device Management Exception Info
+            DeviceManagementRequestContentExceptionInfo.class,
+            DeviceManagementResponseCodeExceptionInfo.class,
+            DeviceManagementResponseContentExceptionInfo.class,
+            DeviceManagementSendExceptionInfo.class,
+            DeviceManagementTimeoutExceptionInfo.class,
+            DeviceNotConnectedExceptionInfo.class,
+
+            // Service Configuration Exception Info
+            ServiceConfigurationLimitExceededExceptionInfo.class,
+            ServiceConfigurationParentLimitExceededExceptionInfo.class,
+
+            // Commons
+            KapuaSerializable.class,
+
+            // Tocds
+            KapuaTocd.class,
+            KapuaTad.class,
+            KapuaTicon.class,
+            KapuaTmetadata.class,
+            KapuaToption.class,
+
+            // Account
+            Account.class,
+            AccountCreator.class,
+            AccountListResult.class,
+            AccountQuery.class,
+            AccountXmlRegistry.class,
+
+            // Data Channel Info
+            ChannelInfo.class,
+            ChannelInfoListResult.class,
+            ChannelInfoQuery.class,
+            ChannelInfoXmlRegistry.class,
+
+            // Data Client Info
+            ClientInfo.class,
+            ClientInfoListResult.class,
+            ClientInfoQuery.class,
+            ClientInfoXmlRegistry.class,
+
+            // Data Metric Info
+            MetricInfo.class,
+            MetricInfoListResult.class,
+            MetricInfoQuery.class,
+            MetricInfoXmlRegistry.class,
+
+            // Data Messages
+            KapuaDataMessage.class,
+            KapuaDataChannel.class,
+            KapuaDataPayload.class,
+
+            MessageListResult.class,
+            MessageQuery.class,
+            MessageXmlRegistry.class,
+
+            JsonKapuaPayload.class,
+            JsonDatastoreMessage.class,
+
+            DatastoreMessage.class,
+            DatastoreMessageXmlRegistry.class,
+            StorableEntityId.class,
+            StorableId.class,
+            SortField.class,
+            SortFieldXmlAdapter.class,
+            XmlAdaptedSortField.class,
+            XmlAdaptedSortFields.class,
+            JsonMessageQuery.class,
+
+            // Device
+            Device.class,
+            DeviceCreator.class,
+            DeviceListResult.class,
+            DeviceQuery.class,
+            DeviceXmlRegistry.class,
+
+            // Device Connection
+            DeviceConnection.class,
+            DeviceConnectionListResult.class,
+            DeviceConnectionQuery.class,
+            DeviceConnectionXmlRegistry.class,
+
+            // Device Connection Options
+            DeviceConnectionOption.class,
+            DeviceConnectionOptionXmlRegistry.class,
+
+            // Device Event
+            DeviceEvent.class,
+            DeviceEventListResult.class,
+            DeviceEventQuery.class,
+            DeviceEventXmlRegistry.class,
+
+            // Device Management Assets
+            DeviceAssets.class,
+            DeviceAssetStoreSettings.class,
+            DeviceAssetXmlRegistry.class,
+
+            // Device Management Bundles
+            KuraBundles.class,
+            DeviceBundle.class,
+            DeviceBundles.class,
+            DeviceBundleXmlRegistry.class,
+
+            // Device Management Command
+            DeviceCommandInput.class,
+            DeviceCommandOutput.class,
+            DeviceCommandXmlRegistry.class,
+
+            // Device Management Configuration
+            KuraDeviceConfiguration.class,
+            DeviceConfiguration.class,
+            DeviceComponentConfiguration.class,
+            DeviceConfigurationStoreSettings.class,
+            DeviceConfigurationXmlRegistry.class,
+
+            // Device Management Inventory
+            DeviceInventory.class,
+            DeviceInventoryItem.class,
+            KuraInventoryItems.class,
+            KuraInventoryItem.class,
+            DeviceInventoryBundles.class,
+            DeviceInventoryBundle.class,
+            KuraInventoryBundles.class,
+            KuraInventoryBundle.class,
+            DeviceInventoryContainers.class,
+            DeviceInventoryContainer.class,
+            KuraInventoryContainers.class,
+            KuraInventoryContainer.class,
+            DeviceInventoryPackages.class,
+            DeviceInventoryPackage.class,
+            KuraInventoryPackages.class,
+            KuraInventoryPackage.class,
+            DeviceInventorySystemPackages.class,
+            DeviceInventorySystemPackage.class,
+            KuraInventorySystemPackages.class,
+            KuraInventorySystemPackage.class,
+            DeviceInventoryXmlRegistry.class,
+
+            // Device Management Keystore
+            DeviceKeystores.class,
+            DeviceKeystore.class,
+            DeviceKeystoreCertificateInfo.class,
+            DeviceKeystoreCertificate.class,
+            DeviceKeystoreItems.class,
+            DeviceKeystoreItem.class,
+            DeviceKeystoreItemQuery.class,
+            DeviceKeystoreCertificate.class,
+            DeviceKeystoreKeypair.class,
+            DeviceKeystoreCSRInfo.class,
+            DeviceKeystoreCSR.class,
+            DeviceKeystoreXmlRegistry.class,
+
+            // Device Management Snapshots
+            KuraSnapshotIds.class,
+            DeviceSnapshot.class,
+            DeviceSnapshots.class,
+            DeviceSnapshotXmlRegistry.class,
+
+            // Device Management Packages
+            KuraDeploymentPackages.class,
+            KuraDeploymentPackage.class,
+            DevicePackage.class,
+            DevicePackages.class,
+            DevicePackageBundleInfo.class,
+            DevicePackageBundleInfos.class,
+            DevicePackageDownloadRequest.class,
+            DevicePackageDownloadOperation.class,
+            DevicePackageInstallRequest.class,
+            DevicePackageInstallOperation.class,
+            DevicePackageUninstallRequest.class,
+            DevicePackageUninstallOperation.class,
+            DevicePackageXmlRegistry.class,
+
+            // Device Management Requests
+            KapuaRequestMessage.class,
+            KapuaResponseMessage.class,
+            KapuaRequestChannel.class,
+            KapuaResponseChannel.class,
+            KapuaRequestPayload.class,
+            RequestMessageXmlRegistry.class,
+
+            // Device Management Registry
+            DeviceManagementOperation.class,
+            DeviceManagementOperationCreator.class,
+            DeviceManagementOperationListResult.class,
+            DeviceManagementOperationQuery.class,
+            DeviceManagementOperationXmlRegistry.class,
+            NotifyStatus.class,
+
+            // Device Management Registry Notification
+            ManagementOperationNotification.class,
+            ManagementOperationNotificationCreator.class,
+            ManagementOperationNotificationListResult.class,
+            ManagementOperationNotificationQuery.class,
+            ManagementOperationNotificationXmlRegistry.class,
+
+            // Device Management Generic Request
+            GenericRequestChannel.class,
+            GenericRequestPayload.class,
+            GenericRequestMessage.class,
+            GenericResponseChannel.class,
+            GenericResponsePayload.class,
+            GenericResponseMessage.class,
+            GenericRequestXmlRegistry.class,
+
+            JsonGenericRequestMessage.class,
+            JsonGenericResponseMessage.class,
+
+            // Authentication
+            AuthenticationCredentials.class,
+            AuthenticationXmlRegistry.class,
+            AccessToken.class,
+            LoginInfo.class,
+            ApiKeyCredentials.class,
+            JwtCredentials.class,
+            UsernamePasswordCredentials.class,
+            RefreshTokenCredentials.class,
+
+            // Credential
+            Credential.class,
+            CredentialListResult.class,
+            CredentialCreator.class,
+            CredentialType.class,
+            CredentialQuery.class,
+            CredentialXmlRegistry.class,
+
+            // Multi Factor Authentication
+            MfaOption.class,
+            MfaOptionListResult.class,
+            MfaOptionCreator.class,
+            MfaOptionQuery.class,
+            MfaOptionXmlRegistry.class,
+            ScratchCode.class,
+            ScratchCodeListResult.class,
+            ScratchCodeCreator.class,
+            ScratchCodeQuery.class,
+            ScratchCodeXmlRegistry.class,
+
+            // Permission
+            Permission.class,
+
+            // Endpoint Info
+            EndpointUsage.class,
+            EndpointInfo.class,
+            EndpointInfoListResult.class,
+            EndpointInfoCreator.class,
+            EndpointInfoQuery.class,
+            EndpointInfoXmlRegistry.class,
+
+            // Roles
+            Role.class,
+            RoleListResult.class,
+            RoleCreator.class,
+            RoleQuery.class,
+            RoleXmlRegistry.class,
+
+            // Role Permissions
+            RolePermission.class,
+            RolePermissionListResult.class,
+            RolePermissionCreator.class,
+            RolePermissionQuery.class,
+            RolePermissionXmlRegistry.class,
+
+            // Domains
+            Domain.class,
+            DomainListResult.class,
+            DomainQuery.class,
+            DomainXmlRegistry.class,
+
+            // Groups
+            Group.class,
+            GroupListResult.class,
+            GroupCreator.class,
+            GroupQuery.class,
+            GroupXmlRegistry.class,
+
+            // Access Info
+            AccessInfo.class,
+            AccessInfoListResult.class,
+            AccessInfoCreator.class,
+            AccessInfoQuery.class,
+            AccessInfoXmlRegistry.class,
+
+            // Access Permissions
+            AccessPermission.class,
+            AccessPermissionListResult.class,
+            AccessPermissionCreator.class,
+            AccessPermissionQuery.class,
+            AccessPermissionXmlRegistry.class,
+
+            // Access Roles
+            AccessRole.class,
+            AccessRoleListResult.class,
+            AccessRoleCreator.class,
+            AccessRoleQuery.class,
+            AccessRoleXmlRegistry.class,
+
+            // Tag
+            Tag.class,
+            TagListResult.class,
+            TagCreator.class,
+            TagQuery.class,
+            TagXmlRegistry.class,
+
+            // User
+            User.class,
+            UserCreator.class,
+            UserListResult.class,
+            UserQuery.class,
+            UserXmlRegistry.class,
+
+            // KapuaEvent
+            ServiceEvent.class,
+            EventStoreRecordCreator.class,
+            EventStoreRecordListResult.class,
+            EventStoreRecordQuery.class,
+            EventStoreXmlRegistry.class,
+
+            // Service Config
+            ServiceConfigurationXmlRegistry.class,
+            ServiceConfiguration.class,
+            ServiceComponentConfiguration.class,
+
+            // Jobs
+            Job.class,
+            JobStartOptions.class,
+            IsJobRunningResponse.class,
+            IsJobRunningMultipleResponse.class,
+            MultipleJobIdRequest.class,
+            JobCreator.class,
+            JobListResult.class,
+            JobQuery.class,
+            JobXmlRegistry.class,
+            JobEngineXmlRegistry.class,
+
+            JobStep.class,
+            JobStepCreator.class,
+            JobStepListResult.class,
+            JobStepQuery.class,
+            JobStepXmlRegistry.class,
+            JobStepProperty.class,
+
+            JobExecution.class,
+            JobExecutionListResult.class,
+            JobExecutionQuery.class,
+            JobExecutionXmlRegistry.class,
+
+            JobStepDefinition.class,
+            JobStepDefinitionListResult.class,
+            JobStepDefinitionQuery.class,
+            JobStepDefinitionXmlRegistry.class,
+
+            JobTarget.class,
+            JobTargetCreator.class,
+            JobTargetListResult.class,
+            JobTargetQuery.class,
+            JobExecutionXmlRegistry.class,
+
+            // Trigger
+            Trigger.class,
+            TriggerCreator.class,
+            TriggerListResult.class,
+            TriggerQuery.class,
+            TriggerProperty.class,
+            TriggerXmlRegistry.class,
+
+            TriggerDefinition.class,
+            TriggerDefinitionListResult.class,
+            TriggerDefinitionQuery.class,
+            TriggerDefinitionXmlRegistry.class,
+
+            FiredTrigger.class,
+            FiredTriggerListResult.class,
+            FiredTriggerQuery.class,
+            FiredTriggerXmlRegistry.class
+    );
+
     @Override
     protected List<Class<?>> getClassesToBound() {
-        return Arrays.asList(
-
-                // REST API utility models
-                CountResult.class,
-
-                // REST API exception models
-                ThrowableInfo.class,
-                ExceptionInfo.class,
-
-                InternalUserOnlyExceptionInfo.class,
-                SelfManagedOnlyExceptionInfo.class,
-                SubjectUnauthorizedExceptionInfo.class,
-
-                EntityNotFoundExceptionInfo.class,
-                IllegalArgumentExceptionInfo.class,
-                IllegalNullArgumentExceptionInfo.class,
-                MfaRequiredExceptionInfo.class,
-
-                // Jobs Exception Info
-                CleanJobDataExceptionInfo.class,
-                JobAlreadyRunningExceptionInfo.class,
-                JobEngineExceptionInfo.class,
-                JobScopedEngineExceptionInfo.class,
-                JobInvalidTargetExceptionInfo.class,
-                JobMissingStepExceptionInfo.class,
-                JobMissingTargetExceptionInfo.class,
-                JobNotRunningExceptionInfo.class,
-                JobResumingExceptionInfo.class,
-                JobRunningExceptionInfo.class,
-                JobStartingExceptionInfo.class,
-                JobStoppingExceptionInfo.class,
-
-                // Device Management Exception Info
-                DeviceManagementRequestContentExceptionInfo.class,
-                DeviceManagementResponseCodeExceptionInfo.class,
-                DeviceManagementResponseContentExceptionInfo.class,
-                DeviceManagementSendExceptionInfo.class,
-                DeviceManagementTimeoutExceptionInfo.class,
-                DeviceNotConnectedExceptionInfo.class,
-
-                // Service Configuration Exception Info
-                ServiceConfigurationLimitExceededExceptionInfo.class,
-                ServiceConfigurationParentLimitExceededExceptionInfo.class,
-
-                // Commons
-                KapuaSerializable.class,
-
-                // Tocds
-                KapuaTocd.class,
-                KapuaTad.class,
-                KapuaTicon.class,
-                KapuaTmetadata.class,
-                KapuaToption.class,
-
-                // Account
-                Account.class,
-                AccountCreator.class,
-                AccountListResult.class,
-                AccountQuery.class,
-                AccountXmlRegistry.class,
-
-                // Data Channel Info
-                ChannelInfo.class,
-                ChannelInfoListResult.class,
-                ChannelInfoQuery.class,
-                ChannelInfoXmlRegistry.class,
-
-                // Data Client Info
-                ClientInfo.class,
-                ClientInfoListResult.class,
-                ClientInfoQuery.class,
-                ClientInfoXmlRegistry.class,
-
-                // Data Metric Info
-                MetricInfo.class,
-                MetricInfoListResult.class,
-                MetricInfoQuery.class,
-                MetricInfoXmlRegistry.class,
-
-                // Data Messages
-                KapuaDataMessage.class,
-                KapuaDataChannel.class,
-                KapuaDataPayload.class,
-
-                MessageListResult.class,
-                MessageQuery.class,
-                MessageXmlRegistry.class,
-
-                JsonKapuaPayload.class,
-                JsonDatastoreMessage.class,
-
-                DatastoreMessage.class,
-                DatastoreMessageXmlRegistry.class,
-                StorableEntityId.class,
-                StorableId.class,
-                SortField.class,
-                SortFieldXmlAdapter.class,
-                XmlAdaptedSortField.class,
-                XmlAdaptedSortFields.class,
-                JsonMessageQuery.class,
-
-                // Device
-                Device.class,
-                DeviceCreator.class,
-                DeviceListResult.class,
-                DeviceQuery.class,
-                DeviceXmlRegistry.class,
-
-                // Device Connection
-                DeviceConnection.class,
-                DeviceConnectionListResult.class,
-                DeviceConnectionQuery.class,
-                DeviceConnectionXmlRegistry.class,
-
-                // Device Connection Options
-                DeviceConnectionOption.class,
-                DeviceConnectionOptionXmlRegistry.class,
-
-                // Device Event
-                DeviceEvent.class,
-                DeviceEventListResult.class,
-                DeviceEventQuery.class,
-                DeviceEventXmlRegistry.class,
-
-                // Device Management Assets
-                DeviceAssets.class,
-                DeviceAssetStoreSettings.class,
-                DeviceAssetXmlRegistry.class,
-
-                // Device Management Bundles
-                KuraBundles.class,
-                DeviceBundle.class,
-                DeviceBundles.class,
-                DeviceBundleXmlRegistry.class,
-
-                // Device Management Command
-                DeviceCommandInput.class,
-                DeviceCommandOutput.class,
-                DeviceCommandXmlRegistry.class,
-
-                // Device Management Configuration
-                KuraDeviceConfiguration.class,
-                DeviceConfiguration.class,
-                DeviceComponentConfiguration.class,
-                DeviceConfigurationStoreSettings.class,
-                DeviceConfigurationXmlRegistry.class,
-
-                // Device Management Inventory
-                DeviceInventory.class,
-                DeviceInventoryItem.class,
-                KuraInventoryItems.class,
-                KuraInventoryItem.class,
-                DeviceInventoryBundles.class,
-                DeviceInventoryBundle.class,
-                KuraInventoryBundles.class,
-                KuraInventoryBundle.class,
-                DeviceInventoryContainers.class,
-                DeviceInventoryContainer.class,
-                KuraInventoryContainers.class,
-                KuraInventoryContainer.class,
-                DeviceInventoryPackages.class,
-                DeviceInventoryPackage.class,
-                KuraInventoryPackages.class,
-                KuraInventoryPackage.class,
-                DeviceInventorySystemPackages.class,
-                DeviceInventorySystemPackage.class,
-                KuraInventorySystemPackages.class,
-                KuraInventorySystemPackage.class,
-                DeviceInventoryXmlRegistry.class,
-
-                // Device Management Keystore
-                DeviceKeystores.class,
-                DeviceKeystore.class,
-                DeviceKeystoreCertificateInfo.class,
-                DeviceKeystoreCertificate.class,
-                DeviceKeystoreItems.class,
-                DeviceKeystoreItem.class,
-                DeviceKeystoreItemQuery.class,
-                DeviceKeystoreCertificate.class,
-                DeviceKeystoreKeypair.class,
-                DeviceKeystoreCSRInfo.class,
-                DeviceKeystoreCSR.class,
-                DeviceKeystoreXmlRegistry.class,
-
-                // Device Management Snapshots
-                KuraSnapshotIds.class,
-                DeviceSnapshot.class,
-                DeviceSnapshots.class,
-                DeviceSnapshotXmlRegistry.class,
-
-                // Device Management Packages
-                KuraDeploymentPackages.class,
-                KuraDeploymentPackage.class,
-                DevicePackage.class,
-                DevicePackages.class,
-                DevicePackageBundleInfo.class,
-                DevicePackageBundleInfos.class,
-                DevicePackageDownloadRequest.class,
-                DevicePackageDownloadOperation.class,
-                DevicePackageInstallRequest.class,
-                DevicePackageInstallOperation.class,
-                DevicePackageUninstallRequest.class,
-                DevicePackageUninstallOperation.class,
-                DevicePackageXmlRegistry.class,
-
-                // Device Management Requests
-                KapuaRequestMessage.class,
-                KapuaResponseMessage.class,
-                KapuaRequestChannel.class,
-                KapuaResponseChannel.class,
-                KapuaRequestPayload.class,
-                RequestMessageXmlRegistry.class,
-
-                // Device Management Registry
-                DeviceManagementOperation.class,
-                DeviceManagementOperationCreator.class,
-                DeviceManagementOperationListResult.class,
-                DeviceManagementOperationQuery.class,
-                DeviceManagementOperationXmlRegistry.class,
-                NotifyStatus.class,
-
-                // Device Management Registry Notification
-                ManagementOperationNotification.class,
-                ManagementOperationNotificationCreator.class,
-                ManagementOperationNotificationListResult.class,
-                ManagementOperationNotificationQuery.class,
-                ManagementOperationNotificationXmlRegistry.class,
-
-                // Device Management Generic Request
-                GenericRequestChannel.class,
-                GenericRequestPayload.class,
-                GenericRequestMessage.class,
-                GenericResponseChannel.class,
-                GenericResponsePayload.class,
-                GenericResponseMessage.class,
-                GenericRequestXmlRegistry.class,
-
-                JsonGenericRequestMessage.class,
-                JsonGenericResponseMessage.class,
-
-                // Authentication
-                AuthenticationCredentials.class,
-                AuthenticationXmlRegistry.class,
-                AccessToken.class,
-                LoginInfo.class,
-                ApiKeyCredentials.class,
-                JwtCredentials.class,
-                UsernamePasswordCredentials.class,
-                RefreshTokenCredentials.class,
-
-                // Credential
-                Credential.class,
-                CredentialListResult.class,
-                CredentialCreator.class,
-                CredentialType.class,
-                CredentialQuery.class,
-                CredentialXmlRegistry.class,
-
-                // Multi Factor Authentication
-                MfaOption.class,
-                MfaOptionListResult.class,
-                MfaOptionCreator.class,
-                MfaOptionQuery.class,
-                MfaOptionXmlRegistry.class,
-                ScratchCode.class,
-                ScratchCodeListResult.class,
-                ScratchCodeCreator.class,
-                ScratchCodeQuery.class,
-                ScratchCodeXmlRegistry.class,
-
-                // Permission
-                Permission.class,
-
-                // Endpoint Info
-                EndpointUsage.class,
-                EndpointInfo.class,
-                EndpointInfoListResult.class,
-                EndpointInfoCreator.class,
-                EndpointInfoQuery.class,
-                EndpointInfoXmlRegistry.class,
-
-                // Roles
-                Role.class,
-                RoleListResult.class,
-                RoleCreator.class,
-                RoleQuery.class,
-                RoleXmlRegistry.class,
-
-                // Role Permissions
-                RolePermission.class,
-                RolePermissionListResult.class,
-                RolePermissionCreator.class,
-                RolePermissionQuery.class,
-                RolePermissionXmlRegistry.class,
-
-                // Domains
-                Domain.class,
-                DomainListResult.class,
-                DomainQuery.class,
-                DomainXmlRegistry.class,
-
-                // Groups
-                Group.class,
-                GroupListResult.class,
-                GroupCreator.class,
-                GroupQuery.class,
-                GroupXmlRegistry.class,
-
-                // Access Info
-                AccessInfo.class,
-                AccessInfoListResult.class,
-                AccessInfoCreator.class,
-                AccessInfoQuery.class,
-                AccessInfoXmlRegistry.class,
-
-                // Access Permissions
-                AccessPermission.class,
-                AccessPermissionListResult.class,
-                AccessPermissionCreator.class,
-                AccessPermissionQuery.class,
-                AccessPermissionXmlRegistry.class,
-
-                // Access Roles
-                AccessRole.class,
-                AccessRoleListResult.class,
-                AccessRoleCreator.class,
-                AccessRoleQuery.class,
-                AccessRoleXmlRegistry.class,
-
-                // Tag
-                Tag.class,
-                TagListResult.class,
-                TagCreator.class,
-                TagQuery.class,
-                TagXmlRegistry.class,
-
-                // User
-                User.class,
-                UserCreator.class,
-                UserListResult.class,
-                UserQuery.class,
-                UserXmlRegistry.class,
-
-                // KapuaEvent
-                ServiceEvent.class,
-                EventStoreRecordCreator.class,
-                EventStoreRecordListResult.class,
-                EventStoreRecordQuery.class,
-                EventStoreXmlRegistry.class,
-
-                // Service Config
-                ServiceConfigurationXmlRegistry.class,
-                ServiceConfiguration.class,
-                ServiceComponentConfiguration.class,
-
-                // Jobs
-                Job.class,
-                JobStartOptions.class,
-                IsJobRunningResponse.class,
-                IsJobRunningMultipleResponse.class,
-                MultipleJobIdRequest.class,
-                JobCreator.class,
-                JobListResult.class,
-                JobQuery.class,
-                JobXmlRegistry.class,
-                JobEngineXmlRegistry.class,
-
-                JobStep.class,
-                JobStepCreator.class,
-                JobStepListResult.class,
-                JobStepQuery.class,
-                JobStepXmlRegistry.class,
-                JobStepProperty.class,
-
-                JobExecution.class,
-                JobExecutionListResult.class,
-                JobExecutionQuery.class,
-                JobExecutionXmlRegistry.class,
-
-                JobStepDefinition.class,
-                JobStepDefinitionListResult.class,
-                JobStepDefinitionQuery.class,
-                JobStepDefinitionXmlRegistry.class,
-
-                JobTarget.class,
-                JobTargetCreator.class,
-                JobTargetListResult.class,
-                JobTargetQuery.class,
-                JobExecutionXmlRegistry.class,
-
-                // Trigger
-                Trigger.class,
-                TriggerCreator.class,
-                TriggerListResult.class,
-                TriggerQuery.class,
-                TriggerProperty.class,
-                TriggerXmlRegistry.class,
-
-                TriggerDefinition.class,
-                TriggerDefinitionListResult.class,
-                TriggerDefinitionQuery.class,
-                TriggerDefinitionXmlRegistry.class,
-
-                FiredTrigger.class,
-                FiredTriggerListResult.class,
-                FiredTriggerQuery.class,
-                FiredTriggerXmlRegistry.class
-        );
+        return CLASSES_TO_BOUND;
     }
 }

@@ -36,23 +36,25 @@ import java.util.List;
  */
 public class QaTestRestJAXBContextProvider extends DefaultJAXBContextProvider implements JAXBContextProvider {
 
+    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+            // Account
+            Account.class,
+            AccountCreator.class,
+            AccountListResult.class,
+
+            // Authorization
+            AccessToken.class,
+
+            // User
+            User.class,
+            UserCreator.class,
+            UserListResult.class,
+            UserQuery.class,
+            UserXmlRegistry.class
+    );
+
     @Override
     protected List<Class<?>> getClassesToBound() {
-        return Arrays.asList(
-                // Account
-                Account.class,
-                AccountCreator.class,
-                AccountListResult.class,
-
-                // Authorization
-                AccessToken.class,
-
-                // User
-                User.class,
-                UserCreator.class,
-                UserListResult.class,
-                UserQuery.class,
-                UserXmlRegistry.class
-        );
+        return CLASSES_TO_BOUND;
     }
 }

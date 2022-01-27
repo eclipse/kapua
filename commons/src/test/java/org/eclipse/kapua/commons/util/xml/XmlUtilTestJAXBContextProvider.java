@@ -22,11 +22,13 @@ import java.util.List;
  */
 public class XmlUtilTestJAXBContextProvider extends DefaultJAXBContextProvider implements JAXBContextProvider {
 
+    private static final List<Class<?>> CLASSES_TO_BOUND = Collections.singletonList(
+            XmlUtilTestObject.class
+    );
+
     @Override
     public List<Class<?>> getClassesToBound() {
-        return Collections.singletonList(
-                XmlUtilTestObject.class
-        );
+        return CLASSES_TO_BOUND;
     }
 
 }

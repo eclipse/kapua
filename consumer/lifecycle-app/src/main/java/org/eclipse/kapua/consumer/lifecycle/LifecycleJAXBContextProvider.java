@@ -64,63 +64,64 @@ import java.util.List;
  */
 public class LifecycleJAXBContextProvider extends FallbackMappingJAXBContextProvider implements JAXBContextProvider {
 
+    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+            // Kapua Service Configuration
+            KapuaTmetadata.class,
+            KapuaTocd.class,
+            KapuaTad.class,
+            KapuaTicon.class,
+            TscalarImpl.class,
+            KapuaToption.class,
+            KapuaTdesignate.class,
+            KapuaTobject.class,
+            MetatypeXmlRegistry.class,
+
+            // Kapua Event
+            ServiceEvent.class,
+            EventStoreRecordCreator.class,
+            EventStoreRecordListResult.class,
+            EventStoreRecordQuery.class,
+            EventStoreXmlRegistry.class,
+
+            // TODO: EXT-CAMEL only for test remove when jobs will be defined in their own container
+            // Jobs
+            Job.class,
+            JobListResult.class,
+            JobTargetSublist.class,
+            JobXmlRegistry.class,
+
+            // Device Management Asset
+            DeviceAsset.class,
+            DeviceAssets.class,
+
+            // Device Management Bundle
+            DeviceBundle.class,
+            DeviceBundles.class,
+            KuraBundle.class,
+            KuraBundles.class,
+            KuraBundleInfo.class,
+
+            // Device Management Command
+            DeviceCommandInput.class,
+            DeviceCommandOutput.class,
+
+            // Device Management Configuration + Device Management Snapshot
+            DeviceConfiguration.class,
+            KuraDeviceComponentConfiguration.class,
+            KuraDeviceConfiguration.class,
+            KuraSnapshotIds.class,
+
+            // Device Management Packages
+            DevicePackage.class,
+            DevicePackages.class,
+            DevicePackageDownloadRequest.class,
+            DevicePackageUninstallRequest.class,
+            KuraDeploymentPackage.class,
+            KuraDeploymentPackages.class
+    );
+
     @Override
     protected List<Class<?>> getClassesToBound() {
-        return Arrays.asList(
-                // Kapua Service Configuration
-                KapuaTmetadata.class,
-                KapuaTocd.class,
-                KapuaTad.class,
-                KapuaTicon.class,
-                TscalarImpl.class,
-                KapuaToption.class,
-                KapuaTdesignate.class,
-                KapuaTobject.class,
-                MetatypeXmlRegistry.class,
-
-                // Kapua Event
-                ServiceEvent.class,
-                EventStoreRecordCreator.class,
-                EventStoreRecordListResult.class,
-                EventStoreRecordQuery.class,
-                EventStoreXmlRegistry.class,
-
-                // TODO: EXT-CAMEL only for test remove when jobs will be defined in their own container
-                // Jobs
-                Job.class,
-                JobListResult.class,
-                JobTargetSublist.class,
-                JobXmlRegistry.class,
-
-                // Device Management Asset
-                DeviceAsset.class,
-                DeviceAssets.class,
-
-                // Device Management Bundle
-                DeviceBundle.class,
-                DeviceBundles.class,
-                KuraBundle.class,
-                KuraBundles.class,
-                KuraBundleInfo.class,
-
-                // Device Management Command
-                DeviceCommandInput.class,
-                DeviceCommandOutput.class,
-
-                // Device Management Configuration + Device Management Snapshot
-                DeviceConfiguration.class,
-                KuraDeviceComponentConfiguration.class,
-                KuraDeviceConfiguration.class,
-                KuraSnapshotIds.class,
-
-                // Device Management Packages
-                DevicePackage.class,
-                DevicePackages.class,
-                DevicePackageDownloadRequest.class,
-                DevicePackageUninstallRequest.class,
-                KuraDeploymentPackage.class,
-                KuraDeploymentPackages.class
-
-        );
+        return CLASSES_TO_BOUND;
     }
 }

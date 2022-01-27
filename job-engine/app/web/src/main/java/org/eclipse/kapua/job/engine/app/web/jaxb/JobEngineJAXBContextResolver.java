@@ -89,86 +89,88 @@ import java.util.List;
 @Produces({MediaType.APPLICATION_JSON})
 public class JobEngineJAXBContextResolver extends JaxRSJAXBContextResolver {
 
+    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+            // REST API exception models
+            ThrowableInfo.class,
+            ExceptionInfo.class,
+
+            SubjectUnauthorizedExceptionInfo.class,
+
+            EntityNotFoundExceptionInfo.class,
+            IllegalArgumentExceptionInfo.class,
+            IllegalNullArgumentExceptionInfo.class,
+
+            // Jobs Exception Info
+            CleanJobDataExceptionInfo.class,
+            JobAlreadyRunningExceptionInfo.class,
+            JobEngineExceptionInfo.class,
+            JobInvalidTargetExceptionInfo.class,
+            JobMissingStepExceptionInfo.class,
+            JobMissingTargetExceptionInfo.class,
+            JobNotRunningExceptionInfo.class,
+            JobResumingExceptionInfo.class,
+            JobRunningExceptionInfo.class,
+            JobStartingExceptionInfo.class,
+            JobStoppingExceptionInfo.class,
+
+            // Authentication
+            AuthenticationXmlRegistry.class,
+            AccessToken.class,
+
+            // Device Management Keystore
+            DeviceKeystores.class,
+            DeviceKeystore.class,
+            DeviceKeystoreCertificate.class,
+            DeviceKeystoreItems.class,
+            DeviceKeystoreItem.class,
+            DeviceKeystoreItemQuery.class,
+            DeviceKeystoreKeypair.class,
+            DeviceKeystoreCSRInfo.class,
+            DeviceKeystoreCSR.class,
+            DeviceKeystoreXmlRegistry.class,
+
+            // Jobs
+            Job.class,
+            JobQuery.class,
+            JobXmlRegistry.class,
+
+            JobStep.class,
+            JobStepListResult.class,
+            JobStepQuery.class,
+            JobStepXmlRegistry.class,
+            JobStepProperty.class,
+
+            JobExecution.class,
+            JobExecutionListResult.class,
+            JobExecutionQuery.class,
+            JobExecutionXmlRegistry.class,
+
+            JobTarget.class,
+            JobTargetListResult.class,
+            JobTargetQuery.class,
+            JobExecutionXmlRegistry.class,
+
+            JobTargetSublist.class,
+
+            DeviceAssets.class,
+            DeviceCommandInput.class,
+            DevicePackageDownloadRequest.class,
+            DevicePackageDownloadOptions.class,
+            DevicePackageInstallRequest.class,
+            DevicePackageInstallOptions.class,
+            DevicePackageUninstallRequest.class,
+            DevicePackageUninstallOptions.class,
+            DeviceConfiguration.class,
+            KuraDeviceConfiguration.class,
+
+            Trigger.class,
+            TriggerListResult.class,
+            TriggerQuery.class,
+            TriggerXmlRegistry.class
+    );
+
     @Override
     protected List<Class<?>> getClassesToBound() {
-        return Arrays.asList(
-                // REST API exception models
-                ThrowableInfo.class,
-                ExceptionInfo.class,
-
-                SubjectUnauthorizedExceptionInfo.class,
-
-                EntityNotFoundExceptionInfo.class,
-                IllegalArgumentExceptionInfo.class,
-                IllegalNullArgumentExceptionInfo.class,
-
-                // Jobs Exception Info
-                CleanJobDataExceptionInfo.class,
-                JobAlreadyRunningExceptionInfo.class,
-                JobEngineExceptionInfo.class,
-                JobInvalidTargetExceptionInfo.class,
-                JobMissingStepExceptionInfo.class,
-                JobMissingTargetExceptionInfo.class,
-                JobNotRunningExceptionInfo.class,
-                JobResumingExceptionInfo.class,
-                JobRunningExceptionInfo.class,
-                JobStartingExceptionInfo.class,
-                JobStoppingExceptionInfo.class,
-
-                // Authentication
-                AuthenticationXmlRegistry.class,
-                AccessToken.class,
-
-                // Device Management Keystore
-                DeviceKeystores.class,
-                DeviceKeystore.class,
-                DeviceKeystoreCertificate.class,
-                DeviceKeystoreItems.class,
-                DeviceKeystoreItem.class,
-                DeviceKeystoreItemQuery.class,
-                DeviceKeystoreKeypair.class,
-                DeviceKeystoreCSRInfo.class,
-                DeviceKeystoreCSR.class,
-                DeviceKeystoreXmlRegistry.class,
-
-                // Jobs
-                Job.class,
-                JobQuery.class,
-                JobXmlRegistry.class,
-
-                JobStep.class,
-                JobStepListResult.class,
-                JobStepQuery.class,
-                JobStepXmlRegistry.class,
-                JobStepProperty.class,
-
-                JobExecution.class,
-                JobExecutionListResult.class,
-                JobExecutionQuery.class,
-                JobExecutionXmlRegistry.class,
-
-                JobTarget.class,
-                JobTargetListResult.class,
-                JobTargetQuery.class,
-                JobExecutionXmlRegistry.class,
-
-                JobTargetSublist.class,
-
-                DeviceAssets.class,
-                DeviceCommandInput.class,
-                DevicePackageDownloadRequest.class,
-                DevicePackageDownloadOptions.class,
-                DevicePackageInstallRequest.class,
-                DevicePackageInstallOptions.class,
-                DevicePackageUninstallRequest.class,
-                DevicePackageUninstallOptions.class,
-                DeviceConfiguration.class,
-                KuraDeviceConfiguration.class,
-
-                Trigger.class,
-                TriggerListResult.class,
-                TriggerQuery.class,
-                TriggerXmlRegistry.class
-        );
+        return CLASSES_TO_BOUND;
     }
 }

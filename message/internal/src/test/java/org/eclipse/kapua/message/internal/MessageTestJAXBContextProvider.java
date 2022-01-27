@@ -35,17 +35,19 @@ import java.util.Map;
  */
 public class MessageTestJAXBContextProvider extends DefaultJAXBContextProvider implements JAXBContextProvider {
 
+    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+            KapuaMessage.class,
+            KapuaChannel.class,
+            KapuaPayload.class,
+            KapuaPosition.class,
+
+            XmlAdaptedMetric.class,
+            XmlAdaptedMetrics.class
+    );
+
     @Override
     protected List<Class<?>> getClassesToBound() {
-        return Arrays.asList(
-                KapuaMessage.class,
-                KapuaChannel.class,
-                KapuaPayload.class,
-                KapuaPosition.class,
-
-                XmlAdaptedMetric.class,
-                XmlAdaptedMetrics.class
-        );
+        return CLASSES_TO_BOUND;
     }
 
     @Override

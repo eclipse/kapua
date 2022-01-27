@@ -95,101 +95,103 @@ import java.util.List;
  */
 public class QaTestJAXBContextProvider extends DefaultJAXBContextProvider implements JAXBContextProvider {
 
+    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+            // Kapua Service Configuration + Device Management Configuration
+            KapuaTmetadata.class,
+            KapuaTocd.class,
+            KapuaTad.class,
+            KapuaTicon.class,
+            TscalarImpl.class,
+            KapuaToption.class,
+            KapuaTdesignate.class,
+            KapuaTobject.class,
+            MetatypeXmlRegistry.class,
+
+            // Kapua Event
+            ServiceEvent.class,
+            EventStoreRecordCreator.class,
+            EventStoreRecordListResult.class,
+            EventStoreRecordQuery.class,
+            EventStoreXmlRegistry.class,
+
+            // Device Management Asset
+            DeviceAsset.class,
+            DeviceAssets.class,
+
+            // Device Management Bundle
+            DeviceBundle.class,
+            DeviceBundles.class,
+            KuraBundle.class,
+            KuraBundles.class,
+            KuraBundleInfo.class,
+
+            // Device Management Command
+            DeviceCommandInput.class,
+            DeviceCommandOutput.class,
+
+            // Device Management Configuration + Device Management Snapshots
+            DeviceConfiguration.class,
+            KuraDeviceComponentConfiguration.class,
+            KuraDeviceConfiguration.class,
+            KuraSnapshotIds.class,
+
+            // Device Management Inventory
+            DeviceInventory.class,
+            DeviceInventoryItem.class,
+            KuraInventoryItems.class,
+            KuraInventoryItem.class,
+            DeviceInventoryBundles.class,
+            DeviceInventoryBundle.class,
+            KuraInventoryBundles.class,
+            KuraInventoryBundle.class,
+            DeviceInventoryContainers.class,
+            DeviceInventoryContainer.class,
+            KuraInventoryContainers.class,
+            KuraInventoryContainer.class,
+            DeviceInventoryPackages.class,
+            DeviceInventoryPackage.class,
+            KuraInventoryPackages.class,
+            KuraInventoryPackage.class,
+            DeviceInventorySystemPackages.class,
+            DeviceInventorySystemPackage.class,
+            KuraInventorySystemPackages.class,
+            KuraInventorySystemPackage.class,
+            DeviceInventoryXmlRegistry.class,
+
+            // Device Management Keystore
+            DeviceKeystore.class,
+            DeviceKeystoreCSR.class,
+            DeviceKeystoreCSRInfo.class,
+            DeviceKeystoreCertificate.class,
+            DeviceKeystoreItem.class,
+            DeviceKeystoreItemQuery.class,
+            DeviceKeystoreItems.class,
+            DeviceKeystoreKeypair.class,
+            DeviceKeystoreXmlRegistry.class,
+            DeviceKeystores.class,
+
+            // Device Management Packages
+            DevicePackages.class,
+            DevicePackageDownloadRequest.class,
+            DevicePackageUninstallRequest.class,
+            KuraDeploymentPackage.class,
+            KuraDeploymentPackages.class,
+
+            // Jobs
+            Job.class,
+            JobListResult.class,
+            JobXmlRegistry.class,
+            JobTargetSublist.class,
+            DeviceCommandInput.class,
+            DeviceCommandOutput.class,
+
+            // Job Engine
+            JobStartOptions.class,
+            JobTargetSublist.class
+    );
+
     @Override
     protected List<Class<?>> getClassesToBound() {
-        return Arrays.asList(
-                // Kapua Service Configuration + Device Management Configuration
-                KapuaTmetadata.class,
-                KapuaTocd.class,
-                KapuaTad.class,
-                KapuaTicon.class,
-                TscalarImpl.class,
-                KapuaToption.class,
-                KapuaTdesignate.class,
-                KapuaTobject.class,
-                MetatypeXmlRegistry.class,
-
-                // Kapua Event
-                ServiceEvent.class,
-                EventStoreRecordCreator.class,
-                EventStoreRecordListResult.class,
-                EventStoreRecordQuery.class,
-                EventStoreXmlRegistry.class,
-
-                // Device Management Asset
-                DeviceAsset.class,
-                DeviceAssets.class,
-
-                // Device Management Bundle
-                DeviceBundle.class,
-                DeviceBundles.class,
-                KuraBundle.class,
-                KuraBundles.class,
-                KuraBundleInfo.class,
-
-                // Device Management Command
-                DeviceCommandInput.class,
-                DeviceCommandOutput.class,
-
-                // Device Management Configuration + Device Management Snapshots
-                DeviceConfiguration.class,
-                KuraDeviceComponentConfiguration.class,
-                KuraDeviceConfiguration.class,
-                KuraSnapshotIds.class,
-
-                // Device Management Inventory
-                DeviceInventory.class,
-                DeviceInventoryItem.class,
-                KuraInventoryItems.class,
-                KuraInventoryItem.class,
-                DeviceInventoryBundles.class,
-                DeviceInventoryBundle.class,
-                KuraInventoryBundles.class,
-                KuraInventoryBundle.class,
-                DeviceInventoryContainers.class,
-                DeviceInventoryContainer.class,
-                KuraInventoryContainers.class,
-                KuraInventoryContainer.class,
-                DeviceInventoryPackages.class,
-                DeviceInventoryPackage.class,
-                KuraInventoryPackages.class,
-                KuraInventoryPackage.class,
-                DeviceInventorySystemPackages.class,
-                DeviceInventorySystemPackage.class,
-                KuraInventorySystemPackages.class,
-                KuraInventorySystemPackage.class,
-                DeviceInventoryXmlRegistry.class,
-
-                // Device Management Keystore
-                DeviceKeystore.class,
-                DeviceKeystoreCSR.class,
-                DeviceKeystoreCSRInfo.class,
-                DeviceKeystoreCertificate.class,
-                DeviceKeystoreItem.class,
-                DeviceKeystoreItemQuery.class,
-                DeviceKeystoreItems.class,
-                DeviceKeystoreKeypair.class,
-                DeviceKeystoreXmlRegistry.class,
-                DeviceKeystores.class,
-
-                // Device Management Packages
-                DevicePackages.class,
-                DevicePackageDownloadRequest.class,
-                DevicePackageUninstallRequest.class,
-                KuraDeploymentPackage.class,
-                KuraDeploymentPackages.class,
-
-                // Jobs
-                Job.class,
-                JobListResult.class,
-                JobXmlRegistry.class,
-                JobTargetSublist.class,
-                DeviceCommandInput.class,
-                DeviceCommandOutput.class,
-
-                // Job Engine
-                JobStartOptions.class,
-                JobTargetSublist.class
-        );
+        return CLASSES_TO_BOUND;
     }
 }

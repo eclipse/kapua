@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
@@ -112,119 +111,121 @@ import java.util.List;
  */
 public class ConsoleJAXBContextProvider extends FallbackMappingJAXBContextProvider implements JAXBContextProvider {
 
+    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+            // Device Management Assets
+            DeviceAssets.class,
+            DeviceAssetXmlRegistry.class,
+
+            // Device Management Bundle
+            DeviceBundle.class,
+            DeviceBundles.class,
+            KuraBundle.class,
+            KuraBundles.class,
+            KuraBundleInfo.class,
+
+            // Device Manangement Comand
+            DeviceCommandInput.class,
+            DeviceCommandOutput.class,
+
+            // Device Management Configuration
+            DeviceConfiguration.class,
+            DeviceComponentConfiguration.class,
+            KuraDeviceComponentConfiguration.class,
+            KuraDeviceConfiguration.class,
+
+            // Device Management Inventory
+            DeviceInventory.class,
+            DeviceInventoryItem.class,
+            DeviceInventoryBundles.class,
+            DeviceInventoryBundle.class,
+            DeviceInventoryContainers.class,
+            DeviceInventoryContainer.class,
+            DeviceInventoryPackages.class,
+            DeviceInventoryPackage.class,
+            DeviceInventorySystemPackages.class,
+            DeviceInventorySystemPackage.class,
+            DeviceInventoryXmlRegistry.class,
+            KuraInventoryBundles.class,
+            KuraInventoryBundle.class,
+            KuraInventoryContainers.class,
+            KuraInventoryContainer.class,
+            KuraInventoryItems.class,
+            KuraInventoryItem.class,
+            KuraInventoryPackage.class,
+            KuraInventoryPackages.class,
+            KuraInventorySystemPackages.class,
+            KuraInventorySystemPackage.class,
+
+            // Device Management Keystore
+            DeviceKeystores.class,
+            DeviceKeystore.class,
+            DeviceKeystoreCertificate.class,
+            DeviceKeystoreItems.class,
+            DeviceKeystoreItem.class,
+            DeviceKeystoreItemQuery.class,
+            DeviceKeystoreCertificate.class,
+            DeviceKeystoreKeypair.class,
+            DeviceKeystoreCSRInfo.class,
+            DeviceKeystoreCSR.class,
+            DeviceKeystoreXmlRegistry.class,
+
+            // Device Management Packages
+            DevicePackageDownloadRequest.class,
+            DevicePackageInstallRequest.class,
+            DevicePackageUninstallRequest.class,
+            DevicePackages.class,
+            KuraDeploymentPackage.class,
+            KuraDeploymentPackages.class,
+
+            // Device Management Snapshots
+            KuraSnapshotIds.class,
+            DeviceSnapshots.class,
+
+            // Job
+            JobTargetSublist.class,
+            JobStartOptions.class,
+            IsJobRunningResponse.class,
+            JobListResult.class,
+            JobQuery.class,
+            JobXmlRegistry.class,
+            JobEngineXmlRegistry.class,
+
+            // Job Engine Exception Info
+            CleanJobDataExceptionInfo.class,
+            JobAlreadyRunningExceptionInfo.class,
+            JobEngineExceptionInfo.class,
+            JobInvalidTargetExceptionInfo.class,
+            JobMissingStepExceptionInfo.class,
+            JobMissingTargetExceptionInfo.class,
+            JobNotRunningExceptionInfo.class,
+            JobResumingExceptionInfo.class,
+            JobRunningExceptionInfo.class,
+            JobStartingExceptionInfo.class,
+            JobStoppingExceptionInfo.class,
+
+            // Kapua Service Configuration + Device Management Configuration
+            KapuaTocd.class,
+            KapuaTad.class,
+            KapuaTicon.class,
+            KapuaToption.class,
+            KapuaTmetadata.class,
+            TscalarImpl.class,
+            MetatypeXmlRegistry.class,
+
+            // Kapua Event
+            ServiceEvent.class,
+            EventStoreRecordCreator.class,
+            EventStoreRecordListResult.class,
+            EventStoreRecordQuery.class,
+            EventStoreXmlRegistry.class,
+
+            // REST API exception models
+            ThrowableInfo.class,
+            ExceptionInfo.class
+    );
+
     @Override
     protected List<Class<?>> getClassesToBound() {
-        return Arrays.asList(
-                // Device Management Assets
-                DeviceAssets.class,
-                DeviceAssetXmlRegistry.class,
-
-                // Device Management Bundle
-                DeviceBundle.class,
-                DeviceBundles.class,
-                KuraBundle.class,
-                KuraBundles.class,
-                KuraBundleInfo.class,
-
-                // Device Manangement Comand
-                DeviceCommandInput.class,
-                DeviceCommandOutput.class,
-
-                // Device Management Configuration
-                DeviceConfiguration.class,
-                DeviceComponentConfiguration.class,
-                KuraDeviceComponentConfiguration.class,
-                KuraDeviceConfiguration.class,
-
-                // Device Management Inventory
-                DeviceInventory.class,
-                DeviceInventoryItem.class,
-                DeviceInventoryBundles.class,
-                DeviceInventoryBundle.class,
-                DeviceInventoryContainers.class,
-                DeviceInventoryContainer.class,
-                DeviceInventoryPackages.class,
-                DeviceInventoryPackage.class,
-                DeviceInventorySystemPackages.class,
-                DeviceInventorySystemPackage.class,
-                DeviceInventoryXmlRegistry.class,
-                KuraInventoryBundles.class,
-                KuraInventoryBundle.class,
-                KuraInventoryContainers.class,
-                KuraInventoryContainer.class,
-                KuraInventoryItems.class,
-                KuraInventoryItem.class,
-                KuraInventoryPackage.class,
-                KuraInventoryPackages.class,
-                KuraInventorySystemPackages.class,
-                KuraInventorySystemPackage.class,
-
-                // Device Management Keystore
-                DeviceKeystores.class,
-                DeviceKeystore.class,
-                DeviceKeystoreCertificate.class,
-                DeviceKeystoreItems.class,
-                DeviceKeystoreItem.class,
-                DeviceKeystoreItemQuery.class,
-                DeviceKeystoreCertificate.class,
-                DeviceKeystoreKeypair.class,
-                DeviceKeystoreCSRInfo.class,
-                DeviceKeystoreCSR.class,
-                DeviceKeystoreXmlRegistry.class,
-
-                // Device Management Packages
-                DevicePackageDownloadRequest.class,
-                DevicePackageInstallRequest.class,
-                DevicePackageUninstallRequest.class,
-                DevicePackages.class,
-                KuraDeploymentPackage.class,
-                KuraDeploymentPackages.class,
-
-                // Device Management Snapshots
-                KuraSnapshotIds.class,
-                DeviceSnapshots.class,
-
-                // Job
-                JobTargetSublist.class,
-                JobStartOptions.class,
-                IsJobRunningResponse.class,
-                JobListResult.class,
-                JobQuery.class,
-                JobXmlRegistry.class,
-                JobEngineXmlRegistry.class,
-
-                // Job Engine Exception Info
-                CleanJobDataExceptionInfo.class,
-                JobAlreadyRunningExceptionInfo.class,
-                JobEngineExceptionInfo.class,
-                JobInvalidTargetExceptionInfo.class,
-                JobMissingStepExceptionInfo.class,
-                JobMissingTargetExceptionInfo.class,
-                JobNotRunningExceptionInfo.class,
-                JobResumingExceptionInfo.class,
-                JobRunningExceptionInfo.class,
-                JobStartingExceptionInfo.class,
-                JobStoppingExceptionInfo.class,
-
-                // Kapua Service Configuration + Device Management Configuration
-                KapuaTocd.class,
-                KapuaTad.class,
-                KapuaTicon.class,
-                KapuaToption.class,
-                KapuaTmetadata.class,
-                TscalarImpl.class,
-                MetatypeXmlRegistry.class,
-
-                // Kapua Event
-                ServiceEvent.class,
-                EventStoreRecordCreator.class,
-                EventStoreRecordListResult.class,
-                EventStoreRecordQuery.class,
-                EventStoreXmlRegistry.class,
-
-                // REST API exception models
-                ThrowableInfo.class,
-                ExceptionInfo.class
-        );
+        return CLASSES_TO_BOUND;
     }
 }

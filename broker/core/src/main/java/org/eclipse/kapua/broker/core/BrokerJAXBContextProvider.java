@@ -52,40 +52,42 @@ import java.util.List;
  */
 public class BrokerJAXBContextProvider extends FallbackMappingJAXBContextProvider implements JAXBContextProvider {
 
+    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+            // Kapua Service Configuration
+            KapuaTmetadata.class,
+            KapuaTocd.class,
+            KapuaTad.class,
+            KapuaTicon.class,
+            TscalarImpl.class,
+            KapuaToption.class,
+            KapuaTdesignate.class,
+            KapuaTobject.class,
+            MetatypeXmlRegistry.class,
+
+            // TODO: EXT-CAMEL only for test remove when jobs will be defined in their own container
+            // Jobs
+            Job.class,
+            JobListResult.class,
+            JobStartOptions.class,
+            JobTargetSublist.class,
+            JobXmlRegistry.class,
+
+            // Jobs Exception Info
+            CleanJobDataExceptionInfo.class,
+            JobAlreadyRunningExceptionInfo.class,
+            JobEngineExceptionInfo.class,
+            JobInvalidTargetExceptionInfo.class,
+            JobMissingStepExceptionInfo.class,
+            JobMissingTargetExceptionInfo.class,
+            JobNotRunningExceptionInfo.class,
+            JobResumingExceptionInfo.class,
+            JobRunningExceptionInfo.class,
+            JobStartingExceptionInfo.class,
+            JobStoppingExceptionInfo.class
+    );
+
     @Override
     protected List<Class<?>> getClassesToBound() {
-        return Arrays.asList(
-                // Kapua Service Configuration
-                KapuaTmetadata.class,
-                KapuaTocd.class,
-                KapuaTad.class,
-                KapuaTicon.class,
-                TscalarImpl.class,
-                KapuaToption.class,
-                KapuaTdesignate.class,
-                KapuaTobject.class,
-                MetatypeXmlRegistry.class,
-
-                // TODO: EXT-CAMEL only for test remove when jobs will be defined in their own container
-                // Jobs
-                Job.class,
-                JobListResult.class,
-                JobStartOptions.class,
-                JobTargetSublist.class,
-                JobXmlRegistry.class,
-
-                // Jobs Exception Info
-                CleanJobDataExceptionInfo.class,
-                JobAlreadyRunningExceptionInfo.class,
-                JobEngineExceptionInfo.class,
-                JobInvalidTargetExceptionInfo.class,
-                JobMissingStepExceptionInfo.class,
-                JobMissingTargetExceptionInfo.class,
-                JobNotRunningExceptionInfo.class,
-                JobResumingExceptionInfo.class,
-                JobRunningExceptionInfo.class,
-                JobStartingExceptionInfo.class,
-                JobStoppingExceptionInfo.class
-        );
+        return CLASSES_TO_BOUND;
     }
 }

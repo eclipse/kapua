@@ -41,26 +41,28 @@ import java.util.List;
  */
 public class TelemetryJAXBContextProvider extends FallbackMappingJAXBContextProvider implements JAXBContextProvider {
 
+    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+            // Kapua Service Configuration
+            KapuaTmetadata.class,
+            KapuaTocd.class,
+            KapuaTad.class,
+            KapuaTicon.class,
+            TscalarImpl.class,
+            KapuaToption.class,
+            KapuaTdesignate.class,
+            KapuaTobject.class,
+            MetatypeXmlRegistry.class,
+
+            // Kapua Event
+            ServiceEvent.class,
+            EventStoreRecordCreator.class,
+            EventStoreRecordListResult.class,
+            EventStoreRecordQuery.class,
+            EventStoreXmlRegistry.class
+    );
+
     @Override
     protected List<Class<?>> getClassesToBound() {
-        return Arrays.asList(
-                // Kapua Service Configuration
-                KapuaTmetadata.class,
-                KapuaTocd.class,
-                KapuaTad.class,
-                KapuaTicon.class,
-                TscalarImpl.class,
-                KapuaToption.class,
-                KapuaTdesignate.class,
-                KapuaTobject.class,
-                MetatypeXmlRegistry.class,
-
-                // Kapua Event
-                ServiceEvent.class,
-                EventStoreRecordCreator.class,
-                EventStoreRecordListResult.class,
-                EventStoreRecordQuery.class,
-                EventStoreXmlRegistry.class
-        );
+        return CLASSES_TO_BOUND;
     }
 }
