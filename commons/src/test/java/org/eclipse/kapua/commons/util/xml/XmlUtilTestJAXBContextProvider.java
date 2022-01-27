@@ -12,37 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util.xml;
 
-import org.eclipse.persistence.jaxb.JAXBContextFactory;
-import org.eclipse.persistence.jaxb.MarshallerProperties;
-
-import javax.xml.bind.JAXBContext;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * {@link JAXBContextProvider} implementation to be used in {@link XmlUtilTest}.
  *
  * @since 2.0.0
  */
-public class XmlUtilTestJAXBContextProvider implements JAXBContextProvider {
-
-    private JAXBContext jaxbContext;
+public class XmlUtilTestJAXBContextProvider extends DefaultJAXBContextProvider implements JAXBContextProvider {
 
     @Override
-    public JAXBContext getJAXBContext() {
-        try {
-            if (jaxbContext == null) {
-                Map<String, Object> properties = new HashMap<>(1);
-                properties.put(MarshallerProperties.JSON_WRAPPER_AS_ARRAY_NAME, true);
-
-                jaxbContext = JAXBContextFactory.createContext(new Class<?>[]{
-                        XmlUtilTestObject.class,
-                }, properties);
-            }
-            return jaxbContext;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public List<Class<?>> getClassesToBound() {
+        return Collections.singletonList(
+                XmlUtilTestObject.class
+        );
     }
 
 }
