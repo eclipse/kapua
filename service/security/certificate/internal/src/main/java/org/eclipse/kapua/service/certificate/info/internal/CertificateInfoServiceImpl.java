@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.certificate.info.internal;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.certificate.CertificateQuery;
@@ -28,9 +27,10 @@ import org.eclipse.kapua.service.certificate.info.CertificateInfoQuery;
 import org.eclipse.kapua.service.certificate.info.CertificateInfoService;
 import org.eclipse.kapua.service.certificate.internal.CertificateQueryImpl;
 
+import javax.inject.Singleton;
 import java.util.List;
 
-@KapuaProvider
+@Singleton
 public class CertificateInfoServiceImpl implements CertificateInfoService {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
