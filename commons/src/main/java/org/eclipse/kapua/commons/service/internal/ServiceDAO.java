@@ -86,6 +86,8 @@ import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -695,9 +697,9 @@ public class ServiceDAO {
         String attrName = attrPred.getAttributeName();
 
         // Parse attributes
-        Object attrValue = attrPred.getAttributeValue();
-        if (attrValue instanceof KapuaId && !(attrValue instanceof KapuaEid)) {
-            attrValue = KapuaEid.parseKapuaId((KapuaId) attrValue);
+        Object attributeValue = attrPred.getAttributeValue();
+        if (attributeValue instanceof KapuaId && !(attributeValue instanceof KapuaEid)) {
+            attributeValue = KapuaEid.parseKapuaId((KapuaId) attributeValue);
         }
 
         // Fields to query properties of sub attributes of the root entity
@@ -708,48 +710,56 @@ public class ServiceDAO {
             attribute = entityType.getAttribute(attrName);
         }
 
-        if (attrValue instanceof Object[]) {
-            Object[] attrValues = (Object[]) attrValue;
+        // Convert old Object[] support to List<?>
+        if (attributeValue instanceof Object[]) {
+            attributeValue = Arrays.asList((Object[]) attributeValue);
+        }
+
+        // Support IN clause
+        if (attributeValue instanceof Collection) {
+            Collection<?> attributeValues = (Collection<?>) attributeValue;
+
             Expression<?> orPredicate = extractAttribute(entityRoot, attrName);
 
-            Predicate[] orPredicates = new Predicate[attrValues.length];
-            for (int i = 0; i < attrValues.length; i++) {
-                Object value = attrValues[i];
+            Predicate[] orPredicates = attributeValues.stream()
+                    .map(value -> {
+                        Object predicateValue;
+                        if (value instanceof KapuaId && !(value instanceof KapuaEid)) {
+                            predicateValue = KapuaEid.parseKapuaId((KapuaId) value);
+                        } else {
+                            predicateValue = value;
+                        }
 
-                if (value instanceof KapuaId && !(value instanceof KapuaEid)) {
-                    value = new KapuaEid((KapuaId) value);
-                }
-
-                orPredicates[i] = cb.equal(orPredicate, value);
-            }
+                        return cb.equal(orPredicate, predicateValue);
+                    }).toArray(Predicate[]::new);
 
             expr = cb.and(cb.or(orPredicates));
         } else {
             String strAttrValue;
             switch (attrPred.getOperator()) {
                 case LIKE:
-                    strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
+                    strAttrValue = attributeValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
                     ParameterExpression<String> pl = cb.parameter(String.class);
                     binds.put(pl, LIKE + strAttrValue + LIKE);
                     expr = cb.like(extractAttribute(entityRoot, attrName), pl);
                     break;
 
                 case LIKE_IGNORE_CASE:
-                    strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY).toLowerCase();
+                    strAttrValue = attributeValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY).toLowerCase();
                     ParameterExpression<String> plci = cb.parameter(String.class);
                     binds.put(plci, LIKE + strAttrValue + LIKE);
                     expr = cb.like(cb.lower(extractAttribute(entityRoot, attrName)), plci);
                     break;
 
                 case STARTS_WITH:
-                    strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
+                    strAttrValue = attributeValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY);
                     ParameterExpression<String> psw = cb.parameter(String.class);
                     binds.put(psw, strAttrValue + LIKE);
                     expr = cb.like(extractAttribute(entityRoot, attrName), psw);
                     break;
 
                 case STARTS_WITH_IGNORE_CASE:
-                    strAttrValue = attrValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY).toLowerCase();
+                    strAttrValue = attributeValue.toString().replace(LIKE, ESCAPE + LIKE).replace(ANY, ESCAPE + ANY).toLowerCase();
                     ParameterExpression<String> pswci = cb.parameter(String.class);
                     binds.put(pswci, strAttrValue + LIKE);
                     expr = cb.like(cb.lower(extractAttribute(entityRoot, attrName)), pswci);
@@ -764,12 +774,12 @@ public class ServiceDAO {
                     break;
 
                 case NOT_EQUAL:
-                    expr = cb.notEqual(extractAttribute(entityRoot, attrName), attrValue);
+                    expr = cb.notEqual(extractAttribute(entityRoot, attrName), attributeValue);
                     break;
 
                 case GREATER_THAN:
-                    if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
-                        Comparable comparableAttrValue = (Comparable<?>) attrValue;
+                    if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                        Comparable comparableAttrValue = (Comparable<?>) attributeValue;
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
                         expr = cb.greaterThan(comparableExpression, comparableAttrValue);
                     } else {
@@ -778,9 +788,9 @@ public class ServiceDAO {
                     break;
 
                 case GREATER_THAN_OR_EQUAL:
-                    if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                    if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparableAttrValue = (Comparable<?>) attrValue;
+                        Comparable comparableAttrValue = (Comparable<?>) attributeValue;
                         expr = cb.greaterThanOrEqualTo(comparableExpression, comparableAttrValue);
                     } else {
                         throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
@@ -788,18 +798,18 @@ public class ServiceDAO {
                     break;
 
                 case LESS_THAN:
-                    if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                    if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparableAttrValue = (Comparable<?>) attrValue;
+                        Comparable comparableAttrValue = (Comparable<?>) attributeValue;
                         expr = cb.lessThan(comparableExpression, comparableAttrValue);
                     } else {
                         throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
                     }
                     break;
                 case LESS_THAN_OR_EQUAL:
-                    if (attrValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
+                    if (attributeValue instanceof Comparable && ArrayUtils.contains(attribute.getJavaType().getInterfaces(), Comparable.class)) {
                         Expression<? extends Comparable> comparableExpression = extractAttribute(entityRoot, attrName);
-                        Comparable comparableAttrValue = (Comparable<?>) attrValue;
+                        Comparable comparableAttrValue = (Comparable<?>) attributeValue;
                         expr = cb.lessThanOrEqualTo(comparableExpression, comparableAttrValue);
                     } else {
                         throw new KapuaException(KapuaErrorCodes.ILLEGAL_ARGUMENT, COMPARE_ERROR_MESSAGE);
@@ -808,7 +818,7 @@ public class ServiceDAO {
 
                 case EQUAL:
                 default:
-                    expr = cb.equal(extractAttribute(entityRoot, attrName), attrValue);
+                    expr = cb.equal(extractAttribute(entityRoot, attrName), attributeValue);
             }
         }
         return expr;
