@@ -152,7 +152,7 @@ public class JobDeviceManagementTriggerManagerServiceImpl implements JobDeviceMa
             }
 
         } catch (Exception e) {
-            throw new ProcessOnConnectException(scopeId, deviceId);
+            throw new ProcessOnConnectException(e, scopeId, deviceId);
         }
     }
 }
