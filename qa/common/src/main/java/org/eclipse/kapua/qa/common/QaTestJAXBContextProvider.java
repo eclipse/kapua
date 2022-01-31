@@ -12,6 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
+import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobScopedEngineExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
+import org.eclipse.kapua.app.api.core.model.job.IsJobRunningMultipleResponse;
+import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
+import org.eclipse.kapua.app.api.core.model.job.MultipleJobIdRequest;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
@@ -181,13 +196,29 @@ public class QaTestJAXBContextProvider extends DefaultJAXBContextProvider implem
             Job.class,
             JobListResult.class,
             JobXmlRegistry.class,
-            JobTargetSublist.class,
             DeviceCommandInput.class,
             DeviceCommandOutput.class,
 
             // Job Engine
             JobStartOptions.class,
-            JobTargetSublist.class
+            JobTargetSublist.class,
+
+            // Jobs Engine Exception Info
+            CleanJobDataExceptionInfo.class,
+            JobAlreadyRunningExceptionInfo.class,
+            JobEngineExceptionInfo.class,
+            JobScopedEngineExceptionInfo.class,
+            JobInvalidTargetExceptionInfo.class,
+            JobMissingStepExceptionInfo.class,
+            JobMissingTargetExceptionInfo.class,
+            JobNotRunningExceptionInfo.class,
+            JobResumingExceptionInfo.class,
+            JobRunningExceptionInfo.class,
+            JobStartingExceptionInfo.class,
+            JobStoppingExceptionInfo.class,
+            IsJobRunningResponse.class,
+            IsJobRunningMultipleResponse.class,
+            MultipleJobIdRequest.class
     );
 
     @Override

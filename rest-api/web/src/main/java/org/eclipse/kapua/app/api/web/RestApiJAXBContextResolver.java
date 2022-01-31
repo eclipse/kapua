@@ -347,20 +347,6 @@ public class RestApiJAXBContextResolver extends JaxRSJAXBContextResolver {
             IllegalNullArgumentExceptionInfo.class,
             MfaRequiredExceptionInfo.class,
 
-            // Jobs Exception Info
-            CleanJobDataExceptionInfo.class,
-            JobAlreadyRunningExceptionInfo.class,
-            JobEngineExceptionInfo.class,
-            JobScopedEngineExceptionInfo.class,
-            JobInvalidTargetExceptionInfo.class,
-            JobMissingStepExceptionInfo.class,
-            JobMissingTargetExceptionInfo.class,
-            JobNotRunningExceptionInfo.class,
-            JobResumingExceptionInfo.class,
-            JobRunningExceptionInfo.class,
-            JobStartingExceptionInfo.class,
-            JobStoppingExceptionInfo.class,
-
             // Device Management Exception Info
             DeviceManagementRequestContentExceptionInfo.class,
             DeviceManagementResponseCodeExceptionInfo.class,
@@ -684,12 +670,28 @@ public class RestApiJAXBContextResolver extends JaxRSJAXBContextResolver {
             ServiceConfiguration.class,
             ServiceComponentConfiguration.class,
 
-            // Jobs
-            Job.class,
+            // Job Engine
             JobStartOptions.class,
+
+            // Jobs Engine Exception Info
+            CleanJobDataExceptionInfo.class,
+            JobAlreadyRunningExceptionInfo.class,
+            JobEngineExceptionInfo.class,
+            JobScopedEngineExceptionInfo.class,
+            JobInvalidTargetExceptionInfo.class,
+            JobMissingStepExceptionInfo.class,
+            JobMissingTargetExceptionInfo.class,
+            JobNotRunningExceptionInfo.class,
+            JobResumingExceptionInfo.class,
+            JobRunningExceptionInfo.class,
+            JobStartingExceptionInfo.class,
+            JobStoppingExceptionInfo.class,
             IsJobRunningResponse.class,
             IsJobRunningMultipleResponse.class,
             MultipleJobIdRequest.class,
+
+            // Job
+            Job.class,
             JobCreator.class,
             JobListResult.class,
             JobQuery.class,

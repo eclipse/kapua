@@ -12,6 +12,19 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.lifecycle;
 
+import org.eclipse.kapua.app.api.core.exception.model.CleanJobDataExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.ExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobAlreadyRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobEngineExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobInvalidTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingStepExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobMissingTargetExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobNotRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobResumingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobRunningExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
@@ -20,6 +33,7 @@ import org.eclipse.kapua.commons.service.event.store.api.EventStoreXmlRegistry;
 import org.eclipse.kapua.commons.util.xml.FallbackMappingJAXBContextProvider;
 import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTdesignate;
@@ -87,8 +101,26 @@ public class LifecycleJAXBContextProvider extends FallbackMappingJAXBContextProv
             // Jobs
             Job.class,
             JobListResult.class,
-            JobTargetSublist.class,
             JobXmlRegistry.class,
+
+            // Job Engine
+            JobStartOptions.class,
+            JobTargetSublist.class,
+
+            // Job Engine Exception Info
+            ThrowableInfo.class,
+            ExceptionInfo.class,
+            CleanJobDataExceptionInfo.class,
+            JobAlreadyRunningExceptionInfo.class,
+            JobEngineExceptionInfo.class,
+            JobInvalidTargetExceptionInfo.class,
+            JobMissingStepExceptionInfo.class,
+            JobMissingTargetExceptionInfo.class,
+            JobNotRunningExceptionInfo.class,
+            JobResumingExceptionInfo.class,
+            JobRunningExceptionInfo.class,
+            JobStartingExceptionInfo.class,
+            JobStoppingExceptionInfo.class,
 
             // Device Management Asset
             DeviceAsset.class,

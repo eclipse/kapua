@@ -68,11 +68,13 @@ public class BrokerJAXBContextProvider extends FallbackMappingJAXBContextProvide
             // Jobs
             Job.class,
             JobListResult.class,
-            JobStartOptions.class,
-            JobTargetSublist.class,
             JobXmlRegistry.class,
 
-            // Jobs Exception Info
+            // Job Engine
+            JobStartOptions.class,
+            JobTargetSublist.class,
+
+            // Jobs Engine Exception Info
             CleanJobDataExceptionInfo.class,
             JobAlreadyRunningExceptionInfo.class,
             JobEngineExceptionInfo.class,
