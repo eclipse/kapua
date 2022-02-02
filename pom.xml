@@ -2078,7 +2078,13 @@
             <dependency>
                 <groupId>org.eclipse.jetty.aggregate</groupId>
                 <artifactId>jetty-all</artifactId>
-                <version>${jetty-activemq.version}</version>
+                <version>${jetty.version}</version>
+                <classifier>uber</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.jetty.aggregate</groupId>
+                <artifactId>jetty-all</artifactId>
+                <version>${jetty.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jetty.websocket</groupId>
