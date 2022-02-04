@@ -5,7 +5,6 @@ services:
     container_name: db
     image: kapua/kapua-sql:${IMAGE_VERSION}
     ports:
-      - 8181:8181
       - 3306:3306
   es:
     container_name: es
