@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+  job-engine:
+    ports:
+      - ${KAPUA_JOB_ENGINE_DEBUG_PORT:-5008}:5005
+    environment:
+      - JETTY_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=${KAPUA_JOB_ENGINE_DEBUG_SUSPEND:-n},address=5005

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2019, 2021 Eurotech and/or its affiliates and others
+# Copyright (c) 2019, 2022 Eurotech and/or its affiliates and others
 #
 # This program and the accompanying materials are made
 # available under the terms of the Eclipse Public License 2.0
@@ -13,6 +13,8 @@
 #Requires -Version 7
 
 Param(
+    [switch]$dev = $false,
+    [switch]$debug = $false,
     [switch]$logs = $false
 )
 
@@ -25,24 +27,28 @@ Write-Host "Deploying Eclipse Kapua..."
 
 [String[]]$compose_files = @()
 
-If (Test-Path env:KAPUA_BROKER_DEBUG_PORT)
-{
-    If ($env:KAPUA_BROKER_DEBUG_SUSPEND -eq "true")
-    {
-        $env:KAPUA_BROKER_DEBUG_SUSPEND = "y"
-    }
-    Else
-    {
-        $env:KAPUA_BROKER_DEBUG_SUSPEND = "n"
-    }
+# Debug Mode
+If ($debug) {
+    Write-Host "Debug mode enabled!"
     $compose_files+="-f"
     $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.broker-debug.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.console-debug.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.consumer-lifecycle-debug.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.consumer-telemetry-debug.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.job-engine-debug.yml)
+    $compose_files+="-f"
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.rest-debug.yml)
 }
 
-If (Test-Path env:KAPUA_ELASTICSEARCH_DATA_DIR)
-{
+# Dev Mode
+If($dev) {
+    Write-Host "Dev mode enabled!"
     $compose_files+="-f"
-    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.es-storage-dir.yml)
+    $compose_files+=$(Join-Path $script_dir .. compose extras docker-compose.db-dev.yml)
 }
 
 docker-compose -f $(Join-Path $script_dir .. compose docker-compose.yml) $compose_files up -d

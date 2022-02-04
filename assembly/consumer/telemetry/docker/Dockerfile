@@ -30,15 +30,15 @@ ENV SQL_DB_PORT 3306
 ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
 
 ENV JAVA_OPTS -Dcommons.db.schema.update=true \
+              -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
+              -Dcommons.db.connection.port=\${SQL_DB_PORT} \
+              -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
               -Dconsumer.jaxb_context_class_name=org.eclipse.kapua.consumer.telemetry.TelemetryJAXBContextProvider \
-              -Dcommons.db.connection.host=${SQL_DB_ADDR} \
-              -Dcommons.db.connection.port=${SQL_DB_PORT} \
-              -Ddatastore.elasticsearch.nodes=${DATASTORE_ADDR} \
-              -Ddatastore.elasticsearch.port=${DATASTORE_PORT} \
-              -Ddatastore.client.class=${DATASTORE_CLIENT} \
-              -Dbroker.host=${BROKER_ADDR} \
-              -Dbroker.port=${BROKER_PORT} \
-              -Dcommons.eventbus.url="${SERVICE_BROKER_ADDR}" \
+              -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
+              -Ddatastore.elasticsearch.port=\${DATASTORE_PORT} \
+              -Ddatastore.client.class=\${DATASTORE_CLIENT} \
+              -Dbroker.host=\${BROKER_ADDR} \
+              -Dbroker.port=\${BROKER_PORT} \
               -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
               -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem
 

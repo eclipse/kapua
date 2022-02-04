@@ -3,6 +3,6 @@ version: '3.1'
 services:
   kapua-api:
     ports:
-      - ${KAPUA_REST_DEBUG_PORT}:5005
+      - ${KAPUA_REST_DEBUG_PORT:-5006}:5005
     environment:
       - JETTY_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=${KAPUA_REST_DEBUG_SUSPEND:-n},address=5005

@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+  db:
+    ports:
+      - ${KAPUA_DB_WEB_PORT:-8181}:8181
+    environment:
+      - H2_WEB_OPTS=-web -webAllowOthers -webPort ${KAPUA_DB_WEB_PORT:-8181}

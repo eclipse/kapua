@@ -35,12 +35,12 @@ RUN useradd -u 1002 -g 0 -d '/var/opt/activemq' -s '/sbin/nologin' activemq && \
 ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
                    -Dcommons.db.connection.host=\${SQL_DB_ADDR} \
                    -Dcommons.db.connection.port=\${SQL_DB_PORT} \
+                   -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
+                   -Dbroker.ip=message-broker \
                    -Ddatastore.elasticsearch.nodes=\${DATASTORE_ADDR} \
                    -Ddatastore.elasticsearch.provider=\${DATASTORE_CLIENT} \
-                   -Dcommons.eventbus.url=\${SERVICE_BROKER_ADDR} \
                    -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
                    -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
-                   -Dbroker.ip=message-broker \
                    -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR} \
                    -Djob.engine.client.auth.mode=trusted"
 

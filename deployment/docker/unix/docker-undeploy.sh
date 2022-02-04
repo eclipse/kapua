@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ###############################################################################
-# Copyright (c) 2016, 2021 Red Hat Inc and others
+# Copyright (c) 2016, 2022 Red Hat Inc and others
 #
 # This program and the accompanying materials are made
 # available under the terms of the Eclipse Public License 2.0
@@ -18,7 +18,6 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 docker_common() {
-    #shellcheck source=./docker-common.sh
     . "${SCRIPT_DIR}"/docker-common.sh
 }
 

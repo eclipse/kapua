@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2018, 2021 Eurotech and/or its affiliates and others
+# Copyright (c) 2018, 2022 Eurotech and/or its affiliates and others
 #
 # This program and the accompanying materials are made
 # available under the terms of the Eclipse Public License 2.0
@@ -40,7 +40,9 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
                -Ddatastore.disable=\${KAPUA_DISABLE_DATASTORE:-false} \
                -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR} \
-               -Djob.engine.client.auth.mode=access_token"
+               -Djob.engine.client.auth.mode=access_token \
+               \${JETTY_DEBUG_OPTS}"
+
 USER 0
 
 RUN chown -R 1000:0 /opt/jetty /var/opt/jetty && \
