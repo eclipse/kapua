@@ -18,63 +18,71 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 docker_common() {
-    #shellcheck source=./docker-common.sh
     . "${SCRIPT_DIR}"/docker-common.sh
 }
 
 docker_compose() {
+
     declare -a COMPOSE_FILES;
 
-    if [[ -n "${KAPUA_BROKER_DEBUG_PORT}" ]]; then
-        if [[ "${KAPUA_BROKER_DEBUG_SUSPEND}" == "true" ]]; then
-            KAPUA_BROKER_DEBUG_SUSPEND="y"
-        else
-            KAPUA_BROKER_DEBUG_SUSPEND="n"
-        fi
-        COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.broker-debug.yml")
+    # Debug Mode
+    if [[ "$1" == true ]]; then
+      echo "Debug mode enabled!"
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.broker-debug.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.console-debug.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.consumer-lifecycle-debug.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.consumer-telemetry-debug.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.job-engine-debug.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.rest-debug.yml")
     fi
 
-    if [[ -n "${KAPUA_REST_DEBUG_PORT}" ]]; then
-        if [[ "${KAPUA_REST_DEBUG_SUSPEND}" == "true" ]]; then
-            KAPUA_REST_DEBUG_SUSPEND="y"
-        else
-            KAPUA_REST_DEBUG_SUSPEND="n"
-        fi
-        COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.rest-debug.yml")
-    fi
-
-    if [[ -n "${KAPUA_ELASTICSEARCH_DATA_DIR}" ]]; then
-        COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.es-storage-dir.yml")
+    # Dev Mode
+    if [[ "$2" == true ]]; then
+      echo "Dev mode enabled!"
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.db-dev.yml")
     fi
 
     docker-compose -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
 }
 
-check_if_docker_logs() {
-    if [[ "$1" == '--logs' ]]; then
-        #shellcheck source=./docker-logs.sh
-        . "${SCRIPT_DIR}/docker-logs.sh"
-    else
-        echo "Unrecognised parameter: ${1}"
-        print_usage_deploy
-    fi
+print_usage_deploy() {
+    echo "Usage: $(basename "$0") [--dev] [--debug] [--logs] " >&2
 }
 
-print_usage_deploy() {
-    echo "Usage: $(basename "$0") [--logs]" >&2
-}
+OPEN_LOGS=false
+DEV_MODE=false
+DEBUG_MODE=false
+for option in "$@"; do
+  case $option in
+    --logs)
+      OPEN_LOGS=true
+      ;;
+    --dev)
+      DEV_MODE=true
+      ;;
+    --debug)
+      DEBUG_MODE=true
+      ;;
+    -*)
+      echo "ERROR: Unrecognised option $option"
+      exit 1
+      ;;
+    *)
+      ;;
+  esac
+done
 
 docker_common
 
 echo "Deploying Eclipse Kapua..."
-docker_compose || {
+docker_compose ${DEBUG_MODE} ${DEV_MODE}  || {
     echo "Deploying Eclipse Kapua... ERROR!"
     exit 1
 }
 echo "Deploying Eclipse Kapua... DONE!"
 
-if [[ -z "$1" ]]; then
-    echo "Run \"docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml logs -f\" for container logs"
+if [[ ${OPEN_LOGS} == true ]]; then
+    . "${SCRIPT_DIR}/docker-logs.sh"
 else
-    check_if_docker_logs "$1"
+    echo "Run \"docker-compose -f ${SCRIPT_DIR}/../compose/docker-compose.yml logs -f\" for container logs"
 fi

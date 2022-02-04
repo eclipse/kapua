@@ -18,7 +18,6 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 docker_common() {
-    #shellcheck source=./docker-common.sh
     . "${SCRIPT_DIR}"/docker-common.sh
 }
 

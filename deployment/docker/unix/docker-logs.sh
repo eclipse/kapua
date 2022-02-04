@@ -18,7 +18,6 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 docker_common() {
-    #shellcheck source=./docker-common.sh
     . "${SCRIPT_DIR}"/docker-common.sh
 }
 
@@ -31,7 +30,7 @@ docker_common
 echo "Opening Eclipse Kapua logs..."
 docker_logs  || {
     echo "Opening Eclipse Kapua logs... ERROR!"
-     exit 1
+    exit 1
 }
 
 echo "Opening Eclipse Kapua logs... DONE!"

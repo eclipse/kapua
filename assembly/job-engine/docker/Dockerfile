@@ -37,7 +37,8 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
                -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
                -Ddatastore.disable=\${KAPUA_DISABLE_DATASTORE:-false} \
-               -Djavax.xml.bind.context.factory=org.eclipse.persistence.jaxb.JAXBContextFactory"
+               -Djavax.xml.bind.context.factory=org.eclipse.persistence.jaxb.JAXBContextFactory \
+               \${JETTY_DEBUG_OPTS}"
 
 USER 0
 
