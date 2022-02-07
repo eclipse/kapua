@@ -13,5 +13,11 @@
 ###############################################################################
 
 echo "Building Keycloak docker image..."
-docker build -t keycloak:sso -f ./Dockerfile .
+
+docker build -t keycloak:sso -f ./docker/Dockerfile . ||
+{
+    echo "Building Keycloak docker image... ERROR!"
+    exit 1
+}
+
 echo "Building Keycloak docker image... DONE!"

@@ -21,13 +21,12 @@
     </parent>
 
     <packaging>pom</packaging>
-    <artifactId>kapua-deployment</artifactId>
 
     <modules>
+        <module>commons</module>
         <module>docker</module>
         <module>minishift</module>
         <module>openshift</module>
-        <module>commons</module>
     </modules>
 
 </project>

@@ -14,7 +14,7 @@
 
 FROM jboss/keycloak:7.0.0
 
-COPY run-keycloak /opt/jboss/run-keycloak
+COPY ../entrypoint/run-keycloak /opt/jboss/run-keycloak
 
 USER 0
 

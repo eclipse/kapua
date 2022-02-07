@@ -21,6 +21,5 @@
     </parent>
 
     <packaging>pom</packaging>
-    <artifactId>kapua-deployment-commons</artifactId>
 
 </project>
