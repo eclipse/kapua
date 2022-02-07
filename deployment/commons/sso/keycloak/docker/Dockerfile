@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2021 Red Hat Inc and others
+# Copyright (c) 2017, 2022 Red Hat Inc and others
 #
 # This program and the accompanying materials are made
 # available under the terms of the Eclipse Public License 2.0
@@ -14,7 +14,7 @@
 
 FROM jboss/keycloak:7.0.0
 
-COPY run-keycloak /opt/jboss/run-keycloak
+COPY ../entrypoint/run-keycloak /opt/jboss/run-keycloak
 
 USER 0
 
