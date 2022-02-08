@@ -29,6 +29,7 @@ import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.event.RaiseServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEvent.EventStatus;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.event.ServiceEventBusException;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -48,6 +49,7 @@ import java.util.List;
  *
  * @since 1.0
  */
+@KapuaProvider
 @InterceptorBind(matchSubclassOf = KapuaService.class, matchAnnotatedWith = RaiseServiceEvent.class)
 public class RaiseServiceEventInterceptor implements MethodInterceptor {
 
