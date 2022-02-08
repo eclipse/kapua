@@ -22,7 +22,7 @@
         <version>1.6.0-SNAPSHOT</version>
     </parent>
 
-    <packaging>pom</packaging>
     <artifactId>kapua-docker</artifactId>
+    <packaging>pom</packaging>
 
 </project>
