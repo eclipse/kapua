@@ -12,16 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.integration.misc;
 
-import org.apache.activemq.command.ConnectionInfo;
-import org.apache.activemq.command.BrokerId;
-import org.apache.activemq.command.ActiveMQDestination;
-import org.apache.activemq.command.Message;
+import org.apache.activemq.broker.Broker;
+import org.apache.activemq.broker.Connection;
+import org.apache.activemq.broker.ConnectionContext;
 import org.apache.activemq.broker.ProducerBrokerExchange;
 import org.apache.activemq.broker.TransportConnector;
-import org.apache.activemq.broker.Broker;
-import org.apache.activemq.broker.ConnectionContext;
-import org.apache.activemq.broker.Connection;
+import org.apache.activemq.command.ActiveMQDestination;
+import org.apache.activemq.command.BrokerId;
+import org.apache.activemq.command.ConnectionInfo;
 import org.apache.activemq.command.ConsumerInfo;
+import org.apache.activemq.command.Message;
 import org.apache.activemq.security.SecurityContext;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityBrokerFilter;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
@@ -46,6 +46,8 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
 
     @Before
     public void initialize() {
+        System.setProperty("broker.ip", "192.168.33.10");
+
         broker = Mockito.mock(Broker.class);
         brokerId = new BrokerId();
         connectionContext = new ConnectionContext();
@@ -58,13 +60,9 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
     }
 
     @Test
-    public void startTest() {
-        try {
-            Mockito.when(broker.getBrokerId()).thenReturn(brokerId);
-            kapuaSecurityBrokerFilter.start();
-        } catch (Exception e) {
-            fail("Exception not expected.");
-        }
+    public void startTest() throws Exception {
+        Mockito.when(broker.getBrokerId()).thenReturn(brokerId);
+        kapuaSecurityBrokerFilter.start();
     }
 
     @Test(expected = NullPointerException.class)
