@@ -107,11 +107,6 @@ velocity.log
 #
 .DS_Store
 
-#
-# vagrant runtime environment
-#
-.vagrant
-
 # Temporarly hide consoleV2 folder until it's merged from its branch
 console-v2/
 

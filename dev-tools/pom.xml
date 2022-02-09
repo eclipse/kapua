@@ -28,7 +28,6 @@
 
     <modules>
         <module>cucumber-reports</module>
-        <module>vagrant</module>
     </modules>
 
 </project>
