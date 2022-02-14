@@ -50,4 +50,12 @@ public class GwtInventoryBundle extends KapuaBaseModel {
         return get("status");
     }
 
+    public void setSigned(Boolean signed) {
+        set("signed", signed);
+    }
+
+    public Boolean getSigned() {
+        return get("signed");
+    }
+
 }

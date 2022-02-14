@@ -55,11 +55,14 @@ components:
           type: string
         status:
           type: string
+        signed:
+          type: boolean
       example:
         id: 0
         name: org.eclipse.osgi
         version: 3.16.0.v20200828-0759
         status: ACTIVE
+        signed: false
     deviceInventoryBundles:
       type: object
       properties:

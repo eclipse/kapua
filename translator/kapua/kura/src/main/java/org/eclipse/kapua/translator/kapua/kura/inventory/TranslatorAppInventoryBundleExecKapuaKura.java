@@ -73,6 +73,7 @@ public class TranslatorAppInventoryBundleExecKapuaKura extends AbstractTranslato
                 KuraInventoryBundle kuraInventoryBundle = new KuraInventoryBundle();
                 kuraInventoryBundle.setName(deviceInventoryBundle.getName());
                 kuraInventoryBundle.setVersion(deviceInventoryBundle.getVersion());
+                kuraInventoryBundle.setSigned(deviceInventoryBundle.getSigned());
 
                 kuraRequestPayload.setBody(getJsonMapper().writeValueAsString(kuraInventoryBundle).getBytes(CHAR_ENCODING));
             }

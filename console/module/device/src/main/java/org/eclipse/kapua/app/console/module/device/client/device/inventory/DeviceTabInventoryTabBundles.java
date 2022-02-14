@@ -28,8 +28,10 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
@@ -115,6 +117,18 @@ public class DeviceTabInventoryTabBundles extends TabItem {
         column.setId("status");
         column.setHeader("Status");
         column.setWidth(80);
+        configs.add(column);
+
+        column = new ColumnConfig();
+        column.setId("signed");
+        column.setHeader("Signed");
+        column.setWidth(50);
+        column.setRenderer(new GridCellRenderer<GwtInventoryBundle>() {
+            @Override
+            public Object render(GwtInventoryBundle gwtInventoryBundle, String property, ColumnData columnData, int col, int row, ListStore<GwtInventoryBundle> listStore, Grid<GwtInventoryBundle> grid) {
+                return gwtInventoryBundle.getSigned() != null ? gwtInventoryBundle.getSigned() : "N/A";
+            }
+        });
         configs.add(column);
 
         ColumnModel columnModel = new ColumnModel(configs);
