@@ -107,6 +107,7 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
             deviceInventoryBundle.setName(kuraInventoryBundle.getName());
             deviceInventoryBundle.setVersion(kuraInventoryBundle.getVersion());
             deviceInventoryBundle.setStatus(kuraInventoryBundle.getState());
+            deviceInventoryBundle.setSigned(kuraInventoryBundle.getSigned());
 
             deviceInventoryBundles.addInventoryBundle(deviceInventoryBundle);
         });
