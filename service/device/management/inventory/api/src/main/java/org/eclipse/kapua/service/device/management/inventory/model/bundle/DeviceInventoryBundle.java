@@ -97,4 +97,20 @@ public interface DeviceInventoryBundle {
      * @since 1.5.0
      */
     void setStatus(String status);
+
+    /**
+     * Whether the bundle is signed.
+     *
+     * @return {@code true} if is signed, {@code false} if not or {@code null} if the information is not known.
+     * @since 1.6.0
+     */
+    Boolean getSigned();
+
+    /**
+     * Sets whether the bundle is signed.
+     *
+     * @param signed {@code true} if is signed, {@code false} if not or {@code null} if the information is not known.
+     * @since 1.6.0
+     */
+    void setSigned(Boolean signed);
 }

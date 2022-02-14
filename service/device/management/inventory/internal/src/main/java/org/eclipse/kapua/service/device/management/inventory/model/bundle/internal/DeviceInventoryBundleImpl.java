@@ -25,6 +25,7 @@ public class DeviceInventoryBundleImpl implements DeviceInventoryBundle {
     private String name;
     private String version;
     private String status;
+    private Boolean signed;
 
     /**
      * Constructor.
@@ -72,5 +73,15 @@ public class DeviceInventoryBundleImpl implements DeviceInventoryBundle {
     @Override
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public Boolean getSigned() {
+        return signed;
+    }
+
+    @Override
+    public void setSigned(Boolean signed) {
+        this.signed = signed;
     }
 }

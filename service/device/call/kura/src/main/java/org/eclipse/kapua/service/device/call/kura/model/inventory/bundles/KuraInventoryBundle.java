@@ -35,6 +35,9 @@ public class KuraInventoryBundle {
     @JsonProperty("state")
     public String state;
 
+    @JsonProperty("signed")
+    public Boolean signed;
+
     /**
      * Gets the identifier.
      *
@@ -113,5 +116,25 @@ public class KuraInventoryBundle {
      */
     public void setState(String state) {
         this.state = state;
+    }
+
+    /**
+     * Whether the bundle is signed.
+     *
+     * @return {@code true} if is signed, {@code false} if not or {@code null} if the information is not known.
+     * @since 1.6.0
+     */
+    public Boolean getSigned() {
+        return signed;
+    }
+
+    /**
+     * Sets whether the bundle is signed.
+     *
+     * @param signed {@code true} if is signed, {@code false} if not or {@code null} if the information is not known.
+     * @since 1.6.0
+     */
+    public void setSigned(Boolean signed) {
+        this.signed = signed;
     }
 }
