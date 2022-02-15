@@ -19,14 +19,14 @@ import org.eclipse.kapua.service.user.User;
 /**
  * {@link Session#getAttribute(Object)} keys.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 public class ShiroSessionKeys {
 
     /**
      * Constructor.
      *
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private ShiroSessionKeys() {
     }
@@ -41,7 +41,7 @@ public class ShiroSessionKeys {
     /**
      * The {@link Account#getName()}.
      *
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public static final String ACCOUNT_NAME = "scopeName";
 
@@ -55,7 +55,7 @@ public class ShiroSessionKeys {
     /**
      * The {@link User#getName()}.
      *
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public static final String USER_NAME = "userName";
 }

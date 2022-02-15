@@ -20,14 +20,14 @@ import org.slf4j.MDC;
  * Logging {@link MDC} keys.
  *
  * @see MDC
- * @since 1.6.0
+ * @since 2.0.0
  */
 public class LoggingMdcKeys {
 
     /**
      * Constructor.
      *
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private LoggingMdcKeys() {
     }
@@ -56,7 +56,7 @@ public class LoggingMdcKeys {
     /**
      * The {@link User#getName()}.
      *
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public static final String USER_NAME = "userName";
 }

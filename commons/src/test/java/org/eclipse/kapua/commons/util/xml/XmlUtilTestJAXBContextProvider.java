@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * {@link JAXBContextProvider} implementation to be used in {@link XmlUtilTest}.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 public class XmlUtilTestJAXBContextProvider implements JAXBContextProvider {
 

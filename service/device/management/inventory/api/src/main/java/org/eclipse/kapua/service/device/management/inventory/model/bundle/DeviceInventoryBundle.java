@@ -102,7 +102,7 @@ public interface DeviceInventoryBundle {
      * Whether the bundle is signed.
      *
      * @return {@code true} if is signed, {@code false} if not or {@code null} if the information is not known.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     Boolean getSigned();
 
@@ -110,7 +110,7 @@ public interface DeviceInventoryBundle {
      * Sets whether the bundle is signed.
      *
      * @param signed {@code true} if is signed, {@code false} if not or {@code null} if the information is not known.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     void setSigned(Boolean signed);
 }

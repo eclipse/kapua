@@ -43,7 +43,7 @@ public class ExceptionInfo extends ThrowableInfo {
      *
      * @param httpStatus The {@link Status} of the {@link Response}
      * @param exception  The cause of the error.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public ExceptionInfo(Status httpStatus, KapuaException exception) {
         super(httpStatus, exception);

@@ -84,7 +84,7 @@ public class XmlUtil {
      *
      * @return The configured {@link JAXBContextProvider}.
      * @throws KapuaIllegalStateException if {@link JAXBContextProvider} is not configured.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public static JAXBContextProvider getContextProvider() {
         if (jaxbContextProvider == null) {
@@ -375,7 +375,7 @@ public class XmlUtil {
      * @return The unmarshalled {@link Object}.
      * @throws JAXBException See {@link #getContext()}.
      * @throws SAXException  See {@link XMLReaderFactory#createXMLReader()}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public static <T> T unmarshalJson(@NotNull Reader reader, @NotNull Class<T> type)
             throws JAXBException, SAXException {

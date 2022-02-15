@@ -60,7 +60,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
      * Constructor.
      *
      * @param persistenceUnitName The {@link PersistenceUnit} name.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     protected AbstractEntityManagerFactory(String persistenceUnitName) {
         this(persistenceUnitName, DEFAULT_DATASOURCE_NAME);
@@ -71,7 +71,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
      *
      * @param persistenceUnitName The {@link PersistenceUnit} name.
      * @param datasourceName      The {@link DataSource} name.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     protected AbstractEntityManagerFactory(String persistenceUnitName, String datasourceName) {
         //
@@ -121,7 +121,7 @@ public abstract class AbstractEntityManagerFactory implements org.eclipse.kapua.
      * @param persistenceUnitName The {@link PersistenceUnit#name()}.
      * @param datasourceName      The datasource name.
      * @param configOverrides     The configuration overrides for the {@link EntityManager}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private void printEntityManagerConfiguration(String persistenceUnitName, String datasourceName, Map<String, Object> configOverrides) {
         ConfigurationPrinter configurationPrinter =

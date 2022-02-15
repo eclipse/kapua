@@ -18,7 +18,7 @@ import java.util.List;
  * Utility class used by the {@link org.eclipse.kapua.locator.KapuaLocator} implementation to export configuration 
  * regarding JAXB serializable classes defined within Kapua modules.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 public class ServiceModuleJaxbClassConfig {
 

@@ -62,7 +62,7 @@ public class JobResumingException extends JobScopedEngineException {
      * Gets the {@link JobExecution#getId()} which was not able to resume.
      *
      * @return The {@link JobExecution#getId()} which was not able to resume.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public KapuaId getJobExecutionId() {
         return jobExecutionId;

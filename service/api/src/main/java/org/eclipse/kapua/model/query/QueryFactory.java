@@ -17,7 +17,7 @@ import org.eclipse.kapua.model.KapuaObjectFactory;
 /**
  * {@link KapuaQuery} {@link KapuaObjectFactory} definition.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 public interface QueryFactory extends KapuaObjectFactory {
 
@@ -25,7 +25,7 @@ public interface QueryFactory extends KapuaObjectFactory {
      * Instantiates a new {@link KapuaQuery}.
      *
      * @return The newly instantiated {@link KapuaQuery}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     KapuaQuery newQuery();
 }

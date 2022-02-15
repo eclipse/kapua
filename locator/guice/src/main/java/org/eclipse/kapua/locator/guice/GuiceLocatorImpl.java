@@ -188,7 +188,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
      * @param className        The {@link Class#getName()} to check.
      * @param excludedPackages The {@link Collection} of excluded {@link Class#getPackage()}.
      * @return {@code true} if matched, {@code false otherwise}
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private boolean isExcluded(@NotNull String className, @NotNull Collection<String> excludedPackages) {
         for (String pkg : excludedPackages) {
@@ -205,7 +205,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
      * @param resourceNameURL The {@link KapuaLocator} configuration resource name.
      * @param locatorConfig   The loaded {@link LocatorConfig}.
      * @param kapuaModules    The laaded {@link KapuaModule}s
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private void printLoadedKapuaModuleConfiguration(@NotNull URL resourceNameURL, @NotNull LocatorConfig locatorConfig, @NotNull List<AbstractKapuaModule> kapuaModules, @NotNull List<Class<? extends AbstractKapuaModule>> excludedKapuaModules) {
         ConfigurationPrinter configurationPrinter =
@@ -251,7 +251,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
      * @param resourceNameURL       The {@link KapuaLocator} configuration resource name.
      * @param locatorConfig         The loaded {@link LocatorConfig}.
      * @param loadedXmlSerializable The laaded {@link KapuaModule}s
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private void printLoadedXmlSerializableConfiguration(@NotNull URL resourceNameURL, @NotNull LocatorConfig locatorConfig, @NotNull List<Class<?>> loadedXmlSerializable, @NotNull List<Class<?>> excludedXmlSerializable) {
         ConfigurationPrinter configurationPrinter =
@@ -306,7 +306,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
      *
      * @param configurationPrinter The {@link ConfigurationPrinter} to add the configuration to.
      * @param locatorConfig        The {@link LocatorConfig}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private void addIncludedExcludedPackageConfig(@NotNull ConfigurationPrinter configurationPrinter, @NotNull LocatorConfig locatorConfig) {
         // Inclusions
@@ -338,7 +338,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
      * @param strings The {@link Collection} to sort.
      * @param <C>     The type of {@link Comparable}.
      * @return The sorted {@link Collection}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private <C extends Comparable<?>> Collection<C> sortedComparable(Collection<C> strings) {
         return strings.stream().sorted().collect(Collectors.toList());
@@ -350,7 +350,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
      * @param classes The {@link Collection} to sort.
      * @param <T>     The type of {@link Class}.
      * @return The sorted {@link Collection}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private <T extends Class<?>> Collection<T> sortedClass(Collection<T> classes) {
         return classes.stream().sorted(Comparator.comparing(Class::getName)).collect(Collectors.toList());
