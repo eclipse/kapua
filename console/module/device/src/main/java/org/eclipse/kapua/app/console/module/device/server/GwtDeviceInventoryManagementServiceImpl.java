@@ -97,6 +97,7 @@ public class GwtDeviceInventoryManagementServiceImpl extends KapuaRemoteServiceS
                 gwtInventoryBundle.setName(inventoryBundle.getName());
                 gwtInventoryBundle.setVersion(inventoryBundle.getVersion());
                 gwtInventoryBundle.setStatus(inventoryBundle.getStatus());
+                gwtInventoryBundle.setSigned(inventoryBundle.getSigned());
 
                 gwtInventoryBundles.add(gwtInventoryBundle);
             }
@@ -183,6 +184,7 @@ public class GwtDeviceInventoryManagementServiceImpl extends KapuaRemoteServiceS
                     inventoryBundle.setName(bundleInfo.getName());
                     inventoryBundle.setVersion(bundleInfo.getVersion());
                     inventoryBundle.setStatus(bundleInfo.getStatus());
+                    inventoryBundle.setSigned(bundleInfo.getSigned());
 
                     gwtPackageBundles.add(inventoryBundle);
                 }
