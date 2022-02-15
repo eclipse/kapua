@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Just a container to pass a bunch of classes around
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 public interface ClassProvider {
 

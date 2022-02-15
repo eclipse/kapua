@@ -77,7 +77,7 @@ public class KapuaWebFilter extends ShiroFilter {
      * Gets the {@link KapuaSession} from the {@link Subject}
      *
      * @return The {@link KapuaSession} from the {@link Subject}
-     * @since 1.6.0
+     * @since 2.0.0
      */
     protected KapuaSession getSession() {
         Subject shiroSubject = SecurityUtils.getSubject();
@@ -89,7 +89,7 @@ public class KapuaWebFilter extends ShiroFilter {
      *
      * @param accessToken The {@link AccessToken} to check and refresh if needed.
      * @throws KapuaException If one of the checks fails or refreshing the token fails.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     protected void checkAndRefreshAccessTokenIfExpired(AccessToken accessToken) throws KapuaException {
         if (accessToken == null) {

@@ -70,7 +70,7 @@ public class EntityUniquenessExceptionInfo extends ExceptionInfo {
      * Gets the {@link KapuaEntityUniquenessException#getUniquesFieldValues()}.
      *
      * @return The {@link KapuaEntityUniquenessException#getUniquesFieldValues()}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public List<Map.Entry<String, Object>> getUniquesFieldValues() {
         return uniquesFieldValues;

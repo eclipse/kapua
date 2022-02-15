@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Util class that offers checks on the {@link KapuaNamedEntity#getName()} uniqueness in different flavors.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 public class KapuaNamedEntityServiceUtils {
 
@@ -44,7 +44,7 @@ public class KapuaNamedEntityServiceUtils {
     /**
      * Constructor.
      *
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private KapuaNamedEntityServiceUtils() {
     }
@@ -58,7 +58,7 @@ public class KapuaNamedEntityServiceUtils {
      * @param <C>                     The {@link KapuaNamedEntityCreator} type.
      * @throws KapuaDuplicateNameException if the {@link KapuaNamedEntityCreator#getName()} is duplicated within the {@link KapuaNamedEntityCreator#getScopeId()}.
      * @throws KapuaException              if any other error occurs.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public static <E extends KapuaNamedEntity, C extends KapuaNamedEntityCreator<E>> void checkEntityNameUniqueness(@NotNull KapuaEntityService<E, C> kapuaNamedEntityService, @NotNull C creator) throws KapuaException {
         checkEntityNameUniqueness(kapuaNamedEntityService, creator, Collections.emptyList());
@@ -74,7 +74,7 @@ public class KapuaNamedEntityServiceUtils {
      * @param <C>                     The {@link KapuaNamedEntityCreator} type.
      * @throws KapuaDuplicateNameException if the {@link KapuaNamedEntityCreator#getName()} is duplicated within the {@link KapuaNamedEntityCreator#getScopeId()}.
      * @throws KapuaException              if any other error occurs.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public static <E extends KapuaNamedEntity, C extends KapuaNamedEntityCreator<E>> void checkEntityNameUniqueness(@NotNull KapuaEntityService<E, C> kapuaNamedEntityService, @NotNull C creator, @NotNull List<QueryPredicate> additionalPredicates) throws KapuaException {
         KapuaQuery query = QUERY_FACTORY.newQuery();
@@ -102,7 +102,7 @@ public class KapuaNamedEntityServiceUtils {
      * @param <E>                     The {@link KapuaNamedEntity} type.
      * @throws KapuaDuplicateNameException if the {@link KapuaNamedEntity#getName()} is duplicated within the {@link KapuaNamedEntity#getScopeId()}.
      * @throws KapuaException              if any other error occurs.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public static <E extends KapuaNamedEntity> void checkEntityNameUniqueness(@NotNull KapuaEntityService<E, ?> kapuaNamedEntityService, @NotNull E entity) throws KapuaException {
         checkEntityNameUniqueness(kapuaNamedEntityService, entity, Collections.emptyList());
@@ -117,7 +117,7 @@ public class KapuaNamedEntityServiceUtils {
      * @param <E>                     The {@link KapuaNamedEntity} type.
      * @throws KapuaDuplicateNameException if the {@link KapuaNamedEntity#getName()} is duplicated within the {@link KapuaNamedEntity#getScopeId()}.
      * @throws KapuaException              if any other error occurs.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public static <E extends KapuaNamedEntity> void checkEntityNameUniqueness(@NotNull KapuaEntityService<E, ?> kapuaNamedEntityService, @NotNull E entity, @NotNull List<QueryPredicate> additionalPredicates) throws KapuaException {
         KapuaQuery query = QUERY_FACTORY.newQuery();
@@ -147,7 +147,7 @@ public class KapuaNamedEntityServiceUtils {
      * @param <C>                     The {@link KapuaNamedEntityCreator} type.
      * @throws KapuaDuplicateNameException if the {@link KapuaNamedEntityCreator#getName()} is duplicated within all the scopes
      * @throws KapuaException              if any other error occurs.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public static <E extends KapuaNamedEntity, C extends KapuaNamedEntityCreator<E>> void checkEntityNameUniquenessInAllScopes(@NotNull KapuaEntityService<E, C> kapuaNamedEntityService, @NotNull C creator) throws KapuaException {
         KapuaQuery query = QUERY_FACTORY.newQuery();
@@ -166,7 +166,7 @@ public class KapuaNamedEntityServiceUtils {
      * @param <E>                     The {@link KapuaNamedEntity} type.
      * @throws KapuaDuplicateNameException if the {@link KapuaNamedEntity#getName()} is duplicated within all the scopes
      * @throws KapuaException              if any other error occurs.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public static <E extends KapuaNamedEntity> void checkEntityNameUniquenessInAllScopes(@NotNull KapuaEntityService<E, ?> kapuaNamedEntityService, @NotNull E entity) throws KapuaException {
         KapuaQuery query = QUERY_FACTORY.newQuery();

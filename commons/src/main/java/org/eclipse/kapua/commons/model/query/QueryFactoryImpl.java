@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 /**
  * {@link QueryFactory} implementation.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 @Singleton
 public class QueryFactoryImpl implements QueryFactory {

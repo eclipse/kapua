@@ -20,7 +20,7 @@ import org.eclipse.kapua.service.account.AccountService;
 /**
  * {@code kapua-account-internal} {@link Module} implementation.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 public class AccountModule extends AbstractKapuaModule implements Module {
 

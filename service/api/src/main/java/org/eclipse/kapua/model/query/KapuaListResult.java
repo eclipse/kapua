@@ -81,7 +81,7 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
      *
      * @param filter The filter to apply to select results.
      * @return The filtered {@link KapuaEntity}s that matched the {@link KapuaQuery#getPredicate()}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     List<E> getItems(@NotNull Predicate<E> filter);
 
@@ -94,7 +94,7 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
      * @param keyMapper The {@link Function} which defines the {@link Map.Entry#getKey()} for each {@link Map.Entry}
      * @param <K>       The type of the {@link Map.Entry#getKey()}
      * @return The {@link Map} generated according to the mapping {@link Map.Entry#getKey()} {@link Function}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     <K> Map<K, E> getItemsAsMap(@NotNull Function<E, K> keyMapper);
 
@@ -107,7 +107,7 @@ public interface KapuaListResult<E extends KapuaEntity> extends KapuaSerializabl
      * @param <K>         The type of the {@link Map.Entry#getKey()}
      * @param <V>         The type of the {@link Map.Entry#getValue()}
      * @return The {@link Map} generated according to the mapping {@link Function}s.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     <K, V> Map<K, V> getItemsAsMap(@NotNull Function<E, K> keyMapper, @NotNull Function<E, V> valueMapper);
 

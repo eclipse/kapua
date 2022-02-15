@@ -19,7 +19,7 @@ import org.eclipse.kapua.model.query.QueryFactory;
 /**
  * {@code kapua-commons} {@link AbstractKapuaModule}.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 public class CommonsModule extends AbstractKapuaModule {
 

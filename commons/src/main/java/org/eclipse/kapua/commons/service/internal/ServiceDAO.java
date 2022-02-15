@@ -291,7 +291,7 @@ public class ServiceDAO {
      * @param value The value of the {@link KapuaNamedEntity#getName()} to search.
      * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
      * @throws NonUniqueResultException When more than one result is returned
-     * @since 1.6.0
+     * @since 2.0.0
      */
     @Nullable
     public static <E extends KapuaNamedEntity> E findByName(@NonNull EntityManager em,

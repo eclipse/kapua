@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Test {@link Object} to be used in {@link XmlUtilTest}.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

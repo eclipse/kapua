@@ -372,7 +372,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
      * @param selectorQuery The selector {@link JobStepQuery}.
      * @param increment     The increment o apply to the matched {@link JobStep}s
      * @throws KapuaException
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private void shiftJobStepPosition(EntityManager em, JobStepQuery selectorQuery, int increment) throws KapuaException {
         selectorQuery.setSortCriteria(selectorQuery.fieldSortCriteria(JobStepAttributes.STEP_INDEX, SortOrder.ASCENDING));

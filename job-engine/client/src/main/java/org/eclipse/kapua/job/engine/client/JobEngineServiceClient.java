@@ -234,7 +234,7 @@ public class JobEngineServiceClient implements JobEngineService {
      *
      * @param path The path of the request.
      * @return The {@link Invocation.Builder}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private Invocation.Builder getPreparedRequest(String path) {
         return jobEngineTarget.path(path)
@@ -250,7 +250,7 @@ public class JobEngineServiceClient implements JobEngineService {
      * @param response The {@link Response} to check.
      * @return The body of the request in {@link String} format.
      * @throws KapuaException The proper {@link KapuaException} if needed.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private String checkResponse(String method, String path, Response response) throws KapuaException {
         String responseText = response.readEntity(String.class);

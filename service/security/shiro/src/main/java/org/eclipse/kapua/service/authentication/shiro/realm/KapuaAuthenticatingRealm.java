@@ -43,7 +43,7 @@ import java.util.Map;
 /**
  * Base {@code abstract} {@link AuthenticatingRealm} extension.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
 
@@ -57,7 +57,7 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
      *
      * @param subject                 The {@link Subject} of the login.
      * @param loginAuthenticationInfo The {@link LoginAuthenticationInfo} source of the data
-     * @since 1.6.0
+     * @since 2.0.0
      */
     protected void populateSession(@NotNull Subject subject, @NotNull LoginAuthenticationInfo loginAuthenticationInfo) {
         Session session = subject.getSession();
@@ -82,7 +82,7 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
      *
      * @param accountId The {@link Account#getId()} to check.
      * @return The found {@link Account}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     protected Account checkAccount(KapuaId accountId) {
         AccountService accountService = LOCATOR.getService(AccountService.class);
@@ -127,7 +127,7 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
      * @throws UnknownAccountException     if {@link Credential} is {@code null}
      * @throws DisabledAccountException    if {@link Credential#getStatus()} is {@link CredentialStatus#DISABLED}.
      * @throws ExpiredCredentialsException if {@link Credential#getExpirationDate()} is passed.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     protected void checkCredential(Credential credential) throws UnknownAccountException, DisabledAccountException, ExpiredCredentialsException {
         if (credential == null) {
@@ -151,7 +151,7 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
      * @param credential              The {@link Credential} to check.
      * @param credentialServiceConfig The {@link CredentialService#getConfigValues(KapuaId)}
      * @throws TemporaryLockedAccountException if the {@link Credential} is temporary locked.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     protected void checkCredentialLockout(Credential credential, Map<String, Object> credentialServiceConfig) throws TemporaryLockedAccountException {
 
@@ -170,7 +170,7 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
      *
      * @param scopeId The scope {@link KapuaId}.
      * @return The {@link Map} of configuration values of the {@link CredentialService}.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     protected Map<String, Object> getCredentialServiceConfig(KapuaId scopeId) {
         try {
@@ -186,7 +186,7 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
      * To be used after a succeessful login.
      *
      * @param credential The {@link Credential} to reset.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     protected void resetCredentialLockout(Credential credential) {
         CredentialService credentialService = LOCATOR.getService(CredentialService.class);
@@ -219,7 +219,7 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
      * @throws UnknownAccountException     if {@link User} is {@code null}
      * @throws DisabledAccountException    if {@link User#getStatus()} is {@link UserStatus#DISABLED}.
      * @throws ExpiredCredentialsException if {@link User#getExpirationDate()} is passed.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     protected void checkUser(User user) {
         if (user == null) {

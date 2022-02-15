@@ -76,7 +76,7 @@ public class JobStoppingException extends JobScopedEngineException {
      * Gets the {@link JobExecution#getId()} that cannot be stopped.
      *
      * @return The {@link JobExecution#getId()} that cannot be stopped.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     public KapuaId getJobExecutionId() {
         return jobExecutionId;

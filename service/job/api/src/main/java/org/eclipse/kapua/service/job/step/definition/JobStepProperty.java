@@ -97,7 +97,7 @@ public interface JobStepProperty {
      * Gets whether this {@link #getPropertyValue()} is a secret that shouldn't be shown (i.e. passwords).
      *
      * @return {@code true} if {@link #getPropertyValue()} is a secret that shouldn't be shown, {@code false} otherwise.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     Boolean getSecret();
 
@@ -105,7 +105,7 @@ public interface JobStepProperty {
      * Whether t{@link #getPropertyValue()} is a secret that shouldn't be shown (i.e. passwords).
      *
      * @param se {@code true} if {@link #getPropertyValue()} is a secret that shouldn't be shown, {@code false} otherwise.
-     * @since 1.6.0
+     * @since 2.0.0
      */
     void setSecret(Boolean se);
 

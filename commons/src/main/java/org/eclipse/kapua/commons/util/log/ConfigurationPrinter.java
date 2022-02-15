@@ -483,7 +483,7 @@ public class ConfigurationPrinter {
      * <p>
      * Used to create the list of parameters (value) to print.
      *
-     * @since 1.6.0
+     * @since 2.0.0
      */
     private static class SimpleConfigurationParameter extends ConfigurationHeader {
 

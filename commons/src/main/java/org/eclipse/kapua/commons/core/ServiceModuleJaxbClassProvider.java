@@ -21,7 +21,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
  * implementation. KapuaLocator is initialized in the constructor in order let the
  * implementation export the required list of classes.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 public class ServiceModuleJaxbClassProvider implements ClassProvider {
 

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * {@link Account#getParentAccountPath()} {@link XmlAdapter}.
  *
- * @since 1.6.0
+ * @since 2.0.0
  */
 public class AccountParentPathXmlAdapter extends XmlAdapter<String, String> {
 
