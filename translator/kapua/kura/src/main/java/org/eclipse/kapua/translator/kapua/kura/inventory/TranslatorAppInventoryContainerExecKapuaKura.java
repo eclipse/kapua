@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -14,16 +14,16 @@ package org.eclipse.kapua.translator.kapua.kura.inventory;
 
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.InventoryMetrics;
-import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundle;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.containers.KuraInventoryContainer;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestChannel;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestMessage;
 import org.eclipse.kapua.service.device.call.message.kura.app.request.KuraRequestPayload;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
-import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryBundleExecRequestMessage;
+import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryContainerExecRequestMessage;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryRequestChannel;
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryRequestPayload;
-import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
 import org.eclipse.kapua.translator.exception.InvalidPayloadException;
@@ -31,11 +31,11 @@ import org.eclipse.kapua.translator.kapua.kura.AbstractTranslatorKapuaKura;
 import org.eclipse.kapua.translator.kapua.kura.TranslatorKapuaKuraUtils;
 
 /**
- * {@link Translator} implementation from {@link InventoryBundleExecRequestMessage} to {@link KuraRequestMessage}
+ * {@link Translator} implementation from {@link InventoryContainerExecRequestMessage} to {@link KuraRequestMessage}
  *
- * @since 1.5.0
+ * @since 2.0.0
  */
-public class TranslatorAppInventoryBundleExecKapuaKura extends AbstractTranslatorKapuaKura<InventoryRequestChannel, InventoryRequestPayload, InventoryBundleExecRequestMessage> {
+public class TranslatorAppInventoryContainerExecKapuaKura extends AbstractTranslatorKapuaKura<InventoryRequestChannel, InventoryRequestPayload, InventoryContainerExecRequestMessage> {
 
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
@@ -44,7 +44,7 @@ public class TranslatorAppInventoryBundleExecKapuaKura extends AbstractTranslato
         try {
             KuraRequestChannel kuraRequestChannel = TranslatorKapuaKuraUtils.buildBaseRequestChannel(InventoryMetrics.APP_ID, InventoryMetrics.APP_VERSION, inventoryRequestChannel.getMethod());
 
-            switch (inventoryRequestChannel.getBundleAction()) {
+            switch (inventoryRequestChannel.getContainerAction()) {
                 case START:
                     kuraRequestChannel.setResources(new String[]{inventoryRequestChannel.getResource(), "_start"});
                     break;
@@ -52,7 +52,7 @@ public class TranslatorAppInventoryBundleExecKapuaKura extends AbstractTranslato
                     kuraRequestChannel.setResources(new String[]{inventoryRequestChannel.getResource(), "_stop"});
                     break;
                 default:
-                    throw new KapuaIllegalArgumentException("inventoryRequestChannel.bundleAction", inventoryRequestChannel.getBundleAction().name());
+                    throw new KapuaIllegalArgumentException("inventoryRequestChannel.containerAction", inventoryRequestChannel.getContainerAction().name());
             }
 
             // Return Kura Channel
@@ -68,16 +68,14 @@ public class TranslatorAppInventoryBundleExecKapuaKura extends AbstractTranslato
             KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
 
             if (inventoryRequestPayload.hasBody()) {
-                DeviceInventoryBundle deviceInventoryBundle = inventoryRequestPayload.getDeviceInventoryBundle();
+                DeviceInventoryContainer deviceInventoryContainer = inventoryRequestPayload.getDeviceInventoryContainer();
 
-                KuraInventoryBundle kuraInventoryBundle = new KuraInventoryBundle();
-                kuraInventoryBundle.setId(Integer.valueOf(deviceInventoryBundle.getId()));
-                kuraInventoryBundle.setName(deviceInventoryBundle.getName());
-                kuraInventoryBundle.setVersion(deviceInventoryBundle.getVersion());
-                kuraInventoryBundle.setState(deviceInventoryBundle.getStatus());
-                kuraInventoryBundle.setSigned(deviceInventoryBundle.getSigned());
+                KuraInventoryContainer kuraInventoryContainer = new KuraInventoryContainer();
+                kuraInventoryContainer.setName(deviceInventoryContainer.getName());
+                kuraInventoryContainer.setVersion(deviceInventoryContainer.getVersion());
+                kuraInventoryContainer.setType(deviceInventoryContainer.getType());
 
-                kuraRequestPayload.setBody(getJsonMapper().writeValueAsString(kuraInventoryBundle).getBytes(CHAR_ENCODING));
+                kuraRequestPayload.setBody(getJsonMapper().writeValueAsString(kuraInventoryContainer).getBytes(CHAR_ENCODING));
             }
 
             return kuraRequestPayload;
@@ -87,8 +85,8 @@ public class TranslatorAppInventoryBundleExecKapuaKura extends AbstractTranslato
     }
 
     @Override
-    public Class<InventoryBundleExecRequestMessage> getClassFrom() {
-        return InventoryBundleExecRequestMessage.class;
+    public Class<InventoryContainerExecRequestMessage> getClassFrom() {
+        return InventoryContainerExecRequestMessage.class;
     }
 
     @Override
