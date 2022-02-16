@@ -19,6 +19,9 @@ import org.eclipse.kapua.service.device.management.DeviceManagementService;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundleAction;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainerAction;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainers;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
 import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackages;
@@ -63,12 +66,37 @@ public interface DeviceInventoryManagementService extends DeviceManagementServic
      * @param scopeId                     The scope {@link KapuaId} of the target {@link Device}
      * @param deviceId                    The {@link Device#getId()}
      * @param deviceInventoryBundle       The {@link DeviceInventoryBundle} to execute the action on.
-     * @param deviceInventoryBundleAction The {@link DeviceInventoryBundleAction} deviceInventoryBundleAction.
+     * @param deviceInventoryBundleAction The {@link DeviceInventoryBundleAction}.
      * @param timeout                     The timeout waiting for the device response
      * @throws KapuaException
      * @since 1.5.0
      */
     void execBundle(KapuaId scopeId, KapuaId deviceId, DeviceInventoryBundle deviceInventoryBundle, DeviceInventoryBundleAction deviceInventoryBundleAction, Long timeout) throws KapuaException;
+
+    /**
+     * Gets the {@link DeviceInventoryContainers}
+     *
+     * @param scopeId  The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId The {@link Device#getId()}
+     * @param timeout  The timeout waiting for the device response
+     * @return The {@link DeviceInventoryContainers} retrieved from the {@link Device}
+     * @throws KapuaException
+     * @since 1.5.0
+     */
+    DeviceInventoryContainers getContainers(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
+
+    /**
+     * Executes an action on a {@link DeviceInventoryContainer}.
+     *
+     * @param scopeId                        The scope {@link KapuaId} of the target {@link Device}
+     * @param deviceId                       The {@link Device#getId()}
+     * @param deviceInventoryContainer       The {@link DeviceInventoryContainer} to execute the action on.
+     * @param deviceInventoryContainerAction The {@link DeviceInventoryContainerAction}.
+     * @param timeout                        The timeout waiting for the device response
+     * @throws KapuaException
+     * @since 2.0.0
+     */
+    void execContainer(KapuaId scopeId, KapuaId deviceId, DeviceInventoryContainer deviceInventoryContainer, DeviceInventoryContainerAction deviceInventoryContainerAction, Long timeout) throws KapuaException;
 
     /**
      * Gets the {@link DeviceInventorySystemPackages}
@@ -78,7 +106,7 @@ public interface DeviceInventoryManagementService extends DeviceManagementServic
      * @param timeout  The timeout waiting for the device response
      * @return The {@link DeviceInventorySystemPackages} retrieved from the {@link Device}
      * @throws KapuaException
-     * @since 1.5.0
+     * @since 2.0.0
      */
     DeviceInventorySystemPackages getSystemPackages(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;
 
