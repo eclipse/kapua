@@ -13,12 +13,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common.utils;
 
-import org.eclipse.kapua.service.elasticsearch.server.embedded.EsEmbeddedEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.cucumber.guice.ScenarioScoped;
 import io.cucumber.java.en.Given;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -33,14 +31,11 @@ public class EmbeddedDatastore {
 
     private static final int EXTRA_STARTUP_DELAY = Integer.getInteger("org.eclipse.kapua.qa.datastore.extraStartupDelay", 0);
 
-    private static EsEmbeddedEngine esEmbeddedEngine;
-
 
     @Given("^Start Datastore$")
     public void setup() {
 
         LOG.info("Starting embedded datastore...");
-        esEmbeddedEngine = new EsEmbeddedEngine();
 
         if (EXTRA_STARTUP_DELAY > 0) {
             try {
@@ -73,10 +68,6 @@ public class EmbeddedDatastore {
                     LOG.warn("Wait interrupted!");
                 }
             }
-        }
-
-        if (esEmbeddedEngine != null) {
-            esEmbeddedEngine.close();
         }
 
         LOG.info("Stopping embedded datastore... DONE!");

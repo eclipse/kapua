@@ -901,11 +901,6 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-service-elasticsearch-server-embedded</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-service-storable-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
