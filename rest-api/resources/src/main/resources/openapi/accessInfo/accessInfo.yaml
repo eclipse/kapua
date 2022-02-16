@@ -147,9 +147,6 @@ components:
         forwardable:
           description: When `true`, this permission is also active descending the entire Accounts hierarchy
           type: boolean
-      required:
-        - domain
-        - action
       example:
         domain: broker
         action: connect
