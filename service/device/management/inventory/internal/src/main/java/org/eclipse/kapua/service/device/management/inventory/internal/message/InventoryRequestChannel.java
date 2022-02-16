@@ -14,6 +14,7 @@ package org.eclipse.kapua.service.device.management.inventory.internal.message;
 
 import org.eclipse.kapua.service.device.management.commons.message.request.KapuaRequestChannelImpl;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundleAction;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainerAction;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestChannel;
 
@@ -27,6 +28,8 @@ public class InventoryRequestChannel extends KapuaRequestChannelImpl implements 
     private static final long serialVersionUID = 9127157971609776985L;
 
     private DeviceInventoryBundleAction bundleAction;
+
+    private DeviceInventoryContainerAction containerAction;
 
     /**
      * Gets the {@link DeviceInventoryBundleAction} to perform when {@link #getResource()} is {@code bundles}.
@@ -47,4 +50,26 @@ public class InventoryRequestChannel extends KapuaRequestChannelImpl implements 
     public void setBundleAction(DeviceInventoryBundleAction bundleAction) {
         this.bundleAction = bundleAction;
     }
+
+    /**
+     * Gets the {@link DeviceInventoryContainerAction} to perform when {@link #getResource()} is {@code containers}.
+     *
+     * @return The {@link DeviceInventoryContainerAction} to perform.
+     * @since 2.0.0
+     */
+    public DeviceInventoryContainerAction getContainerAction() {
+        return containerAction;
+    }
+
+    /**
+     * Sets the {@link DeviceInventoryContainerAction} to perform when {@link #getResource()} is {@code containers}
+     *
+     * @param containerAction The {@link DeviceInventoryContainerAction} to perform.
+     * @since 2.0.0
+     */
+    public void setContainerAction(DeviceInventoryContainerAction containerAction) {
+        this.containerAction = containerAction;
+    }
+
+
 }
