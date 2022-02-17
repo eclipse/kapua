@@ -21,7 +21,7 @@ Feature: Device Broker connection ip with System environment variable
   Scenario: Start full docker environment
     Given Init Jaxb Context
     And Init Security Context
-    And System property "broker.ip" with value "localhost"
+    And System property "broker.host" with value "localhost"
     And Start full docker environment
 
   Scenario: Send BIRTH message and then DC message while broker ip is set by System
@@ -33,7 +33,7 @@ Feature: Device Broker connection ip with System environment variable
     And Device birth message is sent
     And I wait 5 seconds
     And I login as user with name "kapua-sys" and password "kapua-password"
-    Then Device is connected with "message-broker" server ip
+    Then Device is connected with "message-broker" server host
     And I logout
     And Device death message is sent
 

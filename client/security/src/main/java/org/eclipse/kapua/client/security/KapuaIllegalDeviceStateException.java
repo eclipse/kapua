@@ -13,7 +13,6 @@
 package org.eclipse.kapua.client.security;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.client.security.AuthErrorCodes;
 
 public class KapuaIllegalDeviceStateException extends KapuaException {
 
