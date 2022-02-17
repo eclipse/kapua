@@ -56,7 +56,7 @@ scenarios.
 **Note:** the Docker Hub repository mentioned above is not the official project repository from Eclipse Foundation.
 ***
 
-Suppose the target is the current snapshot 2.0.0-SNAPSHOT.
+Suppose the target is the current snapshot 2.0.0-ARTEMIS-SNAPSHOT.
 
 * Clone Eclipse Kapua&trade; into a local directory
 * Open an OS shell and move to Kapua project root directory

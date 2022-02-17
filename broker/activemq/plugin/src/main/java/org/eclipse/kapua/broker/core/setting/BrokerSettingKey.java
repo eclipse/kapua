@@ -19,17 +19,17 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  */
 public enum BrokerSettingKey implements SettingKey {
     /**
-     * Broker IP resolver implementation (if not evaluated, the default resolver will be used).
+     * Broker HOST resolver implementation (if not evaluated, the default resolver will be used).
      */
-    BROKER_IP_RESOLVER_CLASS_NAME("broker.ip_resolver_class_name"),
+    BROKER_HOST_RESOLVER_CLASS_NAME("broker.host_resolver_class_name"),
     /**
      * Broker id resolver implementation
      */
     BROKER_ID_RESOLVER_CLASS_NAME("broker.id_resolver_class_name"),
     /**
-     * Broker IP used by the default resolver.
+     * Broker HOST used by the default resolver.
      */
-    BROKER_IP("broker.ip"),
+    BROKER_HOST("broker.host"),
     /**
      * Enable/disable the clustered stealing link feature
      */

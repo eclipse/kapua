@@ -37,7 +37,7 @@ import com.spotify.docker.client.messages.PortBinding;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-import org.apache.activemq.command.BrokerInfo;
+
 import org.eclipse.kapua.qa.common.BasicSteps;
 import org.eclipse.kapua.qa.common.DBHelper;
 import org.eclipse.kapua.qa.common.StepData;
@@ -66,7 +66,7 @@ public class DockerSteps {
     private static final Logger logger = LoggerFactory.getLogger(DockerSteps.class);
 
     private static final String NETWORK_PREFIX = "kapua-net";
-    private static final String KAPUA_VERSION = "2.0.0-SNAPSHOT";
+    private static final String KAPUA_VERSION = "2.0.0-ARTEMIS-SNAPSHOT";
     private static final String ES_IMAGE = "elasticsearch:7.8.1";
     private static final String BROKER_IMAGE = "kapua-broker-artemis";
     private static final String LIFECYCLE_CONSUMER_IMAGE = "kapua-consumer-lifecycle";
@@ -118,7 +118,6 @@ public class DockerSteps {
     private List<String> envVar;
     private Map<String, String> containerMap;
     public Map<String, Integer> portMap;
-    public Map<String, BrokerInfo> brokerMap;
 
     private DBHelper database;
     private StepData stepData;
@@ -708,7 +707,7 @@ public class DockerSteps {
                 "certificate.jwt.private.key=file:///var/opt/activemq/key.pk8",
                 "certificate.jwt.certificate=file:///var/opt/activemq/cert.pem",
                 "CRYPTO_SECRET_KEY=kapuaTestsKey!!!",
-                String.format("broker.ip=%s", brokerIp));
+                String.format("broker.host=%s", brokerIp));
         if (envVar != null) {
             envVars.addAll(envVar);
         }
