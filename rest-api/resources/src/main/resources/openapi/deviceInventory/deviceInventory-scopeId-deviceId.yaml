@@ -72,6 +72,11 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/scopeId'
         - $ref: '../device/device.yaml#/components/parameters/deviceId'
         - $ref: '../device/device.yaml#/components/parameters/timeout'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryBundle'
       responses:
         204:
           description: The inventory bundle has been started
@@ -101,6 +106,83 @@ paths:
       responses:
         204:
           description: The inventory bundle has been stopped
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /{scopeId}/devices/{deviceId}/inventory/containers:
+    get:
+      tags:
+        - Device Management - Inventory
+      summary: Get the container inventory from a single Device
+      operationId: deviceInventoryContainerGet
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      responses:
+        200:
+          description: The container inventory from the Device
+          content:
+            application/json:
+              schema:
+                $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryContainers'
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /{scopeId}/devices/{deviceId}/inventory/containers/_start:
+    post:
+      tags:
+        - Device Management - Inventory
+      summary: Starts the container inventory in a Device
+      operationId: deviceInventoryContainerStart
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryContainer'
+      responses:
+        204:
+          description: The inventory container has been started
+        401:
+          $ref: '../openapi.yaml#/components/responses/unauthenticated'
+        403:
+          $ref: '../openapi.yaml#/components/responses/subjectUnauthorized'
+        404:
+          $ref: '../openapi.yaml#/components/responses/entityNotFound'
+        500:
+          $ref: '../openapi.yaml#/components/responses/kapuaError'
+  /{scopeId}/devices/{deviceId}/inventory/containers/_stop:
+    post:
+      tags:
+        - Device Management - Inventory
+      summary: Stops the container inventory in a Device
+      operationId: deviceInventoryContainerStop
+      parameters:
+        - $ref: '../openapi.yaml#/components/parameters/scopeId'
+        - $ref: '../device/device.yaml#/components/parameters/deviceId'
+        - $ref: '../device/device.yaml#/components/parameters/timeout'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './deviceInventory.yaml#/components/schemas/deviceInventoryContainer'
+      responses:
+        204:
+          description: The inventory container has been stopped
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:

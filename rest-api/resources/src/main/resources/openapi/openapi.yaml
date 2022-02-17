@@ -175,6 +175,12 @@ paths:
     $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1bundles~1_start'
   /{scopeId}/devices/{deviceId}/inventory/bundles/_stop:
     $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1bundles~1_stop'
+  /{scopeId}/devices/{deviceId}/inventory/containers:
+    $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1containers'
+  /{scopeId}/devices/{deviceId}/inventory/containers/_start:
+    $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1containers~1_start'
+  /{scopeId}/devices/{deviceId}/inventory/containers/_stop:
+    $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1containers~1_stop'
   /{scopeId}/devices/{deviceId}/inventory/system:
     $ref: './deviceInventory/deviceInventory-scopeId-deviceId.yaml#/paths/~1{scopeId}~1devices~1{deviceId}~1inventory~1system'
   /{scopeId}/devices/{deviceId}/inventory/packages:
