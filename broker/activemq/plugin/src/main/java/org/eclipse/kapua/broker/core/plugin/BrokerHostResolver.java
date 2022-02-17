@@ -17,13 +17,13 @@ package org.eclipse.kapua.broker.core.plugin;
  *
  * @since 1.0
  */
-public interface BrokerIpResolver {
+public interface BrokerHostResolver {
 
     /**
      * Resolve the broker address (private ip)
      *
      * @return
      */
-    String getBrokerIpOrHostName();
+    String getBrokerHost();
 
 }

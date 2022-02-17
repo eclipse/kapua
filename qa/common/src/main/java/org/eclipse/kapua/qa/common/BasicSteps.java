@@ -312,7 +312,7 @@ public class BasicSteps extends TestBase {
 
     private void setProperties(Scenario scenario, String schema, String updateSchema,
             String dbHost, String dbPort, String dbConnResolver, String dbDriver, String jdbcConnection,
-            String jwtKey, String jwtCertificate, String brokerIp, String jobEngineUrl, String jobEngineAuthMode, String additionalOptions) {
+            String jwtKey, String jwtCertificate, String brokerHost, String jobEngineUrl, String jobEngineAuthMode, String additionalOptions) {
         SystemSetting.resetInstance();
         System.setProperty(SystemSettingKey.DB_SCHEMA.key(), schema);
         System.setProperty(SystemSettingKey.DB_SCHEMA_UPDATE.key(), updateSchema);
@@ -327,7 +327,7 @@ public class BasicSteps extends TestBase {
         System.setProperty(CryptoSettingKeys.CRYPTO_SECRET_KEY.key(), "kapuaTestsKey!!!");
         System.setProperty("certificate.jwt.private.key", jwtKey);
         System.setProperty("certificate.jwt.certificate", jwtCertificate);
-        System.setProperty("broker.ip", brokerIp);
+        System.setProperty("broker.host", brokerHost);
         System.setProperty("job.engine.base.url", jobEngineUrl);
         System.setProperty("job.engine.client.auth.mode", jobEngineAuthMode);
         setSpecificProperties(scenario);

@@ -17,7 +17,7 @@
 
     <groupId>org.eclipse.kapua</groupId>
     <artifactId>kapua</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.0.0-ARTEMIS-SNAPSHOT</version>
 
     <name>kapua</name>
     <packaging>pom</packaging>
@@ -29,11 +29,14 @@
         <maven.compiler.target>1.8</maven.compiler.target>
 
         <!-- Dependencies versions -->
-        <activemq.version>5.14.5</activemq.version>
+        <camel.version>3.11.0</camel.version> <!-- latest 3.11.0 -->
+        <spring.version>5.3.23</spring.version> <!-- latest 5.3.8 -->
+        <spring-security.version>5.7.5</spring-security.version> <!-- latest 5.5.1 -->
+        <spring-boot.version>2.5.14</spring-boot.version> <!-- latest 2.5.2 --> <!-- 2.3.x is not fully supported by camel (will be on camel 3.4) -->
+
         <aopalliance.version>1.0</aopalliance.version>
         <artemis.version>2.19.0</artemis.version>
         <assertj.version>3.2.0</assertj.version>
-        <camel.version>3.11.0</camel.version> <!-- latest 3.11.0 -->
         <checker-framework.version>3.15.0</checker-framework.version>
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-cli.version>1.4</commons-cli.version>
@@ -107,9 +110,6 @@
         <slf4j.version>1.7.33</slf4j.version>
         <snakeyaml.version>1.33</snakeyaml.version>
         <spotify.version>8.15.1</spotify.version>
-        <spring.version>5.3.23</spring.version>
-        <spring-boot.version>2.5.14</spring-boot.version> <!-- 2.3.x is not fully supported by camel (will be on camel 3.4) -->
-        <spring-security.version>5.7.5</spring-security.version>
         <swagger-ui.version>3.23.0</swagger-ui.version>
         <zxing.version>3.4.1</zxing.version>
 
@@ -507,11 +507,6 @@
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-broker-api</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.kapua</groupId>
-                <artifactId>kapua-broker-activemq-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -2330,56 +2325,6 @@
                         <artifactId>slf4j-simple</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-
-            <!-- -->
-            <!-- Apache ActiveMQ -->
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-broker</artifactId>
-                <version>${activemq.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jms_1.1_spec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-camel</artifactId>
-                <version>${activemq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-client</artifactId>
-                <version>${activemq.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jms_1.1_spec</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-jms-server</artifactId>
-                <version>${artemis.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-kahadb-store</artifactId>
-                <version>${activemq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-mqtt</artifactId>
-                <version>${activemq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-spring</artifactId>
-                <version>${activemq.version}</version>
             </dependency>
 
             <!-- Camel -->

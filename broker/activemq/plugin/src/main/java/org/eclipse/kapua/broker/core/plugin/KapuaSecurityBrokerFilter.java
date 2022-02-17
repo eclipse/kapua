@@ -113,7 +113,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     protected static final String VT_CONSUMER_PREFIX = "Consumer";
 
     private static final String MISSING_TOPIC_SUFFIX = "MQTT.LWT";
-    private static final String BROKER_IP_RESOLVER_CLASS_NAME;
+    private static final String BROKER_HOST_RESOLVER_CLASS_NAME;
     private static final String BROKER_ID_RESOLVER_CLASS_NAME;
     private static final String AUTHENTICATOR_CLASS_NAME;
     private static final String AUTHORIZER_CLASS_NAME;
@@ -139,7 +139,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         AUTHENTICATOR_CLASS_NAME = "";//clientConfig.getString(ServiceAuthenticationSettingKey.AUTHENTICATOR_CLASS_NAME);
         AUTHORIZER_CLASS_NAME = "";//clientConfig.getString(ServiceAuthenticationSettingKey.AUTHORIZER_CLASS_NAME);
         BrokerSetting config = BrokerSetting.getInstance();
-        BROKER_IP_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_IP_RESOLVER_CLASS_NAME);
+        BROKER_HOST_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_HOST_RESOLVER_CLASS_NAME);
         BROKER_ID_RESOLVER_CLASS_NAME = config.getString(BrokerSettingKey.BROKER_ID_RESOLVER_CLASS_NAME);
         STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME = config.getLong(BrokerSettingKey.STEALING_LINK_INITIALIZATION_MAX_WAIT_TIME);
         stealingLinkEnabled = config.getBoolean(BrokerSettingKey.BROKER_STEALING_LINK_ENABLED);
@@ -176,7 +176,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
         logger.info(">>> Security broker filter: calling start... Initialize authorizer {}", AUTHORIZER_CLASS_NAME);
         authorizer = ClassUtil.newInstance(AUTHORIZER_CLASS_NAME, DefaultAuthorizer.class, new Class<?>[] {}, new Object[] {});
         logger.info(">>> Security broker filter: calling start... Initialize broker ip resolver");
-        brokerIpResolver = ClassUtil.newInstance(BROKER_IP_RESOLVER_CLASS_NAME, DefaultBrokerIpResolver.class);
+        brokerIpResolver = ClassUtil.newInstance(BROKER_HOST_RESOLVER_CLASS_NAME, DefaultBrokerHostResolver.class);
         logger.info(">>> Security broker filter: calling start... Initialize broker id resolver");
         brokerIdResolver = ClassUtil.newInstance(BROKER_ID_RESOLVER_CLASS_NAME, DefaultBrokerIdResolver.class);
         brokerId = brokerIdResolver.getBrokerId(this);

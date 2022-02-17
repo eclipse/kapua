@@ -24,12 +24,12 @@ import java.util.Map;
 @Category(JUnitTests.class)
 public class DefaultBrokerIpResolverTest {
 
-    private static final String BROKER_IP_PROP_KEY = "broker.ip";
+    private static final String BROKER_HOST_PROP_KEY = "broker.host";
 
     @Test
     public void defaultBrokerIpResolverTest() throws KapuaException {
         final Map<String, String> properties = new HashMap<>();
-        properties.put(BROKER_IP_PROP_KEY, "localhost");
+        properties.put(BROKER_HOST_PROP_KEY, "localhost");
 
         Tests.runWithProperties(properties, () -> {
             DefaultBrokerIpResolver defaultBrokerIpResolver = new DefaultBrokerIpResolver();
@@ -40,7 +40,7 @@ public class DefaultBrokerIpResolverTest {
     @Test(expected = KapuaException.class)
     public void defaultBrokerIpResolverExceptionTest() throws KapuaException {
         final Map<String, String> properties = new HashMap<>();
-        properties.put(BROKER_IP_PROP_KEY, "");
+        properties.put(BROKER_HOST_PROP_KEY, "");
 
         Tests.runWithProperties(properties, DefaultBrokerIpResolver::new);
     }
@@ -48,7 +48,7 @@ public class DefaultBrokerIpResolverTest {
     @Test(expected = NullPointerException.class)
     public void defaultBrokerIpResolverNullTest() throws KapuaException {
         final Map<String, String> properties = new HashMap<>();
-        properties.put(BROKER_IP_PROP_KEY, null);
+        properties.put(BROKER_HOST_PROP_KEY, null);
 
         Tests.runWithProperties(properties, DefaultBrokerIpResolver::new);
     }

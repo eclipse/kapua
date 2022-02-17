@@ -436,7 +436,7 @@ public class BrokerSteps extends TestBase {
         Assert.assertEquals(expectedExitCode, commandExitCode.intValue());
     }
 
-    @Then("Device is connected with {string} server ip")
+    @Then("Device is connected with {string} server host")
     public void deviceWithServerIp(String serverIp) {
         DeviceConnection deviceConn = null;
         stepData.put("ExceptionCaught", false);
