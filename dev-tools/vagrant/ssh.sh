@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #*******************************************************************************
-# Copyright (c) 2020, 2021 Eurotech and/or its affiliates
+# Copyright (c) 2020, 2022 Eurotech and/or its affiliates
 #
 # This program and the accompanying materials are made
 # available under the terms of the Eclipse Public License 2.0
