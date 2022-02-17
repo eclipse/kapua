@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 Red Hat Inc and others
+ * Copyright (c) 2017, 2022 Red Hat Inc and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -58,7 +58,7 @@ public class ResourceUtilsTest extends Assert {
         Charset[] validCharsetList = new Charset[]{StandardCharsets.UTF_8, StandardCharsets.US_ASCII, StandardCharsets.ISO_8859_1};
         Charset[] invalidCharsetList = new Charset[]{StandardCharsets.UTF_16, StandardCharsets.UTF_16BE, StandardCharsets.UTF_16LE,};
         String expectedString = "###############################################################################\n" +
-                "# Copyright (c) 2016, 2021 Red Hat and/or its affiliates and others\n" +
+                "# Copyright (c) 2016, 2022 Red Hat and/or its affiliates and others\n" +
                 "#\n" +
                 "# This program and the accompanying materials are made\n" +
                 "# available under the terms of the Eclipse Public License 2.0\n" +
