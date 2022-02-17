@@ -81,6 +81,35 @@ components:
             name: org.eclipse.equinox.cm
             version: 1.4.400.v20200422-1833
             status: RESOLVED
+    deviceInventoryContainer:
+      type: object
+      properties:
+        name:
+          type: string
+        version:
+          type: string
+        type:
+          type: string
+      example:
+        name: docker_container_1
+        version: nginx:latest
+        type: DOCKER
+    deviceInventoryContainers:
+      type: object
+      properties:
+        inventoryContainers:
+          type: array
+          items:
+            $ref: '#/components/schemas/deviceInventoryContainer'
+      example:
+        type: deviceInventoryContainers
+        inventoryBundles:
+          - name: docker_container_1
+            version: nginx:latest
+            type: DOCKER
+          - name: docker_container_2
+            version: haproxy:latest
+            type: DOCKER
     deviceInventorySystemPackage:
       type: object
       properties:
