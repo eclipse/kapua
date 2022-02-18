@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2017, 2021 Red Hat Inc and others
+    Copyright (c) 2017, 2022 Red Hat Inc and others
 
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -11,7 +11,6 @@
     Contributors:
         Red Hat Inc - initial API and implementation
  -->
-
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 
 <module name="Checker">
@@ -23,21 +22,18 @@
 
     <module name="TreeWalker">
 
-        <!-- annotation -->
-
+        <!-- Annotations -->
         <module name="AnnotationLocation">
             <property name="allowSamelineSingleParameterlessAnnotation" value="false" />
         </module>
         <module name="MissingDeprecated" />
 
-        <!-- imports -->
-
+        <!-- Imports -->
         <module name="AvoidStarImport" />
         <module name="AvoidStaticImport" />
         <module name="UnusedImports" />
 
-        <!-- others -->
-
+        <!-- Others -->
         <module name="ExplicitInitialization" />
         <module name="HideUtilityClassConstructor" />
         <module name="StringLiteralEquality" />
@@ -47,13 +43,11 @@
         </module>
         <module name="OneStatementPerLine" />
 
-        <!-- braces -->
-
+        <!-- Braces -->
         <module name="NeedBraces" />
         <module name="LeftCurly" />
 
-        <!-- names -->
-
+        <!-- Names -->
         <module name="ConstantName">
             <property name="format"
                 value="^logger|[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$" />
@@ -66,18 +60,15 @@
         <module name="ParameterName" />
         <module name="StaticVariableName" />
 
-        <!-- whitespaces and lines -->
-
+        <!-- Whitespaces and lines -->
         <module name="EmptyLineSeparator">
             <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
             <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, STATIC_INIT, INSTANCE_INIT, METHOD_DEF, CTOR_DEF"/>
         </module>
-
         <module name="GenericWhitespace" />
         <module name="MethodParamPad" />
         <module name="NoLineWrap" />
         <module name="SingleSpaceSeparator" />
-
         <module name="RegexpSinglelineJava">
             <property name="format" value="^\s+$"/>
             <property name="message" value="Empty lines must not contain whitespaces"/>
@@ -89,7 +80,7 @@
 
     <module name="RegexpHeader">
         <property name="header"
-            value="^/\*{79}$\n^ \* Copyright \(c\) (|\d{4}, )2021 (.*) and others\.?$\n^ \*$\n^ \* This program and the accompanying materials are made$\n^ \* available under the terms of the Eclipse Public License 2.0$\n^ \* which is available at https://www.eclipse.org/legal/epl-2.0/$\n^ \*$\n^ \* SPDX-License-Identifier: EPL-2.0$\n^ \*$\n^ \* Contributors:$\n^ \*     (.*)(| - .*)$\n^ \*{79}/\n^package" />
+            value="^/\*{79}$\n^ \* Copyright \(c\) (|\d{4}, )2022 (.*) and others\.?$\n^ \*$\n^ \* This program and the accompanying materials are made$\n^ \* available under the terms of the Eclipse Public License 2.0$\n^ \* which is available at https://www.eclipse.org/legal/epl-2.0/$\n^ \*$\n^ \* SPDX-License-Identifier: EPL-2.0$\n^ \*$\n^ \* Contributors:$\n^ \*     (.*)(| - .*)$\n^ \*{79}/\n^package" />
         <property name="charset" value="UTF-8" />
         <property name="multiLines" value="11" />
         <property name="fileExtensions" value="java" />
@@ -97,7 +88,7 @@
 
     <module name="RegexpHeader">
         <property name="header"
-            value="^&lt;\?xml.*&gt;$\n^&lt;!--$\n^    Copyright \(c\) (|\d{4}, )2021 (.*) and others\.?$\n^$\n^    This program and the accompanying materials are made$\n^    available under the terms of the Eclipse Public License 2\.0$\n^    which is available at https\:\/\/www.eclipse.org/legal/epl-2.0/$\n^$\n^    SPDX-License-Identifier: EPL-2.0$\n^$\n^    Contributors\:$\n^        (.*)(| - .*)$\n^ ?--&gt;$" />
+            value="^&lt;\?xml.*&gt;$\n^&lt;!--$\n^    Copyright \(c\) (|\d{4}, )2022 (.*) and others\.?$\n^$\n^    This program and the accompanying materials are made$\n^    available under the terms of the Eclipse Public License 2\.0$\n^    which is available at https\:\/\/www.eclipse.org/legal/epl-2.0/$\n^$\n^    SPDX-License-Identifier: EPL-2.0$\n^$\n^    Contributors\:$\n^        (.*)(| - .*)$\n^ ?--&gt;$" />
         <property name="charset" value="UTF-8" />
         <property name="multiLines" value="12" />
         <property name="fileExtensions" value="xml" />
