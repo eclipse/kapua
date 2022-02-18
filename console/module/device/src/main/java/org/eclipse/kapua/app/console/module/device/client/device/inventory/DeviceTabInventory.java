@@ -49,12 +49,13 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
     private TabPanel tabsPanel;
     private DeviceTabInventoryTabInventory inventoryTab;
     private DeviceTabInventoryTabBundles inventoryBundlesTab;
+    private DeviceTabInventoryTabContainer inventoryContainerTab;
     private DeviceTabInventoryTabSystemPackages inventorySystemPackagesTab;
     private DeviceTabInventoryTabDeploymentPackages inventoryDeploymentPackageTab;
 
 
     public DeviceTabInventory(GwtSession currentSession, DeviceView deviceTabs) {
-        super(currentSession, "Inventory", new KapuaIcon(IconSet.DROPBOX));
+        super(currentSession, "Inventory", new KapuaIcon(IconSet.ARCHIVE));
 
         this.deviceTabs = deviceTabs;
         setEnabled(false);
@@ -154,6 +155,22 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
         tabsPanel.add(inventoryBundlesTab);
 
         //
+        // Container Sub-tab
+        inventoryContainerTab = new DeviceTabInventoryTabContainer(this);
+        inventoryContainerTab.setBorders(false);
+        inventoryContainerTab.setLayout(new FitLayout());
+
+        inventoryContainerTab.addListener(Events.Select, new Listener<ComponentEvent>() {
+
+            @Override
+            public void handleEvent(ComponentEvent be) {
+                setEntity(selectedEntity);
+                refresh();
+            }
+        });
+        tabsPanel.add(inventoryContainerTab);
+
+        //
         // System Packages Sub-tab
         inventorySystemPackagesTab = new DeviceTabInventoryTabSystemPackages(this);
         inventorySystemPackagesTab.setBorders(false);
@@ -205,6 +222,10 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
                 inventoryBundlesTab.refresh();
             }
 
+            if (tabsPanel.getSelectedItem().equals(inventoryContainerTab)) {
+                inventoryContainerTab.refresh();
+            }
+
             if (tabsPanel.getSelectedItem().equals(inventorySystemPackagesTab)) {
                 inventorySystemPackagesTab.refresh();
             }
@@ -226,6 +247,7 @@ public class DeviceTabInventory extends KapuaTabItem<GwtDevice> {
             inventoryTab.setDirty(true);
             inventoryDeploymentPackageTab.setDirty(true);
             inventoryBundlesTab.setDirty(true);
+            inventoryContainerTab.setDirty(true);
             inventorySystemPackagesTab.setDirty(true);
         }
     }
