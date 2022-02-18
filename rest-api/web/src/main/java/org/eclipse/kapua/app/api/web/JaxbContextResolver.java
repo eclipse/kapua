@@ -159,6 +159,8 @@ import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryI
 import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryItems;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundle;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundles;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.containers.KuraInventoryContainer;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.containers.KuraInventoryContainers;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.packages.KuraInventoryPackage;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.packages.KuraInventoryPackages;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInventorySystemPackage;
@@ -177,6 +179,8 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceConfigura
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationXmlRegistry;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainers;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryXmlRegistry;
@@ -484,6 +488,10 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceInventoryBundle.class,
                     KuraInventoryBundles.class,
                     KuraInventoryBundle.class,
+                    DeviceInventoryContainers.class,
+                    DeviceInventoryContainer.class,
+                    KuraInventoryContainers.class,
+                    KuraInventoryContainer.class,
                     DeviceInventoryPackages.class,
                     DeviceInventoryPackage.class,
                     KuraInventoryPackages.class,
