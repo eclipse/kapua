@@ -1,0 +1,1534 @@
+{
+  "inventory": [
+    {
+      "name": "alpine-baselayout",
+      "version": "3.2.0-r18",
+      "type": "APK"
+    },
+    {
+      "name": "alpine-keys",
+      "version": "2.4-r1",
+      "type": "APK"
+    },
+    {
+      "name": "alsa-lib",
+      "version": "1.2.5.1-r1",
+      "type": "APK"
+    },
+    {
+      "name": "apk-tools",
+      "version": "2.12.7-r3",
+      "type": "APK"
+    },
+    {
+      "name": "bash",
+      "version": "5.1.8-r0",
+      "type": "APK"
+    },
+    {
+      "name": "bcpkix",
+      "version": "1.65.0",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "bcprov",
+      "version": "1.65.0",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "bluez",
+      "version": "5.63-r0",
+      "type": "APK"
+    },
+    {
+      "name": "bluez-dbus-osgi",
+      "version": "0.1.4",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "bluez-deprecated",
+      "version": "5.63-r0",
+      "type": "APK"
+    },
+    {
+      "name": "brotli-libs",
+      "version": "1.0.9-r5",
+      "type": "APK"
+    },
+    {
+      "name": "busybox",
+      "version": "1.34.1-r3",
+      "type": "APK"
+    },
+    {
+      "name": "busybox-extras",
+      "version": "1.34.1-r4",
+      "type": "APK"
+    },
+    {
+      "name": "ca-certificates",
+      "version": "20211220-r0",
+      "type": "APK"
+    },
+    {
+      "name": "ca-certificates-bundle",
+      "version": "20191127-r7",
+      "type": "APK"
+    },
+    {
+      "name": "chrony",
+      "version": "4.1-r0",
+      "type": "APK"
+    },
+    {
+      "name": "clever_heisenberg",
+      "version": "kura_alpine:",
+      "type": "DOCKER"
+    },
+    {
+      "name": "com.codeminders.hidapi",
+      "version": "1.2.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.codeminders.hidapi.x86_64",
+      "version": "1.2.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.eclipsesource.jaxrs.jersey-min",
+      "version": "2.22.2",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.eclipsesource.jaxrs.provider.gson",
+      "version": "2.3.0.201602281253",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.eclipsesource.jaxrs.provider.multipart",
+      "version": "2.2.0.201602281253",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.eclipsesource.jaxrs.provider.security",
+      "version": "2.2.0.201602281253",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.eclipsesource.jaxrs.publisher",
+      "version": "5.3.1.201602281253",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.eurotech.gpsd4java",
+      "version": "1.0.0",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.google.gson",
+      "version": "2.7.0.v20170129-0911",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.google.guava",
+      "version": "25.0.0.jre",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.gwt.user",
+      "version": "1.2.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.h2database",
+      "version": "2.1.210",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "com.sun.xml.bind.jaxb-osgi",
+      "version": "2.3.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "consumer-lifecycle",
+      "version": "kapua/kapua-consumer-lifecycle:latest",
+      "type": "DOCKER"
+    },
+    {
+      "name": "consumer-telemetry",
+      "version": "kapua/kapua-consumer-telemetry:latest",
+      "type": "DOCKER"
+    },
+    {
+      "name": "curl",
+      "version": "7.80.0-r0",
+      "type": "APK"
+    },
+    {
+      "name": "db",
+      "version": "kapua/kapua-sql:latest",
+      "type": "DOCKER"
+    },
+    {
+      "name": "dbus",
+      "version": "1.12.20-r4",
+      "type": "APK"
+    },
+    {
+      "name": "dbus-libs",
+      "version": "1.12.20-r4",
+      "type": "APK"
+    },
+    {
+      "name": "de.dentrassi.kura.addons.utils.fileinstall",
+      "version": "0.6.0",
+      "type": "DP"
+    },
+    {
+      "name": "dos2unix",
+      "version": "7.4.2-r0",
+      "type": "APK"
+    },
+    {
+      "name": "encodings",
+      "version": "1.0.5-r0",
+      "type": "APK"
+    },
+    {
+      "name": "es",
+      "version": "docker.elastic.co/elasticsearch/elasticsearch:7.8.1",
+      "type": "DOCKER"
+    },
+    {
+      "name": "eudev",
+      "version": "3.2.11_pre1-r0",
+      "type": "APK"
+    },
+    {
+      "name": "eudev-libs",
+      "version": "3.2.11_pre1-r0",
+      "type": "APK"
+    },
+    {
+      "name": "events-broker",
+      "version": "kapua/kapua-events-broker:latest",
+      "type": "DOCKER"
+    },
+    {
+      "name": "expat",
+      "version": "2.4.4-r0",
+      "type": "APK"
+    },
+    {
+      "name": "fontconfig",
+      "version": "2.13.1-r4",
+      "type": "APK"
+    },
+    {
+      "name": "freetype",
+      "version": "2.11.0-r0",
+      "type": "APK"
+    },
+    {
+      "name": "giflib",
+      "version": "5.2.1-r0",
+      "type": "APK"
+    },
+    {
+      "name": "glib",
+      "version": "2.70.1-r0",
+      "type": "APK"
+    },
+    {
+      "name": "gmp",
+      "version": "6.2.1-r1",
+      "type": "APK"
+    },
+    {
+      "name": "gnutls",
+      "version": "3.7.1-r0",
+      "type": "APK"
+    },
+    {
+      "name": "gzip",
+      "version": "1.11-r0",
+      "type": "APK"
+    },
+    {
+      "name": "io.netty.buffer",
+      "version": "4.1.68.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "io.netty.codec",
+      "version": "4.1.68.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "io.netty.codec-http",
+      "version": "4.1.68.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "io.netty.codec-mqtt",
+      "version": "4.1.68.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "io.netty.common",
+      "version": "4.1.68.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "io.netty.handler",
+      "version": "4.1.68.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "io.netty.resolver",
+      "version": "4.1.68.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "io.netty.transport",
+      "version": "4.1.68.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "io.netty.transport-native-epoll",
+      "version": "4.1.68.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "io.netty.transport-native-kqueue",
+      "version": "4.1.68.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "io.netty.transport-native-unix-common",
+      "version": "4.1.68.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "jakarta.activation-api",
+      "version": "1.2.2",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "jakarta.annotation-api",
+      "version": "1.3.5",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "jakarta.xml.bind-api",
+      "version": "2.3.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "jakarta.xml.soap-api",
+      "version": "1.4.2",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "jakarta.xml.ws-api",
+      "version": "2.3.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "java-cacerts",
+      "version": "1.0-r1",
+      "type": "APK"
+    },
+    {
+      "name": "java-common",
+      "version": "0.4-r0",
+      "type": "APK"
+    },
+    {
+      "name": "javax.servlet",
+      "version": "3.1.0.v201410161800",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "jcl.over.slf4j",
+      "version": "1.7.32",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "jdk.dio",
+      "version": "1.1.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "jdk.dio.x86_64",
+      "version": "1.1.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "job-engine",
+      "version": "kapua/kapua-job-engine:latest",
+      "type": "DOCKER"
+    },
+    {
+      "name": "json-c",
+      "version": "0.15-r1",
+      "type": "APK"
+    },
+    {
+      "name": "kapua-api",
+      "version": "kapua/kapua-api:latest",
+      "type": "DOCKER"
+    },
+    {
+      "name": "kapua-console",
+      "version": "kapua/kapua-console:latest",
+      "type": "DOCKER"
+    },
+    {
+      "name": "keyutils-libs",
+      "version": "1.6.3-r0",
+      "type": "APK"
+    },
+    {
+      "name": "kmod-libs",
+      "version": "29-r2",
+      "type": "APK"
+    },
+    {
+      "name": "krb5-conf",
+      "version": "1.0-r2",
+      "type": "APK"
+    },
+    {
+      "name": "krb5-libs",
+      "version": "1.19.2-r4",
+      "type": "APK"
+    },
+    {
+      "name": "kura",
+      "version": "eclipse/kura:latest",
+      "type": "DOCKER"
+    },
+    {
+      "name": "lcms2",
+      "version": "2.12-r1",
+      "type": "APK"
+    },
+    {
+      "name": "less",
+      "version": "590-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libacl",
+      "version": "2.2.53-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libblkid",
+      "version": "2.37.4-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libbsd",
+      "version": "0.11.3-r1",
+      "type": "APK"
+    },
+    {
+      "name": "libbz2",
+      "version": "1.0.8-r1",
+      "type": "APK"
+    },
+    {
+      "name": "libc-utils",
+      "version": "0.7.2-r3",
+      "type": "APK"
+    },
+    {
+      "name": "libcap",
+      "version": "2.61-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libcom_err",
+      "version": "1.46.4-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libcrypto1.1",
+      "version": "1.1.1l-r7",
+      "type": "APK"
+    },
+    {
+      "name": "libcurl",
+      "version": "7.80.0-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libffi",
+      "version": "3.4.2-r1",
+      "type": "APK"
+    },
+    {
+      "name": "libfontenc",
+      "version": "1.1.4-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libgcc",
+      "version": "10.3.1_git20211027-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libgcrypt",
+      "version": "1.9.4-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libgpg-error",
+      "version": "1.42-r1",
+      "type": "APK"
+    },
+    {
+      "name": "libintl",
+      "version": "0.21-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libjpeg-turbo",
+      "version": "2.1.2-r0",
+      "type": "APK"
+    },
+    {
+      "name": "liblksctp",
+      "version": "1.0.19-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libmd",
+      "version": "1.0.3-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libmount",
+      "version": "2.37.4-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libpng",
+      "version": "1.6.37-r1",
+      "type": "APK"
+    },
+    {
+      "name": "libproc",
+      "version": "3.3.17-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libretls",
+      "version": "3.3.4-r2",
+      "type": "APK"
+    },
+    {
+      "name": "libssl1.1",
+      "version": "1.1.1l-r7",
+      "type": "APK"
+    },
+    {
+      "name": "libstdc++",
+      "version": "10.3.1_git20211027-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libtasn1",
+      "version": "4.18.0-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libunistring",
+      "version": "0.9.10-r1",
+      "type": "APK"
+    },
+    {
+      "name": "libuuid",
+      "version": "2.37.4-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libverto",
+      "version": "0.3.2-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libx11",
+      "version": "1.7.2-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libxau",
+      "version": "1.0.9-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libxcb",
+      "version": "1.14-r2",
+      "type": "APK"
+    },
+    {
+      "name": "libxcomposite",
+      "version": "0.4.5-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libxdmcp",
+      "version": "1.1.3-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libxext",
+      "version": "1.3.4-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libxi",
+      "version": "1.8-r0",
+      "type": "APK"
+    },
+    {
+      "name": "libxml2",
+      "version": "2.9.12-r2",
+      "type": "APK"
+    },
+    {
+      "name": "libxrender",
+      "version": "0.9.10-r3",
+      "type": "APK"
+    },
+    {
+      "name": "libxslt",
+      "version": "1.1.34-r1",
+      "type": "APK"
+    },
+    {
+      "name": "libxtst",
+      "version": "1.2.3-r3",
+      "type": "APK"
+    },
+    {
+      "name": "message-broker",
+      "version": "kapua/kapua-broker:latest",
+      "type": "DOCKER"
+    },
+    {
+      "name": "mii-tool",
+      "version": "1.60_git20140218-r2",
+      "type": "APK"
+    },
+    {
+      "name": "minimal-json",
+      "version": "0.9.5",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "mkfontscale",
+      "version": "1.2.1-r1",
+      "type": "APK"
+    },
+    {
+      "name": "musl",
+      "version": "1.2.2-r7",
+      "type": "APK"
+    },
+    {
+      "name": "musl-utils",
+      "version": "1.2.2-r7",
+      "type": "APK"
+    },
+    {
+      "name": "ncurses-libs",
+      "version": "6.3_p20211120-r0",
+      "type": "APK"
+    },
+    {
+      "name": "ncurses-terminfo-base",
+      "version": "6.3_p20211120-r0",
+      "type": "APK"
+    },
+    {
+      "name": "net-tools",
+      "version": "1.60_git20140218-r2",
+      "type": "APK"
+    },
+    {
+      "name": "nettle",
+      "version": "3.7.3-r0",
+      "type": "APK"
+    },
+    {
+      "name": "nghttp2-libs",
+      "version": "1.46.0-r0",
+      "type": "APK"
+    },
+    {
+      "name": "nspr",
+      "version": "4.32-r0",
+      "type": "APK"
+    },
+    {
+      "name": "nss",
+      "version": "3.72.1-r0",
+      "type": "APK"
+    },
+    {
+      "name": "openjdk8",
+      "version": "8.302.08-r2",
+      "type": "APK"
+    },
+    {
+      "name": "openjdk8-jre",
+      "version": "8.302.08-r2",
+      "type": "APK"
+    },
+    {
+      "name": "openjdk8-jre-base",
+      "version": "8.302.08-r2",
+      "type": "APK"
+    },
+    {
+      "name": "openjdk8-jre-lib",
+      "version": "8.302.08-r2",
+      "type": "APK"
+    },
+    {
+      "name": "openssl",
+      "version": "1.1.1l-r8",
+      "type": "APK"
+    },
+    {
+      "name": "org.apache.activemq.artemis",
+      "version": "2.6.0",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.activemq.artemis-mqtt-protocol",
+      "version": "2.6.4",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.activemq.artemis-native",
+      "version": "2.6.4",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.camel.camel-amqp",
+      "version": "2.25.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.camel.camel-core",
+      "version": "2.25.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.camel.camel-core-osgi",
+      "version": "2.25.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.camel.camel-jms",
+      "version": "2.25.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.camel.camel-script",
+      "version": "2.25.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.camel.camel-stream",
+      "version": "2.25.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.commons.beanutils",
+      "version": "1.9.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.commons.collections",
+      "version": "3.2.2",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.commons.csv",
+      "version": "1.4.0",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.commons.exec",
+      "version": "1.3.0",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.commons.fileupload",
+      "version": "1.3.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.commons.io",
+      "version": "2.4.0",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.commons.lang3",
+      "version": "3.4.0",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.commons.net",
+      "version": "3.1.0.v201205071737",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.felix.dependencymanager",
+      "version": "3.0.0",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.felix.deploymentadmin",
+      "version": "0.9.5",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.felix.fileinstall",
+      "version": "3.6.4",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.felix.gogo.command",
+      "version": "1.0.2.v20170914-1324",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.felix.gogo.runtime",
+      "version": "1.1.0.v20180713-1646",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.felix.gogo.shell",
+      "version": "1.1.0.v20180713-1646",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.felix.scr",
+      "version": "2.1.16.v20200110-1820",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.felix.useradmin",
+      "version": "1.0.4.k1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.geronimo.specs.geronimo-jms_2.0_spec",
+      "version": "1.0.0.alpha-2",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.geronimo.specs.geronimo-json_1.0_spec",
+      "version": "1.0.0.alpha-1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.geronimo.specs.geronimo-jta_1.1_spec",
+      "version": "1.1.1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.log4j2-api-config",
+      "version": "1.0.0",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.logging.log4j.api",
+      "version": "2.17.1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.logging.log4j.core",
+      "version": "2.17.1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.logging.log4j.slf4j-impl",
+      "version": "2.17.1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.qpid.jms.client",
+      "version": "0.45.0",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.qpid.proton-j",
+      "version": "0.33.2",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-beans",
+      "version": "4.3.20.RELEASE_1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-context",
+      "version": "4.3.20.RELEASE_1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-core",
+      "version": "4.3.20.RELEASE_1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-expression",
+      "version": "4.3.20.RELEASE_1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-jms",
+      "version": "4.3.20.RELEASE_1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-tx",
+      "version": "4.3.20.RELEASE_1",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.cm",
+      "version": "1.4.400.v20200422-1833",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.common",
+      "version": "3.13.0.v20200828-1034",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.console",
+      "version": "1.4.200.v20200828-1034",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.ds",
+      "version": "1.6.200.v20200422-1833",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.event",
+      "version": "1.5.500.v20200616-0800",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.http.jetty",
+      "version": "3.7.400.v20200123-1333",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.http.registry",
+      "version": "1.2.0.v20200614-1851",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.http.servlet",
+      "version": "1.6.600.v20200707-1543",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.io",
+      "version": "1.1.100.v20150430-1834",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.metatype",
+      "version": "1.5.300.v20200422-1833",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.registry",
+      "version": "3.9.0.v20200625-1425",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.util",
+      "version": "1.1.300.v20190714-1852",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.equinox.wireadmin",
+      "version": "1.0.800.v20180827-1235",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.jetty.continuation",
+      "version": "9.4.44.v20210927",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.jetty.http",
+      "version": "9.4.44.v20210927",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.jetty.io",
+      "version": "9.4.44.v20210927",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.jetty.security",
+      "version": "9.4.44.v20210927",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.jetty.server",
+      "version": "9.4.44.v20210927",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.jetty.servlet",
+      "version": "9.4.44.v20210927",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.jetty.util",
+      "version": "9.4.44.v20210927",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.jetty.util.ajax",
+      "version": "9.4.44.v20210927",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.api",
+      "version": "2.3.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.asset.cloudlet.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.asset.helper.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.asset.provider",
+      "version": "2.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.ble.eddystone.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.ble.ibeacon.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.ble.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.broker.artemis.core",
+      "version": "1.2.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.broker.artemis.simple.mqtt",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.broker.artemis.xml",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.camel",
+      "version": "1.4.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.camel.cloud.factory",
+      "version": "1.2.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.camel.sun.misc",
+      "version": "1.1.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.camel.xml",
+      "version": "1.2.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.cloudconnection.eclipseiot.mqtt.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.cloudconnection.raw.mqtt.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.container.orchestration.provider",
+      "version": "1.0.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.container.provider",
+      "version": "1.0.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.certificates",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.cloud",
+      "version": "1.2.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.cloud.factory",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.comm",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.configuration",
+      "version": "2.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.crypto",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.deployment",
+      "version": "1.2.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.inventory",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.keystore",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.net",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.status",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.system",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.core.tamper.detection",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.demo.heater",
+      "version": "1.0.300",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.demo.heater",
+      "version": "1.0.300",
+      "type": "DP"
+    },
+    {
+      "name": "org.eclipse.kura.deployment.agent",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.driver.helper.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.emulator",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.emulator.net",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.hook.file.move.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.http.server.manager",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.jetty.customizer",
+      "version": "1.1.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.json.marshaller.unmarshaller.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.linux.bluetooth",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.linux.clock",
+      "version": "1.2.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.linux.command",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.linux.gpio",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.linux.position",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.linux.usb",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.linux.usb.x86_64",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.linux.watchdog",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.localization",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.localization.resources",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.log.filesystem.provider",
+      "version": "1.0.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.misc.cloudcat",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.request.handler.jaxrs",
+      "version": "1.0.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.rest.asset.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.rest.configuration.provider",
+      "version": "1.0.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.rest.provider",
+      "version": "1.2.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.rest.wire.provider",
+      "version": "1.0.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.sun.misc",
+      "version": "1.1.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.useradmin.store",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.util",
+      "version": "1.2.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.web2",
+      "version": "2.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.wire.camel",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.wire.component.conditional.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.wire.component.join.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.wire.component.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.wire.h2db.component.provider",
+      "version": "2.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.wire.helper.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.wire.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.kura.xml.marshaller.unmarshaller.provider",
+      "version": "1.1.0.202202171533",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.osgi",
+      "version": "3.16.0.v20200828-0759",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.osgi.services",
+      "version": "3.9.0.v20200511-1725",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.osgi.util",
+      "version": "3.5.300.v20190708-1141",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.soda.dk.comm",
+      "version": "1.3.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.eclipse.soda.dk.comm.x86_64",
+      "version": "1.3.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.glassfish.hk2.osgi-resource-locator",
+      "version": "1.0.3",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.jboss.logging.jboss-logging",
+      "version": "3.3.2.Final",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.knowhowlab.osgi.monitoradmin",
+      "version": "1.0.2",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.tigris.mtoolkit.iagent.rpc",
+      "version": "3.0.0.20110411-0918",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "org.usb4java",
+      "version": "1.3.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "p11-kit",
+      "version": "0.24.0-r1",
+      "type": "APK"
+    },
+    {
+      "name": "p11-kit-trust",
+      "version": "0.24.0-r1",
+      "type": "APK"
+    },
+    {
+      "name": "pcre",
+      "version": "8.45-r1",
+      "type": "APK"
+    },
+    {
+      "name": "pcsc-lite-libs",
+      "version": "1.9.4-r0",
+      "type": "APK"
+    },
+    {
+      "name": "procps",
+      "version": "3.3.17-r0",
+      "type": "APK"
+    },
+    {
+      "name": "psmisc",
+      "version": "23.4-r0",
+      "type": "APK"
+    },
+    {
+      "name": "readline",
+      "version": "8.1.1-r0",
+      "type": "APK"
+    },
+    {
+      "name": "scanelf",
+      "version": "1.3.3-r0",
+      "type": "APK"
+    },
+    {
+      "name": "slf4j.api",
+      "version": "1.7.32",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "socat",
+      "version": "1.7.4.2-r0",
+      "type": "APK"
+    },
+    {
+      "name": "sqlite-libs",
+      "version": "3.36.0-r0",
+      "type": "APK"
+    },
+    {
+      "name": "ssl_client",
+      "version": "1.34.1-r3",
+      "type": "APK"
+    },
+    {
+      "name": "tar",
+      "version": "1.34-r0",
+      "type": "APK"
+    },
+    {
+      "name": "ttf-dejavu",
+      "version": "2.37-r1",
+      "type": "APK"
+    },
+    {
+      "name": "udev-init-scripts",
+      "version": "35-r0",
+      "type": "APK"
+    },
+    {
+      "name": "unzip",
+      "version": "6.0-r9",
+      "type": "APK"
+    },
+    {
+      "name": "usb4java-javax",
+      "version": "1.3.0.SNAPSHOT",
+      "type": "BUNDLE"
+    },
+    {
+      "name": "which",
+      "version": "2.21-r2",
+      "type": "APK"
+    },
+    {
+      "name": "xmlstarlet",
+      "version": "1.6.1-r0",
+      "type": "APK"
+    },
+    {
+      "name": "xz-libs",
+      "version": "5.2.5-r0",
+      "type": "APK"
+    },
+    {
+      "name": "zip",
+      "version": "3.0-r9",
+      "type": "APK"
+    },
+    {
+      "name": "zlib",
+      "version": "1.2.11-r3",
+      "type": "APK"
+    },
+    {
+      "name": "zstd-libs",
+      "version": "1.5.0-r0",
+      "type": "APK"
+    }
+  ]
+}

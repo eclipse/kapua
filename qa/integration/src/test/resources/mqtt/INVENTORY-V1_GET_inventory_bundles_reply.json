@@ -1,0 +1,1264 @@
+{
+  "bundles": [
+    {
+      "name": "org.eclipse.osgi",
+      "version": "3.16.0.v20200828-0759",
+      "id": 0,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.cm",
+      "version": "1.4.400.v20200422-1833",
+      "id": 1,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.sun.misc",
+      "version": "1.1.0.SNAPSHOT",
+      "id": 2,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.common",
+      "version": "3.13.0.v20200828-1034",
+      "id": 3,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.registry",
+      "version": "3.9.0.v20200625-1425",
+      "id": 4,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.http.registry",
+      "version": "1.2.0.v20200614-1851",
+      "id": 5,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.console",
+      "version": "1.4.200.v20200828-1034",
+      "id": 6,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.ds",
+      "version": "1.6.200.v20200422-1833",
+      "id": 7,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.event",
+      "version": "1.5.500.v20200616-0800",
+      "id": 8,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.io",
+      "version": "1.1.100.v20150430-1834",
+      "id": 9,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.metatype",
+      "version": "1.5.300.v20200422-1833",
+      "id": 10,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.util",
+      "version": "1.1.300.v20190714-1852",
+      "id": 11,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.osgi.services",
+      "version": "3.9.0.v20200511-1725",
+      "id": 12,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.osgi.util",
+      "version": "3.5.300.v20190708-1141",
+      "id": 13,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.felix.scr",
+      "version": "2.1.16.v20200110-1820",
+      "id": 14,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.felix.gogo.command",
+      "version": "1.0.2.v20170914-1324",
+      "id": 15,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.felix.gogo.runtime",
+      "version": "1.1.0.v20180713-1646",
+      "id": 16,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.felix.gogo.shell",
+      "version": "1.1.0.v20180713-1646",
+      "id": 17,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.knowhowlab.osgi.monitoradmin",
+      "version": "1.0.2",
+      "id": 18,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.felix.dependencymanager",
+      "version": "3.0.0",
+      "id": 19,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.felix.deploymentadmin",
+      "version": "0.9.5",
+      "id": 20,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.wireadmin",
+      "version": "1.0.800.v20180827-1235",
+      "id": 21,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.http.jetty",
+      "version": "3.7.400.v20200123-1333",
+      "id": 22,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.jetty.customizer",
+      "version": "1.1.0.SNAPSHOT",
+      "id": 23,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.equinox.http.servlet",
+      "version": "1.6.600.v20200707-1543",
+      "id": 24,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.jetty.continuation",
+      "version": "9.4.44.v20210927",
+      "id": 25,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.jetty.http",
+      "version": "9.4.44.v20210927",
+      "id": 26,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.jetty.io",
+      "version": "9.4.44.v20210927",
+      "id": 27,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.jetty.security",
+      "version": "9.4.44.v20210927",
+      "id": 28,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.jetty.server",
+      "version": "9.4.44.v20210927",
+      "id": 29,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.jetty.servlet",
+      "version": "9.4.44.v20210927",
+      "id": 30,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.jetty.util",
+      "version": "9.4.44.v20210927",
+      "id": 31,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.jetty.util.ajax",
+      "version": "9.4.44.v20210927",
+      "id": 32,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "javax.servlet",
+      "version": "3.1.0.v201410161800",
+      "id": 33,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.commons.fileupload",
+      "version": "1.3.3",
+      "id": 34,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.commons.io",
+      "version": "2.4.0",
+      "id": 35,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "slf4j.api",
+      "version": "1.7.32",
+      "id": 36,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "jcl.over.slf4j",
+      "version": "1.7.32",
+      "id": 37,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.log4j2-api-config",
+      "version": "1.0.0",
+      "id": 38,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.apache.logging.log4j.api",
+      "version": "2.17.1",
+      "id": 39,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.logging.log4j.core",
+      "version": "2.17.1",
+      "id": 40,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.logging.log4j.slf4j-impl",
+      "version": "2.17.1",
+      "id": 41,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "minimal-json",
+      "version": "0.9.5",
+      "id": 42,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "com.h2database",
+      "version": "2.1.210",
+      "id": 43,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "com.codeminders.hidapi.x86_64",
+      "version": "1.2.0.SNAPSHOT",
+      "id": 44,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "com.codeminders.hidapi",
+      "version": "1.2.0.SNAPSHOT",
+      "id": 45,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.soda.dk.comm.x86_64",
+      "version": "1.3.0.SNAPSHOT",
+      "id": 46,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.soda.dk.comm",
+      "version": "1.3.0.SNAPSHOT",
+      "id": 47,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.commons.lang3",
+      "version": "3.4.0",
+      "id": 48,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.usb4java",
+      "version": "1.3.0.SNAPSHOT",
+      "id": 49,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "usb4java-javax",
+      "version": "1.3.0.SNAPSHOT",
+      "id": 50,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "jdk.dio.x86_64",
+      "version": "1.1.0.SNAPSHOT",
+      "id": 51,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "jdk.dio",
+      "version": "1.1.0.SNAPSHOT",
+      "id": 52,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.apache.commons.net",
+      "version": "3.1.0.v201205071737",
+      "id": 53,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.commons.exec",
+      "version": "1.3.0",
+      "id": 54,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "com.eclipsesource.jaxrs.jersey-min",
+      "version": "2.22.2",
+      "id": 55,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "com.eclipsesource.jaxrs.publisher",
+      "version": "5.3.1.201602281253",
+      "id": 56,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "com.eclipsesource.jaxrs.provider.gson",
+      "version": "2.3.0.201602281253",
+      "id": 57,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "com.eclipsesource.jaxrs.provider.security",
+      "version": "2.2.0.201602281253",
+      "id": 58,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "com.eclipsesource.jaxrs.provider.multipart",
+      "version": "2.2.0.201602281253",
+      "id": 59,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "com.google.gson",
+      "version": "2.7.0.v20170129-0911",
+      "id": 60,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.apache.commons.csv",
+      "version": "1.4.0",
+      "id": 61,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.apache.felix.useradmin",
+      "version": "1.0.4.k1",
+      "id": 62,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.useradmin.store",
+      "version": "1.1.0.202202171533",
+      "id": 63,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "bcpkix",
+      "version": "1.65.0",
+      "id": 64,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "bcprov",
+      "version": "1.65.0",
+      "id": 65,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "bluez-dbus-osgi",
+      "version": "0.1.4",
+      "id": 66,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "jakarta.activation-api",
+      "version": "1.2.2",
+      "id": 67,
+      "state": "INSTALLED",
+      "signed": false
+    },
+    {
+      "name": "jakarta.annotation-api",
+      "version": "1.3.5",
+      "id": 68,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "jakarta.xml.bind-api",
+      "version": "2.3.3",
+      "id": 69,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "jakarta.xml.ws-api",
+      "version": "2.3.3",
+      "id": 70,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "jakarta.xml.soap-api",
+      "version": "1.4.2",
+      "id": 71,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "com.sun.xml.bind.jaxb-osgi",
+      "version": "2.3.3",
+      "id": 72,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.glassfish.hk2.osgi-resource-locator",
+      "version": "1.0.3",
+      "id": 73,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "com.eurotech.gpsd4java",
+      "version": "1.0.0",
+      "id": 74,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.api",
+      "version": "2.3.0.202202171533",
+      "id": 75,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core",
+      "version": "1.1.0.202202171533",
+      "id": 76,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.system",
+      "version": "1.1.0.202202171533",
+      "id": 77,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.certificates",
+      "version": "1.1.0.202202171533",
+      "id": 78,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.cloud",
+      "version": "1.2.0.202202171533",
+      "id": 79,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.cloud.factory",
+      "version": "1.1.0.202202171533",
+      "id": 80,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.cloudconnection.eclipseiot.mqtt.provider",
+      "version": "1.1.0.202202171533",
+      "id": 81,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.cloudconnection.raw.mqtt.provider",
+      "version": "1.1.0.202202171533",
+      "id": 82,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.comm",
+      "version": "1.1.0.202202171533",
+      "id": 83,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.configuration",
+      "version": "2.1.0.202202171533",
+      "id": 84,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.crypto",
+      "version": "1.1.0.202202171533",
+      "id": 85,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.deployment",
+      "version": "1.2.0.202202171533",
+      "id": 86,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.inventory",
+      "version": "1.1.0.202202171533",
+      "id": 87,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.tamper.detection",
+      "version": "1.1.0.202202171533",
+      "id": 88,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.net",
+      "version": "1.1.0.202202171533",
+      "id": 89,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.status",
+      "version": "1.1.0.202202171533",
+      "id": 90,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.deployment.agent",
+      "version": "1.1.0.202202171533",
+      "id": 91,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.linux.clock",
+      "version": "1.2.0.202202171533",
+      "id": 92,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.linux.command",
+      "version": "1.1.0.202202171533",
+      "id": 93,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.linux.position",
+      "version": "1.1.0.202202171533",
+      "id": 94,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.linux.usb.x86_64",
+      "version": "1.1.0.202202171533",
+      "id": 95,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.linux.usb",
+      "version": "1.1.0.202202171533",
+      "id": 96,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.linux.bluetooth",
+      "version": "1.1.0.202202171533",
+      "id": 97,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.ble.provider",
+      "version": "1.1.0.202202171533",
+      "id": 98,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.ble.ibeacon.provider",
+      "version": "1.1.0.202202171533",
+      "id": 99,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.ble.eddystone.provider",
+      "version": "1.1.0.202202171533",
+      "id": 100,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.linux.watchdog",
+      "version": "1.1.0.202202171533",
+      "id": 101,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.camel.sun.misc",
+      "version": "1.1.0.SNAPSHOT",
+      "id": 102,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.apache.camel.camel-amqp",
+      "version": "2.25.3",
+      "id": 103,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.camel.camel-core",
+      "version": "2.25.3",
+      "id": 104,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.camel.camel-core-osgi",
+      "version": "2.25.3",
+      "id": 105,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.camel.camel-jms",
+      "version": "2.25.3",
+      "id": 106,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.camel.camel-script",
+      "version": "2.25.3",
+      "id": 107,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.camel.camel-stream",
+      "version": "2.25.3",
+      "id": 108,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.camel",
+      "version": "1.4.0.202202171533",
+      "id": 109,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.camel.cloud.factory",
+      "version": "1.2.0.202202171533",
+      "id": 110,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.camel.xml",
+      "version": "1.2.0.202202171533",
+      "id": 111,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.wire.camel",
+      "version": "1.1.0.202202171533",
+      "id": 112,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.qpid.jms.client",
+      "version": "0.45.0",
+      "id": 113,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.qpid.proton-j",
+      "version": "0.33.2",
+      "id": 114,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-beans",
+      "version": "4.3.20.RELEASE_1",
+      "id": 115,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-context",
+      "version": "4.3.20.RELEASE_1",
+      "id": 116,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-core",
+      "version": "4.3.20.RELEASE_1",
+      "id": 117,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-expression",
+      "version": "4.3.20.RELEASE_1",
+      "id": 118,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-jms",
+      "version": "4.3.20.RELEASE_1",
+      "id": 119,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.servicemix.bundles.spring-tx",
+      "version": "4.3.20.RELEASE_1",
+      "id": 120,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.rest.provider",
+      "version": "1.2.0.202202171533",
+      "id": 121,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.rest.configuration.provider",
+      "version": "1.0.0.202202171533",
+      "id": 122,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.rest.wire.provider",
+      "version": "1.0.0.202202171533",
+      "id": 123,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.request.handler.jaxrs",
+      "version": "1.0.0.202202171533",
+      "id": 124,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.asset.provider",
+      "version": "2.1.0.202202171533",
+      "id": 125,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.asset.cloudlet.provider",
+      "version": "1.1.0.202202171533",
+      "id": 126,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.asset.helper.provider",
+      "version": "1.1.0.202202171533",
+      "id": 127,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.rest.asset.provider",
+      "version": "1.1.0.202202171533",
+      "id": 128,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "com.google.guava",
+      "version": "25.0.0.jre",
+      "id": 129,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "io.netty.buffer",
+      "version": "4.1.68.Final",
+      "id": 130,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "io.netty.codec",
+      "version": "4.1.68.Final",
+      "id": 131,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "io.netty.codec-http",
+      "version": "4.1.68.Final",
+      "id": 132,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "io.netty.codec-mqtt",
+      "version": "4.1.68.Final",
+      "id": 133,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "io.netty.common",
+      "version": "4.1.68.Final",
+      "id": 134,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "io.netty.handler",
+      "version": "4.1.68.Final",
+      "id": 135,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "io.netty.resolver",
+      "version": "4.1.68.Final",
+      "id": 136,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "io.netty.transport",
+      "version": "4.1.68.Final",
+      "id": 137,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "io.netty.transport-native-epoll",
+      "version": "4.1.68.Final",
+      "id": 138,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "io.netty.transport-native-kqueue",
+      "version": "4.1.68.Final",
+      "id": 139,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "io.netty.transport-native-unix-common",
+      "version": "4.1.68.Final",
+      "id": 140,
+      "state": "RESOLVED",
+      "signed": true
+    },
+    {
+      "name": "org.apache.activemq.artemis-mqtt-protocol",
+      "version": "2.6.4",
+      "id": 141,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.activemq.artemis-native",
+      "version": "2.6.4",
+      "id": 142,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.apache.commons.beanutils",
+      "version": "1.9.3",
+      "id": 143,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.apache.commons.collections",
+      "version": "3.2.2",
+      "id": 144,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.apache.geronimo.specs.geronimo-jms_2.0_spec",
+      "version": "1.0.0.alpha-2",
+      "id": 145,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.apache.geronimo.specs.geronimo-json_1.0_spec",
+      "version": "1.0.0.alpha-1",
+      "id": 146,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.apache.geronimo.specs.geronimo-jta_1.1_spec",
+      "version": "1.1.1",
+      "id": 147,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.jboss.logging.jboss-logging",
+      "version": "3.3.2.Final",
+      "id": 148,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.apache.activemq.artemis",
+      "version": "2.6.0",
+      "id": 149,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.broker.artemis.core",
+      "version": "1.2.0.202202171533",
+      "id": 150,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.broker.artemis.simple.mqtt",
+      "version": "1.1.0.202202171533",
+      "id": 151,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.broker.artemis.xml",
+      "version": "1.1.0.202202171533",
+      "id": 152,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.hook.file.move.provider",
+      "version": "1.1.0.202202171533",
+      "id": 153,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.json.marshaller.unmarshaller.provider",
+      "version": "1.1.0.202202171533",
+      "id": 154,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.xml.marshaller.unmarshaller.provider",
+      "version": "1.1.0.202202171533",
+      "id": 155,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.driver.helper.provider",
+      "version": "1.1.0.202202171533",
+      "id": 156,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.localization",
+      "version": "1.1.0.202202171533",
+      "id": 157,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.localization.resources",
+      "version": "1.1.0.202202171533",
+      "id": 158,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.util",
+      "version": "1.2.0.202202171533",
+      "id": 159,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.wire.h2db.component.provider",
+      "version": "2.1.0.202202171533",
+      "id": 160,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.wire.component.provider",
+      "version": "1.1.0.202202171533",
+      "id": 161,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.wire.helper.provider",
+      "version": "1.1.0.202202171533",
+      "id": 162,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.wire.provider",
+      "version": "1.1.0.202202171533",
+      "id": 163,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.wire.component.conditional.provider",
+      "version": "1.1.0.202202171533",
+      "id": 164,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.wire.component.join.provider",
+      "version": "1.1.0.202202171533",
+      "id": 165,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.misc.cloudcat",
+      "version": "1.1.0.202202171533",
+      "id": 166,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.core.keystore",
+      "version": "1.1.0.202202171533",
+      "id": 167,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.log.filesystem.provider",
+      "version": "1.0.0.202202171533",
+      "id": 168,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.container.orchestration.provider",
+      "version": "1.0.0.202202171533",
+      "id": 169,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.container.provider",
+      "version": "1.0.0.202202171533",
+      "id": 170,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "com.gwt.user",
+      "version": "1.2.0.SNAPSHOT",
+      "id": 171,
+      "state": "RESOLVED",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.web2",
+      "version": "2.1.0.202202171533",
+      "id": 172,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.http.server.manager",
+      "version": "1.1.0.202202171533",
+      "id": 173,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.linux.gpio",
+      "version": "1.1.0.202202171533",
+      "id": 174,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.emulator",
+      "version": "1.1.0.202202171533",
+      "id": 175,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.emulator.net",
+      "version": "1.1.0.202202171533",
+      "id": 176,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.tigris.mtoolkit.iagent.rpc",
+      "version": "3.0.0.20110411-0918",
+      "id": 177,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.apache.felix.fileinstall",
+      "version": "3.6.4",
+      "id": 178,
+      "state": "ACTIVE",
+      "signed": false
+    },
+    {
+      "name": "org.eclipse.kura.demo.heater",
+      "version": "1.0.300",
+      "id": 180,
+      "state": "ACTIVE",
+      "signed": false
+    }
+  ]
+}
