@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -70,7 +71,11 @@ public class KuraDevice implements MqttCallback {
     private String inventoryStartWithTopic;
     private String inventoryGetInventoryEntries;
     private String inventoryGetInventoryBundleEntries;
+    private String inventoryExecInventoryBundleStart;
+    private String inventoryExecInventoryBundleStop;
     private String inventoryGetInventoryContainerEntries;
+    private String inventoryExecInventoryContainerStart;
+    private String inventoryExecInventoryContainerStop;
     private String inventoryGetInventorySystemPackagesEntries;
     private String inventoryGetInventoryPackagesEntries;
 
@@ -146,6 +151,11 @@ public class KuraDevice implements MqttCallback {
     public boolean packageListChangedAfterUninstall;
     public boolean assetStateChanged;
 
+    public boolean inventoryBundleStarted;
+    public boolean inventoryBundleStopped;
+    public boolean inventoryContainerStarted;
+    public boolean inventoryContainerStopped;
+
     public int keystoreInstalledCertificate;
     public int keystoreInstalledKeypair;
 
@@ -174,7 +184,11 @@ public class KuraDevice implements MqttCallback {
         inventoryStartWithTopic = "$EDC/kapua-sys/rpione3/INVENTORY-V1/";
         inventoryGetInventoryEntries = "$EDC/kapua-sys/rpione3/INVENTORY-V1/GET/inventory";
         inventoryGetInventoryBundleEntries = "$EDC/kapua-sys/rpione3/INVENTORY-V1/GET/bundles";
+        inventoryExecInventoryBundleStart = "$EDC/kapua-sys/rpione3/INVENTORY-V1/EXEC/bundles/_start";
+        inventoryExecInventoryBundleStop = "$EDC/kapua-sys/rpione3/INVENTORY-V1/EXEC/bundles/_stop";
         inventoryGetInventoryContainerEntries = "$EDC/kapua-sys/rpione3/INVENTORY-V1/GET/containers";
+        inventoryExecInventoryContainerStart = "$EDC/kapua-sys/rpione3/INVENTORY-V1/EXEC/containers/_start";
+        inventoryExecInventoryContainerStop = "$EDC/kapua-sys/rpione3/INVENTORY-V1/EXEC/containers/_stop";
         inventoryGetInventorySystemPackagesEntries = "$EDC/kapua-sys/rpione3/INVENTORY-V1/GET/systemPackages";
         inventoryGetInventoryPackagesEntries = "$EDC/kapua-sys/rpione3/INVENTORY-V1/GET/deploymentPackages";
 
@@ -539,17 +553,86 @@ public class KuraDevice implements MqttCallback {
                 } else if (topic.equals(inventoryGetInventoryBundleEntries)) {
                     callbackParam = extractCallback(requestPayload);
 
-                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
-
                     byte[] responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/INVENTORY-V1_GET_inventory_bundles_reply.json").toURI()));
 
+                    String responseBodyString = new String(responseBody);
+                    if (inventoryBundleStarted) {
+                        responseBodyString =
+                                responseBodyString.replace("\"name\": \"io.netty.transport-native-unix-common\",\n" +
+                                                "      \"version\": \"4.1.68.Final\",\n" +
+                                                "      \"id\": 140,\n" +
+                                                "      \"state\": \"RESOLVED\",\n" +
+                                                "      \"signed\": true",
+                                        "\"name\": \"io.netty.transport-native-unix-common\",\n" +
+                                                "      \"version\": \"4.1.68.Final\",\n" +
+                                                "      \"id\": 140,\n" +
+                                                "      \"state\": \"ACTIVE\",\n" +
+                                                "      \"signed\": true");
+                    }
+
+                    if (inventoryBundleStopped) {
+                        responseBodyString =
+                                responseBodyString.replace("\"name\": \"org.apache.felix.fileinstall\",\n" +
+                                                "      \"version\": \"3.6.4\",\n" +
+                                                "      \"id\": 178,\n" +
+                                                "      \"state\": \"ACTIVE\",\n" +
+                                                "      \"signed\": false",
+                                        "\"name\": \"org.apache.felix.fileinstall\",\n" +
+                                                "      \"version\": \"3.6.4\",\n" +
+                                                "      \"id\": 178,\n" +
+                                                "      \"state\": \"RESOLVED\",\n" +
+                                                "      \"signed\": false");
+                    }
+
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
                     KuraPayload kuraResponsePayload = new KuraPayload();
-                    kuraResponsePayload.setBody(responseBody);
+                    kuraResponsePayload.setBody(responseBodyString.getBytes(StandardCharsets.UTF_8));
                     kuraResponsePayload.getMetrics().put("response.code", 200);
 
                     responsePayload = kuraResponsePayload.toByteArray();
 
                     mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(inventoryExecInventoryBundleStart)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    KuraPayload kuraRequestPayload = new KuraPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
+
+                    String jsonRequestBody = new String(kuraRequestPayload.getBody());
+
+                    if (jsonRequestBody.contains("io.netty.transport-native-unix-common")) {
+                        inventoryBundleStarted = true;
+
+                        responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                        KuraPayload kuraResponsePayload = new KuraPayload();
+                        kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                        responsePayload = kuraResponsePayload.toByteArray();
+
+                        mqttClient.publish(responseTopic, responsePayload, 0, false);
+                    }
+                } else if (topic.equals(inventoryExecInventoryBundleStop)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    KuraPayload kuraRequestPayload = new KuraPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
+
+                    String jsonRequestBody = new String(kuraRequestPayload.getBody());
+
+                    if (jsonRequestBody.contains("org.apache.felix.fileinstall")) {
+                        inventoryBundleStopped = true;
+
+                        responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                        KuraPayload kuraResponsePayload = new KuraPayload();
+                        kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                        responsePayload = kuraResponsePayload.toByteArray();
+
+                        mqttClient.publish(responseTopic, responsePayload, 0, false);
+                    }
                 } else if (topic.equals(inventoryGetInventoryContainerEntries)) {
                     callbackParam = extractCallback(requestPayload);
 
@@ -564,6 +647,46 @@ public class KuraDevice implements MqttCallback {
                     responsePayload = kuraResponsePayload.toByteArray();
 
                     mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(inventoryExecInventoryContainerStart)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    KuraPayload kuraRequestPayload = new KuraPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
+
+                    String jsonRequestBody = new String(kuraRequestPayload.getBody());
+
+                    if (jsonRequestBody.contains("db")) {
+                        inventoryContainerStarted = true;
+
+                        responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                        KuraPayload kuraResponsePayload = new KuraPayload();
+                        kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                        responsePayload = kuraResponsePayload.toByteArray();
+
+                        mqttClient.publish(responseTopic, responsePayload, 0, false);
+                    }
+                } else if (topic.equals(inventoryExecInventoryContainerStop)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    KuraPayload kuraRequestPayload = new KuraPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
+
+                    String jsonRequestBody = new String(kuraRequestPayload.getBody());
+
+                    if (jsonRequestBody.contains("db")) {
+                        inventoryContainerStopped = true;
+
+                        responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                        KuraPayload kuraResponsePayload = new KuraPayload();
+                        kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                        responsePayload = kuraResponsePayload.toByteArray();
+
+                        mqttClient.publish(responseTopic, responsePayload, 0, false);
+                    }
                 } else if (topic.equals(inventoryGetInventorySystemPackagesEntries)) {
                     callbackParam = extractCallback(requestPayload);
 

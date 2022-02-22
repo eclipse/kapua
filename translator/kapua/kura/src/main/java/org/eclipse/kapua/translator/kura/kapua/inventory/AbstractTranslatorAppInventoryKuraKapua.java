@@ -41,7 +41,7 @@ import org.eclipse.kapua.translator.kura.kapua.AbstractSimpleTranslatorResponseK
 import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
 
 /**
- * {@link Translator}  {@code abstract} implementation from {@link KuraResponseMessage} to {@link InventoryResponseMessage}
+ * {@link Translator} {@code abstract} implementation from {@link KuraResponseMessage} to {@link InventoryResponseMessage}
  *
  * @since 1.5.0
  */
