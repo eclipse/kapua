@@ -133,7 +133,7 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
             DeviceInventoryContainer deviceInventoryContainer = deviceInventoryFactory.newDeviceInventoryContainer();
             deviceInventoryContainer.setName(kuraInventoryContainer.getName());
             deviceInventoryContainer.setVersion(kuraInventoryContainer.getVersion());
-            deviceInventoryContainer.setType(kuraInventoryContainer.getType());
+            deviceInventoryContainer.setContainerType(kuraInventoryContainer.getType());
 
             deviceInventoryContainers.addInventoryContainer(deviceInventoryContainer);
         });

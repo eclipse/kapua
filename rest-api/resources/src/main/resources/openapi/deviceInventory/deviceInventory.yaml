@@ -88,12 +88,12 @@ components:
           type: string
         version:
           type: string
-        type:
+        containerType:
           type: string
       example:
         name: docker_container_1
         version: nginx:latest
-        type: DOCKER
+        containerType: DOCKER
     deviceInventoryContainers:
       type: object
       properties:
@@ -106,10 +106,10 @@ components:
         inventoryBundles:
           - name: docker_container_1
             version: nginx:latest
-            type: DOCKER
+            containerType: DOCKER
           - name: docker_container_2
             version: haproxy:latest
-            type: DOCKER
+            containerType: DOCKER
     deviceInventorySystemPackage:
       type: object
       properties:

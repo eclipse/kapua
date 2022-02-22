@@ -290,7 +290,7 @@ public class DeviceManagementInventorySteps extends TestBase {
         List<DeviceInventoryContainer> inventoryContainers = (List<DeviceInventoryContainer>) stepData.get(INVENTORY_CONTAINERS);
         DeviceInventoryContainer inventoryContainer = inventoryContainers.stream().filter(c -> c.getName().equals(inventoryContainerName)).findAny().orElse(null);
         Assert.assertNotNull(inventoryContainer);
-        Assert.assertEquals(inventoryContainerType, inventoryContainer.getType());
+        Assert.assertEquals(inventoryContainerType, inventoryContainer.getContainerType());
     }
 
     @Then("I start Inventory Container named {string}")

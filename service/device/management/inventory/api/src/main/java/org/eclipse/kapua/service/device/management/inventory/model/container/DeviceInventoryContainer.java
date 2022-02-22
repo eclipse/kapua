@@ -70,14 +70,14 @@ public interface DeviceInventoryContainer {
      * @return The type.
      * @since 2.0.0
      */
-    @XmlElement(name = "type")
-    String getType();
+    @XmlElement(name = "containerType")
+    String getContainerType();
 
     /**
-     * Sets the type.
+     * Sets the container type.
      *
-     * @param type The type.
+     * @param containerType The container type.
      * @since 2.0.0
      */
-    void setType(String type);
+    void setContainerType(String containerType);
 }
