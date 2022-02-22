@@ -23,7 +23,7 @@ public class DeviceInventoryContainerImpl implements DeviceInventoryContainer {
 
     private String name;
     private String version;
-    private String type;
+    private String containerType;
 
     /**
      * Constructor.
@@ -54,12 +54,12 @@ public class DeviceInventoryContainerImpl implements DeviceInventoryContainer {
     }
 
     @Override
-    public String getType() {
-        return type;
+    public String getContainerType() {
+        return containerType;
     }
 
     @Override
-    public void setType(String type) {
-        this.type = type;
+    public void setContainerType(String containerType) {
+        this.containerType = containerType;
     }
 }

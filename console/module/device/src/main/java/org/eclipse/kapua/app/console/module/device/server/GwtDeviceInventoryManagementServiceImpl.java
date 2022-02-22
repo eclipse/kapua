@@ -153,7 +153,7 @@ public class GwtDeviceInventoryManagementServiceImpl extends KapuaRemoteServiceS
                 GwtInventoryContainer gwtInventoryContainer = new GwtInventoryContainer();
                 gwtInventoryContainer.setName(inventoryContainer.getName());
                 gwtInventoryContainer.setVersion(inventoryContainer.getVersion());
-                gwtInventoryContainer.setType(inventoryContainer.getType());
+                gwtInventoryContainer.setType(inventoryContainer.getContainerType());
 
                 gwtInventoryContainers.add(gwtInventoryContainer);
             }
@@ -175,7 +175,7 @@ public class GwtDeviceInventoryManagementServiceImpl extends KapuaRemoteServiceS
             DeviceInventoryContainer deviceInventoryContainer = DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventoryContainer();
             deviceInventoryContainer.setName(gwtInventoryContainer.getName());
             deviceInventoryContainer.setVersion(gwtInventoryContainer.getVersion());
-            deviceInventoryContainer.setType(gwtInventoryContainer.getType());
+            deviceInventoryContainer.setContainerType(gwtInventoryContainer.getType());
 
             DEVICE_INVENTORY_MANAGEMENT_SERVICE.execContainer(
                     scopeId,
