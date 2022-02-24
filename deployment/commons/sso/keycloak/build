@@ -12,12 +12,12 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 
-echo "Building Keycloak docker image..."
+echo "Building Kapua Keycloak Docker image..."
 
-docker build -t keycloak:sso -f ./docker/Dockerfile . ||
+docker build -f ./docker/Dockerfile -t kapua/kapua-keycloak:"${IMAGE_VERSION:=latest}" . ||
 {
-    echo "Building Keycloak docker image... ERROR!"
+    echo "Building Kapua Keycloak docker image... ERROR!"
     exit 1
 }
 
-echo "Building Keycloak docker image... DONE!"
+echo "Building Kapua Keycloak docker image... DONE!"

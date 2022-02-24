@@ -13,6 +13,6 @@
 FROM kapua/kapua-console:latest
 
 USER 0
-COPY tls.crt /tmp/tls.crt
+COPY ../tls.crt /tmp/tls.crt
 RUN keytool -noprompt  -importcert -file "/tmp/tls.crt" -alias "ssocert" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit"
 USER 1000
