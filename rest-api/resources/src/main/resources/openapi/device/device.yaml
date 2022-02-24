@@ -64,7 +64,7 @@ components:
             connection:
               $ref: '../deviceConnection/deviceConnection.yaml#/components/schemas/connection'
             status:
-              $ref: '#/components/schemas/status'
+              $ref: '#/components/schemas/deviceStatus'
             displayName:
               description: The Kura Display Name of this Device
               type: string
@@ -192,7 +192,7 @@ components:
               readOnly: true
               description: The Kura Client ID of this device
             status:
-              $ref: '#/components/schemas/status'
+              $ref: '#/components/schemas/deviceStatus'
             lastEventId:
               allOf:
                 - $ref: '../openapi.yaml#/components/schemas/kapuaId'
@@ -288,7 +288,7 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/device'
-    status:
+    deviceStatus:
       type: string
       enum:
         - ENABLED
