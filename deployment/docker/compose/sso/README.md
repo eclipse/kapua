@@ -1,7 +1,9 @@
-# SSO docker compose
+# Single Sign On (SSO) Docker Compose
 
-The `sso-docker-compose.yml` file is used only for SSO testing, and its already provided with a Keycloak service.
-This file is meant to be called by the scripts placed in the `deployment/docker/unix/sso` directory.
-The Keycloak service is built using scripts in the `deployment/commons/sso/keycloak` directory.
+Docker Compose files used to run the deployment with the SSO enabled. 
 
-In order to use other SSO services, replace the Keycloak service with the desired one.
+Check [Docker Compose Deployment README](../../README.md) for instruction on how to run them.
+
+### Running with other SSO providers
+
+In order to use other SSO providers, replace the Keycloak service with the desired one.

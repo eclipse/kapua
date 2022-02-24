@@ -1,9 +1,17 @@
-# Keycloak Docker image build 
+# Keycloack SSO Provider
 
-This directory contains script to build a new Docker image on top of the official one, provided with a dedicated 'Kapua'
-realm and a dedicated client. Launch the `build` shell script in order to build the Keycloak docker image.
+### Keycloak Docker image build 
 
-## About the Keycloak version
+This directory contains scripts to build a new Docker image on top of the official one, provided with a dedicated 'Kapua'
+realm and a dedicated client. 
+
+Launch the `build` shell script in order to build the Keycloak docker image:
+
+```bash
+./build
+```
+
+### About the Keycloak version
 
 **WARNING**: 
 The Dockerfile is using Keycloak 7.0.0, since version 7.0.1 does not seem to work properly on OpenShift. 

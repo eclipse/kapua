@@ -30,8 +30,6 @@ docker_compose() {
       echo "Debug mode enabled!"
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.broker-debug.yml")
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.console-debug.yml")
-      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.consumer-lifecycle-debug.yml")
-      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.consumer-telemetry-debug.yml")
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.job-engine-debug.yml")
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.rest-debug.yml")
     fi
@@ -40,6 +38,16 @@ docker_compose() {
     if [[ "$2" == true ]]; then
       echo "Dev mode enabled!"
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/extras/docker-compose.db-dev.yml")
+    fi
+
+    # SSO Mode
+    if [[ "$3" == true ]]; then
+      echo "SSO enabled!"
+      . "${SCRIPT_DIR}/sso/docker-sso-config.sh"
+
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/sso/docker-compose.console-sso.yml")
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/sso/docker-compose.keycloak.yml")
+
     fi
 
     docker-compose -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
@@ -52,6 +60,7 @@ print_usage_deploy() {
 OPEN_LOGS=false
 DEV_MODE=false
 DEBUG_MODE=false
+SSO_MODE=false
 for option in "$@"; do
   case $option in
     --logs)
@@ -62,6 +71,9 @@ for option in "$@"; do
       ;;
     --debug)
       DEBUG_MODE=true
+      ;;
+    --sso)
+      SSO_MODE=true
       ;;
     -*)
       echo "ERROR: Unrecognised option $option"
@@ -75,7 +87,7 @@ done
 docker_common
 
 echo "Deploying Eclipse Kapua..."
-docker_compose ${DEBUG_MODE} ${DEV_MODE}  || {
+docker_compose ${DEBUG_MODE} ${DEV_MODE} ${SSO_MODE} || {
     echo "Deploying Eclipse Kapua... ERROR!"
     exit 1
 }

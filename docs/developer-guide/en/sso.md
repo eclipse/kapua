@@ -162,8 +162,8 @@ The example described here makes use of a Keycloak Server Docker image
 
 ### Installing the Keycloak Server (Docker image)
 
-In order to deploy automatically the Keycloak image, is sufficient to use the `sso-docker-deploy.sh`script inside the 
-`sso` subdirectory of the docker deployment scripts. In such a way the environment is ready to be used without the need
+In order to deploy automatically the Keycloak image, is sufficient to add the `--sso` option to the `docker-deploy.sh` 
+script inside the directory of the docker deployment scripts. In such a way the environment is ready to be used without the need
 for further configuration. 
 
 However, if you want to use a stand alone Keycloak image, please follow the instruction below in order to configure it.
@@ -177,8 +177,10 @@ The Keycloak Server Admin Console will be available at the following URL: _http:
 
 #### SSL configuration
 
+_Following section needs to be updated_
+
 The Keycloak provider can be configured to use SSL, which is enabled by setting the 9443 port for the `KEYCLOAK_URL` 
-in the `sso-docker-common.sh` file. A self-signed certificate and a key are produced through `sso-docker-deploy.sh` 
+in the `docker-common-sso.sh` file. A self-signed certificate and a key are produced through `sso-docker-deploy.sh` 
 script and passed via the volume based on the `./certs:/etc/x509/https` directory.
 The script also installs the certificate in the Kapua Console docker image (which is tagged with the 'sso' tag).
 
@@ -190,7 +192,7 @@ please refer to the official
 ### Manually configuring the Keycloak Server
 
 The Keycloak instance provided with the docker deployment is already configured with a dedicated
-"Kapua" realm and a client when using the script `sso-docker-deploy.sh` in the subdirectory `sso`.
+"Kapua" realm and a client when using the script `docker-deploy.sh` with `--sso` option.
 
 However, if you already have a running Keycloak instance, you can follow the instructions below in order to configure 
 it manually.
@@ -216,7 +218,7 @@ short)
 ### Configuring Kapua to use SSO with the Keycloak Server
 
 The Kapua console docker image is already configured and deployed in docker without further configuration using the 
-`sso-docker-deploy.sh` script in the subdirectory `sso`.
+script `docker-deploy.sh` with `--sso` option.
 
 If you need to configure it manually, the following properties must be passed (as VM options) in order to set up the SSO 
 on Kapua using Keycloak (you can login using the default `admin` user with `admin` password):

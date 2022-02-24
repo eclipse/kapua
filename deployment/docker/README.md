@@ -162,6 +162,28 @@ After the build has completed follow the steps from the [Running](#Running) sect
 
 ---
 
+### Enabling Single Sing On (SSO)
+
+Kapua can be deployed with an SSO provider. To enable it, provide the `--sso` option.
+
+Example:
+
+```bash
+./docker-deploy.sh --sso
+```
+
+By adding this option Kapua will be deployed with an instance of [Keycloak](https://www.keycloak.org/) SSO provider.
+
+The Keycloack instance can be accessed at the following endpoints:
+
+| Application/Service | Endpoint       | User  | Password | Notes             |
+|---------------------|----------------|-------|----------|-------------------|
+| Keycloak Console    | localhost:9090 | admin | admin    |                   |
+
+This option is not available on Windows OS at the moment.
+
+---
+
 ### Enabling SSL
 
 To enable SSL in the Jetty (Console and REST API) and Broker containers, set the `KAPUA_DISABLE_SSL` environment
