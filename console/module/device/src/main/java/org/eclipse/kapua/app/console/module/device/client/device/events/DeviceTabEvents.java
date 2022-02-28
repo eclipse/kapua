@@ -207,7 +207,7 @@ public class DeviceTabEvents extends KapuaTabItem<GwtDevice> {
                 final HorizontalPanel horizontalPanel = new HorizontalPanel();
                 final Text cellText = new Text();
                 cellText.setStyleName("x-grid3-cell");
-                cellText.setText(model.getUnescapedEventMessage());
+                cellText.setText(model.getEventMessage());
 
                 // Search button
                 final ToolButton searchButton = new ToolButton("x-tool-search", new SelectionListener<IconButtonEvent>() {
