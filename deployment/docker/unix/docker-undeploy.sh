@@ -22,11 +22,20 @@ docker_common() {
 }
 
 docker_undeploy() {
-    docker-compose -f "${SCRIPT_DIR}"/../compose/docker-compose.yml down
+    declare -a COMPOSE_FILES;
+
+    if [[ "$(docker ps | grep kapua/kapua-keycloak)" != "" ]] ; then
+      COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/sso/docker-compose.keycloak.yml")
+    fi
+
+    docker-compose -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" down
 }
 
 docker_common
 
 echo "Undeploying Eclipse Kapua..."
-docker_undeploy || { echo "Undeploying Eclipse Kapua... ERROR!"; exit 1; }
+docker_undeploy || {
+    echo "Undeploying Eclipse Kapua... ERROR!";
+    exit 1;
+}
 echo "Undeploying Eclipse Kapua... DONE!"
