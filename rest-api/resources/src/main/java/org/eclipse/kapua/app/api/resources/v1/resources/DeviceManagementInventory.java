@@ -22,6 +22,9 @@ import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryMana
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundleAction;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainerAction;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainers;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackages;
 import org.eclipse.kapua.service.device.management.inventory.model.system.DeviceInventorySystemPackages;
@@ -88,7 +91,7 @@ public class DeviceManagementInventory extends AbstractKapuaResource {
      * @param deviceId              The {@link Device#getId()}.
      * @param deviceInventoryBundle The {@link DeviceInventoryBundle} to start.
      * @param timeout               The timeout of the operation in milliseconds
-     * @return The {@link DeviceInventoryBundles}.
+     * @return The {@link Response#noContent()} if succeeded.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
@@ -113,7 +116,7 @@ public class DeviceManagementInventory extends AbstractKapuaResource {
      * @param deviceId              The {@link Device#getId()}.
      * @param deviceInventoryBundle The {@link DeviceInventoryBundle} to start.
      * @param timeout               The timeout of the operation in milliseconds
-     * @return The {@link DeviceInventoryBundles}.
+     * @return The {@link Response#noContent()} if succeeded.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
      */
@@ -127,6 +130,76 @@ public class DeviceManagementInventory extends AbstractKapuaResource {
             DeviceInventoryBundle deviceInventoryBundle) throws KapuaException {
 
         DEVICE_INVENTORY_MANAGEMENT_SERVICE.execBundle(scopeId, deviceId, deviceInventoryBundle, DeviceInventoryBundleAction.STOP, timeout);
+
+        return returnNoContent();
+    }
+
+    /**
+     * Gets the {@link DeviceInventoryContainers} present on the {@link Device}.
+     *
+     * @param scopeId  The {@link Device#getScopeId()}.
+     * @param deviceId The {@link Device#getId()}.
+     * @param timeout  The timeout of the operation in milliseconds
+     * @return The {@link DeviceInventoryContainers}.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 2.0.0
+     */
+    @GET
+    @Path("containers")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public DeviceInventoryContainers getInventoryContainers(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @QueryParam("timeout") Long timeout) throws KapuaException {
+        return DEVICE_INVENTORY_MANAGEMENT_SERVICE.getContainers(scopeId, deviceId, timeout);
+    }
+
+    /**
+     * Starts a  {@link DeviceInventoryContainer} present on the {@link Device}.
+     *
+     * @param scopeId                  The {@link Device#getScopeId()}.
+     * @param deviceId                 The {@link Device#getId()}.
+     * @param deviceInventoryContainer The {@link DeviceInventoryContainer} to start.
+     * @param timeout                  The timeout of the operation in milliseconds
+     * @return The {@link Response#noContent()} if succeeded.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 2.0.0
+     */
+    @POST
+    @Path("containers/_start")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response startInventoryContainers(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @QueryParam("timeout") Long timeout,
+            DeviceInventoryContainer deviceInventoryContainer) throws KapuaException {
+
+        DEVICE_INVENTORY_MANAGEMENT_SERVICE.execContainer(scopeId, deviceId, deviceInventoryContainer, DeviceInventoryContainerAction.START, timeout);
+
+        return returnNoContent();
+    }
+
+    /**
+     * Starts a  {@link DeviceInventoryContainer} present on the {@link Device}.
+     *
+     * @param scopeId                  The {@link Device#getScopeId()}.
+     * @param deviceId                 The {@link Device#getId()}.
+     * @param deviceInventoryContainer The {@link DeviceInventoryContainer} to start.
+     * @param timeout                  The timeout of the operation in milliseconds
+     * @return The {@link Response#noContent()} if succeeded.
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @since 2.0.0
+     */
+    @POST
+    @Path("containers/_stop")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response stopInventoryContainers(
+            @PathParam("scopeId") ScopeId scopeId,
+            @PathParam("deviceId") EntityId deviceId,
+            @QueryParam("timeout") Long timeout,
+            DeviceInventoryContainer deviceInventoryContainer) throws KapuaException {
+
+        DEVICE_INVENTORY_MANAGEMENT_SERVICE.execContainer(scopeId, deviceId, deviceInventoryContainer, DeviceInventoryContainerAction.STOP, timeout);
 
         return returnNoContent();
     }

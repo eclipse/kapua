@@ -1,0 +1,32 @@
+{
+  "deploymentPackages": [
+    {
+      "name": "org.eclipse.kura.demo.heater",
+      "version": "1.0.300",
+      "bundles": [
+        {
+          "name": "org.eclipse.kura.demo.heater",
+          "version": "1.0.300",
+          "id": 180,
+          "state": "RESOLVED",
+          "signed": false
+        }
+      ],
+      "signed": false
+    },
+    {
+      "name": "de.dentrassi.kura.addons.utils.fileinstall",
+      "version": "0.6.0",
+      "bundles": [
+        {
+          "name": "org.apache.felix.fileinstall",
+          "version": "3.6.4",
+          "id": 178,
+          "state": "ACTIVE",
+          "signed": true
+        }
+      ],
+      "signed": true
+    }
+  ]
+}

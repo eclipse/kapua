@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
@@ -45,6 +46,7 @@ public class KuraDevice implements MqttCallback {
     private static final String $EDC_KAPUA_SYS = "$EDC/kapua-sys/";
     private static final String DEPLOY_V2_REPLY = "/DEPLOY-V2/REPLY/";
     private static final String DEPLOY_V2_NOTIFY = "/DEPLOY-V2/NOTIFY/";
+    private static final String INVENTORY_V1_REPLY = "/INVENTORY-V1/REPLY/";
     private static final String KEYS_V1_REPLY = "/KEYS-V1/REPLY/";
 
     private static final String COMPLETED = "COMPLETED";
@@ -64,6 +66,21 @@ public class KuraDevice implements MqttCallback {
     private String deployExecStart34;
     private String deployExecStart95;
     private String deployExecStop77;
+
+    // INVENTORY-V1
+    private String inventoryStartWithTopic;
+    private String inventoryGetInventoryEntries;
+    private String inventoryGetInventoryBundleEntries;
+    private String inventoryExecInventoryBundleStart;
+    private String inventoryExecInventoryBundleStop;
+    private String inventoryGetInventoryContainerEntries;
+    private String inventoryExecInventoryContainerStart;
+    private String inventoryExecInventoryContainerStop;
+    private String inventoryGetInventorySystemPackagesEntries;
+    private String inventoryGetInventoryPackagesEntries;
+
+    // KEYS-V1
+    private String keystoreStartWithTopic;
     private String keystoreGetKeystores;
     private String keystoreGetKeystoresEntries;
     private String keystoreGetKeystoresEntry;
@@ -134,6 +151,11 @@ public class KuraDevice implements MqttCallback {
     public boolean packageListChangedAfterUninstall;
     public boolean assetStateChanged;
 
+    public boolean inventoryBundleStarted;
+    public boolean inventoryBundleStopped;
+    public boolean inventoryContainerStarted;
+    public boolean inventoryContainerStopped;
+
     public int keystoreInstalledCertificate;
     public int keystoreInstalledKeypair;
 
@@ -158,7 +180,20 @@ public class KuraDevice implements MqttCallback {
         deployExecStart95 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/start/95";
         deployExecStop77 = "$EDC/kapua-sys/rpione3/DEPLOY-V2/EXEC/stop/77";
 
+        // INVENTORY-V1
+        inventoryStartWithTopic = "$EDC/kapua-sys/rpione3/INVENTORY-V1/";
+        inventoryGetInventoryEntries = "$EDC/kapua-sys/rpione3/INVENTORY-V1/GET/inventory";
+        inventoryGetInventoryBundleEntries = "$EDC/kapua-sys/rpione3/INVENTORY-V1/GET/bundles";
+        inventoryExecInventoryBundleStart = "$EDC/kapua-sys/rpione3/INVENTORY-V1/EXEC/bundles/_start";
+        inventoryExecInventoryBundleStop = "$EDC/kapua-sys/rpione3/INVENTORY-V1/EXEC/bundles/_stop";
+        inventoryGetInventoryContainerEntries = "$EDC/kapua-sys/rpione3/INVENTORY-V1/GET/containers";
+        inventoryExecInventoryContainerStart = "$EDC/kapua-sys/rpione3/INVENTORY-V1/EXEC/containers/_start";
+        inventoryExecInventoryContainerStop = "$EDC/kapua-sys/rpione3/INVENTORY-V1/EXEC/containers/_stop";
+        inventoryGetInventorySystemPackagesEntries = "$EDC/kapua-sys/rpione3/INVENTORY-V1/GET/systemPackages";
+        inventoryGetInventoryPackagesEntries = "$EDC/kapua-sys/rpione3/INVENTORY-V1/GET/deploymentPackages";
+
         // KEYS-V1
+        keystoreStartWithTopic = "$EDC/kapua-sys/rpione3/KEYS-V1/";
         keystoreGetKeystores = "$EDC/kapua-sys/rpione3/KEYS-V1/GET/keystores";
         keystoreGetKeystoresEntries = "$EDC/kapua-sys/rpione3/KEYS-V1/GET/keystores/entries";
         keystoreGetKeystoresEntry = "$EDC/kapua-sys/rpione3/KEYS-V1/GET/keystores/entries/entry";
@@ -499,207 +534,396 @@ public class KuraDevice implements MqttCallback {
                 bundleStateChanged = true;
                 mqttClient.publish(responseTopic, responsePayload, 0, false);
             }
+            // INVENTORY-V1
+            else if (topic.startsWith(inventoryStartWithTopic)) {
+                if (topic.equals(inventoryGetInventoryEntries)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                    byte[] responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/INVENTORY-V1_GET_inventory_reply.json").toURI()));
+
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.setBody(responseBody);
+                    kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                    responsePayload = kuraResponsePayload.toByteArray();
+
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(inventoryGetInventoryBundleEntries)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    byte[] responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/INVENTORY-V1_GET_inventory_bundles_reply.json").toURI()));
+
+                    String responseBodyString = new String(responseBody);
+                    if (inventoryBundleStarted) {
+                        responseBodyString =
+                                responseBodyString.replace("\"name\": \"io.netty.transport-native-unix-common\",\n" +
+                                                "      \"version\": \"4.1.68.Final\",\n" +
+                                                "      \"id\": 140,\n" +
+                                                "      \"state\": \"RESOLVED\",\n" +
+                                                "      \"signed\": true",
+                                        "\"name\": \"io.netty.transport-native-unix-common\",\n" +
+                                                "      \"version\": \"4.1.68.Final\",\n" +
+                                                "      \"id\": 140,\n" +
+                                                "      \"state\": \"ACTIVE\",\n" +
+                                                "      \"signed\": true");
+                    }
+
+                    if (inventoryBundleStopped) {
+                        responseBodyString =
+                                responseBodyString.replace("\"name\": \"org.apache.felix.fileinstall\",\n" +
+                                                "      \"version\": \"3.6.4\",\n" +
+                                                "      \"id\": 178,\n" +
+                                                "      \"state\": \"ACTIVE\",\n" +
+                                                "      \"signed\": false",
+                                        "\"name\": \"org.apache.felix.fileinstall\",\n" +
+                                                "      \"version\": \"3.6.4\",\n" +
+                                                "      \"id\": 178,\n" +
+                                                "      \"state\": \"RESOLVED\",\n" +
+                                                "      \"signed\": false");
+                    }
+
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.setBody(responseBodyString.getBytes(StandardCharsets.UTF_8));
+                    kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                    responsePayload = kuraResponsePayload.toByteArray();
+
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(inventoryExecInventoryBundleStart)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    KuraPayload kuraRequestPayload = new KuraPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
+
+                    String jsonRequestBody = new String(kuraRequestPayload.getBody());
+
+                    if (jsonRequestBody.contains("io.netty.transport-native-unix-common")) {
+                        inventoryBundleStarted = true;
+
+                        responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                        KuraPayload kuraResponsePayload = new KuraPayload();
+                        kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                        responsePayload = kuraResponsePayload.toByteArray();
+
+                        mqttClient.publish(responseTopic, responsePayload, 0, false);
+                    }
+                } else if (topic.equals(inventoryExecInventoryBundleStop)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    KuraPayload kuraRequestPayload = new KuraPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
+
+                    String jsonRequestBody = new String(kuraRequestPayload.getBody());
+
+                    if (jsonRequestBody.contains("org.apache.felix.fileinstall")) {
+                        inventoryBundleStopped = true;
+
+                        responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                        KuraPayload kuraResponsePayload = new KuraPayload();
+                        kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                        responsePayload = kuraResponsePayload.toByteArray();
+
+                        mqttClient.publish(responseTopic, responsePayload, 0, false);
+                    }
+                } else if (topic.equals(inventoryGetInventoryContainerEntries)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                    byte[] responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/INVENTORY-V1_GET_inventory_containers_reply.json").toURI()));
+
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.setBody(responseBody);
+                    kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                    responsePayload = kuraResponsePayload.toByteArray();
+
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(inventoryExecInventoryContainerStart)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    KuraPayload kuraRequestPayload = new KuraPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
+
+                    String jsonRequestBody = new String(kuraRequestPayload.getBody());
+
+                    if (jsonRequestBody.contains("db")) {
+                        inventoryContainerStarted = true;
+
+                        responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                        KuraPayload kuraResponsePayload = new KuraPayload();
+                        kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                        responsePayload = kuraResponsePayload.toByteArray();
+
+                        mqttClient.publish(responseTopic, responsePayload, 0, false);
+                    }
+                } else if (topic.equals(inventoryExecInventoryContainerStop)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    KuraPayload kuraRequestPayload = new KuraPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
+
+                    String jsonRequestBody = new String(kuraRequestPayload.getBody());
+
+                    if (jsonRequestBody.contains("db")) {
+                        inventoryContainerStopped = true;
+
+                        responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                        KuraPayload kuraResponsePayload = new KuraPayload();
+                        kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                        responsePayload = kuraResponsePayload.toByteArray();
+
+                        mqttClient.publish(responseTopic, responsePayload, 0, false);
+                    }
+                } else if (topic.equals(inventoryGetInventorySystemPackagesEntries)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                    byte[] responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/INVENTORY-V1_GET_inventory_system_reply.json").toURI()));
+
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.setBody(responseBody);
+                    kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                    responsePayload = kuraResponsePayload.toByteArray();
+
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(inventoryGetInventoryPackagesEntries)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + INVENTORY_V1_REPLY + callbackParam.getRequestId();
+
+                    byte[] responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/INVENTORY-V1_GET_inventory_packages_reply.json").toURI()));
+
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.setBody(responseBody);
+                    kuraResponsePayload.getMetrics().put("response.code", 200);
+
+                    responsePayload = kuraResponsePayload.toByteArray();
+
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else {
+                    LOG.error("Kapua Mock Device unhandled INVENTORY-V1 topic: {}", topic);
+                }
+            }
             // KEYS-V1
-            else if (topic.equals(keystoreGetKeystores)) {
-                callbackParam = extractCallback(requestPayload);
+            else if (topic.startsWith(keystoreStartWithTopic)) {
+                if (topic.equals(keystoreGetKeystores)) {
+                    callbackParam = extractCallback(requestPayload);
 
-                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
 
-                byte[] responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_reply.json").toURI()));
+                    byte[] responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_reply.json").toURI()));
 
-                KuraPayload kuraResponsePayload = new KuraPayload();
-                kuraResponsePayload.setBody(responseBody);
-                kuraResponsePayload.getMetrics().put("response.code", 200);
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.setBody(responseBody);
+                    kuraResponsePayload.getMetrics().put("response.code", 200);
 
-                responsePayload = kuraResponsePayload.toByteArray();
+                    responsePayload = kuraResponsePayload.toByteArray();
 
-                mqttClient.publish(responseTopic, responsePayload, 0, false);
-            } else if (topic.equals(keystoreGetKeystoresEntries)) {
-                callbackParam = extractCallback(requestPayload);
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(keystoreGetKeystoresEntries)) {
+                    callbackParam = extractCallback(requestPayload);
 
-                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
 
-                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
-                kuraRequestPayload.readFromByteArray(requestPayload);
+                    KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
 
-                byte[] responseBody = null;
-                if (kuraRequestPayload.hasBody()) {
-                    String queryJsonString = new String(kuraRequestPayload.getBody());
+                    byte[] responseBody = null;
+                    if (kuraRequestPayload.hasBody()) {
+                        String queryJsonString = new String(kuraRequestPayload.getBody());
 
-                    if (queryJsonString.contains("alias")) {
-                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_alias_reply.json").toURI()));
-                    } else if (queryJsonString.contains("keystoreServicePid")) {
-                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_keystore_reply.json").toURI()));
-                    }
-                } else {
-
-                    if (keystoreInstalledCertificate == 0 && keystoreInstalledKeypair == 0) {
-                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_default_reply.json").toURI()));
-                    } else if (keystoreInstalledCertificate == 1 && keystoreInstalledKeypair == 0) {
-                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_cert_installed_reply.json").toURI()));
-                    } else if (keystoreInstalledCertificate == 1 && keystoreInstalledKeypair == 1) {
-                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_cert_key_installed_reply.json").toURI()));
-                    } else if (keystoreInstalledCertificate == 0 && keystoreInstalledKeypair == 1) {
-                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_key_installed_reply.json").toURI()));
-                    }
-                }
-
-                KuraPayload kuraResponsePayload = new KuraPayload();
-                kuraResponsePayload.setBody(responseBody);
-                kuraResponsePayload.getMetrics().put("response.code", 200);
-
-                responsePayload = kuraResponsePayload.toByteArray();
-
-                mqttClient.publish(responseTopic, responsePayload, 0, false);
-            } else if (topic.equals(keystoreGetKeystoresEntry)) {
-                callbackParam = extractCallback(requestPayload);
-
-                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
-
-                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
-                kuraRequestPayload.readFromByteArray(requestPayload);
-
-                byte[] responseBody = null;
-                if (kuraRequestPayload.hasBody()) {
-                    String queryJsonString = new String(kuraRequestPayload.getBody());
-
-                    if (queryJsonString.contains("\"alias\":\"localhost\"") &&
-                            queryJsonString.contains("\"keystoreServicePid\":\"HttpsKeystore\"")) {
-                        responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entry_reply.json").toURI()));
-                    }
-                }
-
-                KuraPayload kuraResponsePayload = new KuraPayload();
-                kuraResponsePayload.setBody(responseBody);
-                kuraResponsePayload.getMetrics().put("response.code", 200);
-
-                responsePayload = kuraResponsePayload.toByteArray();
-
-                mqttClient.publish(responseTopic, responsePayload, 0, false);
-            } else if (topic.equals(keystorePostKeystoresEntriesCertificate)) {
-                callbackParam = extractCallback(requestPayload);
-
-                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
-
-                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
-                kuraRequestPayload.readFromByteArray(requestPayload);
-
-                int responseCode;
-                if (kuraRequestPayload.hasBody()) {
-                    String queryJsonString = new String(kuraRequestPayload.getBody());
-
-                    if (queryJsonString.contains("-----BEGIN CERTIFICATE-----") &&
-                            queryJsonString.contains("-----END CERTIFICATE-----")) {
-                        keystoreInstalledCertificate++;
-                        responseCode = 200;
+                        if (queryJsonString.contains("alias")) {
+                            responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_alias_reply.json").toURI()));
+                        } else if (queryJsonString.contains("keystoreServicePid")) {
+                            responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_keystore_reply.json").toURI()));
+                        }
                     } else {
-                        responseCode = 500;
+
+                        if (keystoreInstalledCertificate == 0 && keystoreInstalledKeypair == 0) {
+                            responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_default_reply.json").toURI()));
+                        } else if (keystoreInstalledCertificate == 1 && keystoreInstalledKeypair == 0) {
+                            responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_cert_installed_reply.json").toURI()));
+                        } else if (keystoreInstalledCertificate == 1 && keystoreInstalledKeypair == 1) {
+                            responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_cert_key_installed_reply.json").toURI()));
+                        } else if (keystoreInstalledCertificate == 0 && keystoreInstalledKeypair == 1) {
+                            responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entries_key_installed_reply.json").toURI()));
+                        }
                     }
-                } else {
-                    responseCode = 400;
-                }
 
-                KuraPayload kuraResponsePayload = new KuraPayload();
-                kuraResponsePayload.getMetrics().put("response.code", responseCode);
-                responsePayload = kuraResponsePayload.toByteArray();
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.setBody(responseBody);
+                    kuraResponsePayload.getMetrics().put("response.code", 200);
 
-                mqttClient.publish(responseTopic, responsePayload, 0, false);
-            } else if (topic.equals(keystorePostKeystoresEntriesKeypair)) {
-                callbackParam = extractCallback(requestPayload);
+                    responsePayload = kuraResponsePayload.toByteArray();
 
-                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(keystoreGetKeystoresEntry)) {
+                    callbackParam = extractCallback(requestPayload);
 
-                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
-                kuraRequestPayload.readFromByteArray(requestPayload);
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
 
-                int responseCode;
-                if (kuraRequestPayload.hasBody()) {
-                    String queryJsonString = new String(kuraRequestPayload.getBody());
+                    KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
 
-                    if (queryJsonString.contains("SHA256withRSA") &&
-                            queryJsonString.contains("CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US")) {
-                        keystoreInstalledKeypair++;
-                        responseCode = 200;
-                    } else {
-                        responseCode = 500;
+                    byte[] responseBody = null;
+                    if (kuraRequestPayload.hasBody()) {
+                        String queryJsonString = new String(kuraRequestPayload.getBody());
+
+                        if (queryJsonString.contains("\"alias\":\"localhost\"") &&
+                                queryJsonString.contains("\"keystoreServicePid\":\"HttpsKeystore\"")) {
+                            responseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_GET_keystores_entry_reply.json").toURI()));
+                        }
                     }
-                } else {
-                    responseCode = 400;
-                }
 
-                KuraPayload kuraResponsePayload = new KuraPayload();
-                kuraResponsePayload.getMetrics().put("response.code", responseCode);
-                responsePayload = kuraResponsePayload.toByteArray();
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.setBody(responseBody);
+                    kuraResponsePayload.getMetrics().put("response.code", 200);
 
-                mqttClient.publish(responseTopic, responsePayload, 0, false);
-            } else if (topic.equals(keystorePostKeystoresEntriesCsr)) {
-                callbackParam = extractCallback(requestPayload);
+                    responsePayload = kuraResponsePayload.toByteArray();
 
-                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(keystorePostKeystoresEntriesCertificate)) {
+                    callbackParam = extractCallback(requestPayload);
 
-                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
-                kuraRequestPayload.readFromByteArray(requestPayload);
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
 
-                byte[] resposnseBody = null;
-                int responseCode;
-                if (kuraRequestPayload.hasBody()) {
-                    String queryJsonString = new String(kuraRequestPayload.getBody());
+                    KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
 
-                    if (queryJsonString.contains("\"signatureAlgorithm\":\"SHA256withRSA\"") &&
-                            queryJsonString.contains("\"attributes\":\"CN=Kura, OU=IoT, O=Eclipse, C=US\"")) {
+                    int responseCode;
+                    if (kuraRequestPayload.hasBody()) {
+                        String queryJsonString = new String(kuraRequestPayload.getBody());
 
-                        if (queryJsonString.contains("\"alias\":\"localhostFixed\"")) {
-                            resposnseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_POST_keystores_entries_csr_fixed_reply.json").toURI()));
-                            responseCode = 200;
-                        } else if (queryJsonString.contains("\"alias\":\"localhostKuraBugged\"")) {
-                            resposnseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_POST_keystores_entries_csr_kurabugged_reply.txt").toURI()));
+                        if (queryJsonString.contains("-----BEGIN CERTIFICATE-----") &&
+                                queryJsonString.contains("-----END CERTIFICATE-----")) {
+                            keystoreInstalledCertificate++;
                             responseCode = 200;
                         } else {
                             responseCode = 500;
                         }
                     } else {
-                        responseCode = 500;
+                        responseCode = 400;
                     }
-                } else {
-                    responseCode = 400;
-                }
 
-                KuraPayload kuraResponsePayload = new KuraPayload();
-                kuraResponsePayload.getMetrics().put("response.code", responseCode);
-                kuraResponsePayload.setBody(resposnseBody);
-                responsePayload = kuraResponsePayload.toByteArray();
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.getMetrics().put("response.code", responseCode);
+                    responsePayload = kuraResponsePayload.toByteArray();
 
-                mqttClient.publish(responseTopic, responsePayload, 0, false);
-            } else if (topic.equals(keystoreDelKeystoresEntries)) {
-                callbackParam = extractCallback(requestPayload);
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(keystorePostKeystoresEntriesKeypair)) {
+                    callbackParam = extractCallback(requestPayload);
 
-                responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
 
-                KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
-                kuraRequestPayload.readFromByteArray(requestPayload);
+                    KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
 
-                int responseCode;
-                if (kuraRequestPayload.hasBody()) {
-                    String queryJsonString = new String(kuraRequestPayload.getBody());
+                    int responseCode;
+                    if (kuraRequestPayload.hasBody()) {
+                        String queryJsonString = new String(kuraRequestPayload.getBody());
 
-                    if (queryJsonString.contains("SSLKeystore") && queryJsonString.contains("qaCertificate")) {
-                        keystoreInstalledCertificate--;
-                        responseCode = 200;
-                    } else if (queryJsonString.contains("SSLKeystore") && queryJsonString.contains("qaKeypair")) {
-                        keystoreInstalledKeypair--;
-                        responseCode = 200;
+                        if (queryJsonString.contains("SHA256withRSA") &&
+                                queryJsonString.contains("CN=Let's Encrypt Authority X3,O=Let's Encrypt,C=US")) {
+                            keystoreInstalledKeypair++;
+                            responseCode = 200;
+                        } else {
+                            responseCode = 500;
+                        }
                     } else {
-                        responseCode = 500;
+                        responseCode = 400;
                     }
+
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.getMetrics().put("response.code", responseCode);
+                    responsePayload = kuraResponsePayload.toByteArray();
+
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(keystorePostKeystoresEntriesCsr)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+
+                    KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
+
+                    byte[] resposnseBody = null;
+                    int responseCode;
+                    if (kuraRequestPayload.hasBody()) {
+                        String queryJsonString = new String(kuraRequestPayload.getBody());
+
+                        if (queryJsonString.contains("\"signatureAlgorithm\":\"SHA256withRSA\"") &&
+                                queryJsonString.contains("\"attributes\":\"CN=Kura, OU=IoT, O=Eclipse, C=US\"")) {
+
+                            if (queryJsonString.contains("\"alias\":\"localhostFixed\"")) {
+                                resposnseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_POST_keystores_entries_csr_fixed_reply.json").toURI()));
+                                responseCode = 200;
+                            } else if (queryJsonString.contains("\"alias\":\"localhostKuraBugged\"")) {
+                                resposnseBody = Files.readAllBytes(Paths.get(getClass().getResource("/mqtt/KEYS-V1_POST_keystores_entries_csr_kurabugged_reply.txt").toURI()));
+                                responseCode = 200;
+                            } else {
+                                responseCode = 500;
+                            }
+                        } else {
+                            responseCode = 500;
+                        }
+                    } else {
+                        responseCode = 400;
+                    }
+
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.getMetrics().put("response.code", responseCode);
+                    kuraResponsePayload.setBody(resposnseBody);
+                    responsePayload = kuraResponsePayload.toByteArray();
+
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
+                } else if (topic.equals(keystoreDelKeystoresEntries)) {
+                    callbackParam = extractCallback(requestPayload);
+
+                    responseTopic = $EDC + CLIENT_ACCOUNT + "/" + callbackParam.getClientId() + KEYS_V1_REPLY + callbackParam.getRequestId();
+
+                    KuraRequestPayload kuraRequestPayload = new KuraRequestPayload();
+                    kuraRequestPayload.readFromByteArray(requestPayload);
+
+                    int responseCode;
+                    if (kuraRequestPayload.hasBody()) {
+                        String queryJsonString = new String(kuraRequestPayload.getBody());
+
+                        if (queryJsonString.contains("SSLKeystore") && queryJsonString.contains("qaCertificate")) {
+                            keystoreInstalledCertificate--;
+                            responseCode = 200;
+                        } else if (queryJsonString.contains("SSLKeystore") && queryJsonString.contains("qaKeypair")) {
+                            keystoreInstalledKeypair--;
+                            responseCode = 200;
+                        } else {
+                            responseCode = 500;
+                        }
+                    } else {
+                        responseCode = 400;
+                    }
+
+                    KuraPayload kuraResponsePayload = new KuraPayload();
+                    kuraResponsePayload.getMetrics().put("response.code", responseCode);
+                    responsePayload = kuraResponsePayload.toByteArray();
+
+                    mqttClient.publish(responseTopic, responsePayload, 0, false);
                 } else {
-                    responseCode = 400;
+                    LOG.error("Kapua Mock Device unhandled KEYS-V1 topic: {}", topic);
                 }
-
-                KuraPayload kuraResponsePayload = new KuraPayload();
-                kuraResponsePayload.getMetrics().put("response.code", responseCode);
-                responsePayload = kuraResponsePayload.toByteArray();
-
-                mqttClient.publish(responseTopic, responsePayload, 0, false);
             }
             // Fail
             else {

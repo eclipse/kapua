@@ -16,6 +16,7 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.InventoryMetrics;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.KuraInventoryItems;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.bundles.KuraInventoryBundles;
+import org.eclipse.kapua.service.device.call.kura.model.inventory.containers.KuraInventoryContainers;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.packages.KuraInventoryPackages;
 import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInventorySystemPackages;
 import org.eclipse.kapua.service.device.call.message.kura.app.response.KuraResponseChannel;
@@ -26,6 +27,8 @@ import org.eclipse.kapua.service.device.management.inventory.internal.message.In
 import org.eclipse.kapua.service.device.management.inventory.internal.message.InventoryResponsePayload;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainers;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
 import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackage;
@@ -38,7 +41,7 @@ import org.eclipse.kapua.translator.kura.kapua.AbstractSimpleTranslatorResponseK
 import org.eclipse.kapua.translator.kura.kapua.TranslatorKuraKapuaUtils;
 
 /**
- * {@link Translator}  {@code abstract} implementation from {@link KuraResponseMessage} to {@link InventoryResponseMessage}
+ * {@link Translator} {@code abstract} implementation from {@link KuraResponseMessage} to {@link InventoryResponseMessage}
  *
  * @since 1.5.0
  */
@@ -116,6 +119,29 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
     }
 
     /**
+     * Translates {@link KuraInventoryContainers} to {@link DeviceInventoryContainers}
+     *
+     * @param kuraInventoryContainers The {@link KuraInventoryContainers} to translate.
+     * @return The translated {@link DeviceInventoryContainers}.
+     * @since 2.0.0
+     */
+    protected DeviceInventoryContainers translate(KuraInventoryContainers kuraInventoryContainers) {
+        DeviceInventoryManagementFactory deviceInventoryFactory = LOCATOR.getFactory(DeviceInventoryManagementFactory.class);
+        DeviceInventoryContainers deviceInventoryContainers = deviceInventoryFactory.newDeviceInventoryContainers();
+
+        kuraInventoryContainers.getInventoryContainers().forEach(kuraInventoryContainer -> {
+            DeviceInventoryContainer deviceInventoryContainer = deviceInventoryFactory.newDeviceInventoryContainer();
+            deviceInventoryContainer.setName(kuraInventoryContainer.getName());
+            deviceInventoryContainer.setVersion(kuraInventoryContainer.getVersion());
+            deviceInventoryContainer.setContainerType(kuraInventoryContainer.getType());
+
+            deviceInventoryContainers.addInventoryContainer(deviceInventoryContainer);
+        });
+
+        return deviceInventoryContainers;
+    }
+
+    /**
      * Translates {@link KuraInventorySystemPackages} to {@link DeviceInventorySystemPackages}
      *
      * @param kuraInventorySystemPackages The {@link KuraInventorySystemPackages} to translate.
@@ -160,6 +186,7 @@ public class AbstractTranslatorAppInventoryKuraKapua<M extends InventoryResponse
                 deviceInventoryBundle.setName(kuraInventoryBundle.getName());
                 deviceInventoryBundle.setVersion(kuraInventoryBundle.getVersion());
                 deviceInventoryBundle.setStatus(kuraInventoryBundle.getState());
+                deviceInventoryBundle.setSigned(kuraInventoryBundle.getSigned());
 
                 deviceInventoryPackage.addPackageBundle(deviceInventoryBundle);
             });

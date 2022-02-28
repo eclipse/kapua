@@ -19,6 +19,7 @@ import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagem
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.message.request.KapuaRequestPayload;
 
@@ -62,6 +63,34 @@ public class InventoryRequestPayload extends KapuaPayloadImpl implements KapuaRe
      */
     public void setDeviceInventoryBundle(@NotNull DeviceInventoryBundle deviceInventoryBundle) throws Exception {
         String bodyString = XmlUtil.marshal(deviceInventoryBundle);
+        setBody(bodyString.getBytes(CHAR_ENCODING));
+    }
+
+    /**
+     * Gets the {@link DeviceInventoryContainer} from the {@link #getBody()}.
+     *
+     * @return The {@link DeviceInventoryContainer} from the {@link #getBody()}.
+     * @throws Exception if reading {@link #getBody()} errors.
+     * @since 2.0.0
+     */
+    public DeviceInventoryContainer getDeviceInventoryContainer() throws Exception {
+        if (!hasBody()) {
+            return DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventoryContainer();
+        }
+
+        String bodyString = new String(getBody(), CHAR_ENCODING);
+        return XmlUtil.unmarshal(bodyString, DeviceInventoryContainer.class);
+    }
+
+    /**
+     * Sets the {@link DeviceInventoryContainer} in the {@link #getBody()}.
+     *
+     * @param deviceInventoryContainer The {@link DeviceInventoryContainer} in the {@link #getBody()}.
+     * @throws Exception if writing errors.
+     * @since 2.0.0
+     */
+    public void setDeviceInventoryContainer(@NotNull DeviceInventoryContainer deviceInventoryContainer) throws Exception {
+        String bodyString = XmlUtil.marshal(deviceInventoryContainer);
         setBody(bodyString.getBytes(CHAR_ENCODING));
     }
 }

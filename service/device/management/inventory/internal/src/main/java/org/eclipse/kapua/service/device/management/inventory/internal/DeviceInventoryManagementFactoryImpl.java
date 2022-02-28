@@ -17,6 +17,10 @@ import org.eclipse.kapua.service.device.management.inventory.model.bundle.Device
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.internal.DeviceInventoryBundleImpl;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.internal.DeviceInventoryBundlesImpl;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainers;
+import org.eclipse.kapua.service.device.management.inventory.model.container.internal.DeviceInventoryContainerImpl;
+import org.eclipse.kapua.service.device.management.inventory.model.container.internal.DeviceInventoryContainersImpl;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.internal.DeviceInventoryImpl;
@@ -58,6 +62,16 @@ public class DeviceInventoryManagementFactoryImpl implements DeviceInventoryMana
     @Override
     public DeviceInventoryBundles newDeviceInventoryBundles() {
         return new DeviceInventoryBundlesImpl();
+    }
+
+    @Override
+    public DeviceInventoryContainer newDeviceInventoryContainer() {
+        return new DeviceInventoryContainerImpl();
+    }
+
+    @Override
+    public DeviceInventoryContainers newDeviceInventoryContainers() {
+        return new DeviceInventoryContainersImpl();
     }
 
     @Override

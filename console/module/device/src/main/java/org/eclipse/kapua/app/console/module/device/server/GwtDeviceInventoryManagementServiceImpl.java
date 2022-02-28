@@ -20,6 +20,7 @@ import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandle
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryBundle;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryContainer;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryItem;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventorySystemPackage;
@@ -32,6 +33,9 @@ import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryMana
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundleAction;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainerAction;
+import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainers;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventory;
 import org.eclipse.kapua.service.device.management.inventory.model.inventory.DeviceInventoryItem;
 import org.eclipse.kapua.service.device.management.inventory.model.packages.DeviceInventoryPackage;
@@ -117,14 +121,67 @@ public class GwtDeviceInventoryManagementServiceImpl extends KapuaRemoteServiceS
             KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
 
             DeviceInventoryBundle deviceInventoryBundle = DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventoryBundle();
+            deviceInventoryBundle.setId(gwtInventoryBundle.getId());
             deviceInventoryBundle.setName(gwtInventoryBundle.getName());
             deviceInventoryBundle.setVersion(gwtInventoryBundle.getVersion());
+            deviceInventoryBundle.setStatus(gwtInventoryBundle.getStatus());
+            deviceInventoryBundle.setSigned(gwtInventoryBundle.getSigned());
 
             DEVICE_INVENTORY_MANAGEMENT_SERVICE.execBundle(
                     scopeId,
                     deviceId,
                     deviceInventoryBundle,
                     startOrStop ? DeviceInventoryBundleAction.START : DeviceInventoryBundleAction.STOP,
+                    null);
+
+        } catch (Exception exception) {
+            throw KapuaExceptionHandler.buildExceptionFromError(exception);
+        }
+    }
+
+    @Override
+    public ListLoadResult<GwtInventoryContainer> findDeviceContainers(String scopeIdString, String deviceIdString)
+            throws GwtKapuaException {
+        try {
+            KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
+            KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
+
+            DeviceInventoryContainers inventoryContainers = DEVICE_INVENTORY_MANAGEMENT_SERVICE.getContainers(scopeId, deviceId, null);
+
+            List<GwtInventoryContainer> gwtInventoryContainers = new ArrayList<GwtInventoryContainer>();
+            for (DeviceInventoryContainer inventoryContainer : inventoryContainers.getInventoryContainers()) {
+                GwtInventoryContainer gwtInventoryContainer = new GwtInventoryContainer();
+                gwtInventoryContainer.setName(inventoryContainer.getName());
+                gwtInventoryContainer.setVersion(inventoryContainer.getVersion());
+                gwtInventoryContainer.setType(inventoryContainer.getContainerType());
+
+                gwtInventoryContainers.add(gwtInventoryContainer);
+            }
+
+            return new BaseListLoadResult<GwtInventoryContainer>(gwtInventoryContainers);
+        } catch (Exception exception) {
+            throw KapuaExceptionHandler.buildExceptionFromError(exception);
+        }
+    }
+
+    @Override
+    public void execDeviceContainer(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtInventoryContainer gwtInventoryContainer, boolean startOrStop) throws GwtKapuaException {
+        checkXSRFToken(xsrfToken);
+
+        try {
+            KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
+            KapuaId deviceId = KapuaEid.parseCompactId(deviceIdString);
+
+            DeviceInventoryContainer deviceInventoryContainer = DEVICE_INVENTORY_MANAGEMENT_FACTORY.newDeviceInventoryContainer();
+            deviceInventoryContainer.setName(gwtInventoryContainer.getName());
+            deviceInventoryContainer.setVersion(gwtInventoryContainer.getVersion());
+            deviceInventoryContainer.setContainerType(gwtInventoryContainer.getType());
+
+            DEVICE_INVENTORY_MANAGEMENT_SERVICE.execContainer(
+                    scopeId,
+                    deviceId,
+                    deviceInventoryContainer,
+                    startOrStop ? DeviceInventoryContainerAction.START : DeviceInventoryContainerAction.STOP,
                     null);
 
         } catch (Exception exception) {

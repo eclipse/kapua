@@ -18,6 +18,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryBundle;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryContainer;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventoryItem;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.inventory.GwtInventorySystemPackage;
@@ -39,6 +40,11 @@ public interface GwtDeviceInventoryManagementService extends RemoteService {
     void execDeviceBundle(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtInventoryBundle gwtInventoryBundle, boolean startOrStop)
             throws GwtKapuaException;
 
+    ListLoadResult<GwtInventoryContainer> findDeviceContainers(String scopeIdString, String deviceIdString)
+            throws GwtKapuaException;
+
+    void execDeviceContainer(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtInventoryContainer gwtInventoryContainer, boolean startOrStop)
+            throws GwtKapuaException;
 
     ListLoadResult<GwtInventorySystemPackage> findDeviceSystemPackages(String scopeIdString, String deviceIdString)
             throws GwtKapuaException;
