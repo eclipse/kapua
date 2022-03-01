@@ -38,7 +38,7 @@ public class EndpointDeleteDialog extends EntityDeleteDialog {
 
     @Override
     public void submit() {
-        GWT_ENDPOINT_SERVICE.delete(gwtEndpoint.getScopeId(), gwtEndpoint.getId(), new AsyncCallback<Void>() {
+        GWT_ENDPOINT_SERVICE.delete(xsrfToken, gwtEndpoint.getScopeId(), gwtEndpoint.getId(), new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable cause) {
