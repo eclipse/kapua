@@ -48,7 +48,7 @@ public class EndpointAddDialog extends EntityAddEditDialog {
     protected KapuaNumberField endpointPortField;
 
     protected CheckBoxGroup endpointSecureCheckboxGroup;
-    protected CheckBox endpointSercureCheckbox;
+    protected CheckBox endpointSecureCheckbox;
 
     public EndpointAddDialog(GwtSession currentSession) {
         super(currentSession);
@@ -89,13 +89,13 @@ public class EndpointAddDialog extends EntityAddEditDialog {
         endpointPortField.setPropertyEditorType(Integer.class);
         endpointFormPanel.add(endpointPortField);
 
-        endpointSercureCheckbox = new CheckBox();
-        endpointSercureCheckbox.setBoxLabel("");
-        endpointSercureCheckbox.setToolTip(MSGS.dialogAddFieldSecureTooltip());
+        endpointSecureCheckbox = new CheckBox();
+        endpointSecureCheckbox.setBoxLabel("");
+        endpointSecureCheckbox.setToolTip(MSGS.dialogAddFieldSecureTooltip());
 
         endpointSecureCheckboxGroup = new CheckBoxGroup();
         endpointSecureCheckboxGroup.setFieldLabel(MSGS.dialogAddFieldSecure());
-        endpointSecureCheckboxGroup.add(endpointSercureCheckbox);
+        endpointSecureCheckboxGroup.add(endpointSecureCheckbox);
         endpointFormPanel.add(endpointSecureCheckboxGroup);
 
         bodyPanel.add(endpointFormPanel);

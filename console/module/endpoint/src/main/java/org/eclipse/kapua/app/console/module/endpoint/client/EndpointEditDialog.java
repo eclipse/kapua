@@ -91,7 +91,7 @@ public class EndpointEditDialog extends EndpointAddDialog {
         endpointSchemaField.setValue(gwtEndpoint.getSchema());
         endpointDnsField.setValue(gwtEndpoint.getDns());
         endpointPortField.setValue(gwtEndpoint.getPort());
-        endpointSercureCheckbox.setValue(gwtEndpoint.getSecure());
+        endpointSecureCheckbox.setValue(gwtEndpoint.getSecure());
     }
 
 }
