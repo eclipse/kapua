@@ -21,7 +21,6 @@ import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.SimpleDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
-import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 
 public class EventMessageDetailsDialog extends SimpleDialog {
@@ -60,7 +59,7 @@ public class EventMessageDetailsDialog extends SimpleDialog {
         eventMessageField.setHeight(220);
         eventMessageField.setWidth(515);
         eventMessageField.setStyleAttribute("white-space", "pre-wrap");
-        eventMessageField.setValue(KapuaSafeHtmlUtils.htmlUnescape(eventMessage));
+        eventMessageField.setValue(eventMessage);
         eventOutput.add(eventMessageField);
         eventsFormPanel.add(eventOutput);
         bodyPanel.add(eventsFormPanel);
