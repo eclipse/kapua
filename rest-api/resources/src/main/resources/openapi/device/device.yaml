@@ -44,107 +44,110 @@ components:
         type: string
   schemas:
     device:
-      properties:
-        groupId:
-          allOf:
-            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
-            - description: The ID of the Access Group to which this Device is assigned to
-        clientId:
-          type: string
-          readOnly: true
-          description: The Kura Client ID of this device
-        connectionId:
-          allOf:
-            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
-            - description: The ID of the Connection of this Device
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
+        - type: object
+          properties:
+            groupId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the Access Group to which this Device is assigned to
+            clientId:
+              type: string
               readOnly: true
-        connection:
-          $ref: '../deviceConnection/deviceConnection.yaml#/components/schemas/connection'
-        status:
-          $ref: '#/components/schemas/status'
-        displayName:
-          description: The Kura Display Name of this Device
-          type: string
-        lastEventId:
-          allOf:
-            - $ref: '../openapi.yaml#/components/schemas/kapuaId'
-            - description: The ID of the last recorded Event from this Device
-              readOnly: true
-        lastEvent:
-          $ref: '#/components/schemas/event'
-        serialNumber:
-          description: The Serial Number of this Device
-          type: string
-        modelId:
-          description: The Model ID (not an Kapua ID) of this Device
-          type: string
-        modelName:
-          description: The Model Name of this Device
-          type: string
-        imei:
-          description: The IMEI Code of this Device
-          type: string
-        imsi:
-          description: The IMSI Code of this Device
-          type: string
-        iccid:
-          description: The ICCID Code of this Device
-          type: string
-        biosVersion:
-          description: The BIOS Version running on this Device
-          type: string
-        firmwareVersion:
-          description: The Firmware Version of this Device
-          type: string
-        osVersion:
-          description: The OS Version running on this Device
-          type: string
-        jvmVersion:
-          description: The JVM Version running on this Device
-          type: string
-        osgiFrameworkVersion:
-          description: The OSGi Framework Version running on this Device
-          type: string
-        applicationFrameworkVersion:
-          description: The Application Framework Version running on this Device
-          type: string
-        connectionInterface:
-          description: The Primary Connection Interface Name of this Device
-          type: string
-        connectionIp:
-          description: The IP Address of the Primary Connection Interface on this Device
-          type: string
-        applicationIdentifiers:
-          description: A string listing all the Kura Applications running on this Device
-          type: string
-        acceptEncoding:
-          description: The MIME Encoding accepted by this Device
-          type: string
-        customAttribute1:
-          description: A Custom Attirbute of this Device - 1
-          type: string
-        customAttribute2:
-          description: A Custom Attirbute of this Device - 2
-          type: string
-        customAttribute3:
-          description: A Custom Attirbute of this Device - 3
-          type: string
-        customAttribute4:
-          description: A Custom Attirbute of this Device - 4
-          type: string
-        customAttribute5:
-          description: A Custom Attirbute of this Device - 5
-          type: string
-        extendedProperties:
-          type: array
-          items:
-            allOf:
-              - $ref: '#/components/schemas/deviceExtendedProperty'
-        tagIds:
-          type: array
-          items:
-            allOf:
-              - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+              description: The Kura Client ID of this device
+            connectionId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the Connection of this Device
+                  readOnly: true
+            connection:
+              $ref: '../deviceConnection/deviceConnection.yaml#/components/schemas/connection'
+            status:
+              $ref: '#/components/schemas/deviceStatus'
+            displayName:
+              description: The Kura Display Name of this Device
+              type: string
+            lastEventId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the last recorded Event from this Device
+                  readOnly: true
+            lastEvent:
+              $ref: '#/components/schemas/event'
+            serialNumber:
+              description: The Serial Number of this Device
+              type: string
+            modelId:
+              description: The Model ID (not an Kapua ID) of this Device
+              type: string
+            modelName:
+              description: The Model Name of this Device
+              type: string
+            imei:
+              description: The IMEI Code of this Device
+              type: string
+            imsi:
+              description: The IMSI Code of this Device
+              type: string
+            iccid:
+              description: The ICCID Code of this Device
+              type: string
+            biosVersion:
+              description: The BIOS Version running on this Device
+              type: string
+            firmwareVersion:
+              description: The Firmware Version of this Device
+              type: string
+            osVersion:
+              description: The OS Version running on this Device
+              type: string
+            jvmVersion:
+              description: The JVM Version running on this Device
+              type: string
+            osgiFrameworkVersion:
+              description: The OSGi Framework Version running on this Device
+              type: string
+            applicationFrameworkVersion:
+              description: The Application Framework Version running on this Device
+              type: string
+            connectionInterface:
+              description: The Primary Connection Interface Name of this Device
+              type: string
+            connectionIp:
+              description: The IP Address of the Primary Connection Interface on this Device
+              type: string
+            applicationIdentifiers:
+              description: A string listing all the Kura Applications running on this Device
+              type: string
+            acceptEncoding:
+              description: The MIME Encoding accepted by this Device
+              type: string
+            customAttribute1:
+              description: A Custom Attirbute of this Device - 1
+              type: string
+            customAttribute2:
+              description: A Custom Attirbute of this Device - 2
+              type: string
+            customAttribute3:
+              description: A Custom Attirbute of this Device - 3
+              type: string
+            customAttribute4:
+              description: A Custom Attirbute of this Device - 4
+              type: string
+            customAttribute5:
+              description: A Custom Attirbute of this Device - 5
+              type: string
+            extendedProperties:
+              type: array
+              items:
+                allOf:
+                  - $ref: '#/components/schemas/deviceExtendedProperty'
+            tagIds:
+              type: array
+              items:
+                allOf:
+                  - $ref: '../openapi.yaml#/components/schemas/kapuaId'
       example:
         type: device
         id: dIVxI5QpFUI
@@ -181,57 +184,86 @@ components:
         - type: object
           properties:
             groupId:
-              $ref: '#/components/schemas/device/properties/groupId'
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the Access Group to which this Device is assigned to
             clientId:
-              $ref: '#/components/schemas/device/properties/clientId'
+              type: string
+              readOnly: true
+              description: The Kura Client ID of this device
             status:
-              $ref: '#/components/schemas/status'
+              $ref: '#/components/schemas/deviceStatus'
             lastEventId:
-              $ref: '#/components/schemas/device/properties/lastEventId'
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the last recorded Event from this Device
+                  readOnly: true
             displayName:
-              $ref: '#/components/schemas/device/properties/displayName'
+              description: The Kura Display Name of this Device
+              type: string
             serialNumber:
-              $ref: '#/components/schemas/device/properties/serialNumber'
+              description: The Serial Number of this Device
+              type: string
             modelId:
-              $ref: '#/components/schemas/device/properties/modelId'
+              description: The Model ID (not an Kapua ID) of this Device
+              type: string
             modelName:
-              $ref: '#/components/schemas/device/properties/modelName'
+              description: The Model Name of this Device
+              type: string
             imei:
-              $ref: '#/components/schemas/device/properties/imei'
+              description: The IMEI Code of this Device
+              type: string
             imsi:
-              $ref: '#/components/schemas/device/properties/imsi'
+              description: The IMSI Code of this Device
+              type: string
             iccid:
-              $ref: '#/components/schemas/device/properties/iccid'
+              description: The ICCID Code of this Device
+              type: string
             biosVersion:
-              $ref: '#/components/schemas/device/properties/biosVersion'
+              description: The BIOS Version running on this Device
+              type: string
             firmwareVersion:
-              $ref: '#/components/schemas/device/properties/firmwareVersion'
+              description: The Firmware Version of this Device
+              type: string
             osVersion:
-              $ref: '#/components/schemas/device/properties/osVersion'
+              description: The OS Version running on this Device
+              type: string
             jvmVersion:
-              $ref: '#/components/schemas/device/properties/jvmVersion'
+              description: The JVM Version running on this Device
+              type: string
             osgiFrameworkVersion:
-              $ref: '#/components/schemas/device/properties/osgiFrameworkVersion'
+              description: The OSGi Framework Version running on this Device
+              type: string
             applicationFrameworkVersion:
-              $ref: '#/components/schemas/device/properties/applicationFrameworkVersion'
+              description: The Application Framework Version running on this Device
+              type: string
             connectionInterface:
-              $ref: '#/components/schemas/device/properties/connectionInterface'
+              description: The Primary Connection Interface Name of this Device
+              type: string
             connectionIp:
-              $ref: '#/components/schemas/device/properties/connectionIp'
+              description: The IP Address of the Primary Connection Interface on this Device
+              type: string
             applicationIdentifiers:
-              $ref: '#/components/schemas/device/properties/applicationIdentifiers'
+              description: A string listing all the Kura Applications running on this Device
+              type: string
             acceptEncoding:
-              $ref: '#/components/schemas/device/properties/acceptEncoding'
+              description: The MIME Encoding accepted by this Device
+              type: string
             customAttribute1:
-              $ref: '#/components/schemas/device/properties/customAttribute1'
+              description: A Custom Attirbute of this Device - 1
+              type: string
             customAttribute2:
-              $ref: '#/components/schemas/device/properties/customAttribute2'
+              description: A Custom Attirbute of this Device - 2
+              type: string
             customAttribute3:
-              $ref: '#/components/schemas/device/properties/customAttribute3'
+              description: A Custom Attirbute of this Device - 3
+              type: string
             customAttribute4:
-              $ref: '#/components/schemas/device/properties/customAttribute4'
+              description: A Custom Attirbute of this Device - 4
+              type: string
             customAttribute5:
-              $ref: '#/components/schemas/device/properties/customAttribute5'
+              description: A Custom Attirbute of this Device - 5
+              type: string
           required:
             - clientId
           example:
@@ -256,7 +288,7 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/device'
-    status:
+    deviceStatus:
       type: string
       enum:
         - ENABLED

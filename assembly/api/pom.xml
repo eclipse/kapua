@@ -28,7 +28,7 @@
     <properties>
         <nodejs.version>10.16.3</nodejs.version>
         <swagger-cli.executable>${project.build.directory}/bin/swagger-cli</swagger-cli.executable>
-        <swagger-cli.version>4.0.2</swagger-cli.version>
+        <swagger-cli.version>4.0.4</swagger-cli.version>
     </properties>
 
     <dependencies>
@@ -312,7 +312,6 @@
                     </environmentVariables>
                     <arguments>
                         <argument>bundle</argument>
-                        <argument>--dereference</argument>
                         <argument>-t</argument>
                         <argument>yaml</argument>
                         <argument>-o</argument>
