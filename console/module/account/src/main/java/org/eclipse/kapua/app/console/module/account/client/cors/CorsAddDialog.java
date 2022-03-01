@@ -81,7 +81,7 @@ public class CorsAddDialog extends EntityAddEditDialog {
 
             @Override
             public void onSuccess(EndpointModel gwtEndpointCreator) {
-                GWT_ENDPOINT_SERVICE.create((GwtEndpointCreator) gwtEndpointCreator, new AsyncCallback<GwtEndpoint>() {
+                GWT_ENDPOINT_SERVICE.create(xsrfToken, (GwtEndpointCreator) gwtEndpointCreator, new AsyncCallback<GwtEndpoint>() {
 
                     @Override
                     public void onSuccess(GwtEndpoint gwtEndpoint) {

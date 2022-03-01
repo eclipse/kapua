@@ -131,7 +131,7 @@ public class EndpointAddDialog extends EntityAddEditDialog {
         gwtEndpointCreator.setSecure(endpointSecureCheckboxGroup.getValue() != null);
         gwtEndpointCreator.setEndpointType(EndpointInfo.ENDPOINT_TYPE_RESOURCE);
 
-        GWT_ENDPOINT_SERVICE.create(gwtEndpointCreator, new AsyncCallback<GwtEndpoint>() {
+        GWT_ENDPOINT_SERVICE.create(xsrfToken, gwtEndpointCreator, new AsyncCallback<GwtEndpoint>() {
 
             @Override
             public void onSuccess(GwtEndpoint gwtEndpoint) {
