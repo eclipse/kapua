@@ -59,7 +59,7 @@ public class CorsEditDialog extends CorsAddDialog {
             @Override
             public void onSuccess(EndpointModel gwtEndpoint) {
 
-                GWT_ENDPOINT_SERVICE.update((GwtEndpoint) gwtEndpoint, new AsyncCallback<GwtEndpoint>() {
+                GWT_ENDPOINT_SERVICE.update(xsrfToken, (GwtEndpoint) gwtEndpoint, new AsyncCallback<GwtEndpoint>() {
 
                     @Override
                     public void onFailure(Throwable cause) {

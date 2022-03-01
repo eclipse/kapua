@@ -17,12 +17,12 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.KapuaRemoteServiceServlet;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.endpoint.client.EndpointModel;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint;
@@ -71,7 +71,8 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
     private static final String ENTITY_INFO = "entityInfo";
 
     @Override
-    public GwtEndpoint create(GwtEndpointCreator gwtEndpointCreator) throws GwtKapuaException {
+    public GwtEndpoint create(GwtXSRFToken xsrfToken, GwtEndpointCreator gwtEndpointCreator) throws GwtKapuaException {
+        checkXSRFToken(xsrfToken);
         GwtEndpoint gwtEndpoint = null;
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(gwtEndpointCreator.getScopeId());
@@ -94,7 +95,8 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
     }
 
     @Override
-    public GwtEndpoint update(GwtEndpoint gwtEndpoint) throws GwtKapuaException {
+    public GwtEndpoint update(GwtXSRFToken xsrfToken, GwtEndpoint gwtEndpoint) throws GwtKapuaException {
+        checkXSRFToken(xsrfToken);
         GwtEndpoint gwtEndpointUpdated = null;
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(gwtEndpoint.getScopeId());
@@ -174,7 +176,8 @@ public class GwtEndpointServiceImpl extends KapuaRemoteServiceServlet implements
     }
 
     @Override
-    public void delete(String scopeIdString, String endpointIdString) throws GwtKapuaException {
+    public void delete(GwtXSRFToken xsrfToken, String scopeIdString, String endpointIdString) throws GwtKapuaException {
+        checkXSRFToken(xsrfToken);
 
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(scopeIdString);
