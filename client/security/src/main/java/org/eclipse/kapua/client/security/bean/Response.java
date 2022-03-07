@@ -14,6 +14,10 @@ package org.eclipse.kapua.client.security.bean;
 
 public interface Response {
 
+    String getRequester();
+
+    void setRequester(String requester);
+
     public String getRequestId();
 
     public void setRequestId(String requestId);

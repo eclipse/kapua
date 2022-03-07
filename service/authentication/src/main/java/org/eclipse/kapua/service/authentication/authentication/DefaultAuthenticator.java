@@ -26,6 +26,8 @@ import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
+import org.eclipse.kapua.service.authentication.setting.ServiceAuthenticationSetting;
+import org.eclipse.kapua.service.authentication.setting.ServiceAuthenticationSettingKey;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.slf4j.Logger;
@@ -51,6 +53,7 @@ public class DefaultAuthenticator implements Authenticator {
     }
 
     private LoginMetric loginMetric = LoginMetric.getInstance();
+    private boolean raiseLifecycleEvents;
     private String lifecycleEventAddress;
 
     //TODO declare AuthenticationLogic interface and add parameters to help injector to inject the right instance
@@ -71,8 +74,14 @@ public class DefaultAuthenticator implements Authenticator {
      */
     public DefaultAuthenticator() throws KapuaException {
         adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        lifecycleEventAddress = "lifecycleEvent";//TODO get from configuration
-        serviceEventBus = ServiceEventBusManager.getInstance();
+        raiseLifecycleEvents = ServiceAuthenticationSetting.getInstance().getBoolean(ServiceAuthenticationSettingKey.SERVICE_AUTHENTICATION_ENABLE_LIFECYCLE_EVENTS, false);
+        if (raiseLifecycleEvents) {
+            lifecycleEventAddress = ServiceAuthenticationSetting.getInstance().getString(ServiceAuthenticationSettingKey.SERVICE_AUTHENTICATION_LIFECYCLE_EVENTS_ADDRESS);
+            serviceEventBus = ServiceEventBusManager.getInstance();
+        }
+        else {
+            logger.info("Skipping AuthenticationService event bus initialization since the raise of connect/disconnect event is disabled!");
+        }
     }
 
     @Override
@@ -88,7 +97,10 @@ public class DefaultAuthenticator implements Authenticator {
             authorizationEntries = userAuthenticationLogic.connect(authContext);
             loginMetric.getConnected().inc();
             Context loginSendLogingUpdateMsgTimeContext = loginMetric.getSendLoginUpdateMsgTime().time();
-            raiseLifecycleEvent(authContext, DeviceConnectionStatus.CONNECTED);
+            if (raiseLifecycleEvents) {
+                logger.info("raising connect lifecycle event for clientIs: {}", authContext.getClientId());
+                raiseLifecycleEvent(authContext, DeviceConnectionStatus.CONNECTED);
+            }
             loginSendLogingUpdateMsgTimeContext.stop();
         }
         return authorizationEntries;
@@ -103,6 +115,7 @@ public class DefaultAuthenticator implements Authenticator {
         else {
             loginMetric.getDisconnected().inc();
             if (userAuthenticationLogic.disconnect(authContext)) {
+                logger.info("raising disconnect lifecycle event for clientIs: {}", authContext.getClientId());
                 Context loginSendLogingUpdateMsgTimeContext = loginMetric.getSendLoginUpdateMsgTime().time();
                 raiseLifecycleEvent(authContext, DeviceConnectionStatus.DISCONNECTED);
                 loginSendLogingUpdateMsgTimeContext.stop();
@@ -115,6 +128,7 @@ public class DefaultAuthenticator implements Authenticator {
     }
 
     protected void raiseLifecycleEvent(AuthContext authContext, DeviceConnectionStatus deviceConnectionStatus) throws ServiceEventBusException {
+        logger.debug("raising lifecycle events: clientIs: {} - connection status: {}", authContext.getClientId(), deviceConnectionStatus);
         serviceEventBus.publish(lifecycleEventAddress, getServiceEvent(authContext, deviceConnectionStatus));
     }
 

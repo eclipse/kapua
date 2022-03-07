@@ -14,6 +14,10 @@ package org.eclipse.kapua.client.security.bean;
 
 public interface Request {
 
+    String getRequester();
+
+    void setRequester(String requester);
+
     String getAction();
 
     void setAction(String action);

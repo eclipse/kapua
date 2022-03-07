@@ -23,9 +23,12 @@ import org.eclipse.kapua.client.security.bean.AccountRequest;
 import org.eclipse.kapua.client.security.bean.AccountResponse;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
+import org.eclipse.kapua.client.security.bean.Request;
 import org.eclipse.kapua.client.security.bean.ResponseContainer;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -34,6 +37,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  *
  */
 public class ServiceClientMessagingImpl implements ServiceClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(ServiceClientMessagingImpl.class);
 
     public enum SecurityAction {
         brokerConnect,
@@ -47,13 +52,13 @@ public class ServiceClientMessagingImpl implements ServiceClient {
     }
 
     public static final String REQUEST_QUEUE = "auth_request";
-    public static final String RESPONSE_QUEUE = "auth_response";
+    public static final String RESPONSE_QUEUE_PREFIX = "auth_response_";
 
     private static final int TIMEOUT = 5000;
 
     private Client client;
 
-    public ServiceClientMessagingImpl() {
+    public ServiceClientMessagingImpl(String requester) {
         //TODO change configuration (use service event broker for now)
         String clientId = "auth-" + UUID.randomUUID().toString();
         String host = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_HOST, "events-broker");
@@ -62,7 +67,7 @@ public class ServiceClientMessagingImpl implements ServiceClient {
         String password = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_PASSWORD, "password");
         try {
             client = new Client(username, password, host, port, clientId,
-                REQUEST_QUEUE, RESPONSE_QUEUE, new MessageListener());
+                REQUEST_QUEUE, RESPONSE_QUEUE_PREFIX + requester, new MessageListener());
         } catch (JMSException e) {
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, (Object[])null);
         }
@@ -75,6 +80,7 @@ public class ServiceClientMessagingImpl implements ServiceClient {
         authRequest.setRequestId(requestId);
         authRequest.setAction(SecurityAction.brokerConnect.name());
         ResponseContainer<AuthResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(authRequest);
+        logRequest(authRequest);
         client.sendMessage(MessageHelper.getBrokerConnectMessage(client.createTextMessage(), authRequest));
         synchronized (responseContainer) {
             responseContainer.wait(TIMEOUT);
@@ -90,6 +96,7 @@ public class ServiceClientMessagingImpl implements ServiceClient {
         authRequest.setRequestId(requestId);
         authRequest.setAction(SecurityAction.brokerDisconnect.name());
         ResponseContainer<AuthResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(authRequest);
+        logRequest(authRequest);
         client.sendMessage(MessageHelper.getBrokerDisconnectMessage(client.createTextMessage(), authRequest));
         synchronized (responseContainer) {
             responseContainer.wait(TIMEOUT);
@@ -105,6 +112,7 @@ public class ServiceClientMessagingImpl implements ServiceClient {
         accountRequest.setRequestId(requestId);
         accountRequest.setAction(SecurityAction.getAccount.name());
         ResponseContainer<AccountResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(accountRequest);
+        logRequest(accountRequest);
         client.sendMessage(MessageHelper.getAccountMessage(client.createTextMessage(), accountRequest));
         synchronized (responseContainer) {
             responseContainer.wait(TIMEOUT);
@@ -113,4 +121,8 @@ public class ServiceClientMessagingImpl implements ServiceClient {
         return responseContainer.getResponse();
     }
 
+    private void logRequest(Request request) {
+        logger.info("Request id: {} - action: {} - requester: {}",
+            request.getRequestId(), request.getAction(), request.getRequester());
+    }
 }

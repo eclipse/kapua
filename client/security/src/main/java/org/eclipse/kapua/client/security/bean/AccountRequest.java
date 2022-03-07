@@ -21,6 +21,9 @@ public class AccountRequest implements Request {
 
     protected static Logger logger = LoggerFactory.getLogger(AuthResponse.class);
 
+    @JsonProperty("requester")
+    private String requester;
+
     @JsonProperty("action")
     private String action;
 
@@ -33,9 +36,18 @@ public class AccountRequest implements Request {
     public AccountRequest() {
     }
 
-    public AccountRequest(String action, String username) {
+    public AccountRequest(String requester, String action, String username) {
+        this.requester = requester;
         this.action = action;
         this.username = username;
+    }
+
+    public String getRequester() {
+        return requester;
+    }
+
+    public void setRequester(String requester) {
+        this.requester = requester;
     }
 
     public String getAction() {

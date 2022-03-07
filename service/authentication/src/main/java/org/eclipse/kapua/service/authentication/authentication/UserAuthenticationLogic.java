@@ -65,9 +65,10 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
         Context loginNormalUserTimeContext = loginMetric.getNormalUserTime().time();
-        if (authContext.getOldConnectionId()!=null && !authContext.getConnectionId().equals(authContext.getOldConnectionId())) {
+        boolean isStealingLink = isStealingLink(authContext);
+        if (isStealingLink) {
             loginMetric.getStealingLinkDisconnect().inc();
-            logger.warn("Stealing link detected for clientId: {} old connection: {} new connection: {}",
+            logger.warn("Connecting client: Stealing link detected for clientId: {} old connection: {} new connection: {}",
                 authContext.getClientId(), authContext.getOldConnectionId(), authContext.getConnectionId());
         }
 
@@ -100,18 +101,19 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public boolean disconnect(AuthContext authContext) {
-        boolean stealingLinkDetected = isStealingLink(authContext);
+        boolean isStealingLink = isStealingLink(authContext);
+        boolean isIllegalState = isIllegalState(authContext);
         boolean deviceOwnedByTheCurrentNode = true;
         String error = authContext.getExceptionClass();
-        logger.info("Old connection id: {} - new connection id: {} - error: {}",
-            authContext.getOldConnectionId(), authContext.getConnectionId(), error);
-        if (stealingLinkDetected) {
+        logger.info("Disconnecting client: old connection id: {} - new connection id: {} - error: {} - isStealingLink {} - isIllegalState: {}",
+            authContext.getOldConnectionId(), authContext.getConnectionId(), error, isStealingLink, isIllegalState);
+        if (isStealingLink) {
             loginMetric.getStealingLinkDisconnect().inc();
             logger.info("Skip device connection status update since is coming from a stealing link condition. Client id: {} - Connection id: {}",
                     authContext.getClientId(),
                     authContext.getConnectionId());
         }
-        else if (isIllegalState(authContext)) {
+        else if (isIllegalState) {
             loginMetric.getIllegalStateDisconnect().inc();
             logger.info("Skip device connection status update from illegal device status disconnection. Client id: {} - Connection id: {}",
                     authContext.getClientId(),
@@ -157,7 +159,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
                 }
             }
         }
-        return !stealingLinkDetected && deviceOwnedByTheCurrentNode && !authContext.isMissing();
+        return !isStealingLink && deviceOwnedByTheCurrentNode && !authContext.isMissing();
     }
 
     @Override

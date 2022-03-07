@@ -16,6 +16,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccountResponse implements Response {
 
+    @JsonProperty("requester")
+    private String requester;
+
     @JsonProperty("action")
     private String action;
 
@@ -33,6 +36,14 @@ public class AccountResponse implements Response {
 
     @JsonProperty("errorCode")
     private String errorCode;
+
+    public String getRequester() {
+        return requester;
+    }
+
+    public void setRequester(String requester) {
+        this.requester = requester;
+    }
 
     public String getAction() {
         return action;

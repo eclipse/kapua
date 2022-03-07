@@ -21,6 +21,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 public class AuthContext {
 
+    private String requester;
     private String username;
     private String userId;
     private String accountName;
@@ -61,6 +62,7 @@ public class AuthContext {
 
     private void initCommonFields(AuthRequest authRequest) {
         property = new HashMap<>();
+        requester = authRequest.getRequester();
         username = authRequest.getUsername();
         clientId = authRequest.getClientId();
         clientIp = authRequest.getClientIp();
@@ -69,6 +71,10 @@ public class AuthContext {
         brokerId = authRequest.getBrokerId();
         brokerHost = authRequest.getBrokerHost();
         transportProtocol = authRequest.getTransportProtocol();
+    }
+
+    public String getRequester() {
+        return requester;
     }
 
     public String getUsername() {

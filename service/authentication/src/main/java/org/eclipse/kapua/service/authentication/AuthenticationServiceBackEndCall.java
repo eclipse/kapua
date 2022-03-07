@@ -144,6 +144,7 @@ public class AuthenticationServiceBackEndCall {
 
     private AuthResponse buildAuthResponse(AuthRequest authRequest, ResultCode resultCode) {
         AuthResponse authResponse = new AuthResponse();
+        authResponse.setRequester(authRequest.getRequester());
         authResponse.setAction(authRequest.getAction());
         authResponse.setRequestId(authRequest.getRequestId());
         authResponse.setResultCode(resultCode.name());
@@ -167,6 +168,7 @@ public class AuthenticationServiceBackEndCall {
 
     private AccountResponse buildGetAccountResponse(AccountRequest accountRequest, ResultCode resultCode) {
         AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setRequester(accountRequest.getRequester());
         accountResponse.setAction(accountRequest.getAction());
         accountResponse.setRequestId(accountRequest.getRequestId());
         accountResponse.setUsername(accountRequest.getUsername());

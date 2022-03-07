@@ -24,6 +24,9 @@ public class AuthResponse implements Response {
 
     protected static Logger logger = LoggerFactory.getLogger(AuthResponse.class);
 
+    @JsonProperty("requester")
+    private String requester;
+
     @JsonProperty("action")
     private String action;
 
@@ -80,6 +83,14 @@ public class AuthResponse implements Response {
         admin = authContext.isAdmin();
         missing = authContext.isMissing();
         kapuaConnectionId = authContext.getKapuaConnectionId();
+    }
+
+    public String getRequester() {
+        return requester;
+    }
+
+    public void setRequester(String requester) {
+        this.requester = requester;
     }
 
     public String getRequestId() {

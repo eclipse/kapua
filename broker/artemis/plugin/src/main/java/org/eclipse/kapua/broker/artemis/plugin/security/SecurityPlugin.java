@@ -23,20 +23,11 @@ import javax.security.cert.X509Certificate;
 
 import org.apache.activemq.artemis.api.core.ActiveMQException;
 import org.apache.activemq.artemis.api.core.ActiveMQExceptionType;
-import org.apache.activemq.artemis.core.protocol.mqtt.MQTTConnection;
 import org.apache.activemq.artemis.core.remoting.impl.netty.NettyServerConnection;
 import org.apache.activemq.artemis.core.security.CheckType;
 import org.apache.activemq.artemis.core.security.Role;
-import org.apache.activemq.artemis.protocol.amqp.broker.ActiveMQProtonRemotingConnection;
 import org.apache.activemq.artemis.spi.core.protocol.RemotingConnection;
-import org.apache.activemq.artemis.spi.core.remoting.Connection;
 import org.apache.activemq.artemis.spi.core.security.ActiveMQSecurityManager5;
-import org.eclipse.kapua.broker.artemis.plugin.security.context.SecurityContextHandler;
-import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
-import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
-import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdentity;
-import org.eclipse.kapua.client.security.ServiceClient;
-import org.eclipse.kapua.client.security.ServiceClientMessagingImpl;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
 import org.eclipse.kapua.client.security.bean.AccountRequest;
 import org.eclipse.kapua.client.security.bean.AccountResponse;
@@ -75,33 +66,12 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
     private PublishMetric publishMetric = PublishMetric.getInstance();
     private SubscribeMetric subscribeMetric = SubscribeMetric.getInstance();
 
-    private String amqpInternalConectorPort;
-    private String amqpInternalConnectorName;
-    private String mqttInternalConectorPort;
-    private String mqttInternalConnectorName;
-
-    //TODO provide client pluggability once the Rest one will be implemented (now just the AMQP client is available)
-    //TODO manage through injection if possible
-    private ServiceClient authServiceClient;
-    private SecurityContextHandler securityContextHandler;
-    private BrokerIdentity brokerIdentity;
+    protected ServerContext serverContext;
 
     public SecurityPlugin() {
         logger.info("Initializing SecurityPlugin...");
-        //TOOD see comment above
-        authServiceClient = new ServiceClientMessagingImpl();
-        securityContextHandler = SecurityContextHandler.getInstance();
-        brokerIdentity = BrokerIdentity.getInstance();
-        BrokerSetting brokerSetting = BrokerSetting.getInstance();
-        amqpInternalConectorPort = ":" + brokerSetting.getString(BrokerSettingKey.INTERNAL_AMQP_ACCEPTOR_PORT);
-        amqpInternalConnectorName = brokerSetting.getString(BrokerSettingKey.INTERNAL_AMQP_ACCEPTOR_NAME);
-        mqttInternalConectorPort = ":" + brokerSetting.getString(BrokerSettingKey.INTERNAL_MQTT_ACCEPTOR_PORT);
-        mqttInternalConnectorName = brokerSetting.getString(BrokerSettingKey.INTERNAL_MQTT_ACCEPTOR_NAME);
+        serverContext = ServerContext.getInstance();
         logger.info("Initializing SecurityPlugin... DONE");
-    }
-
-    public void setBrokerIdentity(BrokerIdentity brokerIdentity) {
-        this.brokerIdentity = brokerIdentity;
     }
 
     @Override
@@ -110,21 +80,21 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         //like a cache looks for an already authenticated user in context
         //Artemis does the authenticate call even when checking for authorization (publish, subscribe, manage)
         //since we keep a "Kapua session" map the map that is cleaned when the connection is dropped, no security issues will come if this cache is used to avoid redundant login process
-        String connectionId = securityContextHandler.getConnectionId(remotingConnection);
-        KapuaPrincipal kapuaPrincipal = securityContextHandler.getPrincipal(connectionId);
+        String connectionId = PluginUtility.getConnectionId(remotingConnection);
+        KapuaPrincipal kapuaPrincipal = serverContext.getSecurityContextHandler().getPrincipal(connectionId);
         if (kapuaPrincipal!=null) {
             loginMetric.getSuccessFromCache().inc();
-            return securityContextHandler.buildFromPrincipal(kapuaPrincipal);
+            return serverContext.getSecurityContextHandler().buildFromPrincipal(kapuaPrincipal);
         }
         else {
             ConnectionInfo connectionInfo = new ConnectionInfo(
-                securityContextHandler.getConnectionId(remotingConnection),//connectionId
+                PluginUtility.getConnectionId(remotingConnection),//connectionId
                 remotingConnection.getClientID(),//clientId
                 remotingConnection.getTransportConnection().getRemoteAddress(),//clientIp
                 remotingConnection.getTransportConnection().getConnectorConfig().getName(),//connectorName
                 remotingConnection.getProtocolName(),//transportProtocol
                 getPeerCertificates(remotingConnection));//clientsCertificates
-            return isInternal(remotingConnection) ?
+            return PluginUtility.isInternal(remotingConnection) ?
                 authenticateInternalConn(connectionInfo, username, password, remotingConnection) :
                 authenticateExternalConn(connectionInfo, username, password, remotingConnection);
         }
@@ -145,8 +115,9 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(
                  connectionInfo.getClientId()!=null ? connectionInfo.getClientId() : connectionInfo.getClientIp());
             Subject subject = buildInternalSubject(kapuaPrincipal);
-            SessionContext sessionContext = new SessionContext(kapuaPrincipal, connectionInfo, brokerIdentity.getBrokerId(), brokerIdentity.getBrokerHost());
-            securityContextHandler.setSessionContext(sessionContext);
+            SessionContext sessionContext = new SessionContext(kapuaPrincipal, connectionInfo,
+                serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost());
+            serverContext.getSecurityContextHandler().setSessionContext(sessionContext);
             return subject;
         }
     }
@@ -155,25 +126,28 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         loginMetric.getAttempt().inc();
         //do login
         Context loginTotalContext = loginMetric.getAddConnectionTime().time();
-        securityContextHandler.printContent("authenticateInternal start", remotingConnection);
+        serverContext.getSecurityContextHandler().printContent("authenticateInternal start", PluginUtility.getConnectionId(remotingConnection));
         try {
             logger.info("User: {} - client id: {} - connection id: {}",
                 username, connectionInfo.getClientId(), remotingConnection.getID());
             String fullClientId = Utils.getFullClientId(getScopeId(username), connectionInfo.getClientId());
             Context loginShiroLoginTimeContext = loginMetric.getShiroLoginTime().time();
-            AuthRequest authRequest = new AuthRequest(SecurityAction.brokerConnect.name(), username, password, connectionInfo, getOldConnectionId(fullClientId),
-                brokerIdentity.getBrokerHost(), brokerIdentity.getBrokerId());
-            AuthResponse authResponse = authServiceClient.brokerConnect(authRequest);
+            AuthRequest authRequest = new AuthRequest(
+                serverContext.getBrokerIdentity().getBrokerHost(), SecurityAction.brokerConnect.name(),
+                username, password, connectionInfo, getOldConnectionId(fullClientId),
+                serverContext.getBrokerIdentity().getBrokerHost(), serverContext.getBrokerIdentity().getBrokerId());
+            AuthResponse authResponse = serverContext.getAuthServiceClient().brokerConnect(authRequest);
             validateAuthResponse(authResponse);
             KapuaPrincipal principal = new KapuaPrincipalImpl(authResponse);
-            SessionContext sessionContext = new SessionContext(principal, connectionInfo, authResponse.getKapuaConnectionId(), brokerIdentity.getBrokerId(), brokerIdentity.getBrokerHost());
+            SessionContext sessionContext = new SessionContext(principal, connectionInfo, authResponse.getKapuaConnectionId(),
+                serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost());
             loginShiroLoginTimeContext.stop();
 
             //update client id with account|clientId (see pattern)
-            securityContextHandler.printContent("authenticateInternal before updating clientId", remotingConnection);
+            serverContext.getSecurityContextHandler().printContent("authenticateInternal before updating clientId", PluginUtility.getConnectionId(remotingConnection));
             remotingConnection.setClientID(fullClientId);
-            securityContextHandler.setSessionContext(sessionContext, authResponse);
-            Subject subject = securityContextHandler.buildFromPrincipal(sessionContext.getPrincipal());
+            serverContext.getSecurityContextHandler().setSessionContext(sessionContext, authResponse);
+            Subject subject = serverContext.getSecurityContextHandler().buildFromPrincipal(sessionContext.getPrincipal());
             loginMetric.getSuccess().inc();
             return subject;
         }
@@ -184,7 +158,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
 //            throw new ActiveMQException(ActiveMQExceptionType.SECURITY_EXCEPTION, "User not authorized!", e);
         }
         finally {
-            securityContextHandler.printContent("authenticateInternal end", remotingConnection);
+            serverContext.getSecurityContextHandler().printContent("authenticateInternal end", PluginUtility.getConnectionId(remotingConnection));
             loginTotalContext.stop();
         }
     }
@@ -197,26 +171,26 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         KapuaPrincipal principal = getKapuaPrincipal(subject);
         if (principal!=null) {
             if (!principal.isInternal()) {
-                SessionContext sessionContext = securityContextHandler.getSessionContextByClientId(
+                SessionContext sessionContext = serverContext.getSecurityContextHandler().getSessionContextByClientId(
                     Utils.getFullClientId(principal.getAccountId(), principal.getClientId()));
                 switch (checkType) {
                 case CONSUME:
-                    allowed = securityContextHandler.checkConsumerAllowed(sessionContext, address);
+                    allowed = serverContext.getSecurityContextHandler().checkConsumerAllowed(sessionContext, address);
                     if (!allowed) {
                         subscribeMetric.getNotAllowedMessages().inc();
                     }
                     break;
                 case SEND:
-                    allowed = securityContextHandler.checkPublisherAllowed(sessionContext, address);
+                    allowed = serverContext.getSecurityContextHandler().checkPublisherAllowed(sessionContext, address);
                     if (!allowed) {
                         publishMetric.getNotAllowedMessages().inc();
                     }
                     break;
                 case BROWSE:
-                    allowed = securityContextHandler.checkConsumerAllowed(sessionContext, address);
+                    allowed = serverContext.getSecurityContextHandler().checkConsumerAllowed(sessionContext, address);
                     break;
                 default:
-                    allowed = securityContextHandler.checkAdminAllowed(sessionContext, address);
+                    allowed = serverContext.getSecurityContextHandler().checkAdminAllowed(sessionContext, address);
                     break;
                 }
             }
@@ -270,48 +244,8 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         }
     }
 
-    private boolean isInternal(RemotingConnection remotingConnection) {
-        String protocolName = remotingConnection.getProtocolName();
-        if (remotingConnection instanceof ActiveMQProtonRemotingConnection) {
-//            AMQPConnectionContext connectionContext = ((ActiveMQProtonRemotingConnection)remotingConnection).getAmqpConnection();
-            Connection connection = ((ActiveMQProtonRemotingConnection)remotingConnection).getAmqpConnection().getConnectionCallback().getTransportConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Protocol: {} - Remote container: {} - connection id: {} - local address: {}",
-                    protocolName, ((ActiveMQProtonRemotingConnection)remotingConnection).getAmqpConnection().getRemoteContainer(), connection.getID(), connection.getLocalAddress());
-            }
-            return isAmqpInternal(connection.getLocalAddress(), protocolName);//and connector name as expected
-        }
-        else if(remotingConnection instanceof MQTTConnection) {
-            Connection connection = ((MQTTConnection)remotingConnection).getTransportConnection();
-            if (logger.isDebugEnabled()) {
-                logger.debug("Protocol: {} - Remote address: {} - connection id: {} - local address: {}",
-                    protocolName, connection.getRemoteAddress(), connection.getID(), connection.getLocalAddress());
-            }
-            return isMqttInternal(connection.getLocalAddress(), protocolName);//and connector name as expected
-        }
-        else {
-            return false;
-        }
-    }
-
-    private boolean isAmqpInternal(String localAddress, String protocolName) {
-        //is internal if the inbound connection is coming from the amqp connector
-        //are the first check redundant? If the connector name is what is expected should be enough?
-        return
-            (localAddress.endsWith(amqpInternalConectorPort) && //local port amqp
-                amqpInternalConnectorName.equalsIgnoreCase(protocolName));
-    }
-
-    private boolean isMqttInternal(String localAddress, String protocolName) {
-        //is internal if the inbound connection is coming from the mqtt internal connector
-        //are the first check redundant? If the connector name is what is expected should be enough?
-        return
-            (localAddress.endsWith(mqttInternalConectorPort) && //local port internal mqtt
-                mqttInternalConnectorName.equalsIgnoreCase(protocolName));
-    }
-
     private String getOldConnectionId(String fullClientId) {
-        SessionContext oldSessionContext = securityContextHandler.getSessionContextByClientId(fullClientId);
+        SessionContext oldSessionContext = serverContext.getSecurityContextHandler().getSessionContextByClientId(fullClientId);
         if (oldSessionContext != null) {
             return oldSessionContext.getConnectionId();
         }
@@ -369,8 +303,8 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
      * @throws JsonProcessingException
      */
     private KapuaId getScopeId(String username) throws JsonProcessingException, JMSException, InterruptedException {
-        AccountRequest accountRequest = new AccountRequest(SecurityAction.getAccount.name(), username);
-        AccountResponse accountResponse = authServiceClient.getAccount(accountRequest);
+        AccountRequest accountRequest = new AccountRequest(serverContext.getBrokerIdentity().getBrokerHost(), SecurityAction.getAccount.name(), username);
+        AccountResponse accountResponse = serverContext.getAuthServiceClient().getAccount(accountRequest);
         if (accountResponse != null) {
             return KapuaEid.parseCompactId(accountResponse.getScopeId());
         }

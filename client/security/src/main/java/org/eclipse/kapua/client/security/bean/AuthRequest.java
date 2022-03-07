@@ -24,6 +24,9 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class AuthRequest implements Request {
 
+    @JsonProperty("requester")
+    private String requester;
+
     @JsonProperty("action")
     private String action;
 
@@ -77,7 +80,8 @@ public class AuthRequest implements Request {
     public AuthRequest() {
     }
 
-    public AuthRequest(String action, String username, String password, ConnectionInfo connectionInfo, String oldConnectionId, String brokerHost, String brokerIp) {
+    public AuthRequest(String requester, String action, String username, String password, ConnectionInfo connectionInfo, String oldConnectionId, String brokerHost, String brokerIp) {
+        this.requester = requester;
         this.action = action;
         this.username = username;
         this.clientId = connectionInfo.getClientId();
@@ -91,7 +95,8 @@ public class AuthRequest implements Request {
         this.certificates = connectionInfo.getCertificates();
     }
 
-    public AuthRequest(String action, SessionContext sessionContext, String oldConnectionId) {
+    public AuthRequest(String requester, String action, SessionContext sessionContext, String oldConnectionId) {
+        this.requester = requester;
         this.action = action;
         this.username = sessionContext.getUsername();
         this.clientId = sessionContext.getClientId();
@@ -104,6 +109,14 @@ public class AuthRequest implements Request {
         accountName = sessionContext.getAccountName();
         scopeId = sessionContext.getScopeId().toCompactId();
         userId = sessionContext.getUserId().toCompactId();
+    }
+
+    public String getRequester() {
+        return requester;
+    }
+
+    public void setRequester(String requester) {
+        this.requester = requester;
     }
 
     public String getAction() {

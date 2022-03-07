@@ -49,6 +49,8 @@ public class Client {
         connection.setClientID(clientId);
         connection.start();
         session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+        logger.info("AMQP client binding request sender to: {}", requestAddress);
+        logger.info("AMQP client binding message listener to: {}", replyAddress);
         consumer = session.createConsumer(session.createQueue(replyAddress));
         consumer.setMessageListener(clientMessageListener);
         producer = session.createProducer(session.createQueue(requestAddress));
