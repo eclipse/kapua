@@ -21,10 +21,13 @@ import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.client.security.bean.AccountRequest;
 import org.eclipse.kapua.client.security.bean.AccountResponse;
 import org.eclipse.kapua.client.security.bean.MessageConstants;
+import org.eclipse.kapua.client.security.bean.Request;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.service.camel.CommonMetrics;
 import org.eclipse.kapua.service.camel.listener.AbstractListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.Counter;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,6 +36,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 @UriEndpoint(title = "authentication service listener", syntax = "bean:authenticationServiceListener", scheme = "bean")
 public class AuthenticationServiceListener extends AbstractListener {
+
+    protected static final Logger logger = LoggerFactory.getLogger(AuthenticationServiceListener.class);
 
     public static final String METRIC_AUTHENTICATION = "authentication";
     public static final String METRIC_LOGIN = "login";
@@ -64,6 +69,7 @@ public class AuthenticationServiceListener extends AbstractListener {
 
     public void brokerConnect(Exchange exchange, AuthRequest authRequest) throws JsonProcessingException, JMSException {
         metricLoginRequestCount.inc();
+        logRequest(exchange, authRequest);
         AuthResponse authResponse = authenticationServiceBackEndCall.brokerConnect(authRequest);
         updateMessage(exchange, authRequest, authResponse);
         metricLoginCount.inc();
@@ -71,6 +77,8 @@ public class AuthenticationServiceListener extends AbstractListener {
 
     public void brokerDisconnect(Exchange exchange, AuthRequest authRequest) throws JsonProcessingException, JMSException {
         metricLogoutRequestCount.inc();
+        logRequest(exchange, authRequest);
+        logger.info("Checking stealing link for clientId: {} old connection: {} new connection: {}", authRequest.getClientId(), authRequest.getOldConnectionId(), authRequest.getConnectionId());
         AuthResponse authResponse = authenticationServiceBackEndCall.brokerDisconnect(authRequest);
         updateMessage(exchange, authRequest, authResponse);
         metricLogoutCount.inc();
@@ -78,6 +86,7 @@ public class AuthenticationServiceListener extends AbstractListener {
 
     public void getAccount(Exchange exchange, AccountRequest accountRequest) throws JsonProcessingException, JMSException {
         metricGetAccountRequestCount.inc();
+        logRequest(exchange, accountRequest);
         AccountResponse accountResponse = authenticationServiceBackEndCall.getAccount(accountRequest);
         updateMessage(exchange, accountRequest, accountResponse);
         metricGetAccountCount.inc();
@@ -90,6 +99,7 @@ public class AuthenticationServiceListener extends AbstractListener {
             textPayload = writer.writeValueAsString(authResponse);
             message.setBody(textPayload, String.class);
         }
+        message.setHeader(MessageConstants.HEADER_REQUESTER, authRequest.getRequester());
         message.setHeader(MessageConstants.HEADER_REQUEST_ID, authRequest.getRequestId());
         message.setHeader(MessageConstants.HEADER_ACTION, authRequest.getAction());
         message.setHeader(MessageConstants.HEADER_USERNAME, authRequest.getUsername());
@@ -107,8 +117,17 @@ public class AuthenticationServiceListener extends AbstractListener {
             textPayload = writer.writeValueAsString(accountResponse);
             message.setBody(textPayload, String.class);
         }
-        message.setHeader(MessageConstants.HEADER_REQUEST_ID, accountResponse.getRequestId());
-        message.setHeader(MessageConstants.HEADER_ACTION, accountResponse.getAction());
-        message.setHeader(MessageConstants.HEADER_USERNAME, accountResponse.getUsername());
+        message.setHeader(MessageConstants.HEADER_REQUESTER, accountRequest.getRequester());
+        message.setHeader(MessageConstants.HEADER_REQUEST_ID, accountRequest.getRequestId());
+        message.setHeader(MessageConstants.HEADER_ACTION, accountRequest.getAction());
+        message.setHeader(MessageConstants.HEADER_USERNAME, accountRequest.getUsername());
+        message.setHeader(MessageConstants.HEADER_RESULT_CODE, accountResponse.getResultCode());
+        message.setHeader(MessageConstants.HEADER_ERROR_CODE, accountResponse.getErrorCode());
+    }
+
+    private void logRequest(Exchange exchange, Request request) {
+        logger.info("Message id: {} - request id: {} - action: {} - requester: {}",
+            exchange.getIn().getMessageId(),
+            request.getRequestId(), request.getAction(), request.getRequester());
     }
 }

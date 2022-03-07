@@ -15,6 +15,7 @@ package org.eclipse.kapua.client.security.bean;
 public interface MessageConstants {
 
     //common
+    public static final String HEADER_REQUESTER = "requester";
     public static final String HEADER_ACTION = "action";
     public static final String HEADER_REQUEST_ID = "request_id";
     public static final String HEADER_USERNAME = "username";

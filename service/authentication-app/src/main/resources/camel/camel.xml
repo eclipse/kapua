@@ -42,7 +42,7 @@
                     <bean ref="authenticationServiceListener" method="getAccount"/>
                 </when>
             </choice>
-            <to uri="amqp:queue://auth_response"/>
+            <toD uri="amqp:queue:auth_response_${header.requester}"/>
         </pipeline>
     </route>
     <route id="notProcessableMessage">

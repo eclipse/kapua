@@ -17,12 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.security.auth.Subject;
 
-import org.apache.activemq.artemis.core.server.ServerConsumer;
-import org.apache.activemq.artemis.core.server.ServerSession;
-import org.apache.activemq.artemis.spi.core.protocol.RemotingConnection;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.client.security.context.SessionContext;
+import org.eclipse.kapua.client.security.context.SessionContextContainer;
 import org.eclipse.kapua.client.security.context.Utils;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
 import org.slf4j.Logger;
@@ -69,23 +67,18 @@ public final class SecurityContextHandler {
         sessionContextMapByClient.put(Utils.getFullClientId(sessionContext), sessionContext);
     }
 
-    public SessionContext cleanSessionContext(SessionContext sessionContext) {
-        if (sessionContext!=null) {
-            principalMap.remove(sessionContext.getConnectionId());
-            sessionContextMapByConnection.remove(sessionContext.getConnectionId());
-            if (!sessionContext.isInternal()) {
-                aclMap.remove(sessionContext.getConnectionId());
-                //check for stealing link
-                //remove object only if connection ids match
-                String fullClientId = Utils.getFullClientId(sessionContext);
-                SessionContext oldSessionContext = sessionContextMapByClient.get(fullClientId);
-                if (oldSessionContext!=null && oldSessionContext.getConnectionId().equals(sessionContext.getConnectionId())) {
-                    return sessionContextMapByClient.remove(fullClientId);
-                }
+    private SessionContext cleanSessionContext(SessionContext sessionContext) {
+        principalMap.remove(sessionContext.getConnectionId());
+        sessionContextMapByConnection.remove(sessionContext.getConnectionId());
+        if (!sessionContext.isInternal()) {
+            aclMap.remove(sessionContext.getConnectionId());
+            //check for stealing link
+            //remove object only if connection ids match
+            String fullClientId = Utils.getFullClientId(sessionContext);
+            SessionContext oldSessionContext = sessionContextMapByClient.get(fullClientId);
+            if (oldSessionContext!=null && oldSessionContext.getConnectionId().equals(sessionContext.getConnectionId())) {
+                return sessionContextMapByClient.remove(fullClientId);
             }
-        }
-        else {
-            //TODO add metrics?
         }
         return null;
     }
@@ -94,12 +87,16 @@ public final class SecurityContextHandler {
         return sessionContextMapByClient.get(fullClientId);
     }
 
-    public SessionContext getSessionContextByConnectionId(String connectionId) {
-        return sessionContextMapByConnection.get(connectionId);
+    public SessionContextContainer getAndCleanSessionContextByConnectionId(String connectionId) {
+        SessionContext sessionContext = sessionContextMapByConnection.get(connectionId);
+        //oldSessionContext should be not null since it was updated by the new connection
+        //so if the current connection id and that from sessionContet get by clientId are equals -> no stealing link
+        SessionContext sessionContextOld = sessionContext!=null ? cleanSessionContext(sessionContext) : null;
+        return new SessionContextContainer(sessionContext, sessionContextOld);
     }
 
-    public SessionContext getSessionContextByConnectionId(ServerSession session) {
-        return sessionContextMapByConnection.get(getConnectionId(session.getRemotingConnection()));
+    public SessionContext getSessionContextByConnectionId(String connectionId) {
+        return sessionContextMapByConnection.get(connectionId);
     }
 
     public boolean checkPublisherAllowed(SessionContext sessionContext, String address) {
@@ -138,27 +135,15 @@ public final class SecurityContextHandler {
         }
     }
 
-    public String getClientId(RemotingConnection remotingConnection) {
-        return remotingConnection.getClientID();
-    }
-
-    public String getConnectionId(RemotingConnection remotingConnection) {
-        return remotingConnection.getID().toString();
-    }
-
-    public String getConnectionId(ServerConsumer consumer) {
-        return consumer.getConnectionID().toString();
-    }
-
     public Subject buildFromPrincipal(KapuaPrincipal kapuaPrincipal) {
         Subject subject = new Subject();
         subject.getPrincipals().add(kapuaPrincipal);
         return subject;
     }
 
-    public void printContent(String method, RemotingConnection connection) {
+    public void printContent(String method, String connectionId) {
         StringBuilder builder = new StringBuilder();
-        builder.append("\n============================").append(method).append(" - ").append(connection!=null ? getConnectionId(connection) : "N/A");
+        builder.append("\n============================").append(method).append(" - ").append(connectionId);
         builder.append("\nconnection info by client id\n");
         sessionContextMapByClient.forEach((key, sessionContext) -> builder.append("\tclientId: ").append(key).append(" - conId: ").append(sessionContext.getConnectionId()).append("\tinternal: ").append(sessionContext.isInternal()).append("\n"));
         builder.append("\nconnection info by connection id\n");

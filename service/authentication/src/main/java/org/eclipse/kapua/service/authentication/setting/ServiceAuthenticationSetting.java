@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 Eurotech and/or its affiliates and others
+ * Copyright (c) 2022 Eurotech and/or its affiliates and others
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,31 +10,31 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.client.setting;
+package org.eclipse.kapua.service.authentication.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
 /**
- * Service client setting implementation.<br>
- * This class handles settings for the {@link ServiceClientSettingKey}.
+ * Service authentication implementation.<br>
+ * This class handles settings for the {@link ServiceAuthenticationSettingKey}.
  */
-public final class ServiceClientSetting extends AbstractKapuaSetting<ServiceClientSettingKey> {
+public final class ServiceAuthenticationSetting extends AbstractKapuaSetting<ServiceAuthenticationSettingKey> {
 
-    private static final String CONFIG_RESOURCE_NAME = "kapua-service-client-setting.properties";
+    private static final String CONFIG_RESOURCE_NAME = "kapua-service-authentication-setting.properties";
 
-    private static ServiceClientSetting instance;
+    private static ServiceAuthenticationSetting instance;
 
-    private ServiceClientSetting() {
+    private ServiceAuthenticationSetting() {
         super(CONFIG_RESOURCE_NAME);
     }
 
     /**
-     * Return the service client setting instance (singleton)
+     * Return the service authentication setting instance (singleton)
      */
-    public static ServiceClientSetting getInstance() {
-        synchronized (ServiceClientSetting.class) {
+    public static ServiceAuthenticationSetting getInstance() {
+        synchronized (ServiceAuthenticationSetting.class) {
             if (instance == null) {
-                instance = new ServiceClientSetting();
+                instance = new ServiceAuthenticationSetting();
             }
             return instance;
         }
@@ -52,7 +52,7 @@ public final class ServiceClientSetting extends AbstractKapuaSetting<ServiceClie
      * </p>
      */
     public static void resetInstance() {
-        synchronized (ServiceClientSetting.class) {
+        synchronized (ServiceAuthenticationSetting.class) {
             instance = null;
         }
     }

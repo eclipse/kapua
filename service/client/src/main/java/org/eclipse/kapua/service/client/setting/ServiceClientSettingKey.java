@@ -32,10 +32,6 @@ public enum ServiceClientSettingKey implements SettingKey {
      */
     SERVICE_CLIENT_POOL_NO_DEST_MIN_SIZE("service.client_pool.no_dest_min_size"),
     /**
-     * Service broker name
-     */
-    SERVICE_BROKER_NAME("service.broker.name"),
-    /**
      * Allow disabling the default connector descriptor
      */
     DISABLE_DEFAULT_PROTOCOL_DESCRIPTOR("protocol.descriptor.default.disable"),

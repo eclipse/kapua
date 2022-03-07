@@ -54,11 +54,13 @@ public class AdminAuthenticationLogic extends AuthenticationLogic {
     public boolean disconnect(AuthContext authContext) {
         boolean stealingLinkDetected = isIllegalState(authContext);
         String error = authContext.getExceptionClass();
-        logger.debug("Old connection id: {} - new connection id: {} - error: {}}", authContext.getOldConnectionId(), authContext.getConnectionId(), error);
+        boolean isDisconnection = !stealingLinkDetected && !authContext.isMissing();
+        logger.debug("Old connection id: {} - new connection id: {} - error: {} - is disconnection: {}",
+                authContext.getOldConnectionId(), authContext.getConnectionId(), error, isDisconnection);
         if (stealingLinkDetected) {
             loginMetric.getAdminStealingLinkDisconnect().inc();
         }
-        return !stealingLinkDetected && !authContext.isMissing();
+        return isDisconnection;
     }
 
     protected List<AuthAcl> buildAuthorizationMap(UserPermissions userPermissions, AuthContext authContext) {
