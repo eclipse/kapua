@@ -274,12 +274,9 @@ public abstract class AuthenticationLogic {
                     authContext.getConnectionId(),
                     authContext.getClientIp());
         }
-        if(!stealingLink && isIllegalState(authContext)) {
-            stealingLink = true;
-        }
         if (stealingLink) {
             loginMetric.getStealingLinkDisconnect().inc();
-            logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
+            logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {}",
                 authContext.getClientId(),
                 authContext.getScopeId(),
                 authContext.getOldConnectionId(),
@@ -335,7 +332,7 @@ public abstract class AuthenticationLogic {
                 loginMetric.getStealingLinkConnect().inc();
 
                 // stealing link detected, skip info
-                logger.warn("Detected Stealing link for cliend id {} - account - last connection id was {} - current connection id is {} - IP: {} - No connection status changes!",
+                logger.warn("Detected Stealing link for cliend id {} - account {} - last connection id was {} - current connection id is {} - IP: {}",
                         authContext.getClientId(),
                         authContext.getAccountName(),
                         previousConnectionId,
