@@ -19,7 +19,8 @@ import org.eclipse.kapua.service.user.User;
 
 public class KapuaGwtUserModelConverter {
 
-    private KapuaGwtUserModelConverter() { }
+    private KapuaGwtUserModelConverter() {
+    }
 
     /**
      * Converts a {@link User} into a {@link GwtUser} for GWT usage.
@@ -46,6 +47,7 @@ public class KapuaGwtUserModelConverter {
         gwtUser.setExpirationDate(user.getExpirationDate());
         gwtUser.setUserType(user.getUserType().toString());
         gwtUser.setExternalId(user.getExternalId());
+        gwtUser.setExternalUsername(user.getExternalUsername());
 
         //
         // Return converted entity

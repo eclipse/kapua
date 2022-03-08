@@ -16,7 +16,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
+import org.eclipse.kapua.app.console.core.server.util.ConsoleSsoLocator;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtCredential;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtJwtIdToken;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
@@ -293,7 +293,7 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         gwtSession.setVersion(commonsConfig.getString(SystemSettingKey.VERSION));
         gwtSession.setBuildVersion(commonsConfig.getString(SystemSettingKey.BUILD_VERSION));
         gwtSession.setBuildNumber(commonsConfig.getString(SystemSettingKey.BUILD_NUMBER));
-        gwtSession.setSsoEnabled(SsoLocator.getLocator(this).getService().isEnabled());
+        gwtSession.setSsoEnabled(ConsoleSsoLocator.getLocator(this).getService().isEnabled());
         gwtSession.setDatastoreDisabled(DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false));
 
         // User info
