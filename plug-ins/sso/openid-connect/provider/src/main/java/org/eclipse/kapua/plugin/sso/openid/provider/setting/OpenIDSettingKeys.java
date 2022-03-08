@@ -15,16 +15,44 @@ package org.eclipse.kapua.plugin.sso.openid.provider.setting;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
 
+/**
+ * @since 1.0.0
+ */
 public enum OpenIDSettingKeys implements SettingKey {
-    SSO_OPENID_PROVIDER("sso.openid.provider"), //
+
+    /**
+     * @since 1.0.0
+     */
+    SSO_OPENID_PROVIDER("sso.openid.provider"),
+    /**
+     * @since 1.0.0
+     */
     SSO_OPENID_CONF_PATH("sso.openid.conf.path"),
-    SSO_OPENID_CLIENT_ID("sso.openid.client.id"), //
-    SSO_OPENID_CLIENT_SECRET("sso.openid.client.secret"), //
-    SSO_OPENID_JWT_PROCESSOR_TIMEOUT("sso.openid.jwt_processor_timeout"),  // the JwtProcessor expiration time
-    ;
+    /**
+     * @since 1.0.0
+     */
+    SSO_OPENID_CLIENT_ID("sso.openid.client.id"),
+    /**
+     * @since 1.0.0
+     */
+    SSO_OPENID_CLIENT_SECRET("sso.openid.client.secret"),
+    /**
+     * @since 1.0.0
+     */
+    SSO_OPENID_JWT_PROCESSOR_TIMEOUT("sso.openid.jwt_processor_timeout"),
+
+    /**
+     * @since 2.0.0
+     */
+    SSO_OPENID_CLAIMS_EXTERNAL_USERNAME_KEY("sso.openid.claims.externalUsername.key");
 
     private final String key;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     OpenIDSettingKeys(final String key) {
         this.key = key;
     }

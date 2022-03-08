@@ -17,6 +17,8 @@ import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 
 /**
  * OpenID Connect single sign-on service locator interface.
+ *
+ * @since 1.0.0
  */
 public interface OpenIDLocator {
 
@@ -24,6 +26,7 @@ public interface OpenIDLocator {
      * Retrieve the OpenID Connect single sign-on service.
      *
      * @return a {@link OpenIDService} object.
+     * @since 1.0.0
      */
     OpenIDService getService();
 
@@ -32,6 +35,7 @@ public interface OpenIDLocator {
      *
      * @return a {@link JwtProcessor} object.
      * @throws OpenIDException if it fails to retrieve the {@link JwtProcessor}.
+     * @since 1.0.0
      */
     JwtProcessor getProcessor() throws OpenIDException;
 }

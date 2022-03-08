@@ -14,6 +14,9 @@ package org.eclipse.kapua.plugin.sso.openid.exception.jwt;
 
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDErrorCodes;
 
+/**
+ * @since 1.2.0
+ */
 public class OpenIDJwtProcessException extends OpenIDJwtException {
 
     /**

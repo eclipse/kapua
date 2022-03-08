@@ -17,13 +17,14 @@ import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDIllegalArgumentExcept
 import org.eclipse.kapua.plugin.sso.openid.provider.AbstractOpenIDService;
 import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
 
- /**
+/**
  * The Keycloak OpenID service class.
  */
 public class KeycloakOpenIDService extends AbstractOpenIDService {
 
     private static final String KEYCLOAK_AUTH_URI_SUFFIX = "/protocol/openid-connect/auth";
     private static final String KEYCLOAK_TOKEN_URI_SUFFIX = "/protocol/openid-connect/token";
+    private static final String KEYCLOAK_USERINFO_URI_SUFFIX = "/protocol/openid-connect/userinfo";
     private static final String KEYCLOAK_LOGOUT_URI_SUFFIX = "/protocol/openid-connect/logout";
 
     public KeycloakOpenIDService() {
@@ -41,15 +42,21 @@ public class KeycloakOpenIDService extends AbstractOpenIDService {
     }
 
     @Override
+    protected String getLogoutUri() throws OpenIDIllegalArgumentException {
+        return KeycloakOpenIDUtils.getProviderUri() + KeycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
+                KeycloakOpenIDUtils.getRealm() + KEYCLOAK_LOGOUT_URI_SUFFIX;
+    }
+
+    @Override
     protected String getTokenUri() throws OpenIDIllegalArgumentException {
         return KeycloakOpenIDUtils.getProviderUri() + KeycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
                 KeycloakOpenIDUtils.getRealm() + KEYCLOAK_TOKEN_URI_SUFFIX;
     }
 
     @Override
-    protected String getLogoutUri() throws OpenIDIllegalArgumentException {
+    protected String getUserInfoUri() throws OpenIDIllegalArgumentException {
         return KeycloakOpenIDUtils.getProviderUri() + KeycloakOpenIDUtils.KEYCLOAK_URI_COMMON_PART +
-                KeycloakOpenIDUtils.getRealm() + KEYCLOAK_LOGOUT_URI_SUFFIX;
+                KeycloakOpenIDUtils.getRealm() + KEYCLOAK_USERINFO_URI_SUFFIX;
     }
 
 }

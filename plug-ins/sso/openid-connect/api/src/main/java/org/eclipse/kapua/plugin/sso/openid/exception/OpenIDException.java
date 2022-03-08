@@ -15,6 +15,9 @@ package org.eclipse.kapua.plugin.sso.openid.exception;
 import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.KapuaException;
 
+/**
+ * @since 1.2.0
+ */
 public abstract class OpenIDException extends KapuaException {
 
     private static final String KAPUA_ERROR_MESSAGES = "openid-error-messages";

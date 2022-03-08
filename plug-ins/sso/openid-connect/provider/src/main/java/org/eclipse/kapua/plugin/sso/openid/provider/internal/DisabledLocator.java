@@ -41,12 +41,17 @@ public class DisabledLocator implements ProviderLocator {
         }
 
         @Override
+        public String getLogoutUri(String idTokenHint, URI postLogoutRedirectUri, String state) {
+            return null;
+        }
+
+        @Override
         public JsonObject getTokens(final String authCode, final URI redirectUri) {
             return null;
         }
 
         @Override
-        public String getLogoutUri(String idTokenHint, URI postLogoutRedirectUri, String state) {
+        public JsonObject getUserInfo(String authCode) {
             return null;
         }
     };
@@ -73,6 +78,11 @@ public class DisabledLocator implements ProviderLocator {
 
         @Override
         public String getExternalIdClaimName() {
+            return null;
+        }
+
+        @Override
+        public String getExternalUsernameClaimName() {
             return null;
         }
     };
