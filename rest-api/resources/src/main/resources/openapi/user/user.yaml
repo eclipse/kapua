@@ -55,6 +55,8 @@ components:
                 - EXTERNAL
             externalId:
               type: string
+            externalUsername:
+              type: string
             expirationDate:
               type: string
               format: 'date-time'
