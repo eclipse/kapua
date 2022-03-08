@@ -61,8 +61,12 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
     private UserType userType;
 
     @Basic
-    @Column(name = "external_id", updatable = false)
+    @Column(name = "external_id")
     private String externalId;
+
+    @Basic
+    @Column(name = "external_username")
+    private String externalUsername;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "expiration_date")
@@ -119,6 +123,7 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
         setPhoneNumber(user.getPhoneNumber());
         setUserType(user.getUserType());
         setExternalId(user.getExternalId());
+        setExternalUsername(user.getExternalUsername());
         setExpirationDate(user.getExpirationDate());
     }
 
@@ -180,6 +185,16 @@ public class UserImpl extends AbstractKapuaNamedEntity implements User {
     @Override
     public void setExternalId(String externalId) {
         this.externalId = externalId;
+    }
+
+    @Override
+    public String getExternalUsername() {
+        return externalUsername;
+    }
+
+    @Override
+    public void setExternalUsername(String externalUsername) {
+        this.externalUsername = externalUsername;
     }
 
     @Override

@@ -108,6 +108,24 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
      */
     void setExternalId(String externalId);
 
+    /**
+     * Gets the external username.
+     *
+     * @return The external username.
+     * @since 2.0.0
+     */
+    @XmlElement(name = "externalUsername")
+    String getExternalUsername();
+
+    /**
+     * Sets the external username.
+     *
+     * @param externalUsername The external username.
+     * @since 2.0.0
+     */
+    void setExternalUsername(String externalUsername);
+
+
     @XmlElement(name = "expirationDate")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
     Date getExpirationDate();

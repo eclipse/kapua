@@ -30,13 +30,14 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
 
     private static final long serialVersionUID = 4664940282892151008L;
 
+    private UserStatus userStatus;
     private String displayName;
     private String email;
     private String phoneNumber;
     private UserType userType = UserType.INTERNAL;
     private String externalId;
+    private String externalUsername;
     private Date expirationDate;
-    private UserStatus userStatus;
 
     /**
      * Constructor
@@ -46,12 +47,23 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
      */
     public UserCreatorImpl(KapuaId accountId, String name) {
         super(accountId, name);
+
         setUserStatus(UserStatus.ENABLED);
         setUserType(UserType.INTERNAL);
     }
 
     public UserCreatorImpl(KapuaId scopeId) {
         this(scopeId, null);
+    }
+
+    @Override
+    public UserStatus getUserStatus() {
+        return userStatus;
+    }
+
+    @Override
+    public void setUserStatus(UserStatus userStatus) {
+        this.userStatus = userStatus;
     }
 
     @Override
@@ -105,6 +117,16 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
     }
 
     @Override
+    public String getExternalUsername() {
+        return externalUsername;
+    }
+
+    @Override
+    public void setExternalUsername(String externalUsername) {
+        this.externalUsername = externalUsername;
+    }
+
+    @Override
     public Date getExpirationDate() {
         return expirationDate;
     }
@@ -112,15 +134,5 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
     @Override
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
-    }
-
-    @Override
-    public UserStatus getUserStatus() {
-        return userStatus;
-    }
-
-    @Override
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
     }
 }

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user;
 
+import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaNamedEntity;
 import org.eclipse.kapua.model.xml.DateXmlAdapter;
 
@@ -24,9 +25,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Date;
 
 /**
- * {@link User} {@link org.eclipse.kapua.model.KapuaEntity} definition
+ * {@link User} {@link KapuaEntity} definition.
  *
  * @since 1.0.0
+ * @see KapuaEntity
  */
 @XmlRootElement(name = "user")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -145,6 +147,23 @@ public interface User extends KapuaNamedEntity {
      * @since 1.0.0
      */
     void setExternalId(String externalId);
+
+    /**
+     * Gets the external username.
+     *
+     * @return The external username.
+     * @since 2.0.0
+     */
+    @XmlElement(name = "externalUsername")
+    String getExternalUsername();
+
+    /**
+     * Sets the external username.
+     *
+     * @param externalUsername The external username.
+     * @since 2.0.0
+     */
+    void setExternalUsername(String externalUsername);
 
     /**
      * Gets the expiration date
