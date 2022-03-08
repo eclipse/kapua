@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.server.util;
 
+import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
-import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
+public final class ConsoleSsoLocator {
 
-public final class SsoLocator {
-
-    private SsoLocator() {
+    private ConsoleSsoLocator() {
     }
 
     public static OpenIDLocator getLocator(final ServletContext context) {

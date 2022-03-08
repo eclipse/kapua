@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.server.util;
 
+import com.google.common.net.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.commons.security.KapuaSession;
@@ -49,19 +51,26 @@ public class OpenIDLogoutListener implements HttpSessionListener {
      */
     @Override
     public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
-        HttpSession session = httpSessionEvent.getSession();
-        KapuaSession kapuaSession = (KapuaSession) session.getAttribute(KapuaSession.KAPUA_SESSION_KEY);
-
-        // perform the OpenID Logout only if it is enabled
+        // Perform the OpenID Logout only if it is enabled
         if (ConsoleSetting.getInstance().getBoolean(ConsoleSettingKeys.SSO_OPENID_SESSION_LISTENER_LOGOUT_ENABLED, true)) {
+            HttpSession session = httpSessionEvent.getSession();
+            KapuaSession kapuaSession = (KapuaSession) session.getAttribute(KapuaSession.KAPUA_SESSION_KEY);
+
             if (kapuaSession != null && kapuaSession.getOpenIDidToken() != null && !kapuaSession.isUserInitiatedLogout()) {
                 try {
-                    String logoutUri = SsoLocator.getLocator(httpSessionEvent.getSession().getServletContext()).getService().getLogoutUri(
-                            kapuaSession.getOpenIDidToken(), URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());
+                    String logoutUri = ConsoleSsoLocator
+                            .getLocator(httpSessionEvent.getSession().getServletContext())
+                            .getService()
+                            .getLogoutUri(
+                                    kapuaSession.getOpenIDidToken(),
+                                    URI.create(ConsoleSsoHelper.getHomeUri()),
+                                    UUID.randomUUID().toString()
+                            );
+
                     URL url = new URL(logoutUri);
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("GET");
-                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestMethod(HttpMethod.GET.toString());
+                    conn.setRequestProperty(HttpHeaders.CONTENT_TYPE, "application/json");
                     conn.setDoOutput(true);
 
                     int httpRespCode = conn.getResponseCode();

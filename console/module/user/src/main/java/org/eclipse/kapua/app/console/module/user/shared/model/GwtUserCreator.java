@@ -32,6 +32,7 @@ public class GwtUserCreator implements Serializable {
     private Date expirationDate;
     private GwtUserStatus userStatus;
     private String externalId;
+    private String externalUsername;
     private GwtUserType userType;
 
     private boolean isAdministrator;
@@ -129,6 +130,14 @@ public class GwtUserCreator implements Serializable {
 
     public void setExternalId(String externalId) {
         this.externalId = externalId;
+    }
+
+    public String getExternalUsername() {
+        return externalUsername;
+    }
+
+    public void setExternalUsername(String externalUsername) {
+        this.externalUsername = externalUsername;
     }
 
     public GwtUserType getUserType() {

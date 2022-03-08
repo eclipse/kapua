@@ -408,7 +408,7 @@ public class KapuaCloudConsole implements EntryPoint {
         loginDialog.show();
     }
 
-    private void performOpenIDLogin(final Viewport viewport, String authToken, String idToken) {
+    private void performOpenIDLogin(final Viewport viewport, String accessToken, String idToken) {
 
         // show wait dialog
         final Dialog dlg = new Dialog();
@@ -427,7 +427,7 @@ public class KapuaCloudConsole implements EntryPoint {
 
         // start login process
         final GwtJwtIdToken gwtIdToken = new GwtJwtIdToken(idToken);
-        final GwtJwtCredential credentials = new GwtJwtCredential(authToken);
+        final GwtJwtCredential credentials = new GwtJwtCredential(accessToken);
         gwtAuthorizationService.login(credentials, gwtIdToken, new AsyncCallback<GwtSession>() {
 
             @Override

@@ -14,14 +14,15 @@ package org.eclipse.kapua.app.console.core.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
-import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
+import org.eclipse.kapua.app.console.core.server.util.ConsoleSsoHelper;
+import org.eclipse.kapua.app.console.core.server.util.ConsoleSsoLocator;
 import org.eclipse.kapua.app.console.core.shared.model.GwtProductInformation;
 import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsService;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.server.util.KapuaExceptionHandler;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
+import org.eclipse.kapua.plugin.sso.openid.OpenIDService;
 
 import java.net.URI;
 import java.util.UUID;
@@ -29,56 +30,66 @@ import java.util.UUID;
 public class GwtSettingsServiceImpl extends RemoteServiceServlet implements GwtSettingsService {
 
     private static final long serialVersionUID = -6876999298300071273L;
-    private static final ConsoleSetting SETTINGS = ConsoleSetting.getInstance();
+
+    private static final ConsoleSetting CONSOLE_SETTINGS = ConsoleSetting.getInstance();
 
     @Override
     public GwtProductInformation getProductInformation() {
         GwtProductInformation result = new GwtProductInformation();
-        result.setBackgroundCredits(SETTINGS.getString(ConsoleSettingKeys.LOGIN_BACKGROUND_CREDITS, ""));
-        result.setInformationSnippet(SETTINGS.getString(ConsoleSettingKeys.LOGIN_GENERIC_SNIPPET, ""));
-        result.setProductName(SETTINGS.getString(ConsoleSettingKeys.PRODUCT_NAME, ""));
-        result.setCopyright(SETTINGS.getString(ConsoleSettingKeys.PRODUCT_COPYRIGHT, ""));
+        result.setBackgroundCredits(CONSOLE_SETTINGS.getString(ConsoleSettingKeys.LOGIN_BACKGROUND_CREDITS, ""));
+        result.setInformationSnippet(CONSOLE_SETTINGS.getString(ConsoleSettingKeys.LOGIN_GENERIC_SNIPPET, ""));
+        result.setProductName(CONSOLE_SETTINGS.getString(ConsoleSettingKeys.PRODUCT_NAME, ""));
+        result.setCopyright(CONSOLE_SETTINGS.getString(ConsoleSettingKeys.PRODUCT_COPYRIGHT, ""));
+
         return result;
     }
 
     @Override
     public String getOpenIDLoginUri() throws GwtKapuaException {
         try {
-            return SsoLocator.getLocator(this).getService().getLoginUri(UUID.randomUUID().toString(), SsoHelper.getRedirectUri());
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-            return null;
+            return getOpenIdService().getLoginUri(UUID.randomUUID().toString(), ConsoleSsoHelper.getRedirectUri());
+        } catch (Exception t) {
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
     }
 
     @Override
     public String getOpenIDLogoutUri(String idToken) throws GwtKapuaException {
         try {
-            if (SETTINGS.getBoolean(ConsoleSettingKeys.SSO_OPENID_USER_LOGOUT_ENABLED, true)) {
+            if (CONSOLE_SETTINGS.getBoolean(ConsoleSettingKeys.SSO_OPENID_USER_LOGOUT_ENABLED, true)) {
                 if (idToken.isEmpty()) {
                     throw new KapuaIllegalArgumentException("ssoIdToken", idToken);
                 }
-                return SsoLocator.getLocator(this).getService().getLogoutUri(
-                        idToken, URI.create(SsoHelper.getHomeUri()), UUID.randomUUID().toString());}
+
+                return getOpenIdService()
+                        .getLogoutUri(
+                                idToken,
+                                URI.create(ConsoleSsoHelper.getHomeUri()),
+                                UUID.randomUUID().toString()
+                        );
+            }
             return "";  // return empty string instead of using a dedicated callback just to check if the logout is enabled
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-            return null;
+        } catch (Exception t) {
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
     }
 
     @Override
     public boolean getOpenIDEnabled() {
-        return SsoLocator.getLocator(this).getService().isEnabled();
+        return getOpenIdService().isEnabled();
     }
 
     @Override
     public String getHomeUri() throws GwtKapuaException {
         try {
-            return SsoHelper.getHomeUri();
+            return ConsoleSsoHelper.getHomeUri();
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
             return null;
         }
+    }
+
+    private OpenIDService getOpenIdService() {
+        return ConsoleSsoLocator.getLocator(this).getService();
     }
 }
