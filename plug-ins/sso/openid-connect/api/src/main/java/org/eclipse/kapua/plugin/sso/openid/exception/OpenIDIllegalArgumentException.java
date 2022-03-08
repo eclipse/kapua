@@ -17,7 +17,7 @@ import org.eclipse.kapua.KapuaErrorCode;
 /**
  * OpenIDIllegalArgumentException is thrown when the value of a method parameter is invalid.
  *
- * @since 1.0
+ * @since 1.2.0
  */
 public class OpenIDIllegalArgumentException extends OpenIDException {
 

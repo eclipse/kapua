@@ -16,6 +16,9 @@ import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.eclipse.kapua.plugin.sso.openid.exception.jwt.OpenIDJwtException;
 import org.jose4j.jwt.consumer.JwtContext;
 
+/**
+ * @since 1.2.0
+ */
 public interface JwtProcessor extends AutoCloseable {
 
     /**
@@ -24,6 +27,7 @@ public interface JwtProcessor extends AutoCloseable {
      * @param jwt the String representing the JWT.
      * @return <tt>true</tt> if the validation succeeds, <tt>false</tt> otherwise.
      * @throws OpenIDJwtException if the validation fails.
+     * @since 1.2.0
      */
     boolean validate(final String jwt) throws OpenIDException;
 
@@ -33,6 +37,7 @@ public interface JwtProcessor extends AutoCloseable {
      * @param jwt the String representing the JWT.
      * @return a JwtContext object.
      * @throws OpenIDJwtException if JWT processing fails.
+     * @since 1.2.0
      */
     JwtContext process(final String jwt) throws OpenIDException;
 
@@ -40,6 +45,16 @@ public interface JwtProcessor extends AutoCloseable {
      * Return the claim to be extracted form the JWT as user identifier.
      *
      * @return the claim in the form of a String
+     * @since 1.5.0
      */
     String getExternalIdClaimName();
+
+    /**
+     * Return the claim to be extracted form the JWT as external username.
+     * The actual claim extracted depends on configured value.
+     *
+     * @return the claim in the form of a String
+     * @since 2.0.0
+     */
+    String getExternalUsernameClaimName();
 }

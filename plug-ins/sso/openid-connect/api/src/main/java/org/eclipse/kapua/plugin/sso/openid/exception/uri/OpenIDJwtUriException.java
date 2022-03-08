@@ -14,12 +14,16 @@ package org.eclipse.kapua.plugin.sso.openid.exception.uri;
 
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDErrorCodes;
 
+/**
+ * @since 1.2.0
+ */
 public class OpenIDJwtUriException extends OpenIDUriException {
 
     /**
      * Constructor.
      *
      * @param cause The original {@link Throwable}.
+     * @since 1.2.0
      */
     public OpenIDJwtUriException(Throwable cause) {
         super(OpenIDErrorCodes.JWT_URI_ERROR, cause);

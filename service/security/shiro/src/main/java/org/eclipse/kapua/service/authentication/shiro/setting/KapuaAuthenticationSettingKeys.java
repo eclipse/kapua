@@ -13,12 +13,13 @@
 package org.eclipse.kapua.service.authentication.shiro.setting;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
+import org.eclipse.kapua.service.authentication.JwtCredentials;
+import org.eclipse.kapua.service.user.User;
 
 /**
  * Authentication setting key
  *
  * @since 1.0
- *
  */
 public enum KapuaAuthenticationSettingKeys implements SettingKey {
     AUTHENTICATION_KEY("authentication.key"), //
@@ -52,7 +53,21 @@ public enum KapuaAuthenticationSettingKeys implements SettingKey {
     // to enable the registration service
     AUTHENTICATION_REGISTRATION_SERVICE_ENABLED("authentication.registration.service.enabled"),
 
-    // mfa authenticator service configuration
+    // SSO
+    /**
+     * Whether populate the {@link User#getExternalId()} when authenticating {@link JwtCredentials}, if not populated.
+     *
+     * @since 2.0.0
+     */
+    AUTHENTICATION_SSO_USER_EXTERNAL_ID_AUTOFILL("authentication.sso.user.external.id.autofill"),
+    /**
+     * Whether populate the {@link User#getExternalUsername()} when authenticating {@link JwtCredentials}, if not populated.
+     *
+     * @since 2.0.0
+     */
+    AUTHENTICATION_SSO_USER_EXTERNAL_USERNAME_AUTOFILL("authentication.sso.user.external.username.autofill"),
+
+    // MFA authenticator service configuration
     AUTHENTICATION_MFA_TIME_STEP_SIZE("authentication.mfa.time.step.size"),  // the time step size, in seconds, min > 0
     AUTHENTICATION_MFA_WINDOW_SIZE("authentication.mfa.window.size"),  // number of windows of size timeStepSizeInMillis checked during the validation, min > 0
     AUTHENTICATION_MFA_SCRATCH_CODES_NUMBER("authentication.mfa.scratch.codes.number"),  // number of scratch codes, min is 0 max is 1000

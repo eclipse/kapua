@@ -15,6 +15,9 @@ package org.eclipse.kapua.plugin.sso.openid.provider.setting;
 
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
+/**
+ * @since 1.0.0
+ */
 public class OpenIDSetting extends AbstractKapuaSetting<OpenIDSettingKeys> {
 
     private static final String OPENID_SETTING_RESOURCE = "openid-setting.properties";

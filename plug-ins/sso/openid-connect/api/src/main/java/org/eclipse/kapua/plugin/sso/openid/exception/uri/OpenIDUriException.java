@@ -15,6 +15,9 @@ package org.eclipse.kapua.plugin.sso.openid.exception.uri;
 import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 
+/**
+ * @since 1.2.0
+ */
 public abstract class OpenIDUriException extends OpenIDException {
 
     /**
