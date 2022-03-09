@@ -18,8 +18,17 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-job-1.6.0.xml">
 
-    <include relativeToChangelogFile="true" file="job_job_step_properties-secret.xml"/>
-    <include relativeToChangelogFile="true" file="job_job_step_definition_properties-secret.xml"/>
-    <include relativeToChangelogFile="true" file="job_job_execution-indexes.xml"/>
+    <changeSet id="changelog-job_execution-1.6.0-indexes" author="eurotech">
+        <createIndex tableName="job_job_execution" indexName="idx_jobExecution_scopeId_jobId_startedOn">
+            <column name="scope_id"/>
+            <column name="job_id"/>
+            <column name="started_on"/>
+        </createIndex>
+        <createIndex tableName="job_job_execution" indexName="idx_jobExecution_scopeId_jobId_endedOn">
+            <column name="scope_id"/>
+            <column name="job_id"/>
+            <column name="ended_on"/>
+        </createIndex>
+    </changeSet>
 
 </databaseChangeLog>
