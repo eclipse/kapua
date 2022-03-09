@@ -217,6 +217,7 @@ public class JobTargets extends AbstractKapuaResource {
             JobTargetCreator jobTargetCreator) throws KapuaException {
         jobTargetCreator.setScopeId(scopeId);
         jobTargetCreator.setJobId(jobId);
+
         return returnCreated(jobTargetService.create(jobTargetCreator));
     }
 
