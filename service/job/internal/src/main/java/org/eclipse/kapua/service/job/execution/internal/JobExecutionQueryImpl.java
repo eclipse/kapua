@@ -14,6 +14,9 @@ package org.eclipse.kapua.service.job.execution.internal;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaQuery;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.query.KapuaSortCriteria;
+import org.eclipse.kapua.model.query.SortOrder;
+import org.eclipse.kapua.service.job.execution.JobExecutionAttributes;
 import org.eclipse.kapua.service.job.execution.JobExecutionQuery;
 
 /**
@@ -31,5 +34,10 @@ public class JobExecutionQueryImpl extends AbstractKapuaQuery implements JobExec
      */
     public JobExecutionQueryImpl(KapuaId scopeId) {
         super(scopeId);
+    }
+
+    @Override
+    public KapuaSortCriteria getDefaultSortCriteria() {
+        return fieldSortCriteria(JobExecutionAttributes.STARTED_ON, SortOrder.DESCENDING);
     }
 }
