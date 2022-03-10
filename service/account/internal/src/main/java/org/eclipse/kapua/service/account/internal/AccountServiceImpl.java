@@ -88,6 +88,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         ArgumentValidator.notNull(accountCreator, "accountCreator");
         ArgumentValidator.notNull(accountCreator.getScopeId(), "accountCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(accountCreator.getName(), "accountCreator.name");
+        ArgumentValidator.match(accountCreator.getName(), CommonsValidationRegex.NAME_REGEXP, "accountCreator.name");
         ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationName(), "accountCreator.organizationName");
         ArgumentValidator.notEmptyOrNull(accountCreator.getOrganizationEmail(), "accountCreator.organizationEmail");
         ArgumentValidator.match(accountCreator.getOrganizationEmail(), CommonsValidationRegex.EMAIL_REGEXP, "accountCreator.organizationEmail");
@@ -158,6 +159,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Argument validation
         ArgumentValidator.notNull(account.getId(), "account.id");
         ArgumentValidator.notEmptyOrNull(account.getName(), "account.name");
+        ArgumentValidator.match(account.getName(), CommonsValidationRegex.NAME_REGEXP, "account.name");
         ArgumentValidator.notNull(account.getOrganization(), "account.organization");
         ArgumentValidator.match(account.getOrganization().getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "account.organization.email");
 
