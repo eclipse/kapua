@@ -28,7 +28,7 @@ docker_logs() {
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/sso/docker-compose.keycloak.yml")
     fi
 
-    docker-compose -f "${SCRIPT_DIR}"/../compose/docker-compose.yml logs -f
+    docker-compose -f "${SCRIPT_DIR}"/../compose/docker-compose.yml "${COMPOSE_FILES[@]}" logs -f
 }
 
 docker_common
