@@ -219,6 +219,22 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         ArgumentValidator.notNull(credential.getCredentialType(), "credential.credentialType");
         ArgumentValidator.notEmptyOrNull(credential.getCredentialKey(), "credential.credentialKey");
 
+        if (CredentialType.PASSWORD == credential.getCredentialType()) {
+            // Validate Password length
+            int minPasswordLength = getMinimumPasswordLength(credential.getScopeId());
+            if (credential.getCredentialKey().length() < minPasswordLength) {
+                throw new KapuaPasswordTooShortException(minPasswordLength);
+            }
+            if (credential.getCredentialKey().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+                throw new KapuaPasswordTooLongException(SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+            }
+
+            //
+            // Validate Password regex
+            ArgumentValidator.match(credential.getCredentialKey(),
+                    CommonsValidationRegex.PASSWORD_REGEXP, "credentialCreator.credentialKey");
+        }
+
         //
         // Check access
         KapuaLocator locator = KapuaLocator.getInstance();
