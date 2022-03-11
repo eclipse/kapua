@@ -191,6 +191,12 @@ public class DeviceTabInventoryTabDeploymentPackages extends TabItem {
         }
     }
 
+    @Override
+    protected void onShow() {
+        super.onShow();
+        refresh();
+    }
+
     public TreeGrid<ModelData> getTreeGrid() {
         return treeGrid;
     }
