@@ -13,9 +13,12 @@
 package org.eclipse.kapua.plugin.sso.openid.exception.uri;
 
 import org.eclipse.kapua.KapuaErrorCode;
-import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDIllegalArgumentException;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDErrorCodes;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDIllegalArgumentException;
 
+/**
+ * @since 1.2.0
+ */
 public class OpenIDIllegalUriException extends OpenIDIllegalArgumentException {
 
     /**
@@ -23,6 +26,7 @@ public class OpenIDIllegalUriException extends OpenIDIllegalArgumentException {
      *
      * @param argName  the name of the illegal URI
      * @param argValue the value of the illegal URI
+     * @since 1.2.0
      */
     public OpenIDIllegalUriException(String argName, String argValue) {
         this(OpenIDErrorCodes.ILLEGAL_URI, argName, argValue);
@@ -34,6 +38,7 @@ public class OpenIDIllegalUriException extends OpenIDIllegalArgumentException {
      * @param code     The {@link KapuaErrorCode} associated with the {@link Exception}.
      * @param argName  the name of the illegal URI
      * @param argValue the value of the illegal URI
+     * @since 1.2.0
      */
     protected OpenIDIllegalUriException(KapuaErrorCode code, String argName, String argValue) {
         super(code, argName, argValue);

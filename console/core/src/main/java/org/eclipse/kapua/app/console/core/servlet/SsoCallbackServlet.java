@@ -13,8 +13,8 @@
 package org.eclipse.kapua.app.console.core.servlet;
 
 import org.apache.http.client.utils.URIBuilder;
-import org.eclipse.kapua.app.console.core.server.util.SsoHelper;
-import org.eclipse.kapua.app.console.core.server.util.SsoLocator;
+import org.eclipse.kapua.app.console.core.server.util.ConsoleSsoHelper;
+import org.eclipse.kapua.app.console.core.server.util.ConsoleSsoLocator;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDTokenException;
@@ -53,7 +53,7 @@ public class SsoCallbackServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        this.locator = SsoLocator.getLocator(config);
+        this.locator = ConsoleSsoLocator.getLocator(config);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class SsoCallbackServlet extends HttpServlet {
                         .addParameter(OPENID_SESSION_STATE_PARAM, req.getParameter(OPENID_SESSION_STATE_PARAM))
                         .closeSection();
         try {
-            homeUri = SsoHelper.getHomeUri();
+            homeUri = ConsoleSsoHelper.getHomeUri();
 
             httpReqLogger
                     .openSection("SSO servlet response")
@@ -83,7 +83,7 @@ public class SsoCallbackServlet extends HttpServlet {
             final URIBuilder redirect = new URIBuilder(homeUri);
 
             if (authCode != null) {
-                final URI redirectUri = SsoHelper.getRedirectUri();
+                final URI redirectUri = ConsoleSsoHelper.getRedirectUri();
                 final JsonObject jsonObject = locator.getService().getTokens(authCode, redirectUri);
 
                 // Get and clean jwks_uri property

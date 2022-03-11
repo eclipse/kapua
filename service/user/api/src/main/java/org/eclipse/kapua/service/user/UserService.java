@@ -94,6 +94,16 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
     User findByExternalId(String externalId) throws KapuaException;
 
     /**
+     * Finds the {@link User} by it {@link User#getExternalUsername()}
+     *
+     * @param externalUsername The {@link User#getExternalUsername()}.
+     * @return The matching {@link User} or {@code null}.
+     * @throws KapuaException
+     * @since 2.0.0
+     */
+    User findByExternalUsername(String externalUsername) throws KapuaException;
+
+    /**
      * Queries for all users
      */
     @Override

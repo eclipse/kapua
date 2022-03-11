@@ -14,6 +14,7 @@
 package org.eclipse.kapua.service.user.internal;
 
 import org.eclipse.kapua.KapuaDuplicateExternalIdException;
+import org.eclipse.kapua.KapuaDuplicateExternalUsernameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -86,13 +87,18 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         ArgumentValidator.notEmptyOrNull(userCreator.getName(), "userCreator.name");
         ArgumentValidator.match(userCreator.getName(), CommonsValidationRegex.NAME_REGEXP, "userCreator.name");
         ArgumentValidator.match(userCreator.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "userCreator.email");
-        ArgumentValidator.notNull(userCreator.getUserType(), "userCreator.userType");
         ArgumentValidator.notNull(userCreator.getUserStatus(), "userCreator.userStatus");
 
+        ArgumentValidator.notNull(userCreator.getUserType(), "userCreator.userType");
         if (userCreator.getUserType() == UserType.EXTERNAL) {
-            ArgumentValidator.notEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
+            if (userCreator.getExternalId() != null) {
+                ArgumentValidator.notEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
+            } else {
+                ArgumentValidator.notEmptyOrNull(userCreator.getExternalUsername(), "userCreator.externalUsername");
+            }
         } else if (userCreator.getUserType() == UserType.INTERNAL) {
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
+            ArgumentValidator.isEmptyOrNull(userCreator.getExternalUsername(), "userCreator.externalUsername");
         }
 
         int remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
@@ -114,9 +120,19 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Check User.userType
         if (userCreator.getUserType() == UserType.EXTERNAL) {
             // Check duplicate externalId
-            User userByExternalId = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(userCreator.getExternalId()));
-            if (userByExternalId != null) {
-                throw new KapuaDuplicateExternalIdException(userCreator.getExternalId());
+            if (userCreator.getExternalId() != null) {
+                User userByExternalId = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(userCreator.getExternalId()));
+                if (userByExternalId != null) {
+                    throw new KapuaDuplicateExternalIdException(userCreator.getExternalId());
+                }
+            }
+
+            // Check duplicate externalUsername
+            if (userCreator.getExternalUsername() != null) {
+                User userByExternalPreferredUserame = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(userCreator.getExternalUsername()));
+                if (userByExternalPreferredUserame != null) {
+                    throw new KapuaDuplicateExternalUsernameException(userCreator.getExternalUsername());
+                }
             }
         }
 
@@ -130,17 +146,23 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     public User update(User user) throws KapuaException {
         //
         // Argument validation
-        ArgumentValidator.notNull(user.getId().getId(), "user.id");
+        ArgumentValidator.notNull(user.getId(), "user.id");
         ArgumentValidator.notNull(user.getScopeId(), "user.scopeId");
         ArgumentValidator.notEmptyOrNull(user.getName(), "user.name");
         ArgumentValidator.match(user.getName(), CommonsValidationRegex.NAME_REGEXP, "user.name");
         ArgumentValidator.match(user.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "user.email");
+        ArgumentValidator.notNull(user.getStatus(), "user.status");
         ArgumentValidator.notNull(user.getUserType(), "user.userType");
 
         if (user.getUserType() == UserType.EXTERNAL) {
-            ArgumentValidator.notEmptyOrNull(user.getExternalId(), "user.externalId");
+            if (user.getExternalId() != null) {
+                ArgumentValidator.notEmptyOrNull(user.getExternalId(), "user.externalId");
+            } else {
+                ArgumentValidator.notEmptyOrNull(user.getExternalUsername(), "user.externalUsername");
+            }
         } else if (user.getUserType() == UserType.INTERNAL) {
             ArgumentValidator.isEmptyOrNull(user.getExternalId(), "user.externalId");
+            ArgumentValidator.isEmptyOrNull(user.getExternalUsername(), "user.externalUsername");
         }
 
         //
@@ -166,25 +188,40 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Check disabling on logged user
         if (user.getId().equals(KapuaSecurityUtils.getSession().getUserId())) {
             if (user.getStatus().equals(UserStatus.DISABLED)) {
-                throw new KapuaIllegalArgumentException("status", user.getStatus().name());
+                throw new KapuaIllegalArgumentException("user.status", user.getStatus().name());
             }
         }
 
         //
         // Check not updatable fields
+
         // User.userType
         if (!Objects.equals(currentUser.getUserType(), user.getUserType())) {
-            throw new KapuaIllegalArgumentException("userType", user.getUserType().toString());
-        }
-
-        // User.externalId
-        if (!Objects.equals(currentUser.getExternalId(), user.getExternalId())) {
-            throw new KapuaIllegalArgumentException("externalId", user.getExternalId());
+            throw new KapuaIllegalArgumentException("user.userType", user.getUserType().toString());
         }
 
         // User.name
         if (!Objects.equals(currentUser.getName(), user.getName())) {
-            throw new KapuaIllegalArgumentException("name", user.getName());
+            throw new KapuaIllegalArgumentException("user.name", user.getName());
+        }
+
+        //
+        // Check duplicates
+
+        // User.externalId
+        if (user.getExternalId() != null) {
+            User userByExternalId = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(user.getExternalId()));
+            if (userByExternalId != null && !userByExternalId.getId().equals(user.getId())) {
+                throw new KapuaDuplicateExternalIdException(user.getExternalId());
+            }
+        }
+
+        // User.externalUsername
+        if (user.getExternalUsername() != null) {
+            User userByExternalPreferredUsername = KapuaSecurityUtils.doPrivileged(() -> findByExternalId(user.getExternalUsername()));
+            if (userByExternalPreferredUsername != null && !userByExternalPreferredUsername.getId().equals(user.getId())) {
+                throw new KapuaDuplicateExternalUsernameException(user.getExternalUsername());
+            }
         }
 
         //
@@ -275,6 +312,18 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         //
         // Do the find
         return entityManagerSession.doAction(EntityManagerContainer.<User>create().onResultHandler(em -> checkReadAccess(UserDAO.findByExternalId(em, externalId)))
+                .onAfterHandler((entity) -> entityCache.put(entity)));
+    }
+
+    @Override
+    public User findByExternalUsername(String externalUsername) throws KapuaException {
+        //
+        // Validation of the fields
+        ArgumentValidator.notEmptyOrNull(externalUsername, "externalUsername");
+
+        //
+        // Do the find
+        return entityManagerSession.doAction(EntityManagerContainer.<User>create().onResultHandler(em -> checkReadAccess(UserDAO.findByExternalUsername(em, externalUsername)))
                 .onAfterHandler((entity) -> entityCache.put(entity)));
     }
 

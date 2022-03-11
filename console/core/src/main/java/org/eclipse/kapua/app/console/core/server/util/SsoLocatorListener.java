@@ -12,12 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.server.util;
 
+import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
+import org.eclipse.kapua.plugin.sso.openid.provider.ProviderOpenIDLocator;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-
-import org.eclipse.kapua.plugin.sso.openid.OpenIDLocator;
-import org.eclipse.kapua.plugin.sso.openid.provider.ProviderOpenIDLocator;
 
 public class SsoLocatorListener implements ServletContextListener {
 
@@ -26,22 +26,24 @@ public class SsoLocatorListener implements ServletContextListener {
     private ProviderOpenIDLocator context;
 
     @Override
-    public void contextInitialized(final ServletContextEvent event) {
+    public void contextInitialized(ServletContextEvent event) {
         this.context = new ProviderOpenIDLocator();
+
         event.getServletContext().setAttribute(SSO_CONTEXT_KEY, this);
     }
 
     @Override
-    public void contextDestroyed(final ServletContextEvent event) {
+    public void contextDestroyed(ServletContextEvent event) {
         event.getServletContext().removeAttribute(SSO_CONTEXT_KEY);
+
         try {
             this.context.close();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    static OpenIDLocator getLocator(final ServletContext context) {
+    static OpenIDLocator getLocator(ServletContext context) {
         return ((SsoLocatorListener) context.getAttribute(SSO_CONTEXT_KEY)).context;
     }
 

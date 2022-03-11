@@ -52,12 +52,6 @@ import org.eclipse.kapua.service.authorization.access.AccessRoleService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceDomain;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
@@ -72,6 +66,12 @@ import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * The server side implementation of the RPC service.
@@ -109,19 +109,15 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(gwtUserCreator.getScopeId());
 
-            final UserCreator userCreator = USER_FACTORY.newCreator(scopeId, gwtUserCreator.getUsername());
+            UserCreator userCreator = USER_FACTORY.newCreator(scopeId, gwtUserCreator.getUsername());
             userCreator.setUserType(GwtKapuaUserModelConverter.convertUserType(gwtUserCreator.getUserType()));
             userCreator.setDisplayName(gwtUserCreator.getDisplayName());
             userCreator.setEmail(gwtUserCreator.getEmail());
             userCreator.setPhoneNumber(gwtUserCreator.getPhoneNumber());
             userCreator.setExpirationDate(gwtUserCreator.getExpirationDate());
             userCreator.setUserStatus(GwtKapuaUserModelConverter.convertUserStatus(gwtUserCreator.getUserStatus()));
-
-            // add the externalId if the user is EXTERNAL
-            if (GwtKapuaUserModelConverter.convertUserType(gwtUserCreator.getUserType()).equals(UserType.EXTERNAL) &&
-                    gwtUserCreator.getExternalId()!=null) {
-                userCreator.setExternalId(gwtUserCreator.getExternalId());
-            }
+            userCreator.setExternalId(gwtUserCreator.getExternalId());
+            userCreator.setExternalUsername(gwtUserCreator.getExternalUsername());
 
             //
             // Create the User
@@ -129,7 +125,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
             //
             // Create credentials
-            if (GwtKapuaUserModelConverter.convertUserType(gwtUserCreator.getUserType()).equals(UserType.INTERNAL) &&
+            if (UserType.INTERNAL.equals(user.getUserType()) &&
                     gwtUserCreator.getPassword() != null) {
 
                 CredentialCreator credentialCreator = CREDENTIAL_FACTORY.newCreator(scopeId,
@@ -142,8 +138,6 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
                 CREDENTIAL_SERVICE.create(credentialCreator);
             }
 
-            // convertKapuaId to GwtAccount and return
-            // reload the user as we want to load all its permissions
             gwtUser = KapuaGwtUserModelConverter.convertUser(USER_SERVICE.find(user.getScopeId(), user.getId()));
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
@@ -157,7 +151,6 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
-        GwtUser gwtUserUpdated = null;
         try {
             KapuaId scopeId = KapuaEid.parseCompactId(gwtUser.getScopeId());
             KapuaId userId = KapuaEid.parseCompactId(gwtUser.getId());
@@ -165,32 +158,27 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             User user = USER_SERVICE.find(scopeId, userId);
 
             if (user != null) {
-
-                //
                 // Update user
                 user.setName(gwtUser.getUnescapedUsername());
                 user.setDisplayName(gwtUser.getUnescapedDisplayName());
                 user.setEmail(gwtUser.getUnescapedEmail());
                 user.setPhoneNumber(gwtUser.getUnescapedPhoneNumber());
                 user.setExpirationDate(gwtUser.getExpirationDate());
-                // status
+                user.setExternalId(gwtUser.getExternalId());
+                user.setExternalUsername(gwtUser.getExternalUsername());
                 user.setStatus(GwtKapuaUserModelConverter.convertUserStatus(gwtUser.getStatusEnum()));
 
                 // optlock
                 user.setOptlock(gwtUser.getOptlock());
 
                 // update the user
-                USER_SERVICE.update(user);
-
-                //
-                // convertKapuaId to GwtAccount and return
-                // reload the user as we want to load all its permissions
-                gwtUserUpdated = KapuaGwtUserModelConverter.convertUser(USER_SERVICE.find(user.getScopeId(), user.getId()));
+                user = USER_SERVICE.update(user);
             }
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
+
+            return KapuaGwtUserModelConverter.convertUser(user);
+        } catch (Exception exception) {
+            throw KapuaExceptionHandler.buildExceptionFromError(exception);
         }
-        return gwtUserUpdated;
     }
 
     @Override
@@ -323,30 +311,36 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
                 DeviceConnection deviceConnection = null;
                 if (deviceListQuery(scopeId) != null && AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceConnectionDomain(), Actions.read, scopeId))) {
-                for (Device device : deviceListQuery(scopeId).getItems()) {
-                    if (device.getConnectionId() != null) {
-                        deviceConnection = DEVICE_CONNECTION_SERVICE.find(scopeId, device.getConnectionId());
-                        break;
+                    for (Device device : deviceListQuery(scopeId).getItems()) {
+                        if (device.getConnectionId() != null) {
+                            deviceConnection = DEVICE_CONNECTION_SERVICE.find(scopeId, device.getConnectionId());
+                            break;
+                        }
                     }
-                }}
+                }
                 gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userStatus", user.getStatus().toString()));
                 gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userName", user.getName()));
                 gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userDisplayName", user.getDisplayName()));
                 gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userEmail", user.getEmail()));
                 gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userPhoneNumber", user.getPhoneNumber()));
                 gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "expirationDate", user.getExpirationDate()));
+
                 if (isSsoEnabled) {
                     gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userType", user.getUserType().toString()));
                     if (user.getUserType() == UserType.EXTERNAL) {
                         gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userExternalId", user.getExternalId()));
+                        gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userExternalUsername", user.getExternalUsername()));
                     }
                 }
+
                 gwtUserDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "userCreatedOn", user.getCreatedOn()));
                 gwtUserDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "userCreatedBy", user.getCreatedBy() != null ? usernameMap.get(user.getCreatedBy().toCompactId()) : null));
                 gwtUserDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "userModifiedOn", user.getModifiedOn()));
                 gwtUserDescription.add(new GwtGroupedNVPair(ENTITY_INFO, "userModifiedBy", user.getModifiedBy() != null ? usernameMap.get(user.getModifiedBy().toCompactId()) : null));
+
                 if (deviceConnection != null && deviceConnection.getReservedUserId() != null && deviceConnection.getReservedUserId().equals(user.getId())) {
-                    gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userReservedConnection", "Yes" )); }
+                    gwtUserDescription.add(new GwtGroupedNVPair(USER_INFO, "userReservedConnection", "Yes"));
+                }
             }
         } catch (Exception e) {
             KapuaExceptionHandler.handle(e);
@@ -357,7 +351,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public PagingLoadResult<GwtUser> getUsersForRole(PagingLoadConfig pagingLoadConfig,
-            GwtAccessRoleQuery query) throws GwtKapuaException {
+                                                     GwtAccessRoleQuery query) throws GwtKapuaException {
         int totalLength = 0;
         List<GwtUser> list = new ArrayList<GwtUser>();
         try {
@@ -382,7 +376,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
 
     @Override
     public PagingLoadResult<GwtUser> getUsersForAccount(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery,
-            String accountId) throws GwtKapuaException {
+                                                        String accountId) throws GwtKapuaException {
 
         int totalLength = 0;
         List<GwtUser> gwtUsers = new ArrayList<GwtUser>();
@@ -421,14 +415,14 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
     }
 
     /**
-    Method which returns list of all available devices in current scope(if User have Device:read permission), otherwise null is returned.
+     * Method which returns list of all available devices in current scope(if User have Device:read permission), otherwise null is returned.
      */
     private DeviceListResult deviceListQuery(KapuaId scopeId) throws KapuaException {
-         DeviceListResult devicesList = null;
-         if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceDomain(), Actions.read, scopeId))) {
-         DeviceQuery deviceQuery = DEVICE_FACTORY.newQuery(scopeId);
-         devicesList = DEVICE_SERVICE.query(deviceQuery);
-         }
-         return devicesList;
+        DeviceListResult devicesList = null;
+        if (AUTHORIZATION_SERVICE.isPermitted(PERMISSION_FACTORY.newPermission(new DeviceDomain(), Actions.read, scopeId))) {
+            DeviceQuery deviceQuery = DEVICE_FACTORY.newQuery(scopeId);
+            devicesList = DEVICE_SERVICE.query(deviceQuery);
+        }
+        return devicesList;
     }
 }

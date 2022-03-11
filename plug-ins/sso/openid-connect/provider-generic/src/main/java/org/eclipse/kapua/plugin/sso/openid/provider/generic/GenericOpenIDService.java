@@ -18,9 +18,9 @@ import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDIllegalArgumentException;
 import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDIllegalUriException;
 import org.eclipse.kapua.plugin.sso.openid.provider.AbstractOpenIDService;
+import org.eclipse.kapua.plugin.sso.openid.provider.OpenIDUtils;
 import org.eclipse.kapua.plugin.sso.openid.provider.generic.setting.GenericOpenIDSetting;
 import org.eclipse.kapua.plugin.sso.openid.provider.generic.setting.GenericOpenIDSettingKeys;
-import org.eclipse.kapua.plugin.sso.openid.provider.OpenIDUtils;
 import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
 
 import java.net.URI;
@@ -33,6 +33,7 @@ public class GenericOpenIDService extends AbstractOpenIDService {
 
     private static final String AUTH_WELL_KNOWN_KEY = "authorization_endpoint";
     private static final String LOGOUT_WELL_KNOWN_KEY = "end_session_endpoint";
+    private static final String USERINFO_WELL_KNOWN_KEY = "user_info_endpoint";
     private static final String TOKEN_WELL_KNOWN_KEY = "token_endpoint";
 
     private final GenericOpenIDSetting genericSettings;
@@ -75,6 +76,20 @@ public class GenericOpenIDService extends AbstractOpenIDService {
     }
 
     @Override
+    protected String getUserInfoUri() throws OpenIDException {
+        try {
+            final Optional<URI> uri = OpenIDUtils.getConfigUri(USERINFO_WELL_KNOWN_KEY, getOpenIdConfPath());
+            return uri.orElseThrow(() -> new OpenIDIllegalUriException(USERINFO_WELL_KNOWN_KEY, null)).toString();
+        } catch (OpenIDException se) {
+            String tokenUri = genericSettings.getString(GenericOpenIDSettingKeys.SSO_OPENID_SERVER_ENDPOINT_USERINFO);
+            if (Strings.isNullOrEmpty(tokenUri)) {
+                throw se;
+            }
+            return tokenUri;
+        }
+    }
+
+    @Override
     protected String getLogoutUri() throws OpenIDException {
         try {
             final Optional<URI> uri = OpenIDUtils.getConfigUri(LOGOUT_WELL_KNOWN_KEY, getOpenIdConfPath());
@@ -91,8 +106,8 @@ public class GenericOpenIDService extends AbstractOpenIDService {
     /**
      * Get the OpenID configuration path.
      *
-     * @throws OpenIDIllegalArgumentException if it cannot retrieve the OpenID configuration path
      * @return a String representing the OpenID configuration URL.
+     * @throws OpenIDIllegalArgumentException if it cannot retrieve the OpenID configuration path
      */
     private String getOpenIdConfPath() throws OpenIDIllegalArgumentException {
         String issuerUri = genericSettings.getString(GenericOpenIDSettingKeys.SSO_OPENID_JWT_ISSUER_ALLOWED);

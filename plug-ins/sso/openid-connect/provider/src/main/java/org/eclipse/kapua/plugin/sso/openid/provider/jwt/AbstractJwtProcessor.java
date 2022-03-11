@@ -16,11 +16,11 @@ package org.eclipse.kapua.plugin.sso.openid.provider.jwt;
 import org.eclipse.kapua.plugin.sso.openid.JwtProcessor;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
 import org.eclipse.kapua.plugin.sso.openid.exception.jwt.OpenIDJwtException;
+import org.eclipse.kapua.plugin.sso.openid.exception.jwt.OpenIDJwtExtractionException;
+import org.eclipse.kapua.plugin.sso.openid.exception.jwt.OpenIDJwtProcessException;
 import org.eclipse.kapua.plugin.sso.openid.provider.OpenIDUtils;
 import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
 import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSettingKeys;
-import org.eclipse.kapua.plugin.sso.openid.exception.jwt.OpenIDJwtExtractionException;
-import org.eclipse.kapua.plugin.sso.openid.exception.jwt.OpenIDJwtProcessException;
 import org.jose4j.jwk.HttpsJwks;
 import org.jose4j.jwt.MalformedClaimException;
 import org.jose4j.jwt.ReservedClaimNames;
@@ -54,7 +54,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
      * Constructs and AbstractJwtProcessor with the given expiration time.
      *
      * @throws OpenIDJwtException if the concrete implementation of {@link #getJwtExpectedIssuers()
-     * getJwtExpectedIssuers} method throws such exception.
+     *                            getJwtExpectedIssuers} method throws such exception.
      */
     public AbstractJwtProcessor() throws OpenIDException {
         List<String> audiences = getJwtAudiences();
@@ -123,6 +123,14 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
     @Override
     public String getExternalIdClaimName() {
         return ReservedClaimNames.SUBJECT;
+    }
+
+    /**
+     * @return 'preferred_username' (according to the official OpenID Connect 1.0 specification)
+     */
+    @Override
+    public String getExternalUsernameClaimName() {
+        return OpenIDSetting.getInstance().getString(OpenIDSettingKeys.SSO_OPENID_CLAIMS_EXTERNAL_USERNAME_KEY, "preferred_username");
     }
 
     @Override

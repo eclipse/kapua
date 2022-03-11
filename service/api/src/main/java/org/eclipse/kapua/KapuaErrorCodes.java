@@ -37,6 +37,12 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      */
     DUPLICATE_EXTERNAL_ID,
     /**
+     * Duplicate externalId
+     *
+     * @since 2.0.0
+     */
+    DUPLICATE_EXTERNAL_USERNAME,
+    /**
      * Entity uniqueness in scope
      */
     ENTITY_UNIQUENESS,

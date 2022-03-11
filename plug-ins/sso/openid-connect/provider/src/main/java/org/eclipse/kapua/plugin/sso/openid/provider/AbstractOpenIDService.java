@@ -21,8 +21,9 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.plugin.sso.openid.OpenIDService;
-import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDTokenException;
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDException;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDIllegalArgumentException;
+import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDTokenException;
 import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDLoginUriException;
 import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDLogoutUriException;
 import org.eclipse.kapua.plugin.sso.openid.provider.setting.OpenIDSetting;
@@ -55,8 +56,7 @@ import java.util.Map;
  */
 public abstract class AbstractOpenIDService implements OpenIDService {
 
-
-    private static final Logger logger = LoggerFactory.getLogger(AbstractOpenIDService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractOpenIDService.class);
 
     private static final String HIDDEN_SECRET = "****";
     private static final List<String> SECRET_TOKENS = Arrays.asList("access_token", "id_token", "refresh_token");
@@ -81,6 +81,14 @@ public abstract class AbstractOpenIDService implements OpenIDService {
     protected abstract String getAuthUri() throws OpenIDException;
 
     /**
+     * Get the endpoint URL for logging out.
+     *
+     * @return the URI representing the logout endpoint in the form of a String.
+     * @throws OpenIDException if it fails to get the logout URI.
+     */
+    protected abstract String getLogoutUri() throws OpenIDException;
+
+    /**
      * Get the endpoint URL to the token API.
      *
      * @return the URI representing the token endpoint in the form of a String.
@@ -89,12 +97,13 @@ public abstract class AbstractOpenIDService implements OpenIDService {
     protected abstract String getTokenUri() throws OpenIDException;
 
     /**
-     * Get the endpoint URL for logging out.
+     * Gets the endpoint URL to the userinfo API
      *
-     * @return the URI representing the logout endpoint in the form of a String.
-     * @throws OpenIDException if it fails to get the logout URI.
+     * @return The endpoint URL to the userinfo API
+     * @throws OpenIDIllegalArgumentException if it fails to get the userinfo URI.
+     * @since 2.0.0
      */
-    protected abstract String getLogoutUri() throws OpenIDException;
+    protected abstract String getUserInfoUri() throws OpenIDException;
 
     /**
      * Check if the service is enabled.
@@ -129,12 +138,12 @@ public abstract class AbstractOpenIDService implements OpenIDService {
         ConfigurationPrinter reqLogger =
                 ConfigurationPrinter
                         .create()
-                        .withLogger(logger)
+                        .withLogger(LOG)
                         .withLogLevel(ConfigurationPrinter.LogLevel.DEBUG)
                         .withTitle("OpenID login URI");
         try {
-            final String authUri = getAuthUri();
-            final URIBuilder uri = new URIBuilder(authUri);
+            String authUri = getAuthUri();
+            URIBuilder uri = new URIBuilder(authUri);
             reqLogger.addParameter("URI", authUri);
 
             uri.addParameter("scope", "openid");
@@ -151,10 +160,10 @@ public abstract class AbstractOpenIDService implements OpenIDService {
 
             return uri.toString();
         } catch (URISyntaxException use) {
-            logger.error("Authentication URI is not a valid URI: {}", use.getLocalizedMessage(), use);
+            LOG.error("Authentication URI is not a valid URI: {}", use.getLocalizedMessage(), use);
             throw new OpenIDLoginUriException(use);
         } catch (OpenIDException se) {
-            logger.error("Error while retrieving the authentication URI {}", se.getLocalizedMessage(), se);
+            LOG.error("Error while retrieving the authentication URI {}", se.getLocalizedMessage(), se);
             throw new OpenIDLoginUriException(se);
         } finally {
             reqLogger.printLog();
@@ -166,7 +175,7 @@ public abstract class AbstractOpenIDService implements OpenIDService {
         ConfigurationPrinter reqLogger =
                 ConfigurationPrinter
                         .create()
-                        .withLogger(logger)
+                        .withLogger(LOG)
                         .withLogLevel(ConfigurationPrinter.LogLevel.DEBUG)
                         .withTitle("OpenID logout URI");
         try {
@@ -197,10 +206,10 @@ public abstract class AbstractOpenIDService implements OpenIDService {
 
             return uri.toString();
         } catch (URISyntaxException use) {
-            logger.error("Logout URI is not a valid URI: {}", use.getLocalizedMessage(), use);
+            LOG.error("Logout URI is not a valid URI: {}", use.getLocalizedMessage(), use);
             throw new OpenIDLogoutUriException(use);
         } catch (OpenIDException se) {
-            logger.error("Error while retrieving the logout URI {}", se.getLocalizedMessage(), se);
+            LOG.error("Error while retrieving the logout URI {}", se.getLocalizedMessage(), se);
             throw new OpenIDLogoutUriException(se);
         } finally {
             reqLogger.printLog();
@@ -214,86 +223,131 @@ public abstract class AbstractOpenIDService implements OpenIDService {
     public JsonObject getTokens(final String authCode, final URI redirectUri) throws OpenIDTokenException {
         // FIXME: switch to HttpClient implementation: better performance and connection caching
 
-        ConfigurationPrinter reqLogger =
-                ConfigurationPrinter
-                        .create()
-                        .withLogger(logger)
-                        .withLogLevel(ConfigurationPrinter.LogLevel.DEBUG)
-                        .withTitle("OpenID tokens HTTP request");
         try {
             URL url = new URL(getTokenUri());
-            reqLogger.addParameter("URL", url);
 
-            final HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty(HttpHeaders.CONTENT_TYPE, URLEncodedUtils.CONTENT_TYPE);
-            reqLogger.addParameter("HTTP request method", urlConnection.getRequestMethod());
 
-            final List<NameValuePair> parameters = new ArrayList<>();
+            List<NameValuePair> parameters = new ArrayList<>();
             parameters.add(new BasicNameValuePair("grant_type", "authorization_code"));
             parameters.add(new BasicNameValuePair("code", authCode));
             parameters.add(new BasicNameValuePair("client_id", getClientId()));
 
-            final String clientSecret = getClientSecret();
+            String clientSecret = getClientSecret();
             if (clientSecret != null && !clientSecret.isEmpty()) {
                 parameters.add(new BasicNameValuePair("client_secret", clientSecret));
             }
 
             parameters.add(new BasicNameValuePair("redirect_uri", redirectUri.toString()));
 
-            reqLogger.openSection("Parameters:");
-            for (NameValuePair nameValuePair : parameters) {
-                String name = nameValuePair.getName();
-                if (name.equals("code") || name.equals("client_secret")) {
-                    reqLogger.addParameter(name, HIDDEN_SECRET);
-                } else {
-                    reqLogger.addParameter(name, nameValuePair.getValue());
-                }
-            }
-            reqLogger.closeSection();
-
-            final UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters);
+            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(parameters);
 
             // Send post request
             urlConnection.setDoOutput(true);
-            try (final OutputStream outputStream = urlConnection.getOutputStream()) {
+            try (OutputStream outputStream = urlConnection.getOutputStream()) {
                 entity.writeTo(outputStream);
             }
 
             // parse result
             try (InputStream stream = urlConnection.getInputStream(); JsonReader jsonReader = Json.createReader(stream)) {
-                reqLogger.addParameter("Response code", urlConnection.getResponseCode());
                 JsonObject result = jsonReader.readObject();
-                reqLogger.openSection("Response body:");
-                for (Map.Entry<String, JsonValue> entry : result.entrySet()) {
-                    if (SECRET_TOKENS.contains(entry.getKey())) {
-                        reqLogger.addParameter(entry.getKey(), HIDDEN_SECRET);
-                    } else {
-                        reqLogger.addParameter(entry.getKey(), entry.getValue());
-                    }
-                }
-                logger.debug("Successfully obtained tokens.");
+                LOG.debug("Successfully obtained tokens.");
+
+                logRequest(url, urlConnection, parameters, result);
+
                 return result;
             }
         } catch (OpenIDException se) {
-            logger.error("Error while retrieving the String of the token API endpoint {}", se.getLocalizedMessage(), se);
+            LOG.error("Error while retrieving the String of the token API endpoint {}", se.getLocalizedMessage(), se);
             throw new OpenIDTokenException(se);
         } catch (MalformedURLException mue) {
-            logger.error("Malformed token API endpoint URL {}", mue.getLocalizedMessage(), mue);
+            LOG.error("Malformed token API endpoint URL {}", mue.getLocalizedMessage(), mue);
             throw new OpenIDTokenException(mue);
         } catch (ProtocolException pe) {
-            logger.error("Wrong HTTP request method {}", pe.getLocalizedMessage(), pe);
+            LOG.error("Wrong HTTP request method {}", pe.getLocalizedMessage(), pe);
             throw new OpenIDTokenException(pe);
         } catch (UnsupportedEncodingException uee) {
-            logger.error("Unsupported HTTP request default encoding {}", uee.getLocalizedMessage(), uee);
+            LOG.error("Unsupported HTTP request default encoding {}", uee.getLocalizedMessage(), uee);
             throw new OpenIDTokenException(uee);
         } catch (IOException ioe) {
-            logger.error("Error while getting the tokens {}", ioe.getLocalizedMessage(), ioe);
+            LOG.error("Error while getting the tokens {}", ioe.getLocalizedMessage(), ioe);
             throw new OpenIDTokenException(ioe);
-        } finally {
-            reqLogger.printLog();
         }
+    }
+
+    /**
+     * @throws OpenIDTokenException if an {@link IOException} is caught or the {@link #getTokenUri} method fails.
+     */
+    @Override
+    public JsonObject getUserInfo(final String accessToken) throws OpenIDTokenException {
+        try {
+            URL url = new URL(getUserInfoUri());
+
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setRequestProperty(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
+
+            // parse result
+            try (InputStream stream = urlConnection.getInputStream(); JsonReader jsonReader = Json.createReader(stream)) {
+                JsonObject result = jsonReader.readObject();
+                LOG.debug("Successfully obtained userInfo.");
+
+                logRequest(url, urlConnection, new ArrayList<>(), result);
+
+                return result;
+            }
+        } catch (OpenIDException se) {
+            LOG.error("Error while retrieving the String of the token API endpoint {}", se.getLocalizedMessage(), se);
+            throw new OpenIDTokenException(se);
+        } catch (MalformedURLException mue) {
+            LOG.error("Malformed token API endpoint URL {}", mue.getLocalizedMessage(), mue);
+            throw new OpenIDTokenException(mue);
+        } catch (ProtocolException pe) {
+            LOG.error("Wrong HTTP request method {}", pe.getLocalizedMessage(), pe);
+            throw new OpenIDTokenException(pe);
+        } catch (UnsupportedEncodingException uee) {
+            LOG.error("Unsupported HTTP request default encoding {}", uee.getLocalizedMessage(), uee);
+            throw new OpenIDTokenException(uee);
+        } catch (IOException ioe) {
+            LOG.error("Error while getting the tokens {}", ioe.getLocalizedMessage(), ioe);
+            throw new OpenIDTokenException(ioe);
+        }
+    }
+
+    private void logRequest(URL url, HttpURLConnection urlConnection, List<NameValuePair> parameters, JsonObject result) throws IOException {
+        //
+        // Log operation details
+        ConfigurationPrinter reqLogger =
+                ConfigurationPrinter
+                        .create()
+                        .withLogger(LOG)
+                        .withLogLevel(ConfigurationPrinter.LogLevel.DEBUG)
+                        .withTitle("OpenID HTTP request");
+        reqLogger.addParameter("URL", url);
+        reqLogger.addParameter("HTTP request method", urlConnection.getRequestMethod());
+        reqLogger.openSection("Parameters:");
+        for (NameValuePair parameter : parameters) {
+            reqLogger.addParameter(
+                    parameter.getName(),
+                    (parameter.getName().equals("code") || parameter.getName().equals("client_secret")) ?
+                            HIDDEN_SECRET :
+                            parameter.getValue());
+        }
+        reqLogger.closeSection();
+        reqLogger.addParameter("Response code", urlConnection.getResponseCode());
+        reqLogger.openSection("Response body:");
+        for (Map.Entry<String, JsonValue> entry : result.entrySet()) {
+            reqLogger.addParameter(
+                    entry.getKey(),
+                    SECRET_TOKENS.contains(
+                            entry.getKey()) ?
+                            HIDDEN_SECRET :
+                            entry.getValue());
+        }
+
+        reqLogger.printLog();
     }
 
 }

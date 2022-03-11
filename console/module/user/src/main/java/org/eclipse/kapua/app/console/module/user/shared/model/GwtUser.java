@@ -12,10 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.shared.model;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 import org.eclipse.kapua.app.console.module.api.client.util.DateUtils;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtUpdatableEntityModel;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.util.Date;
 
@@ -59,7 +58,6 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
     public <X> X get(String property) {
         if ("statusEnum".equals(property)) {
             return (X) (GwtUserStatus.valueOf(getStatus()));
@@ -86,11 +84,11 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
     }
 
     public String getUsername() {
-        return (String) get(USERNAME);
+        return get(USERNAME);
     }
 
     public String getUnescapedUsername() {
-        return (String) getUnescaped(USERNAME);
+        return getUnescaped(USERNAME);
     }
 
     public void setUsername(String username) {
@@ -98,11 +96,11 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
     }
 
     public String getDisplayName() {
-        return (String) get(DISPLAY_NAME);
+        return get(DISPLAY_NAME);
     }
 
     public String getUnescapedDisplayName() {
-        return (String) getUnescaped(DISPLAY_NAME);
+        return getUnescaped(DISPLAY_NAME);
     }
 
     public void setDisplayName(String displayName) {
@@ -110,11 +108,11 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
     }
 
     public String getEmail() {
-        return (String) get(EMAIL);
+        return get(EMAIL);
     }
 
     public String getUnescapedEmail() {
-        return (String) getUnescaped(EMAIL);
+        return getUnescaped(EMAIL);
     }
 
     public void setEmail(String email) {
@@ -122,11 +120,11 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
     }
 
     public String getPhoneNumber() {
-        return (String) get(PHONE_NUMBER);
+        return get(PHONE_NUMBER);
     }
 
     public String getUnescapedPhoneNumber() {
-        return (String) getUnescaped(PHONE_NUMBER);
+        return getUnescaped(PHONE_NUMBER);
     }
 
     public void setPhoneNumber(String phoneNumber) {
@@ -134,11 +132,11 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
     }
 
     public String getStatus() {
-        return (String) get("status");
+        return get("status");
     }
 
     public GwtUserStatus getStatusEnum() {
-        return (GwtUserStatus) get("statusEnum");
+        return get("statusEnum");
     }
 
     public void setStatus(String status) {
@@ -158,11 +156,11 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
     }
 
     public String getUserType() {
-        return (String) get("userType");
+        return get("userType");
     }
 
     public GwtUserType getUserTypeEnum() {
-        return (GwtUserType) get("userTypeEnum");
+        return get("userTypeEnum");
     }
 
     public void setUserType(String userType) {
@@ -170,14 +168,18 @@ public class GwtUser extends GwtUpdatableEntityModel implements IsSerializable {
     }
 
     public String getExternalId() {
-        return (String) get("externalId");
-    }
-
-    public String getUnescapedExternalId() {
-        return (String) getUnescaped("externalId");
+        return get("externalId");
     }
 
     public void setExternalId(String externalId) {
         set("externalId", externalId);
+    }
+
+    public String getExternalUsername() {
+        return get("externalUsername");
+    }
+
+    public void setExternalUsername(String externalUsername) {
+        set("externalUsername", externalUsername);
     }
 }

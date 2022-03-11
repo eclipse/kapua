@@ -49,6 +49,7 @@ public class UserDAO extends ServiceDAO {
         userImpl.setPhoneNumber(userCreator.getPhoneNumber());
         userImpl.setUserType(userCreator.getUserType());
         userImpl.setExternalId(userCreator.getExternalId());
+        userImpl.setExternalUsername(userCreator.getExternalUsername());
         userImpl.setStatus(userCreator.getUserStatus());
         userImpl.setExpirationDate(userCreator.getExpirationDate());
 
@@ -95,7 +96,7 @@ public class UserDAO extends ServiceDAO {
     }
 
     /**
-     * Finds the {@link User} by the {@link org.eclipse.kapua.service.user.UserAttributes} external id
+     * Finds the {@link User} by the {@link UserAttributes#EXTERNAL_ID}
      *
      * @param em         the entity manager to use
      * @param externalId id the external ID so search for
@@ -103,6 +104,19 @@ public class UserDAO extends ServiceDAO {
      */
     public static User findByExternalId(final EntityManager em, final String externalId) {
         return ServiceDAO.findByField(em, UserImpl.class, UserAttributes.EXTERNAL_ID, externalId);
+    }
+
+
+    /**
+     * Finds the {@link User} by the {@link UserAttributes#EXTERNAL_USERNAME}.
+     *
+     * @param em               the entity manager to use
+     * @param externalUsername id the external username so search for
+     * @return the user record, may be {@code null}
+     * @since 2.0.0
+     */
+    public static User findByExternalUsername(EntityManager em, String externalUsername) {
+        return ServiceDAO.findByField(em, UserImpl.class, UserAttributes.EXTERNAL_USERNAME, externalUsername);
     }
 
     /**

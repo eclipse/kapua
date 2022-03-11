@@ -14,12 +14,16 @@ package org.eclipse.kapua.plugin.sso.openid.exception.uri;
 
 import org.eclipse.kapua.plugin.sso.openid.exception.OpenIDErrorCodes;
 
+/**
+ * @since 1.2.0
+ */
 public class OpenIDLoginUriException extends OpenIDUriException {
 
     /**
      * Constructor.
      *
      * @param cause The original {@link Throwable}.
+     * @since 1.2.0
      */
     public OpenIDLoginUriException(Throwable cause) {
         super(OpenIDErrorCodes.LOGIN_URI_ERROR, cause);

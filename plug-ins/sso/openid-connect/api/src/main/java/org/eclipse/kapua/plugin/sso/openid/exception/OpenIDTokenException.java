@@ -12,12 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.plugin.sso.openid.exception;
 
+/**
+ * @since 1.2.0
+ */
 public class OpenIDTokenException extends OpenIDException {
 
     /**
      * Constructor.
      *
      * @param cause The original {@link Throwable}.
+     * @since 1.2.0
      */
     public OpenIDTokenException(Throwable cause) {
         super(OpenIDErrorCodes.TOKEN_ERROR, cause, (Object[]) null);

@@ -13,6 +13,9 @@
 package org.eclipse.kapua.app.console.module.api.server.util;
 
 import org.apache.shiro.authc.AuthenticationException;
+import org.eclipse.kapua.KapuaDuplicateExternalIdException;
+import org.eclipse.kapua.KapuaDuplicateExternalIdInAnotherAccountError;
+import org.eclipse.kapua.KapuaDuplicateExternalUsernameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaEntityUniquenessException;
 import org.eclipse.kapua.KapuaErrorCodes;
@@ -170,15 +173,20 @@ public class KapuaExceptionHandler {
             return new GwtKapuaException(GwtKapuaErrorCode.ADMIN_ROLE_DELETED_ERROR, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.SUBJECT_UNAUTHORIZED.name())) {
             return new GwtKapuaException(GwtKapuaErrorCode.SUBJECT_UNAUTHORIZED, throwable, ((SubjectUnauthorizedException) throwable).getPermission().toString());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, throwable, throwable.getMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.DUPLICATE_NAME.name())) {
             return new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_NAME, throwable, throwable.getMessage());
-        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.DUPLICATE_EXTERNAL_ID.name())) {
-            return new GwtKapuaException(GwtKapuaErrorCode.DUPLICATE_EXTERNAL_ID, throwable, throwable.getMessage());
-        } else if (throwable instanceof KapuaConfigurationException && ((KapuaConfigurationException) throwable).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
+        } else if (throwable instanceof KapuaException && ((KapuaException) throwable).getCode().name().equals(KapuaErrorCodes.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT.name())) {
+            return new GwtKapuaException(GwtKapuaErrorCode.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, throwable, throwable.getMessage());
+        }
+
+        // User external id and username
+        else if (throwable instanceof KapuaDuplicateExternalIdException || throwable instanceof KapuaDuplicateExternalIdInAnotherAccountError) {
+            return new GwtKapuaException(GwtKapuaErrorCode.EXTERNAL_ID_ALREADY_EXIST, throwable, throwable.getMessage());
+        } else if (throwable instanceof KapuaDuplicateExternalUsernameException) {
+            return new GwtKapuaException(GwtKapuaErrorCode.EXTERNAL_USERNAME_ALREADY_EXIST, throwable, throwable.getMessage());
+        }
+
+        else if (throwable instanceof KapuaConfigurationException && ((KapuaConfigurationException) throwable).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             return new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaEntityNotFoundException) {
             KapuaEntityNotFoundException kapuaEntityNotFoundException = (KapuaEntityNotFoundException) throwable;

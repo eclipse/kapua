@@ -13,19 +13,30 @@
 package org.eclipse.kapua.app.console.module.user.client.dialog;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.FieldSet;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
+import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.Radio;
 import com.extjs.gxt.ui.client.widget.form.RadioGroup;
+import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.entity.EntityAddEditDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.panel.FormPanel;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaDateField;
 import org.eclipse.kapua.app.console.module.api.client.ui.widget.KapuaTextField;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.Constants;
 import org.eclipse.kapua.app.console.module.api.client.util.DialogUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
-import org.eclipse.kapua.app.console.module.api.client.util.KapuaSafeHtmlUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.ConfirmPasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.PasswordFieldValidator;
 import org.eclipse.kapua.app.console.module.api.client.util.validator.TextFieldValidator;
@@ -41,104 +52,94 @@ import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserCreator;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserService;
 import org.eclipse.kapua.app.console.module.user.shared.service.GwtUserServiceAsync;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
 public class UserAddDialog extends EntityAddEditDialog {
+
+    private enum RadioGroupStatus {
+        INTERNAL, EXTERNAL
+    }
 
     protected static final ConsoleUserMessages USER_MSGS = GWT.create(ConsoleUserMessages.class);
     protected static final ConsoleMessages CMSGS = GWT.create(ConsoleMessages.class);
 
+    private static final GwtUserServiceAsync GWT_USER_SERVICE = GWT.create(GwtUserService.class);
+    private static final GwtCredentialServiceAsync GWT_CREDENTIAL_SERVICE = GWT.create(GwtCredentialService.class);
+
     protected FieldSet infoFieldSet;
+
     protected KapuaTextField<String> username;
     protected LabelField usernameLabel;
+
     protected KapuaTextField<String> externalId;
     protected LabelField externalIdLabel;
+
+    protected KapuaTextField<String> externalUsername;
+    protected LabelField externalUsernameLabel;
+
     protected KapuaTextField<String> password;
     protected KapuaTextField<String> confirmPassword;
     protected LabelField passwordTooltip;
+
     protected KapuaTextField<String> displayName;
     protected KapuaTextField<String> email;
     protected KapuaTextField<String> phoneNumber;
     protected SimpleComboBox<GwtUser.GwtUserStatus> userStatus;
+
     protected LabelField userType;
+
     protected KapuaDateField expirationDate;
+
     protected NumberField optlock;
 
-    protected RadioGroup userRadioGroup = new RadioGroup();
+    protected RadioGroup userTypeRadioGroup = new RadioGroup();
 
-    private String specificAccountId;
-    private Boolean passwordIsShown = false;
-    private Boolean externalIdIsShown = false;
-
-    private GwtUserServiceAsync gwtUserService = GWT.create(GwtUserService.class);
-    private GwtCredentialServiceAsync gwtCredentialService = GWT.create(GwtCredentialService.class);
+    private String scopeId;
 
     public UserAddDialog(GwtSession currentSession) {
         super(currentSession);
         DialogUtils.resizeDialog(this, 400, 500);
     }
 
-    public UserAddDialog(GwtSession currentSession, String specificAccountId) {
+    public UserAddDialog(GwtSession currentSession, String scopeId) {
         this(currentSession);
-        this.specificAccountId = specificAccountId;
-    }
 
-    private enum RadioGroupStatus {
-        INTERNAL, EXTERNAL
+        this.scopeId = scopeId;
     }
 
     @Override
     public void createBody() {
-
         submitButton.disable();
+
         FormPanel userFormPanel = new FormPanel(FORM_LABEL_WIDTH);
         userFormPanel.setFrame(false);
         userFormPanel.setBorders(false);
         userFormPanel.setBodyBorder(false);
         userFormPanel.setHeaderVisible(false);
         userFormPanel.setPadding(0);
+        bodyPanel.add(userFormPanel);
 
-        final FormData subFieldsetFormData = new FormData();
-        FormData subFormData = new FormData();
+        FormData userFormData = new FormData();
+        FormData userFieldsetFormData = new FormData();
 
-        //
-        // User info tab
-        //
+        // Info fieldset
+        FormLayout userInfoLayout = new FormLayout();
+        userInfoLayout.setLabelWidth(Constants.LABEL_WIDTH_FORM);
+
         infoFieldSet = new FieldSet();
         infoFieldSet.setHeading(USER_MSGS.dialogAddFieldSet());
         infoFieldSet.setBorders(true);
         infoFieldSet.setStyleAttribute("margin", "0px 10px 0px 10px");
-
-        FieldSet statusFieldSet = new FieldSet();
-        statusFieldSet.setBorders(true);
-        statusFieldSet.setStyleAttribute("margin", "5px 10px 0px 10px");
-        statusFieldSet.setHeading(USER_MSGS.dialogAddStatus());
-
-        FormLayout userLayout = new FormLayout();
-        FormLayout statusLayout = new FormLayout();
-        userLayout.setLabelWidth(Constants.LABEL_WIDTH_FORM);
-        statusLayout.setLabelWidth(Constants.LABEL_WIDTH_FORM);
-        infoFieldSet.setLayout(userLayout);
+        infoFieldSet.setLayout(userInfoLayout);
         infoFieldSet.setStyleAttribute("background-color", "E8E8E8");
-        statusFieldSet.setLayout(statusLayout);
-        statusFieldSet.setStyleAttribute("background-color", "E8E8E8");
+        userFormPanel.add(infoFieldSet, userFormData);
 
+        // Username
         usernameLabel = new LabelField();
         usernameLabel.setFieldLabel(USER_MSGS.dialogAddFieldUsername());
         usernameLabel.setLabelSeparator(":");
-        usernameLabel.setVisible(false);
+        usernameLabel.hide();
+        usernameLabel.setStyleAttribute("white-space", "nowrap");
+        usernameLabel.setStyleAttribute("text-overflow", "ellipsis");
+        usernameLabel.setStyleAttribute("overflow", "hidden");
         infoFieldSet.add(usernameLabel);
 
         username = new KapuaTextField<String>();
@@ -148,22 +149,59 @@ public class UserAddDialog extends EntityAddEditDialog {
         username.setFieldLabel("* " + USER_MSGS.dialogAddFieldUsername());
         username.setValidator(new TextFieldValidator(username, FieldType.NAME));
         username.setToolTip(USER_MSGS.dialogAddFieldNameTooltip());
-        infoFieldSet.add(username, subFieldsetFormData);
+        infoFieldSet.add(username, userFieldsetFormData);
 
-        externalIdLabel = new LabelField();
-        externalIdLabel.setFieldLabel(USER_MSGS.dialogAddFieldExternalId());
-        externalIdLabel.setLabelSeparator(":");
-        externalIdLabel.setVisible(false);
+        // User type
+        userTypeRadioGroup.setFieldLabel(USER_MSGS.dialogAddFieldUserTypeRadioButton());
+        userTypeRadioGroup.setOrientation(Style.Orientation.HORIZONTAL);
+        userTypeRadioGroup.setSelectionRequired(true);
+        userTypeRadioGroup.setStyleAttribute("margin-left", "5px");
+        userTypeRadioGroup.hide();
+        infoFieldSet.add(userTypeRadioGroup);
 
-        externalId = new KapuaTextField<String>();
-        externalId.setAllowBlank(false);
-        externalId.setMaxLength(255);
-        externalId.setName("externalId");
-        externalId.setFieldLabel("* " + USER_MSGS.dialogAddFieldExternalId());
-        // Not using a TextFieldValidator for the externalId, since the  external id format can change between
-        // different providers.
-        externalId.setToolTip(USER_MSGS.dialogAddFieldExternalIdTooltip());
+        userTypeRadioGroup.addListener(Events.Change, new Listener<BaseEvent>() {
 
+            @Override
+            public void handleEvent(BaseEvent baseEvent) {
+                Radio radio = ((RadioGroup) baseEvent.getSource()).getValue();
+                if (radio.getValueAttribute().equals(RadioGroupStatus.INTERNAL.name())) {
+                    password.show();
+                    password.enable();
+                    confirmPassword.show();
+                    confirmPassword.enable();
+                    passwordTooltip.show();
+
+                    externalId.hide();
+                    externalId.disable();
+                    externalUsername.hide();
+                    externalUsername.disable();
+                } else if (radio.getValueAttribute().equals(RadioGroupStatus.EXTERNAL.name())) {
+                    password.hide();
+                    password.disable();
+                    confirmPassword.hide();
+                    confirmPassword.disable();
+                    passwordTooltip.hide();
+
+                    externalId.show();
+                    externalId.enable();
+                    externalUsername.show();
+                    externalUsername.enable();
+                }
+            }
+        });
+
+        Radio userTypeInternalRadio = new Radio();
+        userTypeInternalRadio.setValueAttribute(RadioGroupStatus.INTERNAL.name());
+        userTypeInternalRadio.setBoxLabel(USER_MSGS.dialogAddFieldInternalUser());
+        userTypeInternalRadio.setValue(true);
+        userTypeRadioGroup.add(userTypeInternalRadio);
+
+        Radio userTypeExternalRadio = new Radio();
+        userTypeExternalRadio.setValueAttribute(RadioGroupStatus.EXTERNAL.name());
+        userTypeExternalRadio.setBoxLabel(USER_MSGS.dialogAddFieldExternalUser());
+        userTypeRadioGroup.add(userTypeExternalRadio);
+
+        // Password
         password = new KapuaTextField<String>();
         password.setAllowBlank(false);
         password.setName("password");
@@ -171,6 +209,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         password.setPassword(true);
         password.setMaxLength(255);
 
+        // Confirm Password
         confirmPassword = new KapuaTextField<String>();
         confirmPassword.setAllowBlank(false);
         confirmPassword.setName("confirmPassword");
@@ -184,7 +223,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         passwordTooltip.setStyleAttribute("font-size", "10px");
 
         if (currentSession.hasPermission(CredentialSessionPermission.read())) {
-            gwtCredentialService.getMinPasswordLength(specificAccountId != null ? specificAccountId : currentSession.getSelectedAccountId(), new AsyncCallback<Integer>() {
+            GWT_CREDENTIAL_SERVICE.getMinPasswordLength(scopeId != null ? scopeId : currentSession.getSelectedAccountId(), new AsyncCallback<Integer>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
@@ -199,115 +238,97 @@ public class UserAddDialog extends EntityAddEditDialog {
                 }
             });
         }
-        userRadioGroup.setFieldLabel(USER_MSGS.dialogAddFieldUserTypeRadioButton());
-        userRadioGroup.setOrientation(Style.Orientation.HORIZONTAL);
-        userRadioGroup.setSelectionRequired(true);
-        userRadioGroup.setStyleAttribute("margin-left", "5px");
-        userRadioGroup.addListener(Events.Change, new Listener<BaseEvent>() {
-
-            @Override
-            public void handleEvent(BaseEvent baseEvent) {
-                Radio radio = ((RadioGroup) baseEvent.getSource()).getValue();
-                if (radio.getValueAttribute().equals(RadioGroupStatus.INTERNAL.name())) {
-                    //DialogUtils.resizeDialog(UserAddDialog.this, 400, 470);
-
-                    password.show();
-                    password.enable();
-                    confirmPassword.show();
-                    confirmPassword.enable();
-                    passwordTooltip.show();
-                    passwordTooltip.enable();
-                    passwordIsShown = true;
-
-                    externalId.hide();
-                    externalId.disable();
-                    externalIdIsShown = false;
-                } else if (radio.getValueAttribute().equals(RadioGroupStatus.EXTERNAL.name())) {
-                    //DialogUtils.resizeDialog(UserAddDialog.this, 400, 100);
-                    //UserAddDialog.this.layout();
-
-                    password.hide();
-                    password.disable();
-                    confirmPassword.hide();
-                    confirmPassword.disable();
-                    passwordTooltip.hide();
-                    passwordTooltip.disable();
-                    passwordIsShown = false;
-
-                    externalId.show();
-                    externalId.enable();
-                    externalIdIsShown = true;
-
-                }
-            }
-        });
-
-        Radio internalRadio = new Radio();
-        internalRadio.setValueAttribute(RadioGroupStatus.INTERNAL.name());
-        internalRadio.setBoxLabel(USER_MSGS.dialogAddFieldInternalUser());
-        internalRadio.setValue(true);
-        Radio externalRadio = new Radio();
-        externalRadio.setValueAttribute(RadioGroupStatus.EXTERNAL.name());
-        externalRadio.setBoxLabel(USER_MSGS.dialogAddFieldExternalUser());
-        userRadioGroup.add(internalRadio);
-        userRadioGroup.add(externalRadio);
-        infoFieldSet.add(userRadioGroup);
-
-        infoFieldSet.add(externalId, subFieldsetFormData);
-        externalId.hide();
-        externalId.disable();
-        infoFieldSet.add(externalIdLabel);
 
         if (currentSession.hasPermission(CredentialSessionPermission.write())) {
-            infoFieldSet.add(password, subFieldsetFormData);
-            infoFieldSet.add(confirmPassword, subFieldsetFormData);
+            infoFieldSet.add(password, userFieldsetFormData);
+            infoFieldSet.add(confirmPassword, userFieldsetFormData);
             infoFieldSet.add(passwordTooltip);
         }
 
-        userRadioGroup.hide();
-        userRadioGroup.disable();
-        if (currentSession.isSsoEnabled()) {
-            userRadioGroup.show();
-            userRadioGroup.enable();
-        } else {
-            passwordIsShown = true;
-            password.show();
-            password.enable();
-            confirmPassword.show();
-            confirmPassword.enable();
-            passwordTooltip.show();
-            passwordTooltip.enable();
-        }
+        // External Id
+        externalIdLabel = new LabelField();
+        externalIdLabel.setFieldLabel(USER_MSGS.dialogAddFieldExternalId());
+        externalIdLabel.setLabelSeparator(":");
+        externalIdLabel.setStyleAttribute("white-space", "nowrap");
+        externalIdLabel.setStyleAttribute("text-overflow", "ellipsis");
+        externalIdLabel.setStyleAttribute("overflow", "hidden");
+        externalIdLabel.hide();
+        infoFieldSet.add(externalIdLabel);
 
+        externalId = new KapuaTextField<String>();
+        externalId.setMaxLength(255);
+        externalId.setName("externalId");
+        externalId.setFieldLabel(USER_MSGS.dialogAddFieldExternalId());
+        externalId.setToolTip(USER_MSGS.dialogAddFieldExternalIdTooltip());
+        externalId.hide();
+        externalId.disable();
+        infoFieldSet.add(externalId, userFieldsetFormData);
+
+        // External Username
+        externalUsernameLabel = new LabelField();
+        externalUsernameLabel.setFieldLabel("External Username");
+        externalUsernameLabel.setLabelSeparator(":");
+        externalUsernameLabel.hide();
+        infoFieldSet.add(externalUsernameLabel);
+
+        externalUsername = new KapuaTextField<String>();
+        externalUsername.setMaxLength(255);
+        externalUsername.setName("externalUsername");
+        externalUsername.setFieldLabel("External Username");
+        externalUsername.setToolTip("Set the external username. This username is required when the external id is not known and it is provided by the OpenId Connect Provider.");
+        externalUsername.hide();
+        externalUsername.disable();
+        infoFieldSet.add(externalUsername, userFieldsetFormData);
+
+        // Display Name
         displayName = new KapuaTextField<String>();
         displayName.setName("displayName");
         displayName.setFieldLabel(USER_MSGS.dialogAddFieldDisplayName());
         displayName.setToolTip(USER_MSGS.dialogAddFieldDisplayNameTooltip());
         displayName.setMaxLength(255);
-        infoFieldSet.add(displayName, subFieldsetFormData);
+        displayName.setStyleAttribute("white-space", "nowrap");
+        displayName.setStyleAttribute("text-overflow", "ellipsis");
+        displayName.setStyleAttribute("overflow", "hidden");
+        infoFieldSet.add(displayName, userFieldsetFormData);
 
+        // Email
         email = new KapuaTextField<String>();
         email.setName("userEmail");
         email.setFieldLabel(USER_MSGS.dialogAddFieldEmail());
         email.setValidator(new TextFieldValidator(email, FieldType.EMAIL));
         email.setToolTip(USER_MSGS.dialogAddFieldEmailTooltip());
         email.setMaxLength(255);
-        infoFieldSet.add(email, subFieldsetFormData);
+        infoFieldSet.add(email, userFieldsetFormData);
 
+        // Phone number
         phoneNumber = new KapuaTextField<String>();
         phoneNumber.setName("phoneNumber");
         phoneNumber.setFieldLabel(USER_MSGS.dialogAddFieldPhoneNumber());
         phoneNumber.setValidator(new TextFieldValidator(phoneNumber, FieldType.PHONE));
         phoneNumber.setToolTip(USER_MSGS.dialogAddFieldPhoneNumberTooltip());
         phoneNumber.setMaxLength(64);
-        infoFieldSet.add(phoneNumber, subFieldsetFormData);
+        infoFieldSet.add(phoneNumber, userFieldsetFormData);
 
+        // Optlock
         optlock = new NumberField();
         optlock.setName("optlock");
         optlock.setEditable(false);
-        optlock.setVisible(false);
+        optlock.hide();
         infoFieldSet.add(optlock);
 
+        // Status fieldset
+        FormLayout statusLayout = new FormLayout();
+        statusLayout.setLabelWidth(Constants.LABEL_WIDTH_FORM);
+
+        FieldSet statusFieldSet = new FieldSet();
+        statusFieldSet.setBorders(true);
+        statusFieldSet.setStyleAttribute("margin", "5px 10px 0px 10px");
+        statusFieldSet.setHeading(USER_MSGS.dialogAddStatus());
+        statusFieldSet.setLayout(statusLayout);
+        statusFieldSet.setStyleAttribute("background-color", "E8E8E8");
+        userFormPanel.add(statusFieldSet, userFormData);
+
+        // User status
         userStatus = new SimpleComboBox<GwtUserStatus>();
         userStatus.setName("comboStatus");
         userStatus.setFieldLabel(USER_MSGS.dialogAddStatus());
@@ -316,12 +337,13 @@ public class UserAddDialog extends EntityAddEditDialog {
         userStatus.setEditable(false);
         userStatus.setTypeAhead(true);
         userStatus.setTriggerAction(TriggerAction.ALL);
-        // show account status combo box
+
         userStatus.add(GwtUserStatus.ENABLED);
         userStatus.add(GwtUserStatus.DISABLED);
         userStatus.setSimpleValue(GwtUserStatus.ENABLED);
-        statusFieldSet.add(userStatus, subFieldsetFormData);
+        statusFieldSet.add(userStatus, userFieldsetFormData);
 
+        // Expiration Date
         expirationDate = new KapuaDateField(this);
         expirationDate.setName("expirationDate");
         expirationDate.setFormatValue(true);
@@ -334,41 +356,30 @@ public class UserAddDialog extends EntityAddEditDialog {
         expirationDate.setValue(null);
         expirationDate.setMaxLength(10);
         expirationDate.getDatePicker().addListener(Events.Select, new Listener<BaseEvent>() {
-
             @Override
             public void handleEvent(BaseEvent be) {
                 formPanel.fireEvent(Events.OnClick);
             }
         });
-        statusFieldSet.add(expirationDate, subFieldsetFormData);
+        statusFieldSet.add(expirationDate, userFieldsetFormData);
 
-        userFormPanel.add(infoFieldSet, subFormData);
-        userFormPanel.add(statusFieldSet, subFormData);
-
-        bodyPanel.add(userFormPanel);
-    }
-
-    public void validateUser() {
-        if (username.getValue() == null || (passwordIsShown && password.getValue() == null)
-                || (passwordIsShown && confirmPassword.getValue() == null)
-                || (externalIdIsShown && externalId.getValue() == null)) {
-            ConsoleInfo.display(CMSGS.error(), CMSGS.allFieldsRequired());
-        } else if (Boolean.TRUE.equals(passwordIsShown) && !password.isValid()) {
-            ConsoleInfo.display(CMSGS.error(), password.getErrorMessage());
-        } else if (Boolean.TRUE.equals(passwordIsShown) && !password.getValue().equals(confirmPassword.getValue())) {
-            ConsoleInfo.display(CMSGS.error(), confirmPassword.getErrorMessage());
-        } else if (!email.isValid()) {
-            ConsoleInfo.display(CMSGS.error(), email.getErrorMessage());
-        } else if (!phoneNumber.isValid()) {
-            ConsoleInfo.display(CMSGS.error(), phoneNumber.getErrorMessage());
-        } else if (!expirationDate.isValid()) {
-            ConsoleInfo.display(CMSGS.error(), KapuaSafeHtmlUtils.htmlUnescape(expirationDate.getErrorMessage()));
+        // Check SSO enabled.
+        if (currentSession.isSsoEnabled()) {
+            userTypeRadioGroup.show();
         }
     }
 
     @Override
     protected void preSubmit() {
-        validateUser();
+        if (userTypeRadioGroup.getValue().getValueAttribute().equals(RadioGroupStatus.EXTERNAL.name())) {
+            if ((externalId.getValue() == null || externalId.getValue().isEmpty()) &&
+                    (externalUsername.getValue() == null || externalUsername.getValue().isEmpty())) {
+                externalId.markInvalid("Either the External Id or the External Username Id are required");
+                externalUsername.markInvalid("Either the External Username or the External Id are required");
+                return;
+            }
+        }
+
         super.preSubmit();
     }
 
@@ -376,22 +387,17 @@ public class UserAddDialog extends EntityAddEditDialog {
     public void submit() {
         GwtUserCreator gwtUserCreator = new GwtUserCreator();
 
-        gwtUserCreator.setScopeId(specificAccountId != null ? specificAccountId : currentSession.getSelectedAccountId());
-
+        gwtUserCreator.setScopeId(scopeId != null ? scopeId : currentSession.getSelectedAccountId());
         gwtUserCreator.setUsername(username.getValue());
 
-        if (userRadioGroup.getValue().getValueAttribute().equals(RadioGroupStatus.INTERNAL.name())) {
+        if (userTypeRadioGroup.getValue().getValueAttribute().equals(RadioGroupStatus.INTERNAL.name())) {
             gwtUserCreator.setGwtUserType(GwtUser.GwtUserType.INTERNAL);
-            if (password != null) {
-                gwtUserCreator.setPassword(password.getValue());
-            }
-        } else if (userRadioGroup.getValue().getValueAttribute().equals(RadioGroupStatus.EXTERNAL.name())) {
+            gwtUserCreator.setPassword(password.getValue());
+        } else if (userTypeRadioGroup.getValue().getValueAttribute().equals(RadioGroupStatus.EXTERNAL.name())) {
             gwtUserCreator.setGwtUserType(GwtUser.GwtUserType.EXTERNAL);
-            if (externalId != null) {
-                gwtUserCreator.setExternalId(externalId.getValue());
-            }
+            gwtUserCreator.setExternalId(externalId.getValue());
+            gwtUserCreator.setExternalUsername(externalUsername.getValue());
         }
-        // TODO: implement third case? Or throw exception
 
         gwtUserCreator.setDisplayName(displayName.getValue());
         gwtUserCreator.setEmail(email.getValue());
@@ -399,7 +405,7 @@ public class UserAddDialog extends EntityAddEditDialog {
         gwtUserCreator.setUserStatus(userStatus.getValue().getValue());
         gwtUserCreator.setExpirationDate(expirationDate.getValue());
 
-        gwtUserService.create(xsrfToken, gwtUserCreator, new AsyncCallback<GwtUser>() {
+        GWT_USER_SERVICE.create(xsrfToken, gwtUserCreator, new AsyncCallback<GwtUser>() {
 
             @Override
             public void onSuccess(GwtUser gwtUser) {
@@ -416,6 +422,7 @@ public class UserAddDialog extends EntityAddEditDialog {
                 unmask();
                 submitButton.enable();
                 cancelButton.enable();
+
                 if (!isPermissionErrorMessage(cause)) {
                     if (cause instanceof GwtKapuaException) {
                         GwtKapuaException gwtCause = (GwtKapuaException) cause;
@@ -424,9 +431,11 @@ public class UserAddDialog extends EntityAddEditDialog {
                             case ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT:
                                 username.markInvalid(gwtCause.getMessage());
                                 break;
-                            case DUPLICATE_EXTERNAL_ID:
-                            case EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT:
+                            case EXTERNAL_ID_ALREADY_EXIST:
                                 externalId.markInvalid(gwtCause.getMessage());
+                                break;
+                            case EXTERNAL_USERNAME_ALREADY_EXIST:
+                                externalUsername.markInvalid(gwtCause.getMessage());
                                 break;
                             default:
                                 break;

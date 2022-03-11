@@ -17,11 +17,13 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 
 public enum GenericOpenIDSettingKeys implements SettingKey {
 
-    SSO_OPENID_SERVER_ENDPOINT_AUTH("sso.openid.generic.server.endpoint.auth"), //
-    SSO_OPENID_SERVER_ENDPOINT_TOKEN("sso.openid.generic.server.endpoint.token"), //
-    SSO_OPENID_SERVER_ENDPOINT_LOGOUT("sso.openid.generic.server.endpoint.logout"),
     SSO_OPENID_JWT_AUDIENCE_ALLOWED("sso.openid.generic.jwt.audience.allowed"),
     SSO_OPENID_JWT_ISSUER_ALLOWED("sso.openid.generic.jwt.issuer.allowed"),
+
+    SSO_OPENID_SERVER_ENDPOINT_AUTH("sso.openid.generic.server.endpoint.auth"),
+    SSO_OPENID_SERVER_ENDPOINT_LOGOUT("sso.openid.generic.server.endpoint.logout"),
+    SSO_OPENID_SERVER_ENDPOINT_TOKEN("sso.openid.generic.server.endpoint.token"),
+    SSO_OPENID_SERVER_ENDPOINT_USERINFO("sso.openid.generic.server.endpoint.userinfo"),
     ;
 
     private final String key;

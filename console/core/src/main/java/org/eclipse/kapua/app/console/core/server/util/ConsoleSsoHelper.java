@@ -12,17 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.server.util;
 
-import java.net.URI;
-
+import com.google.common.base.Strings;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSetting;
 import org.eclipse.kapua.app.console.module.api.setting.ConsoleSettingKeys;
 import org.eclipse.kapua.plugin.sso.openid.exception.uri.OpenIDIllegalUriException;
 
-public final class SsoHelper {
+import java.net.URI;
+
+public final class ConsoleSsoHelper {
 
     private static final String ILLEGAL_STATE_MESSAGE = "Unable to lookup OpenID redirect URL";
 
-    private SsoHelper() {
+    private ConsoleSsoHelper() {
     }
 
     private static ConsoleSetting getSettings() {
@@ -31,7 +32,7 @@ public final class SsoHelper {
 
     public static String getHomeUri() throws OpenIDIllegalUriException {
         String homeUri = getSettings().getString(ConsoleSettingKeys.SSO_OPENID_CONSOLE_HOME_URI);
-        if (homeUri == null || homeUri.isEmpty()) {
+        if (Strings.isNullOrEmpty(homeUri)) {
             throw new OpenIDIllegalUriException(ConsoleSettingKeys.SSO_OPENID_CONSOLE_HOME_URI.key(), null);
         }
         return homeUri;
@@ -39,7 +40,8 @@ public final class SsoHelper {
 
     public static URI getRedirectUri() {
         String result = getSettings().getString(ConsoleSettingKeys.SSO_OPENID_REDIRECT_URI);
-        if (result != null && !result.isEmpty()) {
+
+        if (!Strings.isNullOrEmpty(result)) {
             return URI.create(result);
         }
 

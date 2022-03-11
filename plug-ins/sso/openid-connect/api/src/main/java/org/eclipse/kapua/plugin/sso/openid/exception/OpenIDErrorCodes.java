@@ -15,6 +15,9 @@ package org.eclipse.kapua.plugin.sso.openid.exception;
 import org.eclipse.kapua.KapuaErrorCode;
 
 
+/**
+ * @since 1.2.0
+ */
 public enum OpenIDErrorCodes implements KapuaErrorCode {
 
     /**
