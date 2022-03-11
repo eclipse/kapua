@@ -19,6 +19,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.endpoint.client.EndpointModel;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpointCreator;
@@ -29,15 +30,15 @@ import java.util.List;
 @RemoteServiceRelativePath("endpoint")
 public interface GwtEndpointService extends RemoteService {
 
-    GwtEndpoint create(GwtEndpointCreator gwtEndpointCreator) throws GwtKapuaException;
+    GwtEndpoint create(GwtXSRFToken gwtXsrfToken, GwtEndpointCreator gwtEndpointCreator) throws GwtKapuaException;
 
-    GwtEndpoint update(GwtEndpoint gwtEndpoint) throws GwtKapuaException;
+    GwtEndpoint update(GwtXSRFToken gwtXsrfToken, GwtEndpoint gwtEndpoint) throws GwtKapuaException;
 
     GwtEndpoint find(String scopeShortId, String roleShortId) throws GwtKapuaException;
 
     PagingLoadResult<GwtEndpoint> query(PagingLoadConfig loadConfig, GwtEndpointQuery gwtEndpointQuery, String section) throws GwtKapuaException;
 
-    void delete(String scopeId, String endpointId) throws GwtKapuaException;
+    void delete(GwtXSRFToken gwtXsrfToken, String scopeId, String endpointId) throws GwtKapuaException;
 
     ListLoadResult<GwtGroupedNVPair> getEndpointDescription(String scopeShortId, String endpointShortId) throws GwtKapuaException;
 

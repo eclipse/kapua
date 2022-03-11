@@ -49,7 +49,7 @@ public class EndpointEditDialog extends EndpointAddDialog {
         selectedEndpoint.setPort(endpointPortField.getValue());
         selectedEndpoint.setSecure(endpointSecureCheckboxGroup.getValue() != null);
 
-        GWT_ENDPOINT_SERVICE.update(selectedEndpoint, new AsyncCallback<GwtEndpoint>() {
+        GWT_ENDPOINT_SERVICE.update(xsrfToken, selectedEndpoint, new AsyncCallback<GwtEndpoint>() {
 
             @Override
             public void onFailure(Throwable cause) {
@@ -91,7 +91,7 @@ public class EndpointEditDialog extends EndpointAddDialog {
         endpointSchemaField.setValue(gwtEndpoint.getSchema());
         endpointDnsField.setValue(gwtEndpoint.getDns());
         endpointPortField.setValue(gwtEndpoint.getPort());
-        endpointSercureCheckbox.setValue(gwtEndpoint.getSecure());
+        endpointSecureCheckbox.setValue(gwtEndpoint.getSecure());
     }
 
 }
