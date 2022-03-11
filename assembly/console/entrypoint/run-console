@@ -48,6 +48,7 @@ elif [ -n "${KAPUA_CONSOLE_URL}" ] && [ -n "${KAPUA_OPENID_JWT_ISSUER}" ]; then
   test -n "${KAPUA_OPENID_AUTH_ENDPOINT}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.generic.server.endpoint.auth=${KAPUA_OPENID_AUTH_ENDPOINT}"
   test -n "${KAPUA_OPENID_LOGOUT_ENDPOINT}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.generic.server.endpoint.logout=${KAPUA_OPENID_LOGOUT_ENDPOINT}"
   test -n "${KAPUA_OPENID_TOKEN_ENDPOINT}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.generic.server.endpoint.token=${KAPUA_OPENID_TOKEN_ENDPOINT}"
+  test -n "${KAPUA_OPENID_USERINFO_ENDPOINT}" && JAVA_OPTS="${JAVA_OPTS} -Dsso.openid.generic.server.endpoint.userinfo=${KAPUA_OPENID_USERINFO_ENDPOINT}"
 fi
 
 # Multi Factor Authentication configurations
