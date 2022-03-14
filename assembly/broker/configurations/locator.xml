@@ -89,6 +89,8 @@
         <api>org.eclipse.kapua.service.device.registry.event.DeviceEventService</api>
         <api>org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService</api>
 
+        <api>org.eclipse.kapua.service.job.JobService</api>
+        <api>org.eclipse.kapua.service.job.JobFactory</api>
         <api>org.eclipse.kapua.service.job.execution.JobExecutionService</api>
         <api>org.eclipse.kapua.service.job.execution.JobExecutionFactory</api>
         <api>org.eclipse.kapua.service.job.step.JobStepService</api>
