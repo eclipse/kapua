@@ -17,6 +17,8 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Lookup from the configuration file
@@ -25,11 +27,14 @@ import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey
  */
 public class DefaultBrokerHostResolver implements BrokerHostResolver {
 
-    private static final String CANNOT_FIND_IP_ERROR_MSG = "Cannot find the ip. Please check the configuration!";
+    protected static final Logger logger = LoggerFactory.getLogger(DefaultBrokerHostResolver.class);
+
+    private static final String CANNOT_FIND_IP_ERROR_MSG = "Cannot resolve the broker host. Please check the configuration!";
     private String brokerHost;
 
     public DefaultBrokerHostResolver() throws KapuaException {
         brokerHost = BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_HOST);
+        logger.info("Loaded broker host: {}", brokerHost);
         if (StringUtils.isEmpty(brokerHost)) {
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, CANNOT_FIND_IP_ERROR_MSG);
         }

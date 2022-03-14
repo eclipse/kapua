@@ -65,13 +65,6 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
         Context loginNormalUserTimeContext = loginMetric.getNormalUserTime().time();
-        boolean isStealingLink = isStealingLink(authContext);
-        if (isStealingLink) {
-            loginMetric.getStealingLinkDisconnect().inc();
-            logger.warn("Connecting client: Stealing link detected for clientId: {} old connection: {} new connection: {}",
-                authContext.getClientId(), authContext.getOldConnectionId(), authContext.getConnectionId());
-        }
-
         Context loginCheckAccessTimeContext = loginMetric.getCheckAccessTime().time();
         UserPermissions userPermissions = updatePermissions(authContext);
         loginCheckAccessTimeContext.stop();
@@ -101,65 +94,36 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public boolean disconnect(AuthContext authContext) {
-        boolean isStealingLink = isStealingLink(authContext);
-        boolean isIllegalState = isIllegalState(authContext);
         boolean deviceOwnedByTheCurrentNode = true;
-        String error = authContext.getExceptionClass();
-        logger.info("Disconnecting client: old connection id: {} - new connection id: {} - error: {} - isStealingLink {} - isIllegalState: {}",
-            authContext.getOldConnectionId(), authContext.getConnectionId(), error, isStealingLink, isIllegalState);
-        if (isStealingLink) {
-            loginMetric.getStealingLinkDisconnect().inc();
-            logger.info("Skip device connection status update since is coming from a stealing link condition. Client id: {} - Connection id: {}",
-                    authContext.getClientId(),
-                    authContext.getConnectionId());
-        }
-        else if (isIllegalState) {
-            loginMetric.getIllegalStateDisconnect().inc();
-            logger.info("Skip device connection status update from illegal device status disconnection. Client id: {} - Connection id: {}",
-                    authContext.getClientId(),
-                    authContext.getConnectionId());
-        }
-        else {
+        if (!authContext.isStealingLink() && !authContext.isIllegalState()) {
             // update device connection (if the disconnection wasn't caused by a stealing link)
-            DeviceConnection deviceConnection;
-            try {
-                deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(
-                    KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
-            } catch (Exception e) {
-                throw new ShiroException("Error while looking for device connection on updating the device status!", e);
+            DeviceConnection deviceConnection = getDeviceConnection(authContext);
+            logger.warn("=====================> DeviceConnection: {}", deviceConnection);
+            logger.info(aclCtrlAcc);
+            if (authContext.getBrokerHost() == null) {
+                logger.warn("Broker Ip or host name is not correctly set! Please check the configuration!");
+                //TODO add metric?
             }
-            // the device connection must be not null
-            if (deviceConnection != null) {
-                if (authContext.getBrokerHost() == null) {
-                    logger.warn("Broker Ip or host name is not correctly set! Please check the configuration!");
+            else if (deviceConnection==null){
+                logger.warn("Cannot find device connection for device: {}/{}", authContext.getScopeId() , authContext.getClientId());
+                //TODO add metric?
+            }
+            else if(isDeviceOwnedByTheCurrentNode(authContext, deviceConnection)) {
+                //update status only if the old status wasn't missing
+                if (DeviceConnectionStatus.MISSING.equals(deviceConnection.getStatus())) {
+                    logger.warn("Skipping device status update for device {} since last status was MISSING!", deviceConnection.getClientId());
                 }
-                else if (!authContext.getBrokerHost().equals(deviceConnection.getServerIp())) {
-                    //the device is connected to a different node so skip to update the status!
-                    deviceOwnedByTheCurrentNode = false;
-                    logger.warn("Detected disconnection for client connected to another node: cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
-                            authContext.getClientId(),
-                            authContext.getScopeId(),
-                            authContext.getOldConnectionId(),
-                            authContext.getConnectionId(),
-                            authContext.getClientIp());
-                }
-                if(deviceOwnedByTheCurrentNode) {
-                    //update status only if the old status wasn't missing
-                    if (DeviceConnectionStatus.MISSING.equals(deviceConnection.getStatus())) {
-                        logger.warn("Skipping device status update for device {} since last status was MISSING!", deviceConnection.getClientId());
-                    }
-                    else {
-                        deviceConnection.setStatus(error == null && !authContext.isMissing() ? DeviceConnectionStatus.DISCONNECTED : DeviceConnectionStatus.MISSING);
-                        try {
-                            KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnection));
-                        } catch (Exception e) {
-                            throw new ShiroException("Error while updating the device connection status!", e);
-                        }
+                else {
+                    deviceConnection.setStatus(!authContext.isMissing() ? DeviceConnectionStatus.DISCONNECTED : DeviceConnectionStatus.MISSING);
+                    try {
+                        KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnection));
+                    } catch (Exception e) {
+                        throw new ShiroException("Error while updating the device connection status!", e);
                     }
                 }
             }
         }
-        return !isStealingLink && deviceOwnedByTheCurrentNode && !authContext.isMissing();
+        return !authContext.isStealingLink() && deviceOwnedByTheCurrentNode && !authContext.isMissing();
     }
 
     @Override

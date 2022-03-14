@@ -78,7 +78,6 @@ public class AuthenticationServiceListener extends AbstractListener {
     public void brokerDisconnect(Exchange exchange, AuthRequest authRequest) throws JsonProcessingException, JMSException {
         metricLogoutRequestCount.inc();
         logRequest(exchange, authRequest);
-        logger.info("Checking stealing link for clientId: {} old connection: {} new connection: {}", authRequest.getClientId(), authRequest.getOldConnectionId(), authRequest.getConnectionId());
         AuthResponse authResponse = authenticationServiceBackEndCall.brokerDisconnect(authRequest);
         updateMessage(exchange, authRequest, authResponse);
         metricLogoutCount.inc();

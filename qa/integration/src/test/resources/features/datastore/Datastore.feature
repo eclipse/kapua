@@ -752,7 +752,6 @@ Feature: Datastore tests
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait for 1 seconds
     Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     Then I find device with clientId "rpione3"
@@ -808,7 +807,6 @@ Feature: Datastore tests
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait for 1 seconds
     Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I find device with clientId "rpione3"
@@ -867,7 +865,6 @@ Feature: Datastore tests
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait for 1 seconds
     Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
@@ -917,7 +914,6 @@ Feature: Datastore tests
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait for 1 seconds
     Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds

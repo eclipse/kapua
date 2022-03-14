@@ -55,11 +55,13 @@ public class KapuaPrincipalImpl implements KapuaPrincipal {
     /**
      * Create a KapuaPrincipal for internal connectors
      *
+     * @param accountId
      * @param clientId
      */
-    public KapuaPrincipalImpl(String clientId) {
+    public KapuaPrincipalImpl(KapuaId accountId, String clientId) {
         internal = true;
         this.clientId = clientId;
+        this.accountId = accountId;
     }
 
     @Override

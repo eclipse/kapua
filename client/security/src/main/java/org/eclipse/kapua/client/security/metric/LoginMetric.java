@@ -38,6 +38,7 @@ public class LoginMetric {
     private Counter internalConnectorDisconnected;
     private Counter stealingLinkConnect;
     private Counter stealingLinkDisconnect;
+    private Counter adminStealingLinkConnect;
     private Counter adminStealingLinkDisconnect;
     private Counter disconnectByEvent;
     private Counter illegalStateDisconnect;
@@ -75,6 +76,7 @@ public class LoginMetric {
         internalConnectorDisconnected = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_INTERNAL_CONNECTOR, SecurityMetrics.METRIC_DISCONNECT, SecurityMetrics.METRIC_COUNT);
         stealingLinkConnect = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_STEALING_LINK, SecurityMetrics.METRIC_CONNECT, SecurityMetrics.METRIC_COUNT);
         stealingLinkDisconnect = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_STEALING_LINK, SecurityMetrics.METRIC_DISCONNECT, SecurityMetrics.METRIC_COUNT);
+        adminStealingLinkConnect = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_ADMIN_STEALING_LINK, SecurityMetrics.METRIC_CONNECT, SecurityMetrics.METRIC_COUNT);
         adminStealingLinkDisconnect = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_ADMIN_STEALING_LINK, SecurityMetrics.METRIC_DISCONNECT, SecurityMetrics.METRIC_COUNT);
         disconnectByEvent = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_DISCONNECT_BY_EVENT, SecurityMetrics.METRIC_DISCONNECT, SecurityMetrics.METRIC_COUNT);
         illegalStateDisconnect = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_LOGIN, SecurityMetrics.METRIC_ILLEGAL_STATE, SecurityMetrics.METRIC_DISCONNECT, SecurityMetrics.METRIC_COUNT);
@@ -148,6 +150,10 @@ public class LoginMetric {
 
     public Counter getDisconnectByEvent() {
         return disconnectByEvent;
+    }
+
+    public Counter getAdminStealingLinkConnect() {
+        return adminStealingLinkConnect;
     }
 
     public Counter getAdminStealingLinkDisconnect() {

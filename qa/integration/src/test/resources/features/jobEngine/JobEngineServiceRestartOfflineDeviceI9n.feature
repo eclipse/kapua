@@ -34,7 +34,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -65,7 +64,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -96,7 +94,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -127,7 +124,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -158,7 +154,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -189,7 +184,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -220,7 +214,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -255,7 +248,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -293,7 +285,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -331,7 +322,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -368,7 +358,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -405,7 +394,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     And KuraMock is disconnected
     And I wait 1 second
@@ -442,7 +430,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -479,7 +466,6 @@ Feature: JobEngineService tests for restarting job with offline device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second

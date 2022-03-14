@@ -89,11 +89,27 @@ public class DefaultAuthenticator implements Authenticator {
         List<AuthAcl> authorizationEntries = null;
         if (isAdminUser(authContext)) {
             loginMetric.getAdminAttempt().inc();
+            if (authContext.isStealingLink()) {
+                loginMetric.getAdminStealingLinkConnect().inc();
+                logger.warn("Detected Stealing link for clientId: {} - account: {} - current connectionId: {} - IP: {}",
+                        authContext.getClientId(),
+                        authContext.getAccountName(),
+                        authContext.getConnectionId(),
+                        authContext.getClientIp());
+            }
             authorizationEntries = adminAuthenticationLogic.connect(authContext);
             loginMetric.getAdminConnected().inc();
         }
         else {
             loginMetric.getAttempt().inc();
+            if (authContext.isStealingLink()) {
+                loginMetric.getStealingLinkConnect().inc();
+                logger.warn("Detected Stealing link for clientId: {} - account: {} - current connectionId: {} - IP: {}",
+                        authContext.getClientId(),
+                        authContext.getAccountName(),
+                        authContext.getConnectionId(),
+                        authContext.getClientIp());
+            }
             authorizationEntries = userAuthenticationLogic.connect(authContext);
             loginMetric.getConnected().inc();
             Context loginSendLogingUpdateMsgTimeContext = loginMetric.getSendLoginUpdateMsgTime().time();
@@ -110,10 +126,28 @@ public class DefaultAuthenticator implements Authenticator {
     public void disconnect(AuthContext authContext) throws KapuaException {
         if (isAdminUser(authContext)) {
             loginMetric.getAdminDisconnected().inc();
+            if (authContext.isStealingLink()) {
+                loginMetric.getAdminStealingLinkDisconnect().inc();
+            }
             adminAuthenticationLogic.disconnect(authContext);
         }
         else {
             loginMetric.getDisconnected().inc();
+            String error = authContext.getExceptionClass();
+            logger.info("Disconnecting client: connection id: {} - error: {} - isStealingLink {} - isIllegalState: {}",
+                    authContext.getConnectionId(), error, authContext.isStealingLink(), authContext.isIllegalState());
+            if (authContext.isStealingLink()) {
+                loginMetric.getStealingLinkDisconnect().inc();
+                logger.info("Stealing link: skip device connection status update. Client id: {} - Connection id: {}",
+                        authContext.getClientId(),
+                        authContext.getConnectionId());
+            }
+            else if (authContext.isIllegalState()) {
+                loginMetric.getIllegalStateDisconnect().inc();
+                logger.info("Illegal device connection status: skip device connection status update. Client id: {} - Connection id: {}",
+                        authContext.getClientId(),
+                        authContext.getConnectionId());
+            }
             if (userAuthenticationLogic.disconnect(authContext)) {
                 logger.info("raising disconnect lifecycle event for clientIs: {}", authContext.getClientId());
                 Context loginSendLogingUpdateMsgTimeContext = loginMetric.getSendLoginUpdateMsgTime().time();
@@ -124,7 +158,7 @@ public class DefaultAuthenticator implements Authenticator {
     }
 
     protected boolean isAdminUser(AuthContext authContext) {
-        return authContext.getUsername().equals(adminUserName);
+        return adminUserName.equals(authContext.getUsername());
     }
 
     protected void raiseLifecycleEvent(AuthContext authContext, DeviceConnectionStatus deviceConnectionStatus) throws ServiceEventBusException {

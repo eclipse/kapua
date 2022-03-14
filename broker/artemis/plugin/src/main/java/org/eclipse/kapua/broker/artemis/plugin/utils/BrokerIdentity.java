@@ -41,8 +41,6 @@ public class BrokerIdentity {
         BrokerHostResolver brokerIpResolver =
             ReflectionUtil.newInstance(BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_HOST_RESOLVER_CLASS_NAME), DefaultBrokerHostResolver.class);
         brokerHost = brokerIpResolver.getBrokerHost();
-        brokerId = BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_ID);
-        brokerHost = BrokerSetting.getInstance().getString(BrokerSettingKey.BROKER_HOST);
     }
 
     public String getBrokerId() {

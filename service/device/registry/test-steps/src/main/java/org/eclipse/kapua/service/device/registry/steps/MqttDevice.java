@@ -190,11 +190,6 @@ public class MqttDevice {
         MqttClient mqttClient = null;
         mqttClient = new MqttClient(BROKER_URI, clientId,
                 new MemoryPersistence());
-        mqttClient.connect(clientOpts);
-        if ((topicFilter != null) && (topicFilter.length() > 0)) {
-            mqttClient.subscribe(topicFilter, DEFAULT_QOS);
-        }
-
         mqttClient.setCallback(new MqttCallback() {
 
             @Override
@@ -217,6 +212,11 @@ public class MqttDevice {
                 logger.info("Client message delivery complete.");
             }
         });
+
+        mqttClient.connect(clientOpts);
+        if ((topicFilter != null) && (topicFilter.length() > 0)) {
+            mqttClient.subscribe(topicFilter, DEFAULT_QOS);
+        }
 
         mqttClients.put(clientId, mqttClient);
     }
