@@ -46,7 +46,7 @@ public class LocalCache<K, V> implements Cache<K, V> {
      * @param sizeMax
      *            max cache size
      * @param expireAfter
-     *            values ttl
+     *            values ttl (seconds)
      * @param defaultValue
      *            default value (if no value is found for a specific key)
      */
@@ -84,11 +84,9 @@ public class LocalCache<K, V> implements Cache<K, V> {
 
     @Override
     public V get(K k) {
-        if (cache != null) {
-            V v = cache.getIfPresent(k);
-            if (v != null) {
-                return v;
-            }
+        V v = cache.getIfPresent(k);
+        if (v != null) {
+            return v;
         }
         return defaultValue;
     }
@@ -100,24 +98,25 @@ public class LocalCache<K, V> implements Cache<K, V> {
      */
     public List<K> getAllKeys() {
         ArrayList<K> keys = new ArrayList<K>();
-        if (cache != null) {
-            keys.addAll(cache.asMap().keySet());
-        }
+        keys.addAll(cache.asMap().keySet());
         return keys;
     }
 
     @Override
     public void put(K k, V v) {
-        if (cache != null) {
-            cache.put(k, v);
-        }
+        cache.put(k, v);
     }
 
     @Override
     public void remove(K k) {
-        if (cache != null) {
-            cache.invalidate(k);
-        }
+        cache.invalidate(k);
+    }
+
+    @Override
+    public V getAndRemove(K k) {
+        V v = get(k);
+        cache.invalidate(k);
+        return v;
     }
 
     @Override

@@ -12,10 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.authentication;
 
+import org.apache.shiro.ShiroException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.BrokerDomains;
-import org.eclipse.kapua.client.security.AuthErrorCodes;
-import org.eclipse.kapua.client.security.KapuaIllegalDeviceStateException;
 import org.eclipse.kapua.client.security.bean.AclUtils;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthAcl.Action;
@@ -263,35 +262,6 @@ public abstract class AuthenticationLogic {
         }
     }
 
-    protected boolean isStealingLink(AuthContext authContext) {
-        boolean stealingLink = false;
-        if (authContext.getOldConnectionId() != null) {
-            stealingLink = !authContext.getOldConnectionId().equals(authContext.getConnectionId());
-        }
-        else {
-            logger.error("Cannot find connection id for client id {} on connection map. Correct connection id is {} - IP: {}",
-                    authContext.getClientId(),
-                    authContext.getConnectionId(),
-                    authContext.getClientIp());
-        }
-        if (stealingLink) {
-            loginMetric.getStealingLinkDisconnect().inc();
-            logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {}",
-                authContext.getClientId(),
-                authContext.getScopeId(),
-                authContext.getOldConnectionId(),
-                authContext.getConnectionId(),
-                authContext.getClientIp());
-        }
-        return stealingLink;
-    }
-
-    protected boolean isIllegalState(AuthContext authContext) {
-        //TODO make this check based on instanceof
-        //something like Class.forName(exceptionClass).. just are we sure we have the exceptionClass implementation available at runtime?
-        return KapuaIllegalDeviceStateException.class.getName().equals(authContext.getExceptionClass()) && AuthErrorCodes.DUPLICATE_CLIENT_ID.equals(authContext.getAuthErrorCode());
-    }
-
     /**
      * Create a new {@link DeviceConnection} or updates the existing one using the info provided.
      *
@@ -301,6 +271,7 @@ public abstract class AuthenticationLogic {
      * @throws KapuaException
      */
     protected DeviceConnection upsertDeviceConnection(AuthContext authContext, DeviceConnection deviceConnection) throws KapuaException {
+        // TODO manage the stealing link event (may be a good idea to use different connect status (connect -stealing)?
         if (deviceConnection == null) {
             DeviceConnectionCreator deviceConnectionCreator = deviceConnectionFactory.newCreator(KapuaEid.parseCompactId(authContext.getScopeId()));
             deviceConnectionCreator.setStatus(DeviceConnectionStatus.CONNECTED);
@@ -325,22 +296,25 @@ public abstract class AuthenticationLogic {
             // if (DeviceStatus.DISABLED.equals(device.getStatus())) {
             // throw new KapuaIllegalAccessException("clientId - This client ID is disabled and cannot connect");
             // }
-
-            // TODO manage the stealing link event (may be a good idea to use different connect status (connect -stealing)?
-            String previousConnectionId = authContext.getOldConnectionId();
-            if (previousConnectionId != null) {
-                loginMetric.getStealingLinkConnect().inc();
-
-                // stealing link detected, skip info
-                logger.warn("Detected Stealing link for cliend id {} - account {} - last connection id was {} - current connection id is {} - IP: {}",
-                        authContext.getClientId(),
-                        authContext.getAccountName(),
-                        previousConnectionId,
-                        authContext.getConnectionId(),
-                        authContext.getClientIp());
-            }
         }
         return deviceConnection;
     }
 
+    protected DeviceConnection getDeviceConnection(AuthContext authContext) {
+        try {
+            return KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(
+                KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
+        } catch (Exception e) {
+            throw new ShiroException("Error while looking for device connection on updating the device status!", e);
+        }
+    }
+
+    protected boolean isDeviceOwnedByTheCurrentNode(AuthContext authContext, DeviceConnection deviceConnection) {
+        if (!authContext.getBrokerHost().equals(deviceConnection.getServerIp())) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 }

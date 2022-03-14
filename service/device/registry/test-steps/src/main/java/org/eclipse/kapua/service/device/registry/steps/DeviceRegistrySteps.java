@@ -1825,6 +1825,73 @@ public class DeviceRegistrySteps extends TestBase {
         });
     }
 
+    @When("I search for a connection from the device {string} in account {string} I find 1 connection with status {string} within {int} second(s)")
+    public void searchForConnectionFromDeviceWithClientIDStatusAndUser(String clientId, String accountName, String status, int timeout) throws Exception {
+        int executions = 0;
+        Account account = accountService.findByName(accountName);
+        Assert.assertNotNull("Account cannot be null!", account);
+        while (executions++ < timeout) {
+            if (searchForConnectionFromDeviceWithClientIDStatusAndUser(clientId, account.getId(), status, null, false)) {
+                return;
+            }
+            Thread.sleep(1000);
+        }
+        searchForConnectionFromDeviceWithClientIDStatusAndUser(clientId, account.getId(), status, null, true);
+    }
+
+    @When("I search for a connection from the device {string} in account {string} I find 1 connection with status {string} and user {string} within {int} second(s)")
+    public void searchForConnectionFromDeviceWithClientIDStatusAndUser(String clientId, String accountName, String status, String connectionUsername, int timeout) throws Exception {
+        int executions = 0;
+        Account account = accountService.findByName(accountName);
+        Assert.assertNotNull("Account cannot be null!", account);
+        User connectionUserId = userService.findByName(connectionUsername);
+        Assert.assertNotNull("Coonection username not valid!", connectionUserId);
+        while (executions++ < timeout) {
+            if (searchForConnectionFromDeviceWithClientIDStatusAndUser(clientId, account.getId(), status, connectionUserId.getId(), false)) {
+                return;
+            }
+            Thread.sleep(1000);
+        }
+        searchForConnectionFromDeviceWithClientIDStatusAndUser(clientId, account.getId(), status, connectionUserId.getId(), true);
+    }
+
+    private boolean searchForConnectionFromDeviceWithClientIDStatusAndUser(String clientId, KapuaId accountId, String connectionStatus, KapuaId connectionUserId, boolean timeoutOccurred) throws Exception {
+        try {
+            Device device = deviceRegistryService.findByClientId(accountId, clientId);
+            if (timeoutOccurred) {
+                Assert.assertNotNull(device);
+            }
+            else if (device==null) {
+                return false;
+            }
+            DeviceConnection deviceConnection = deviceConnectionService.findByClientId(accountId, clientId);
+            if (timeoutOccurred) {
+                Assert.assertNotNull("Device connection cannot be null!", deviceConnection);
+                Assert.assertEquals("Bad connection status!", connectionStatus, deviceConnection.getStatus().name());
+                if (connectionUserId!=null) {
+                    Assert.assertEquals("Bad connection user Id!", connectionUserId, deviceConnection.getUserId());
+                }
+            }
+            else {
+                if (connectionUserId!=null) {
+                    return deviceConnection!=null && connectionStatus.equals(deviceConnection.getStatus().name()) && connectionUserId.equals(deviceConnection.getUserId());
+                }
+                else {
+                    return deviceConnection!=null && connectionStatus.equals(deviceConnection.getStatus().name());
+                }
+            }
+            stepData.put(DEVICE_CONNECTION, deviceConnection);
+            DeviceConnectionListResult tmpConnLst = deviceConnectionFactory.newListResult();
+            Vector<DeviceConnection> dcv = new Vector<>();
+            dcv.add(deviceConnection);
+            tmpConnLst.addItems(dcv);
+            stepData.put(DEVICE_CONNECTION_LIST, tmpConnLst);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+        return true;
+    }
+
     @Then("The connection user is {string}")
     public void checkDeviceConnectionUser(String user) throws KapuaException {
         KapuaSecurityUtils.doPrivileged(() -> {

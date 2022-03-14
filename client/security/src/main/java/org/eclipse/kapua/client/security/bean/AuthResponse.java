@@ -63,6 +63,9 @@ public class AuthResponse implements Response {
     @JsonProperty("missing")
     private boolean missing;
 
+    @JsonProperty("stealingLink")
+    private boolean stealingLink;
+
     @JsonProperty("accessTokenId")
     private String accessTokenId;
 
@@ -82,6 +85,7 @@ public class AuthResponse implements Response {
     public void update(AuthContext authContext) {
         admin = authContext.isAdmin();
         missing = authContext.isMissing();
+        stealingLink = authContext.isStealingLink();
         kapuaConnectionId = authContext.getKapuaConnectionId();
     }
 
@@ -195,6 +199,14 @@ public class AuthResponse implements Response {
 
     public void setMissing(boolean missing) {
         this.missing = missing;
+    }
+
+    public boolean isStealingLink() {
+        return stealingLink;
+    }
+
+    public void setStealingLink(boolean stealingLink) {
+        this.stealingLink = stealingLink;
     }
 
     public List<AuthAcl> getAcls() {

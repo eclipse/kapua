@@ -44,22 +44,14 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 5 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 5 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-2"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-2" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -85,11 +77,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -103,11 +91,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-2"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-2" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -133,11 +117,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -171,11 +151,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -192,11 +168,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-2"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-2" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -227,33 +199,21 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -284,10 +244,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -318,10 +275,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -336,10 +290,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -370,33 +321,21 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -406,10 +345,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
 
     Given The account name is "test-acc-1" and the client ID is "device-1"
@@ -439,10 +375,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -457,10 +390,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -469,10 +399,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -495,40 +422,28 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
 
     And I set the reserved user for the connection from device "device-1" in account "test-acc-1" to "test-user-1"
@@ -544,10 +459,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -578,10 +490,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -612,10 +521,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -624,10 +530,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -658,10 +561,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -684,20 +584,14 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -706,10 +600,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -742,10 +633,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -762,10 +650,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -790,10 +675,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -812,10 +694,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -832,10 +711,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -866,11 +742,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -896,10 +768,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
 
     Given The account name is "test-acc-1" and the client ID is "device-1"
@@ -929,10 +798,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -947,10 +813,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -959,10 +822,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -993,10 +853,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1011,10 +868,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
 
     And I set the reserved user for the connection from device "device-1" in account "test-acc-1" to "test-user-1"
@@ -1030,10 +884,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1064,10 +915,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1098,10 +946,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1110,10 +955,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1144,10 +986,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1178,10 +1017,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1190,10 +1026,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1226,10 +1059,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1246,10 +1076,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1272,10 +1099,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1284,10 +1108,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1304,10 +1125,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1328,11 +1146,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1355,11 +1169,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-2"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-2" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1382,11 +1192,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-2"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-2" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1411,11 +1217,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1438,11 +1240,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-2"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-2" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1491,11 +1289,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-3"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-3" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1504,11 +1298,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1523,44 +1313,28 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-3"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-3" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-2:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-2"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-2" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-2"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-2" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-3"
+    And I search for a connection from the device "device-2" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-3" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1575,22 +1349,14 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
     Given The account name is "test-acc-1" and the client ID is "device-3"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-3" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-3"
+    And I search for a connection from the device "device-3" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-3" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1615,11 +1381,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-3"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-3" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1628,11 +1390,7 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-1:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-1"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-1" within 10 seconds
     Then I stop the simulator
     And I wait for 2 seconds
 
@@ -1657,13 +1415,8 @@ Feature: User Coupling
     Given The account name is "test-acc-1" and the client ID is "device-1"
     And The broker URI is "tcp://test-user-3:KeepCalm123.@localhost:1883"
     When I start the simulator
-    And I wait for 2 seconds
-    When I search for a connection from the device "device-1" in account "test-acc-1"
-    Then I find 1 connection
-    And The connection status is "CONNECTED"
-    And The connection user is "test-user-3"
+    And I search for a connection from the device "device-1" in account "test-acc-1" I find 1 connection with status "CONNECTED" and user "test-user-3" within 10 seconds
     Then I stop the simulator
-    And I wait for 2 seconds
 
 @teardown
   Scenario: Stop docker environment

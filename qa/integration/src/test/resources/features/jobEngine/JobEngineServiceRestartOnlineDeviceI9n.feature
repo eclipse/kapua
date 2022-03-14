@@ -34,7 +34,6 @@ Feature: JobEngineService restart job tests with online device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
@@ -67,7 +66,6 @@ Feature: JobEngineService restart job tests with online device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
@@ -105,7 +103,6 @@ Feature: JobEngineService restart job tests with online device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
@@ -143,7 +140,6 @@ Feature: JobEngineService restart job tests with online device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
@@ -182,7 +178,6 @@ Feature: JobEngineService restart job tests with online device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
@@ -222,7 +217,6 @@ Feature: JobEngineService restart job tests with online device
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     And Device is connected within 10 seconds
-    And I wait 1 second
     And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds

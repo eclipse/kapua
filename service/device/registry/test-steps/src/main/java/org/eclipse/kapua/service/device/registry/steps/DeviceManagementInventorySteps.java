@@ -20,11 +20,9 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
-import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementFactory;
 import org.eclipse.kapua.service.device.management.inventory.DeviceInventoryManagementService;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundleAction;
@@ -57,46 +55,24 @@ public class DeviceManagementInventorySteps extends TestBase {
     private DeviceRegistryService deviceRegistryService;
 
     private DeviceInventoryManagementService deviceInventoryManagementService;
-    private DeviceInventoryManagementFactory deviceInventoryManagementFactory;
 
     @Inject
     public DeviceManagementInventorySteps(StepData stepData) {
         super(stepData);
     }
 
-    @After(value = "@setup")
-    public void beforeScenario(Scenario scenario) {
+    @Before(value="@env_docker or @env_docker_base or @env_none", order=10)
+    public void beforeScenarioNone(Scenario scenario) {
+        updateScenario(scenario);
+    }
 
-        this.scenario = scenario;
-
+    @After(value="@setup")
+    public void setServices() {
         BrokerSetting.resetInstance();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceInventoryManagementService = locator.getService(DeviceInventoryManagementService.class);
-        deviceInventoryManagementFactory = locator.getFactory(DeviceInventoryManagementFactory.class);
-    }
-
-    @Before(value = "@env_docker or @env_docker_base or @env_none", order = 10)
-    public void beforeScenarioNone(Scenario scenario) {
-        updateScenario(scenario);
-    }
-
-    @After
-    public void afterScenario() {
-
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get(KURA_DEVICES);
-
-        if (kuraDevices != null) {
-            for (KuraDevice kuraDevice : kuraDevices) {
-                if (kuraDevice != null) {
-                    kuraDevice.mqttClientDisconnect();
-                }
-            }
-            kuraDevices.clear();
-        }
-
-        KapuaSecurityUtils.clearSession();
     }
 
     //

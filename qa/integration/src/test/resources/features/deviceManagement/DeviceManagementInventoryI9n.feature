@@ -34,9 +34,8 @@ Feature: Device Management Inventory Service Tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected within 5 seconds
-    And I wait 1 second
-    And Device status is "CONNECTED" within 5 seconds
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Inventory Items are requested
@@ -55,9 +54,8 @@ Feature: Device Management Inventory Service Tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected within 5 seconds
-    And I wait 1 second
-    And Device status is "CONNECTED" within 5 seconds
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Inventory Bundles are requested
@@ -80,9 +78,8 @@ Feature: Device Management Inventory Service Tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected within 5 seconds
-    And I wait 1 second
-    And Device status is "CONNECTED" within 5 seconds
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Inventory Bundles are requested
@@ -109,9 +106,8 @@ Feature: Device Management Inventory Service Tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected within 5 seconds
-    And I wait 1 second
-    And Device status is "CONNECTED" within 5 seconds
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Inventory Bundles are requested
@@ -138,9 +134,8 @@ Feature: Device Management Inventory Service Tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected within 5 seconds
-    And I wait 1 second
-    And Device status is "CONNECTED" within 5 seconds
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Inventory Containers are requested
@@ -159,9 +154,8 @@ Feature: Device Management Inventory Service Tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected within 5 seconds
-    And I wait 1 second
-    And Device status is "CONNECTED" within 5 seconds
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Inventory Containers are requested
@@ -184,9 +178,8 @@ Feature: Device Management Inventory Service Tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected within 5 seconds
-    And I wait 1 second
-    And Device status is "CONNECTED" within 5 seconds
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Inventory Containers are requested
@@ -209,9 +202,8 @@ Feature: Device Management Inventory Service Tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected within 5 seconds
-    And I wait 1 second
-    And Device status is "CONNECTED" within 5 seconds
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Inventory System Packages are requested
@@ -230,9 +222,8 @@ Feature: Device Management Inventory Service Tests
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
-    And Device is connected within 5 seconds
-    And I wait 1 second
-    And Device status is "CONNECTED" within 5 seconds
+    And Device is connected within 10 seconds
+    And Device status is "CONNECTED" within 10 seconds
     And I select account "kapua-sys"
     And I get the KuraMock device after 5 seconds
     And Inventory Deployment Packages are requested

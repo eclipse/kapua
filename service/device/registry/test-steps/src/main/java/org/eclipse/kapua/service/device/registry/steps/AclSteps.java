@@ -154,14 +154,34 @@ public class AclSteps extends TestBase {
         mqttDevice.mqttClientsDisconnect();
     }
 
-    @Then("Broker receives string {string} on topic {string}")
-    public void brokerReceivesStringOnTopic(String payload, String topic) {
+    @Then("Broker receives string {string} on topic {string} within {int} second(s)")
+    public void brokerReceivesStringOnTopic(String payload, String topic, int timeout) throws InterruptedException {
+        int executions = 0;
+        while (executions++ < timeout) {
+            if (brokerReceivesStringOnTopicInternal(payload, topic, false)) {
+                return;
+            }
+            Thread.sleep(1000);
+        }
+        brokerReceivesStringOnTopicInternal(payload, topic, true);
+    }
+
+    private boolean brokerReceivesStringOnTopicInternal(String payload, String topic, boolean timeout) {
+        boolean result = false;
         if ((listenerMqttMessage != null) && (listenerMqttMessage.size() == 1)) {
             String message = listenerMqttMessage.get(topic);
-            Assert.assertEquals(payload, message);
+            if (timeout) {
+                Assert.assertEquals(payload, message);
+            }
+            else {
+                result = payload.equals(message);
+            }
         } else {
-            Assert.fail("Message not received by broker.");
+            if (timeout) {
+                Assert.fail("Message not received by broker.");
+            }
         }
+        return result;
     }
 
     @Then("Broker doesn't receive string {string} on topic {string}")
@@ -172,16 +192,36 @@ public class AclSteps extends TestBase {
         }
     }
 
-    @Then("client {string} receives string {string} on topic {string}")
-    public void iReceiveStringOnTopic(String clientId, String payload, String topic) {
+    @Then("client {string} receives string {string} on topic {string} within {int} second(s)")
+    public void iReceiveStringOnTopic(String clientId, String payload, String topic, int timeout) throws InterruptedException {
+        int executions = 0;
+        while (executions++ < timeout) {
+            if (iReceiveStringOnTopicInternal(clientId, payload, topic, false)) {
+                return;
+            }
+            Thread.sleep(1000);
+        }
+        iReceiveStringOnTopicInternal(clientId, payload, topic, true);
+    }
+
+    private boolean iReceiveStringOnTopicInternal(String clientId, String payload, String topic, boolean timeout) {
         Map<String, String> messages = clientMqttMessage.get(clientId);
+        boolean result = false;
         if ((messages != null) && (messages.size() >= 1)) {
             String message = messages.get(topic);
-            Assert.assertEquals(payload, message);
+            if (timeout) {
+                Assert.assertEquals(payload, message);
+            }
+            else {
+                result = payload.equals(message);
+            }
         } else {
-            // TODO log (or append in the failure message) this error in a better way
-            Assert.fail("Message not received by broker." + (listenerMqttMessage != null && listenerMqttMessage.size() > 0 ? listenerMqttMessage.get(0) : " NULL"));
+            if (timeout) {
+                // TODO log (or append in the failure message) this error in a better way
+                Assert.fail("Message not received by broker." + (listenerMqttMessage != null && listenerMqttMessage.size() > 0 ? listenerMqttMessage.get(0) : " NULL"));
+            }
         }
+        return result;
     }
 
     @Then("client {string} doesn't receive string {string} on topic {string}")

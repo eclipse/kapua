@@ -26,6 +26,7 @@ public class ServerContext {
     protected ServiceClient authServiceClient;
     protected SecurityContextHandler securityContextHandler;
     protected BrokerIdentity brokerIdentity;
+    protected ActiveMQServer server;
 
     private final static ServerContext INSTANCE = new ServerContext();
 
@@ -34,12 +35,21 @@ public class ServerContext {
     }
 
     public void init(ActiveMQServer server) throws KapuaException {
+        this.server = server;
         //TODO see comment above
         brokerIdentity = BrokerIdentity.getInstance();
         brokerIdentity.init(server);
         authServiceClient = new ServiceClientMessagingImpl(brokerIdentity.getBrokerHost());
         securityContextHandler = SecurityContextHandler.getInstance();
-        brokerIdentity.init(server);
+        securityContextHandler.init(server);
+    }
+
+    public void shutdown(ActiveMQServer server) throws KapuaException {
+        securityContextHandler.shutdown(server);
+    }
+
+    public ActiveMQServer getServer() {
+        return server;
     }
 
     public ServiceClient getAuthServiceClient() {

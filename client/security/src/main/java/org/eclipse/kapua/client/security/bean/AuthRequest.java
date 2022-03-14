@@ -14,6 +14,10 @@ package org.eclipse.kapua.client.security.bean;
 
 import java.security.cert.Certificate;
 
+import org.apache.activemq.artemis.api.core.ActiveMQException;
+import org.apache.activemq.artemis.api.core.ActiveMQExceptionType;
+import org.eclipse.kapua.client.security.AuthErrorCodes;
+import org.eclipse.kapua.client.security.KapuaIllegalDeviceStateException;
 import org.eclipse.kapua.client.security.bean.serializer.CertificateToStringConverter;
 import org.eclipse.kapua.client.security.bean.serializer.StringToCertificateConverter;
 import org.eclipse.kapua.client.security.context.SessionContext;
@@ -48,8 +52,23 @@ public class AuthRequest implements Request {
     @JsonProperty("connectionId")
     private String connectionId;
 
-    @JsonProperty("oldConnectionId")
-    private String oldConnectionId;
+    //stealing link flag
+    @JsonProperty("stealingLink")
+    private boolean stealingLink;
+
+    //device connection illegal state flag
+    @JsonProperty("illegalState")
+    private boolean illegalState;
+
+    //device missing flag
+    @JsonProperty("missing")
+    private boolean missing;
+
+    @JsonProperty("exceptionClass")
+    private String exceptionClass;
+
+    @JsonProperty("authErrorCode")
+    private AuthErrorCodes authErrorCode;
 
     @JsonProperty("transportProtocol")
     private String transportProtocol;
@@ -83,14 +102,13 @@ public class AuthRequest implements Request {
     public AuthRequest() {
     }
 
-    public AuthRequest(String requester, String action, String username, String password, ConnectionInfo connectionInfo, String oldConnectionId, String brokerHost, String brokerIp) {
+    public AuthRequest(String requester, String action, String username, String password, ConnectionInfo connectionInfo, String brokerHost, String brokerIp) {
         this.requester = requester;
         this.action = action;
         this.username = username;
         this.clientId = connectionInfo.getClientId();
         this.clientIp = connectionInfo.getClientIp();
         this.connectionId = connectionInfo.getConnectionId();
-        this.oldConnectionId = oldConnectionId;
         this.transportProtocol = connectionInfo.getTransportProtocol();
         this.brokerHost = brokerHost;
         this.brokerId = brokerIp;
@@ -99,20 +117,42 @@ public class AuthRequest implements Request {
         this.certificates = connectionInfo.getCertificates();
     }
 
-    public AuthRequest(String requester, String action, SessionContext sessionContext, String oldConnectionId) {
+    public AuthRequest(String requester, String action, SessionContext sessionContext, Exception exception) {
         this.requester = requester;
         this.action = action;
         this.username = sessionContext.getUsername();
         this.clientId = sessionContext.getClientId();
         this.clientIp = sessionContext.getClientIp();
         this.connectionId = sessionContext.getConnectionId();
-        this.oldConnectionId = oldConnectionId;
         this.transportProtocol = sessionContext.getTransportProtocol();
         this.brokerHost = sessionContext.getBrokerHost();
         this.brokerId = sessionContext.getBrokerId();
         accountName = sessionContext.getAccountName();
         scopeId = sessionContext.getScopeId().toCompactId();
-        userId = sessionContext.getUserId().toCompactId();
+        //internal connection doesn't have an assigned userId
+        if (!sessionContext.isInternal()) {
+            userId = sessionContext.getUserId().toCompactId();
+        }
+        missing = sessionContext.isMissing();
+        updateError(exception);
+    }
+
+    public void updateError(Exception exception) {
+        exceptionClass = exception!=null ? exception.getClass().getName() : null;
+        if (exception instanceof ActiveMQException) {
+            ActiveMQException activeMQException = (ActiveMQException) exception;
+            //analyze the exception code
+            ActiveMQExceptionType exceptionType = activeMQException.getType();
+            if (!ActiveMQExceptionType.REMOTE_DISCONNECT.equals(exceptionType)) {
+                authErrorCode = AuthErrorCodes.UNEXPECTED_STATUS;
+            }
+        }
+        else if (exception instanceof KapuaIllegalDeviceStateException) {
+            authErrorCode = (AuthErrorCodes)((KapuaIllegalDeviceStateException) exception).getCode();
+        }
+        else {
+            //TODO generic error?
+        }
     }
 
     public String getRequester() {
@@ -179,12 +219,44 @@ public class AuthRequest implements Request {
         this.connectionId = connectionId;
     }
 
-    public String getOldConnectionId() {
-        return oldConnectionId;
+    public boolean isStealingLink() {
+        return stealingLink;
     }
 
-    public void setOldConnectionId(String oldConnectionId) {
-        this.oldConnectionId = oldConnectionId;
+    public void setStealingLink(boolean stealingLink) {
+        this.stealingLink = stealingLink;
+    }
+
+    public boolean isIllegalState() {
+        return illegalState;
+    }
+
+    public void setIllegalState(boolean illegalState) {
+        this.illegalState = illegalState;
+    }
+
+    public boolean isMissing() {
+        return missing;
+    }
+
+    public void setMissing(boolean missing) {
+        this.missing = missing;
+    }
+
+    public String getExceptionClass() {
+        return exceptionClass;
+    }
+
+    public void setExceptionClass(String exceptionClass) {
+        this.exceptionClass = exceptionClass;
+    }
+
+    public AuthErrorCodes getAuthErrorCode() {
+        return authErrorCode;
+    }
+
+    public void setAuthErrorCode(AuthErrorCodes authErrorCode) {
+        this.authErrorCode = authErrorCode;
     }
 
     public String getTransportProtocol() {

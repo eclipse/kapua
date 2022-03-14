@@ -525,6 +525,7 @@ public class BrokerSteps extends TestBase {
             logger.info("Device(s) status countdown check: {}", timeout);
             for (KuraDevice kuraDevice : kuraDevices) {
                 DeviceConnection deviceConn = deviceConnectionService.findByClientId(SYS_SCOPE_ID, kuraDevice.getClientId());
+                logger.info("Device: {} - {} - {} - connection status: {}", kuraDevice.getClientId(), kuraDevice.isConnected(), kuraDevice.mqttClientInstanceId(), deviceConn.getStatus());
                 boolean deviceStatusCheck = deviceStatus.equals(deviceConn.getStatus().toString());
                 checkDone = checkDone && deviceStatusCheck;
             }
