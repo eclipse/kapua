@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.device.registry.steps;
 
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
@@ -65,34 +64,19 @@ public class DeviceManagementKeystoreSteps extends TestBase {
         super(stepData);
     }
 
-    @Before
-    public void beforeScenario(Scenario scenario) {
+    @Before(value="@env_docker or @env_docker_base or @env_none", order=10)
+    public void beforeScenarioNone(Scenario scenario) {
+        updateScenario(scenario);
+    }
 
-        this.scenario = scenario;
-
+    @After(value="@setup")
+    public void setServices() {
         BrokerSetting.resetInstance();
 
         KapuaLocator locator = KapuaLocator.getInstance();
         deviceRegistryService = locator.getService(DeviceRegistryService.class);
         deviceKeystoreManagementService = locator.getService(DeviceKeystoreManagementService.class);
         deviceKeystoreManagementFactory = locator.getFactory(DeviceKeystoreManagementFactory.class);
-    }
-
-    @After
-    public void afterScenario() {
-
-        List<KuraDevice> kuraDevices = (List<KuraDevice>) stepData.get(KURA_DEVICES);
-
-        if (kuraDevices != null) {
-            for (KuraDevice kuraDevice : kuraDevices) {
-                if (kuraDevice != null) {
-                    kuraDevice.mqttClientDisconnect();
-                }
-            }
-            kuraDevices.clear();
-        }
-
-        KapuaSecurityUtils.clearSession();
     }
 
     @When("Keystores are requested")

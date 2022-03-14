@@ -63,6 +63,14 @@ public interface Cache<K, V> {
     public void remove(K k);
 
     /**
+     * Get and remove the cache value for the given key.<BR>
+     * No exception will be thrown if the value is not present
+     *
+     * @param k
+     */
+    public V getAndRemove(K k);
+
+    /**
      * Clear the cache
      */
     public void invalidateAll();

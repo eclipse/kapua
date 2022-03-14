@@ -31,10 +31,6 @@ public enum BrokerSettingKey implements SettingKey {
      */
     BROKER_HOST("broker.host"),
     /**
-     * Broker Id
-     */
-    BROKER_ID("broker.id"),
-    /**
      * AMQP acceptor port for "internal use acceptor" (used by the external consumers, console and rest-api)
      * default value should be 5672 (AMQP)
      */

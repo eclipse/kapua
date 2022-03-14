@@ -29,7 +29,6 @@ public class AuthContext {
     private String clientId;
     private String clientIp;
     private String connectionId;
-    private String oldConnectionId;
     private String brokerId;
     private String brokerHost;
     private String transportProtocol;
@@ -41,6 +40,10 @@ public class AuthContext {
 
     private boolean admin;
     private boolean missing;
+    //stealing link flag
+    private boolean stealingLink;
+    //device connection illegal state flag
+    private boolean illegalState;
     private String kapuaConnectionId;
 
     private Map<String, Object> property;
@@ -66,7 +69,6 @@ public class AuthContext {
         clientId = authRequest.getClientId();
         clientIp = authRequest.getClientIp();
         connectionId = authRequest.getConnectionId();
-        oldConnectionId = authRequest.getOldConnectionId();
         brokerId = authRequest.getBrokerId();
         brokerHost = authRequest.getBrokerHost();
         transportProtocol = authRequest.getTransportProtocol();
@@ -75,6 +77,11 @@ public class AuthContext {
         if(authRequest.getSslEnabled() != null) {
             sslEnabled = authRequest.getSslEnabled();
         }
+        exceptionClass = authRequest.getExceptionClass();
+        authErrorCode = authRequest.getAuthErrorCode();
+        stealingLink = authRequest.isStealingLink();
+        illegalState = authRequest.isIllegalState();
+        missing = authRequest.isMissing();
     }
 
     public String getRequester() {
@@ -111,10 +118,6 @@ public class AuthContext {
 
     public String getConnectionId() {
         return connectionId;
-    }
-
-    public String getOldConnectionId() {
-        return oldConnectionId;
     }
 
     public String getBrokerId() {
@@ -171,6 +174,22 @@ public class AuthContext {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+    }
+
+    public boolean isStealingLink() {
+        return stealingLink;
+    }
+
+    public void setStealingLink(boolean stealingLink) {
+        this.stealingLink = stealingLink;
+    }
+
+    public boolean isIllegalState() {
+        return illegalState;
+    }
+
+    public void setIllegalState(boolean illegalState) {
+        this.illegalState = illegalState;
     }
 
     public <T> void setProperty(String key, T value) {

@@ -44,6 +44,12 @@ Feature: Device Broker Integration
     And I logout
     And Device death message is sent
 
+  Scenario: Test the stealing link handling with multiple clients connecting at the same time
+
+    When I prepare 10 clients with "client-stealing-link" as client id in a pool called "stealing" with username "kapua-broker" password "kapua-password" and brokerUrl "tcp://localhost:1883" and if connected disconnect after 5 seconds
+    And I connect the pool called "stealing"
+    Then Only 1 client of the pool called "stealing" is still connected within 10 seconds
+
 @teardown
   Scenario: Stop full docker environment
     Given Stop full docker environment

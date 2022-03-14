@@ -18,7 +18,6 @@ import org.apache.activemq.artemis.core.config.WildcardConfiguration;
 import org.apache.activemq.artemis.core.settings.HierarchicalRepository;
 import org.apache.activemq.artemis.core.settings.impl.HierarchicalObjectRepository;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthAcl.Action;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
@@ -42,7 +41,7 @@ public class Acl {
     private HierarchicalRepository<KapuaPrincipal> write;
     private HierarchicalRepository<KapuaPrincipal> admin;
 
-    public Acl(KapuaPrincipal principal, AuthResponse authResponse) throws KapuaIllegalArgumentException {
+    public Acl(KapuaPrincipal principal, List<AuthAcl> authAcls) throws KapuaIllegalArgumentException {
         if (principal==null) {
             throw new KapuaIllegalArgumentException("principal", null);
         }
@@ -52,13 +51,13 @@ public class Acl {
         write.setDefault(null);
         admin = new HierarchicalObjectRepository<>(WILDCARD_CONFIGURATION);
         admin.setDefault(null);
-        List<AuthAcl> authAcls = authResponse.getAcls();
         StringBuilder aclLog = new StringBuilder();
         if (authAcls!=null) {
             authAcls.forEach((authAcl) -> {
                 try {
                     add(principal, authAcl.getMatch(), authAcl.getAction());
-                    aclLog.append(authAcl.getMatch()).append(" - ").append(authAcl.getAction()).append(" - ").append(principal.getName()).append("\n");
+                    aclLog.append("\n\t").append(authAcl.getMatch()).append(" - ").append(authAcl.getAction()).append(" - ").
+                        append(principal.getName()).append("/").append(principal.getAccountId().toStringId()).append("/").append(principal.getClientId());
                 } catch (Exception e) {
                     //TODO add metric
                     //no security issue since in case of error no acl is added
@@ -72,6 +71,9 @@ public class Acl {
     private void add(KapuaPrincipal principal, String match, Action action) throws KapuaIllegalArgumentException {
         if (action==null) {
             throw new KapuaIllegalArgumentException("action", null);
+        }
+        if (principal==null) {
+            throw new KapuaIllegalArgumentException("principal", null);
         }
         if (match==null || match.trim().length()<=0) {
             throw new KapuaIllegalArgumentException("match", match);

@@ -75,7 +75,6 @@ Feature: JobEngineService execute job on device connect
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -119,7 +118,6 @@ Feature: JobEngineService execute job on device connect
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -164,7 +162,6 @@ Feature: JobEngineService execute job on device connect
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -211,7 +208,6 @@ Feature: JobEngineService execute job on device connect
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
@@ -261,7 +257,6 @@ Feature: JobEngineService execute job on device connect
     Given I login as user with name "kapua-sys" and password "kapua-password"
     And I start the Kura Mock
     When Device is connected within 10 seconds
-    And I wait 1 second
     Then Device status is "CONNECTED" within 10 seconds
     When KuraMock is disconnected
     And I wait 1 second
