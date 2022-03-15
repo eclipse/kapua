@@ -18,6 +18,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.kapua.model.KapuaEntity;
 
+import java.net.URI;
+
 /**
  *
  * @author alberto.codutti
@@ -52,19 +54,55 @@ public abstract class AbstractKapuaResource {
      * return javax.ws.rs.core.Response.ok().build();
      * </pre>
      *
-     * @return A build {@link Response#ok()}
+     * @return A built {@link Response#ok()}
      * @since 1.0.0
      */
     public Response returnOk() {
         return Response.ok().build();
     }
 
-    public Response returnNoContent() {
-        return Response.noContent().build();
+    /**
+     * Builds a 200 HTTP Response a content.
+     *
+     * <pre>
+     * return javax.ws.rs.core.Response.ok().entity(entity).build();
+     * </pre>
+     *
+     * @param entity The entity to return.
+     * @return A built {@link Response#ok()}
+     * @since 1.0.0
+     */
+    public Response returnOk(Object entity) {
+        return Response.ok().entity(entity).build();
     }
 
+    /**
+     * Builds a 201 HTTP Response a content.
+     *
+     * <pre>
+     * return javax.ws.rs.core.Response.status(Status.CREATED).entity(entity).build();
+     * </pre>
+     *
+     * @param entity The entity to return.
+     * @return A built {@link Response#created(URI)}
+     * @since 1.2.0
+     */
     public Response returnCreated(Object entity) {
         return Response.status(Status.CREATED).entity(entity).build();
+    }
+
+    /**
+     * Builds a 204 HTTP Response a content.
+     *
+     * <pre>
+     * return javax.ws.rs.core.Response.noContent().build();
+     * </pre>
+     *
+     * @return A built {@link Response#noContent()}
+     * @since 1.2.0
+     */
+    public Response returnNoContent() {
+        return Response.noContent().build();
     }
 
 }
