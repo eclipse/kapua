@@ -16,6 +16,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSetting;
+import org.eclipse.kapua.app.api.core.settings.KapuaApiCoreSettingKeys;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
@@ -30,6 +32,7 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
 import org.eclipse.kapua.service.device.registry.Device;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -37,16 +40,17 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("{scopeId}/devices/{deviceId}/packages")
 public class DeviceManagementPackages extends AbstractKapuaResource {
+
+    private static final Boolean RESPONSE_LEGACY_MODE = KapuaApiCoreSetting.getInstance().getBoolean(KapuaApiCoreSettingKeys.API_DEVICE_MANAGEMENT_PACKAGE_RESPONSE_LEGACY_MODE, false);
 
     private final KapuaLocator locator = KapuaLocator.getInstance();
 
     private final DevicePackageManagementService devicePackageManagementService = locator.getService(DevicePackageManagementService.class);
     private final DevicePackageFactory devicePackageFactory = locator.getFactory(DevicePackageFactory.class);
-
-    private final DeviceManagementOperationRegistryService deviceManagementOperationRegistryService = locator.getService(DeviceManagementOperationRegistryService.class);
 
     /**
      * Returns the list of all the packages installed on the device.
@@ -67,6 +71,8 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
         return devicePackageManagementService.getInstalled(scopeId, deviceId, timeout);
     }
 
+    private final DeviceManagementOperationRegistryService deviceManagementOperationRegistryService = locator.getService(DeviceManagementOperationRegistryService.class);
+
     /**
      * Download and optionally installs a package into the device.
      *
@@ -81,10 +87,11 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     @POST
     @Path("_download")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public DeviceManagementOperation download(
+    public Response download(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
+            @QueryParam("legacy") @DefaultValue("false") boolean legacy,
             DevicePackageDownloadRequest packageDownloadRequest)
             throws KapuaException {
         DevicePackageDownloadOptions options = devicePackageFactory.newPackageDownloadOptions();
@@ -92,7 +99,9 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
 
         KapuaId deviceManagementOperationId = devicePackageManagementService.downloadExec(scopeId, deviceId, packageDownloadRequest, options);
 
-        return deviceManagementOperationRegistryService.find(scopeId, deviceManagementOperationId);
+        DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRegistryService.find(scopeId, deviceManagementOperationId);
+
+        return RESPONSE_LEGACY_MODE || legacy ? returnNoContent() : returnOk(deviceManagementOperation);
     }
 
     /**
@@ -109,17 +118,20 @@ public class DeviceManagementPackages extends AbstractKapuaResource {
     @POST
     @Path("_uninstall")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public DeviceManagementOperation uninstall(
+    public Response uninstall(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
             @QueryParam("timeout") Long timeout,
+            @QueryParam("legacy") @DefaultValue("false") boolean legacy,
             DevicePackageUninstallRequest packageUninstallRequest) throws KapuaException {
         DevicePackageUninstallOptions options = devicePackageFactory.newPackageUninstallOptions();
         options.setTimeout(timeout);
 
         KapuaId deviceManagementOperationId = devicePackageManagementService.uninstallExec(scopeId, deviceId, packageUninstallRequest, options);
 
-        return deviceManagementOperationRegistryService.find(scopeId, deviceManagementOperationId);
+        DeviceManagementOperation deviceManagementOperation = deviceManagementOperationRegistryService.find(scopeId, deviceManagementOperationId);
+
+        return RESPONSE_LEGACY_MODE || legacy? returnNoContent() : returnOk(deviceManagementOperation);
     }
 
 }
