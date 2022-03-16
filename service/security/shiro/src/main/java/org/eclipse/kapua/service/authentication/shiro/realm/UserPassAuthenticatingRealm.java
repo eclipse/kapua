@@ -17,22 +17,20 @@ import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 import org.eclipse.kapua.service.authentication.shiro.UsernamePasswordCredentialsImpl;
+import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
@@ -153,38 +151,14 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
             throws AuthenticationException {
         LoginAuthenticationInfo kapuaInfo = (LoginAuthenticationInfo) info;
         CredentialService credentialService = LOCATOR.getService(CredentialService.class);
-        MfaOptionService mfaOptionService = LOCATOR.getService(MfaOptionService.class);
-        KapuaId userId = kapuaInfo.getUser().getId();
-        KapuaId scopeId = kapuaInfo.getUser().getScopeId();
-        boolean hasMfa = false;
-        boolean checkedUsernameAndPasswordMatch = false;
-        boolean userPasswordMatch = true;
-        try {
-            if (KapuaSecurityUtils.doPrivileged(() -> mfaOptionService.findByUserId(scopeId, userId) != null)) {
-                hasMfa = true;
-            }
-        } catch (KapuaException e) {
-            LOG.warn("Unexpected error while looking for the User. Error: {}", e.getMessage());
-            throw new ShiroException("Unexpected error while looking for the user!", e);
-        }
 
         try {
-            if (hasMfa) {
-                super.assertCredentialsMatch(authcToken, info);
-            } else {
-                userPasswordMatch = ((UserPassCredentialsMatcher) getCredentialsMatcher()).doUsernameAndPasswordMatch(authcToken, info);
-                checkedUsernameAndPasswordMatch = true;
-                if (!userPasswordMatch) {
-                    String msg = "Submitted credentials for token [" + authcToken + "] did not match the expected credentials.";
-                    throw new IncorrectCredentialsException(msg);
-                }
-            }
-        } catch (AuthenticationException authenticationEx) {
+            super.assertCredentialsMatch(authcToken, info);
+        } catch (MfaRequiredException e) {
+            throw e;
+        } catch (AuthenticationException e) {
             try {
                 Credential failedCredential = (Credential) kapuaInfo.getCredentials();
-                userPasswordMatch = checkedUsernameAndPasswordMatch ?
-                        userPasswordMatch : ((UserPassCredentialsMatcher) getCredentialsMatcher()).doUsernameAndPasswordMatch(authcToken, info);
-                final boolean hasMfaAndUserPasswordMatch = hasMfa && userPasswordMatch;
                 KapuaSecurityUtils.doPrivileged(() -> {
                     Map<String, Object> credentialServiceConfig = kapuaInfo.getCredentialServiceConfig();
                     boolean lockoutPolicyEnabled = (boolean) credentialServiceConfig.get("lockoutPolicy.enabled");
@@ -194,8 +168,7 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
 
                         Date firstLoginFailure;
                         boolean resetAttempts = failedCredential.getFirstLoginFailure() == null ||
-                                now.after(failedCredential.getLoginFailuresReset()) ||
-                                hasMfaAndUserPasswordMatch;
+                                now.after(failedCredential.getLoginFailuresReset());
                         if (resetAttempts) {
                             firstLoginFailure = now;
                             failedCredential.setLoginFailures(1);
@@ -220,7 +193,7 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
             } catch (KapuaException kex) {
                 throw new ShiroException("Unexpected error while updating the lockout policy", kex);
             }
-            throw authenticationEx;
+            throw e;
         }
 
         //
