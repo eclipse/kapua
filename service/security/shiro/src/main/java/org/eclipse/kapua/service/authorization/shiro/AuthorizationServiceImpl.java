@@ -45,8 +45,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             boolean[] returnedPermissions = new boolean[permissions.size()];
             Arrays.fill(returnedPermissions, true);
             return returnedPermissions;
-        }
-        else {
+        } else {
             List<org.apache.shiro.authz.Permission> permissionsShiro = permissions.stream()
                     .map(permission -> (org.apache.shiro.authz.Permission) permission)
                     .collect(Collectors.toList());
@@ -63,7 +62,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             throw new KapuaUnauthenticatedException();
         }
 
-        return session.isTrustedMode() ? true : SecurityUtils.getSubject().isPermitted((org.apache.shiro.authz.Permission) permission);
+        return session.isTrustedMode() ||
+                SecurityUtils.getSubject().isPermitted((org.apache.shiro.authz.Permission) permission);
     }
 
     @Override
