@@ -67,6 +67,4 @@ public interface GwtAuthorizationService extends RemoteService {
     public void logout()
             throws GwtKapuaException;
 
-    public boolean hasMfa(String username) throws GwtKapuaException;
-
 }
