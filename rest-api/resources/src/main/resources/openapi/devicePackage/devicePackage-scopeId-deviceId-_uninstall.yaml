@@ -44,6 +44,12 @@ paths:
               version: 1.0.500
         required: true
       responses:
+        200:
+          description: The corresponding Device Management Operation to track the progress of the Device Package Uninstall Request
+          content:
+            application/json:
+              schema:
+                $ref: '../deviceOperation/deviceOperation.yaml#/components/schemas/deviceOperation'
         204:
           description: |
             The Package Install request has been successfully received. However, this does NOT mean that the package has been successfully installed, since the Package Install
