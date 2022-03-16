@@ -16,7 +16,6 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.apache.commons.lang3.StringUtils;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
@@ -285,6 +284,8 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
     @Override
     public Integer getMinPasswordLength(final String scopeId) throws GwtKapuaException {
         try {
+            AUTHENTICATION_SERVICE.isAuthenticated();
+
             // Do privileged because the request may come from a user with no permission who just wants to change his own password
             return KapuaSecurityUtils.doPrivileged(new Callable<Integer>() {
 
