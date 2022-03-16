@@ -97,4 +97,6 @@ public interface AuthenticationService extends KapuaService {
      */
     LoginInfo getLoginInfo() throws KapuaException;
 
+    boolean isAuthenticated() throws KapuaException;
+
 }

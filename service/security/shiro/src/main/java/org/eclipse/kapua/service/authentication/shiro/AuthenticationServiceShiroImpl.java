@@ -28,6 +28,7 @@ import org.apache.shiro.subject.Subject;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.commons.logging.LoggingMdcKeys;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -436,6 +437,18 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         loginInfo.setAccessPermission(Sets.newHashSet(accessPermissions.getItems()));
 
         return loginInfo;
+    }
+
+    @Override
+    public boolean isAuthenticated()
+            throws KapuaException {
+        KapuaSession session = KapuaSecurityUtils.getSession();
+
+        if (session == null) {
+            throw new KapuaUnauthenticatedException();
+        }
+
+        return session.isTrustedMode() || SecurityUtils.getSubject().isAuthenticated();
     }
 
     //
