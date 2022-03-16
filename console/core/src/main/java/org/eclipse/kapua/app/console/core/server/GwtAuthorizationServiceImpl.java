@@ -374,35 +374,6 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
         }
     }
 
-    @Override
-    public boolean hasMfa(final String username) throws GwtKapuaException {
-        try {
-            final User user = KapuaSecurityUtils.doPrivileged(new Callable<User>() {
-
-                @Override
-                public User call() throws Exception {
-                    return USER_SERVICE.findByName(username);
-                }
-
-            });
-
-            if (user == null) {
-                return false;
-            }
-
-            return KapuaSecurityUtils.doPrivileged(new Callable<Boolean>() {
-
-                @Override
-                public Boolean call() throws Exception {
-                    return MFA_OPTION_SERVICE.findByUserId(user.getScopeId(), user.getId()) != null;
-                }
-
-            });
-        } catch (KapuaException ex) {
-            throw KapuaExceptionHandler.buildExceptionFromError(ex);
-        }
-    }
-
     /**
      * Internal logout, also used in case of exceptions.
      */

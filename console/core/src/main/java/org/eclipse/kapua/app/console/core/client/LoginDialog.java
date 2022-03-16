@@ -31,16 +31,17 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
-import org.eclipse.kapua.app.console.module.api.client.util.CookieUtils;
 import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
 import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtSettingsServiceAsync;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.CookieUtils;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 
@@ -272,60 +273,26 @@ public class LoginDialog extends Dialog {
             ConsoleInfo.display(MSGS.dialogError(), MSGS.passwordFieldRequired());
             password.markInvalid(password.getErrorMessage());
         } else {
-            gwtAuthorizationService.hasMfa(username.getValue(), new AsyncCallback<Boolean>() {
 
-                @Override
-                public void onFailure(Throwable caught) {
-                    FailureHandler.handle(caught);
-                }
+            status.show();
+            getButtonBar().disable();
+            username.disable();
+            password.disable();
 
-                @Override
-                public void onSuccess(Boolean hasMfaAuth) {
-                    status.show();
-                    getButtonBar().disable();
-                    username.disable();
-                    password.disable();
+            // Open the MFA if needed
+            // trust cookie test
+            boolean existTrustCookie = CookieUtils.isCookieEnabled(CookieUtils.KAPUA_COOKIE_TRUST + username.getValue());
+            status.show();
+            getButtonBar().disable();
 
-                    // Open the MFA if needed
-                    if (hasMfaAuth) {
-                        // trust cookie test
-                        boolean existTrustCookie = CookieUtils.isCookieEnabled(CookieUtils.KAPUA_COOKIE_TRUST + username.getValue());
-                        if (existTrustCookie) {
-                            status.show();
-                            getButtonBar().disable();
-
-                            CookieUtils cookie = new CookieUtils(username.getValue());
-                            String trustKey = cookie.getTrustKeyCookie();
-                            if (trustKey != null) {
-                                if (!"".equals(trustKey)) {
-                                    // trust login
-                                    performLogin(trustKey);
-                                }
-                            } else {
-                                performLogin();
-                            }
-                        } else {
-                            mfaLoginDialog.show();
-                        }
-                    } else {
-                        // remove obsolete trust cookie if exists
-                        CookieUtils.removeCookie(CookieUtils.KAPUA_COOKIE_TRUST + username.getValue());
-
-                        status.show();
-                        getButtonBar().disable();
-
-                        performLogin();
-                    }
-                }
-            });
-
+            CookieUtils cookie = new CookieUtils(username.getValue());
+            String trustKey = cookie.getTrustKeyCookie();
+            performLogin(cookie != null ? cookie.getTrustKeyCookie() : null);
         }
+
     }
 
     // Login
-    public void performLogin() {
-        performLogin(null);
-    }
 
     public void performLogin(String trustKey) {
 
@@ -336,8 +303,18 @@ public class LoginDialog extends Dialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
-                CookieUtils.removeCookie(CookieUtils.KAPUA_COOKIE_TRUST + username.getValue());
+                if (caught instanceof GwtKapuaException) {
+                    GwtKapuaException ex = (GwtKapuaException) caught;
+                    if (GwtKapuaErrorCode.REQUIRE_MFA_CODE == ex.getCode()) {
+                        mfaLoginDialog.show();
+                        return;
+                    } else {
+                        ConsoleInfo.display(CORE_MSGS.loginError(), caught.getLocalizedMessage());
+                    }
+                    CookieUtils.removeCookie(CookieUtils.KAPUA_COOKIE_TRUST + username.getValue());
+                } else {
+                    ConsoleInfo.display("Error while performing login", caught.getLocalizedMessage());
+                }
                 resetDialog();
             }
 
