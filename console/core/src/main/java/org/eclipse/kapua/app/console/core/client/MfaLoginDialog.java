@@ -12,16 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
-import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
-import org.eclipse.kapua.app.console.module.api.client.util.CookieUtils;
-import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
-import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
-import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
-import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
-import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
-import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
-import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
-
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -40,6 +30,15 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
+import org.eclipse.kapua.app.console.core.client.messages.ConsoleCoreMessages;
+import org.eclipse.kapua.app.console.core.shared.model.authentication.GwtLoginCredential;
+import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
+import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
+import org.eclipse.kapua.app.console.module.api.client.util.CookieUtils;
+import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
+import org.eclipse.kapua.app.console.module.authentication.client.messages.ConsoleCredentialMessages;
 
 /**
  * Multi Factor Authentication - Login second step: MFA code and trust this machine request
@@ -86,6 +85,7 @@ public class MfaLoginDialog extends Dialog {
 
         KeyListener keyListener = new KeyListener() {
 
+            @Override
             public void componentKeyUp(ComponentEvent event) {
                 validate();
                 if (event.getKeyCode() == 13) {
@@ -121,7 +121,9 @@ public class MfaLoginDialog extends Dialog {
         trustCheckbox.setToolTip(MSGS.userFormLockedTooltip());
         add(trustCheckbox);
 
-        setFocusWidget(code);
+        if (this.isVisible()) {
+            setFocusWidget(code);
+        }
     }
 
     protected void onSubmit() {
@@ -183,6 +185,7 @@ public class MfaLoginDialog extends Dialog {
         submit = new Button(CORE_MSGS.loginLogin());
         submit.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
+            @Override
             public void componentSelected(ButtonEvent ce) {
                 onSubmit();
             }
@@ -192,6 +195,7 @@ public class MfaLoginDialog extends Dialog {
         back = new Button("Back");
         back.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
+            @Override
             public void componentSelected(ButtonEvent ce) {
                 status.hide();
 

@@ -17,7 +17,6 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
-
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
@@ -33,7 +32,6 @@ import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.authentication.shiro.mfa.MfaAuthenticatorServiceLocator;
 import org.eclipse.kapua.service.user.User;
-
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Date;
@@ -79,8 +77,9 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         //
         // Match token with info
         boolean credentialMatch = false;
-        if (tokenUsername.equals(infoUser.getName()) && CredentialType.PASSWORD.equals(infoCredential.getCredentialType()) && BCrypt.checkpw(
-                tokenPassword, infoCredential.getCredentialKey())) {
+        if (tokenUsername.equals(infoUser.getName()) &&
+                CredentialType.PASSWORD.equals(infoCredential.getCredentialType()) &&
+                BCrypt.checkpw(tokenPassword, infoCredential.getCredentialKey())) {
 
             if (!mfaAuthenticator.isEnabled()) {
                 credentialMatch = true;
@@ -172,18 +171,6 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
         }
 
         return credentialMatch;
-    }
-
-    public boolean doUsernameAndPasswordMatch(AuthenticationToken authenticationToken, AuthenticationInfo authenticationInfo) {
-        UsernamePasswordCredentials token = (UsernamePasswordCredentials) authenticationToken;
-        String tokenUsername = token.getUsername();
-        String tokenPassword = token.getPassword();
-        LoginAuthenticationInfo loginAuthInfo = (LoginAuthenticationInfo) authenticationInfo;
-        User infoUser = (User) loginAuthInfo.getPrincipals().getPrimaryPrincipal();
-        Credential infoCredential = (Credential) loginAuthInfo.getCredentials();
-        return tokenUsername.equals(infoUser.getName()) &&
-                CredentialType.PASSWORD.equals(infoCredential.getCredentialType()) &&
-                BCrypt.checkpw(tokenPassword, infoCredential.getCredentialKey());
     }
 
 }
