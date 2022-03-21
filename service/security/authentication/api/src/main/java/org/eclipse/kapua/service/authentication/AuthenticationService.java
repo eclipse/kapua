@@ -18,85 +18,125 @@ import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.authentication.token.LoginInfo;
 
 /**
- * AuthenticationService exposes APIs to manage User object under an Account.<br>
- * It includes APIs to create, update, find, list and delete Users.<br>
- * Instances of the UserService can be acquired through the ServiceLocator.
+ * {@link AuthenticationService} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface AuthenticationService extends KapuaService {
 
+    //
+    // Session
+
     /**
-     * Login the provided user login credentials on the system (if the credentials are valid)
+     * Logins the provided {@link LoginCredentials}.
+     * <p>
+     * Creates a new session that is represented by the {@link AccessToken}.
      *
-     * @param loginCredentials
-     * @return
-     * @throws KapuaException an exception is thrown if the credentials are not found on the system, are expired or are disabled
+     * @param loginCredentials The {@link LoginCredentials} to validate.
+     * @return The {@link AccessToken} created by this login
+     * @throws KapuaException
+     * @since 1.0.0
      */
     AccessToken login(LoginCredentials loginCredentials) throws KapuaException;
 
     /**
-     * Login the provided user login credentials on the system (if the credentials are valid) and enable the trust key
+     * Logins the provided {@link LoginCredentials}.
      *
-     * @param loginCredentials
-     * @param enableTrust
-     * @return
-     * @throws KapuaException an exception is thrown if the credentials are not found on the system, are expired or are disabled
+     * @param loginCredentials The {@link LoginCredentials} to validate.
+     * @param enableTrust      Whether to generate a trustkey.
+     * @return The {@link AccessToken} created by this login
+     * @throws KapuaException
+     * @since 1.0.0
+     * @deprecated Since 2.0.0. Please make use of {@link #login(LoginCredentials)}.
      */
+    @Deprecated
     AccessToken login(LoginCredentials loginCredentials, boolean enableTrust) throws KapuaException;
 
     /**
-     * FIXME: add javadoc
+     * Logins the provided {@link SessionCredentials}.
+     * <p>
+     * Restores a previously created session from a {@link #login(LoginCredentials)}.
      *
-     * @param sessionCredentials
-     * @throws KapuaException an exception is thrown if the credentials are not found on the system, are expired or are disabled
+     * @param sessionCredentials The {@link SessionCredentials} to validate
+     * @throws KapuaException
+     * @since 1.0.0
      */
     void authenticate(SessionCredentials sessionCredentials) throws KapuaException;
 
     /**
-     * Logout the current logged user
+     * Verifies the given {@link LoginCredentials}.
+     * <p>
+     * This does not create a new session and does not create a new {@link AccessToken}.
+     *
+     * @param loginCredentials The {@link LoginCredentials} to validate.
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    void verifyCredentials(LoginCredentials loginCredentials) throws KapuaException;
+
+    /**
+     * Checks if there is a session that is authenticated.
+     *
+     * @return {@code true} if session is authenticated, {@code false} otherwise.
+     * @throws KapuaException
+     * @since 2.0.0
+     */
+    boolean isAuthenticated() throws KapuaException;
+
+    /**
+     * Returns the {@link LoginInfo} related to the current session.
+     *
+     * @return The {@link LoginInfo} related to the current session.
+     * @throws KapuaException
+     * @since 1.1.0
+     */
+    LoginInfo getLoginInfo() throws KapuaException;
+
+    /**
+     * Logouts the current logged user.
+     * <p>
+     * Destroys the session represented by the {@link AccessToken}.
      *
      * @throws KapuaException
+     * @since 1.0.0
      */
     void logout() throws KapuaException;
 
+    //
+    // Access token
+
     /**
-     * Return the {@link AccessToken} identified by the provided token identifier. Expired {@link AccessToken}s are
-     * excluded.
+     * Gets the {@link AccessToken} identified by its {@link AccessToken#getTokenId()}.
+     * Expired {@link AccessToken}s are excluded.
      *
-     * @param tokenId           The ID of the {@link AccessToken}
-     * @return                  The desired {@link AccessToken} object
-     * @throws KapuaException if no {@link AccessToken} is found for that token identifier
+     * @param tokenId The {@link AccessToken#getTokenId()} to look for.
+     * @return The found {@link AccessToken} or {@code null} if not present.
+     * @throws KapuaException
+     * @since 1.0.0
      */
     AccessToken findAccessToken(String tokenId) throws KapuaException;
+
+    /**
+     * Refreshes the current {@link AccessToken} with a new one.
+     *
+     * @param tokenId The current {@link AccessToken#getTokenId()}
+     * @param refreshToken The current {@link AccessToken#getRefreshToken()}
+     * @return A new {@link AccessToken}.
+     * @throws KapuaException
+     * @since 1.0.0
+     */
+    AccessToken refreshAccessToken(String tokenId, String refreshToken) throws KapuaException;
 
     /**
      * Return a Refreshable {@link AccessToken} identified by the provided token identifier. A Refreshable token may be
      * already expired or not, but its Refresh Token is still valid
      *
-     * @param tokenId               The ID of the {@link AccessToken}
-     * @return                      The desired {@link AccessToken} object
+     * @param tokenId The ID of the {@link AccessToken}
+     * @return The desired {@link AccessToken} object
      * @throws KapuaException if no {@link AccessToken} is found for that token identifier
+     * @since 1.3.0
+     * @deprecated Since 2.0.0. This has been added to this API but is not necessary.
      */
+    @Deprecated
     AccessToken findRefreshableAccessToken(String tokenId) throws KapuaException;
-
-    AccessToken refreshAccessToken(String tokenId, String refreshToken) throws KapuaException;
-
-    /**
-     * Verifies the password of a user without logging him in, and thus create any kind of session
-     *
-     * @param loginCredentials
-     * @throws KapuaException an exception is thrown if the credentials are not found on the system, are expired or are disabled
-     */
-    void verifyCredentials(LoginCredentials loginCredentials) throws KapuaException;
-
-    /**
-     * Return the {@link LoginInfo} related to the current session
-     * @return the {@link LoginInfo} object containing all the permissions related to the current session and the current {@link AccessToken}
-     * @throws KapuaException
-     */
-    LoginInfo getLoginInfo() throws KapuaException;
-
-    boolean isAuthenticated() throws KapuaException;
-
 }
