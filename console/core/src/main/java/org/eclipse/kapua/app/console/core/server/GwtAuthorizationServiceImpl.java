@@ -118,12 +118,13 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             UsernamePasswordCredentials usernamePasswordCredentials = CREDENTIALS_FACTORY.newUsernamePasswordCredentials(gwtLoginCredentials.getUsername(), gwtLoginCredentials.getPassword());
             usernamePasswordCredentials.setAuthenticationCode(gwtLoginCredentials.getAuthenticationCode());
             usernamePasswordCredentials.setTrustKey(gwtLoginCredentials.getTrustKey());
+            usernamePasswordCredentials.setTrustMe(trustReq);
 
             // Cleanup any previous session
             cleanupSession();
 
             // Login
-            AUTHENTICATION_SERVICE.login(usernamePasswordCredentials, trustReq);
+            AUTHENTICATION_SERVICE.login(usernamePasswordCredentials);
 
             // Populate Session
             return establishSession();
