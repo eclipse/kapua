@@ -166,8 +166,9 @@ class UsernamePasswordCredentialsAnother implements UsernamePasswordCredentials 
 
     private String username;
     private String password;
-    private String trustKey;
     private String authenticationCode;
+    private String trustKey;
+    private boolean trustMe;
 
     public UsernamePasswordCredentialsAnother(String username, String password) {
         this.username = username;
@@ -195,6 +196,16 @@ class UsernamePasswordCredentialsAnother implements UsernamePasswordCredentials 
     }
 
     @Override
+    public String getAuthenticationCode() {
+        return authenticationCode;
+    }
+
+    @Override
+    public void setAuthenticationCode(String authenticationCode) {
+        this.authenticationCode = authenticationCode;
+    }
+
+    @Override
     public String getTrustKey() {
         return trustKey;
     }
@@ -205,12 +216,12 @@ class UsernamePasswordCredentialsAnother implements UsernamePasswordCredentials 
     }
 
     @Override
-    public String getAuthenticationCode() {
-        return authenticationCode;
+    public boolean getTrustMe() {
+        return trustMe;
     }
 
     @Override
-    public void setAuthenticationCode(String authenticationCode) {
-        this.authenticationCode = authenticationCode;
+    public void setTrustMe(boolean trustMe) {
+        this.trustMe = trustMe;
     }
 }

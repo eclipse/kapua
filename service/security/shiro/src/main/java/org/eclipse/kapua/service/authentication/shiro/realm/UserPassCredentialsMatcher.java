@@ -43,11 +43,11 @@ import java.util.Date;
  */
 public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
-    private KapuaLocator locator;
-    private MfaOptionService mfaOptionService;
-    private ScratchCodeService scratchCodeService;
-    private MfaAuthenticatorServiceLocator mfaAuthServiceLocator;
-    private MfaAuthenticator mfaAuthenticator;
+    private final KapuaLocator locator;
+    private final MfaOptionService mfaOptionService;
+    private final ScratchCodeService scratchCodeService;
+    private final MfaAuthenticatorServiceLocator mfaAuthServiceLocator;
+    private final MfaAuthenticator mfaAuthenticator;
 
     public UserPassCredentialsMatcher() {
         locator = KapuaLocator.getInstance();

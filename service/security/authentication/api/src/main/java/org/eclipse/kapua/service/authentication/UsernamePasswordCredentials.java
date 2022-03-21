@@ -90,4 +90,20 @@ public interface UsernamePasswordCredentials extends LoginCredentials {
      * @since 1.3.0
      */
     void setTrustKey(String trustKey);
+
+    /**
+     * Gets whether create a trust key or not.
+     *
+     * @return {@code true} if to be created, {@code false} otherwise
+     * @since 2.0.0
+     */
+    boolean getTrustMe();
+
+    /**
+     * Sets whether create a trust key or not.
+     *
+     * @param trustMe {@code true} if to be created, {@code false} if not.
+     * @since 2.0.0
+     */
+    void setTrustMe(boolean trustMe);
 }
