@@ -37,9 +37,9 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import java.util.Date;
 
 /**
- * {@link ApiKeyCredentials} credential matcher implementation
+ * {@link ApiKeyCredentials} {@link CredentialsMatcher} implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class UserPassCredentialsMatcher implements CredentialsMatcher {
 
@@ -78,20 +78,20 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                 // FIXME: if true cache token password for authentication performance improvement
             } else {
 
-                // first check if 2FA is enabled for the current user
+                // Check if MFA is enabled for the current user
                 MfaOption mfaOption;
                 try {
-                    mfaOption = KapuaSecurityUtils.doPrivileged(() -> MFA_OPTION_SERVICE.findByUserId(infoUser.getScopeId(),
-                            infoUser.getId()));
+                    mfaOption = KapuaSecurityUtils.doPrivileged(() -> MFA_OPTION_SERVICE.findByUserId(infoUser.getScopeId(), infoUser.getId()));
                 } catch (AuthenticationException ae) {
                     throw ae;
                 } catch (Exception e) {
                     throw new ShiroException("Error while finding Mfa Option!", e);
                 }
+
                 if (mfaOption != null) {
                     if (tokenAuthenticationCode != null) {
 
-                        // do 2fa match
+                        // Do MFA match
                         boolean isCodeValid;
                         try {
                             isCodeValid = MFA_AUTHENTICATOR.authorize(mfaOption.getMfaSecretKey(), Integer.parseInt(tokenAuthenticationCode));
@@ -101,12 +101,11 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                             throw new ShiroException("Error while authenticating Mfa Option!", e);
                         }
 
-                        //  code is not valid, try scratch code login
                         if (!isCodeValid) {
+                            //  Code is not valid, try scratch codes login
                             ScratchCodeListResult scratchCodeListResult;
                             try {
-                                scratchCodeListResult = KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.findByMfaOptionId(
-                                        mfaOption.getScopeId(), mfaOption.getId()));
+                                scratchCodeListResult = KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.findByMfaOptionId(mfaOption.getScopeId(), mfaOption.getId()));
                             } catch (AuthenticationException ae) {
                                 throw ae;
                             } catch (Exception e) {
@@ -117,6 +116,7 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                                 if (MFA_AUTHENTICATOR.authorize(code.getCode(), tokenAuthenticationCode)) {
                                     isCodeValid = true;
                                     try {
+                                        // Delete the used scratch code
                                         KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.delete(code.getScopeId(), code.getId()));
                                     } catch (AuthenticationException ae) {
                                         throw ae;
@@ -129,15 +129,15 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                         }
                         credentialMatch = isCodeValid;
                     } else {
-                        // if authentication code is null then check the trust_key
+                        // If authentication code is null, then check the trust_key
                         if (tokenTrustKey != null) {
-                            // check trust machine authentication on the server side
+                            // Check trust machine authentication on the server side
                             if (mfaOption.getTrustKey() != null) {
 
                                 Date now = new Date(System.currentTimeMillis());
                                 if (mfaOption.getTrustExpirationDate().before(now)) {
 
-                                    // the trust key is expired and must be disabled
+                                    // The trust key is expired and must be disabled
                                     try {
                                         KapuaSecurityUtils.doPrivileged(() -> MFA_OPTION_SERVICE.disableTrust(mfaOption.getScopeId(), mfaOption.getId()));
                                     } catch (AuthenticationException ae) {

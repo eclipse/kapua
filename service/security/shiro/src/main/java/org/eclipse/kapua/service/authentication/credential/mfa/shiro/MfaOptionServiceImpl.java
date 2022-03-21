@@ -41,7 +41,6 @@ import org.eclipse.kapua.service.authentication.credential.mfa.KapuaExistingMfaO
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionAttributes;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
@@ -80,24 +79,35 @@ import java.util.UUID;
 
 /**
  * {@link MfaOptionService} implementation.
+ *
+ * @since 1.3.0
  */
 @KapuaProvider
 public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOptionService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MfaOptionServiceImpl.class);
+
     private static final MfaAuthenticatorServiceLocator MFA_AUTH_SERVICE_LOCATOR = MfaAuthenticatorServiceLocator.getInstance();
     private static final MfaAuthenticator MFA_AUTHENTICATOR = MFA_AUTH_SERVICE_LOCATOR.getMfaAuthenticator();
+
+    private static final KapuaAuthenticationSetting AUTHENTICATION_SETTING = KapuaAuthenticationSetting.getInstance();
+    private static final int TRUST_KEY_DURATION = AUTHENTICATION_SETTING.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
     private static final int QR_CODE_SIZE = 134;  // TODO: make this configurable?
     private static final String IMAGE_FORMAT = "png";
+
     private final KapuaLocator locator = KapuaLocator.getInstance();
+
     private final AccountService accountService = locator.getService(AccountService.class);
-    private final UserService userService = locator.getService(UserService.class);
     private final ScratchCodeService scratchCodeService = locator.getService(ScratchCodeService.class);
     private final ScratchCodeFactory scratchCodeFactory = locator.getFactory(ScratchCodeFactory.class);
 
-    private final KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-    private final int trustKeyDuration = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TRUST_KEY_DURATION);
+    private final UserService userService = locator.getService(UserService.class);
 
+    /**
+     * Constructor.
+     *
+     * @since 1.3.0
+     */
     public MfaOptionServiceImpl() {
         super(MfaOptionEntityManagerFactory.getInstance());
     }
@@ -298,11 +308,8 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
         //
         // Query and return result
         MfaOptionListResult result = query(query);
-        if (!result.isEmpty()) {
-            return result.getFirstItem();
-        } else {
-            return null;
-        }
+
+        return result.getFirstItem();
     }
 
     @Override
@@ -311,31 +318,38 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
         // Argument Validation (fields validation is performed inside the 'update' method)
         ArgumentValidator.notNull(mfaOption, "mfaOption");
 
-        // Trust key generation always performed
-        // This allows the use only of a single trusted machine, until a solution with different trust keys is implemented
-        String trustKey = generateTrustKey();
-
-        Date expirationDate = new Date(System.currentTimeMillis());
-        expirationDate = DateUtils.addDays(expirationDate, trustKeyDuration);
-
-        mfaOption.setTrustKey(cryptTrustKey(trustKey));
-        mfaOption.setTrustExpirationDate(expirationDate);
-        update(mfaOption);
-
-        // post-persist magic
-        return trustKey;
+        return enableTrust(mfaOption.getScopeId(), mfaOption.getId());
     }
 
     @Override
     public String enableTrust(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException {
-
+        //
         // Argument Validation
-        ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
         ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(mfaOptionId, "mfaOptionId");
 
-        // extracting the MfaOption
+        //
+        // Checking existence
         MfaOption mfaOption = find(scopeId, mfaOptionId);
-        return enableTrust(mfaOption);
+
+        if (mfaOption == null) {
+            throw new KapuaEntityNotFoundException(MfaOption.TYPE, mfaOptionId);
+        }
+
+        // Trust key generation always performed
+        // This allows the use only of a single trusted machine,
+        // until a solution with different trust keys is implemented!
+        String trustKey = generateTrustKey();
+        mfaOption.setTrustKey(cryptTrustKey(trustKey));
+
+        Date expirationDate = new Date(System.currentTimeMillis());
+        expirationDate = DateUtils.addDays(expirationDate, TRUST_KEY_DURATION);
+        mfaOption.setTrustExpirationDate(expirationDate);
+
+        // Update
+        update(mfaOption);
+
+        return trustKey;
     }
 
     @Override
@@ -359,36 +373,10 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
      * Generate the trust key string.
      *
      * @return String
+     * @since 1.3.0
      */
     private String generateTrustKey() {
         return UUID.randomUUID().toString();
-    }
-
-    private void deleteMfaOptionByUserId(KapuaId scopeId, KapuaId userId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        MfaOptionFactory mfaOptionFactory = locator.getFactory(MfaOptionFactory.class);
-
-        MfaOptionQuery query = mfaOptionFactory.newQuery(scopeId);
-        query.setPredicate(query.attributePredicate(MfaOptionAttributes.USER_ID, userId));
-
-        MfaOptionListResult mfaOptionsToDelete = query(query);
-
-        for (MfaOption c : mfaOptionsToDelete.getItems()) {
-            delete(c.getScopeId(), c.getId());
-        }
-    }
-
-    private void deleteMfaOptionByAccountId(KapuaId scopeId, KapuaId accountId) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        MfaOptionFactory mfaOptionFactory = locator.getFactory(MfaOptionFactory.class);
-
-        MfaOptionQuery query = mfaOptionFactory.newQuery(accountId);
-
-        MfaOptionListResult mfaOptionsToDelete = query(query);
-
-        for (MfaOption c : mfaOptionsToDelete.getItems()) {
-            delete(c.getScopeId(), c.getId());
-        }
     }
 
     /**
@@ -400,6 +388,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
      * @param username    the username
      * @param key         the Mfa secret key in plain text
      * @return the QR code image in base64 format
+     * @since 1.3.0
      */
     private String generateQRCode(String organizationName, String accountName, String username, String key)
             throws IOException, WriterException, URISyntaxException {
@@ -422,6 +411,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
      *
      * @param img the {@link BufferedImage} to convert
      * @return the base64 string representation of the input image
+     * @since 1.3.0
      */
     private static String imgToBase64(BufferedImage img) throws IOException {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -434,6 +424,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
      *
      * @param bitMatrix the {@link BitMatrix} to be converted into ad image
      * @return the {@link BufferedImage} obtained from the conversion
+     * @since 1.3.0
      */
     private static BufferedImage buildImage(BitMatrix bitMatrix) {
         BufferedImage qrCodeImage = MatrixToImageWriter.toBufferedImage(bitMatrix);
@@ -446,14 +437,14 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
     }
 
     /**
-     * Encrypts the trust key
+     * Encrypts the trust key.
      *
      * @param plainTrustKey the trust key in plain text
      * @return the encrypted trust key
      * @throws KapuaException if the cryptCredential method throws a {@link KapuaException}
+     * @since 1.4.0
      */
     private static String cryptTrustKey(String plainTrustKey) throws KapuaException {
         return AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, plainTrustKey);
     }
-
 }
