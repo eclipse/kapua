@@ -104,22 +104,25 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * Authentication service implementation.
- * <p>
- * since 1.0
+ * {@link AuthenticationService} implementation.
+ *
+ * @since 1.0.0
  */
 @KapuaProvider
 public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
+
     private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final UserService userService = locator.getService(UserService.class);
+
     private final CredentialService credentialService = locator.getService(CredentialService.class);
     private final MfaOptionService mfaOptionService = locator.getService(MfaOptionService.class);
+
     private final AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
     private final AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
     private final CertificateService certificateService = locator.getService(CertificateService.class);
     private final CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
+
     private final AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
     private final AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
     private final AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
@@ -127,6 +130,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     private final RolePermissionFactory rolePermissionFactory = locator.getFactory(RolePermissionFactory.class);
     private final AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
     private final AccessPermissionFactory accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
+
+    private final UserService userService = locator.getService(UserService.class);
 
     @Override
     public AccessToken login(LoginCredentials loginCredentials) throws KapuaException {
