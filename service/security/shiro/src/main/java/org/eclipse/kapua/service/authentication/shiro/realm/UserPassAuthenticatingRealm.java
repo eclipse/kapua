@@ -19,7 +19,6 @@ import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
 import org.apache.shiro.realm.AuthenticatingRealm;
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -36,7 +35,6 @@ import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -150,50 +148,17 @@ public class UserPassAuthenticatingRealm extends KapuaAuthenticatingRealm {
     protected void assertCredentialsMatch(AuthenticationToken authcToken, AuthenticationInfo info)
             throws AuthenticationException {
         LoginAuthenticationInfo kapuaInfo = (LoginAuthenticationInfo) info;
-        CredentialService credentialService = LOCATOR.getService(CredentialService.class);
 
         try {
             super.assertCredentialsMatch(authcToken, info);
-        } catch (MfaRequiredException e) {
-            throw e;
-        } catch (AuthenticationException e) {
-            try {
-                Credential failedCredential = (Credential) kapuaInfo.getCredentials();
-                KapuaSecurityUtils.doPrivileged(() -> {
-                    Map<String, Object> credentialServiceConfig = kapuaInfo.getCredentialServiceConfig();
-                    boolean lockoutPolicyEnabled = (boolean) credentialServiceConfig.get("lockoutPolicy.enabled");
-                    if (lockoutPolicyEnabled) {
-                        Date now = new Date();
-                        int resetAfterSeconds = (int) credentialServiceConfig.get("lockoutPolicy.resetAfter");
+        } catch (MfaRequiredException mfaRequiredException) {
+            throw mfaRequiredException;
+        } catch (AuthenticationException authenticationException) {
+            //
+            // Increase count of failed attempts
+            increaseLockoutPolicyCount(kapuaInfo);
 
-                        Date firstLoginFailure;
-                        boolean resetAttempts = failedCredential.getFirstLoginFailure() == null ||
-                                now.after(failedCredential.getLoginFailuresReset());
-                        if (resetAttempts) {
-                            firstLoginFailure = now;
-                            failedCredential.setLoginFailures(1);
-                        } else {
-                            firstLoginFailure = failedCredential.getFirstLoginFailure();
-                            failedCredential.setLoginFailures(failedCredential.getLoginFailures() + 1);
-                        }
-
-                        Date loginFailureWindowExpiration = new Date(firstLoginFailure.getTime() + (resetAfterSeconds * 1000L));
-                        failedCredential.setFirstLoginFailure(firstLoginFailure);
-                        failedCredential.setLoginFailuresReset(loginFailureWindowExpiration);
-                        int maxLoginFailures = (int) credentialServiceConfig.get("lockoutPolicy.maxFailures");
-                        if (failedCredential.getLoginFailures() >= maxLoginFailures) {
-                            long lockoutDuration = (int) credentialServiceConfig.get("lockoutPolicy.lockDuration");
-                            Date resetDate = new Date(now.getTime() + (lockoutDuration * 1000));
-                            failedCredential.setLockoutReset(resetDate);
-                        }
-                    }
-
-                    credentialService.update(failedCredential);
-                });
-            } catch (KapuaException kex) {
-                throw new ShiroException("Unexpected error while updating the lockout policy", kex);
-            }
-            throw e;
+            throw authenticationException;
         }
 
         //

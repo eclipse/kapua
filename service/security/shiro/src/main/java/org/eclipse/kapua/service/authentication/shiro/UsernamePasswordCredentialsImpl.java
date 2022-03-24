@@ -13,9 +13,9 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import org.apache.shiro.authc.AuthenticationToken;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -33,6 +33,7 @@ public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredenti
     private String password;
     private String authenticationCode;
     private String trustKey;
+    private boolean trustMe;
 
     /**
      * Constructor.
@@ -46,7 +47,6 @@ public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredenti
         setPassword(password);
     }
 
-
     /**
      * Clone constructor.
      *
@@ -58,6 +58,7 @@ public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredenti
         setPassword(usernamePasswordCredentials.getPassword());
         setAuthenticationCode(usernamePasswordCredentials.getAuthenticationCode());
         setTrustKey(usernamePasswordCredentials.getTrustKey());
+        setTrustMe(usernamePasswordCredentials.getTrustMe());
     }
 
     @Override
@@ -110,11 +111,21 @@ public class UsernamePasswordCredentialsImpl implements UsernamePasswordCredenti
         this.trustKey = trustKey;
     }
 
+    @Override
+    public boolean getTrustMe() {
+        return trustMe;
+    }
+
+    @Override
+    public void setTrustMe(boolean trustMe) {
+        this.trustMe = trustMe;
+    }
+
     /**
      * Parses a {@link UsernamePasswordCredentials} into a {@link UsernamePasswordCredentialsImpl}.
      *
      * @param usernamePasswordCredentials The {@link UsernamePasswordCredentials} to parse.
-     * @return A instance of {@link UsernamePasswordCredentialsImpl}.
+     * @return An instance of {@link UsernamePasswordCredentialsImpl}.
      * @since 1.5.0
      */
     public static UsernamePasswordCredentialsImpl parse(@Nullable UsernamePasswordCredentials usernamePasswordCredentials) {

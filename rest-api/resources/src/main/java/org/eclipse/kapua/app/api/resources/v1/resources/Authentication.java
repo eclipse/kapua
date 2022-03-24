@@ -19,7 +19,6 @@ import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.JwtCredentials;
-import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.RefreshTokenCredentials;
 import org.eclipse.kapua.service.authentication.UsernamePasswordCredentials;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
@@ -41,45 +40,44 @@ public class Authentication extends AbstractKapuaResource {
     private final AuthenticationService authenticationService = locator.getService(AuthenticationService.class);
 
     /**
-     * Authenticates an user with username and password and returns
-     * the authentication token to be used in subsequent REST API calls.
+     * Authenticates a {@link UsernamePasswordCredentials}.
      *
-     * @param authenticationCredentials The username and password authentication credential of a user.
-     * @return The authentication token
+     * @param authenticationCredentials The {@link UsernamePasswordCredentials} to validate.
+     * @return The {@link AccessToken} created during login.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("user")
     public AccessToken loginUsernamePassword(UsernamePasswordCredentials authenticationCredentials) throws KapuaException {
-        return login(authenticationCredentials);
+        return authenticationService.login(authenticationCredentials);
     }
 
     /**
-     * Authenticates an user with username, password and mfa authentication code (or trust key, alternatively) and returns
-     * the authentication token to be used in subsequent REST API calls.
-     * It also enable the trusted machine key if the {@code enableTrust} parameter is 'true'.
+     * Authenticates a user with username, password and mfa authentication code (or trust key, alternatively)
+     * and returns the authentication token to be used in subsequent REST API calls.
+     * It also enables the trusted machine key if the {@code enableTrust} parameter is 'true'.
      *
      * @param authenticationCredentials The username, password and code authentication credential of a user.
-     * @param enableTrust If true the machine trust key is enabled.
+     * @param enableTrust               If true the machine trust key is enabled.
      * @return The authentication token.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.4.0
+     * @deprecated Since 2.0.0. Please make use of {@link UsernamePasswordCredentials#getTrustMe()}.
      */
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("mfa")
+    @Deprecated
     public AccessToken loginUsernamePasswordCode(
             @QueryParam("enableTrust") boolean enableTrust,
             UsernamePasswordCredentials authenticationCredentials) throws KapuaException {
-        if (authenticationCredentials.getTrustKey() == null && enableTrust) {
-            return login(authenticationCredentials, true);
-        }
-        return login(authenticationCredentials, false);
+        authenticationCredentials.setTrustMe(enableTrust);
+
+        return loginUsernamePassword(authenticationCredentials);
     }
 
     /**
@@ -91,13 +89,12 @@ public class Authentication extends AbstractKapuaResource {
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("apikey")
     public AccessToken loginApiKey(ApiKeyCredentials authenticationCredentials) throws KapuaException {
-        return login(authenticationCredentials);
+        return authenticationService.login(authenticationCredentials);
     }
 
     /**
@@ -109,13 +106,12 @@ public class Authentication extends AbstractKapuaResource {
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Path("jwt")
     public AccessToken loginJwt(JwtCredentials authenticationCredentials) throws KapuaException {
-        return login(authenticationCredentials);
+        return authenticationService.login(authenticationCredentials);
     }
 
     /**
@@ -144,7 +140,6 @@ public class Authentication extends AbstractKapuaResource {
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.0.0
      */
-
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -154,37 +149,12 @@ public class Authentication extends AbstractKapuaResource {
     }
 
     /**
-     * Authenticates the given {@link LoginCredentials}.
+     * Gets a {@link LoginInfo}.
      *
-     * @param loginCredentials The {@link LoginCredentials} to validate.
-     * @return The Authentication token
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
+     * @return A {@link LoginInfo} containing all the permissions and the {@link AccessToken} for the current session
+     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.s
      * @since 1.1.0
      */
-    private AccessToken login(LoginCredentials loginCredentials) throws KapuaException {
-        return authenticationService.login(loginCredentials);
-    }
-
-    /**
-     * Authenticates the given {@link LoginCredentials} for the MFA.
-     *
-     * @param loginCredentials The {@link LoginCredentials} to validate.
-     * @param enableTrust      True if the machine must be trusted, false otherwise.
-     * @return The Authentication token
-     * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
-     * @since 1.4.0
-     */
-    private AccessToken login(LoginCredentials loginCredentials, boolean enableTrust) throws KapuaException {
-        return authenticationService.login(loginCredentials, enableTrust);
-    }
-
-    /**
-     * Gets a {@link LoginInfo} object
-     *
-     * @return A {@link LoginInfo} object containing all the permissions and the {@link AccessToken} for the current session
-     * @throws KapuaException
-     */
-
     @GET
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("info")

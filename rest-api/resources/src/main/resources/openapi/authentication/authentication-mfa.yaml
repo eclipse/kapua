@@ -17,6 +17,7 @@ paths:
       tags:
         - Authentication
       summary: MFA Login - User, Password and authenticationCode/trustKey
+      description: This resoruce is deprecated and will be removed in future releases. Please make use of /authentication/user and properties in UsernamePasswordCredentials.
       operationId: authenticationMfaUser
       parameters:
         - name: enableTrust
@@ -33,17 +34,13 @@ paths:
               type: object
               properties:
                 username:
-                  allOf:
-                    - $ref: './authentication.yaml#/components/schemas/username'
+                  $ref: './authentication.yaml#/components/schemas/username'
                 password:
-                  allOf:
-                    - $ref: './authentication.yaml#/components/schemas/password'
+                  $ref: './authentication.yaml#/components/schemas/password'
                 authenticationCode:
-                  allOf:
-                    - $ref: './authentication.yaml#/components/schemas/authenticationCode'
+                  $ref: './authentication.yaml#/components/schemas/authenticationCode'
                 trustKey:
-                  allOf:
-                    - $ref: './authentication.yaml#/components/schemas/trustKey'
+                  $ref: './authentication.yaml#/components/schemas/trustKey'
               required:
                 - username
                 - password
@@ -63,4 +60,4 @@ paths:
                 $ref: './authentication.yaml#/components/schemas/accessToken'
         500:
           $ref: '../openapi.yaml#/components/responses/kapuaError'
-      security: []
+      security: [ ]

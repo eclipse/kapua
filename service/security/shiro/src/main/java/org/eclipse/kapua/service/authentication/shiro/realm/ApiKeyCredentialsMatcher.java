@@ -51,7 +51,7 @@ public class ApiKeyCredentialsMatcher implements CredentialsMatcher {
 
             int preLength = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_LENGTH);
             String tokenPre = tokenApiFullKey.substring(0, preLength);
-            String tokenKey = tokenApiFullKey.substring(preLength, tokenApiFullKey.length());
+            String tokenKey = tokenApiFullKey.substring(preLength);
 
             String preSeparator = setting.getString(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_APIKEY_PRE_SEPARATOR);
             String infoPre = fullApiKey.split(preSeparator)[0];

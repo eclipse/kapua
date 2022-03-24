@@ -11,7 +11,7 @@ info:
     name: Eclipse Public License 2.0
     url: https://www.eclipse.org/legal/epl-2.0
 
-paths: {}
+paths: { }
 
 components:
   schemas:
@@ -21,11 +21,9 @@ components:
         - type: object
           properties:
             userId:
-              allOf:
-                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+              $ref: '../openapi.yaml#/components/schemas/kapuaId'
             tokenId:
-              allOf:
-                - $ref: '#/components/schemas/jwt'
+              $ref: '#/components/schemas/jwt'
             expiresOn:
               type: string
               format: 'date-time'
@@ -39,8 +37,9 @@ components:
               type: string
               format: 'date-time'
             trustKey:
-              allOf:
-                - $ref: '#/components/schemas/trustKey'
+              type: string
+              description: A long-lived key to be used within an authentication with MFA from a trusted machine
+              pattern: '^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$'
     loginInfo:
       type: object
       properties:
@@ -100,17 +99,36 @@ components:
               domain: user
               targetScopeId: AQ
               forwardable: false
+    usernamePasswordCredentials:
+      allOf:
+      - type: object
+        properties:
+          user:
+            $ref: '#/components/schemas/username'
+          password:
+            $ref: '#/components/schemas/password'
+          authenticationCode:
+            $ref: '#/components/schemas/authenticationCode'
+          trustKey:
+            $ref: '#/components/schemas/trustKey'
+          trustMe:
+            type: boolean
+            description: Whether to generate a TrustKey or not.
     username:
       type: string
+      description: the username of the user
       pattern: '^[a-zA-Z0-9\_\-]{3,}$'
     password:
       type: string
+      description: the password of the user
       pattern: '^.*(?=.{12,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!\"\#$%&''()*+,\-./:;<=>?@\[\]\\^_`{|}~]).*$'
     authenticationCode:
       type: string
+      description: The MFA authentication code
       pattern: '^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$'
     trustKey:
       type: string
+      description: A long-lived key to be used within an authentication with MFA from a trusted machine
       pattern: '^[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+/=]*$'
     jwt:
       type: string

@@ -20,66 +20,90 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Username and password {@link LoginCredentials} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "usernamePasswordCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "username", "password", "authenticationCode", "trustKey" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newUsernamePasswordCredentials")
+@XmlType(factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newUsernamePasswordCredentials")
 public interface UsernamePasswordCredentials extends LoginCredentials {
 
     /**
-     * return the username
+     * Gets the username.
      *
-     * @return
+     * @return The username.
+     * @since 1.0.0
      */
     String getUsername();
 
     /**
-     * Set the username
+     * Sets the username.
      *
-     * @param username
+     * @param username The username.
+     * @since 1.0.0
      */
     void setUsername(String username);
 
     /**
-     * return the password
+     * Gets the password.
      *
-     * @return
+     * @return The password.
+     * @since 1.0.0
      */
     String getPassword();
 
     /**
-     * Set the password
+     * Sets the password.
      *
-     * @param password
+     * @param password The password.
+     * @since 1.0.0
      */
     void setPassword(String password);
 
     /**
-     * return the authenticationCode
+     * Gets the MFA authentication code.
      *
-     * @return
+     * @return The MFA authentication code.
+     * @since 1.3.0
      */
     String getAuthenticationCode();
 
     /**
-     * Set the authenticationCode
+     * Sets the MFA authentication code.
      *
-     * @param authenticationCode
+     * @param authenticationCode The MFA authentication code.
+     * @since 1.3.0
      */
     void setAuthenticationCode(String authenticationCode);
 
     /**
-     * return the trustKey
+     * Gets the trust key.
      *
-     * @return the trust key
+     * @return The trust key.
+     * @since 1.3.0
      */
     String getTrustKey();
 
     /**
-     * Set the trust key
+     * Sets the trust key.
      *
-     * @param trustKey
+     * @param trustKey The trust key.
+     * @since 1.3.0
      */
     void setTrustKey(String trustKey);
+
+    /**
+     * Gets whether create a trust key or not.
+     *
+     * @return {@code true} if to be created, {@code false} otherwise
+     * @since 2.0.0
+     */
+    boolean getTrustMe();
+
+    /**
+     * Sets whether create a trust key or not.
+     *
+     * @param trustMe {@code true} if to be created, {@code false} if not.
+     * @since 2.0.0
+     */
+    void setTrustMe(boolean trustMe);
 }

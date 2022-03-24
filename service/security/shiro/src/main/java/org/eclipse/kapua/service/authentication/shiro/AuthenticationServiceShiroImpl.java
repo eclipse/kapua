@@ -104,22 +104,25 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * Authentication service implementation.
- * <p>
- * since 1.0
+ * {@link AuthenticationService} implementation.
+ *
+ * @since 1.0.0
  */
 @Singleton
 public class AuthenticationServiceShiroImpl implements AuthenticationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AuthenticationServiceShiroImpl.class);
+
     private final KapuaLocator locator = KapuaLocator.getInstance();
-    private final UserService userService = locator.getService(UserService.class);
+
     private final CredentialService credentialService = locator.getService(CredentialService.class);
     private final MfaOptionService mfaOptionService = locator.getService(MfaOptionService.class);
+
     private final AccessTokenService accessTokenService = locator.getService(AccessTokenService.class);
     private final AccessTokenFactory accessTokenFactory = locator.getFactory(AccessTokenFactory.class);
     private final CertificateService certificateService = locator.getService(CertificateService.class);
     private final CertificateFactory certificateFactory = locator.getFactory(CertificateFactory.class);
+
     private final AccessInfoService accessInfoService = locator.getService(AccessInfoService.class);
     private final AccessRoleService accessRoleService = locator.getService(AccessRoleService.class);
     private final AccessRoleFactory accessRoleFactory = locator.getFactory(AccessRoleFactory.class);
@@ -128,13 +131,21 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
     private final AccessPermissionService accessPermissionService = locator.getService(AccessPermissionService.class);
     private final AccessPermissionFactory accessPermissionFactory = locator.getFactory(AccessPermissionFactory.class);
 
-    @Override
-    public AccessToken login(LoginCredentials loginCredentials) throws KapuaException {
-        return login(loginCredentials, false);
-    }
+    private final UserService userService = locator.getService(UserService.class);
 
     @Override
     public AccessToken login(LoginCredentials loginCredentials, boolean enableTrust) throws KapuaException {
+
+        if (loginCredentials instanceof UsernamePasswordCredentials) {
+            UsernamePasswordCredentialsImpl usernamePasswordCredentials = UsernamePasswordCredentialsImpl.parse((UsernamePasswordCredentials) loginCredentials);
+            usernamePasswordCredentials.setTrustMe(enableTrust);
+        }
+
+        return login(loginCredentials);
+    }
+
+    @Override
+    public AccessToken login(LoginCredentials loginCredentials) throws KapuaException {
         //
         // Check LoginCredentials
         if (loginCredentials == null) {
@@ -188,7 +199,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             currentUser.login(shiroAuthenticationToken);
 
             // Create the access token
-            // FIXME: It is likely that it possible to use the currentUser instead of getting it again
+            // FIXME: It is likely that it is possible to use the currentUser instead of getting it again
             Subject shiroSubject = SecurityUtils.getSubject();
             Session shiroSession = shiroSubject.getSession();
             accessToken = createAccessToken(shiroSession);
@@ -196,15 +207,8 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
             // Establish session
             establishSession(shiroSubject, accessToken, openIDidToken);
 
-            // Enable trust key
-            if (enableTrust) {
-                AccessToken finalAccessToken = accessToken;
-                String trustKey = KapuaSecurityUtils.doPrivileged(() -> {
-                    MfaOption mfaOption = mfaOptionService.findByUserId(finalAccessToken.getScopeId(), finalAccessToken.getUserId());
-                    return mfaOptionService.enableTrust(mfaOption);
-                });
-                accessToken.setTrustKey(trustKey);
-            }
+            // Create trust key if required
+            createTrustKey(shiroAuthenticationToken, accessToken);
 
             LOG.info("Login for thread '{}' - '{}' - '{}'", Thread.currentThread().getId(), Thread.currentThread().getName(), shiroSubject);
         } catch (ShiroException se) {
@@ -528,7 +532,7 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
      * @param userId  The userID
      * @return The persisted {@link AccessToken}
      * @throws KapuaException
-     * @since 1.0
+     * @since 1.0.0
      */
     private AccessToken createAccessToken(KapuaEid scopeId, KapuaEid userId) throws KapuaException {
         // Retrieve TTL access token
@@ -556,6 +560,29 @@ public class AuthenticationServiceShiroImpl implements AuthenticationService {
         }
 
         return accessToken;
+    }
+
+    /**
+     * Creates a trust key if given {@link AuthenticationToken} is a {@link UsernamePasswordCredentials} and if {@link UsernamePasswordCredentials#getTrustMe()} is {@code true}
+     *
+     * @param shiroAuthenticationToken The {@link AuthenticationToken} extracted {@link LoginCredentials}
+     * @param accessToken              The {@link AccessToken} of this login.
+     * @throws KapuaException
+     * @since 2.0.0
+     */
+    private void createTrustKey(AuthenticationToken shiroAuthenticationToken, AccessToken accessToken) throws KapuaException {
+        if (shiroAuthenticationToken instanceof UsernamePasswordCredentials) {
+            UsernamePasswordCredentialsImpl usernamePasswordCredentials = UsernamePasswordCredentialsImpl.parse((UsernamePasswordCredentials) shiroAuthenticationToken);
+
+            if (usernamePasswordCredentials.getTrustMe()) {
+                String trustKey = KapuaSecurityUtils.doPrivileged(() -> {
+                    MfaOption mfaOption = mfaOptionService.findByUserId(accessToken.getScopeId(), accessToken.getUserId());
+                    return mfaOptionService.enableTrust(mfaOption.getScopeId(), mfaOption.getId());
+                });
+
+                accessToken.setTrustKey(trustKey);
+            }
+        }
     }
 
     private void establishSession(Subject subject, AccessToken accessToken, String openIDidToken) {

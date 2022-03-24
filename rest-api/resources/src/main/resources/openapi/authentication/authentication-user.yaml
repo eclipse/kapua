@@ -22,26 +22,24 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  allOf:
-                    - $ref: './authentication.yaml#/components/schemas/username'
-                password:
-                  allOf:
-                    - $ref: './authentication.yaml#/components/schemas/password'
-                trustKey:
-                  allOf:
-                    - $ref: './authentication.yaml#/components/schemas/trustKey'
-              required:
-                - username
-                - password
+              $ref: 'authentication.yaml#/components/schemas/usernamePasswordCredentials'
+            required: true
             examples:
-              kapua-sys:
-                description: Default kapua-sys login credentials
+              Admin:
                 value:
                   username: kapua-sys
                   password: kapua-password
+              MFA with AuthenticationCode:
+                value:
+                  username: kapua-sys
+                  password: kapua-password
+                  authenticationCode: 123456
+                  trustMe: true
+              MFA with TrustKey:
+                value:
+                  username: kapua-sys
+                  password: kapua-password
+                  trustKey: 4bba9938-aa8f-11ec-b909-0242ac120002
       responses:
         200:
           description: The new AccessToken

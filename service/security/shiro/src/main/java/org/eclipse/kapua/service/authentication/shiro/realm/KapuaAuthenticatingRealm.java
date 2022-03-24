@@ -182,6 +182,52 @@ public abstract class KapuaAuthenticatingRealm extends AuthenticatingRealm {
     }
 
     /**
+     * Increases the failed login attempts according to {@link CredentialService#getConfigValues(KapuaId)}.
+     *
+     * @param loginAuthenticationInfo The {@link LoginAuthenticationInfo} the failed login.
+     * @since 2.0.0
+     */
+    protected void increaseLockoutPolicyCount(LoginAuthenticationInfo loginAuthenticationInfo) {
+        try {
+            Credential failedCredential = (Credential) loginAuthenticationInfo.getCredentials();
+
+            KapuaSecurityUtils.doPrivileged(() -> {
+                Map<String, Object> credentialServiceConfig = loginAuthenticationInfo.getCredentialServiceConfig();
+                boolean lockoutPolicyEnabled = (boolean) credentialServiceConfig.get("lockoutPolicy.enabled");
+                if (lockoutPolicyEnabled) {
+                    Date now = new Date();
+                    int resetAfterSeconds = (int) credentialServiceConfig.get("lockoutPolicy.resetAfter");
+
+                    Date firstLoginFailure;
+                    boolean resetAttempts = failedCredential.getFirstLoginFailure() == null || now.after(failedCredential.getLoginFailuresReset());
+                    if (resetAttempts) {
+                        firstLoginFailure = now;
+                        failedCredential.setLoginFailures(1);
+                    } else {
+                        firstLoginFailure = failedCredential.getFirstLoginFailure();
+                        failedCredential.setLoginFailures(failedCredential.getLoginFailures() + 1);
+                    }
+
+                    Date loginFailureWindowExpiration = new Date(firstLoginFailure.getTime() + (resetAfterSeconds * 1000L));
+                    failedCredential.setFirstLoginFailure(firstLoginFailure);
+                    failedCredential.setLoginFailuresReset(loginFailureWindowExpiration);
+                    int maxLoginFailures = (int) credentialServiceConfig.get("lockoutPolicy.maxFailures");
+                    if (failedCredential.getLoginFailures() >= maxLoginFailures) {
+                        long lockoutDuration = (int) credentialServiceConfig.get("lockoutPolicy.lockDuration");
+                        Date resetDate = new Date(now.getTime() + (lockoutDuration * 1000));
+                        failedCredential.setLockoutReset(resetDate);
+                    }
+                }
+
+                CredentialService credentialService = LOCATOR.getService(CredentialService.class);
+                credentialService.update(failedCredential);
+            });
+        } catch (KapuaException kex) {
+            throw new ShiroException("Error while updating lockout policy", kex);
+        }
+    }
+
+    /**
      * Reset the lockout policy of the {@link Credential}.
      * To be used after a succeessful login.
      *
