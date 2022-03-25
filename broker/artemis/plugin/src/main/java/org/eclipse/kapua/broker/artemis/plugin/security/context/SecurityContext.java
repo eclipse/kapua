@@ -23,7 +23,9 @@ import java.util.concurrent.TimeUnit;
 import javax.security.auth.Subject;
 
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
-import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.broker.artemis.plugin.security.RunWithLock;
+import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
+import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
 import org.eclipse.kapua.client.security.AuthErrorCodes;
 import org.eclipse.kapua.client.security.KapuaIllegalDeviceStateException;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
@@ -43,49 +45,50 @@ import org.slf4j.LoggerFactory;
  * So the singleton can be managed by the DI.
  *
  */
-public final class SecurityContextHandler {
+public final class SecurityContext {
 
-    protected static Logger logger = LoggerFactory.getLogger(SecurityContextHandler.class);
+    protected static Logger logger = LoggerFactory.getLogger(SecurityContext.class);
 
     private static final String REPORT_HEADER = "################################################################################################";
+    private static final String REPORT_SEPARATOR = "------------------------------------------------------------------------------------------------";
     private enum ReportType {
         Full,
         Compact,
         DetailedServer
     }
 
-    private static final SecurityContextHandler INSTANCE = new SecurityContextHandler();
-
-    //it's a singleton, no needing to make this fields static
-    private final int connectionTokenCacheSize = 1000;
-    private final int connectionTokenCacheTTL = 60;
-    private final ConnectionToken connectionTokenCacheDefValue = null;
+    private static final SecurityContext INSTANCE = new SecurityContext();
 
     //concurrency shouldn't be an issue since this set will contain the list of active connections
     private final Set<String> activeConnections = new HashSet<>();
-    private final LocalCache<String, ConnectionToken> connectionTokenCache = new LocalCache<>(connectionTokenCacheSize, connectionTokenCacheTTL, connectionTokenCacheDefValue);
+    private final LocalCache<String, ConnectionToken> connectionTokenCache;
+    private final LocalCache<String, SessionContext> sessionContextCache;
+    private final LocalCache<String, Acl> aclCache;
 
     //use string as key since some method returns DefaultChannelId as connection id, some other a string
     //the string returned by some method as connection id is the asShortText of DefaultChannelId
-    private final Map<String, SessionContext> sessionContextMapByClient = new ConcurrentHashMap<>();
+    private final Map<String, SessionContext> sessionContextMapByClient;
 
     //by connection id context
-    private final Map<String, SessionContext> sessionContextMap = new ConcurrentHashMap<>();
-    private final Map<String, Acl> aclMap = new ConcurrentHashMap<>();
-    //for performance reason we can remove this map since it's used only as match with the principal contained in acls. But since they are managed internally, they are the same
-    private final Map<String, KapuaPrincipal> principalMap = new ConcurrentHashMap<>();
+    private final Map<String, SessionContext> sessionContextMap;
+    private final Map<String, Acl> aclMap;
 
     private ExecutorWrapper executorWrapper;
 
-    private SecurityContextHandler() {
+    private SecurityContext() {
+        connectionTokenCache = new LocalCache<>(
+            BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_SIZE), BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_TTL), null);
+        sessionContextCache = new LocalCache<>(
+            BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_SIZE), BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_TTL), null);
+        aclCache = new LocalCache<>(
+            BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_SIZE), BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_SESSION_CONTEXT_TTL), null);
+        sessionContextMapByClient = new ConcurrentHashMap<>();
+        sessionContextMap = new ConcurrentHashMap<>();
+        aclMap = new ConcurrentHashMap<>();
     }
 
-    public static SecurityContextHandler getInstance() {
+    public static SecurityContext getInstance() {
         return INSTANCE;
-    }
-
-    public KapuaPrincipal getPrincipal(String connectionId) {
-        return principalMap.get(connectionId);
     }
 
     public void printReport(ActiveMQServer server, String caller, String connectionId) {
@@ -106,9 +109,9 @@ public final class SecurityContextHandler {
         switch (reportType) {
         case Full:
             appendServerContextReport(builder, server);
-            builder.append(REPORT_HEADER).append("\n");
+            builder.append(REPORT_SEPARATOR).append("\n");
             appendSessionInfoReport(builder, server);
-            builder.append(REPORT_HEADER).append("\n");
+            builder.append(REPORT_SEPARATOR).append("\n");
             appendDetailedServerContextReport(builder, caller, connectionId);
             break;
         case Compact:
@@ -125,8 +128,13 @@ public final class SecurityContextHandler {
     }
 
     public void init(ActiveMQServer server) {
-       executorWrapper = new ExecutorWrapper("ServerReport", () -> printReport(server, "ServerReportTask", "N/A"), 60, 30, TimeUnit.SECONDS);
-       executorWrapper.start();
+        if (executorWrapper==null) {
+            executorWrapper = new ExecutorWrapper("ServerReport", () -> printReport(server, "ServerReportTask", "N/A"), 60, 30, TimeUnit.SECONDS);
+            executorWrapper.start();
+        }
+        else {
+            logger.warn("ServerReportTask already started!");
+        }
     }
 
     public void shutdown(ActiveMQServer server) {
@@ -135,7 +143,28 @@ public final class SecurityContextHandler {
         }
     }
 
-    public ConnectionToken updateConnectionTokenOnConnection(String connectionId) {
+
+    public boolean setSessionContext(SessionContext sessionContext, List<AuthAcl> authAcls) throws Exception {
+        logger.info("Updating session context for connection id: {}", sessionContext.getConnectionId());
+        String connectionId = sessionContext.getConnectionId();
+        return RunWithLock.run(connectionId, () -> {
+            if (updateConnectionTokenOnConnection(connectionId)==null) {
+                logger.info("Setting session context for connection id: {}", connectionId);
+                activeConnections.add(connectionId);
+                //fill by connection id context
+                sessionContextMap.put(connectionId, sessionContext);
+                aclMap.put(connectionId, new Acl(sessionContext.getPrincipal(), authAcls));
+                //fill by full client id context
+                sessionContextMapByClient.put(Utils.getFullClientId(sessionContext), sessionContext);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+    }
+
+    private ConnectionToken updateConnectionTokenOnConnection(String connectionId) {
         ConnectionToken connectionToken = connectionTokenCache.getAndRemove(connectionId);
         if (connectionToken==null) {
             connectionTokenCache.put(connectionId,
@@ -149,45 +178,33 @@ public final class SecurityContextHandler {
         return connectionToken;
     }
 
-    public boolean setSessionContext(SessionContext sessionContext, List<AuthAcl> authAcls) throws KapuaIllegalArgumentException {
-        logger.info("Updating session context for connection id: {}", sessionContext.getConnectionId());
-        synchronized (sessionContext.getConnectionId().intern()) {
-            String connectionId = sessionContext.getConnectionId();
-            if (updateConnectionTokenOnConnection(connectionId)==null) {
-                logger.info("Setting session context for connection id: {}", connectionId);
-                activeConnections.add(connectionId);
-                //fill by connection id context
-                principalMap.put(connectionId, sessionContext.getPrincipal());
-                sessionContextMap.put(connectionId, sessionContext);
-                aclMap.put(connectionId, new Acl(sessionContext.getPrincipal(), authAcls));
-                //fill by full client id context
-                sessionContextMapByClient.put(Utils.getFullClientId(sessionContext), sessionContext);
-                return true;
+    public void updateConnectionTokenOnDisconnection(String connectionId) throws Exception {
+        RunWithLock.run(connectionId, () -> {
+            if (connectionTokenCache.getAndRemove(connectionId)==null) {
+                //put the connection token
+                connectionTokenCache.put(connectionId,
+                    new ConnectionToken(SecurityAction.brokerDisconnect, KapuaDateUtils.getKapuaSysDate()));
+                logger.warn("Disconnect callback called before the connection callback for connection id: {}", connectionId);
             }
-            else {
-                return false;
-            }
-        }
+            return (Void)null;
+        });
     }
 
-    public void updateConnectionTokenOnDisconnection(String connectionId) {
-        if (connectionTokenCache.getAndRemove(connectionId)==null) {
-            //put the connection token
-            connectionTokenCache.put(connectionId,
-                new ConnectionToken(SecurityAction.brokerDisconnect, KapuaDateUtils.getKapuaSysDate()));
-            logger.warn("Disconnect callback called before the connection callback");
-        }
-    }
-
-    public SessionContext cleanSessionContext(SessionContext sessionContext) {
+    public SessionContext cleanSessionContext(SessionContext sessionContext) throws Exception {
         logger.info("Updating session context for connection id: {}", sessionContext.getConnectionId());
-        synchronized (sessionContext.getConnectionId().intern()) {
-            String connectionId = sessionContext.getConnectionId();
+        String connectionId = sessionContext.getConnectionId();
+        return RunWithLock.run(connectionId, () -> {
             logger.info("Cleaning session context for connection id: {}", connectionId);
+            //cleaning context and filling cache
+            SessionContext sessionContextOld = sessionContextMap.remove(connectionId);
+            if (sessionContextOld!=null) {
+                sessionContextCache.put(connectionId, sessionContextOld);
+            }
+            Acl aclOld = aclMap.remove(connectionId);
+            if (aclOld!=null) {
+                aclCache.put(connectionId, aclOld);
+            }
             activeConnections.remove(connectionId);
-            principalMap.remove(connectionId);
-            sessionContextMap.remove(connectionId);
-            aclMap.remove(connectionId);
 
             String fullClientId = Utils.getFullClientId(sessionContext);
             SessionContext currentSessionContext = sessionContextMapByClient.get(fullClientId);
@@ -208,11 +225,24 @@ public final class SecurityContextHandler {
                 }
             }
             return currentSessionContext;
-        }
+        });
     }
 
     public SessionContext getSessionContextByClientId(String fullClientId) {
         return sessionContextMapByClient.get(fullClientId);
+    }
+
+    public SessionContext getSessionContextWithCacheFallback(String connectionId) {
+        SessionContext sessionContext = sessionContextMap.get(connectionId);
+        if (sessionContext == null) {
+            //try from cache
+            sessionContext = sessionContextCache.get(connectionId);
+            if (sessionContext!=null) {
+                //TODO add metric?
+                logger.warn("Got sessioncontext for connectionId {} from cache!", connectionId);
+            }
+        }
+        return sessionContext;
     }
 
     public SessionContext getSessionContext(String connectionId) {
@@ -220,39 +250,31 @@ public final class SecurityContextHandler {
     }
 
     public boolean checkPublisherAllowed(SessionContext sessionContext, String address) {
-        KapuaPrincipal principal = principalMap.get(sessionContext.getConnectionId());
-        Acl acl = aclMap.get(sessionContext.getConnectionId());
-        if (acl==null || !acl.canWrite(principal, address)) {
-            return false;
-//            throw new SecurityException("User " + principal.getName() + " not allowed to publish to " + address);
-        }
-        else {
-            return true;
-        }
+        Acl acl = getAcl(sessionContext.getConnectionId());
+        return acl!=null && acl.canWrite(sessionContext.getPrincipal(), address);
     }
 
     public boolean checkConsumerAllowed(SessionContext sessionContext, String address) {
-        KapuaPrincipal principal = principalMap.get(sessionContext.getConnectionId());
-        Acl acl = aclMap.get(sessionContext.getConnectionId());
-        if (acl==null || !acl.canRead(principal, address)) {
-            return false;
-//            throw new SecurityException("User " + principal.getName() + " not allowed to consume from " + address);
-        }
-        else {
-            return true;
-        }
+        Acl acl = getAcl(sessionContext.getConnectionId());
+        return acl!=null && acl.canRead(sessionContext.getPrincipal(), address);
     }
 
     public boolean checkAdminAllowed(SessionContext sessionContext, String address) {
-        KapuaPrincipal principal = principalMap.get(sessionContext.getConnectionId());
-        Acl acl = aclMap.get(sessionContext.getConnectionId());
-        if (acl==null || !acl.canManage(principal, address)) {
-            return false;
-//            throw new SecurityException("User " + principal.getName() + " not allowed to consume from " + address);
+        Acl acl = getAcl(sessionContext.getConnectionId());
+        return acl!=null && acl.canManage(sessionContext.getPrincipal(), address);
+    }
+
+     private Acl getAcl(String connectionId) {
+        Acl acl = aclMap.get(connectionId);
+        if (acl==null) {
+            //try from cache
+            acl = aclCache.get(connectionId);
+            if (acl!=null) {
+                //TODO add metric?
+                logger.warn("Got acl for connectionId {} from cache!", connectionId);
+            }
         }
-        else {
-            return true;
-        }
+        return acl;
     }
 
     public Subject buildFromPrincipal(KapuaPrincipal kapuaPrincipal) {
@@ -267,14 +289,13 @@ public final class SecurityContextHandler {
     }
 
     private boolean isStealingLink(String connectionId, String oldConnectionId) {
-        return oldConnectionId!=null && connectionId!=null ?
-            !connectionId.equals(oldConnectionId) : oldConnectionId!=null;
+        return oldConnectionId!=null && !oldConnectionId.equals(connectionId);
     }
 
     private boolean isIllegalState(AuthRequest authRequest) {
         //TODO make this check based on instanceof
         //something like Class.forName(exceptionClass).. just are we sure we have the exceptionClass implementation available at runtime?
-        return KapuaIllegalDeviceStateException.class.getName().equals(authRequest.getExceptionClass()) && AuthErrorCodes.DUPLICATE_CLIENT_ID.equals(authRequest.getAuthErrorCode());
+        return KapuaIllegalDeviceStateException.class.getName().equals(authRequest.getExceptionClass()) && AuthErrorCodes.DUPLICATE_CLIENT_ID.name().equals(authRequest.getErrorCode());
     }
 
 
@@ -285,7 +306,6 @@ public final class SecurityContextHandler {
         builder.append("## session context: ").append(sessionContextMap.size()).append("\n");
         builder.append("## session context by client: ").append(sessionContextMapByClient.size()).append("\n");
         builder.append("## acl: ").append(aclMap.size()).append("\n");
-        builder.append("## principal: ").append(principalMap.size()).append("\n");
         builder.append("## connection: ").append(activeConnections.size()).append("\n");
     }
 
@@ -312,7 +332,5 @@ public final class SecurityContextHandler {
         sessionContextMap.forEach((key, sessionContext) -> builder.append("##\tconId: ").append(key).append(" - clientId: ").append(sessionContext.getClientId()).append(" - ip: ").append(sessionContext.getClientIp()).append("\tinternal: ").append(sessionContext.isInternal()).append("\n"));
         builder.append("## acl by connection id\n");
         aclMap.forEach((key, acl) -> builder.append("##\tconnId: ").append(key).append("\n"));
-        builder.append("## principal by connection id\n");
-        principalMap.forEach((key, principal) -> builder.append("##\tconnId: ").append(key).append(" - name: ").append(principal.getName()).append(" - clientId: ").append(principal.getClientId()).append(" - ip: ").append(principal.getClientIp()).append("\tinternal: ").append(principal.isInternal()).append("\n"));
     }
 }

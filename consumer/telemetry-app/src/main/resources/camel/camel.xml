@@ -20,7 +20,7 @@
             <choice id="choiceSystemMessageFilter">
                 <when id="systemMessageFilter">
                     <!-- TODO switch to startsWith? -->
-                    <simple>${header.originalTopic} regex '^[^\$EDC\/].*' &amp;&amp; ${header.originalTopic} regex '^[^activemq\/].*'</simple>
+                    <simple>${header.originalTopic} regex '^(?!\$EDC\/).*' &amp;&amp; ${header.originalTopic} regex '^(?!activemq\/).*'</simple>
                     <!-- keep here the bind/unbind of the kapua session so we can avoid the null check in bind method of KapuaCamelFilter because the Artemis internal messages have no KapuaSession in their header -->
                     <bean ref="kapuaCamelFilter" method="bindSession"/>
                     <bean ref="kapuaDataConverter" method="convertToData"/>

@@ -14,10 +14,6 @@ package org.eclipse.kapua.client.security.bean;
 
 import java.security.cert.Certificate;
 
-import org.apache.activemq.artemis.api.core.ActiveMQException;
-import org.apache.activemq.artemis.api.core.ActiveMQExceptionType;
-import org.eclipse.kapua.client.security.AuthErrorCodes;
-import org.eclipse.kapua.client.security.KapuaIllegalDeviceStateException;
 import org.eclipse.kapua.client.security.bean.serializer.CertificateToStringConverter;
 import org.eclipse.kapua.client.security.bean.serializer.StringToCertificateConverter;
 import org.eclipse.kapua.client.security.context.SessionContext;
@@ -67,8 +63,8 @@ public class AuthRequest implements Request {
     @JsonProperty("exceptionClass")
     private String exceptionClass;
 
-    @JsonProperty("authErrorCode")
-    private AuthErrorCodes authErrorCode;
+    @JsonProperty("errorCode")
+    private String errorCode;
 
     @JsonProperty("transportProtocol")
     private String transportProtocol;
@@ -117,7 +113,7 @@ public class AuthRequest implements Request {
         this.certificates = connectionInfo.getCertificates();
     }
 
-    public AuthRequest(String requester, String action, SessionContext sessionContext, Exception exception) {
+    public AuthRequest(String requester, String action, SessionContext sessionContext) {
         this.requester = requester;
         this.action = action;
         this.username = sessionContext.getUsername();
@@ -134,25 +130,6 @@ public class AuthRequest implements Request {
             userId = sessionContext.getUserId().toCompactId();
         }
         missing = sessionContext.isMissing();
-        updateError(exception);
-    }
-
-    public void updateError(Exception exception) {
-        exceptionClass = exception!=null ? exception.getClass().getName() : null;
-        if (exception instanceof ActiveMQException) {
-            ActiveMQException activeMQException = (ActiveMQException) exception;
-            //analyze the exception code
-            ActiveMQExceptionType exceptionType = activeMQException.getType();
-            if (!ActiveMQExceptionType.REMOTE_DISCONNECT.equals(exceptionType)) {
-                authErrorCode = AuthErrorCodes.UNEXPECTED_STATUS;
-            }
-        }
-        else if (exception instanceof KapuaIllegalDeviceStateException) {
-            authErrorCode = (AuthErrorCodes)((KapuaIllegalDeviceStateException) exception).getCode();
-        }
-        else {
-            //TODO generic error?
-        }
     }
 
     public String getRequester() {
@@ -251,12 +228,12 @@ public class AuthRequest implements Request {
         this.exceptionClass = exceptionClass;
     }
 
-    public AuthErrorCodes getAuthErrorCode() {
-        return authErrorCode;
+    public String getErrorCode() {
+        return errorCode;
     }
 
-    public void setAuthErrorCode(AuthErrorCodes authErrorCode) {
-        this.authErrorCode = authErrorCode;
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 
     public String getTransportProtocol() {

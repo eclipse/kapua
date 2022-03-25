@@ -24,7 +24,7 @@ import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
 import org.eclipse.kapua.client.security.amqpclient.ClientMessageListener;
-import org.eclipse.kapua.client.security.bean.AccountResponse;
+import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.MessageConstants;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.client.security.bean.ResponseContainer;
@@ -67,7 +67,7 @@ public class MessageListener extends ClientMessageListener {
             case brokerDisconnect:
                 updateResponseContainer(buildAuthResponseFromMessage((JmsTextMessage)message));
                 break;
-            case getAccount:
+            case getEntity:
                 updateResponseContainer(buildAccountResponseFromMessage((JmsTextMessage)message));
                 break;
             default:
@@ -99,9 +99,9 @@ public class MessageListener extends ClientMessageListener {
         return reader.readValue(body, AuthResponse.class);
     }
 
-    private AccountResponse buildAccountResponseFromMessage(JmsTextMessage message) throws JMSException, IOException {
+    private EntityResponse buildAccountResponseFromMessage(JmsTextMessage message) throws JMSException, IOException {
         String body = message.getBody(String.class);
-        return reader.readValue(body, AccountResponse.class);
+        return reader.readValue(body, EntityResponse.class);
     }
 
     public static void registerCallback(String requestId, ResponseContainer<?> responseContainer) {

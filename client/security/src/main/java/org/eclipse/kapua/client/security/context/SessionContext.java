@@ -50,12 +50,12 @@ public class SessionContext {
 
     private Map<String, Object> properties = new HashMap<>();
 
-    public SessionContext(KapuaPrincipal principal, ConnectionInfo connectionInfo, String kapuaConnectionId, String brokerId, String brokerHost) {
-        this(principal, connectionInfo, brokerId, brokerHost);
+    public SessionContext(KapuaPrincipal principal, ConnectionInfo connectionInfo, String kapuaConnectionId, String brokerId, String brokerHost, boolean admin, boolean missing) {
+        this(principal, connectionInfo, brokerId, brokerHost, admin, missing);
         this.kapuaConnectionId = KapuaEid.parseCompactId(kapuaConnectionId);
     }
 
-    public SessionContext(KapuaPrincipal principal, ConnectionInfo connectionInfo, String brokerId, String brokerHost) {
+    public SessionContext(KapuaPrincipal principal, ConnectionInfo connectionInfo, String brokerId, String brokerHost, boolean admin, boolean missing) {
         this.principal = principal;
         username = principal.getName();
         kapuaSession = new KapuaSession(principal);
@@ -69,6 +69,8 @@ public class SessionContext {
         connectorName = connectionInfo.getConnectorName();
         transportProtocol = connectionInfo.getTransportProtocol();
         certificates = connectionInfo.getCertificates();
+        setAdmin(admin);
+        setMissing(missing);
     }
 
     public boolean isInternal() {

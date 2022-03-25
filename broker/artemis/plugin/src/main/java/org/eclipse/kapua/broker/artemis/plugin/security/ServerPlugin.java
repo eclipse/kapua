@@ -16,6 +16,7 @@ import java.util.Base64;
 import java.util.Map;
 
 import org.apache.activemq.artemis.api.core.ActiveMQException;
+import org.apache.activemq.artemis.api.core.ActiveMQExceptionType;
 import org.apache.activemq.artemis.api.core.Message;
 import org.apache.activemq.artemis.core.remoting.FailureListener;
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
@@ -32,6 +33,8 @@ import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEvent.EventT
 import org.eclipse.kapua.broker.artemis.plugin.security.event.BrokerEventHanldler;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
+import org.eclipse.kapua.client.security.AuthErrorCodes;
+import org.eclipse.kapua.client.security.KapuaIllegalDeviceStateException;
 import org.eclipse.kapua.client.security.ServiceClient.SecurityAction;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.context.SessionContext;
@@ -41,6 +44,8 @@ import org.eclipse.kapua.client.security.metric.PublishMetric;
 import org.eclipse.kapua.client.security.metric.SubscribeMetric;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
+import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.eclipse.kapua.service.client.DatabaseCheckUpdate;
 import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.slf4j.Logger;
@@ -140,12 +145,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         ActiveMQServerPlugin.super.afterCreateConnection(connection);
     }
 
-    @Override
-    public void afterCreateSession(ServerSession session) throws ActiveMQException {
-        //TODO add metrics?
-        ActiveMQServerPlugin.super.afterCreateSession(session);
-    }
-
     /**
      * DISCONNECT
      */
@@ -154,17 +153,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         //TODO add metrics
         ActiveMQServerPlugin.super.afterDestroyConnection(connection);
         cleanUpConnectionData(connection, Failure.DESTROY);
-    }
-
-    @Override
-    public void beforeCloseSession(ServerSession session, boolean failed) throws ActiveMQException {
-        //TODO add metrics?
-        ActiveMQServerPlugin.super.beforeCloseSession(session, failed);
-    }
-
-    @Override
-    public void afterCloseSession(ServerSession session, boolean failed) throws ActiveMQException {
-        ActiveMQServerPlugin.super.afterCloseSession(session, failed);
     }
 
     /**
@@ -184,7 +172,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         boolean noAutoCreateQueue) throws ActiveMQException {
         String address = message.getAddress();
         int messageSize = message.getEncodeSize();
-        SessionContext sessionContext = serverContext.getSecurityContextHandler().getSessionContext(PluginUtility.getConnectionId(session));
+        SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(PluginUtility.getConnectionId(session));
         logger.info("Publishing message on address {} from clientId: {} - clientIp: {}", address, sessionContext.getClientId(), sessionContext.getClientIp());
         message.putStringProperty(MessageConstants.HEADER_KAPUA_CLIENT_ID, sessionContext.getClientId());
         message.putStringProperty(MessageConstants.HEADER_KAPUA_CONNECTOR_NAME, sessionContext.getConnectorName());
@@ -245,7 +233,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         return serverContext.getServer().getSessions().stream().map(session -> {
             RemotingConnection remotingConnection = session.getRemotingConnection();
             String clientIdToCheck = PluginUtility.getConnectionId(remotingConnection);
-            SessionContext sessionContext = serverContext.getSecurityContextHandler().getSessionContextByClientId(clientIdToCheck);
+            SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextByClientId(clientIdToCheck);
             String connectionFullClientId = Utils.getFullClientId(sessionContext);
             if (fullClientId.equals(connectionFullClientId)) {
                 logger.info("\tclientId to check: {} - full client id: {}... CLOSE", clientIdToCheck, connectionFullClientId);
@@ -278,27 +266,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         }).mapToInt(Integer::new).sum();
     }
 
-//  private int disconnectClient(String connectionId) {
-//      logger.info("Disconnecting client for connection: {}", connectionId);
-//      return serverContext.getServer().getRemotingService().getConnections().stream().map(remotingConnection -> {
-//          int removed = 0;
-//          String connectionIdTmp = PluginUtility.getConnectionId(remotingConnection);
-//          if (connectionId.equals(connectionIdTmp)) {
-//              logger.info("\tconnection: {} - compared to: {} ... CLOSE", connectionId, connectionIdTmp);
-//              remotingConnection.fail(new ActiveMQException(
-//                      ActiveMQExceptionType.DUPLICATE_ID_REJECTED,
-//                      "stealing link",
-//                      new KapuaIllegalDeviceStateException(AuthErrorCodes.DUPLICATE_CLIENT_ID, connectionId)));
-////              remotingConnection.destroy();
-//              removed++;
-//          }
-//          else {
-//              logger.info("\tclientId to check: {} - compared to: {} ... no action", connectionId, connectionIdTmp);
-//          }
-//          return removed;
-//      }).mapToInt(Integer::new).sum();
-//  }
-
     @Override
     public void duplicateSessionMetadataFailure(ServerSession session, String key, String data) throws ActiveMQException {
         logger.error("Duplicate session for key: {} - data: {}", key, data);
@@ -318,16 +285,17 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     }
 
     private void cleanUpConnectionData(RemotingConnection connection, Failure reason, Exception exception) {
-        String connectionId = PluginUtility.getConnectionId(connection);
-        serverContext.getSecurityContextHandler().updateConnectionTokenOnDisconnection(connectionId);
-        logger.info("### cleanUpConnectionData connection: {} - reason: {} - Error: {}", connectionId, reason, exception!=null?exception.getMessage():"N/A");
-        logger.debug("", exception);
         try {
-            SessionContext sessionContext = serverContext.getSecurityContextHandler().getSessionContext(connectionId);
+            String connectionId = PluginUtility.getConnectionId(connection);
+            serverContext.getSecurityContext().updateConnectionTokenOnDisconnection(connectionId);
+            logger.info("### cleanUpConnectionData connection: {} - reason: {} - Error: {}", connectionId, reason, exception!=null?exception.getMessage():"N/A");
+            logger.debug("", exception);
+            SessionContext sessionContext = serverContext.getSecurityContext().getSessionContext(connectionId);
             if (sessionContext!=null) {
-                SessionContext sessionContextByClient = serverContext.getSecurityContextHandler().cleanSessionContext(sessionContext);
-                AuthRequest authRequest = new AuthRequest(serverContext.getBrokerIdentity().getBrokerHost(), SecurityAction.brokerDisconnect.name(), sessionContext, exception);
-                serverContext.getSecurityContextHandler().updateStealingLinkAndIllegalState(authRequest, connectionId, sessionContextByClient!=null ? sessionContextByClient.getConnectionId() : null);
+                SessionContext sessionContextByClient = serverContext.getSecurityContext().cleanSessionContext(sessionContext);
+                AuthRequest authRequest = new AuthRequest(serverContext.getBrokerIdentity().getBrokerHost(), SecurityAction.brokerDisconnect.name(), sessionContext);
+                updateError(authRequest, exception);
+                serverContext.getSecurityContext().updateStealingLinkAndIllegalState(authRequest, connectionId, sessionContextByClient!=null ? sessionContextByClient.getConnectionId() : null);
                 serverContext.getAuthServiceClient().brokerDisconnect(authRequest);
             }
             else {
@@ -338,8 +306,33 @@ public class ServerPlugin implements ActiveMQServerPlugin {
         catch (Exception e) {
             loginMetric.getFailure().inc();
             logger.error("Cleanup connection data error: {}", e.getMessage(), e);
-//            throw new ActiveMQException(ActiveMQExceptionType.SECURITY_EXCEPTION, "User not authorized!", e);
         }
     }
 
+    private void updateError(AuthRequest authRequest, Exception exception) {
+        //Exception must be not null!
+        authRequest.setExceptionClass(exception.getClass().getName());
+        String errorCode = KapuaAuthenticationErrorCodes.AUTHENTICATION_ERROR.name();
+        if (exception instanceof ActiveMQException) {
+            ActiveMQException activeMQException = (ActiveMQException) exception;
+            //analyze the exception code
+            ActiveMQExceptionType exceptionType = activeMQException.getType();
+            if (!ActiveMQExceptionType.REMOTE_DISCONNECT.equals(exceptionType)) {
+                errorCode = AuthErrorCodes.UNEXPECTED_STATUS.name();
+            }
+        }
+        else if (exception instanceof KapuaIllegalDeviceStateException) {
+            AuthErrorCodes authErrorCode = (AuthErrorCodes)((KapuaIllegalDeviceStateException) exception).getCode();
+            if (authErrorCode!=null) {
+                errorCode = authErrorCode.name();
+            }
+        }
+        else if (exception instanceof KapuaAuthenticationException) {
+            KapuaAuthenticationErrorCodes authErrorCode = (KapuaAuthenticationErrorCodes)((KapuaAuthenticationException) exception).getCode();
+            if (authErrorCode!=null) {
+                errorCode = authErrorCode.name();
+            }
+        }
+        authRequest.setErrorCode(errorCode);
+    }
 }

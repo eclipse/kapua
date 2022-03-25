@@ -37,45 +37,24 @@ public class MqttDevice {
 
     private static final AtomicInteger COUNT = new AtomicInteger(0);
 
-    /**
-     * Logger.
-     */
+    //I'm going to remove trivial comments/javadoc (on private fields) like the one below. There is no need to fill the code with more than trivial comments
+//    /**
+//     * Logger.
+//     */
     private static final Logger logger = LoggerFactory.getLogger(MqttDevice.class);
 
-    /**
-     * URI of mqtt broker.
-     */
-    private static final String BROKER_URI = "tcp://localhost:1883";
+    public static final String BROKER_URI = "tcp://localhost:1883";
 
     /**
      * Listening mqtt client name.
      */
     private static final java.lang.String LISTENER_NAME = "ListenerClient_";
-
-    /**
-     * System user under which Device is listening for messages.
-     */
     private static final String SYS_USER = "kapua-sys";
-
-    /**
-     * System user password while connecting to broker.
-     */
     private static final String SYS_PASSWORD = "kapua-password";
 
-    /**
-     * Default quality of service - mqtt.
-     */
     // TODO switch to qos 1????
     private static final int DEFAULT_QOS = 0;
-
-    /**
-     * Default retain flag is false.
-     */
     private static final boolean DEFAULT_RETAIN = false;
-
-    /**
-     * No filter on topic.
-     */
     private static final String NO_TOPIC_FILTER = "#";
 
     /**
@@ -118,42 +97,43 @@ public class MqttDevice {
         subscriberOpts.setPassword(SYS_PASSWORD.toCharArray());
         try {
             subscribedClient = new MqttClient(BROKER_URI, clientId,
-                    new MemoryPersistence());
+                new MemoryPersistence());
+
+            subscribedClient.setCallback(new MqttCallback() {
+                @Override
+                public void connectionLost(Throwable throwable) {
+                    logger.info("(Client {}) Listener connection to broker lost. {}", clientId, throwable.getMessage(), throwable);
+                }
+
+                @Override
+                public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
+                    logger.info("(Client {}) - Message arrived in Listener with topic: {}", clientId, topic);
+                    // exclude the connect messages sent by the broker (that may affect the tests)
+                    // this messages can be received by this callback before the listenerReceivedMqttMessage is properly initialized. So a check for null should be performed
+                    // TODO manage this client in a better way, so the list of the received messages should be internal and exposed as getter to the caller.
+                    if (listenerReceivedMqttMessage != null) {
+                        if (!topic.contains("MQTT/CONNECT") || topic.contains("MQTT/DISCONNECT")) {
+                            listenerReceivedMqttMessage.clear();
+                            listenerReceivedMqttMessage.put(topic, new String(mqttMessage.getPayload()));
+                        } else {
+                            logger.info("(Client {}) - Received CONNECT/DISCONNECT message. The message will be discarded!", clientId);
+                        }
+                    } else {
+                        logger.info("(Client {}) - Received message map is null. The message is not stored!", clientId);
+                    }
+                }
+
+                @Override
+                public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+                    logger.info("Listener message delivery complete.");
+                }
+            });
             subscribedClient.connect(subscriberOpts);
             subscribedClient.subscribe(NO_TOPIC_FILTER, DEFAULT_QOS);
+            logger.info("Subscribed topic for client {}", NO_TOPIC_FILTER, clientId);
         } catch (MqttException e) {
             logger.warn("Error", e);
         }
-
-        subscribedClient.setCallback(new MqttCallback() {
-            @Override
-            public void connectionLost(Throwable throwable) {
-                logger.info("(Client {}) Listener connection to broker lost. {}", clientId, throwable.getMessage(), throwable);
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                logger.info("(Client {}) - Message arrived in Listener with topic: {}", clientId, topic);
-                // exclude the connect messages sent by the broker (that may affect the tests)
-                // this messages can be received by this callback before the listenerReceivedMqttMessage is properly initialized. So a check for null should be performed
-                // TODO manage this client in a better way, so the list of the received messages should be internal and exposed as getter to the caller.
-                if (listenerReceivedMqttMessage != null) {
-                    if (!topic.contains("MQTT/CONNECT") || topic.contains("MQTT/DISCONNECT")) {
-                        listenerReceivedMqttMessage.clear();
-                        listenerReceivedMqttMessage.put(topic, new String(mqttMessage.getPayload()));
-                    } else {
-                        logger.info("(Client {}) - Received CONNECT/DISCONNECT message. The message will be discarded!", clientId);
-                    }
-                } else {
-                    logger.info("(Client {}) - Received message map is null. The message is not stored!", clientId);
-                }
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                logger.info("Listener message delivery complete.");
-            }
-        });
     }
 
     /**
@@ -187,19 +167,18 @@ public class MqttDevice {
         MqttConnectOptions clientOpts = new MqttConnectOptions();
         clientOpts.setUserName(userName);
         clientOpts.setPassword(password.toCharArray());
-        MqttClient mqttClient = null;
-        mqttClient = new MqttClient(BROKER_URI, clientId,
+        MqttClient mqttClient = new MqttClient(BROKER_URI, clientId,
                 new MemoryPersistence());
         mqttClient.setCallback(new MqttCallback() {
 
             @Override
             public void connectionLost(Throwable throwable) {
-                logger.info("Client connection to broker lost.");
+                logger.info("Client {} connection to broker lost: {}", clientId, throwable.getMessage(), throwable);
             }
 
             @Override
             public void messageArrived(String topic, MqttMessage mqttMessage) throws Exception {
-                logger.info("Message arrived in client with topic: {}", topic);
+                logger.info("Message arrived for client {} with topic: {}", clientId, topic);
 
                 clientReceivedMqttMessage.clear();
                 Map<String, String> topicPayload = new HashMap<>();
@@ -209,13 +188,14 @@ public class MqttDevice {
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                logger.info("Client message delivery complete.");
+                logger.info("Client message delivery complete. client: {}", clientId);
             }
         });
 
         mqttClient.connect(clientOpts);
         if ((topicFilter != null) && (topicFilter.length() > 0)) {
             mqttClient.subscribe(topicFilter, DEFAULT_QOS);
+            logger.info("Subscribed topic for client {}", topicFilter, clientId);
         }
 
         mqttClients.put(clientId, mqttClient);
@@ -225,8 +205,8 @@ public class MqttDevice {
      * Disconnect Device mqtt client that listens and sends messages to mqtt broker.
      */
     public void mqttClientsDisconnect() {
-        logger.info("(Client {}) - Disconnecting", clientId);
         for (Map.Entry<String, MqttClient> mqttClient : mqttClients.entrySet()) {
+            logger.info("(Client {}) - Disconnecting", mqttClient.getValue().getClientId());
             try {
                 try (final Suppressed<Exception> s = Suppressed.withException()) {
                     s.run(mqttClient.getValue()::disconnect);
@@ -236,6 +216,7 @@ public class MqttDevice {
                 //drop stacktrace
                 logger.warn("Failed during cleanup of client Paho resources", e.getMessage());
             }
+            logger.info("(Client {}) - Disconnecting: {}", mqttClient.getValue().getClientId(), mqttClient.getValue().isConnected());
         }
     }
 

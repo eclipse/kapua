@@ -18,8 +18,8 @@ import javax.jms.JMSException;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.spi.UriEndpoint;
-import org.eclipse.kapua.client.security.bean.AccountRequest;
-import org.eclipse.kapua.client.security.bean.AccountResponse;
+import org.eclipse.kapua.client.security.bean.EntityRequest;
+import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.MessageConstants;
 import org.eclipse.kapua.client.security.bean.Request;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
@@ -83,10 +83,10 @@ public class AuthenticationServiceListener extends AbstractListener {
         metricLogoutCount.inc();
     }
 
-    public void getAccount(Exchange exchange, AccountRequest accountRequest) throws JsonProcessingException, JMSException {
+    public void getEntity(Exchange exchange, EntityRequest accountRequest) throws JsonProcessingException, JMSException {
         metricGetAccountRequestCount.inc();
         logRequest(exchange, accountRequest);
-        AccountResponse accountResponse = authenticationServiceBackEndCall.getAccount(accountRequest);
+        EntityResponse accountResponse = authenticationServiceBackEndCall.getEntity(accountRequest);
         updateMessage(exchange, accountRequest, accountResponse);
         metricGetAccountCount.inc();
     }
@@ -109,19 +109,18 @@ public class AuthenticationServiceListener extends AbstractListener {
         message.setHeader(MessageConstants.HEADER_ERROR_CODE, authResponse.getErrorCode());
     }
 
-    public void updateMessage(Exchange exchange, AccountRequest accountRequest, AccountResponse accountResponse) throws JMSException, JsonProcessingException {
+    public void updateMessage(Exchange exchange, EntityRequest entityRequest, EntityResponse entityResponse) throws JMSException, JsonProcessingException {
         Message message = exchange.getIn();
         String textPayload = null;
-        if (accountResponse!=null) {
-            textPayload = writer.writeValueAsString(accountResponse);
+        if (entityResponse!=null) {
+            textPayload = writer.writeValueAsString(entityResponse);
             message.setBody(textPayload, String.class);
         }
-        message.setHeader(MessageConstants.HEADER_REQUESTER, accountRequest.getRequester());
-        message.setHeader(MessageConstants.HEADER_REQUEST_ID, accountRequest.getRequestId());
-        message.setHeader(MessageConstants.HEADER_ACTION, accountRequest.getAction());
-        message.setHeader(MessageConstants.HEADER_USERNAME, accountRequest.getUsername());
-        message.setHeader(MessageConstants.HEADER_RESULT_CODE, accountResponse.getResultCode());
-        message.setHeader(MessageConstants.HEADER_ERROR_CODE, accountResponse.getErrorCode());
+        message.setHeader(MessageConstants.HEADER_REQUESTER, entityRequest.getRequester());
+        message.setHeader(MessageConstants.HEADER_REQUEST_ID, entityRequest.getRequestId());
+        message.setHeader(MessageConstants.HEADER_ACTION, entityRequest.getAction());
+        message.setHeader(MessageConstants.HEADER_RESULT_CODE, entityResponse.getResultCode());
+        message.setHeader(MessageConstants.HEADER_ERROR_CODE, entityResponse.getErrorCode());
     }
 
     private void logRequest(Exchange exchange, Request request) {

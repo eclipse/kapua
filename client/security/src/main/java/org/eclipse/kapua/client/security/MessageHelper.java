@@ -17,7 +17,7 @@ import java.util.UUID;
 import javax.jms.JMSException;
 import javax.jms.TextMessage;
 
-import org.eclipse.kapua.client.security.bean.AccountRequest;
+import org.eclipse.kapua.client.security.bean.EntityRequest;
 import org.eclipse.kapua.client.security.bean.MessageConstants;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 
@@ -53,11 +53,11 @@ public class MessageHelper {
         return message;
     }
 
-    static TextMessage getAccountMessage(TextMessage message, AccountRequest accountRequest) throws JMSException, JsonProcessingException {
-        buildBaseMessage(message, accountRequest);
+    static TextMessage getEntityMessage(TextMessage message, EntityRequest entityRequest) throws JMSException, JsonProcessingException {
+        buildBaseMessage(message, entityRequest);
         String textPayload = null;
-        if (accountRequest!=null) {
-            textPayload = writer.writeValueAsString(accountRequest);
+        if (entityRequest!=null) {
+            textPayload = writer.writeValueAsString(entityRequest);
             message.setText(textPayload);
         }
         return message;
@@ -72,10 +72,10 @@ public class MessageHelper {
         message.setStringProperty(MessageConstants.HEADER_CONNECTION_ID, authRequest.getConnectionId());
     }
 
-    static void buildBaseMessage(TextMessage message, AccountRequest accountRequest) throws JMSException {
-        message.setStringProperty(MessageConstants.HEADER_REQUEST_ID, accountRequest.getRequestId());
-        message.setStringProperty(MessageConstants.HEADER_ACTION, accountRequest.getAction());
-        message.setStringProperty(MessageConstants.HEADER_USERNAME, accountRequest.getUsername());
+    static void buildBaseMessage(TextMessage message, EntityRequest entityRequest) throws JMSException {
+        message.setStringProperty(MessageConstants.HEADER_REQUEST_ID, entityRequest.getRequestId());
+        message.setStringProperty(MessageConstants.HEADER_ACTION, entityRequest.getAction());
+        message.setStringProperty(MessageConstants.HEADER_NAME, entityRequest.getName());
     }
 
     static String getNewRequestId() {

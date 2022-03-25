@@ -1417,32 +1417,26 @@ public class DeviceRegistrySteps extends TestBase {
         searchForEventsFromDeviceWithClientIDInternal(clientId, account, events, timeout, false);
     }
 
-    private void searchForEventsFromDeviceWithClientIDInternal(String clientId, String account, int events, int timeout, boolean greater) throws Exception {
+    private void searchForEventsFromDeviceWithClientIDInternal(String clientId, String accountName, int events, int timeout, boolean greater) throws Exception {
         int executions = 0;
+        Account account = accountService.findByName(accountName);
+        Assert.assertNotNull(account);
+        Device device = deviceRegistryService.findByClientId(account.getId(), clientId);
+        Assert.assertNotNull(device);
         while (executions++ < timeout) {
-            if (searchForEventsFromDeviceWithClientID(clientId, account, events, false, greater)) {
+            logger.info("Device(s) events countdown check: {}", executions);
+            if (searchForEventsFromDeviceWithClientID(account, device, events, false, greater)) {
                 return;
             }
             Thread.sleep(1000);
         }
-        searchForEventsFromDeviceWithClientID(clientId, account, events, true, greater);
+        logger.info("Device(s) events countdown check: {} DONE", executions);
+        searchForEventsFromDeviceWithClientID(account, device, events, true, greater);
     }
 
-    private boolean searchForEventsFromDeviceWithClientID(String clientId, String accountName, int events, boolean timeoutOccurred, boolean greater) throws Exception {
+    private boolean searchForEventsFromDeviceWithClientID(Account account, Device device, int events, boolean timeoutOccurred, boolean greater) throws Exception {
         DeviceEventListResult deviceEventList = null;
         try {
-            Account account = accountService.findByName(accountName);
-            if (timeoutOccurred) {
-                Assert.assertNotNull(account);
-            } else if (account == null) {
-                return false;
-            }
-            Device device = deviceRegistryService.findByClientId(account.getId(), clientId);
-            if (timeoutOccurred) {
-                Assert.assertNotNull(device);
-            } else if (device == null) {
-                return false;
-            }
             DeviceEventQuery eventQuery = eventFactory.newQuery(account.getId());
             eventQuery.setPredicate(eventQuery.attributePredicate(DeviceEventAttributes.DEVICE_ID, device.getId(), AttributePredicate.Operator.EQUAL));
             eventQuery.setSortCriteria(eventQuery.fieldSortCriteria(DeviceEventAttributes.RECEIVED_ON, SortOrder.ASCENDING));
@@ -1450,13 +1444,15 @@ public class DeviceRegistrySteps extends TestBase {
         } catch (KapuaException ex) {
             verifyException(ex);
         }
+        logger.info("Device(s) events: {}", deviceEventList.getSize());
         stepData.put(DEVICE_EVENT_LIST, deviceEventList);
         if (timeoutOccurred) {
             printEvents(deviceEventList, events);
             if (greater) {
                 Assert.assertEquals("Wrong device events count", events, deviceEventList.getSize());
-            } else {
-                Assert.assertTrue("Wrong device events count", events <= deviceEventList.getSize());
+            }
+            else {
+                Assert.assertTrue("Wrong device events count. Expected greater than " + events + " but found " + deviceEventList.getSize(), events<=deviceEventList.getSize());
             }
         }
         return greater ? events <= deviceEventList.getSize() : events == deviceEventList.getSize();
@@ -1503,7 +1499,7 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     private void printEvents(DeviceEventListResult eventList, int count) throws Exception {
-        logger.info("Events sie: {}", eventList.getSize());
+        logger.info("Events size: {}", eventList.getSize());
         eventList.getItems().forEach((event) -> logger.info("\ttype: {} - id: {} - date: {} - {}", event.getType(), event.getDeviceId(), event.getCreatedOn(), event.getEventMessage()));
 //        if (count > eventList.getSize()) {
 //            logger.info("++++++++++++++++++++++++++++++++++++++++++++++++\n===========================================================\n\n");
