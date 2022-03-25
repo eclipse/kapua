@@ -19,6 +19,7 @@ public interface MessageConstants {
     public static final String HEADER_ACTION = "action";
     public static final String HEADER_REQUEST_ID = "request_id";
     public static final String HEADER_USERNAME = "username";
+    public static final String HEADER_NAME = "name";
     public static final String HEADER_CLIENT_ID = "client_id";
     public static final String HEADER_CLIENT_IP = "client_ip";
     public static final String HEADER_CONNECTION_ID = "connection_id";

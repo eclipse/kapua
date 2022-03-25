@@ -14,8 +14,8 @@ package org.eclipse.kapua.client.security;
 
 import javax.jms.JMSException;
 
-import org.eclipse.kapua.client.security.bean.AccountRequest;
-import org.eclipse.kapua.client.security.bean.AccountResponse;
+import org.eclipse.kapua.client.security.bean.EntityRequest;
+import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
 
@@ -30,7 +30,12 @@ public interface ServiceClient {
     public enum SecurityAction {
         brokerConnect,
         brokerDisconnect,
-        getAccount
+        getEntity
+    }
+
+    public enum EntityType {
+        account,
+        user
     }
 
     public enum ResultCode {
@@ -59,13 +64,13 @@ public interface ServiceClient {
     public AuthResponse brokerDisconnect(AuthRequest authRequest) throws JMSException, InterruptedException, JsonProcessingException;
 
     /**
-     * Return the account infos giving the username
-     * @param accountRequest
+     * Return the entity id and scope id giving the entity name (supported entities are user and account. which one will be chosen depends on action field)
+     * @param entityRequest
      * @return
      * @throws JMSException
      * @throws InterruptedException
      * @throws JsonProcessingException
      */
-    public AccountResponse getAccount(AccountRequest accountRequest) throws JMSException, InterruptedException, JsonProcessingException;
+    public EntityResponse getEntity(EntityRequest entityRequest) throws JMSException, InterruptedException, JsonProcessingException;
 
 }

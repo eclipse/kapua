@@ -75,8 +75,12 @@ public class AuthResponse implements Response {
     @JsonProperty("resultCode")
     private String resultCode;
 
+    @JsonProperty("exceptionClass")
+    private String exceptionClass;
+
     @JsonProperty("errorCode")
     private String errorCode;
+
 
     public AuthResponse() {
         acls = new ArrayList<>();
@@ -231,6 +235,14 @@ public class AuthResponse implements Response {
 
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;
+    }
+
+    public String getExceptionClass() {
+        return exceptionClass;
+    }
+
+    public void setExceptionClass(String exceptionClass) {
+        this.exceptionClass = exceptionClass;
     }
 
 }

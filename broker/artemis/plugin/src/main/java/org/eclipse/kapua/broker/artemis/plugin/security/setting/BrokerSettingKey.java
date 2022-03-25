@@ -57,7 +57,31 @@ public enum BrokerSettingKey implements SettingKey {
     /**
      * Publish message info if the message size is over the specified threshold
      */
-    PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD("broker.security.published.message_size.log_threshold");
+    PUBLISHED_MESSAGE_SIZE_LOG_THRESHOLD("broker.security.published.message_size.log_threshold"),
+    /**
+     * Connection token cache size
+     */
+    CACHE_CONNECTION_TOKEN_SIZE("broker.cache.connection_token.size"),
+    /**
+     * Connection token cache ttl (in seconds)
+     */
+    CACHE_CONNECTION_TOKEN_TTL("broker.cache.connection_token.ttl"),
+    /**
+     * Session context cache size
+     */
+    CACHE_SESSION_CONTEXT_SIZE("broker.cache.session_context.size"),
+    /**
+     * Session context cache ttl (in seconds)
+     */
+    CACHE_SESSION_CONTEXT_TTL("broker.cache.session_context.ttl"),
+    /**
+     * Scope id cache size
+     */
+    CACHE_SCOPE_ID_SIZE("broker.cache.scope_id.size"),
+    /**
+     * Scope id cache ttl (in seconds)
+     */
+    CACHE_SCOPE_ID_TTL("broker.cache.scope_id.ttl");
 
     private String key;
 

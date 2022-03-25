@@ -61,6 +61,13 @@ public interface KapuaPrincipal extends Principal, java.io.Serializable {
     String getClientId();
 
     /**
+     * Return the client connection Id from which the user should be connected
+     *
+     * @return
+     */
+    String getConnectionId();
+
+    /**
      * Returns true if the principal belongs to a user connected throug an internal connector
      *
      * @return
