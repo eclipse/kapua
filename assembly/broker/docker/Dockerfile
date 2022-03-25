@@ -42,7 +42,8 @@ ENV ACTIVEMQ_OPTS "-Dcommons.db.schema.update=true \
                    -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
                    -Dbroker.ip=broker \
                    -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR} \
-                   -Djob.engine.client.auth.mode=trusted"
+                   -Djob.engine.client.auth.mode=trusted \
+                   -Dorg.apache.activemq.SERIALIZABLE_PACKAGES=\${AMQ_SERIALIZABLE_PACKAGES:-java.lang,java.math,java.util,org.apache.activemq,org.fusesource.hawtbuf,org.eclipse.kapua}"
 
 EXPOSE 1883 1893 8883 61614 61615 8161
 
