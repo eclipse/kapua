@@ -14,7 +14,7 @@ package org.eclipse.kapua.broker.artemis.plugin.security;
 
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.broker.artemis.plugin.security.context.SecurityContextHandler;
+import org.eclipse.kapua.broker.artemis.plugin.security.context.SecurityContext;
 import org.eclipse.kapua.broker.artemis.plugin.utils.BrokerIdentity;
 import org.eclipse.kapua.client.security.ServiceClient;
 import org.eclipse.kapua.client.security.ServiceClientMessagingImpl;
@@ -24,7 +24,7 @@ public class ServerContext {
     //TODO provide client pluggability once the rest one will be implemented (now just the AMQP client is available)
     //TODO manage through injection if possible
     protected ServiceClient authServiceClient;
-    protected SecurityContextHandler securityContextHandler;
+    protected SecurityContext securityContext;
     protected BrokerIdentity brokerIdentity;
     protected ActiveMQServer server;
 
@@ -40,12 +40,12 @@ public class ServerContext {
         brokerIdentity = BrokerIdentity.getInstance();
         brokerIdentity.init(server);
         authServiceClient = new ServiceClientMessagingImpl(brokerIdentity.getBrokerHost());
-        securityContextHandler = SecurityContextHandler.getInstance();
-        securityContextHandler.init(server);
+        securityContext = SecurityContext.getInstance();
+        securityContext.init(server);
     }
 
     public void shutdown(ActiveMQServer server) throws KapuaException {
-        securityContextHandler.shutdown(server);
+        securityContext.shutdown(server);
     }
 
     public ActiveMQServer getServer() {
@@ -56,8 +56,8 @@ public class ServerContext {
         return authServiceClient;
     }
 
-    public SecurityContextHandler getSecurityContextHandler() {
-        return securityContextHandler;
+    public SecurityContext getSecurityContext() {
+        return securityContext;
     }
 
     public BrokerIdentity getBrokerIdentity() {

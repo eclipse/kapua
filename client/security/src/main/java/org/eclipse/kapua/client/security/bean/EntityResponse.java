@@ -12,14 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.bean;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class AccountRequest implements Request {
-
-    protected static Logger logger = LoggerFactory.getLogger(AuthResponse.class);
+public class EntityResponse implements Response {
 
     @JsonProperty("requester")
     private String requester;
@@ -30,17 +25,23 @@ public class AccountRequest implements Request {
     @JsonProperty("requestId")
     private String requestId;
 
-    @JsonProperty("username")
-    private String username;
+    @JsonProperty("entity")
+    private String entity;
 
-    public AccountRequest() {
-    }
+    @JsonProperty("name")
+    private String name;
 
-    public AccountRequest(String requester, String action, String username) {
-        this.requester = requester;
-        this.action = action;
-        this.username = username;
-    }
+    @JsonProperty("id")
+    private String id;
+
+    @JsonProperty("scopeId")
+    private String scopeId;
+
+    @JsonProperty("resultCode")
+    private String resultCode;
+
+    @JsonProperty("errorCode")
+    private String errorCode;
 
     public String getRequester() {
         return requester;
@@ -66,12 +67,52 @@ public class AccountRequest implements Request {
         this.requestId = requestId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEntity() {
+        return entity;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEntity(String entity) {
+        this.entity = entity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getScopeId() {
+        return scopeId;
+    }
+
+    public void setScopeId(String scopeId) {
+        this.scopeId = scopeId;
+    }
+
+    public String getResultCode() {
+        return resultCode;
+    }
+
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 
 }

@@ -36,10 +36,10 @@
                     <bean ref="authenticationServiceConverter" method="convertToAuthRequest"/>
                     <bean ref="authenticationServiceListener" method="brokerDisconnect"/>
                 </when>
-                <when id="getAccount">
-                    <simple>${header.action} == 'getAccount'</simple>
-                    <bean ref="authenticationServiceConverter" method="convertToGetAccount"/>
-                    <bean ref="authenticationServiceListener" method="getAccount"/>
+                <when id="getEntity">
+                    <simple>${header.action} == 'getEntity'</simple>
+                    <bean ref="authenticationServiceConverter" method="convertToGetEntity"/>
+                    <bean ref="authenticationServiceListener" method="getEntity"/>
                 </when>
             </choice>
             <toD uri="amqp:queue:auth_response_${header.requester}"/>

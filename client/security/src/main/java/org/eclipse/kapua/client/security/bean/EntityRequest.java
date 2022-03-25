@@ -12,9 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.bean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class AccountResponse implements Response {
+public class EntityRequest implements Request {
+
+    protected static Logger logger = LoggerFactory.getLogger(AuthResponse.class);
 
     @JsonProperty("requester")
     private String requester;
@@ -25,17 +30,21 @@ public class AccountResponse implements Response {
     @JsonProperty("requestId")
     private String requestId;
 
-    @JsonProperty("username")
-    private String username;
+    @JsonProperty("entity")
+    private String entity;
 
-    @JsonProperty("scopeId")
-    private String scopeId;
+    @JsonProperty("name")
+    private String name;
 
-    @JsonProperty("resultCode")
-    private String resultCode;
+    public EntityRequest() {
+    }
 
-    @JsonProperty("errorCode")
-    private String errorCode;
+    public EntityRequest(String requester, String action, String entity, String name) {
+        this.requester = requester;
+        this.action = action;
+        this.entity = entity;
+        this.name = name;
+    }
 
     public String getRequester() {
         return requester;
@@ -61,36 +70,20 @@ public class AccountResponse implements Response {
         this.requestId = requestId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEntity() {
+        return entity;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEntity(String entity) {
+        this.entity = entity;
     }
 
-    public String getScopeId() {
-        return scopeId;
+    public String getName() {
+        return name;
     }
 
-    public void setScopeId(String scopeId) {
-        this.scopeId = scopeId;
-    }
-
-    public String getResultCode() {
-        return resultCode;
-    }
-
-    public void setResultCode(String resultCode) {
-        this.resultCode = resultCode;
-    }
-
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
+    public void setName(String name) {
+        this.name = name;
     }
 
 }

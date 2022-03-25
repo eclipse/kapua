@@ -16,7 +16,6 @@ import java.security.cert.Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.kapua.client.security.AuthErrorCodes;
 import org.eclipse.kapua.model.id.KapuaId;
 
 public class AuthContext {
@@ -36,7 +35,7 @@ public class AuthContext {
     private boolean sslEnabled;
 
     private String exceptionClass;
-    private AuthErrorCodes authErrorCode;
+    private String errorCode;
 
     private boolean admin;
     private boolean missing;
@@ -78,7 +77,7 @@ public class AuthContext {
             sslEnabled = authRequest.getSslEnabled();
         }
         exceptionClass = authRequest.getExceptionClass();
-        authErrorCode = authRequest.getAuthErrorCode();
+        errorCode = authRequest.getErrorCode();
         stealingLink = authRequest.isStealingLink();
         illegalState = authRequest.isIllegalState();
         missing = authRequest.isMissing();
@@ -144,12 +143,12 @@ public class AuthContext {
         this.exceptionClass = exceptionClass;
     }
 
-    public AuthErrorCodes getAuthErrorCode() {
-        return authErrorCode;
+    public String getErrorCode() {
+        return errorCode;
     }
 
-    public void setAuthErrorCode(AuthErrorCodes authErrorCode) {
-        this.authErrorCode = authErrorCode;
+    public void setAuthErrorCode(String errorCode) {
+        this.errorCode = errorCode;
     }
 
     public String getKapuaConnectionId() {

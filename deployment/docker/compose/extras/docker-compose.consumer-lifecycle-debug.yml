@@ -5,4 +5,4 @@ services:
     ports:
       - ${KAPUA_CONSUMER_LIFECYCLE_DEBUG_PORT:-8002}:8001
     environment:
-      - DEBUG_OPTIONS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=${KAPUA_CONSUMER_LIFECYCLE_DEBUG_SUSPEND:-n},address=8001
+      - DEBUG_OPTIONS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=${KAPUA_CONSUMER_LIFECYCLE_DEBUG_SUSPEND:-n},address=*:8001

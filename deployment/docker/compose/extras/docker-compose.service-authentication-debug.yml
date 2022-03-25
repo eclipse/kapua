@@ -1,0 +1,8 @@
+version: '3.1'
+
+services:
+  service-authentication:
+    ports:
+      - ${KAPUA_SERVICE_AUTHENTICATION_DEBUG_PORT:-8004}:8001
+    environment:
+      - DEBUG_OPTIONS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=${KAPUA_SERVICE_AUTHENTICATION_DEBUG_SUSPEND:-n},address=*:8001

@@ -19,8 +19,8 @@ import javax.jms.JMSException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.client.security.amqpclient.Client;
-import org.eclipse.kapua.client.security.bean.AccountRequest;
-import org.eclipse.kapua.client.security.bean.AccountResponse;
+import org.eclipse.kapua.client.security.bean.EntityRequest;
+import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.client.security.bean.Request;
@@ -39,17 +39,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public class ServiceClientMessagingImpl implements ServiceClient {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceClientMessagingImpl.class);
-
-    public enum SecurityAction {
-        brokerConnect,
-        brokerDisconnect,
-        getAccount
-    }
-
-    public enum ResultCode {
-        authorized,
-        notAuthorized
-    }
 
     public static final String REQUEST_QUEUE = "auth_request";
     public static final String RESPONSE_QUEUE_PREFIX = "auth_response_";
@@ -106,14 +95,13 @@ public class ServiceClientMessagingImpl implements ServiceClient {
     }
 
     @Override
-    public AccountResponse getAccount(AccountRequest accountRequest) throws JMSException, InterruptedException, JsonProcessingException {
+    public EntityResponse getEntity(EntityRequest entityRequest) throws JMSException, InterruptedException, JsonProcessingException {
         client.checkAuthServiceConnection();
         String requestId = MessageHelper.getNewRequestId();
-        accountRequest.setRequestId(requestId);
-        accountRequest.setAction(SecurityAction.getAccount.name());
-        ResponseContainer<AccountResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(accountRequest);
-        logRequest(accountRequest);
-        client.sendMessage(MessageHelper.getAccountMessage(client.createTextMessage(), accountRequest));
+        entityRequest.setRequestId(requestId);
+        ResponseContainer<EntityResponse> responseContainer = ResponseContainer.createAnRegisterNewMessageContainer(entityRequest);
+        logRequest(entityRequest);
+        client.sendMessage(MessageHelper.getEntityMessage(client.createTextMessage(), entityRequest));
         synchronized (responseContainer) {
             responseContainer.wait(TIMEOUT);
         }
