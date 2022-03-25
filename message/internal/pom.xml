@@ -22,11 +22,7 @@
     </parent>
 
     <artifactId>kapua-message-internal</artifactId>
-    <name>${project.artifactId}</name>
 
-    <properties>
-        <jaxb.version>2.2.5</jaxb.version>
-    </properties>
     <dependencies>
         <!-- Internal dependencies -->
         <dependency>
@@ -35,11 +31,6 @@
         </dependency>
 
         <!-- External dependencies -->
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb.version}</version>
-        </dependency>
         <dependency>
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
