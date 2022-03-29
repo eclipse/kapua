@@ -52,7 +52,7 @@ import java.util.List;
  */
 public class BrokerJAXBContextProvider extends FallbackMappingJAXBContextProvider implements JAXBContextProvider {
 
-    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+    private static final List<Class<?>> CONTEXT_CLASSES = Arrays.asList(
             // Kapua Service Configuration
             KapuaTmetadata.class,
             KapuaTocd.class,
@@ -89,7 +89,7 @@ public class BrokerJAXBContextProvider extends FallbackMappingJAXBContextProvide
     );
 
     @Override
-    protected List<Class<?>> getClassesToBound() {
-        return CLASSES_TO_BOUND;
+    protected List<Class<?>> getClasses() {
+        return CONTEXT_CLASSES;
     }
 }

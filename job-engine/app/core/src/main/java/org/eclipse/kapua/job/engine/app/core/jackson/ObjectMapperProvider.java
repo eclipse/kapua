@@ -12,9 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.core.jackson;
 
-import javax.ws.rs.ext.ContextResolver;
-import javax.ws.rs.ext.Provider;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
 import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.app.core.jackson.mixin.IsJobRunningResponseMixin;
@@ -22,13 +20,26 @@ import org.eclipse.kapua.job.engine.app.core.jackson.mixin.JobStartOptionsMixin;
 import org.eclipse.kapua.job.engine.app.core.jackson.mixin.KapuaIdMixin;
 import org.eclipse.kapua.model.id.KapuaId;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
 
+/**
+ * Job Engine {@link ContextResolver} implementation.
+ *
+ * Used for JSON-only serialization/deserialization in JobEngine.
+ *
+ * @since 1.5.0
+ */
 @Provider
 public class ObjectMapperProvider implements ContextResolver<ObjectMapper> {
 
     private final ObjectMapper objectMapper;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.5.0
+     */
     public ObjectMapperProvider() {
         objectMapper = new ObjectMapper();
         objectMapper.addMixIn(KapuaId.class, KapuaIdMixin.class);

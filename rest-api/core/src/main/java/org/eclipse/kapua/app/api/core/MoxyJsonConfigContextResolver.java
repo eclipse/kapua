@@ -17,6 +17,9 @@ import org.glassfish.jersey.moxy.json.MoxyJsonConfig;
 
 import javax.ws.rs.ext.ContextResolver;
 
+/**
+ * @since 1.0.0
+ */
 public class MoxyJsonConfigContextResolver implements ContextResolver<MoxyJsonConfig> {
 
     MoxyJsonConfig config;

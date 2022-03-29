@@ -52,7 +52,7 @@ import java.util.List;
  */
 public class QaTestRestJAXBContextProvider extends DefaultJAXBContextProvider implements JAXBContextProvider {
 
-    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+    private static final List<Class<?>> CONTEXT_CLASSES = Arrays.asList(
             // Account
             Account.class,
             AccountCreator.class,
@@ -90,7 +90,7 @@ public class QaTestRestJAXBContextProvider extends DefaultJAXBContextProvider im
     );
 
     @Override
-    protected List<Class<?>> getClassesToBound() {
-        return CLASSES_TO_BOUND;
+    protected List<Class<?>> getClasses() {
+        return CONTEXT_CLASSES;
     }
 }

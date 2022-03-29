@@ -18,6 +18,13 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.ext.ContextResolver;
 import javax.xml.bind.JAXBContext;
 
+/**
+ * JaxRS-based applications {@link ContextResolver} implementation.
+ * <p>
+ * It relies on the {@link FallbackMappingJAXBContextProvider} implementation.
+ *
+ * @since 2.0.0
+ */
 public abstract class JaxRSJAXBContextResolver extends FallbackMappingJAXBContextProvider implements ContextResolver<JAXBContext> {
 
     @Override

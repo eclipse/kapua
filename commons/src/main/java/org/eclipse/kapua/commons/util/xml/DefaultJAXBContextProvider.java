@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * A default {@link JAXBContextProvider} implementation.
  * <p>
- * This simplifies the creation of a specific {@link JAXBContextProvider} asking only to provide the {@link #getClassesToBound()}
+ * This simplifies the creation of a specific {@link JAXBContextProvider} asking only to provide the {@link #getClasses()}
  *
  * @since 2.0.0
  */
@@ -40,14 +40,14 @@ public abstract class DefaultJAXBContextProvider implements JAXBContextProvider 
     /**
      * Constructor.
      * <p>
-     * It initializes the {@link JAXBContext} with {@link #getClassesToBound()} and the {@link #getJaxbContextProperties()}
+     * It initializes the {@link JAXBContext} with {@link #getClasses()} and the {@link #getJaxbContextProperties()}
      *
      * @since 2.0.0
      */
     public DefaultJAXBContextProvider() {
         try {
             this.jaxbContext = JAXBContextFactory.createContext(
-                    getClassesToBound().toArray(new Class[0]),
+                    getClasses().toArray(new Class[0]),
                     getJaxbContextProperties()
             );
         } catch (JAXBException e) {
@@ -92,12 +92,12 @@ public abstract class DefaultJAXBContextProvider implements JAXBContextProvider 
     }
 
     /**
-     * Gets the {@link List} of {@link Class} to bound to the {@link JAXBContext}.
+     * Gets the {@link List} of {@link Class} to bind to the {@link JAXBContext}.
      *
-     * @return The {@link List} of {@link Class} to bound to the {@link JAXBContext}.
+     * @return The {@link List} of {@link Class} to bind to the {@link JAXBContext}.
      * @since 2.0.0
      */
-    protected abstract List<Class<?>> getClassesToBound();
+    protected abstract List<Class<?>> getClasses();
 
     /**
      * Pretty prints the {@link JAXBContext} configuration using the {@link ConfigurationPrinter}.
@@ -112,11 +112,18 @@ public abstract class DefaultJAXBContextProvider implements JAXBContextProvider 
                         .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                         .withTitle("JAXB Context Configuration");
 
-        contextProviderConfigPrinter
-                .openSection("Bound Classes")
-                .addParameter("Total", getClassesToBound().size())
-                .closeSection();
+        // Classes
+        contextProviderConfigPrinter.openSection("Bound Classes")
+                .addParameter("Total", getClasses().size());
 
+        if (!LOG.isDebugEnabled()) {
+            contextProviderConfigPrinter.openSection("List");
+            getClasses().forEach(contextProviderConfigPrinter::addSimpleParameter);
+            contextProviderConfigPrinter.closeSection();
+        }
+        contextProviderConfigPrinter.closeSection();
+
+        // Properties
         contextProviderConfigPrinter.openSection("Context Properties");
         for (Map.Entry<String, Object> property : getJaxbContextProperties().entrySet()) {
             contextProviderConfigPrinter.addParameter(property.getKey(), String.valueOf(property.getValue()));

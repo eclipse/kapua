@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class MessageTestJAXBContextProvider extends DefaultJAXBContextProvider implements JAXBContextProvider {
 
-    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+    private static final List<Class<?>> CONTEXT_CLASSES = Arrays.asList(
             KapuaMessage.class,
             KapuaChannel.class,
             KapuaPayload.class,
@@ -46,8 +46,8 @@ public class MessageTestJAXBContextProvider extends DefaultJAXBContextProvider i
     );
 
     @Override
-    protected List<Class<?>> getClassesToBound() {
-        return CLASSES_TO_BOUND;
+    protected List<Class<?>> getClasses() {
+        return CONTEXT_CLASSES;
     }
 
     @Override

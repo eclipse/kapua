@@ -316,21 +316,24 @@ import org.eclipse.kapua.service.user.UserXmlRegistry;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
+import javax.xml.bind.JAXBContext;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Provide a customized JAXBContext that makes the concrete implementations
- * known and available for marshalling
+ * REST API {@link ContextResolver} implementation.
+ * <p>
+ * It relies on the {@link JaxRSJAXBContextResolver} implementation.
  *
  * @since 1.0.0
  */
 @Provider
 @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-public class RestApiJAXBContextResolver extends JaxRSJAXBContextResolver {
+public class RestApiJAXBContextResolver extends JaxRSJAXBContextResolver implements ContextResolver<JAXBContext> {
 
-    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+    private static final List<Class<?>> CONTEXT_CLASSES = Arrays.asList(
             // REST API utility models
             CountResult.class,
 
@@ -741,7 +744,7 @@ public class RestApiJAXBContextResolver extends JaxRSJAXBContextResolver {
     );
 
     @Override
-    protected List<Class<?>> getClassesToBound() {
-        return CLASSES_TO_BOUND;
+    protected List<Class<?>> getClasses() {
+        return CONTEXT_CLASSES;
     }
 }

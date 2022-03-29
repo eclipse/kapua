@@ -111,7 +111,7 @@ import java.util.List;
  */
 public class ConsoleJAXBContextProvider extends FallbackMappingJAXBContextProvider implements JAXBContextProvider {
 
-    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+    private static final List<Class<?>> CONTEXT_CLASSES = Arrays.asList(
             // Device Management Assets
             DeviceAssets.class,
             DeviceAssetXmlRegistry.class,
@@ -225,7 +225,7 @@ public class ConsoleJAXBContextProvider extends FallbackMappingJAXBContextProvid
     );
 
     @Override
-    protected List<Class<?>> getClassesToBound() {
-        return CLASSES_TO_BOUND;
+    protected List<Class<?>> getClasses() {
+        return CONTEXT_CLASSES;
     }
 }

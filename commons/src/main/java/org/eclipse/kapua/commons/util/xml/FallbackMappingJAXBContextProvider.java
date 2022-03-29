@@ -37,16 +37,16 @@ public abstract class FallbackMappingJAXBContextProvider extends DefaultJAXBCont
     @Override
     public JAXBContext getJAXBContext(Class<?> clazz) {
         if (!clazz.equals(Object.class) &&
-                !getClassesToBound().contains(clazz)) {
+                !getClasses().contains(clazz)) {
             LOG.warn("The given class {} is not listed in the JaxbContextProvider. Creating it on the fly to avoid JAXBException. " +
                     "Please consider to add the given class to the list to fix this!", clazz);
 
             try {
-                List<Class<?>> classesToBound = new ArrayList<>(getClassesToBound());
-                classesToBound.add(clazz);
+                List<Class<?>> classes = new ArrayList<>(getClasses());
+                classes.add(clazz);
 
                 return JAXBContextFactory.createContext(
-                        classesToBound.toArray(new Class[0]),
+                        classes.toArray(new Class[0]),
                         getJaxbContextProperties()
                 );
             } catch (JAXBException e) {

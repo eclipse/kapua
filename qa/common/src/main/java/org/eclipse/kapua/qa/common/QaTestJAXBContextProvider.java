@@ -110,7 +110,7 @@ import java.util.List;
  */
 public class QaTestJAXBContextProvider extends DefaultJAXBContextProvider implements JAXBContextProvider {
 
-    private static final List<Class<?>> CLASSES_TO_BOUND = Arrays.asList(
+    private static final List<Class<?>> CONTEXT_CLASSES = Arrays.asList(
             // Kapua Service Configuration + Device Management Configuration
             KapuaTmetadata.class,
             KapuaTocd.class,
@@ -222,7 +222,7 @@ public class QaTestJAXBContextProvider extends DefaultJAXBContextProvider implem
     );
 
     @Override
-    protected List<Class<?>> getClassesToBound() {
-        return CLASSES_TO_BOUND;
+    protected List<Class<?>> getClasses() {
+        return CONTEXT_CLASSES;
     }
 }

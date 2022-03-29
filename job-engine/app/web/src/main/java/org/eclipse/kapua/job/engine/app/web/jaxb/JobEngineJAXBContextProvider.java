@@ -19,6 +19,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Providers;
 
+/**
+ * Job Engine {@link JAXBContextProvider} implementation.
+ * <p>
+ * It relies on the {@link JaxRSJAXBContextProvider}
+ *
+ * @since 1.5.0
+ */
 public class JobEngineJAXBContextProvider extends JaxRSJAXBContextProvider implements JAXBContextProvider {
 
     @Context
