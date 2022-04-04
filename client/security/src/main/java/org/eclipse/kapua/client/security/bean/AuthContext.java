@@ -34,6 +34,7 @@ public class AuthContext {
     private String brokerHost;
     private String transportProtocol;
     private Certificate[] clientCertificates;
+    private boolean sslEnabled;
 
     private String exceptionClass;
     private AuthErrorCodes authErrorCode;
@@ -49,7 +50,6 @@ public class AuthContext {
         accountName = authRequest.getAccountName();
         scopeId = authRequest.getScopeId();
         userId = authRequest.getUserId();
-        clientCertificates = authRequest.getCertificates();
     }
 
     public AuthContext(AuthRequest authRequest, AuthResponse authResponse) {
@@ -57,7 +57,6 @@ public class AuthContext {
         accountName = authResponse.getAccountName();
         scopeId = authResponse.getScopeId();
         userId = authResponse.getUserId();
-        clientCertificates = authRequest.getCertificates();
     }
 
     private void initCommonFields(AuthRequest authRequest) {
@@ -71,6 +70,11 @@ public class AuthContext {
         brokerId = authRequest.getBrokerId();
         brokerHost = authRequest.getBrokerHost();
         transportProtocol = authRequest.getTransportProtocol();
+        clientCertificates = authRequest.getCertificates();
+
+        if(authRequest.getSslEnabled() != null) {
+            sslEnabled = authRequest.getSslEnabled();
+        }
     }
 
     public String getRequester() {
@@ -119,6 +123,10 @@ public class AuthContext {
 
     public String getBrokerHost() {
         return brokerHost;
+    }
+
+    public boolean getSslEnabled() {
+        return sslEnabled;
     }
 
     public String getTransportProtocol() {

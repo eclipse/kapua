@@ -60,6 +60,9 @@ public class AuthRequest implements Request {
     @JsonProperty("brokerId")
     private String brokerId;
 
+    @JsonProperty("sslEnabled")
+    private Boolean sslEnabled;
+
     @JsonProperty("certificates")
     @JsonSerialize(converter = CertificateToStringConverter.class)
     @JsonDeserialize(converter = StringToCertificateConverter.class)
@@ -92,6 +95,7 @@ public class AuthRequest implements Request {
         this.brokerHost = brokerHost;
         this.brokerId = brokerIp;
         this.password = password;
+        this.sslEnabled = connectionInfo.getSslEnabled();
         this.certificates = connectionInfo.getCertificates();
     }
 
@@ -205,6 +209,14 @@ public class AuthRequest implements Request {
 
     public void setBrokerId(String brokerId) {
         this.brokerId = brokerId;
+    }
+
+    public Boolean getSslEnabled() {
+        return sslEnabled;
+    }
+
+    public void setSslEnabled(boolean sslEnabled) {
+        this.sslEnabled = sslEnabled;
     }
 
     public Certificate[] getCertificates() {

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.security.context;
 
+import java.security.cert.Certificate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +45,7 @@ public class SessionContext {
     private String brokerHost;
     private String connectorName;
     private String transportProtocol;
+    private Certificate[] certificates;
     private KapuaSession kapuaSession;
 
     private Map<String, Object> properties = new HashMap<>();
@@ -66,6 +68,7 @@ public class SessionContext {
         clientIp = connectionInfo.getClientIp();
         connectorName = connectionInfo.getConnectorName();
         transportProtocol = connectionInfo.getTransportProtocol();
+        certificates = connectionInfo.getCertificates();
     }
 
     public boolean isInternal() {
@@ -142,6 +145,10 @@ public class SessionContext {
 
     public String getTransportProtocol() {
         return transportProtocol;
+    }
+
+    public Certificate[] getClientCertificates() {
+        return certificates;
     }
 
     private void setProperty(String key, Object value) {
