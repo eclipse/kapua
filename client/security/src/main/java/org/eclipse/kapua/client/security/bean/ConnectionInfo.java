@@ -25,15 +25,17 @@ public class ConnectionInfo {
     private String connectorName;
     private String transportProtocol;
     private String clientIp;
+    private Boolean sslEnabled;
     private Certificate[] certificates;
 
-    public ConnectionInfo(String connectionId, String clientId, String clientIp, String connectorName, String transportProtocol, Certificate[] clientCertificates) {
+    public ConnectionInfo(String connectionId, String clientId, String clientIp, String connectorName, String transportProtocol, String sslEnabledStr, Certificate[] clientCertificates) {
         this.connectionId = connectionId;
         this.clientId = clientId;
         this.connectorName = connectorName;
         this.transportProtocol = transportProtocol;
         this.clientIp = clientIp;
         certificates = clientCertificates;
+        sslEnabled = (sslEnabledStr == null) ? null : Boolean.valueOf(sslEnabledStr);
     }
 
     public String getConnectionId() {
@@ -60,4 +62,7 @@ public class ConnectionInfo {
         return certificates;
     }
 
+    public Boolean getSslEnabled() {
+        return sslEnabled;
+    }
 }

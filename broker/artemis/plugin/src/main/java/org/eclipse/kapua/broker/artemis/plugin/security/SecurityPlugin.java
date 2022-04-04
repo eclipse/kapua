@@ -93,6 +93,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                 remotingConnection.getTransportConnection().getRemoteAddress(),//clientIp
                 remotingConnection.getTransportConnection().getConnectorConfig().getName(),//connectorName
                 remotingConnection.getProtocolName(),//transportProtocol
+                (String)remotingConnection.getTransportConnection().getConnectorConfig().getCombinedParams().get("sslEnabled"),//sslEnabled
                 getPeerCertificates(remotingConnection));//clientsCertificates
             return PluginUtility.isInternal(remotingConnection) ?
                 authenticateInternalConn(connectionInfo, username, password, remotingConnection) :
