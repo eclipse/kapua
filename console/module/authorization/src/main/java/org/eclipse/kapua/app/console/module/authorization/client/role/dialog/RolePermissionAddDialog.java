@@ -19,6 +19,7 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboBox;
 import com.extjs.gxt.ui.client.widget.form.SimpleComboValue;
 import com.google.gwt.core.client.GWT;
@@ -176,9 +177,11 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
         actionsCombo.setTriggerAction(TriggerAction.ALL);
         actionsCombo.setEmptyText(MSGS.permissionAddDialogLoading());
         actionsCombo.setToolTip(MSGS.dialogAddFieldPermissionsActionTooltip());
+        permissionFormPanel.add(actionsCombo);
 
         actionsCombo.addSelectionChangedListener(new SelectionChangedListener<SimpleComboValue<GwtAction>>() {
 
+            @Override
             public void selectionChanged(SelectionChangedEvent<SimpleComboValue<GwtAction>> se) {
                 domainsCombo.clearInvalid();
                 actionsCombo.clearInvalid();
@@ -186,8 +189,16 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
             }
         });
 
-        permissionFormPanel.add(actionsCombo);
+        //
+        // Target Scope Id
+        LabelField labelField = new LabelField();
+        labelField.setFieldLabel("Target Scope");
+        labelField.setLabelSeparator(":");
+        labelField.setToolTip("The scope on which the permission is given.");
+        labelField.setValue(currentSession.getSelectedAccountName());
+        permissionFormPanel.add(labelField);
 
+        //
         // Groups
         groupsCombo = new ComboBox<GwtGroup>();
         groupsCombo.setStore(new ListStore<GwtGroup>());
@@ -298,7 +309,7 @@ public class RolePermissionAddDialog extends EntityAddEditDialog {
                 }
                 domainsCombo.markInvalid(exitMessage);
                 actionsCombo.markInvalid(exitMessage);
-                if (groupsCombo.isEnabled()){
+                if (groupsCombo.isEnabled()) {
                     groupsCombo.markInvalid(exitMessage);
                 }
                 ConsoleInfo.display(CMSGS.error(), exitMessage);
