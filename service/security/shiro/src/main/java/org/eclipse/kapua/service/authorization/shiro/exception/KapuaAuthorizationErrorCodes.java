@@ -15,9 +15,9 @@ package org.eclipse.kapua.service.authorization.shiro.exception;
 import org.eclipse.kapua.KapuaErrorCode;
 
 /**
- * Authorization error codes
- * <p>
- * since 1.0
+ * {@link KapuaErrorCode}s implementation for {@link KapuaAuthorizationException}.
+ *
+ * @since 1.0.0
  */
 public enum KapuaAuthorizationErrorCodes implements KapuaErrorCode {
     /**
@@ -26,7 +26,9 @@ public enum KapuaAuthorizationErrorCodes implements KapuaErrorCode {
     INVALID_STRING_PERMISSION,
 
     /**
-     * Subject does not have the required {@link org.eclipse.kapua.service.authorization.permission.Permission}
+     * See {@link SubjectUnauthorizedException}.
+     *
+     * @since 1.0.0
      */
     SUBJECT_UNAUTHORIZED,
 

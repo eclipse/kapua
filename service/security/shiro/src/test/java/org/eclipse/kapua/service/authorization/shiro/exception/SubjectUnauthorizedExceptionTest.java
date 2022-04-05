@@ -53,13 +53,4 @@ public class SubjectUnauthorizedExceptionTest extends Assert {
         assertNull("Null expected.", subjectUnauthorizedException.getPermission());
         assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, subjectUnauthorizedException.getKapuaErrorMessagesBundle());
     }
-
-    @Test
-    public void setAndGetPermissionTest() {
-        subjectUnauthorizedException.setPermission(newPermission);
-        assertEquals("Expected and actual values should be the same.", newPermission, subjectUnauthorizedException.getPermission());
-
-        subjectUnauthorizedException.setPermission(null);
-        assertNull("Null expected.", subjectUnauthorizedException.getPermission());
-    }
 }
