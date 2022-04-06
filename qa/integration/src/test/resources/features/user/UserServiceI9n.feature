@@ -17,8 +17,8 @@
 Feature: User Service Integration
   User Service integration scenarios
 
-@setup
-Scenario: Initialize test environment
+  @setup
+  Scenario: Initialize test environment
     Given Init Jaxb Context
     And Init Security Context
     And Start base docker environment
@@ -95,7 +95,7 @@ Scenario: Initialize test environment
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     When I try to delete user "kapua-g"
     Then No exception was thrown
-    Given I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: user:read:"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "Required permission: user:read:"
     When I try to delete user "kapua-b"
     Then An exception was thrown
     And I logout
@@ -172,7 +172,7 @@ Scenario: Initialize test environment
     And I logout
     When I login as user with name "kapua-b" and password "ToManySecrets123#"
     Then No exception was thrown
-    Given I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: user:read:"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "Required permission: user:read:"
     When I try to delete user "kapua-a"
     Then An exception was thrown
     And I logout
@@ -204,15 +204,15 @@ Scenario: Initialize test environment
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 50    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I expect the exception "KapuaDuplicateNameInAnotherAccountError" with the text "An entity with the same name"
     When I create user with name "TestUser" in account "SubAccount"
     Then An exception was thrown
     And I logout
 
-@teardown
+  @teardown
   Scenario: Stop test environment
     Given Stop full docker environment
     And Reset Security Context
