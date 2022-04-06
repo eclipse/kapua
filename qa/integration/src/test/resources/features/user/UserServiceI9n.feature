@@ -97,7 +97,7 @@ Scenario: Init Security Context for all scenarios
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     When I try to delete user "kapua-g"
     Then No exception was thrown
-    Given I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: user:read:"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "Required permission: user:read:"
     When I try to delete user "kapua-b"
     Then An exception was thrown
     And I logout
@@ -174,7 +174,7 @@ Scenario: Init Security Context for all scenarios
     And I logout
     When I login as user with name "kapua-b" and password "ToManySecrets123#"
     Then No exception was thrown
-    Given I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: user:read:"
+    Given I expect the exception "SubjectUnauthorizedException" with the text "Required permission: user:read:"
     When I try to delete user "kapua-a"
     Then An exception was thrown
     And I logout
@@ -206,9 +206,9 @@ Scenario: Init Security Context for all scenarios
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 50    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And I expect the exception "KapuaDuplicateNameInAnotherAccountError" with the text "An entity with the same name"
     When I create user with name "TestUser" in account "SubAccount"
     Then An exception was thrown

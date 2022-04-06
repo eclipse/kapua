@@ -185,7 +185,7 @@ Feature: User role service integration tests
     And I logout
     Then I login as user with name "user1" and password "User@10031995"
     And A birth message from device "device_1"
-    And I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: device_event:read:"
+    And I expect the exception "SubjectUnauthorizedException" with the text "Required permission: device_event:read:"
     When I search for events from device "device_1" in account "kapua-sys"
     Then An exception was thrown
     And I logout
@@ -481,7 +481,7 @@ Feature: User role service integration tests
     And I logout
     Then I login as user with name "user1" and password "User@10031995"
     And The device "test-device-1"
-    And I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: datastore:read:"
+    And I expect the exception "SubjectUnauthorizedException" with the text "Required permission: datastore:read:"
     And I search for data message with id "fake-id"
     And I logout
     And I login as user with name "kapua-sys" and password "kapua-password"
@@ -565,7 +565,7 @@ Feature: User role service integration tests
     And I delete role permissions
     And I logout
     And I login as user with name "user1" and password "User@10031995"
-    And I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission to perform this action. Missing permission: user:write:1:*. Please perform a new login to refresh users permissions."
+    And I expect the exception "SubjectUnauthorizedException" with the text "User does not have permission to perform this action. Required permission: user:write:1:*."
     And I create user with name "user-test"
     Then An exception was thrown
     And I logout
@@ -682,7 +682,7 @@ Feature: User role service integration tests
     And I delete the last created role permissions
     And I logout
     Given I login as user with name "user1" and password "User@10031995"
-    And I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: scheduler:write:"
+    And I expect the exception "SubjectUnauthorizedException" with the text "Required permission: scheduler:write:"
     And I try to create a new trigger entity from the existing creator
     Then An exception was thrown
     And I logout
@@ -721,10 +721,10 @@ Feature: User role service integration tests
     Then I login as user with name "user1" and password "User@10031995"
     And I try to find endpoint with schema "endpoint1", domain "com" and port 8000
     Then No exception was thrown
-    When I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:write:"
+    When I expect the exception "SubjectUnauthorizedException" with the text "Required permission: endpoint_info:write:"
     And I create endpoint with schema "endpoint2", domain "dns" and port 20000
     Then An exception was thrown
-    When I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:delete:"
+    When I expect the exception "SubjectUnauthorizedException" with the text "Required permission: endpoint_info:delete:"
     And I delete the endpoint with schema "endpoint1", domain "com" and port 8000
     Then An exception was thrown
     And I logout
@@ -732,7 +732,7 @@ Feature: User role service integration tests
     And I delete the last created role permissions
     And I logout
     Given I login as user with name "user1" and password "User@10031995"
-    And I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:read:"
+    And I expect the exception "SubjectUnauthorizedException" with the text "Required permission: endpoint_info:read:"
     And I try to find endpoint with schema "endpoint1", domain "com" and port 8000
     Then An exception was thrown
     And I logout
@@ -1280,10 +1280,10 @@ Feature: User role service integration tests
     And I login as user with name "SubUser" and password "User@10031995"
     And I try to find endpoint with schema "TestEndpoint", domain "com" and port 8000
     Then No exception was thrown
-    When I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:write:"
+    When I expect the exception "SubjectUnauthorizedException" with the text "Required permission: endpoint_info:write:"
     And I create endpoint with schema "endpoint2", domain "dns" and port 20000
     Then An exception was thrown
-    When I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: endpoint_info:delete:"
+    When I expect the exception "SubjectUnauthorizedException" with the text "Required permission: endpoint_info:delete:"
     And I delete the endpoint with schema "TestEndpoint", domain "com" and port 8000
     Then An exception was thrown
     And I logout
@@ -1407,7 +1407,7 @@ Feature: User role service integration tests
     And I add access role "Role1" to user "SubUser" in account "SubAccount"
     And I logout
     And I login as user with name "SubUser" and password "User@10031995"
-    And I expect the exception "SubjectUnauthorizedException" with the text "Missing permission: job:read:-1:*"
+    And I expect the exception "SubjectUnauthorizedException" with the text "Required permission: job:read:-1:*"
     When I find scheduler properties with name "Interval Job"
     Then An exception was thrown
     And I logout

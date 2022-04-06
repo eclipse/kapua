@@ -36,8 +36,8 @@ public class KapuaAuthorizationExceptionTest extends Assert {
         booleanArgument = true;
         throwables = new Throwable[]{null, new Throwable(), new Throwable(new Exception()), new Throwable("message")};
         kapuaErrorMessage = "kapua-service-error-messages";
-        errorMessagesWithoutArguments = new String[]{"Error: ", "User does not have permission to perform this action. Missing permission: {0}. Please perform a new login to refresh users permissions.", "Error: "};
-        errorMessagesWithArguments = new String[]{"Error: " + stringArgument + ", " + intArgument + ", " + booleanArgument, "User does not have permission to perform this action. Missing permission: " + stringArgument + ". Please perform a new login to refresh users permissions.", "Error: " + stringArgument + ", " + intArgument + ", " + booleanArgument};
+        errorMessagesWithoutArguments = new String[]{"Error: ", "User does not have permission to perform this action. Required permission: {0}.", "Error: "};
+        errorMessagesWithArguments = new String[]{"Error: " + stringArgument + ", " + intArgument + ", " + booleanArgument, "User does not have permission to perform this action. Required permission: " + stringArgument + ".", "Error: " + stringArgument + ", " + intArgument + ", " + booleanArgument};
     }
 
     @Test
