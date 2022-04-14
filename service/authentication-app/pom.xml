@@ -37,12 +37,6 @@
             <artifactId>kapua-foreignkeys</artifactId>
         </dependency>
 
-        <!-- only test... remove asap -->
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-tag-internal</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
