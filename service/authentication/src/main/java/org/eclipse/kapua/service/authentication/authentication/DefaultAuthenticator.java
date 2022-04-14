@@ -163,7 +163,14 @@ public class DefaultAuthenticator implements Authenticator {
 
     protected void raiseLifecycleEvent(AuthContext authContext, DeviceConnectionStatus deviceConnectionStatus) throws ServiceEventBusException {
         logger.debug("raising lifecycle events: clientIs: {} - connection status: {}", authContext.getClientId(), deviceConnectionStatus);
-        serviceEventBus.publish(lifecycleEventAddress, getServiceEvent(authContext, deviceConnectionStatus));
+        //internal connections with not registered user/account shouldn't raise connect/disconnect events
+        if (authContext.getUserId()!=null && authContext.getScopeId()!=null) {
+            serviceEventBus.publish(lifecycleEventAddress, getServiceEvent(authContext, deviceConnectionStatus));
+        }
+        else {
+            logger.info("Skipping event raising for clientId {} (username: {} - clientIp: {}) since userId ({}) and/or scopeId ({}) are null",
+                authContext.getClientId(), authContext.getUsername(), authContext.getClientIp(), authContext.getUserId(), authContext.getScopeId());
+        }
     }
 
     private ServiceEvent getServiceEvent(AuthContext authContext, DeviceConnectionStatus deviceConnectionStatus) {

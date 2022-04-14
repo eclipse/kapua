@@ -91,14 +91,19 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         String connectionId = PluginUtility.getConnectionId(remotingConnection);
         logger.info("### authenticate user: {} - clientId: {} - remoteIP: {} - connectionId: {} - securityDomain: {}",
             username, remotingConnection.getClientID(), remotingConnection.getTransportConnection().getRemoteAddress(), connectionId, securityDomain);
+        String clientIp = remotingConnection.getTransportConnection().getRemoteAddress();
+        String clientId = remotingConnection.getClientID();
+        if (clientId==null) {
+            clientId = clientIp;
+        }
         SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(connectionId);
         if (sessionContext!=null && sessionContext.getPrincipal()!=null) {
-            logger.info("### authenticate user (cache found): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, remotingConnection.getClientID(), remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
+            logger.info("### authenticate user (cache found): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, clientId, remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
             loginMetric.getSuccessFromCache().inc();
             return serverContext.getSecurityContext().buildFromPrincipal(sessionContext.getPrincipal());
         }
         else {
-            logger.info("### authenticate user (no cache): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, remotingConnection.getClientID(), remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
+            logger.info("### authenticate user (no cache): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, clientId, remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
             if (!remotingConnection.getTransportConnection().isOpen()) {
                 logger.info("Connection (connectionId: {}) is closed (stealing link occurred?)", connectionId);
                 //TODO add metrics?
@@ -106,8 +111,8 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             }
             ConnectionInfo connectionInfo = new ConnectionInfo(
                 PluginUtility.getConnectionId(remotingConnection),//connectionId
-                remotingConnection.getClientID(),//clientId
-                remotingConnection.getTransportConnection().getRemoteAddress(),//clientIp
+                clientId,//clientId
+                clientIp,//clientIp
                 remotingConnection.getTransportConnection().getConnectorConfig().getName(),//connectorName
                 remotingConnection.getProtocolName(),//transportProtocol
                 (String)remotingConnection.getTransportConnection().getConnectorConfig().getCombinedParams().get("sslEnabled"),//sslEnabled
@@ -133,10 +138,9 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
                         username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(),
                         remotingConnection.getTransportConnection().getRemoteAddress(), remotingConnection.getTransportConnection().isOpen());
                 //TODO double check why the client id is null once coming from AMQP connection (the Kapua connection factory with custom client id generation is called)
-                String clientId = connectionInfo.getClientId()!=null ? connectionInfo.getClientId() : connectionInfo.getClientIp();
-                KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(getAdminScopeId(), clientId);
+                KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(getAdminScopeId(), connectionInfo.getClientId());
                 //update client id with account|clientId (see pattern)
-                String fullClientId = Utils.getFullClientId(getAdminScopeId(), clientId);
+                String fullClientId = Utils.getFullClientId(getAdminScopeId(), connectionInfo.getClientId());
                 remotingConnection.setClientID(fullClientId);
                 Subject subject = buildInternalSubject(kapuaPrincipal);
                 SessionContext sessionContext = new SessionContext(kapuaPrincipal, connectionInfo,

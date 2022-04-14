@@ -80,7 +80,7 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
         enforceDeviceConnectionUserBound(KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(scopeId)), deviceConnection, scopeId, userId);
 
         Context loginUpdateDeviceConnectionTimeContext = loginMetric.getUpdateDeviceConnectionTime().time();
-        deviceConnection = upsertDeviceConnection(authContext, deviceConnection);
+        deviceConnection = deviceConnection!=null ? updateDeviceConnection(authContext, deviceConnection) : createDeviceConnection(authContext);
         if (deviceConnection!=null && deviceConnection.getId()!=null) {
             authContext.setKapuaConnectionId(deviceConnection.getId());
         }
@@ -98,17 +98,8 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
         if (!authContext.isStealingLink() && !authContext.isIllegalState()) {
             // update device connection (if the disconnection wasn't caused by a stealing link)
             DeviceConnection deviceConnection = getDeviceConnection(authContext);
-            logger.warn("=====================> DeviceConnection: {}", deviceConnection);
-            logger.info(aclCtrlAcc);
-            if (authContext.getBrokerHost() == null) {
-                logger.warn("Broker Ip or host name is not correctly set! Please check the configuration!");
-                //TODO add metric?
-            }
-            else if (deviceConnection==null){
-                logger.warn("Cannot find device connection for device: {}/{}", authContext.getScopeId() , authContext.getClientId());
-                //TODO add metric?
-            }
-            else if(isDeviceOwnedByTheCurrentNode(authContext, deviceConnection)) {
+            deviceOwnedByTheCurrentNode = isDeviceOwnedByTheCurrentNode(authContext, deviceConnection);
+            if(deviceOwnedByTheCurrentNode) {
                 //update status only if the old status wasn't missing
                 if (DeviceConnectionStatus.MISSING.equals(deviceConnection.getStatus())) {
                     logger.warn("Skipping device status update for device {} since last status was MISSING!", deviceConnection.getClientId());

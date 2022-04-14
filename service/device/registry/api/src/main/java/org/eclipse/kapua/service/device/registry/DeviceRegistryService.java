@@ -48,4 +48,5 @@ public interface DeviceRegistryService extends KapuaEntityService<Device, Device
      * @throws KapuaException
      */
     Device findByClientId(KapuaId scopeId, String clientId) throws KapuaException;
+
 }
