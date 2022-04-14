@@ -269,6 +269,11 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-consumer-telemetry</artifactId>
         </dependency>
+        <!--  added just to seed the broker domain otherwise the test that check for the defined domains will find one less -->
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-authentication</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
