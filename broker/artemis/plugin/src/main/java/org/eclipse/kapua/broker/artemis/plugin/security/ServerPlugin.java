@@ -294,7 +294,9 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             if (sessionContext!=null) {
                 SessionContext sessionContextByClient = serverContext.getSecurityContext().cleanSessionContext(sessionContext);
                 AuthRequest authRequest = new AuthRequest(serverContext.getBrokerIdentity().getBrokerHost(), SecurityAction.brokerDisconnect.name(), sessionContext);
-                updateError(authRequest, exception);
+                if (exception!=null) {
+                    updateError(authRequest, exception);
+                }
                 serverContext.getSecurityContext().updateStealingLinkAndIllegalState(authRequest, connectionId, sessionContextByClient!=null ? sessionContextByClient.getConnectionId() : null);
                 serverContext.getAuthServiceClient().brokerDisconnect(authRequest);
             }

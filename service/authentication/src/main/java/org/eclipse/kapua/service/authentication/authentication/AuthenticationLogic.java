@@ -32,6 +32,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.DatastoreDomain;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomain;
 import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionCreator;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
@@ -59,6 +60,8 @@ public abstract class AuthenticationLogic {
 
     protected static final String PERMISSION_LOG = "{0}/{1}/{2} - {3}";
 
+    //TODO move to configuration
+    protected boolean invalidateCache = true;
     protected String aclHash;
 
     protected LoginMetric loginMetric = LoginMetric.getInstance();
@@ -76,6 +79,7 @@ public abstract class AuthenticationLogic {
     protected DeviceConnectionFactory deviceConnectionFactory = KapuaLocator.getInstance().getFactory(DeviceConnectionFactory.class);
     protected PermissionFactory permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
     protected DeviceConnectionService deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
+    protected DeviceRegistryService deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
 
     private static final String USER_NOT_AUTHORIZED = "User not authorized!";
 
@@ -263,41 +267,47 @@ public abstract class AuthenticationLogic {
     }
 
     /**
-     * Create a new {@link DeviceConnection} or updates the existing one using the info provided.
+     * Creates a new {@link DeviceConnection} using the info provided.
+     *
+     * @param authContext
+     * @return The created {@link DeviceConnection}
+     * @throws KapuaException
+     */
+    protected DeviceConnection createDeviceConnection(AuthContext authContext) throws KapuaException {
+        // TODO manage the stealing link event (may be a good idea to use different connect status (connect -stealing)?
+        DeviceConnectionCreator deviceConnectionCreator = deviceConnectionFactory.newCreator(KapuaEid.parseCompactId(authContext.getScopeId()));
+        deviceConnectionCreator.setStatus(DeviceConnectionStatus.CONNECTED);
+        deviceConnectionCreator.setClientId(authContext.getClientId());
+        deviceConnectionCreator.setClientIp(authContext.getClientIp());
+        deviceConnectionCreator.setProtocol(authContext.getTransportProtocol());
+        deviceConnectionCreator.setServerIp(authContext.getBrokerHost());
+        deviceConnectionCreator.setUserId(KapuaEid.parseCompactId(authContext.getUserId()));
+        deviceConnectionCreator.setUserCouplingMode(ConnectionUserCouplingMode.INHERITED);
+        deviceConnectionCreator.setAllowUserChange(false);
+        return KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.create(deviceConnectionCreator));
+    }
+
+    /**
+     * Updates a {@link DeviceConnection} using the info provided.
      *
      * @param authContext
      * @param deviceConnection The {@link DeviceConnection} to update, or null if it needs to be created
-     * @return The created/updated {@link DeviceConnection}
+     * @return The updated {@link DeviceConnection}
      * @throws KapuaException
      */
-    protected DeviceConnection upsertDeviceConnection(AuthContext authContext, DeviceConnection deviceConnection) throws KapuaException {
+    protected DeviceConnection updateDeviceConnection(AuthContext authContext, DeviceConnection deviceConnection) throws KapuaException {
         // TODO manage the stealing link event (may be a good idea to use different connect status (connect -stealing)?
-        if (deviceConnection == null) {
-            DeviceConnectionCreator deviceConnectionCreator = deviceConnectionFactory.newCreator(KapuaEid.parseCompactId(authContext.getScopeId()));
-            deviceConnectionCreator.setStatus(DeviceConnectionStatus.CONNECTED);
-            deviceConnectionCreator.setClientId(authContext.getClientId());
-            deviceConnectionCreator.setClientIp(authContext.getClientIp());
-            deviceConnectionCreator.setProtocol(authContext.getTransportProtocol());
-            deviceConnectionCreator.setServerIp(authContext.getBrokerHost());
-            deviceConnectionCreator.setUserId(KapuaEid.parseCompactId(authContext.getUserId()));
-            deviceConnectionCreator.setUserCouplingMode(ConnectionUserCouplingMode.INHERITED);
-            deviceConnectionCreator.setAllowUserChange(false);
-            deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.create(deviceConnectionCreator));
-        } else {
-            deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
-            deviceConnection.setClientIp(authContext.getClientIp());
-            deviceConnection.setProtocol(authContext.getTransportProtocol());
-            deviceConnection.setServerIp(authContext.getBrokerHost());
-            deviceConnection.setUserId(KapuaEid.parseCompactId(authContext.getUserId()));
-            deviceConnection.setAllowUserChange(false);
-            DeviceConnection deviceConnectionToUpdate = deviceConnection;
-            KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnectionToUpdate));
-            // TODO implement the banned status
-            // if (DeviceStatus.DISABLED.equals(device.getStatus())) {
-            // throw new KapuaIllegalAccessException("clientId - This client ID is disabled and cannot connect");
-            // }
-        }
-        return deviceConnection;
+        deviceConnection.setStatus(DeviceConnectionStatus.CONNECTED);
+        deviceConnection.setClientIp(authContext.getClientIp());
+        deviceConnection.setProtocol(authContext.getTransportProtocol());
+        deviceConnection.setServerIp(authContext.getBrokerHost());
+        deviceConnection.setUserId(KapuaEid.parseCompactId(authContext.getUserId()));
+        deviceConnection.setAllowUserChange(false);
+        // TODO implement the banned status
+        // if (DeviceStatus.DISABLED.equals(device.getStatus())) {
+        // throw new KapuaIllegalAccessException("clientId - This client ID is disabled and cannot connect");
+        // }
+        return KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.update(deviceConnection));
     }
 
     protected DeviceConnection getDeviceConnection(AuthContext authContext) {
@@ -310,11 +320,19 @@ public abstract class AuthenticationLogic {
     }
 
     protected boolean isDeviceOwnedByTheCurrentNode(AuthContext authContext, DeviceConnection deviceConnection) {
-        if (!authContext.getBrokerHost().equals(deviceConnection.getServerIp())) {
-            return false;
+        boolean ownedByTheCurrentNode = false;
+        if (authContext.getBrokerHost() == null) {
+            logger.warn("Broker Ip or host name is not correctly set! Please check the configuration!");
+            //TODO add metric?
+        }
+        else if (deviceConnection == null){
+            logger.warn("Cannot find device connection for device: {}/{}", authContext.getScopeId() , authContext.getClientId());
+            //TODO add metric?
         }
         else {
-            return true;
+            ownedByTheCurrentNode = authContext.getBrokerHost().equals(deviceConnection.getServerIp());
         }
+        return ownedByTheCurrentNode;
     }
+
 }

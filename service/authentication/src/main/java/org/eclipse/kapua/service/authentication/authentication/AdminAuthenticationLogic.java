@@ -41,8 +41,9 @@ public class AdminAuthenticationLogic extends AuthenticationLogic {
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
         authContext.setAdmin(true);
-        DeviceConnection deviceConnection = upsertDeviceConnection(authContext, KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(
-                KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId())));
+        DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(
+                KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
+        deviceConnection = deviceConnection!=null ? updateDeviceConnection(authContext, deviceConnection) : createDeviceConnection(authContext);
         if (deviceConnection!=null && deviceConnection.getId()!=null) {
             authContext.setKapuaConnectionId(deviceConnection.getId());
         }
