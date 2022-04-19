@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration;
 
+import org.eclipse.kapua.commons.configuration.metatype.Password;
+import org.eclipse.kapua.commons.crypto.CryptoUtil;
+import org.eclipse.kapua.service.device.management.configuration.DeviceXmlConfigPropertyAdapted.ConfigPropertyType;
+
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.eclipse.kapua.commons.configuration.metatype.Password;
-import org.eclipse.kapua.commons.util.CryptoUtil;
-import org.eclipse.kapua.service.device.management.configuration.DeviceXmlConfigPropertyAdapted.ConfigPropertyType;
 
 /**
  * Xml configuration properties adapter. It marshal and unmarshal configuration properties in a proper way.
@@ -42,44 +42,44 @@ public class DeviceXmlConfigPropertiesAdapter extends XmlAdapter<DeviceXmlConfig
                 if (value instanceof String) {
                     adaptedValue.setArray(false);
                     adaptedValue.setType(ConfigPropertyType.stringType);
-                    adaptedValue.setValues(new String[] { value.toString() });
+                    adaptedValue.setValues(new String[]{value.toString()});
                 } else if (value instanceof Long) {
                     adaptedValue.setArray(false);
                     adaptedValue.setType(ConfigPropertyType.longType);
-                    adaptedValue.setValues(new String[] { value.toString() });
+                    adaptedValue.setValues(new String[]{value.toString()});
                 } else if (value instanceof Double) {
                     adaptedValue.setArray(false);
                     adaptedValue.setType(ConfigPropertyType.doubleType);
-                    adaptedValue.setValues(new String[] { value.toString() });
+                    adaptedValue.setValues(new String[]{value.toString()});
                 } else if (value instanceof Float) {
                     adaptedValue.setArray(false);
                     adaptedValue.setType(ConfigPropertyType.floatType);
-                    adaptedValue.setValues(new String[] { value.toString() });
+                    adaptedValue.setValues(new String[]{value.toString()});
                 } else if (value instanceof Integer) {
                     adaptedValue.setArray(false);
                     adaptedValue.setType(ConfigPropertyType.integerType);
-                    adaptedValue.setValues(new String[] { value.toString() });
+                    adaptedValue.setValues(new String[]{value.toString()});
                 } else if (value instanceof Byte) {
                     adaptedValue.setArray(false);
                     adaptedValue.setType(ConfigPropertyType.byteType);
-                    adaptedValue.setValues(new String[] { value.toString() });
+                    adaptedValue.setValues(new String[]{value.toString()});
                 } else if (value instanceof Character) {
                     adaptedValue.setArray(false);
                     adaptedValue.setType(ConfigPropertyType.charType);
-                    adaptedValue.setValues(new String[] { value.toString() });
+                    adaptedValue.setValues(new String[]{value.toString()});
                 } else if (value instanceof Boolean) {
                     adaptedValue.setArray(false);
                     adaptedValue.setType(ConfigPropertyType.booleanType);
-                    adaptedValue.setValues(new String[] { value.toString() });
+                    adaptedValue.setValues(new String[]{value.toString()});
                 } else if (value instanceof Short) {
                     adaptedValue.setArray(false);
                     adaptedValue.setType(ConfigPropertyType.shortType);
-                    adaptedValue.setValues(new String[] { value.toString() });
+                    adaptedValue.setValues(new String[]{value.toString()});
                 } else if (value instanceof Password) {
                     adaptedValue.setArray(false);
                     adaptedValue.setEncrypted(true);
                     adaptedValue.setType(ConfigPropertyType.passwordType);
-                    adaptedValue.setValues(new String[] { CryptoUtil.encodeBase64(value.toString()) });
+                    adaptedValue.setValues(new String[]{CryptoUtil.encodeBase64(value.toString())});
                 } else if (value instanceof String[]) {
                     adaptedValue.setArray(true);
                     adaptedValue.setType(ConfigPropertyType.stringType);
@@ -191,7 +191,7 @@ public class DeviceXmlConfigPropertiesAdapter extends XmlAdapter<DeviceXmlConfig
         }
 
         DeviceXmlConfigPropertiesAdapted result = new DeviceXmlConfigPropertiesAdapted();
-        result.setProperties(adaptedValues.toArray(new DeviceXmlConfigPropertyAdapted[] {}));
+        result.setProperties(adaptedValues.toArray(new DeviceXmlConfigPropertyAdapted[]{}));
         return result;
     }
 
@@ -210,134 +210,134 @@ public class DeviceXmlConfigPropertiesAdapter extends XmlAdapter<DeviceXmlConfig
                 Object propValue = null;
                 if (!adaptedProp.getArray()) {
                     switch (adaptedProp.getType()) {
-                    case stringType:
-                        propValue = adaptedProp.getValues()[0];
-                        break;
-                    case longType:
-                        propValue = Long.parseLong(adaptedProp.getValues()[0]);
-                        break;
-                    case doubleType:
-                        propValue = Double.parseDouble(adaptedProp.getValues()[0]);
-                        break;
-                    case floatType:
-                        propValue = Float.parseFloat(adaptedProp.getValues()[0]);
-                        break;
-                    case integerType:
-                        propValue = Integer.parseInt(adaptedProp.getValues()[0]);
-                        break;
-                    case byteType:
-                        propValue = Byte.parseByte(adaptedProp.getValues()[0]);
-                        break;
-                    case charType:
-                        String s = adaptedProp.getValues()[0];
-                        propValue = s.charAt(0);
-                        break;
-                    case booleanType:
-                        propValue = Boolean.parseBoolean(adaptedProp.getValues()[0]);
-                        break;
-                    case shortType:
-                        propValue = Short.parseShort(adaptedProp.getValues()[0]);
-                        break;
-                    case passwordType:
-                        propValue = adaptedProp.getValues()[0];
-                        propValue =
-                                adaptedProp.isEncrypted() ?
-                                        new Password(CryptoUtil.decodeBase64((String) propValue)) :
-                                        new Password((String) propValue);
+                        case stringType:
+                            propValue = adaptedProp.getValues()[0];
+                            break;
+                        case longType:
+                            propValue = Long.parseLong(adaptedProp.getValues()[0]);
+                            break;
+                        case doubleType:
+                            propValue = Double.parseDouble(adaptedProp.getValues()[0]);
+                            break;
+                        case floatType:
+                            propValue = Float.parseFloat(adaptedProp.getValues()[0]);
+                            break;
+                        case integerType:
+                            propValue = Integer.parseInt(adaptedProp.getValues()[0]);
+                            break;
+                        case byteType:
+                            propValue = Byte.parseByte(adaptedProp.getValues()[0]);
+                            break;
+                        case charType:
+                            String s = adaptedProp.getValues()[0];
+                            propValue = s.charAt(0);
+                            break;
+                        case booleanType:
+                            propValue = Boolean.parseBoolean(adaptedProp.getValues()[0]);
+                            break;
+                        case shortType:
+                            propValue = Short.parseShort(adaptedProp.getValues()[0]);
+                            break;
+                        case passwordType:
+                            propValue = adaptedProp.getValues()[0];
+                            propValue =
+                                    adaptedProp.isEncrypted() ?
+                                            new Password(CryptoUtil.decodeBase64((String) propValue)) :
+                                            new Password((String) propValue);
 
-                        break;
+                            break;
                     }
                 } else {
                     switch (adaptedProp.getType()) {
-                    case stringType:
-                        propValue = adaptedProp.getValues();
-                        break;
-                    case longType:
-                        Long[] longValues = new Long[adaptedProp.getValues().length];
-                        for (int i = 0; i < adaptedProp.getValues().length; i++) {
-                            if (adaptedProp.getValues()[i] != null) {
-                                longValues[i] = Long.parseLong(adaptedProp.getValues()[i]);
+                        case stringType:
+                            propValue = adaptedProp.getValues();
+                            break;
+                        case longType:
+                            Long[] longValues = new Long[adaptedProp.getValues().length];
+                            for (int i = 0; i < adaptedProp.getValues().length; i++) {
+                                if (adaptedProp.getValues()[i] != null) {
+                                    longValues[i] = Long.parseLong(adaptedProp.getValues()[i]);
+                                }
                             }
-                        }
-                        propValue = longValues;
-                        break;
-                    case doubleType:
-                        Double[] doubleValues = new Double[adaptedProp.getValues().length];
-                        for (int i = 0; i < adaptedProp.getValues().length; i++) {
-                            if (adaptedProp.getValues()[i] != null) {
-                                doubleValues[i] = Double.parseDouble(adaptedProp.getValues()[i]);
+                            propValue = longValues;
+                            break;
+                        case doubleType:
+                            Double[] doubleValues = new Double[adaptedProp.getValues().length];
+                            for (int i = 0; i < adaptedProp.getValues().length; i++) {
+                                if (adaptedProp.getValues()[i] != null) {
+                                    doubleValues[i] = Double.parseDouble(adaptedProp.getValues()[i]);
+                                }
                             }
-                        }
-                        propValue = doubleValues;
-                        break;
-                    case floatType:
-                        Float[] floatValues = new Float[adaptedProp.getValues().length];
-                        for (int i = 0; i < adaptedProp.getValues().length; i++) {
-                            if (adaptedProp.getValues()[i] != null) {
-                                floatValues[i] = Float.parseFloat(adaptedProp.getValues()[i]);
+                            propValue = doubleValues;
+                            break;
+                        case floatType:
+                            Float[] floatValues = new Float[adaptedProp.getValues().length];
+                            for (int i = 0; i < adaptedProp.getValues().length; i++) {
+                                if (adaptedProp.getValues()[i] != null) {
+                                    floatValues[i] = Float.parseFloat(adaptedProp.getValues()[i]);
+                                }
                             }
-                        }
-                        propValue = floatValues;
-                        break;
-                    case integerType:
-                        Integer[] intValues = new Integer[adaptedProp.getValues().length];
-                        for (int i = 0; i < adaptedProp.getValues().length; i++) {
-                            if (adaptedProp.getValues()[i] != null) {
-                                intValues[i] = Integer.parseInt(adaptedProp.getValues()[i]);
+                            propValue = floatValues;
+                            break;
+                        case integerType:
+                            Integer[] intValues = new Integer[adaptedProp.getValues().length];
+                            for (int i = 0; i < adaptedProp.getValues().length; i++) {
+                                if (adaptedProp.getValues()[i] != null) {
+                                    intValues[i] = Integer.parseInt(adaptedProp.getValues()[i]);
+                                }
                             }
-                        }
-                        propValue = intValues;
-                        break;
-                    case byteType:
-                        Byte[] byteValues = new Byte[adaptedProp.getValues().length];
-                        for (int i = 0; i < adaptedProp.getValues().length; i++) {
-                            if (adaptedProp.getValues()[i] != null) {
-                                byteValues[i] = Byte.parseByte(adaptedProp.getValues()[i]);
+                            propValue = intValues;
+                            break;
+                        case byteType:
+                            Byte[] byteValues = new Byte[adaptedProp.getValues().length];
+                            for (int i = 0; i < adaptedProp.getValues().length; i++) {
+                                if (adaptedProp.getValues()[i] != null) {
+                                    byteValues[i] = Byte.parseByte(adaptedProp.getValues()[i]);
+                                }
                             }
-                        }
-                        propValue = byteValues;
-                        break;
-                    case charType:
-                        Character[] charValues = new Character[adaptedProp.getValues().length];
-                        for (int i = 0; i < adaptedProp.getValues().length; i++) {
-                            if (adaptedProp.getValues()[i] != null) {
-                                String s = adaptedProp.getValues()[i];
-                                charValues[i] = s.charAt(0);
+                            propValue = byteValues;
+                            break;
+                        case charType:
+                            Character[] charValues = new Character[adaptedProp.getValues().length];
+                            for (int i = 0; i < adaptedProp.getValues().length; i++) {
+                                if (adaptedProp.getValues()[i] != null) {
+                                    String s = adaptedProp.getValues()[i];
+                                    charValues[i] = s.charAt(0);
+                                }
                             }
-                        }
-                        propValue = charValues;
-                        break;
-                    case booleanType:
-                        Boolean[] booleanValues = new Boolean[adaptedProp.getValues().length];
-                        for (int i = 0; i < adaptedProp.getValues().length; i++) {
-                            if (adaptedProp.getValues()[i] != null) {
-                                booleanValues[i] = Boolean.parseBoolean(adaptedProp.getValues()[i]);
+                            propValue = charValues;
+                            break;
+                        case booleanType:
+                            Boolean[] booleanValues = new Boolean[adaptedProp.getValues().length];
+                            for (int i = 0; i < adaptedProp.getValues().length; i++) {
+                                if (adaptedProp.getValues()[i] != null) {
+                                    booleanValues[i] = Boolean.parseBoolean(adaptedProp.getValues()[i]);
+                                }
                             }
-                        }
-                        propValue = booleanValues;
-                        break;
-                    case shortType:
-                        Short[] shortValues = new Short[adaptedProp.getValues().length];
-                        for (int i = 0; i < adaptedProp.getValues().length; i++) {
-                            if (adaptedProp.getValues()[i] != null) {
-                                shortValues[i] = Short.parseShort(adaptedProp.getValues()[i]);
+                            propValue = booleanValues;
+                            break;
+                        case shortType:
+                            Short[] shortValues = new Short[adaptedProp.getValues().length];
+                            for (int i = 0; i < adaptedProp.getValues().length; i++) {
+                                if (adaptedProp.getValues()[i] != null) {
+                                    shortValues[i] = Short.parseShort(adaptedProp.getValues()[i]);
+                                }
                             }
-                        }
-                        propValue = shortValues;
-                        break;
-                    case passwordType:
-                        Password[] pwdValues = new Password[adaptedProp.getValues().length];
-                        for (int i = 0; i < adaptedProp.getValues().length; i++) {
-                            if (adaptedProp.getValues()[i] != null) {
-                                pwdValues[i] =
-                                        adaptedProp.isEncrypted() ?
-                                                new Password(CryptoUtil.decodeBase64(adaptedProp.getValues()[i])) :
-                                                new Password(adaptedProp.getValues()[i]);
+                            propValue = shortValues;
+                            break;
+                        case passwordType:
+                            Password[] pwdValues = new Password[adaptedProp.getValues().length];
+                            for (int i = 0; i < adaptedProp.getValues().length; i++) {
+                                if (adaptedProp.getValues()[i] != null) {
+                                    pwdValues[i] =
+                                            adaptedProp.isEncrypted() ?
+                                                    new Password(CryptoUtil.decodeBase64(adaptedProp.getValues()[i])) :
+                                                    new Password(adaptedProp.getValues()[i]);
+                                }
                             }
-                        }
 
-                        propValue = pwdValues;
-                        break;
+                            propValue = pwdValues;
+                            break;
                     }
                 }
                 properties.put(propName, propValue);
