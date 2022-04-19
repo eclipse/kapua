@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
-
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Locale;
@@ -48,28 +47,32 @@ public class ExceptionMessageUtils {
      * @param code               The {@link KapuaErrorCode} to search in the {@link ResourceBundle}.
      * @param args               The arguments to use to populate the message pattern.
      * @return The localized message for the given {@link KapuaErrorCode}.
+     * @throws IllegalArgumentException if the format of the localized message is invalid for some reasons
      * @since 1.0.0
      */
     public static String getLocalizedMessage(String resourceBundleName, Locale locale, KapuaErrorCode code, Object[] args) {
 
         String pattern = getMessagePattern(resourceBundleName, locale, code);
-        if (pattern != null) {
-            return MessageFormat.format(pattern, args);
-        } else {
-            StringJoiner joiner = new StringJoiner(", ");
-            if (args != null && args.length > 0) {
-                for (Object arg : args) {
-                    if (arg instanceof Iterable) {
-                        joiner.add(arg.toString());
-                    } else if (arg != null && arg.getClass().isArray()) {
-                        joiner.add(Arrays.toString((Object[]) arg));
-                    } else {
-                        joiner.add(String.valueOf(arg));
-                    }
-                }
-            }
 
-            return MessageFormat.format(KAPUA_GENERIC_MESSAGE, joiner.toString());
+        if (pattern != null) {
+            try {
+                return MessageFormat.format(pattern, args);
+            } catch (IllegalArgumentException iae) {
+
+                // This handles the case that the error message arguments placeholders are not correct.
+                // Required format is "Some text {0}"
+                // Common mistake is "Some text {}"
+                if (iae.getCause() != null && iae.getCause() instanceof NumberFormatException) {
+                    LOG.warn("Error message for code {} has an argument placeholder which is not properly formatted. Bad Error message for code is: {}. A generic error message will be printed instead.", code, pattern);
+
+                    return buildGenericErrorMessage(args);
+                }
+
+                // If not that throw exception
+                throw iae;
+            }
+        } else {
+            return buildGenericErrorMessage(args);
         }
     }
 
@@ -101,4 +104,29 @@ public class ExceptionMessageUtils {
         return messagePattern;
     }
 
+    /**
+     * Builds a generic error message with the given aguments.
+     * <p>
+     * This has to be used when the {@link KapuaErrorCode} does not have an error message created for it or the error message is invalid.
+     *
+     * @param args The args associated with the {@link KapuaException} or {@link KapuaRuntimeException}.
+     * @return A string that formatted with {@link #KAPUA_GENERIC_MESSAGE} followed by the list of arguments.
+     * @since 2.0.0
+     */
+    private static String buildGenericErrorMessage(Object[] args) {
+        StringJoiner joiner = new StringJoiner(", ");
+        if (args != null && args.length > 0) {
+            for (Object arg : args) {
+                if (arg instanceof Iterable) {
+                    joiner.add(arg.toString());
+                } else if (arg != null && arg.getClass().isArray()) {
+                    joiner.add(Arrays.toString((Object[]) arg));
+                } else {
+                    joiner.add(String.valueOf(arg));
+                }
+            }
+        }
+
+        return MessageFormat.format(KAPUA_GENERIC_MESSAGE, joiner.toString());
+    }
 }
