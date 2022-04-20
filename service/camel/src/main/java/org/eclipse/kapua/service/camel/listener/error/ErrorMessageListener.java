@@ -19,8 +19,8 @@ import java.util.Date;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.spi.UriEndpoint;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
-import org.eclipse.kapua.service.camel.CommonMetrics;
 import org.eclipse.kapua.service.camel.listener.AbstractListener;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageConstants;
@@ -51,11 +51,11 @@ public class ErrorMessageListener extends AbstractListener {
     private Counter metricErrorUnknownBodyType;
 
     public ErrorMessageListener() {
-        super(CommonMetrics.ERROR);
-        metricError = registerCounter(CommonMetrics.MESSAGES, "generic", CommonMetrics.COUNT);
-        metricErrorStoredToFile = registerCounter(CommonMetrics.MESSAGES, "file_store", CommonMetrics.COUNT);
-        metricErrorStoredToFileError = registerCounter(CommonMetrics.MESSAGES, "file_store", CommonMetrics.ERROR, CommonMetrics.COUNT);
-        metricErrorUnknownBodyType = registerCounter(CommonMetrics.MESSAGES, "message_conversion_unknown_type", CommonMetrics.ERROR, CommonMetrics.COUNT);
+        super(MetricsLabel.ERROR);
+        metricError = registerCounter(MetricsLabel.MESSAGES, "generic", MetricsLabel.COUNT);
+        metricErrorStoredToFile = registerCounter(MetricsLabel.MESSAGES, "file_store", MetricsLabel.COUNT);
+        metricErrorStoredToFileError = registerCounter(MetricsLabel.MESSAGES, "file_store", MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricErrorUnknownBodyType = registerCounter(MetricsLabel.MESSAGES, "message_conversion_unknown_type", MetricsLabel.ERROR, MetricsLabel.COUNT);
     }
 
     /**

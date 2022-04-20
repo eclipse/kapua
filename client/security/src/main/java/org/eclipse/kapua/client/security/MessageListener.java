@@ -30,6 +30,7 @@ import org.eclipse.kapua.client.security.bean.AuthResponse;
 import org.eclipse.kapua.client.security.bean.ResponseContainer;
 import org.eclipse.kapua.client.security.bean.Response;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,8 +53,8 @@ public class MessageListener extends ClientMessageListener {
 
     public MessageListener() {
         MetricsService metricService = MetricServiceFactory.getInstance();
-        metricLoginCallbackErrorCount = metricService.getCounter("service", "authentication", "callback", "generic_error", "count");
-        metricLoginCallbackTimeoutCount = metricService.getCounter("service", "authentication", "callback", "timeout", "count");
+        metricLoginCallbackErrorCount = metricService.getCounter("service", "authentication", "callback", "generic_error", MetricsLabel.COUNT);
+        metricLoginCallbackTimeoutCount = metricService.getCounter("service", "authentication", "callback", "timeout", MetricsLabel.COUNT);
     }
 
     @Override

@@ -19,10 +19,9 @@ import org.apache.camel.Exchange;
 import org.apache.camel.component.jms.JmsMessage;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.client.security.bean.EntityRequest;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
-import org.eclipse.kapua.service.camel.CommonMetrics;
 import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
-import org.eclipse.kapua.service.camel.converter.ConverterMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +45,8 @@ public class AuthenticationServiceConverter extends AbstractKapuaConverter {
 
     public AuthenticationServiceConverter() {
         super();
-        metricConverterAuthenticationMessage = METRICS_SERVICE.getCounter(ConverterMetrics.METRIC_MODULE_NAME, ConverterMetrics.METRIC_COMPONENT_NAME, AuthenticationServiceListener.METRIC_AUTHENTICATION, CommonMetrics.MESSAGES, CommonMetrics.COUNT);
-        metricConverterAuthenticationMessageError = METRICS_SERVICE.getCounter(ConverterMetrics.METRIC_MODULE_NAME, ConverterMetrics.METRIC_COMPONENT_NAME, AuthenticationServiceListener.METRIC_AUTHENTICATION, CommonMetrics.MESSAGES, CommonMetrics.ERROR, CommonMetrics.COUNT);
+        metricConverterAuthenticationMessage = METRICS_SERVICE.getCounter(MetricsLabel.MODULE_CONVERTER, MetricsLabel.COMPONENT_KAPUA, AuthenticationServiceListener.METRIC_AUTHENTICATION, MetricsLabel.MESSAGES, MetricsLabel.COUNT);
+        metricConverterAuthenticationMessageError = METRICS_SERVICE.getCounter(MetricsLabel.MODULE_CONVERTER, MetricsLabel.COMPONENT_KAPUA, AuthenticationServiceListener.METRIC_AUTHENTICATION, MetricsLabel.MESSAGES, MetricsLabel.ERROR, MetricsLabel.COUNT);
     }
 
     /**

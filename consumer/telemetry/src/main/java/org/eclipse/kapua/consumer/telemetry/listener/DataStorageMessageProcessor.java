@@ -18,6 +18,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.camel.listener.AbstractProcessor;
@@ -51,9 +52,9 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
         super("DataStorage");
         MetricsService metricService = MetricServiceFactory.getInstance();
 
-        metricQueueCommunicationErrorCount = metricService.getCounter(DataStoreMetrics.METRIC_MODULE_NAME, DataStoreMetrics.METRIC_COMPONENT_NAME, DataStoreMetrics.METRIC_STORE, DataStoreMetrics.METRIC_QUEUE, DataStoreMetrics.METRIC_COMMUNICATION, DataStoreMetrics.METRIC_ERROR, DataStoreMetrics.METRIC_COUNT);
-        metricQueueConfigurationErrorCount = metricService.getCounter(DataStoreMetrics.METRIC_MODULE_NAME, DataStoreMetrics.METRIC_COMPONENT_NAME, DataStoreMetrics.METRIC_STORE, DataStoreMetrics.METRIC_QUEUE, DataStoreMetrics.METRIC_CONFIGURATION, DataStoreMetrics.METRIC_ERROR, DataStoreMetrics.METRIC_COUNT);
-        metricQueueGenericErrorCount = metricService.getCounter(DataStoreMetrics.METRIC_MODULE_NAME, DataStoreMetrics.METRIC_COMPONENT_NAME, DataStoreMetrics.METRIC_STORE, DataStoreMetrics.METRIC_QUEUE, DataStoreMetrics.METRIC_GENERIC, DataStoreMetrics.METRIC_ERROR, DataStoreMetrics.METRIC_COUNT);
+        metricQueueCommunicationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DATASTORE, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueConfigurationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DATASTORE, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueGenericErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DATASTORE, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
     }
 
     /**

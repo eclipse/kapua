@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security.context;
 
+import com.codahale.metrics.Gauge;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 import javax.security.auth.Subject;
 
 import org.apache.activemq.artemis.core.server.ActiveMQServer;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.artemis.plugin.security.RunWithLock;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSetting;
 import org.eclipse.kapua.broker.artemis.plugin.security.setting.BrokerSettingKey;
@@ -33,9 +36,13 @@ import org.eclipse.kapua.client.security.bean.AuthAcl;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.context.SessionContext;
 import org.eclipse.kapua.client.security.context.Utils;
+import org.eclipse.kapua.client.security.metric.LoginMetric;
 import org.eclipse.kapua.commons.cache.LocalCache;
+import org.eclipse.kapua.commons.localevent.ExecutorWrapper;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
+import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
-import org.eclipse.kapua.localevent.ExecutorWrapper;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +55,6 @@ import org.slf4j.LoggerFactory;
 public final class SecurityContext {
 
     protected static Logger logger = LoggerFactory.getLogger(SecurityContext.class);
-
     private static final String REPORT_HEADER = "################################################################################################";
     private static final String REPORT_SEPARATOR = "------------------------------------------------------------------------------------------------";
     private enum ReportType {
@@ -56,6 +62,20 @@ public final class SecurityContext {
         Compact,
         DetailedServer
     }
+
+    private static final MetricsService METRIC_SERVICE = MetricServiceFactory.getInstance();
+    private LoginMetric loginMetric = LoginMetric.getInstance();
+    private Gauge<Integer> sessionCount;
+    private Gauge<Integer> connectionCount;
+    private Gauge<Integer> brokerConectionCount;
+    private Gauge<Integer> sessionContextMapCount;
+    private Gauge<Integer> sessionContextMapByClientCount;
+    private Gauge<Integer> aclMapCount;
+    private Gauge<Integer> activeConnectionCount;
+    private Gauge<Long> totalConnection;
+    private Gauge<Long> totalMessage;
+    private Gauge<Long> totalMessageAcknowledged;
+    private Gauge<Long> totalMessageAdded;
 
     private static final SecurityContext INSTANCE = new SecurityContext();
 
@@ -73,6 +93,7 @@ public final class SecurityContext {
     private final Map<String, SessionContext> sessionContextMap;
     private final Map<String, Acl> aclMap;
 
+    private boolean printData = BrokerSetting.getInstance().getBoolean(BrokerSettingKey.PRINT_SECURITY_CONTEXT_REPORT, false);
     private ExecutorWrapper executorWrapper;
 
     private SecurityContext() {
@@ -91,49 +112,22 @@ public final class SecurityContext {
         return INSTANCE;
     }
 
-    public void printReport(ActiveMQServer server, String caller, String connectionId) {
-        printReport(ReportType.Full, server, caller, connectionId);
-    }
-
-    public void printCompactReport(ActiveMQServer server, String caller, String connectionId) {
-        printReport(ReportType.Compact, server, caller, connectionId);
-    }
-
-    public void printDetailedServerReport(ActiveMQServer server, String caller, String connectionId) {
-        printReport(ReportType.DetailedServer, server, caller, connectionId);
-    }
-
-    private void printReport(ReportType reportType, ActiveMQServer server, String caller, String connectionId) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("\n").append(REPORT_HEADER).append("\n");
-        switch (reportType) {
-        case Full:
-            appendServerContextReport(builder, server);
-            builder.append(REPORT_SEPARATOR).append("\n");
-            appendSessionInfoReport(builder, server);
-            builder.append(REPORT_SEPARATOR).append("\n");
-            appendDetailedServerContextReport(builder, caller, connectionId);
-            break;
-        case Compact:
-            appendServerContextReport(builder, server);
-            break;
-        case DetailedServer:
-            appendDetailedServerContextReport(builder, caller, connectionId);
-            break;
-        default:
-            break;
-        }
-        builder.append(REPORT_HEADER);
-        logger.info("{}", builder);
-    }
-
     public void init(ActiveMQServer server) {
-        if (executorWrapper==null) {
-            executorWrapper = new ExecutorWrapper("ServerReport", () -> printReport(server, "ServerReportTask", "N/A"), 60, 30, TimeUnit.SECONDS);
-            executorWrapper.start();
+        if (printData) {
+            if (executorWrapper==null) {
+                executorWrapper = new ExecutorWrapper("ServerReport", () -> printReport(server, "ServerReportTask", "N/A"), 60, 30, TimeUnit.SECONDS);
+                executorWrapper.start();
+            }
+            else {
+                logger.warn("ServerReportTask already started!");
+            }
         }
-        else {
-            logger.warn("ServerReportTask already started!");
+        try {
+            registerMetrics(server);
+        } catch (KapuaException e) {
+            //do nothing
+            //in this case one or more metrics are not registered but it's not a blocking issue
+            logger.error("Cannot register one or more broker core metrics!", e);
         }
     }
 
@@ -143,6 +137,31 @@ public final class SecurityContext {
         }
     }
 
+    private void registerMetrics(ActiveMQServer server) throws KapuaException {
+        sessionCount = () -> server.getSessions().size();
+        registerGauge(sessionCount, MetricsLabel.SESSION, MetricsLabel.COUNT);
+        connectionCount = () -> server.getConnectionCount();
+        registerGauge(connectionCount, MetricsLabel.CONNECTION, MetricsLabel.COUNT);
+        brokerConectionCount = () -> server.getBrokerConnections().size();
+        registerGauge(brokerConectionCount, MetricsLabel.BROKER_CONNECTION, MetricsLabel.COUNT);
+        sessionContextMapCount = () -> sessionContextMap.size();
+        registerGauge(sessionContextMapCount, MetricsLabel.SESSION_CONTEXT, MetricsLabel.COUNT);
+        sessionContextMapByClientCount = () -> sessionContextMapByClient.size();
+        registerGauge(sessionContextMapByClientCount, MetricsLabel.SESSION_CONTEXT_BY_CLIENT, MetricsLabel.COUNT);
+        aclMapCount = () -> aclMap.size();
+        registerGauge(aclMapCount, MetricsLabel.ACL, MetricsLabel.COUNT);
+        activeConnectionCount = () -> activeConnections.size();
+        registerGauge(activeConnectionCount, MetricsLabel.ACTIVE_CONNECTION, MetricsLabel.COUNT);
+        //from broker
+        totalConnection = () -> server.getTotalConnectionCount();
+        registerGauge(totalConnection, MetricsLabel.TOTAL_CONNECTION, MetricsLabel.SIZE);
+        totalMessage = () -> server.getTotalMessageCount();
+        registerGauge(totalMessage, MetricsLabel.TOTAL_MESSAGE, MetricsLabel.SIZE);
+        totalMessageAcknowledged = () -> server.getTotalMessagesAcknowledged();
+        registerGauge(totalMessageAcknowledged, MetricsLabel.TOTAL_MESSAGE_ACKNOWLEDGED, MetricsLabel.SIZE);
+        totalMessageAdded = () -> server.getTotalMessagesAdded();
+        registerGauge(totalMessageAdded, MetricsLabel.TOTAL_MESSAGE_ADDED, MetricsLabel.SIZE);
+    }
 
     public boolean setSessionContext(SessionContext sessionContext, List<AuthAcl> authAcls) throws Exception {
         logger.info("Updating session context for connection id: {}", sessionContext.getConnectionId());
@@ -171,9 +190,9 @@ public final class SecurityContext {
                 new ConnectionToken(SecurityAction.brokerConnect, KapuaDateUtils.getKapuaSysDate()));
         }
         else {
-            //the disconnect callback is called after the connect so nothing to add to the context
-            //TODO add metric?
-            logger.warn("Connect callback called after the disconnection callback ({} - {} - {})", connectionId, connectionToken.getAction(), connectionToken.getActionDate());
+            //the disconnect callback is called before the connect so nothing to add to the context
+            loginMetric.getDisconnectCallbackCallFailure().inc();
+            logger.warn("Connect callback called before the disconnection callback ({} - {} - {})", connectionId, connectionToken.getAction(), connectionToken.getActionDate());
         }
         return connectionToken;
     }
@@ -212,7 +231,7 @@ public final class SecurityContext {
             //on a stealing link currentSessionContext could be null if the disconnect of the latest connected client happens before the others
             if (currentSessionContext==null) {
                 logger.warn("Cannot find session context by full client id: {}", fullClientId);
-                //TODO add metric?
+                loginMetric.getSessionContextByClientIdFailure().inc();
             }
             else {
                 if (connectionId.equals(currentSessionContext.getConnectionId())) {
@@ -235,12 +254,7 @@ public final class SecurityContext {
     public SessionContext getSessionContextWithCacheFallback(String connectionId) {
         SessionContext sessionContext = sessionContextMap.get(connectionId);
         if (sessionContext == null) {
-            //try from cache
             sessionContext = sessionContextCache.get(connectionId);
-            if (sessionContext!=null) {
-                //TODO add metric?
-                logger.warn("Got sessioncontext for connectionId {} from cache!", connectionId);
-            }
         }
         return sessionContext;
     }
@@ -270,7 +284,7 @@ public final class SecurityContext {
             //try from cache
             acl = aclCache.get(connectionId);
             if (acl!=null) {
-                //TODO add metric?
+                loginMetric.getAclCacheHit().inc();
                 logger.warn("Got acl for connectionId {} from cache!", connectionId);
             }
         }
@@ -298,6 +312,46 @@ public final class SecurityContext {
         return KapuaIllegalDeviceStateException.class.getName().equals(authRequest.getExceptionClass()) && AuthErrorCodes.DUPLICATE_CLIENT_ID.name().equals(authRequest.getErrorCode());
     }
 
+    private void registerGauge(Gauge<?> gauge, String... names) throws KapuaException {
+        METRIC_SERVICE.registerGauge(gauge, MetricsLabel.MODULE_BROKER, MetricsLabel.COMPONENT_CORE, names);
+    }
+
+    //logger features
+    public void printReport(ActiveMQServer server, String caller, String connectionId) {
+        printReport(ReportType.Full, server, caller, connectionId);
+    }
+
+    public void printCompactReport(ActiveMQServer server, String caller, String connectionId) {
+        printReport(ReportType.Compact, server, caller, connectionId);
+    }
+
+    public void printDetailedServerReport(ActiveMQServer server, String caller, String connectionId) {
+        printReport(ReportType.DetailedServer, server, caller, connectionId);
+    }
+
+    private void printReport(ReportType reportType, ActiveMQServer server, String caller, String connectionId) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n").append(REPORT_HEADER).append("\n");
+        switch (reportType) {
+        case Full:
+            appendServerContextReport(builder, server);
+            builder.append(REPORT_SEPARATOR).append("\n");
+            appendSessionInfoReport(builder, server);
+            builder.append(REPORT_SEPARATOR).append("\n");
+            appendDetailedServerContextReport(builder, caller, connectionId);
+            break;
+        case Compact:
+            appendServerContextReport(builder, server);
+            break;
+        case DetailedServer:
+            appendDetailedServerContextReport(builder, caller, connectionId);
+            break;
+        default:
+            break;
+        }
+        builder.append(REPORT_HEADER);
+        logger.info("{}", builder);
+    }
 
     private void appendServerContextReport(StringBuilder builder, ActiveMQServer server) {
         builder.append("## Session count: ").append(server.getSessions().size()).
@@ -333,4 +387,5 @@ public final class SecurityContext {
         builder.append("## acl by connection id\n");
         aclMap.forEach((key, acl) -> builder.append("##\tconnId: ").append(key).append("\n"));
     }
+
 }

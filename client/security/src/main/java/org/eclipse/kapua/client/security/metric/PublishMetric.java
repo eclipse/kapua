@@ -17,6 +17,7 @@ import com.codahale.metrics.Histogram;
 import com.codahale.metrics.Timer;
 
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 
 public class PublishMetric {
@@ -36,11 +37,11 @@ public class PublishMetric {
     private PublishMetric() {
         MetricsService metricsService = MetricServiceFactory.getInstance();
         // publish/subscribe
-        allowedMessages = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_PUBLISH, SecurityMetrics.METRIC_ALLOWED, SecurityMetrics.METRIC_COUNT);
-        notAllowedMessages = metricsService.getCounter(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_PUBLISH, SecurityMetrics.METRIC_NOT_ALLOWED, SecurityMetrics.METRIC_COUNT);
-        time = metricsService.getTimer(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_PUBLISH, SecurityMetrics.METRIC_TIME, SecurityMetrics.METRIC_S);
+        allowedMessages = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_PUBLISH, MetricsLabel.ALLOWED, MetricsLabel.COUNT);
+        notAllowedMessages = metricsService.getCounter(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_PUBLISH, MetricsLabel.NOT_ALLOWED, MetricsLabel.COUNT);
+        time = metricsService.getTimer(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_PUBLISH, MetricsLabel.TIME, MetricsLabel.SECONDS);
         // message size
-        messageSizeAllowed = metricsService.getHistogram(SecurityMetrics.METRIC_MODULE_NAME, SecurityMetrics.METRIC_COMPONENT_PUBLISH, SecurityMetrics.METRIC_MESSAGES, SecurityMetrics.METRIC_ALLOWED, SecurityMetrics.METRIC_SIZE, SecurityMetrics.METRIC_BYTES);
+        messageSizeAllowed = metricsService.getHistogram(MetricsLabel.MODULE_SECURITY, MetricsLabel.COMPONENT_PUBLISH, MetricsLabel.MESSAGES, MetricsLabel.ALLOWED, MetricsLabel.SIZE, MetricsLabel.BYTES);
     }
 
     public Counter getAllowedMessages() {

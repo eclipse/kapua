@@ -20,6 +20,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -97,19 +98,19 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
         // data message
         MetricsService metricService = MetricServiceFactory.getInstance();
-        metricMessageCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_COUNT);
-        metricCommunicationErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_COMMUNICATION, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
-        metricConfigurationErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_CONFIGURATION, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
-        metricGenericErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_GENERIC, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
-        metricValidationErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_VALIDATION, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
+        metricMessageCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.COUNT);
+        metricCommunicationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricConfigurationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricGenericErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricValidationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.VALIDATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
 
         // error messages queues size
-        metricQueueCommunicationErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_QUEUE, DataStoreDriverMetrics.METRIC_COMMUNICATION, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
-        metricQueueConfigurationErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_QUEUE, DataStoreDriverMetrics.METRIC_CONFIGURATION, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
-        metricQueueGenericErrorCount = metricService.getCounter(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_QUEUE, DataStoreDriverMetrics.METRIC_GENERIC, DataStoreDriverMetrics.METRIC_ERROR, DataStoreDriverMetrics.METRIC_COUNT);
+        metricQueueCommunicationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.COMMUNICATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueConfigurationErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.CONFIGURATION, MetricsLabel.ERROR, MetricsLabel.COUNT);
+        metricQueueGenericErrorCount = metricService.getCounter(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.QUEUE, MetricsLabel.GENERIC, MetricsLabel.ERROR, MetricsLabel.COUNT);
 
         // store timers
-        metricDataSaveTime = metricService.getTimer(DataStoreDriverMetrics.METRIC_MODULE_NAME, DataStoreDriverMetrics.METRIC_COMPONENT_NAME, DataStoreDriverMetrics.METRIC_STORE, DataStoreDriverMetrics.METRIC_MESSAGES, DataStoreDriverMetrics.METRIC_TIME, DataStoreDriverMetrics.METRIC_S);
+        metricDataSaveTime = metricService.getTimer(MetricsLabel.MODULE_DATASTORE, MetricsLabel.COMPONENT_DRIVER, MetricsLabel.STORE, MetricsLabel.MESSAGES, MetricsLabel.TIME, MetricsLabel.SECONDS);
     }
 
     @Override
