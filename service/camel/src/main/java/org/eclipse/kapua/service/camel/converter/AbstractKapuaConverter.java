@@ -21,9 +21,9 @@ import org.apache.camel.support.DefaultMessage;
 import org.apache.commons.lang3.SerializationUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.camel.CommonMetrics;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.camel.message.JmsUtil;
 import org.eclipse.kapua.service.client.message.MessageConstants;
@@ -60,28 +60,28 @@ public abstract class AbstractKapuaConverter {
      */
     protected AbstractKapuaConverter() {
         metricConverterJmsMessage = METRICS_SERVICE.getCounter(
-                ConverterMetrics.METRIC_MODULE_NAME,
-                ConverterMetrics.METRIC_COMPONENT_NAME,
-                ConverterMetrics.METRIC_JMS,
-                CommonMetrics.MESSAGES,
-                CommonMetrics.COUNT
+                MetricsLabel.MODULE_CONVERTER,
+                MetricsLabel.COMPONENT_KAPUA,
+                MetricsLabel.MESSAGE_FORMAT_JMS,
+                MetricsLabel.MESSAGES,
+                MetricsLabel.COUNT
         );
 
         metricConverterJmsErrorMessage = METRICS_SERVICE.getCounter(
-                ConverterMetrics.METRIC_MODULE_NAME,
-                ConverterMetrics.METRIC_COMPONENT_NAME,
-                ConverterMetrics.METRIC_JMS,
-                CommonMetrics.MESSAGES,
-                CommonMetrics.ERROR,
-                CommonMetrics.COUNT
+                MetricsLabel.MODULE_CONVERTER,
+                MetricsLabel.COMPONENT_KAPUA,
+                MetricsLabel.MESSAGE_FORMAT_JMS,
+                MetricsLabel.MESSAGES,
+                MetricsLabel.ERROR,
+                MetricsLabel.COUNT
         );
 
         metricConverterErrorMessage = METRICS_SERVICE.getCounter(
-                ConverterMetrics.METRIC_MODULE_NAME,
-                ConverterMetrics.METRIC_COMPONENT_NAME,
-                ConverterMetrics.METRIC_KAPUA_MESSAGE,
-                CommonMetrics.ERROR,
-                CommonMetrics.COUNT);
+                MetricsLabel.MODULE_CONVERTER,
+                MetricsLabel.COMPONENT_KAPUA,
+                MetricsLabel.KAPUA_MESSAGE,
+                MetricsLabel.ERROR,
+                MetricsLabel.COUNT);
     }
 
     /**

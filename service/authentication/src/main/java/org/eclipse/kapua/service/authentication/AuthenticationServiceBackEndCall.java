@@ -82,21 +82,21 @@ public class AuthenticationServiceBackEndCall {
             authResponse.update(authContext);
             return authResponse;
         } catch (Exception e) {
-            //TODO add metric
-            logger.warn("Login error: {}", e.getMessage(), e);
+            //this is not a proper error since the login throws exception if the user is not allowed to connect
+            //so the error is logged but no metric is incremented
+            logger.error("Login error: {}", e.getMessage(), e);
             return buildLoginResponseNotAuthorized(authRequest, e);
         }
         finally {
-            Context loginShiroLogoutTimeContext = loginMetric.getShiroLogoutTime().time();
+            Context timeShiroLogout = loginMetric.getExternalAddConnectionTimeShiroLogout().time();
             try {
                 authenticationService.logout();
             } catch (Exception e) {
                 //error while cleaning up the logged user
-                //do nothing
-                //TODO add metric?
-                logger.warn("Logout error: {}", e.getMessage(), e);
+                loginMetric.getAuthServiceLogoutFailure().inc();
+                logger.error("Logout error: {}", e.getMessage(), e);
             }
-            loginShiroLogoutTimeContext.stop();
+            timeShiroLogout.stop();
             ThreadContext.unbindSubject();
         }
     }
@@ -107,8 +107,9 @@ public class AuthenticationServiceBackEndCall {
             authenticator.disconnect(new AuthContext(authRequest));
             return buildLogoutResponseAuthorized(authRequest);
         } catch (Exception e) {
-            //TODO add metric
-            logger.warn("Login error: {}", e.getMessage(), e);
+            //this is an error since the disconnect shouldn't throws exception
+            loginMetric.getAuthServiceDisconnectFailure().inc();
+            logger.error("Login error: {}", e.getMessage(), e);
             return buildLogoutResponseNotAuthorized(authRequest, e);
         }
     }

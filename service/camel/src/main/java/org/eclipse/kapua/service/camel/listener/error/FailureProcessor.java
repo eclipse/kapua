@@ -16,7 +16,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.service.camel.CommonMetrics;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,8 +31,8 @@ public class FailureProcessor implements Processor {
 
     private static final Logger logger = LoggerFactory.getLogger(FailureProcessor.class);
 
-    private Counter unauthenticatedMessagesCount = MetricServiceFactory.getInstance().getCounter(CommonMetrics.PROCESSOR, CommonMetrics.FAILURE, CommonMetrics.UNAUTHENTICATED, CommonMetrics.MESSAGES, CommonMetrics.COUNT);
-    private Counter unauthenticatedCount = MetricServiceFactory.getInstance().getCounter(CommonMetrics.PROCESSOR, CommonMetrics.FAILURE, CommonMetrics.MESSAGES, CommonMetrics.COUNT);
+    private Counter unauthenticatedMessagesCount = MetricServiceFactory.getInstance().getCounter(MetricsLabel.COMPONENT_PROCESSOR, MetricsLabel.FAILURE, MetricsLabel.UNAUTHENTICATED, MetricsLabel.MESSAGES, MetricsLabel.COUNT);
+    private Counter unauthenticatedCount = MetricServiceFactory.getInstance().getCounter(MetricsLabel.COMPONENT_PROCESSOR, MetricsLabel.FAILURE, MetricsLabel.MESSAGES, MetricsLabel.COUNT);
 
     @Override
     public void process(Exchange exchange) throws Exception {

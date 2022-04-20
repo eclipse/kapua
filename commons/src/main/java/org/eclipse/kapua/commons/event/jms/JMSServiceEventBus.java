@@ -12,30 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.event.jms;
 
-import org.apache.commons.pool2.BasePooledObjectFactory;
-import org.apache.commons.pool2.PooledObject;
-import org.apache.commons.pool2.impl.DefaultPooledObject;
-import org.apache.commons.pool2.impl.GenericObjectPool;
-import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
-import org.apache.qpid.jms.jndi.JmsInitialContextFactory;
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
-import org.eclipse.kapua.commons.event.ServiceEventBusManager;
-import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
-import org.eclipse.kapua.commons.event.ServiceEventScope;
-import org.eclipse.kapua.commons.metric.MetricServiceFactory;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.event.ServiceEventBus;
-import org.eclipse.kapua.event.ServiceEventBusException;
-import org.eclipse.kapua.event.ServiceEventBusListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.codahale.metrics.Counter;
 
 import javax.jms.Connection;
@@ -56,21 +32,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaRuntimeException;
-import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
-import org.eclipse.kapua.commons.event.ServiceEventBusManager;
-import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
-import org.eclipse.kapua.commons.event.ServiceEventScope;
-import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.security.KapuaSession;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.event.ServiceEventBus;
-import org.eclipse.kapua.event.ServiceEventBusException;
-import org.eclipse.kapua.event.ServiceEventBusListener;
-
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
@@ -79,6 +40,22 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.qpid.jms.jndi.JmsInitialContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.event.ServiceEventBusDriver;
+import org.eclipse.kapua.commons.event.ServiceEventBusManager;
+import org.eclipse.kapua.commons.event.ServiceEventMarshaler;
+import org.eclipse.kapua.commons.event.ServiceEventScope;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.security.KapuaSession;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.event.ServiceEventBus;
+import org.eclipse.kapua.event.ServiceEventBusException;
+import org.eclipse.kapua.event.ServiceEventBusListener;
 
 /**
  * JMS event bus implementation
@@ -267,6 +244,7 @@ public class JMSServiceEventBus implements ServiceEventBus, ServiceEventBusDrive
                 if (jmsConnection != null) {
                     exceptionListener.stop();
                     jmsConnection.setExceptionListener(null);
+                    jmsConnection.stop();
                     jmsConnection.close();
                 }
             } catch (JMSException e) {

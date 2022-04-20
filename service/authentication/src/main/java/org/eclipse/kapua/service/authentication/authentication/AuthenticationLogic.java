@@ -323,11 +323,11 @@ public abstract class AuthenticationLogic {
         boolean ownedByTheCurrentNode = false;
         if (authContext.getBrokerHost() == null) {
             logger.warn("Broker Ip or host name is not correctly set! Please check the configuration!");
-            //TODO add metric?
+            loginMetric.getAuthServiceBrokerHostFailure().inc();
         }
         else if (deviceConnection == null){
             logger.warn("Cannot find device connection for device: {}/{}", authContext.getScopeId() , authContext.getClientId());
-            //TODO add metric?
+            loginMetric.getAuthServiceFindDeviceConnectionFailure().inc();
         }
         else {
             ownedByTheCurrentNode = authContext.getBrokerHost().equals(deviceConnection.getServerIp());

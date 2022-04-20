@@ -51,6 +51,8 @@ import org.eclipse.kapua.service.client.message.MessageConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.codahale.metrics.Timer.Context;
+
 public class ServerPlugin implements ActiveMQServerPlugin {
 
     protected static Logger logger = LoggerFactory.getLogger(ServerPlugin.class);
@@ -126,7 +128,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     /**
      * CONNECT
      */
-
     @Override
     public void afterCreateConnection(RemotingConnection connection) throws ActiveMQException {
         connection.addCloseListener(() -> cleanUpConnectionData(connection, Failure.CLOSED));
@@ -150,7 +151,6 @@ public class ServerPlugin implements ActiveMQServerPlugin {
      */
     @Override
     public void afterDestroyConnection(RemotingConnection connection) throws ActiveMQException {
-        //TODO add metrics
         ActiveMQServerPlugin.super.afterDestroyConnection(connection);
         cleanUpConnectionData(connection, Failure.DESTROY);
     }
@@ -269,14 +269,14 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     @Override
     public void duplicateSessionMetadataFailure(ServerSession session, String key, String data) throws ActiveMQException {
         logger.error("Duplicate session for key: {} - data: {}", key, data);
-        //TODO add metrics?
+        loginMetric.getDuplicateSessionMetadataFailure().inc();
         ActiveMQServerPlugin.super.duplicateSessionMetadataFailure(session, key, data);
     }
 
     @Override
     public void criticalFailure(CriticalComponent components) throws ActiveMQException {
         logger.error("Critical failure on component {}", components.toString());
-        //TODO add metrics?
+        loginMetric.getCriticalFailure().inc();
         ActiveMQServerPlugin.super.criticalFailure(components);
     }
 
@@ -285,6 +285,7 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     }
 
     private void cleanUpConnectionData(RemotingConnection connection, Failure reason, Exception exception) {
+        Context timeTotal = loginMetric.getRemoveConnectionTimeTotal().time();
         try {
             String connectionId = PluginUtility.getConnectionId(connection);
             serverContext.getSecurityContext().updateConnectionTokenOnDisconnection(connectionId);
@@ -302,12 +303,15 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             }
             else {
                 logger.warn("Cannot find any session context for connection id: {}", connectionId);
-                //TODO add metrics
+                loginMetric.getCleanupConnectionNullSession().inc();
             }
         }
         catch (Exception e) {
-            loginMetric.getFailure().inc();
+            loginMetric.getCleanupConnectionFailure().inc();
             logger.error("Cleanup connection data error: {}", e.getMessage(), e);
+        }
+        finally {
+            timeTotal.stop();
         }
     }
 
