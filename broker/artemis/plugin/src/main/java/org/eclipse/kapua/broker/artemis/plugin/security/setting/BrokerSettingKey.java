@@ -31,6 +31,10 @@ public enum BrokerSettingKey implements SettingKey {
      */
     BROKER_HOST("broker.host"),
     /**
+     * Print the security context report (broker core metrics and other infos related to the connected clients)
+     */
+    PRINT_SECURITY_CONTEXT_REPORT("broker.print_security_context_report"),
+    /**
      * AMQP acceptor port for "internal use acceptor" (used by the external consumers, console and rest-api)
      * default value should be 5672 (AMQP)
      */

@@ -64,30 +64,30 @@ public class UserAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
-        Context loginNormalUserTimeContext = loginMetric.getNormalUserTime().time();
-        Context loginCheckAccessTimeContext = loginMetric.getCheckAccessTime().time();
+        Context timeUserTotal = loginMetric.getExternalAddConnectionTimeUserTotal().time();
+        Context timeUserTotalCheckAccess = loginMetric.getExternalAddConnectionTimeUserTotalCheckAccess().time();
         UserPermissions userPermissions = updatePermissions(authContext);
-        loginCheckAccessTimeContext.stop();
+        timeUserTotalCheckAccess.stop();
 
-        Context loginFindDeviceConnectionTimeContext = loginMetric.getFindDeviceConnectionTime().time();
+        Context timeUserTotalFindDevice = loginMetric.getExternalAddConnectionTimeUserTotalFindDevice().time();
         DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(
             KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
-        loginFindDeviceConnectionTimeContext.stop();
+        timeUserTotalFindDevice.stop();
 
         // enforce the user-device bound
         final KapuaId scopeId = KapuaEid.parseCompactId(authContext.getScopeId());
         final KapuaId userId = KapuaEid.parseCompactId(authContext.getUserId());
         enforceDeviceConnectionUserBound(KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.getConfigValues(scopeId)), deviceConnection, scopeId, userId);
 
-        Context loginUpdateDeviceConnectionTimeContext = loginMetric.getUpdateDeviceConnectionTime().time();
+        Context timeUserTotalUpdateDevice = loginMetric.getExternalAddConnectionTimeUserTotalUpdateDevice().time();
         deviceConnection = deviceConnection!=null ? updateDeviceConnection(authContext, deviceConnection) : createDeviceConnection(authContext);
         if (deviceConnection!=null && deviceConnection.getId()!=null) {
             authContext.setKapuaConnectionId(deviceConnection.getId());
         }
-        loginUpdateDeviceConnectionTimeContext.stop();
+        timeUserTotalUpdateDevice.stop();
 
         List<AuthAcl> authorizationEntries = buildAuthorizationMap(userPermissions, authContext);
-        loginNormalUserTimeContext.stop();
+        timeUserTotal.stop();
 
         return authorizationEntries;
     }

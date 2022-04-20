@@ -22,6 +22,8 @@ import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 
+import com.codahale.metrics.Timer.Context;
+
 import org.eclipse.kapua.client.security.bean.AuthContext;
 
 /**
@@ -40,6 +42,7 @@ public class AdminAuthenticationLogic extends AuthenticationLogic {
 
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
+        Context timeAdminTotal = loginMetric.getExternalAddConnectionTimeAdminTotal().time();
         authContext.setAdmin(true);
         DeviceConnection deviceConnection = KapuaSecurityUtils.doPrivileged(() -> deviceConnectionService.findByClientId(
                 KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
@@ -48,7 +51,10 @@ public class AdminAuthenticationLogic extends AuthenticationLogic {
             authContext.setKapuaConnectionId(deviceConnection.getId());
         }
         //no need to have permissions since is admin profile
-        return buildAuthorizationMap(null, authContext);
+        List<AuthAcl> authorizationEntries = buildAuthorizationMap(null, authContext);
+        timeAdminTotal.stop();
+
+        return authorizationEntries;
     }
 
     @Override

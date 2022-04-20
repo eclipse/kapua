@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.service.elasticsearch.client.AbstractElasticsearchClient;
@@ -111,9 +112,9 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
         }
 
         MetricsService metricService = MetricServiceFactory.getInstance();
-        restCallRuntimeExecCount = metricService.getCounter(getClientConfiguration().getModuleName(), DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.METRIC_RUNTIME_EXEC, DatastoreRestClientMetrics.METRIC_COUNT);
-        timeoutRetryCount = metricService.getCounter(getClientConfiguration().getModuleName(), DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.METRIC_TIMEOUT_RETRY, DatastoreRestClientMetrics.METRIC_COUNT);
-        timeoutRetryLimitReachedCount = metricService.getCounter(getClientConfiguration().getModuleName(), DatastoreRestClientMetrics.METRIC_COMPONENT_NAME, DatastoreRestClientMetrics.TIMEOUT_RETRY_LIMIT_REACHED, DatastoreRestClientMetrics.METRIC_COUNT);
+        restCallRuntimeExecCount = metricService.getCounter(getClientConfiguration().getModuleName(), MetricsLabel.COMPONENT_REST_CLIENT, MetricsLabel.RUNTIME_EXEC, MetricsLabel.COUNT);
+        timeoutRetryCount = metricService.getCounter(getClientConfiguration().getModuleName(), MetricsLabel.COMPONENT_REST_CLIENT, MetricsLabel.TIMEOUT_RETRY, MetricsLabel.COUNT);
+        timeoutRetryLimitReachedCount = metricService.getCounter(getClientConfiguration().getModuleName(), MetricsLabel.COMPONENT_REST_CLIENT, MetricsLabel.TIMEOUT_RETRY_LIMIT_REACHED, MetricsLabel.COUNT);
     }
 
     @Override

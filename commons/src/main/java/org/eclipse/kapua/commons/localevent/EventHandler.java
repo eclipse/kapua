@@ -10,15 +10,19 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.localevent;
+package org.eclipse.kapua.commons.localevent;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
+import org.eclipse.kapua.commons.metric.MetricsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.codahale.metrics.Counter;
 
 public abstract class EventHandler<O> {
 
@@ -32,20 +36,21 @@ public abstract class EventHandler<O> {
     private BlockingQueue<O> eventQueue = new LinkedBlockingDeque<>(MAX_ONGOING_OPERATION);
     private EventProcessor<O> eventProcessor;
 
-    //TODO replace with metrics
-    private AtomicInteger processedEvent = new AtomicInteger();
-    private AtomicInteger enqueuedEvent = new AtomicInteger();
-    private AtomicInteger dequeuedEvent = new AtomicInteger();
+    private Counter processedEvent;
+    private Counter enqueuedEvent;
+    private Counter dequeuedEvent;
 
     protected EventHandler(String name, long initialDelay, long pollTimeout) {
+        MetricsService metricsService = MetricServiceFactory.getInstance();
+        processedEvent = metricsService.getCounter(MetricsLabel.MODULE_CORE, MetricsLabel.COMPONENT_EVENT, MetricsLabel.ENQUEUED_EVENT, MetricsLabel.COUNT);
         executorWrapper = new ExecutorWrapper(name, () -> {
             while (isRunning()) {
                 try {
                     O eventBean = eventQueue.poll(POLL_TIMEOUT, TimeUnit.MILLISECONDS);
                     if (eventBean!=null) {
-                        dequeuedEvent.incrementAndGet();
+                        dequeuedEvent.inc();
                         eventProcessor.processEvent(eventBean);
-                        processedEvent.incrementAndGet();
+                        processedEvent.inc();
                     }
                 } catch (InterruptedException e) {
                     //do nothing...
@@ -53,7 +58,7 @@ public abstract class EventHandler<O> {
                 }
                 catch (Exception e) {
                     //do nothing
-                    logger.error("Error while synchronizing routes: {}", e.getMessage(), e);
+                    logger.error("Error while processing event: {}", e.getMessage(), e);
                     //TODO add metric?
                 }
             }
@@ -62,7 +67,7 @@ public abstract class EventHandler<O> {
 
     public void enqueueEvent(O eventBean) {
         eventQueue.add(eventBean);
-        enqueuedEvent.incrementAndGet();
+        enqueuedEvent.inc();
     }
 
     public void registerConsumer(EventProcessor<O> eventProcessor) {

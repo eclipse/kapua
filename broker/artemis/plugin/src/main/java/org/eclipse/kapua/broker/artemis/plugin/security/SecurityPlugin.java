@@ -106,7 +106,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             logger.info("### authenticate user (no cache): {} - clientId: {} - remoteIP: {} - connectionId: {}", username, clientId, remotingConnection.getTransportConnection().getRemoteAddress(), connectionId);
             if (!remotingConnection.getTransportConnection().isOpen()) {
                 logger.info("Connection (connectionId: {}) is closed (stealing link occurred?)", connectionId);
-                //TODO add metrics?
+                loginMetric.getLoginClosedConnectionFailure().inc();
                 return null;
             }
             ConnectionInfo connectionInfo = new ConnectionInfo(
@@ -127,45 +127,42 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         loginMetric.getInternalConnectorAttempt().inc();
         String usernameToCompare = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_USERNAME);
         String passToCompare = SystemSetting.getInstance().getString(SystemSettingKey.BROKER_INTERNAL_CONNECTOR_PASSWORD);
-        if (usernameToCompare==null || !usernameToCompare.equals(username) ||
+        try {
+            if (usernameToCompare==null || !usernameToCompare.equals(username) ||
                 passToCompare==null || !passToCompare.equals(password)) {
-            return null;
+                throw new ActiveMQException(ActiveMQExceptionType.SECURITY_EXCEPTION, "User not authorized!");
+            }
+            logger.info("Authenticate internal: user: {} - clientId: {} - connectionIp: {} - connectionId: {} - remoteIP: {} - isOpen: {}",
+                username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(),
+                remotingConnection.getTransportConnection().getRemoteAddress(), remotingConnection.getTransportConnection().isOpen());
+            //TODO double check why the client id is null once coming from AMQP connection (the Kapua connection factory with custom client id generation is called)
+            KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(getAdminScopeId(), connectionInfo.getClientId());
+            //update client id with account|clientId (see pattern)
+            String fullClientId = Utils.getFullClientId(getAdminScopeId(), connectionInfo.getClientId());
+            remotingConnection.setClientID(fullClientId);
+            Subject subject = buildInternalSubject(kapuaPrincipal);
+            SessionContext sessionContext = new SessionContext(kapuaPrincipal, connectionInfo,
+                serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost(),
+                true, false);
+            serverContext.getSecurityContext().setSessionContext(sessionContext, null);
+            loginMetric.getInternalConnectorSuccess().inc();
+            return subject;
         }
-        else {
-            try {
-                loginMetric.getInternalConnectorConnected().inc();
-                logger.info("Authenticate internal: user: {} - clientId: {} - connectionIp: {} - connectionId: {} - remoteIP: {} - isOpen: {}",
-                        username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(),
-                        remotingConnection.getTransportConnection().getRemoteAddress(), remotingConnection.getTransportConnection().isOpen());
-                //TODO double check why the client id is null once coming from AMQP connection (the Kapua connection factory with custom client id generation is called)
-                KapuaPrincipal kapuaPrincipal = buildInternalKapuaPrincipal(getAdminScopeId(), connectionInfo.getClientId());
-                //update client id with account|clientId (see pattern)
-                String fullClientId = Utils.getFullClientId(getAdminScopeId(), connectionInfo.getClientId());
-                remotingConnection.setClientID(fullClientId);
-                Subject subject = buildInternalSubject(kapuaPrincipal);
-                SessionContext sessionContext = new SessionContext(kapuaPrincipal, connectionInfo,
-                    serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost(),
-                    true, false);
-                serverContext.getSecurityContext().setSessionContext(sessionContext, null);
-                return subject;
-            }
-            catch (Exception e) {
-                loginMetric.getFailure().inc();
-                logger.error("Authenticate internal: error: {}", e.getMessage());
-                return null;
-            }
+        catch (Exception e) {
+            loginMetric.getInternalConnectorFailure().inc();
+            logger.error("Authenticate internal: error: {}", e.getMessage());
+            return null;
         }
     }
 
     private Subject authenticateExternalConn(ConnectionInfo connectionInfo, String connectionId, String username, String password, RemotingConnection remotingConnection) {
-        loginMetric.getAttempt().inc();
-        //do login
-        Context loginTotalContext = loginMetric.getAddConnectionTime().time();
+        loginMetric.getExternalAttempt().inc();
+        Context timeTotal = loginMetric.getExternalAddConnectionTimeTotal().time();
         try {
             logger.info("Authenticate external: user: {} - clientId: {} - connectionIp: {} - connectionId: {} isOpen: {}",
                 username, connectionInfo.getClientId(), connectionInfo.getClientIp(), remotingConnection.getID(), remotingConnection.getTransportConnection().isOpen());
             String fullClientId = Utils.getFullClientId(getScopeId(username), connectionInfo.getClientId());
-            Context loginShiroLoginTimeContext = loginMetric.getShiroLoginTime().time();
+            Context timeShiroLogin = loginMetric.getExternalAddConnectionTimeShiroLogin().time();
             AuthRequest authRequest = new AuthRequest(
                 serverContext.getBrokerIdentity().getBrokerHost(), SecurityAction.brokerConnect.name(),
                 username, password, connectionInfo,
@@ -178,7 +175,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             SessionContext sessionContext = new SessionContext(principal, connectionInfo, authResponse.getKapuaConnectionId(),
                 serverContext.getBrokerIdentity().getBrokerId(), serverContext.getBrokerIdentity().getBrokerHost(),
                 authResponse.isAdmin(), authResponse.isMissing());
-            loginShiroLoginTimeContext.stop();
+            timeShiroLogin.stop();
 
             //update client id with account|clientId (see pattern)
             remotingConnection.setClientID(fullClientId);
@@ -188,16 +185,16 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             if (serverContext.getSecurityContext().setSessionContext(sessionContext, authResponse.getAcls())) {
                 subject = serverContext.getSecurityContext().buildFromPrincipal(sessionContext.getPrincipal());
             }
-            loginMetric.getSuccess().inc();
+            loginMetric.getExternalSuccess().inc();
             return subject;
         }
         catch (Exception e) {
-            loginMetric.getFailure().inc();
+            loginMetric.getExternalFailure().inc();
             logger.error("Authenticate external: error: {}", e.getMessage());
             return null;
         }
         finally {
-            loginTotalContext.stop();
+            timeTotal.stop();
         }
     }
 

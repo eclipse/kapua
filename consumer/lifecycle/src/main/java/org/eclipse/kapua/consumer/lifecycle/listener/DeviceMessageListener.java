@@ -15,6 +15,7 @@ package org.eclipse.kapua.consumer.lifecycle.listener;
 import com.codahale.metrics.Counter;
 import org.apache.camel.spi.UriEndpoint;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage;
 import org.eclipse.kapua.message.device.lifecycle.KapuaBirthMessage;
@@ -55,11 +56,11 @@ public class DeviceMessageListener extends AbstractListener {
         super(DeviceManagementRegistryNotificationMetrics.METRIC_COMPONENT_DEVICE_LIFE_CYCLE);
         deviceLifeCycleService = KapuaLocator.getInstance().getService(DeviceLifeCycleService.class);
         jobDeviceManagementTriggerManagerService = KapuaLocator.getInstance().getService(JobDeviceManagementTriggerManagerService.class);
-        metricDeviceBirthMessage = registerCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MESSAGES, DeviceManagementRegistryNotificationMetrics.METRIC_BIRTH, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
-        metricDeviceDisconnectMessage = registerCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MESSAGES, DeviceManagementRegistryNotificationMetrics.METRIC_DC, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
-        metricDeviceMissingMessage = registerCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MESSAGES, DeviceManagementRegistryNotificationMetrics.METRIC_MISSING, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
-        metricDeviceAppsMessage = registerCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MESSAGES, DeviceManagementRegistryNotificationMetrics.METRIC_APPS, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
-        metricDeviceErrorMessage = registerCounter(DeviceManagementRegistryNotificationMetrics.METRIC_MESSAGES, DeviceManagementRegistryNotificationMetrics.METRIC_ERROR, DeviceManagementRegistryNotificationMetrics.METRIC_COUNT);
+        metricDeviceBirthMessage = registerCounter(MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_BIRTH, MetricsLabel.COUNT);
+        metricDeviceDisconnectMessage = registerCounter(MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_DC, MetricsLabel.COUNT);
+        metricDeviceMissingMessage = registerCounter(MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_MISSING, MetricsLabel.COUNT);
+        metricDeviceAppsMessage = registerCounter(MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_APPS, MetricsLabel.COUNT);
+        metricDeviceErrorMessage = registerCounter(MetricsLabel.MESSAGES, MetricsLabel.ERROR, MetricsLabel.COUNT);
     }
 
     /**

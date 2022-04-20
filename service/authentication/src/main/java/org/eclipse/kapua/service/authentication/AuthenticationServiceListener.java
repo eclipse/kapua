@@ -22,9 +22,9 @@ import org.eclipse.kapua.client.security.bean.EntityRequest;
 import org.eclipse.kapua.client.security.bean.EntityResponse;
 import org.eclipse.kapua.client.security.bean.MessageConstants;
 import org.eclipse.kapua.client.security.bean.Request;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.client.security.bean.AuthRequest;
 import org.eclipse.kapua.client.security.bean.AuthResponse;
-import org.eclipse.kapua.service.camel.CommonMetrics;
 import org.eclipse.kapua.service.camel.listener.AbstractListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,12 +56,12 @@ public class AuthenticationServiceListener extends AbstractListener {
 
     public AuthenticationServiceListener() {
         super(METRIC_AUTHENTICATION);
-        metricLoginCount = registerCounter(CommonMetrics.MESSAGES, METRIC_LOGIN, CommonMetrics.COUNT);
-        metricLoginRequestCount = registerCounter(CommonMetrics.MESSAGES, METRIC_LOGIN, CommonMetrics.REQUEST, CommonMetrics.COUNT);
-        metricLogoutCount = registerCounter(CommonMetrics.MESSAGES, METRIC_LOGOUT, CommonMetrics.COUNT);
-        metricLogoutRequestCount = registerCounter(CommonMetrics.MESSAGES, METRIC_LOGOUT, CommonMetrics.REQUEST, CommonMetrics.COUNT);
-        metricGetAccountCount = registerCounter(CommonMetrics.MESSAGES, METRIC_GET_ACCOUNT, CommonMetrics.COUNT);
-        metricGetAccountRequestCount = registerCounter(CommonMetrics.MESSAGES, METRIC_GET_ACCOUNT, CommonMetrics.REQUEST, CommonMetrics.COUNT);
+        metricLoginCount = registerCounter(MetricsLabel.MESSAGES, METRIC_LOGIN, MetricsLabel.COUNT);
+        metricLoginRequestCount = registerCounter(MetricsLabel.MESSAGES, METRIC_LOGIN, MetricsLabel.REQUEST, MetricsLabel.COUNT);
+        metricLogoutCount = registerCounter(MetricsLabel.MESSAGES, METRIC_LOGOUT, MetricsLabel.COUNT);
+        metricLogoutRequestCount = registerCounter(MetricsLabel.MESSAGES, METRIC_LOGOUT, MetricsLabel.REQUEST, MetricsLabel.COUNT);
+        metricGetAccountCount = registerCounter(MetricsLabel.MESSAGES, METRIC_GET_ACCOUNT, MetricsLabel.COUNT);
+        metricGetAccountRequestCount = registerCounter(MetricsLabel.MESSAGES, METRIC_GET_ACCOUNT, MetricsLabel.REQUEST, MetricsLabel.COUNT);
     }
 
     private static ObjectMapper mapper = new ObjectMapper();

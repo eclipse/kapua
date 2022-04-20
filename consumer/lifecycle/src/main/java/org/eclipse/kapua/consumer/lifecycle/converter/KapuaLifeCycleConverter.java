@@ -15,9 +15,8 @@ package org.eclipse.kapua.consumer.lifecycle.converter;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.camel.CommonMetrics;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
-import org.eclipse.kapua.service.camel.converter.ConverterMetrics;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageType;
 import org.slf4j.Logger;
@@ -42,11 +41,11 @@ public class KapuaLifeCycleConverter extends AbstractKapuaConverter {
 
     public KapuaLifeCycleConverter() {
         super();
-        metricConverterAppMessage = METRICS_SERVICE.getCounter(ConverterMetrics.METRIC_MODULE_NAME, ConverterMetrics.METRIC_COMPONENT_NAME, ConverterMetrics.METRIC_KAPUA_MESSAGE, CommonMetrics.MESSAGES, ConverterMetrics.METRIC_APP, CommonMetrics.COUNT);
-        metricConverterBirthMessage = METRICS_SERVICE.getCounter(ConverterMetrics.METRIC_MODULE_NAME, ConverterMetrics.METRIC_COMPONENT_NAME, ConverterMetrics.METRIC_KAPUA_MESSAGE, CommonMetrics.MESSAGES, ConverterMetrics.METRIC_BIRTH, CommonMetrics.COUNT);
-        metricConverterDcMessage = METRICS_SERVICE.getCounter(ConverterMetrics.METRIC_MODULE_NAME, ConverterMetrics.METRIC_COMPONENT_NAME, ConverterMetrics.METRIC_KAPUA_MESSAGE, CommonMetrics.MESSAGES, ConverterMetrics.METRIC_DC, CommonMetrics.COUNT);
-        metricConverterMissingMessage = METRICS_SERVICE.getCounter(ConverterMetrics.METRIC_MODULE_NAME, ConverterMetrics.METRIC_COMPONENT_NAME, ConverterMetrics.METRIC_KAPUA_MESSAGE, CommonMetrics.MESSAGES, ConverterMetrics.METRIC_MISSING, CommonMetrics.COUNT);
-        metricConverterNotifyMessage = METRICS_SERVICE.getCounter(ConverterMetrics.METRIC_MODULE_NAME, ConverterMetrics.METRIC_COMPONENT_NAME, ConverterMetrics.METRIC_KAPUA_MESSAGE, CommonMetrics.MESSAGES, ConverterMetrics.METRIC_NOTIFY, CommonMetrics.COUNT);
+        metricConverterAppMessage = METRICS_SERVICE.getCounter(MetricsLabel.MODULE_CONVERTER, MetricsLabel.COMPONENT_KAPUA, MetricsLabel.KAPUA_MESSAGE, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_APPS, MetricsLabel.COUNT);
+        metricConverterBirthMessage = METRICS_SERVICE.getCounter(MetricsLabel.MODULE_CONVERTER, MetricsLabel.COMPONENT_KAPUA, MetricsLabel.KAPUA_MESSAGE, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_BIRTH, MetricsLabel.COUNT);
+        metricConverterDcMessage = METRICS_SERVICE.getCounter(MetricsLabel.MODULE_CONVERTER, MetricsLabel.COMPONENT_KAPUA, MetricsLabel.KAPUA_MESSAGE, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_DC, MetricsLabel.COUNT);
+        metricConverterMissingMessage = METRICS_SERVICE.getCounter(MetricsLabel.MODULE_CONVERTER, MetricsLabel.COMPONENT_KAPUA, MetricsLabel.KAPUA_MESSAGE, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_MISSING, MetricsLabel.COUNT);
+        metricConverterNotifyMessage = METRICS_SERVICE.getCounter(MetricsLabel.MODULE_CONVERTER, MetricsLabel.COMPONENT_KAPUA, MetricsLabel.KAPUA_MESSAGE, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_NOTIFY, MetricsLabel.COUNT);
     }
 
     /**

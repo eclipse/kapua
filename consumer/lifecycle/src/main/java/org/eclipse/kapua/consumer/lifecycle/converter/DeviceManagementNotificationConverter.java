@@ -16,9 +16,8 @@ import com.codahale.metrics.Counter;
 import org.apache.camel.Converter;
 import org.apache.camel.Exchange;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.camel.CommonMetrics;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
 import org.eclipse.kapua.service.camel.converter.AbstractKapuaConverter;
-import org.eclipse.kapua.service.camel.converter.ConverterMetrics;
 import org.eclipse.kapua.service.camel.message.CamelKapuaMessage;
 import org.eclipse.kapua.service.client.message.MessageType;
 import org.slf4j.Logger;
@@ -37,7 +36,7 @@ public class DeviceManagementNotificationConverter extends AbstractKapuaConverte
 
     public DeviceManagementNotificationConverter() {
         super();
-        metricConverterDeviceManagementNotificationMessage = METRICS_SERVICE.getCounter(ConverterMetrics.METRIC_MODULE_NAME, ConverterMetrics.METRIC_COMPONENT_NAME, ConverterMetrics.METRIC_KAPUA_MESSAGE, CommonMetrics.MESSAGES, ConverterMetrics.METRIC_NOTIFY, CommonMetrics.COUNT);
+        metricConverterDeviceManagementNotificationMessage = METRICS_SERVICE.getCounter(MetricsLabel.MODULE_CONVERTER, MetricsLabel.COMPONENT_KAPUA, MetricsLabel.KAPUA_MESSAGE, MetricsLabel.MESSAGES, MetricsLabel.MESSAGE_NOTIFY, MetricsLabel.COUNT);
     }
 
     /**

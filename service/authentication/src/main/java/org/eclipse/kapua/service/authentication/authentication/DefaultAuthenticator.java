@@ -101,9 +101,9 @@ public class DefaultAuthenticator implements Authenticator {
             loginMetric.getAdminConnected().inc();
         }
         else {
-            loginMetric.getAttempt().inc();
+            loginMetric.getUserAttempt().inc();
             if (authContext.isStealingLink()) {
-                loginMetric.getStealingLinkConnect().inc();
+                loginMetric.getUserStealingLinkConnect().inc();
                 logger.warn("Detected Stealing link for clientId: {} - account: {} - current connectionId: {} - IP: {}",
                         authContext.getClientId(),
                         authContext.getAccountName(),
@@ -111,13 +111,13 @@ public class DefaultAuthenticator implements Authenticator {
                         authContext.getClientIp());
             }
             authorizationEntries = userAuthenticationLogic.connect(authContext);
-            loginMetric.getConnected().inc();
-            Context loginSendLogingUpdateMsgTimeContext = loginMetric.getSendLoginUpdateMsgTime().time();
+            loginMetric.getUserConnected().inc();
+            Context loginRaiseLifecycleEventTimeContext = loginMetric.getRaiseLifecycleEventTime().time();
             if (raiseLifecycleEvents) {
                 logger.info("raising connect lifecycle event for clientIs: {}", authContext.getClientId());
                 raiseLifecycleEvent(authContext, DeviceConnectionStatus.CONNECTED);
             }
-            loginSendLogingUpdateMsgTimeContext.stop();
+            loginRaiseLifecycleEventTimeContext.stop();
         }
         return authorizationEntries;
     }
@@ -132,27 +132,27 @@ public class DefaultAuthenticator implements Authenticator {
             adminAuthenticationLogic.disconnect(authContext);
         }
         else {
-            loginMetric.getDisconnected().inc();
+            loginMetric.getUserDisconnected().inc();
             String error = authContext.getExceptionClass();
             logger.info("Disconnecting client: connection id: {} - error: {} - isStealingLink {} - isIllegalState: {}",
                     authContext.getConnectionId(), error, authContext.isStealingLink(), authContext.isIllegalState());
             if (authContext.isStealingLink()) {
-                loginMetric.getStealingLinkDisconnect().inc();
+                loginMetric.getUserStealingLinkDisconnect().inc();
                 logger.info("Stealing link: skip device connection status update. Client id: {} - Connection id: {}",
                         authContext.getClientId(),
                         authContext.getConnectionId());
             }
             else if (authContext.isIllegalState()) {
-                loginMetric.getIllegalStateDisconnect().inc();
+                loginMetric.getUserIllegalStateDisconnect().inc();
                 logger.info("Illegal device connection status: skip device connection status update. Client id: {} - Connection id: {}",
                         authContext.getClientId(),
                         authContext.getConnectionId());
             }
             if (userAuthenticationLogic.disconnect(authContext)) {
                 logger.info("raising disconnect lifecycle event for clientIs: {}", authContext.getClientId());
-                Context loginSendLogingUpdateMsgTimeContext = loginMetric.getSendLoginUpdateMsgTime().time();
+                Context loginRaiseLifecycleEventTimeContext = loginMetric.getRaiseLifecycleEventTime().time();
                 raiseLifecycleEvent(authContext, DeviceConnectionStatus.DISCONNECTED);
-                loginSendLogingUpdateMsgTimeContext.stop();
+                loginRaiseLifecycleEventTimeContext.stop();
             }
         }
     }

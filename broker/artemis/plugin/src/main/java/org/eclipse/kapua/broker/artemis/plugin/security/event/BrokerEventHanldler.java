@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.artemis.plugin.security.event;
 
-import org.eclipse.kapua.localevent.EventHandler;
+import org.eclipse.kapua.commons.localevent.EventHandler;
 
 public class BrokerEventHanldler extends EventHandler<BrokerEvent> {
 

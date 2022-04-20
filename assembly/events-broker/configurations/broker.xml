@@ -16,6 +16,11 @@
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xsi:schemaLocation="urn:activemq /schema/artemis-configuration.xsd">
 
+    <bean xmlns="http://www.springframework.org/schema/beans"
+        id="securityContextHandler"
+        class="org.eclipse.kapua.broker.artemis.plugin.security.SecurityContextHandler"
+        scope="singleton"/>
+
     <core xmlns="urn:activemq:core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="urn:activemq:core ">
         <name>0.0.0.0</name>
