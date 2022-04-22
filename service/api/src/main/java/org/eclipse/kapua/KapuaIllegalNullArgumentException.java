@@ -17,17 +17,17 @@ package org.eclipse.kapua;
  * or as a value for field in an object where <tt>null</tt> is not allowed.<br>
  * This should always be used instead of <tt>NullPointerException</tt> as the latter is too easily confused with programming bugs.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class KapuaIllegalNullArgumentException extends KapuaIllegalArgumentException {
 
     private static final long serialVersionUID = -8762712571192128282L;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param argumentName
+     * @param argumentName The illegal argument name.
+     * @since 1.0.0
      */
     public KapuaIllegalNullArgumentException(String argumentName) {
         super(KapuaErrorCodes.ILLEGAL_NULL_ARGUMENT, argumentName, null);

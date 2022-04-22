@@ -14,16 +14,19 @@ package org.eclipse.kapua;
 
 /**
  * KapuaUnauthenticatedException is thrown when no authenticated context is found on pre-action rights check.
+ * <p>
+ * TODO: Evaluate if migration to `kapua-authentication-api` module make sense.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class KapuaUnauthenticatedException extends KapuaException {
 
     private static final long serialVersionUID = -8059684526029130460L;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0.
      */
     public KapuaUnauthenticatedException() {
         super(KapuaErrorCodes.UNAUTHENTICATED);

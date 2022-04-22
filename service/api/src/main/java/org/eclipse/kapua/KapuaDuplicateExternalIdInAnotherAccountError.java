@@ -12,13 +12,21 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
+/**
+ * @since 1.2.0
+ * @deprecated Since 2.0.0. This is not used but in tests.
+ */
+@Deprecated
 public class KapuaDuplicateExternalIdInAnotherAccountError extends KapuaException {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 6086560691695487741L;
 
+    /**
+     * Constructor.
+     *
+     * @param duplicateExternalId The duplicate User.externalId
+     * @since 1.2.0
+     */
     public KapuaDuplicateExternalIdInAnotherAccountError(String duplicateExternalId) {
         super(KapuaErrorCodes.EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, duplicateExternalId);
         // TODO Auto-generated constructor stub

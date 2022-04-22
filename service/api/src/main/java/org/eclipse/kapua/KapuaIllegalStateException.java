@@ -13,32 +13,48 @@
 package org.eclipse.kapua;
 
 /**
- * KapuaIllegalStateException is thrown when the the user session is inconsistent.
+ * KapuaIllegalStateException is thrown when the user session is inconsistent.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class KapuaIllegalStateException extends KapuaRuntimeException {
 
     private static final long serialVersionUID = -912672615903975466L;
 
+    private final String detailMessage;
+
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param message
+     * @param detailMessage The message describing the illegal state.
+     * @since 1.0.0
      */
-    public KapuaIllegalStateException(String message) {
-        super(KapuaErrorCodes.ILLEGAL_STATE, null, message);
+    public KapuaIllegalStateException(String detailMessage) {
+        super(KapuaErrorCodes.ILLEGAL_STATE, detailMessage);
+
+        this.detailMessage = detailMessage;
     }
 
     /**
      * Constructor
      *
-     * @param message
-     * @param t
+     * @param cause   The original {@link Throwable} error that caused this exception.
+     * @param message The message describing the illegal state.
+     * @since 1.0.0
      */
-    public KapuaIllegalStateException(String message, Throwable t) {
-        super(KapuaErrorCodes.ILLEGAL_STATE, t, message);
+    public KapuaIllegalStateException(Throwable cause, String message) {
+        super(KapuaErrorCodes.ILLEGAL_STATE, cause, message);
+
+        this.detailMessage = message;
     }
 
+    /**
+     * Gets the message describing the illegal state.
+     *
+     * @return The message describing the illegal state.
+     * @since 2.0.0
+     */
+    public String getDetailMessage() {
+        return detailMessage;
+    }
 }

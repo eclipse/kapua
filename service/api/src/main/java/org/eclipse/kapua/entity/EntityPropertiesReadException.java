@@ -15,6 +15,9 @@ package org.eclipse.kapua.entity;
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 
+/**
+ * @since 1.1.0
+ */
 public class EntityPropertiesReadException extends KapuaRuntimeException {
 
     private final String attribute;

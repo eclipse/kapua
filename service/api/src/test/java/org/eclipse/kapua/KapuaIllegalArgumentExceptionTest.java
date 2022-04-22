@@ -83,7 +83,7 @@ public class KapuaIllegalArgumentExceptionTest extends Assert {
                         "The current subject is not authorized for " + name + ".",
                         "An illegal value was provided for the argument " + name + ": " + value + ".",
                         "An illegal null value was provided for the argument " + name + ".",
-                        "The application is in a illegal state: " + name + ".",
+                        "The application is in an illegal state: " + name + ".",
                         "The entity is out of state as it has been modified or deleted by another transaction.",
                         "No authenticated Subject found in context.",
                         "Error: " + name + ", " + value,

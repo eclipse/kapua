@@ -15,7 +15,7 @@ package org.eclipse.kapua;
 import java.util.Locale;
 
 /**
- * {@link KapuaRuntimeException}.
+ * {@link KapuaRuntimeException} definition.
  *
  * @since 1.0.0
  */

@@ -15,7 +15,9 @@ package org.eclipse.kapua;
 import java.io.Serializable;
 
 /**
- * Kapua {@link Serializable} entity. (Marker interface).
+ * Kapua {@link Serializable} entity.
+ * <p>
+ * This is a marker interface.
  *
  * @since 1.0.0
  */

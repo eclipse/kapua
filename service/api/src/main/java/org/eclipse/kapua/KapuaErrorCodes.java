@@ -16,7 +16,7 @@ package org.eclipse.kapua;
  * KapuaErrorCodes holds the enumeration of common error codes for KapuaServices.<br>
  * For each defined enum value, a corresponding message should be defined in the properties bundle named: kapua-service-error-messages.properties.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public enum KapuaErrorCodes implements KapuaErrorCode {
 
@@ -104,6 +104,11 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      */
     MAX_NUMBER_OF_ITEMS_REACHED,
 
+    /**
+     * @since 1.0.0
+     * @deprecated Since 2.0.0. This has been moved into `kapua-device-api` module
+     */
+    @Deprecated
     DEVICE_NOT_FOUND,
 
     ADMIN_ROLE_DELETED_ERROR,
@@ -112,6 +117,18 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
      * Deleting specific permission is not allowed
      */
     PERMISSION_DELETE_NOT_ALLOWED,
+
+    /**
+     * @see ResourceRestrictedToFirstLevelAccountException
+     * @since 2.0.0
+     */
+    RESOURCE_RESTRICTED_TO_FIRST_LEVEL_ACCOUNTS,
+
+    /**
+     * @see ResourceRestrictedToSysAdminAccountException
+     * @since 2.0.0
+     */
+    RESOURCE_RESTRICTED_TO_SYS_ADMIN_ACCOUNT,
 
     /**
      * The service has been disabled

@@ -33,7 +33,7 @@ public class KapuaMaxNumberOfItemsReachedExceptionTest extends Assert {
         for (String value : argValue) {
             KapuaMaxNumberOfItemsReachedException kapuaMaxNumberOfItemsReachedException = new KapuaMaxNumberOfItemsReachedException(value);
             assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.MAX_NUMBER_OF_ITEMS_REACHED, kapuaMaxNumberOfItemsReachedException.getCode());
-            assertEquals("Expected and actual values should be the same.", value, kapuaMaxNumberOfItemsReachedException.getArgValue());
+            assertEquals("Expected and actual values should be the same.", value, kapuaMaxNumberOfItemsReachedException.getEntityType());
             assertEquals("Expected and actual values should be the same.", "Max number of " + value + " reached. Please increase the number or set InfiniteChild" + value + " parameter to True.", kapuaMaxNumberOfItemsReachedException.getMessage());
             assertNull("Null expected.", kapuaMaxNumberOfItemsReachedException.getCause());
         }

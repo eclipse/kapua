@@ -184,9 +184,7 @@ public class KapuaExceptionHandler {
             return new GwtKapuaException(GwtKapuaErrorCode.EXTERNAL_ID_ALREADY_EXIST, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaDuplicateExternalUsernameException) {
             return new GwtKapuaException(GwtKapuaErrorCode.EXTERNAL_USERNAME_ALREADY_EXIST, throwable, throwable.getMessage());
-        }
-
-        else if (throwable instanceof KapuaConfigurationException && ((KapuaConfigurationException) throwable).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
+        } else if (throwable instanceof KapuaConfigurationException && ((KapuaConfigurationException) throwable).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
             return new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaEntityNotFoundException) {
             KapuaEntityNotFoundException kapuaEntityNotFoundException = (KapuaEntityNotFoundException) throwable;
@@ -237,7 +235,7 @@ public class KapuaExceptionHandler {
         //
         // Service Limits
         else if (throwable instanceof KapuaMaxNumberOfItemsReachedException) {
-            return new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, throwable, ((KapuaMaxNumberOfItemsReachedException) throwable).getArgValue());
+            return new GwtKapuaException(GwtKapuaErrorCode.MAX_NUMBER_OF_ITEMS_REACHED, throwable, ((KapuaMaxNumberOfItemsReachedException) throwable).getEntityType());
         }
 
         //

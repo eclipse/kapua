@@ -13,23 +13,37 @@
 package org.eclipse.kapua;
 
 /**
- * KapuaDuplicateExternalIdException is thrown when an operation cannot be completed because an unique externalId
- * constraint has been violated.
+ * {@link KapuaException} to {@code throw} when User.externalId exist already.
+ * <p>
+ * TODO: migrate this to `kapua-user-api` module.
  *
- * @since 1.2
- *
+ * @since 1.2.0
  */
 public class KapuaDuplicateExternalIdException extends KapuaException {
 
     private static final long serialVersionUID = -2761138212317761216L;
 
+    private final String duplicateExternalId;
+
     /**
      * Constructor for the {@link KapuaDuplicateExternalIdException} taking in the duplicated externalId.
      *
-     * @param duplicatedExternalId
+     * @param duplicatedExternalId The duplicate User.externalId
+     * @since 1.2.0
      */
     public KapuaDuplicateExternalIdException(String duplicatedExternalId) {
         super(KapuaErrorCodes.DUPLICATE_EXTERNAL_ID, duplicatedExternalId);
+
+        this.duplicateExternalId = duplicatedExternalId;
     }
 
+    /**
+     * Gets the duplicate User.externalId.
+     *
+     * @return The duplicate User.externalId
+     * @since 2.0.0
+     */
+    public String getDuplicateExternalId() {
+        return duplicateExternalId;
+    }
 }
