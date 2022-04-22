@@ -119,6 +119,18 @@ public enum KapuaErrorCodes implements KapuaErrorCode {
     PERMISSION_DELETE_NOT_ALLOWED,
 
     /**
+     * @see ResourceRestrictedToFirstLevelAccountException
+     * @since 2.0.0
+     */
+    RESOURCE_RESTRICTED_TO_FIRST_LEVEL_ACCOUNTS,
+
+    /**
+     * @see ResourceRestrictedToSysAdminAccountException
+     * @since 2.0.0
+     */
+    RESOURCE_RESTRICTED_TO_SYS_ADMIN_ACCOUNT,
+
+    /**
      * The service has been disabled
      */
     SERVICE_DISABLED

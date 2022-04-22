@@ -21,18 +21,18 @@ public class KapuaIllegalStateException extends KapuaRuntimeException {
 
     private static final long serialVersionUID = -912672615903975466L;
 
-    private final String message;
+    private final String detailMessage;
 
     /**
      * Constructor.
      *
-     * @param message The message describing the illegal state.
+     * @param detailMessage The message describing the illegal state.
      * @since 1.0.0
      */
-    public KapuaIllegalStateException(String message) {
-        super(KapuaErrorCodes.ILLEGAL_STATE, message);
+    public KapuaIllegalStateException(String detailMessage) {
+        super(KapuaErrorCodes.ILLEGAL_STATE, detailMessage);
 
-        this.message = message;
+        this.detailMessage = detailMessage;
     }
 
     /**
@@ -45,7 +45,7 @@ public class KapuaIllegalStateException extends KapuaRuntimeException {
     public KapuaIllegalStateException(Throwable cause, String message) {
         super(KapuaErrorCodes.ILLEGAL_STATE, cause, message);
 
-        this.message = message;
+        this.detailMessage = message;
     }
 
     /**
@@ -54,8 +54,7 @@ public class KapuaIllegalStateException extends KapuaRuntimeException {
      * @return The message describing the illegal state.
      * @since 2.0.0
      */
-    @Override
-    public String getMessage() {
-        return message;
+    public String getDetailMessage() {
+        return detailMessage;
     }
 }
