@@ -27,7 +27,7 @@ public class EntityPropertiesWriteExceptionTest extends Assert {
     public void entityPropertiesWriteExceptionTest() {
         Exception[] exception = {new Exception(), null};
         String[] attributes = {"Attribute", null};
-        Properties[] properties = {new Properties(),null};
+        Properties[] properties = {new Properties(), null};
 
         for (Exception ex : exception) {
             for (String attribute : attributes) {
@@ -36,7 +36,7 @@ public class EntityPropertiesWriteExceptionTest extends Assert {
 
                     assertEquals("Expected and actual values should be the same.", attribute, entityPropertiesWriteException.getAttribute());
                     assertEquals("Expected and actual values should be the same.", property, entityPropertiesWriteException.getProperties());
-                    assertEquals("Expected and actual values should be the same.", KapuaRuntimeErrorCodes.ENTITY_PROPERTIES_READ_ERROR, entityPropertiesWriteException.getCode());
+                    assertEquals("Expected and actual values should be the same.", KapuaRuntimeErrorCodes.ENTITY_PROPERTIES_WRITE_ERROR, entityPropertiesWriteException.getCode());
                     assertEquals("Expected and actual values should be the same.", ex, entityPropertiesWriteException.getCause());
                 }
             }
