@@ -16,9 +16,6 @@ import org.eclipse.kapua.KapuaException;
 
 public class ConnectionServiceException extends KapuaException{
 
-    /**
-     *
-     */
     private static final long serialVersionUID = -3657002518916941124L;
 
     public ConnectionServiceException(ConnectionServiceErrorCodes code) {

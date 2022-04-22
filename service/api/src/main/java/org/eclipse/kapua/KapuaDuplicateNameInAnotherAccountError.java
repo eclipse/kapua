@@ -12,15 +12,32 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
+/**
+ * @since 1.0.0
+ */
 public class KapuaDuplicateNameInAnotherAccountError extends KapuaException {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 6086560691695487741L;
 
+    private final String duplicateName;
+
+    /**
+     * @param duplicateName The duplicate name.
+     * @since 1.0.0
+     */
     public KapuaDuplicateNameInAnotherAccountError(String duplicateName) {
         super(KapuaErrorCodes.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, duplicateName);
+
+        this.duplicateName = duplicateName;
     }
 
+    /**
+     * Gets the duplicate name.
+     *
+     * @return The duplicate name.
+     * @since 2.0.0
+     */
+    public String getDuplicateName() {
+        return duplicateName;
+    }
 }

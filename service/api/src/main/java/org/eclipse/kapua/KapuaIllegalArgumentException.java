@@ -15,44 +15,59 @@ package org.eclipse.kapua;
 /**
  * KapuaIllegalArgumentException is thrown when the value of a method parameter is invalid.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class KapuaIllegalArgumentException extends KapuaException {
 
     private static final long serialVersionUID = -7067191169730223113L;
 
-    private String argumentName;
-    private String argumentValue;
+    private final String argumentName;
+    private final String argumentValue;
 
     /**
-     * Constructor
+     * Constructor.
+     * <p>
+     * This is {@code protected} to handle {@link KapuaIllegalArgumentException} and {@link KapuaIllegalNullArgumentException} nicely.
      *
-     * @param argName
-     * @param argValue
+     * @param code     The {@link KapuaErrorCode}.
+     * @param argumentName  The illegal argument name.
+     * @param argumentValue The illegal argument value.
+     * @since 1.0.0
      */
-    public KapuaIllegalArgumentException(String argName, String argValue) {
-        this(KapuaErrorCodes.ILLEGAL_ARGUMENT, argName, argValue);
+    protected KapuaIllegalArgumentException(KapuaErrorCodes code, String argumentName, String argumentValue) {
+        super(code, argumentName, argumentValue);
+
+        this.argumentName = argumentName;
+        this.argumentValue = argumentValue;
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param code
-     * @param argName
-     * @param argValue
+     * @param argumentName  The illegal argument name.
+     * @param argumentValue The illegal argument value.
+     * @since 1.0.0
      */
-    protected KapuaIllegalArgumentException(KapuaErrorCodes code, String argName, String argValue) {
-        super(code, argName, argValue);
-
-        this.argumentName = argName;
-        this.argumentValue = argValue;
+    public KapuaIllegalArgumentException(String argumentName, String argumentValue) {
+        this(KapuaErrorCodes.ILLEGAL_ARGUMENT, argumentName, argumentValue);
     }
 
+    /**
+     * Gest the illegal argument name.
+     *
+     * @return The illegal argument name.
+     * @since 1.0.0
+     */
     public String getArgumentName() {
         return argumentName;
     }
 
+    /**
+     * Gets the illegal argument value.
+     *
+     * @return The illegal argument value.
+     * @since 1.0.0
+     */
     public String getArgumentValue() {
         return argumentValue;
     }

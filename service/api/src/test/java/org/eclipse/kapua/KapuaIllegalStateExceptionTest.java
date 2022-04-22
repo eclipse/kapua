@@ -35,7 +35,7 @@ public class KapuaIllegalStateExceptionTest extends Assert {
         for (String msg : message) {
             KapuaIllegalStateException kapuaIllegalStateExceptionTest = new KapuaIllegalStateException(msg);
             assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ILLEGAL_STATE, kapuaIllegalStateExceptionTest.getCode());
-            assertEquals("Expected and actual values should be the same.", "The application is in a illegal state: " + msg + ".", kapuaIllegalStateExceptionTest.getMessage());
+            assertEquals("Expected and actual values should be the same.", "The application is in an illegal state: " + msg + ".", kapuaIllegalStateExceptionTest.getMessage());
             assertNull("Null expected.", kapuaIllegalStateExceptionTest.getCause());
         }
     }
@@ -44,9 +44,9 @@ public class KapuaIllegalStateExceptionTest extends Assert {
     public void kapuaIllegalStateExceptionStringThrowableParametersTest() {
         for (String msg : message) {
             for (Throwable throwable : throwables) {
-                KapuaIllegalStateException kapuaIllegalStateExceptionTest = new KapuaIllegalStateException(msg, throwable);
+                KapuaIllegalStateException kapuaIllegalStateExceptionTest = new KapuaIllegalStateException(throwable, msg);
                 assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ILLEGAL_STATE, kapuaIllegalStateExceptionTest.getCode());
-                assertEquals("Expected and actual values should be the same.", "The application is in a illegal state: " + msg + ".", kapuaIllegalStateExceptionTest.getMessage());
+                assertEquals("Expected and actual values should be the same.", "The application is in an illegal state: " + msg + ".", kapuaIllegalStateExceptionTest.getMessage());
                 assertEquals("Expected and actual values should be the same.", throwable, kapuaIllegalStateExceptionTest.getCause());
             }
         }
@@ -63,7 +63,7 @@ public class KapuaIllegalStateExceptionTest extends Assert {
     public void throwingExceptionStringThrowableParametersTest() throws KapuaIllegalStateException {
         for (String msg : message) {
             for (Throwable throwable : throwables) {
-                throw new KapuaIllegalStateException(msg, throwable);
+                throw new KapuaIllegalStateException(throwable, msg);
             }
         }
     }

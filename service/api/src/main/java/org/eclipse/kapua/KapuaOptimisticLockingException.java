@@ -15,21 +15,21 @@ package org.eclipse.kapua;
 /**
  * KapuaOptimisticLockingException is thrown when an update operation cannot
  * be completed because performed on an entity instance which has been outdated
- * by a earlier modification.
+ * by an earlier modification.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class KapuaOptimisticLockingException extends KapuaException {
 
     private static final long serialVersionUID = -4694476988566169899L;
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param e
+     * @param cause The original {@link Exception} that caused this exception.
+     * @since 1.0.0
      */
-    public KapuaOptimisticLockingException(Exception e) {
-        super(KapuaErrorCodes.OPTIMISTIC_LOCKING, e);
+    public KapuaOptimisticLockingException(Exception cause) {
+        super(KapuaErrorCodes.OPTIMISTIC_LOCKING, cause);
     }
 }

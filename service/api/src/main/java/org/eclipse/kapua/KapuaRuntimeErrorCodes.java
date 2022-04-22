@@ -18,7 +18,7 @@ import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import java.util.Properties;
 
 /**
- * Kapua runtime error codes
+ * {@link KapuaErrorCode}s for {@link KapuaRuntimeException}.
  *
  * @since 1.0.0
  */
