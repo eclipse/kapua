@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * {@link KapuaEntityUniquenessException} is thrown when an operation cannot be completed because an unique constraint has been violated.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class KapuaEntityUniquenessException extends KapuaException {
 
@@ -32,6 +32,7 @@ public class KapuaEntityUniquenessException extends KapuaException {
      *
      * @param entityType         The {@link KapuaEntity#getType()}
      * @param uniquesFieldValues The field value pairs that breaks a unique constraint.
+     * @since 1.0.0
      */
     public KapuaEntityUniquenessException(String entityType, List<Map.Entry<String, Object>> uniquesFieldValues) {
         super(KapuaErrorCodes.ENTITY_UNIQUENESS, uniquesFieldValues);
@@ -40,10 +41,22 @@ public class KapuaEntityUniquenessException extends KapuaException {
         this.uniquesFieldValues = uniquesFieldValues;
     }
 
+    /**
+     * Gets the {@link KapuaEntity#getType()}
+     *
+     * @return The {@link KapuaEntity#getType()}
+     * @since 1.0.0
+     */
     public String getEntityType() {
         return entityType;
     }
 
+    /**
+     * Gets the field value pairs that breaks a unique constraint.
+     *
+     * @return The field value pairs that breaks a unique constraint.
+     * @since 1.0.0
+     */
     public List<Map.Entry<String, Object>> getUniquesFieldValues() {
         return uniquesFieldValues;
     }

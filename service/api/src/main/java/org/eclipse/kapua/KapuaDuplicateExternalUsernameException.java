@@ -13,20 +13,37 @@
 package org.eclipse.kapua;
 
 /**
+ * {@link KapuaException} to {@code throw} when User.externalUsername exist already.
+ * <p>
+ * TODO: migrate this to `kapua-user-api` module.
+ *
  * @since 2.0.0
  */
 public class KapuaDuplicateExternalUsernameException extends KapuaException {
 
     private static final long serialVersionUID = -2761138212317761216L;
 
+    private final String duplicatedExternalUsername;
+
     /**
-     * Constructor for the {@link KapuaDuplicateExternalUsernameException} taking in the duplicated external username.
+     * Constructor.
      *
-     * @param duplicatedExternalUsername
+     * @param duplicatedExternalUsername The duplicated User.externalUsername.
      * @since 2.0.0
      */
     public KapuaDuplicateExternalUsernameException(String duplicatedExternalUsername) {
         super(KapuaErrorCodes.DUPLICATE_EXTERNAL_USERNAME, duplicatedExternalUsername);
+
+        this.duplicatedExternalUsername = duplicatedExternalUsername;
     }
 
+    /**
+     * Gets the duplicated User.externalUsername.
+     *
+     * @return The duplicated User.externalUsername.
+     * @since 2.0.0
+     */
+    public String getDuplicatedExternalUsername() {
+        return duplicatedExternalUsername;
+    }
 }

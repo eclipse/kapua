@@ -12,6 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
+/**
+ * @since 1.1.0
+ * @deprecated Since 2.0.0. This exception is not used but in tests.
+ */
+@Deprecated
 public class KapuaExceptionWithoutBundle extends KapuaException {
     public KapuaExceptionWithoutBundle(KapuaErrorCode code) {
         super(code);

@@ -26,10 +26,25 @@ public class KapuaEntityCloneException extends KapuaRuntimeException {
     private final String entityType;
     private final KapuaEntity entity;
 
+    /**
+     * Constructor.
+     *
+     * @param entityType The source {@link KapuaEntity#getType()}
+     * @param entity     The source {@link KapuaEntity}.
+     * @since 1.1.0
+     */
     public KapuaEntityCloneException(String entityType, KapuaEntity entity) {
         this(null, entityType, entity);
     }
 
+    /**
+     * Constructor.
+     *
+     * @param entityType The source {@link KapuaEntity#getType()}
+     * @param entity     The source {@link KapuaEntity}.
+     * @param t          The original {@link Throwable} that caused this exception.
+     * @since 1.1.0
+     */
     public KapuaEntityCloneException(Throwable t, String entityType, KapuaEntity entity) {
         super(KapuaRuntimeErrorCodes.ENTITY_CLONE_ERROR, t, entityType, entity);
 

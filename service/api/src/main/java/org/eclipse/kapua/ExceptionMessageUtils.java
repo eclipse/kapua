@@ -32,8 +32,19 @@ public class ExceptionMessageUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(ExceptionMessageUtils.class);
 
+    /**
+     * Format to be used when there is no matching error message created for the given {@link KapuaErrorCode},
+     * or the matching message is not formatted correctly
+     *
+     * @since 1.1.0
+     */
     private static final String KAPUA_GENERIC_MESSAGE = "Error: {0}";
 
+    /**
+     * Constructor.
+     *
+     * @since 1.0.0
+     */
     private ExceptionMessageUtils() {
     }
 

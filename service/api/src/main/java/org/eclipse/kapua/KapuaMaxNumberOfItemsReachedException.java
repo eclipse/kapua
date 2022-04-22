@@ -12,18 +12,36 @@
  *******************************************************************************/
 package org.eclipse.kapua;
 
+import org.eclipse.kapua.model.KapuaEntity;
+
+/**
+ * @since 1.0.0
+ */
 public class KapuaMaxNumberOfItemsReachedException extends KapuaException {
 
     private static final long serialVersionUID = 8651132350411186861L;
-    private String argValue;
 
+    private final String entityType;
 
-    public KapuaMaxNumberOfItemsReachedException(String argValue) {
-        super(KapuaErrorCodes.MAX_NUMBER_OF_ITEMS_REACHED, argValue);
-        this.argValue = argValue;
+    /**
+     * Constructor.
+     *
+     * @param entityType The {@link KapuaEntity#getType()} that has reached the maximum number allowed.
+     * @since 1.0.0
+     */
+    public KapuaMaxNumberOfItemsReachedException(String entityType) {
+        super(KapuaErrorCodes.MAX_NUMBER_OF_ITEMS_REACHED, entityType);
+
+        this.entityType = entityType;
     }
 
-    public String getArgValue(){
-        return argValue;
+    /**
+     * Gets the {@link KapuaEntity#getType()} that has reached the maximum number allowed.
+     *
+     * @return The {@link KapuaEntity#getType()} that has reached the maximum number allowed.
+     * @since 1.0.0
+     */
+    public String getEntityType() {
+        return entityType;
     }
 }

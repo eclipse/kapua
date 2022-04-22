@@ -15,19 +15,33 @@ package org.eclipse.kapua;
 /**
  * KapuaIllegalAccessException is thrown when an access check does not pass.
  *
- * @since 1.0
- *
+ * @since 1.0.0
  */
 public class KapuaIllegalAccessException extends KapuaException {
 
     private static final long serialVersionUID = 7415560563036738488L;
 
+    private final String operationName;
+
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param operationName
+     * @param operationName The illegal operation name.
+     * @since 1.0.0
      */
     public KapuaIllegalAccessException(String operationName) {
         super(KapuaErrorCodes.ILLEGAL_ACCESS, operationName);
+
+        this.operationName = operationName;
+    }
+
+    /**
+     * Gets the illegal operation name.
+     *
+     * @return The illegal operation name.
+     * @since 1.0.0
+     */
+    public String getOperationName() {
+        return operationName;
     }
 }

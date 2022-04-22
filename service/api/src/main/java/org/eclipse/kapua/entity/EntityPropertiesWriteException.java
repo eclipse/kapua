@@ -17,13 +17,16 @@ import org.eclipse.kapua.KapuaRuntimeException;
 
 import java.util.Properties;
 
+/**
+ * @since 1.1.0
+ */
 public class EntityPropertiesWriteException extends KapuaRuntimeException {
 
     private final String attribute;
     private final Properties properties;
 
     public EntityPropertiesWriteException(Exception e, String attribute, Properties properties) {
-        super(KapuaRuntimeErrorCodes.ENTITY_PROPERTIES_READ_ERROR, e, attribute, properties);
+        super(KapuaRuntimeErrorCodes.ENTITY_PROPERTIES_WRITE_ERROR, e, attribute, properties);
 
         this.attribute = attribute;
         this.properties = properties;
