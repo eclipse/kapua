@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.crypto;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.commons.crypto.exception.AesDecodingException;
 import org.eclipse.kapua.commons.crypto.exception.AesEncodingException;
 import org.eclipse.kapua.commons.crypto.exception.AlgorihmNotAvailableRuntimeException;
@@ -47,6 +48,7 @@ public class CryptoUtil {
     private static final CryptoSettings CRYPTO_SETTINGS = CryptoSettings.getInstance();
 
     private static final String SECRET_KEY = CRYPTO_SETTINGS.getString(CryptoSettingKeys.CRYPTO_SECRET_KEY);
+    private static final String SECRET_KEY_LEGACY = CRYPTO_SETTINGS.getString(CryptoSettingKeys.CIPHER_KEY);
     private static final Boolean SECRET_KEY_ENFORCE = CRYPTO_SETTINGS.getBoolean(CryptoSettingKeys.CRYPTO_SECRET_ENFORCE_CHANGE);
 
     private static final String AES_ALGORITHM = "AES";
@@ -57,11 +59,19 @@ public class CryptoUtil {
     private static final Map<String, Cipher> ALTERNATIVES_AES_CIPHERS_ENCRIPT = new HashMap<>();
 
     static {
-        if ("changeMePlease!!".equals(SECRET_KEY) && SECRET_KEY_ENFORCE) {
-            throw new DefaultSecretKeyDetectedRuntimeException(SECRET_KEY);
+        String defaultSecretKey = SECRET_KEY_LEGACY;
+
+        if (Strings.isNullOrEmpty(defaultSecretKey)) {
+            defaultSecretKey =  SECRET_KEY;
         }
 
-        Key aesKey = new SecretKeySpec(SECRET_KEY.getBytes(), AES_ALGORITHM);
+        if (("changeMePlease!!".equals(defaultSecretKey) ||
+                "Y3h14xr2!fEDp_@1".equals(defaultSecretKey)) &&
+                SECRET_KEY_ENFORCE) {
+            throw new DefaultSecretKeyDetectedRuntimeException(defaultSecretKey);
+        }
+
+        Key aesKey = new SecretKeySpec(defaultSecretKey.getBytes(), AES_ALGORITHM);
 
         try {
             DEFAULT_AES_CIPHER_DECRYPT = Cipher.getInstance(AES_ALGORITHM);
@@ -72,7 +82,7 @@ public class CryptoUtil {
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             throw new AlgorihmNotAvailableRuntimeException(e, AES_ALGORITHM);
         } catch (InvalidKeyException e) {
-            throw new InvalidSecretKeyRuntimeException(e, AES_ALGORITHM, SECRET_KEY);
+            throw new InvalidSecretKeyRuntimeException(e, AES_ALGORITHM, defaultSecretKey);
         }
     }
 
