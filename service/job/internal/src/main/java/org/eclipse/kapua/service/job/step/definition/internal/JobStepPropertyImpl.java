@@ -12,10 +12,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.job.step.definition.internal;
 
+import org.eclipse.kapua.commons.jpa.SecretAttributeConverter;
 import org.eclipse.kapua.service.job.step.definition.JobStepProperty;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -31,6 +33,7 @@ public class JobStepPropertyImpl implements JobStepProperty {
 
     @Basic
     @Column(name = "property_value", nullable = false, updatable = false)
+    @Convert(converter = SecretAttributeConverter.class)
     private String propertyValue;
 
     @Basic
