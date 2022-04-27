@@ -125,8 +125,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
         KapuaLocator locator = KapuaLocator.getInstance();
         AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
         PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write,
-                mfaOptionCreator.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.write, mfaOptionCreator.getScopeId()));
 
         //
         // Check that the operation is carried by the user itself
@@ -340,7 +339,7 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
         // This allows the use only of a single trusted machine,
         // until a solution with different trust keys is implemented!
         String trustKey = generateTrustKey();
-        mfaOption.setTrustKey(cryptTrustKey(trustKey));
+        mfaOption.setTrustKey(AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, trustKey));
 
         Date expirationDate = new Date(System.currentTimeMillis());
         expirationDate = DateUtils.addDays(expirationDate, TRUST_KEY_DURATION);
@@ -434,17 +433,5 @@ public class MfaOptionServiceImpl extends AbstractKapuaService implements MfaOpt
         g.drawImage(qrCodeImage, 0, 0, new Color(232, 232, 232, 255), null);
 
         return resultImage;
-    }
-
-    /**
-     * Encrypts the trust key.
-     *
-     * @param plainTrustKey the trust key in plain text
-     * @return the encrypted trust key
-     * @throws KapuaException if the cryptCredential method throws a {@link KapuaException}
-     * @since 1.4.0
-     */
-    private static String cryptTrustKey(String plainTrustKey) throws KapuaException {
-        return AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, plainTrustKey);
     }
 }

@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.SecretAttributeConverter;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -23,6 +24,7 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -35,13 +37,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * {@link MfaOption} implementation.
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @Entity(name = "MfaOption")
 @Table(name = "atht_mfa_option")
-/**
- * {@link MfaOption} implementation.
- */
 public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOption {
 
     private static final long serialVersionUID = -1872939877726584407L;
@@ -54,6 +56,7 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
 
     @Basic
     @Column(name = "mfa_secret_key", nullable = false)
+    @Convert(converter = SecretAttributeConverter.class)
     private String mfaSecretKey;
 
     @Basic
@@ -92,9 +95,13 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
      * @param scopeId      The scope {@link KapuaId} to set into the {@link MfaOption}.
      * @param userId       user identifier
      * @param mfaSecretKey The secret key to set into the {@link MfaOption}.
+     * @since 1.3.0
+     * @deprecated Since 2.0.0. Please make use of  {@link #MfaOptionImpl()} and its setters.
      */
+    @Deprecated
     public MfaOptionImpl(KapuaId scopeId, KapuaId userId, String mfaSecretKey) {
         super(scopeId);
+
         this.userId = KapuaEid.parseKapuaId(userId);
         this.mfaSecretKey = mfaSecretKey;
     }

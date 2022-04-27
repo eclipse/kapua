@@ -41,11 +41,11 @@ public class ScratchCodeDAO extends ServiceDAO {
 
         //
         // Crypto code (it's ok to do than if BCrypt is used when checking a provided scratch code against the stored one)
-        String cryptedCode = crypt(scratchCodeCreator.getCode());
+        String encryptedCode = AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, scratchCodeCreator.getCode());
 
         //
         // Create code
-        ScratchCodeImpl codeImpl = new ScratchCodeImpl(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId(), cryptedCode);
+        ScratchCodeImpl codeImpl = new ScratchCodeImpl(scratchCodeCreator.getScopeId(), scratchCodeCreator.getMfaOptionId(), encryptedCode);
         //
         // Do create
         return ServiceDAO.create(em, codeImpl);
@@ -111,13 +111,5 @@ public class ScratchCodeDAO extends ServiceDAO {
      */
     public static ScratchCode delete(EntityManager em, KapuaId scopeId, KapuaId scratchCodeId) throws KapuaEntityNotFoundException {
         return ServiceDAO.delete(em, ScratchCodeImpl.class, scopeId, scratchCodeId);
-    }
-
-    //
-    // Private methods
-
-    //
-    private static String crypt(String scratchCodePlainCode) throws KapuaException {
-        return AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, scratchCodePlainCode);
     }
 }
