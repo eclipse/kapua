@@ -20,7 +20,6 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
-import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -31,7 +30,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * An {@link MfaAuthenticator} implementation that wraps secret code generation and authentication methods.
- *
  */
 public class MfaAuthenticatorImpl implements MfaAuthenticator {
 
@@ -73,13 +71,10 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
     }
 
     @Override
-    public boolean authorize(String encryptedSecret, int verificationCode) {
-        boolean isCodeValid;
-        String secret = AuthenticationUtils.decryptAes(encryptedSecret);
-
+    public boolean authorize(String mfaSecretKey, int verificationCode) {
         GoogleAuthenticator ga = new GoogleAuthenticator(GOOGLE_AUTHENTICATOR_CONFIG);
-        isCodeValid = ga.authorize(secret, verificationCode);
-        return isCodeValid;
+
+        return ga.authorize(mfaSecretKey, verificationCode);
     }
 
     @Override

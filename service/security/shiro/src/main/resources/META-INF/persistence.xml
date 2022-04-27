@@ -27,6 +27,7 @@
         <class>org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeImpl</class>
 
         <!-- Base classes and External classes -->
+        <class>org.eclipse.kapua.commons.jpa.SecretAttributeConverter</class>
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
@@ -63,6 +64,7 @@
         <class>org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl</class>
 
         <!-- Base classes and External classes -->
+        <class>org.eclipse.kapua.commons.jpa.SecretAttributeConverter</class>
         <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
         <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>

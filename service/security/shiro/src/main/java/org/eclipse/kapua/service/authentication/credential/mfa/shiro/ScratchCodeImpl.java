@@ -29,13 +29,13 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * {@link ScratchCode} implementation.
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @Entity(name = "ScratchCode")
 @Table(name = "atht_scratch_code")
-/**
- * {@link ScratchCode} implementation.
- */
 public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements ScratchCode {
 
     private static final long serialVersionUID = -2785931432917205759L;
@@ -52,6 +52,8 @@ public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements Scr
 
     /**
      * Constructor.
+     *
+     * @since 1.3.0
      */
     public ScratchCodeImpl() {
         super();
@@ -60,7 +62,8 @@ public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements Scr
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link ScratchCode}.
+     * @param scopeId The {@link ScratchCode#getScopeId()}.
+     * @since 1.3.0
      */
     public ScratchCodeImpl(KapuaId scopeId) {
         super(scopeId);
@@ -84,8 +87,9 @@ public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements Scr
      * @param scratchCode
      * @throws KapuaException
      */
-    public ScratchCodeImpl(ScratchCode scratchCode) throws KapuaException {
+    public ScratchCodeImpl(ScratchCode scratchCode) {
         super(scratchCode);
+
         setCode(scratchCode.getCode());
         setMfaOptionId(scratchCode.getMfaOptionId());
     }

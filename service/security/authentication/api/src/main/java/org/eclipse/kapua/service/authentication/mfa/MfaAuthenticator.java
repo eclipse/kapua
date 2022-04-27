@@ -27,11 +27,11 @@ public interface MfaAuthenticator {
     /**
      * Validates a code generated with the authenticator app
      *
-     * @param encryptedSecret  the encoded secret key
+     * @param mfaSecretKey  the MFA secret key
      * @param verificationCode the verification code
      * @return true if the verficationCode is valid, false otherwise
      */
-    boolean authorize(String encryptedSecret, int verificationCode);
+    boolean authorize(String mfaSecretKey, int verificationCode);
 
     /**
      * Validates a scratch code
