@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
+import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.Assert;
 import org.junit.Test;
