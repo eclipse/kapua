@@ -15,11 +15,11 @@ package org.eclipse.kapua.commons.crypto.exception;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
 
 /**
- * {@link CryptoException} to {@code throw} when {@link CryptoUtil#encodeAes(String)} errors.
+ * {@link CryptoException} to {@code throw} when {@link CryptoUtil#decryptAes(String)} errors.
  *
  * @since 2.0.0
  */
-public class AesEncodingException extends CryptoException {
+public class AesDecryptionException extends CryptoException {
 
     /**
      * Constructor.
@@ -27,7 +27,7 @@ public class AesEncodingException extends CryptoException {
      * @param cause The original cause of the error.
      * @since 2.0.0
      */
-    public AesEncodingException(Throwable cause) {
-        super(CryptoErrorCodes.AES_ENCODE_ERROR, cause);
+    public AesDecryptionException(Throwable cause) {
+        super(CryptoErrorCodes.AES_DECODE_ERROR, cause);
     }
 }
