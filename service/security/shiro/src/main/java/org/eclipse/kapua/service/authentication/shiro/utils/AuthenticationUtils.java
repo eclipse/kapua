@@ -138,7 +138,7 @@ public class AuthenticationUtils {
      *
      * @param value the string to encrypt
      * @return the encrypted string
-     * @deprecated Since 2.0.0. Please make use of {@link CryptoUtil#encodeAes(String)}.
+     * @deprecated Since 2.0.0. Please make use of {@link CryptoUtil#encryptAes(String)}.
      */
     @Deprecated
     public static String encryptAes(String value) {
@@ -160,7 +160,7 @@ public class AuthenticationUtils {
      *
      * @param encryptedValue the string to decrypt
      * @return the decrypted string
-     * @deprecated Since 2.0.0. Please make use of {@link CryptoUtil#decodeAes(String)}.
+     * @deprecated Since 2.0.0. Please make use of {@link CryptoUtil#decryptAes(String)}.
      */
     @Deprecated
     public static String decryptAes(String encryptedValue) {

@@ -14,8 +14,8 @@
 package org.eclipse.kapua.commons.crypto;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.commons.crypto.exception.AesDecodingException;
-import org.eclipse.kapua.commons.crypto.exception.AesEncodingException;
+import org.eclipse.kapua.commons.crypto.exception.AesDecryptionException;
+import org.eclipse.kapua.commons.crypto.exception.AesEncryptionException;
 import org.eclipse.kapua.commons.crypto.exception.AlgorihmNotAvailableRuntimeException;
 import org.eclipse.kapua.commons.crypto.exception.DefaultSecretKeyDetectedRuntimeException;
 import org.eclipse.kapua.commons.crypto.exception.InvalidSecretKeyRuntimeException;
@@ -55,14 +55,14 @@ public class CryptoUtil {
     private static final Cipher DEFAULT_AES_CIPHER_DECRYPT;
     private static final Cipher DEFAULT_AES_CIPHER_ENCRYPT;
 
-    private static final Map<String, Cipher> ALTERNATIVES_AES_CIPHERS_DECRIPT = new HashMap<>();
-    private static final Map<String, Cipher> ALTERNATIVES_AES_CIPHERS_ENCRIPT = new HashMap<>();
+    private static final Map<String, Cipher> ALTERNATIVES_AES_CIPHERS_DECRYPT = new HashMap<>();
+    private static final Map<String, Cipher> ALTERNATIVES_AES_CIPHERS_ENCRYPT = new HashMap<>();
 
     static {
         String defaultSecretKey = SECRET_KEY_LEGACY;
 
         if (Strings.isNullOrEmpty(defaultSecretKey)) {
-            defaultSecretKey =  SECRET_KEY;
+            defaultSecretKey = SECRET_KEY;
         }
 
         if (("changeMePlease!!".equals(defaultSecretKey) ||
@@ -118,61 +118,61 @@ public class CryptoUtil {
     //
 
     /**
-     * Decodes an AES-encoded value. It uses {@link CryptoSettingKeys#CRYPTO_SECRET_KEY} to decode the value.
+     * Decrypts an AES-encrypted value. It uses {@link CryptoSettingKeys#CRYPTO_SECRET_KEY} to decrypt the value.
      *
-     * @param value The value to decode.
-     * @return The decoded value.
-     * @throws AesDecodingException When an error occurs when decoding.
-     * @see #decodeAes(String, Cipher)
+     * @param value The value to decrypt.
+     * @return The decrypted value.
+     * @throws AesDecryptionException When an error occurs when decrypting.
+     * @see #decryptAes(String, Cipher)
      * @since 2.0.0
      */
-    public static String decodeAes(@NotNull String value) throws AesDecodingException {
-        return decodeAes(value, DEFAULT_AES_CIPHER_DECRYPT);
+    public static String decryptAes(@NotNull String value) throws AesDecryptionException {
+        return decryptAes(value, DEFAULT_AES_CIPHER_DECRYPT);
     }
 
     /**
-     * Decodes an AES-encoded value. It uses {@link CryptoSettingKeys#CRYPTO_SECRET_KEY} to decode the value.
+     * Decrpts an AES-encrypted value. It uses {@link CryptoSettingKeys#CRYPTO_SECRET_KEY} to decrypt the value.
      *
-     * @param value                The value to decode.
+     * @param value                The value to decrypt.
      * @param alternativeSecretKey An externally provided secret key.
-     * @return The decoded value.
-     * @throws AesDecodingException When an error occurs when decoding.
-     * @see #decodeAes(String, Cipher)
+     * @return The decrypted value.
+     * @throws AesDecryptionException When an error occurs when decrypting.
+     * @see #decryptAes(String, Cipher)
      * @since 2.0.0
      */
-    public static String decodeAes(@NotNull String value, @NotNull String alternativeSecretKey) throws AesDecodingException {
+    public static String decryptAes(@NotNull String value, @NotNull String alternativeSecretKey) throws AesDecryptionException {
         Cipher decryptCipher = getDecryptCipherForKey(alternativeSecretKey);
 
-        return decodeAes(value, decryptCipher);
+        return decryptAes(value, decryptCipher);
     }
 
     /**
-     * Encodes a value. It uses {@link CryptoSettingKeys#CRYPTO_SECRET_KEY} to encode the value.
+     * Encrypts a value. It uses {@link CryptoSettingKeys#CRYPTO_SECRET_KEY} to encrypt the value.
      *
-     * @param value The value to encode.
-     * @return The encoded value.
-     * @throws AesEncodingException When an error occurs when encoding.
+     * @param value The value to encrypt.
+     * @return The encrypted value.
+     * @throws AesEncryptionException When an error occurs when encrypting.
      * @see Cipher#doFinal()
      * @since 2.0.0
      */
-    public static String encodeAes(@NotNull String value) throws AesEncodingException {
-        return encodeAes(value, DEFAULT_AES_CIPHER_ENCRYPT);
+    public static String encryptAes(@NotNull String value) throws AesEncryptionException {
+        return encryptAes(value, DEFAULT_AES_CIPHER_ENCRYPT);
     }
 
     /**
-     * Encodes a value. It uses {@link CryptoSettingKeys#CRYPTO_SECRET_KEY} to encode the value.
+     * Encrypts a value. It uses {@link CryptoSettingKeys#CRYPTO_SECRET_KEY} to encrypt the value.
      *
-     * @param value                The value to encode.
+     * @param value                The value to encrypt.
      * @param alternativeSecretKey An externally provided secret key.
-     * @return The encoded value.
-     * @throws AesEncodingException When an error occurs when encoding.
+     * @return The encrypted value.
+     * @throws AesEncryptionException When an error occurs when encrypting.
      * @see Cipher#doFinal()
      * @since 2.0.0
      */
-    public static String encodeAes(@NotNull String value, @NotNull String alternativeSecretKey) throws AesEncodingException {
+    public static String encryptAes(@NotNull String value, @NotNull String alternativeSecretKey) throws AesEncryptionException {
         Cipher encryptCipher = getEncryptCipherForKey(alternativeSecretKey);
 
-        return encodeAes(value, encryptCipher);
+        return encryptAes(value, encryptCipher);
     }
 
 
@@ -209,38 +209,38 @@ public class CryptoUtil {
     //
 
     /**
-     * Decodes an AES-encoded value using the given {@link Cipher}
+     * Decrypts an AES-encrypted value using the given {@link Cipher}
      *
-     * @param value         The value to decode.
+     * @param value         The value to decrypt.
      * @param decryptCipher The {@link Cipher} to use to decrypt.
-     * @return The decoded value.
-     * @throws AesDecodingException When an error occurs when decoding.
+     * @return The decrypted value.
+     * @throws AesDecryptionException When an error occurs when decrypting.
      * @see Cipher#doFinal(byte[])
      * @since 2.0.0
      */
-    private static String decodeAes(@NotNull String value, @NotNull Cipher decryptCipher) throws AesDecodingException {
+    private static String decryptAes(@NotNull String value, @NotNull Cipher decryptCipher) throws AesDecryptionException {
         try {
             return new String(decryptCipher.doFinal(DatatypeConverter.parseBase64Binary(value)), StandardCharsets.UTF_8);
         } catch (IllegalBlockSizeException | BadPaddingException e) {
-            throw new AesDecodingException(e);
+            throw new AesDecryptionException(e);
         }
     }
 
     /**
-     * Encodes a value. It uses {@link CryptoSettingKeys#CRYPTO_SECRET_KEY} to encode the value.
+     * Encrypts a value. It uses {@link CryptoSettingKeys#CRYPTO_SECRET_KEY} to encrypt the value.
      *
-     * @param value         The value to encode.
+     * @param value         The value to encrypt.
      * @param encryptCipher The {@link Cipher} to use to encrypt.
-     * @return The encoded value.
-     * @throws AesEncodingException When an error occurs when encoding.
+     * @return The encrypted value.
+     * @throws AesEncryptionException When an error occurs when encrypting.
      * @see Cipher#doFinal()
      * @since 2.0.0
      */
-    private static String encodeAes(@NotNull String value, @NotNull Cipher encryptCipher) throws AesEncodingException {
+    private static String encryptAes(@NotNull String value, @NotNull Cipher encryptCipher) throws AesEncryptionException {
         try {
             return DatatypeConverter.printBase64Binary(encryptCipher.doFinal(value.getBytes(StandardCharsets.UTF_8)));
         } catch (IllegalBlockSizeException | BadPaddingException e) {
-            throw new AesEncodingException(e);
+            throw new AesEncryptionException(e);
         }
     }
 
@@ -254,7 +254,7 @@ public class CryptoUtil {
      * @since 2.0.0
      */
     private static synchronized Cipher getDecryptCipherForKey(String alternativeSecretKey) {
-        return ALTERNATIVES_AES_CIPHERS_DECRIPT.computeIfAbsent(alternativeSecretKey, secretKey -> {
+        return ALTERNATIVES_AES_CIPHERS_DECRYPT.computeIfAbsent(alternativeSecretKey, secretKey -> {
             try {
                 Key key = new SecretKeySpec(secretKey.getBytes(), AES_ALGORITHM);
 
@@ -280,7 +280,7 @@ public class CryptoUtil {
      * @since 2.0.0
      */
     private static synchronized Cipher getEncryptCipherForKey(String alternativeSecretKey) {
-        return ALTERNATIVES_AES_CIPHERS_ENCRIPT.computeIfAbsent(alternativeSecretKey, secretKey -> {
+        return ALTERNATIVES_AES_CIPHERS_ENCRYPT.computeIfAbsent(alternativeSecretKey, secretKey -> {
             try {
                 Key key = new SecretKeySpec(secretKey.getBytes(), AES_ALGORITHM);
 

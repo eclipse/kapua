@@ -22,13 +22,13 @@ import org.eclipse.kapua.KapuaErrorCode;
 public enum CryptoErrorCodes implements KapuaErrorCode {
 
     /**
-     * @see AesDecodingException
+     * @see AesDecryptionException
      * @since 2.0.0
      */
     AES_DECODE_ERROR,
 
     /**
-     * @see AesEncodingException
+     * @see AesEncryptionException
      * @since 2.0.0
      */
     AES_ENCODE_ERROR,
