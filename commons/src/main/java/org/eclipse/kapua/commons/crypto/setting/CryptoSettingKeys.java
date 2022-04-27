@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.crypto.setting;
 
+import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.commons.setting.SettingKey;
 
 /**
@@ -27,6 +28,18 @@ public enum CryptoSettingKeys implements SettingKey {
      * @since 2.0.0
      */
     CRYPTO_SECRET_KEY("crypto.secret.key"),
+
+    /**
+     * This is the old {@link SettingKey} which was used in org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils class
+     * to encrypt and decrypt MfaOption.secretKey attribute.
+     *
+     * This has been ported here to be able to deprecate that class and use the {@link CryptoUtil} class.
+     *
+     * @since 2.0.0
+     * @deprecated Since 2.0.0. This is kept for backward compatibility. Please start make use of {@link #CRYPTO_SECRET_KEY}
+     */
+    @Deprecated
+    CIPHER_KEY("cipher.key"),
 
     /**
      * Whether to enforce the changing of the {@link #CRYPTO_SECRET_KEY}.
