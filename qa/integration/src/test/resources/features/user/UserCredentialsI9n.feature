@@ -47,7 +47,7 @@ Scenario: Init Security Context for all scenarios
     And A generic user
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-    And I expect the exception "KapuaIllegalArgumentException" with the text "*"
+    And I expect the exception "PasswordLengthException" with the text "Password length must be between 12 and 255 characters long (inclusive)"
     Then I add credentials
       | name    | password    | enabled |
       | kapua-a | Password12@ | true    |

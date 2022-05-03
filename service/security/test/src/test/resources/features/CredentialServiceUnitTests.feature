@@ -22,7 +22,7 @@ Feature: Credentials
 
   Scenario: Creating a new PASSWORD Credential not meeting the standard length requirement
   Create a new Credential of type PASSWORD that does NOT meet the default string length requirements
-    Given I expect the exception "KapuaPasswordTooShortException"
+    And I expect the exception "PasswordLengthException" with the text "Password length must be between 15 and 255 characters long (inclusive)"
     When I create a new PASSWORD credential for the default user with password "badPass"
     Then An exception was thrown
 
@@ -73,6 +73,6 @@ Feature: Credentials
       | integer | lockoutPolicy.resetAfter   | 3600  |
       | integer | lockoutPolicy.lockDuration | 10800 |
       | integer | password.minLength         | 15    |
-    And I expect the exception "KapuaPasswordTooShortException"
+    And I expect the exception "PasswordLengthException" with the text "Password length must be between 15 and 255 characters long (inclusive)"
     When I create a new PASSWORD credential for the default user with password "Welcome12345!"
     Then An exception was thrown

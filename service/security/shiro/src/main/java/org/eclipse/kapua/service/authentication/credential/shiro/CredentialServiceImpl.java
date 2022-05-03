@@ -44,9 +44,8 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.credential.KapuaExistingCredentialException;
-import org.eclipse.kapua.service.authentication.credential.KapuaPasswordTooLongException;
-import org.eclipse.kapua.service.authentication.credential.KapuaPasswordTooShortException;
+import org.eclipse.kapua.service.authentication.exception.DuplicatedPasswordCredentialException;
+import org.eclipse.kapua.service.authentication.exception.PasswordLengthException;
 import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -114,17 +113,15 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             CredentialListResult existingCredentials = findByUserId(credentialCreator.getScopeId(), credentialCreator.getUserId());
             for (Credential credential : existingCredentials.getItems()) {
                 if (credential.getCredentialType().equals(CredentialType.PASSWORD)) {
-                    throw new KapuaExistingCredentialException(CredentialType.PASSWORD);
+                    throw new DuplicatedPasswordCredentialException();
                 }
             }
 
             // Validate Password length
             int minPasswordLength = getMinimumPasswordLength(credentialCreator.getScopeId());
-            if (credentialCreator.getCredentialPlainKey().length() < minPasswordLength) {
-                throw new KapuaPasswordTooShortException(minPasswordLength);
-            }
-            if (credentialCreator.getCredentialPlainKey().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
-                throw new KapuaPasswordTooLongException(SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+            if (credentialCreator.getCredentialPlainKey().length() < minPasswordLength ||
+                    credentialCreator.getCredentialPlainKey().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+                throw new PasswordLengthException(minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
             }
 
             //
@@ -220,19 +217,17 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         ArgumentValidator.notEmptyOrNull(credential.getCredentialKey(), "credential.credentialKey");
 
         if (CredentialType.PASSWORD == credential.getCredentialType()) {
+            //
             // Validate Password length
             int minPasswordLength = getMinimumPasswordLength(credential.getScopeId());
-            if (credential.getCredentialKey().length() < minPasswordLength) {
-                throw new KapuaPasswordTooShortException(minPasswordLength);
-            }
-            if (credential.getCredentialKey().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
-                throw new KapuaPasswordTooLongException(SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+            if (credential.getCredentialKey().length() < minPasswordLength ||
+                    credential.getCredentialKey().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+                throw new PasswordLengthException(minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
             }
 
             //
             // Validate Password regex
-            ArgumentValidator.match(credential.getCredentialKey(),
-                    CommonsValidationRegex.PASSWORD_REGEXP, "credentialCreator.credentialKey");
+            ArgumentValidator.match(credential.getCredentialKey(), CommonsValidationRegex.PASSWORD_REGEXP, "credential.credentialKey");
         }
 
         //
