@@ -91,7 +91,7 @@ public class KapuaIllegalArgumentExceptionTest extends Assert {
                         "Error: " + name + ", " + value,
                         "Maximum number of items has been exceeded,",
                         "User does not have permission to perform this action. Required permission: " + name + ".",
-                        "An entity with the same name " + name,
+                        "An entity with the same name " + name + " already exists.",
                         "An entity with the same external id " + name + " already exists in another account.",
                         "Max number of " + name + " reached. Please increase the number or set InfiniteChild" + name + " parameter to True.",
                         "The selected devices were not found. Please refresh device list.",

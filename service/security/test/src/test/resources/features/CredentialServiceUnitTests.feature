@@ -20,15 +20,22 @@ Feature: Credentials
     Given I create a new PASSWORD credential for the default user with password "Welcome12345!"
     Then No exception was thrown
 
+  Scenario: Creating a new PASSWORD Credential twice gives DuplicatedPasswordCredentialException
+    And I create a new PASSWORD credential for the default user with password "Welcome12345!"
+    Then No exception was thrown
+    And I expect the exception "DuplicatedPasswordCredentialException" with the text "The user already has a Credential of type PASSWORD."
+    When I create a new PASSWORD credential for the default user with password "Welcome12345!"
+    Then An exception was thrown
+
   Scenario: Creating a new PASSWORD Credential not meeting the standard length requirement
   Create a new Credential of type PASSWORD that does NOT meet the default string length requirements
-    And I expect the exception "PasswordLengthException" with the text "Password length must be between 15 and 255 characters long (inclusive)"
+    And I expect the exception "PasswordLengthException" with the text "Password length must be between 12 and 255 characters long (inclusive)."
     When I create a new PASSWORD credential for the default user with password "badPass"
     Then An exception was thrown
 
   Scenario: Creating a new PASSWORD Credential not meeting the standard length requirement
   Create a new Credential of type PASSWORD that does NOT meet the default string length requirements
-    And I expect the exception "PasswordLengthException" with the text "Password length must be between 15 and 255 characters long (inclusive)"
+    And I expect the exception "PasswordLengthException" with the text "Password length must be between 12 and 255 characters long (inclusive)."
     When I create a new PASSWORD credential for the default user with password "ThisIsLongPasswordToTestTheMaximumPasswordLengthValidationOf255Chars!ThisIsLongPasswordToTestTheMaximumPasswordLengthValidationOf255Chars!ThisIsLongPasswordToTestTheMaximumPasswordLengthValidationOf255Chars!ThisIsLongPasswordToTestTheMaximumPasswordLengthValidationOf255Chars!"
     Then An exception was thrown
 

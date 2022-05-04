@@ -34,7 +34,7 @@ public class KapuaDuplicateNameInAnotherAccountErrorTest extends Assert {
             KapuaDuplicateNameInAnotherAccountError kapuaDuplicateNameInAnotherAccountError = new KapuaDuplicateNameInAnotherAccountError(duplicateName);
             assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, kapuaDuplicateNameInAnotherAccountError.getCode());
             assertNull("Null expected", kapuaDuplicateNameInAnotherAccountError.getCause());
-            assertEquals("Expected and actual values should be the same.", "An entity with the same name " + duplicateName, kapuaDuplicateNameInAnotherAccountError.getMessage());
+            assertEquals("Expected and actual values should be the same.", "An entity with the same name " + duplicateName + " already exists.", kapuaDuplicateNameInAnotherAccountError.getMessage());
         }
     }
 
