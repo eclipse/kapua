@@ -26,6 +26,12 @@ Feature: Credentials
     When I create a new PASSWORD credential for the default user with password "badPass"
     Then An exception was thrown
 
+  Scenario: Creating a new PASSWORD Credential not meeting the standard length requirement
+  Create a new Credential of type PASSWORD that does NOT meet the default string length requirements
+    And I expect the exception "PasswordLengthException" with the text "Password length must be between 15 and 255 characters long (inclusive)"
+    When I create a new PASSWORD credential for the default user with password "ThisIsLongPasswordToTestTheMaximumPasswordLengthValidationOf255Chars!ThisIsLongPasswordToTestTheMaximumPasswordLengthValidationOf255Chars!ThisIsLongPasswordToTestTheMaximumPasswordLengthValidationOf255Chars!ThisIsLongPasswordToTestTheMaximumPasswordLengthValidationOf255Chars!"
+    Then An exception was thrown
+
   Scenario: Set a correct minimum for password length
   Set a custom minimum value for password length that must be equal or higher to the default system limit
     Given I configure the credential service
