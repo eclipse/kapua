@@ -72,6 +72,9 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(deviceCreator, "deviceCreator");
         ArgumentValidator.notNull(deviceCreator.getScopeId(), "deviceCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(deviceCreator.getClientId(), DEVICE_CREATOR_CLIENT_ID);
+        ArgumentValidator.notEmptyOrNull(
+                deviceCreator.getDisplayName(), "deviceCreator.displayName"
+        );
         ArgumentValidator.lengthRange(deviceCreator.getClientId(), 1, 255, DEVICE_CREATOR_CLIENT_ID);
         ArgumentValidator.match(deviceCreator.getClientId(), DeviceValidationRegex.CLIENT_ID, DEVICE_CREATOR_CLIENT_ID);
 
@@ -95,6 +98,9 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(device, "device");
         ArgumentValidator.notNull(device.getId(), "device.id");
         ArgumentValidator.notNull(device.getScopeId(), "device.scopeId");
+        ArgumentValidator.notEmptyOrNull(
+                device.getDisplayName(), "deviceCreator.displayName"
+        );
 
         // Check that current user can manage the current group of the device
         KapuaId currentGroupId = findCurrentGroupId(device.getScopeId(), device.getId());
