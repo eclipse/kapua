@@ -17,6 +17,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
@@ -113,17 +114,21 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                             }
 
                             for (ScratchCode code : scratchCodeListResult.getItems()) {
-                                if (MFA_AUTHENTICATOR.authorize(code.getCode(), tokenAuthenticationCode)) {
-                                    isCodeValid = true;
-                                    try {
-                                        // Delete the used scratch code
-                                        KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.delete(code.getScopeId(), code.getId()));
-                                    } catch (AuthenticationException ae) {
-                                        throw ae;
-                                    } catch (Exception e) {
-                                        throw new ShiroException("Error while removing used scratch code!", e);
+                                try {
+                                    if (MFA_AUTHENTICATOR.authorize(code.getCode(), tokenAuthenticationCode)) {
+                                        isCodeValid = true;
+                                        try {
+                                            // Delete the used scratch code
+                                            KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.delete(code.getScopeId(), code.getId()));
+                                        } catch (AuthenticationException ae) {
+                                            throw ae;
+                                        } catch (Exception e) {
+                                            throw new ShiroException("Error while removing used scratch code!", e);
+                                        }
+                                        break;
                                     }
-                                    break;
+                                } catch (KapuaException e) {
+                                    throw new ShiroException("Error while validating scratch codes!", e);
                                 }
                             }
                         }

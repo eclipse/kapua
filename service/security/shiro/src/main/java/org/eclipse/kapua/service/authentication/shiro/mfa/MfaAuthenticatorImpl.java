@@ -71,15 +71,27 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
     }
 
     @Override
-    public boolean authorize(String mfaSecretKey, int verificationCode) {
-        GoogleAuthenticator ga = new GoogleAuthenticator(GOOGLE_AUTHENTICATOR_CONFIG);
+    public boolean authorize(String mfaSecretKey, int verificationCode) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notEmptyOrNull(mfaSecretKey, "mfaSecretKey");
 
+        //
+        // Do check
+        GoogleAuthenticator ga = new GoogleAuthenticator(GOOGLE_AUTHENTICATOR_CONFIG);
         return ga.authorize(mfaSecretKey, verificationCode);
     }
 
     @Override
-    public boolean authorize(String hasedScratchCode, String verificationCode) {
-        return BCrypt.checkpw(verificationCode, hasedScratchCode);
+    public boolean authorize(String encryptedVerificationCode, String verificationCode) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notEmptyOrNull(encryptedVerificationCode, "encryptedVerificationCode");
+        ArgumentValidator.notEmptyOrNull(verificationCode, "verificationCode");
+
+        //
+        // Do check
+        return BCrypt.checkpw(verificationCode, encryptedVerificationCode);
     }
 
     @Override
