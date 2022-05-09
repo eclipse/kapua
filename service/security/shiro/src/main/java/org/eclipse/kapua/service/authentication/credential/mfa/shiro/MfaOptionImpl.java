@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.SecretAttributeConverter;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
@@ -39,6 +38,8 @@ import java.util.List;
 
 /**
  * {@link MfaOption} implementation.
+ *
+ * @since 1.3.0
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -75,6 +76,8 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
 
     /**
      * Constructor.
+     *
+     * @since 1.3.0
      */
     public MfaOptionImpl() {
         super();
@@ -83,7 +86,8 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link MfaOption}.
+     * @param scopeId The {@link MfaOption#getScopeId()}
+     * @since 1.3.0
      */
     public MfaOptionImpl(KapuaId scopeId) {
         super(scopeId);
@@ -109,10 +113,10 @@ public class MfaOptionImpl extends AbstractKapuaUpdatableEntity implements MfaOp
     /**
      * Clone constructor.
      *
-     * @param mfaOption
-     * @throws KapuaException
+     * @param mfaOption The {@link MfaOption} to clone.
+     * @since 1.3.0
      */
-    public MfaOptionImpl(MfaOption mfaOption) throws KapuaException {
+    public MfaOptionImpl(MfaOption mfaOption) {
         super(mfaOption);
         setUserId(mfaOption.getUserId());
         setMfaSecretKey(mfaOption.getMfaSecretKey());

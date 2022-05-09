@@ -27,6 +27,7 @@
     <modules>
         <module>foreignkeys</module>
         <module>es-migrator</module>
+        <module>encryption-migrator</module>
     </modules>
 
 </project>
