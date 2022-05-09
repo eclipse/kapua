@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2022 Eurotech and/or its affiliates and others
+
+    This program and the accompanying materials are made
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        Eurotech - initial API and implementation
+ -->
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+    <persistence-unit name="kapua-encryption-migrator" transaction-type="RESOURCE_LOCAL">
+
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+        <class>org.eclipse.kapua.extras.migrator.encryption.authentication.MfaOptionMigrator</class>
+        <class>org.eclipse.kapua.extras.migrator.encryption.job.JobStepMigrator</class>
+
+        <!-- Base classes and External classes -->
+        <class>org.eclipse.kapua.extras.migrator.encryption.utils.SecretAttributeMigratorModelUtils</class>
+        <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
+        <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
+
+        <properties>
+            <property name="javax.persistence.lock.timeout" value="1000"/>
+            <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="kapua-authentication" transaction-type="RESOURCE_LOCAL">
+
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+        <!-- Authentication -->
+        <class>org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl</class>
+        <class>org.eclipse.kapua.service.authentication.token.shiro.AccessTokenImpl</class>
+        <class>org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionImpl</class>
+        <class>org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeImpl</class>
+
+        <!-- Base classes and External classes -->
+        <class>org.eclipse.kapua.commons.jpa.SecretAttributeConverter</class>
+        <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
+        <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
+
+
+        <!-- event -->
+        <class>org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordImpl</class>
+        <class>org.eclipse.kapua.commons.event.ServiceEventHousekeeper</class>
+
+        <properties>
+            <property name="javax.persistence.lock.timeout" value="1000"/>
+            <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger"/>
+        </properties>
+    </persistence-unit>
+
+    <persistence-unit name="kapua-authorization" transaction-type="RESOURCE_LOCAL">
+
+        <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+
+        <!-- Authorization -->
+        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessInfoImpl</class>
+        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImpl</class>
+        <class>org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionImpl</class>
+
+        <class>org.eclipse.kapua.service.authorization.domain.shiro.DomainImpl</class>
+
+        <class>org.eclipse.kapua.service.authorization.group.shiro.GroupImpl</class>
+
+        <class>org.eclipse.kapua.service.authorization.permission.shiro.PermissionImpl</class>
+
+        <class>org.eclipse.kapua.service.authorization.role.shiro.RoleImpl</class>
+        <class>org.eclipse.kapua.service.authorization.role.shiro.RolePermissionImpl</class>
+
+        <!-- Base classes and External classes -->
+        <class>org.eclipse.kapua.commons.jpa.SecretAttributeConverter</class>
+        <class>org.eclipse.kapua.commons.model.id.KapuaEid</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaEntity</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaNamedEntity</class>
+        <class>org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity</class>
+        <class>org.eclipse.kapua.commons.configuration.ServiceConfigImpl</class>
+
+        <!-- event -->
+        <class>org.eclipse.kapua.commons.event.service.internal.ServiceEventImpl</class>
+        <class>org.eclipse.kapua.commons.event.ServiceEventHousekeeper</class>
+
+        <properties>
+            <property name="javax.persistence.lock.timeout" value="1000"/>
+            <property name="eclipselink.logging.logger" value="org.eclipse.persistence.logging.slf4j.SLF4JLogger"/>
+        </properties>
+    </persistence-unit>
+</persistence>
