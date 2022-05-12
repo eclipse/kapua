@@ -41,13 +41,13 @@ public class ServiceClientMessagingImpl implements ServiceClient {
     private static final Logger logger = LoggerFactory.getLogger(ServiceClientMessagingImpl.class);
 
     public static final String REQUEST_QUEUE = "auth_request";
-    public static final String RESPONSE_QUEUE_PREFIX = "auth_response_";
+    public static final String RESPONSE_QUEUE_PATTERN = "auth_response_%s_%s";
 
     private static final int TIMEOUT = 5000;
 
     private Client client;
 
-    public ServiceClientMessagingImpl(String requester) {
+    public ServiceClientMessagingImpl(String clusterName, String requester) {
         //TODO change configuration (use service event broker for now)
         String clientId = "auth-" + UUID.randomUUID().toString();
         String host = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_HOST, "events-broker");
@@ -56,7 +56,7 @@ public class ServiceClientMessagingImpl implements ServiceClient {
         String password = SystemSetting.getInstance().getString(SystemSettingKey.SERVICE_BUS_PASSWORD, "password");
         try {
             client = new Client(username, password, host, port, clientId,
-                REQUEST_QUEUE, RESPONSE_QUEUE_PREFIX + requester, new MessageListener());
+                REQUEST_QUEUE, String.format(RESPONSE_QUEUE_PATTERN, clusterName, requester), new MessageListener());
         } catch (JMSException e) {
             throw new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, e, (Object[])null);
         }

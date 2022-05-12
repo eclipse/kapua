@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
 /**
  * TODO move this under DI. Ask for a way to do so in Artemis (is still Artemis managed by Spring as ActiveMQ 5?)
  * So the singleton can be managed by the DI.
- *
+ * <B>NOTE! This class should be a singleton but this is in charge of the caller.</B>
  */
 public final class SecurityContext {
 
@@ -77,8 +77,6 @@ public final class SecurityContext {
     private Gauge<Long> totalMessageAcknowledged;
     private Gauge<Long> totalMessageAdded;
 
-    private static final SecurityContext INSTANCE = new SecurityContext();
-
     //concurrency shouldn't be an issue since this set will contain the list of active connections
     private final Set<String> activeConnections = new HashSet<>();
     private final LocalCache<String, ConnectionToken> connectionTokenCache;
@@ -96,7 +94,7 @@ public final class SecurityContext {
     private boolean printData = BrokerSetting.getInstance().getBoolean(BrokerSettingKey.PRINT_SECURITY_CONTEXT_REPORT, false);
     private ExecutorWrapper executorWrapper;
 
-    private SecurityContext() {
+    public SecurityContext(ActiveMQServer server) {
         connectionTokenCache = new LocalCache<>(
             BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_SIZE), BrokerSetting.getInstance().getInt(BrokerSettingKey.CACHE_CONNECTION_TOKEN_TTL), null);
         sessionContextCache = new LocalCache<>(
@@ -106,13 +104,6 @@ public final class SecurityContext {
         sessionContextMapByClient = new ConcurrentHashMap<>();
         sessionContextMap = new ConcurrentHashMap<>();
         aclMap = new ConcurrentHashMap<>();
-    }
-
-    public static SecurityContext getInstance() {
-        return INSTANCE;
-    }
-
-    public void init(ActiveMQServer server) {
         if (printData) {
             if (executorWrapper==null) {
                 executorWrapper = new ExecutorWrapper("ServerReport", () -> printReport(server, "ServerReportTask", "N/A"), 60, 30, TimeUnit.SECONDS);

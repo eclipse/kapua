@@ -24,6 +24,9 @@ public class EntityRequest implements Request {
     @JsonProperty("requester")
     private String requester;
 
+    @JsonProperty("clusterName")
+    private String clusterName;
+
     @JsonProperty("action")
     private String action;
 
@@ -39,7 +42,8 @@ public class EntityRequest implements Request {
     public EntityRequest() {
     }
 
-    public EntityRequest(String requester, String action, String entity, String name) {
+    public EntityRequest(String clusterName, String requester, String action, String entity, String name) {
+        this.clusterName = clusterName;
         this.requester = requester;
         this.action = action;
         this.entity = entity;
@@ -52,6 +56,14 @@ public class EntityRequest implements Request {
 
     public void setRequester(String requester) {
         this.requester = requester;
+    }
+
+    public String getClusterName() {
+        return clusterName;
+    }
+
+    public void setClusterName(String clusterName) {
+        this.clusterName = clusterName;
     }
 
     public String getAction() {
