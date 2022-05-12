@@ -23,6 +23,7 @@ public class ServerContext {
 
     //TODO provide client pluggability once the rest one will be implemented (now just the AMQP client is available)
     //TODO manage through injection if possible
+    protected String clusterName;
     protected ServiceClient authServiceClient;
     protected SecurityContext securityContext;
     protected BrokerIdentity brokerIdentity;
@@ -34,14 +35,14 @@ public class ServerContext {
         return INSTANCE;
     }
 
-    public void init(ActiveMQServer server) throws KapuaException {
+    public void init(ActiveMQServer server, String clusterName) throws KapuaException {
         this.server = server;
         //TODO see comment above
         brokerIdentity = BrokerIdentity.getInstance();
+        this.clusterName = clusterName;
         brokerIdentity.init(server);
-        authServiceClient = new ServiceClientMessagingImpl(brokerIdentity.getBrokerHost());
-        securityContext = SecurityContext.getInstance();
-        securityContext.init(server);
+        authServiceClient = new ServiceClientMessagingImpl(clusterName, brokerIdentity.getBrokerHost());
+        securityContext = new SecurityContext(server);
     }
 
     public void shutdown(ActiveMQServer server) throws KapuaException {
@@ -64,4 +65,7 @@ public class ServerContext {
         return brokerIdentity;
     }
 
+    public String getClusterName() {
+        return clusterName;
+    }
 }

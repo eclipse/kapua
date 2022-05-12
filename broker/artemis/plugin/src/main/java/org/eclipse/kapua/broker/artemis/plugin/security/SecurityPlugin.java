@@ -94,7 +94,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
         String clientIp = remotingConnection.getTransportConnection().getRemoteAddress();
         String clientId = remotingConnection.getClientID();
         if (clientId==null) {
-            clientId = clientIp;
+            clientId = clientIp.replaceAll("\\/", "");
         }
         SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(connectionId);
         if (sessionContext!=null && sessionContext.getPrincipal()!=null) {
@@ -164,6 +164,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             String fullClientId = Utils.getFullClientId(getScopeId(username), connectionInfo.getClientId());
             Context timeShiroLogin = loginMetric.getExternalAddConnectionTimeShiroLogin().time();
             AuthRequest authRequest = new AuthRequest(
+                serverContext.getClusterName(),
                 serverContext.getBrokerIdentity().getBrokerHost(), SecurityAction.brokerConnect.name(),
                 username, password, connectionInfo,
                 serverContext.getBrokerIdentity().getBrokerHost(), serverContext.getBrokerIdentity().getBrokerId());
@@ -343,6 +344,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
 
     private KapuaId getAdminScopeIdNoCache() throws JsonProcessingException, JMSException, InterruptedException {
         EntityRequest accountRequest = new EntityRequest(
+            serverContext.getClusterName(),
             serverContext.getBrokerIdentity().getBrokerHost(),
             SecurityAction.getEntity.name(),
             EntityType.account.name(),
@@ -365,6 +367,7 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
      */
     private KapuaId getScopeIdNoCache(String username) throws JsonProcessingException, JMSException, InterruptedException {
         EntityRequest userRequest = new EntityRequest(
+            serverContext.getClusterName(),
             serverContext.getBrokerIdentity().getBrokerHost(),
             SecurityAction.getEntity.name(),
             EntityType.user.name(),

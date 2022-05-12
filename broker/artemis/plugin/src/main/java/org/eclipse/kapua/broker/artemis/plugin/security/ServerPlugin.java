@@ -42,6 +42,8 @@ import org.eclipse.kapua.client.security.context.Utils;
 import org.eclipse.kapua.client.security.metric.LoginMetric;
 import org.eclipse.kapua.client.security.metric.PublishMetric;
 import org.eclipse.kapua.client.security.metric.SubscribeMetric;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
@@ -53,6 +55,11 @@ import org.slf4j.LoggerFactory;
 
 import com.codahale.metrics.Timer.Context;
 
+/**
+ * Server Plugin implementation.
+ * This plugin does session cleanup on disconnection and enrich the message context with Kapua session infos.
+ *
+ */
 public class ServerPlugin implements ActiveMQServerPlugin {
 
     protected static Logger logger = LoggerFactory.getLogger(ServerPlugin.class);
@@ -94,7 +101,8 @@ public class ServerPlugin implements ActiveMQServerPlugin {
     public void registered(ActiveMQServer server) {
         logger.info("registering plugin {}...", this.getClass().getName());
         try {
-            serverContext.init(server);
+            String clusterName = SystemSetting.getInstance().getString(SystemSettingKey.CLUSTER_NAME);
+            serverContext.init(server, clusterName);
             acceptorHandler = new AcceptorHandler(server,
                 BrokerSetting.getInstance().getMap(String.class, BrokerSettingKey.ACCEPTORS));
             //init acceptors
@@ -294,7 +302,10 @@ public class ServerPlugin implements ActiveMQServerPlugin {
             SessionContext sessionContext = serverContext.getSecurityContext().getSessionContext(connectionId);
             if (sessionContext!=null) {
                 SessionContext sessionContextByClient = serverContext.getSecurityContext().cleanSessionContext(sessionContext);
-                AuthRequest authRequest = new AuthRequest(serverContext.getBrokerIdentity().getBrokerHost(), SecurityAction.brokerDisconnect.name(), sessionContext);
+                AuthRequest authRequest = new AuthRequest(
+                    serverContext.getClusterName(),
+                    serverContext.getBrokerIdentity().getBrokerHost(),
+                    SecurityAction.brokerDisconnect.name(), sessionContext);
                 if (exception!=null) {
                     updateError(authRequest, exception);
                 }

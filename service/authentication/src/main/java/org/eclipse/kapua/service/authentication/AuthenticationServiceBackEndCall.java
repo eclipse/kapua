@@ -170,6 +170,7 @@ public class AuthenticationServiceBackEndCall {
 
     private AuthResponse buildAuthResponse(AuthRequest authRequest, ResultCode resultCode, Exception exception) {
         AuthResponse authResponse = new AuthResponse();
+        authResponse.setClusterName(authRequest.getClusterName());
         authResponse.setRequester(authRequest.getRequester());
         authResponse.setAction(authRequest.getAction());
         authResponse.setRequestId(authRequest.getRequestId());
@@ -186,6 +187,7 @@ public class AuthenticationServiceBackEndCall {
 
     private EntityResponse buildGetEntityResponse(EntityRequest entityRequest, KapuaEntity entity) {
         EntityResponse entityResponse = buildGetEntityResponseCommon(entityRequest, ResultCode.authorized);
+        entityResponse.setClusterName(entityRequest.getClusterName());
         entityResponse.setId(entity.getId()!=null ? entity.getId().toCompactId() : null);
         entityResponse.setScopeId(entity.getScopeId()!=null ? entity.getScopeId().toCompactId() : null);
         return entityResponse;
@@ -193,12 +195,14 @@ public class AuthenticationServiceBackEndCall {
 
     private EntityResponse buildGetEntityResponseError(EntityRequest entityRequest, Exception exception) {
         EntityResponse entityResponse = buildGetEntityResponseCommon(entityRequest, ResultCode.notAuthorized);
+        entityResponse.setClusterName(entityRequest.getClusterName());
         entityResponse.setErrorCode(exception.getMessage());
         return entityResponse;
     }
 
     private EntityResponse buildGetEntityResponseCommon(EntityRequest entityRequest, ResultCode resultCode) {
         EntityResponse entityResponse = new EntityResponse();
+        entityResponse.setClusterName(entityRequest.getClusterName());
         entityResponse.setRequester(entityRequest.getRequester());
         entityResponse.setAction(entityRequest.getAction());
         entityResponse.setRequestId(entityRequest.getRequestId());
