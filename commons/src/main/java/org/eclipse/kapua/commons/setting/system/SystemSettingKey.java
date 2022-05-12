@@ -23,6 +23,10 @@ import javax.persistence.EntityExistsException;
  */
 public enum SystemSettingKey implements SettingKey {
     /**
+     * Cluster name
+     */
+    CLUSTER_NAME("cluster.name"),
+    /**
      * Provisioning account name
      */
     SYS_PROVISION_ACCOUNT_NAME("commons.sys.provision.account.name"),

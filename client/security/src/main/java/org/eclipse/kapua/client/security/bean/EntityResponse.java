@@ -19,6 +19,9 @@ public class EntityResponse implements Response {
     @JsonProperty("requester")
     private String requester;
 
+    @JsonProperty("clusterName")
+    private String clusterName;
+
     @JsonProperty("action")
     private String action;
 
@@ -49,6 +52,14 @@ public class EntityResponse implements Response {
 
     public void setRequester(String requester) {
         this.requester = requester;
+    }
+
+    public String getClusterName() {
+        return clusterName;
+    }
+
+    public void setClusterName(String clusterName) {
+        this.clusterName = clusterName;
     }
 
     public String getAction() {

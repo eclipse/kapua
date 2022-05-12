@@ -98,6 +98,7 @@ public class AuthenticationServiceListener extends AbstractListener {
             textPayload = writer.writeValueAsString(authResponse);
             message.setBody(textPayload, String.class);
         }
+        message.setHeader(MessageConstants.HEADER_CLUSTER_NAME, authRequest.getClusterName());
         message.setHeader(MessageConstants.HEADER_REQUESTER, authRequest.getRequester());
         message.setHeader(MessageConstants.HEADER_REQUEST_ID, authRequest.getRequestId());
         message.setHeader(MessageConstants.HEADER_ACTION, authRequest.getAction());
@@ -116,6 +117,7 @@ public class AuthenticationServiceListener extends AbstractListener {
             textPayload = writer.writeValueAsString(entityResponse);
             message.setBody(textPayload, String.class);
         }
+        message.setHeader(MessageConstants.HEADER_CLUSTER_NAME, entityRequest.getClusterName());
         message.setHeader(MessageConstants.HEADER_REQUESTER, entityRequest.getRequester());
         message.setHeader(MessageConstants.HEADER_REQUEST_ID, entityRequest.getRequestId());
         message.setHeader(MessageConstants.HEADER_ACTION, entityRequest.getAction());

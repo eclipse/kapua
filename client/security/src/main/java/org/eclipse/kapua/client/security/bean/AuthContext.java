@@ -20,6 +20,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 
 public class AuthContext {
 
+    private String clusterName;
     private String requester;
     private String username;
     private String userId;
@@ -63,6 +64,7 @@ public class AuthContext {
 
     private void initCommonFields(AuthRequest authRequest) {
         property = new HashMap<>();
+        clusterName = authRequest.getClusterName();
         requester = authRequest.getRequester();
         username = authRequest.getUsername();
         clientId = authRequest.getClientId();
@@ -81,6 +83,10 @@ public class AuthContext {
         stealingLink = authRequest.isStealingLink();
         illegalState = authRequest.isIllegalState();
         missing = authRequest.isMissing();
+    }
+
+    public String getClusterName() {
+        return clusterName;
     }
 
     public String getRequester() {
