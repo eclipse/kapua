@@ -46,7 +46,7 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
 
     @Before
     public void initialize() {
-        System.setProperty("broker.ip", "192.168.33.10");
+        System.setProperty("broker.ip", "localhost");
 
         broker = Mockito.mock(Broker.class);
         brokerId = new BrokerId();

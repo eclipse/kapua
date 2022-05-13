@@ -29,11 +29,11 @@ public class DefaultBrokerIpResolverTest {
     @Test
     public void defaultBrokerIpResolverTest() throws KapuaException {
         final Map<String, String> properties = new HashMap<>();
-        properties.put(BROKER_IP_PROP_KEY, "192.168.33.10");
+        properties.put(BROKER_IP_PROP_KEY, "localhost");
 
         Tests.runWithProperties(properties, () -> {
             DefaultBrokerIpResolver defaultBrokerIpResolver = new DefaultBrokerIpResolver();
-            Assert.assertEquals("Expected and actual values should be the same", "192.168.33.10", defaultBrokerIpResolver.getBrokerIpOrHostName());
+            Assert.assertEquals("Expected and actual values should be the same", "localhost", defaultBrokerIpResolver.getBrokerIpOrHostName());
         });
     }
 
