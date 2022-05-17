@@ -13,7 +13,6 @@
 package org.eclipse.kapua.extras.migrator.encryption.authentication;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionQuery;
 
 /**
@@ -26,10 +25,9 @@ public class MfaOptionMigratorQueryImpl extends AbstractKapuaNamedQuery implemen
     /**
      * Constructor.
      *
-     * @param scopeId The {@link #getScopeId()}.
      * @since 1.0.0
      */
-    public MfaOptionMigratorQueryImpl(KapuaId scopeId) {
-        super(scopeId);
+    public MfaOptionMigratorQueryImpl() {
+        super();
     }
 }
