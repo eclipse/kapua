@@ -38,11 +38,12 @@ The encryption migration tool has been implemented with two goals:
 
 The following settings are available as system properties when running the migration tool:
 
-| Name                                         | Description                                                                                                                                                              | Default Value                                         |
-|----------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------|
-| migrator.encryption.key.old                  | The old secret key for simmetric encryption                                                                                                                              | changeMePlease!!                                      |
-| migrator.encryption.key.mfs                  | The old secret key for simmetric encryption of the MfaOption.mfaSecretKey                                                                                                | rv;ipse329183!@#                                      |
-| migrator.encryption.key.new                  | The new secret key for simmetric encryption                                                                                                                              | changedMeThanks!                                      |
+| Name                        | Description                                                               | Default Value    |
+|-----------------------------|---------------------------------------------------------------------------|------------------|
+| migrator.encryption.dryRun  | Run the tool without affecting data                                       | false            |
+| migrator.encryption.key.old | The old secret key for symmetric encryption                               | changeMePlease!! |
+| migrator.encryption.key.mfs | The old secret key for symmetric encryption of the MfaOption.mfaSecretKey | rv;ipse329183!@# |
+| migrator.encryption.key.new | The new secret key for symmetric encryption                               | changedMeThanks! |
 
 Other useful properties from Kapua
 
@@ -50,7 +51,7 @@ Other useful properties from Kapua
 |----------------------------|------------------------------|----------------|
 | commons.db.name            | The target database name     | kapuadb        |
 | commons.db.username        | The target database username | kapua          | 
-| commons.db.password        | The target database passowrd | kapua          | 
+| commons.db.password        | The target database password | kapua          | 
 | commons.db.connection.host | The target database host     | 192.168.33.10  |
 | commons.db.connection.port | The target database port     | 3306           | 
 

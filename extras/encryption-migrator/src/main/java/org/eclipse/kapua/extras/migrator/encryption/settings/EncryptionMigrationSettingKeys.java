@@ -24,6 +24,13 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 public enum EncryptionMigrationSettingKeys implements SettingKey {
 
     /**
+     * Whether running in dry run mode ot not.
+     *
+     * @since 2.0.0
+     */
+    DRY_RUN("migrator.encryption.dryRun"),
+
+    /**
      * The old encryption key.
      *
      * @since 2.0.0

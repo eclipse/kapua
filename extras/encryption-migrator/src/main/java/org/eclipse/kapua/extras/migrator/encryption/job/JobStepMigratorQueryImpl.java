@@ -13,7 +13,6 @@
 package org.eclipse.kapua.extras.migrator.encryption.job;
 
 import org.eclipse.kapua.commons.model.query.AbstractKapuaNamedQuery;
-import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.job.step.JobStepQuery;
 
 /**
@@ -26,10 +25,9 @@ public class JobStepMigratorQueryImpl extends AbstractKapuaNamedQuery implements
     /**
      * Constructor.
      *
-     * @param scopeId The {@link #getScopeId()}.
      * @since 1.0.0
      */
-    public JobStepMigratorQueryImpl(KapuaId scopeId) {
-        super(scopeId);
+    public JobStepMigratorQueryImpl() {
+        super();
     }
 }

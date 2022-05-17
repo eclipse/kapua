@@ -12,17 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.extras.migrator.encryption.authentication;
 
-import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.extras.migrator.encryption.api.AbstractEntityAttributeMigrator;
 import org.eclipse.kapua.extras.migrator.encryption.api.EntitySecretAttributeMigrator;
-import org.eclipse.kapua.model.KapuaEntityAttributes;
-import org.eclipse.kapua.model.query.SortOrder;
+import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 
-import java.util.List;
-
-public class MfaOptionAttributeMigrator implements EntitySecretAttributeMigrator<MfaOption> {
+public class MfaOptionAttributeMigrator extends AbstractEntityAttributeMigrator<MfaOption> implements EntitySecretAttributeMigrator<MfaOption> {
 
     private static final MfaOptionMigratorServiceImpl MFA_OPTION_MIGRATOR_SERVICE = new MfaOptionMigratorServiceImpl();
+
+    public MfaOptionAttributeMigrator() {
+        super(MFA_OPTION_MIGRATOR_SERVICE);
+    }
 
     @Override
     public String getEntityName() {
@@ -30,29 +31,7 @@ public class MfaOptionAttributeMigrator implements EntitySecretAttributeMigrator
     }
 
     @Override
-    public void migrate(List<MfaOption> entitiesToMigrate) throws KapuaException {
-        for (MfaOption mfaOption : entitiesToMigrate) {
-            MFA_OPTION_MIGRATOR_SERVICE.update(mfaOption);
-        }
-    }
-
-    @Override
-    public List<MfaOption> getChunk(int offset, int limit) throws KapuaException {
-        MfaOptionMigratorQueryImpl query = new MfaOptionMigratorQueryImpl(null);
-
-        // This is the most stable sorting even if it is not always indexed
-        query.setSortCriteria(query.fieldSortCriteria(KapuaEntityAttributes.CREATED_ON, SortOrder.ASCENDING));
-
-        query.setOffset(offset);
-        query.setLimit(limit);
-
-        return MFA_OPTION_MIGRATOR_SERVICE.query(query).getItems();
-    }
-
-    @Override
-    public long getTotalCount() throws KapuaException {
-        MfaOptionMigratorQueryImpl query = new MfaOptionMigratorQueryImpl(null);
-
-        return MFA_OPTION_MIGRATOR_SERVICE.count(query);
+    protected KapuaQuery newEntityQuery() {
+        return new MfaOptionMigratorQueryImpl();
     }
 }
