@@ -72,9 +72,13 @@ import java.util.logging.Logger;
  */
 public class KapuaCloudConsole implements EntryPoint {
 
+    private static final Logger LOG = Logger.getLogger(KapuaCloudConsole.class.getName());
+
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleCoreMessages CORE_MSGS = GWT.create(ConsoleCoreMessages.class);
-    private static final Logger logger = Logger.getLogger(KapuaCloudConsole.class.getName());
+
+    private static final GwtAuthorizationServiceAsync GWT_AUTHORIZATION_SERVICE = GWT.create(GwtAuthorizationService.class);
+    private static final GwtSettingsServiceAsync GWT_SETTINGS_SERVICE = GWT.create(GwtSettingsService.class);
 
     // OpenID Connect single sign-on parameters
     public static final String OPENID_ACCESS_TOKEN_PARAM = "access_token";
@@ -82,12 +86,7 @@ public class KapuaCloudConsole implements EntryPoint {
     public static final String OPENID_ERROR_PARAM = "error";
     public static final String OPENID_ERROR_DESC_PARAM = "error_description";
 
-    // time parameters
     public static final int OPENID_FAILURE_WAIT_TIME = 3000;
-
-    private GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
-
-    private GwtSettingsServiceAsync gwtSettingService = GWT.create(GwtSettingsService.class);
 
     private GwtSession currentSession;
 
@@ -100,6 +99,7 @@ public class KapuaCloudConsole implements EntryPoint {
     private HorizontalPanel southView;
 
     private Label creditLabel;
+    private Label newWebAdminConsoleLabel;
 
     private GwtProductInformation productInformation;
     private BorderLayoutData filterPanelData;
@@ -107,6 +107,8 @@ public class KapuaCloudConsole implements EntryPoint {
     /**
      * Note, we defer all application initialization code to {@link #onModuleLoad2()} so that the
      * UncaughtExceptionHandler can catch any unexpected exceptions.
+     *
+     * @since 1.0.0
      */
     @Override
     public void onModuleLoad() {
@@ -127,13 +129,15 @@ public class KapuaCloudConsole implements EntryPoint {
 
     /**
      * This is the 'real' entry point method.
+     *
+     * @since 1.0.0
      */
     public void onModuleLoad2() {
-        gwtSettingService.getProductInformation(new AsyncCallback<GwtProductInformation>() {
+        GWT_SETTINGS_SERVICE.getProductInformation(new AsyncCallback<GwtProductInformation>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                logger.log(Level.SEVERE, "Error fetching Product Informations");
+                LOG.log(Level.SEVERE, "Error fetching Product Information");
             }
 
             @Override
@@ -142,7 +146,7 @@ public class KapuaCloudConsole implements EntryPoint {
 
                 //
                 // Check if a session has already been established on the server-side
-                gwtAuthorizationService.getCurrentSession(new AsyncCallback<GwtSession>() {
+                GWT_AUTHORIZATION_SERVICE.getCurrentSession(new AsyncCallback<GwtSession>() {
 
                     @Override
                     public void onFailure(Throwable t) {
@@ -269,10 +273,11 @@ public class KapuaCloudConsole implements EntryPoint {
     }
 
     private void renderLoginDialog() {
-        Viewport viewport = new Viewport();
-
         BorderLayout borderLayout = new BorderLayout();
+
+        Viewport viewport = new Viewport();
         viewport.setLayout(borderLayout);
+
         if (!UserAgentUtils.isIE() || UserAgentUtils.getIEDocumentMode() > 8) {
             viewport.setStyleName("login");
         } else {
@@ -280,13 +285,14 @@ public class KapuaCloudConsole implements EntryPoint {
         }
 
         //
-        // center
+        // Center Login Page
         BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
         centerData.setMargins(new Margins(0));
         centerData.setCollapsible(false);
         centerData.setFloatable(false);
         centerData.setHideCollapseTool(false);
         centerData.setSplit(false);
+
         LayoutContainer splash = new LayoutContainer(new FillLayout());
         viewport.add(splash, centerData);
 
@@ -329,10 +335,12 @@ public class KapuaCloudConsole implements EntryPoint {
         //
         // Footer login page
         creditLabel = new Label();
-        creditLabel.setStyleName("margin-right:10px");
+        creditLabel.setStyleAttribute("margin-right", "10px");
+        creditLabel.setStyleName("credit-label");
 
         layout = new TableLayout(2);
         layout.setWidth("100%");
+
         LayoutContainer lcFooter = new LayoutContainer(layout);
         if (!UserAgentUtils.isIE() || UserAgentUtils.getIEDocumentMode() > 8) {
             lcFooter.setStyleName("loginFooter");
@@ -346,7 +354,7 @@ public class KapuaCloudConsole implements EntryPoint {
         lcFooter.add(genericNote, new TableData(Style.HorizontalAlignment.LEFT, Style.VerticalAlignment.BOTTOM));
         lcFooter.add(creditLabel, new TableData(Style.HorizontalAlignment.RIGHT, Style.VerticalAlignment.BOTTOM));
 
-        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 18);
+        BorderLayoutData southData = new BorderLayoutData(LayoutRegion.SOUTH, 25);
         southData.setCollapsible(false);
         southData.setFloatable(false);
         southData.setHideCollapseTool(false);
@@ -359,20 +367,20 @@ public class KapuaCloudConsole implements EntryPoint {
         genericNote.setHtml(productInformation.getInformationSnippet());
         creditLabel.setText(productInformation.getBackgroundCredits());
 
-        // Check if coming from OpenID Connect ssingle sign-on login
+        // Check if coming from OpenID Connect Single Sign-On login
         String accessToken = Window.Location.getParameter(OPENID_ACCESS_TOKEN_PARAM);
         String idToken = Window.Location.getParameter(OPENID_ID_TOKEN_PARAM);
 
         if (accessToken != null && !accessToken.isEmpty() && idToken != null && !idToken.isEmpty()) {
-            logger.info("Performing OpenID Connect login");
+            LOG.info("Performing OpenID Connect login");
             performOpenIDLogin(viewport, accessToken, idToken);
         } else {
 
             String error = Window.Location.getParameter(OPENID_ERROR_PARAM);
 
             // Check if coming from failed OpenID Connect login (the user exists but she does not have the authorizations)
-            if (error != null && !error.isEmpty() && error.equals("access_denied")) {
-                logger.info("Access denied, OpenID Connect login failed");
+            if (error != null && error.equals("access_denied")) {
+                LOG.info("Access denied, OpenID Connect login failed");
                 ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), CORE_MSGS.ssoClientAuthenticationFailed());
             }
             showLoginDialog(viewport);
@@ -411,46 +419,47 @@ public class KapuaCloudConsole implements EntryPoint {
     private void performOpenIDLogin(final Viewport viewport, String accessToken, String idToken) {
 
         // show wait dialog
-        final Dialog dlg = new Dialog();
-        dlg.setHeading(MSGS.ssoWaitDialog_title());
-        dlg.setButtons("");
-        dlg.setClosable(false);
-        dlg.setResizable(false);
-        dlg.setModal(true);
-        dlg.setOnEsc(false);
+        final Dialog ssoLoginWaitDialog = new Dialog();
+        ssoLoginWaitDialog.setHeading(MSGS.ssoWaitDialog_title());
+        ssoLoginWaitDialog.setButtons("");
+        ssoLoginWaitDialog.setClosable(false);
+        ssoLoginWaitDialog.setResizable(false);
+        ssoLoginWaitDialog.setModal(true);
+        ssoLoginWaitDialog.setOnEsc(false);
 
         Label label = new Label(MSGS.ssoWaitDialog_text());
-        dlg.add(label);
+        ssoLoginWaitDialog.add(label);
 
-        dlg.show();
-        dlg.center();
+        ssoLoginWaitDialog.show();
+        ssoLoginWaitDialog.center();
 
         // start login process
         final GwtJwtIdToken gwtIdToken = new GwtJwtIdToken(idToken);
         final GwtJwtCredential credentials = new GwtJwtCredential(accessToken);
-        gwtAuthorizationService.login(credentials, gwtIdToken, new AsyncCallback<GwtSession>() {
+        GWT_AUTHORIZATION_SERVICE.login(credentials, gwtIdToken, new AsyncCallback<GwtSession>() {
 
             @Override
             public void onFailure(Throwable caught) {
-                dlg.hide();
-                logger.info("OpenID Connect login failed.");
+                ssoLoginWaitDialog.hide();
+
+                LOG.info("OpenID Connect login failed.");
                 ConsoleInfo.display(CORE_MSGS.loginSsoLoginError(), caught.getLocalizedMessage());
 
                 // Invalidating the OpenID IdToken. We must use the OpenID logout here, since we don't have the KapuSession set yet, so we don't have the
                 // openIDidToken set inside. This means we cannot realy on the OpenIDLogoutListener to invalidate the OpenID session, instead we must do that
                 // as a 'real' user initiated logout.
-                gwtSettingService.getOpenIDLogoutUri(gwtIdToken.getIdToken(), new AsyncCallback<String>() {
+                GWT_SETTINGS_SERVICE.getOpenIDLogoutUri(gwtIdToken.getIdToken(), new AsyncCallback<String>() {
 
                     @Override
                     public void onFailure(Throwable caught) {
-                        logger.info("Failed to get the logout endpoint.");
+                        LOG.info("Failed to get the logout endpoint.");
                         FailureHandler.handle(caught);
                     }
 
                     @Override
                     public void onSuccess(final String result) {
                         if (!result.isEmpty()) {
-                            logger.info("Waiting for logout.");
+                            LOG.info("Waiting for logout.");
 
                             // this timer is needed to give time to the ConsoleInfo.display method (called above) to show
                             // the message to the user (otherwise the Window.location.assign would reload the page,
@@ -472,13 +481,13 @@ public class KapuaCloudConsole implements EntryPoint {
 
             @Override
             public void onSuccess(GwtSession gwtSession) {
-                logger.info("OpenID login success, now rendering screen.");
-                logger.fine("User: " + gwtSession.getUserId());
+                LOG.info("OpenID login success, now rendering screen.");
+                LOG.fine("User: " + gwtSession.getUserId());
 
                 // This is needed to remove tokens from the URL, however it forces the page reload
                 TokenCleaner.cleanToken();
 
-                dlg.hide();
+                ssoLoginWaitDialog.hide();
                 renderMainScreen(viewport, gwtSession);
             }
         });
@@ -511,6 +520,7 @@ public class KapuaCloudConsole implements EntryPoint {
     public void setFilterPanel(EntityFilterPanel<? extends GwtEntityModel> filterPanel, AbstractEntityView abstractEntityView) {
         EntityGrid entityGrid = abstractEntityView.getEntityGrid(abstractEntityView, currentSession);
         filterPanel.setEntityGrid(entityGrid);
+
         getViewport().remove(this.filterPanel);
         this.filterPanel = filterPanel;
         entityGrid.setFilterPanel(filterPanel);
