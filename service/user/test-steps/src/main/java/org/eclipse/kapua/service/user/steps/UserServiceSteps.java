@@ -223,7 +223,7 @@ public class UserServiceSteps extends TestBase {
         uc.setDisplayName(displayName);
         uc.setEmail(userEmail);
         uc.setPhoneNumber("+1 555 123 4567");
-        uc.setUserStatus(UserStatus.ENABLED);
+        uc.setStatus(UserStatus.ENABLED);
 
         stepData.put(USER_CREATOR, uc);
 
