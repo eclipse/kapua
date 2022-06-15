@@ -30,7 +30,7 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
 
     private static final long serialVersionUID = 4664940282892151008L;
 
-    private UserStatus userStatus;
+    private UserStatus status;
     private String displayName;
     private String email;
     private String phoneNumber;
@@ -48,7 +48,7 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
     public UserCreatorImpl(KapuaId accountId, String name) {
         super(accountId, name);
 
-        setUserStatus(UserStatus.ENABLED);
+        setStatus(UserStatus.ENABLED);
         setUserType(UserType.INTERNAL);
     }
 
@@ -57,13 +57,13 @@ public class UserCreatorImpl extends AbstractKapuaNamedEntityCreator<User> imple
     }
 
     @Override
-    public UserStatus getUserStatus() {
-        return userStatus;
+    public UserStatus getStatus() {
+        return status;
     }
 
     @Override
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 
     @Override

@@ -87,7 +87,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         ArgumentValidator.notEmptyOrNull(userCreator.getName(), "userCreator.name");
         ArgumentValidator.match(userCreator.getName(), CommonsValidationRegex.NAME_REGEXP, "userCreator.name");
         ArgumentValidator.match(userCreator.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "userCreator.email");
-        ArgumentValidator.notNull(userCreator.getUserStatus(), "userCreator.userStatus");
+        ArgumentValidator.notNull(userCreator.getStatus(), "userCreator.status");
 
         ArgumentValidator.notNull(userCreator.getUserType(), "userCreator.userType");
         if (userCreator.getUserType() == UserType.EXTERNAL) {

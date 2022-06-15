@@ -132,8 +132,8 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
 
     void setExpirationDate(Date expirationDate);
 
-    @XmlElement(name = "userStatus")
-    UserStatus getUserStatus();
+    @XmlElement(name = "status")
+    UserStatus getStatus();
 
-    void setUserStatus(UserStatus userStatus);
+    void setStatus(UserStatus status);
 }
