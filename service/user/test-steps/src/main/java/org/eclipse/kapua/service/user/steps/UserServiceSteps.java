@@ -12,6 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.steps;
 
+import com.google.inject.Singleton;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -35,12 +43,12 @@ import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.credential.Credential;
 import org.eclipse.kapua.service.authentication.credential.CredentialAttributes;
 import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
-import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
+import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
+import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionFactory;
@@ -51,33 +59,23 @@ import org.eclipse.kapua.service.authentication.credential.shiro.CredentialQuery
 import org.eclipse.kapua.service.authorization.access.AccessInfoCreator;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
-import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionQueryImpl;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
-import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
 import org.eclipse.kapua.service.authorization.access.AccessPermission;
 import org.eclipse.kapua.service.authorization.access.AccessPermissionAttributes;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionQuery;
+import org.eclipse.kapua.service.authorization.access.AccessPermissionService;
+import org.eclipse.kapua.service.authorization.access.shiro.AccessPermissionQueryImpl;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserAttributes;
 import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
-import org.eclipse.kapua.service.user.UserAttributes;
 import org.junit.Assert;
-
-import com.google.inject.Singleton;
-
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 
 import javax.inject.Inject;
 import java.math.BigInteger;
@@ -144,7 +142,7 @@ public class UserServiceSteps extends TestBase {
     // Definition of Cucumber scenario steps
     // *************************************
 
-    @After(value="@setup")
+    @After(value = "@setup")
     public void setServices() {
         KapuaLocator locator = KapuaLocator.getInstance();
         userService = locator.getService(UserService.class);
@@ -175,7 +173,7 @@ public class UserServiceSteps extends TestBase {
         uc.setDisplayName(displayName);
         uc.setEmail(userEmail);
         uc.setPhoneNumber("+1 555 123 4567");
-        uc.setUserStatus(UserStatus.ENABLED);
+        uc.setStatus(UserStatus.ENABLED);
         stepData.put(USER_CREATOR, uc);
         scenario.log("User " + userName + " created.");
     }
@@ -354,7 +352,7 @@ public class UserServiceSteps extends TestBase {
     @When("I count users in scope {int}")
     public void countUsersInScope(int scopeId) throws Exception {
         UserQuery query = userFactory.newQuery(new KapuaEid(BigInteger.valueOf(scopeId)));
-        stepData.updateCount((int)userService.count(query));
+        stepData.updateCount((int) userService.count(query));
     }
 
     @Then("I count {int} (user/users)")
@@ -905,7 +903,7 @@ public class UserServiceSteps extends TestBase {
         Assert.assertNotNull(user.getCreatedOn());
         Assert.assertNotNull(user.getCreatedBy());
         Assert.assertNotNull(user.getModifiedOn());
-        Assert. assertNotNull(user.getModifiedBy());
+        Assert.assertNotNull(user.getModifiedBy());
         if ((cucUser.getDisplayName() != null) && (cucUser.getDisplayName().length() > 0)) {
             Assert.assertEquals(cucUser.getDisplayName(), user.getDisplayName());
         }
@@ -1027,7 +1025,7 @@ public class UserServiceSteps extends TestBase {
                 LocalDate localDate1 = t1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDate localDate2 = t2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                 if (localDate1.getYear() == localDate2.getYear() && localDate1.getMonthValue() == localDate2.getMonthValue()
-                    && localDate1.getDayOfMonth() == localDate2.getDayOfMonth()) {
+                        && localDate1.getDayOfMonth() == localDate2.getDayOfMonth()) {
                     matchUserData(foundUserItem.getUser(), userItem);
                     userChecks = true;
                     break;
@@ -1048,7 +1046,7 @@ public class UserServiceSteps extends TestBase {
         UserListResult queryResult = userService.query(query);
         iFoundUsers = new HashSet<>();
         List<User> users = queryResult.getItems();
-        for (User userItems : users){
+        for (User userItems : users) {
             iFoundUsers.add(new ComparableUser(userItems));
         }
         stepData.put(USER_LIST, iFoundUsers);
@@ -1087,7 +1085,7 @@ public class UserServiceSteps extends TestBase {
         UserListResult queryResult = userService.query(query);
         iFoundUsers = new HashSet<>();
         List<User> users = queryResult.getItems();
-        for (User userItems : users){
+        for (User userItems : users) {
             iFoundUsers.add(new ComparableUser(userItems));
         }
         stepData.put(USER_LIST, iFoundUsers);
@@ -1121,8 +1119,8 @@ public class UserServiceSteps extends TestBase {
     @And("I find users with phone number {string}")
     public void iFindUsersWithPhoneNumber(String phoneNumber) {
         UserListResult users = (UserListResult) stepData.get(FOUND_USERS);
-        for (User user : users.getItems()){
-            Assert.assertEquals(user.getPhoneNumber(),(phoneNumber));
+        for (User user : users.getItems()) {
+            Assert.assertEquals(user.getPhoneNumber(), (phoneNumber));
         }
         stepData.put(USER_LIST, users);
     }
@@ -1194,19 +1192,19 @@ public class UserServiceSteps extends TestBase {
 
     @And("I search users with email {string}")
     public void iSearchForUsersWithEmail(String email) throws Throwable {
-       UserQuery userQuery = userFactory.newQuery(DEFAULT_ID);
-       userQuery.setPredicate(userQuery.attributePredicate(UserAttributes.EMAIL, email, AttributePredicate.Operator.EQUAL));
-       UserListResult userListResult = userService.query(userQuery);
-       stepData.put(FOUND_USERS, userListResult);
+        UserQuery userQuery = userFactory.newQuery(DEFAULT_ID);
+        userQuery.setPredicate(userQuery.attributePredicate(UserAttributes.EMAIL, email, AttributePredicate.Operator.EQUAL));
+        UserListResult userListResult = userService.query(userQuery);
+        stepData.put(FOUND_USERS, userListResult);
     }
 
     @Then("I find users with email {string}")
     public void iFindUsersWithEmail(String email) {
-       UserListResult users = (UserListResult) stepData.get(FOUND_USERS);
-       for (User user : users.getItems()){
-           Assert.assertEquals(user.getEmail(), (email));
-       }
-       stepData.put(USER_LIST, users);
+        UserListResult users = (UserListResult) stepData.get(FOUND_USERS);
+        for (User user : users.getItems()) {
+            Assert.assertEquals(user.getEmail(), (email));
+        }
+        stepData.put(USER_LIST, users);
     }
 
     @And("^I enable mfa$")

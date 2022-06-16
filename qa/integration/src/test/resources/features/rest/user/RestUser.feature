@@ -14,14 +14,14 @@
 Feature: REST API tests for User
   REST API test of Kapua User API.
 
-@setup
+  @setup
   Scenario: Start event broker for all scenarios
     Given Start Event Broker
     And Start Jetty Server on host "127.0.0.1" at port "8081"
 
   Scenario: Simple Jetty with rest-api war
-    Jetty with api.war is already started, now just login with sys user and
-    call GET on users to retrieve list of all users.
+  Jetty with api.war is already started, now just login with sys user and
+  call GET on users to retrieve list of all users.
 
     Given Server with host "127.0.0.1" on port "8081"
     When REST POST call at "/v1/authentication/user" with JSON "{"password": "kapua-password", "username": "kapua-sys"}"
@@ -38,14 +38,14 @@ Feature: REST API tests for User
 #    And REST response containing AccessToken
 #    And REST POST call at "/v1/AQ/accounts" with JSON "{"expirationDate": "2030-02-21T12:05:00.000Z", "organizationName": "Org A", "organizationPersonName": "Person Name", "organizationEmail": "person@org-a.com", "organizationPhoneNumber": "555-123-456", "organizationAddressLine1": "Address A", "organizationAddressLine2": "NA",  "organizationCity": "Ljubljana", "organizationZipPostCode": "1000", "organizationStateProvinceCounty": "Province", "organizationCountry": "Slovenia", "name": "Person Name","entityAttributes": {}, "scopeId": "1"}"
 #    Then REST response containing Account
-#    And REST POST call at "/v1/$lastAccountCompactId$/users" with JSON "{"displayName": "User A", "email": "user.a@comp-a.com", "phoneNumber": "555-123-456", "userType": "INTERNAL", "externalId": "", "expirationDate": "2030-02-21T12:05:00.000Z", "userStatus": "ENABLED", "name": "usera", "entityAttributes": {}, "scopeId": "$lastAccountId$"}"
+#    And REST POST call at "/v1/$lastAccountCompactId$/users" with JSON "{"displayName": "User A", "email": "user.a@comp-a.com", "phoneNumber": "555-123-456", "userType": "INTERNAL", "externalId": "", "expirationDate": "2030-02-21T12:05:00.000Z", "status": "ENABLED", "name": "usera", "entityAttributes": {}, "scopeId": "$lastAccountId$"}"
 #
 
   Scenario: Bug when user can retrieve user in another account if it has other account's user id
-    Prepare two different accounts with each having single user.
-    Login into account A.
-    Fetch user in that account and keep his ID.
-    Login into account B and search for user from previous step with its ID.
+  Prepare two different accounts with each having single user.
+  Login into account A.
+  Fetch user in that account and keep his ID.
+  Login into account B and search for user from previous step with its ID.
 
     Given Server with host "127.0.0.1" on port "8081"
 # ------ Service steps ------
@@ -130,8 +130,8 @@ Feature: REST API tests for User
     Then REST response code is 404
 
   Scenario: Retrieve all users and check if limitExceed value is true
-    Login with sys user and call GET on users to retrieve list of all users. Specify a limit of 0 entries,
-    then the limitExceed value must be true.
+  Login with sys user and call GET on users to retrieve list of all users. Specify a limit of 0 entries,
+  then the limitExceed value must be true.
 
     Given Server with host "127.0.0.1" on port "8081"
     Given An authenticated user
