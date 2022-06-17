@@ -61,12 +61,12 @@ public class CryptoUtil {
     static {
         String defaultSecretKey = SECRET_KEY_LEGACY;
 
-        if (Strings.isNullOrEmpty(defaultSecretKey)) {
+        if (!Strings.isNullOrEmpty(SECRET_KEY)) {
             defaultSecretKey = SECRET_KEY;
         }
 
         if (("changeMePlease!!".equals(defaultSecretKey) ||
-                "Y3h14xr2!fEDp_@1".equals(defaultSecretKey)) &&
+                "rv;ipse329183!@#".equals(defaultSecretKey)) &&
                 SECRET_KEY_ENFORCE) {
             throw new DefaultSecretKeyDetectedRuntimeException(defaultSecretKey);
         }

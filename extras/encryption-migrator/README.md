@@ -42,7 +42,7 @@ The following settings are available as system properties when running the migra
 |-----------------------------|---------------------------------------------------------------------------|------------------|
 | migrator.encryption.dryRun  | Run the tool without affecting data                                       | false            |
 | migrator.encryption.key.old | The old secret key for symmetric encryption                               | changeMePlease!! |
-| migrator.encryption.key.mfs | The old secret key for symmetric encryption of the MfaOption.mfaSecretKey | rv;ipse329183!@# |
+| migrator.encryption.key.mfa | The old secret key for symmetric encryption of the MfaOption.mfaSecretKey | rv;ipse329183!@# |
 | migrator.encryption.key.new | The new secret key for symmetric encryption                               | changedMeThanks! |
 
 Other useful properties from Kapua
