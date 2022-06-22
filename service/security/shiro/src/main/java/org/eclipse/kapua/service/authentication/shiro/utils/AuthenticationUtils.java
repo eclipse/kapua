@@ -13,16 +13,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro.utils;
 
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-
 import org.apache.shiro.codec.Base64;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.crypto.hash.Sha512Hash;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSetting;
@@ -34,12 +30,15 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 /**
  * Authentication utilities.
  *
  * @since 1.0
- *
  */
 public class AuthenticationUtils {
 
@@ -65,14 +64,14 @@ public class AuthenticationUtils {
         // Do crypt
         String cryptedValue;
         switch (algorithm) {
-        case BCRYPT:
-            cryptedValue = doBCrypt(plainValue);
-            break;
-        case SHA:
-            cryptedValue = doSha(plainValue);
-            break;
-        default:
-            throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, null, (Object[]) null);
+            case BCRYPT:
+                cryptedValue = doBCrypt(plainValue);
+                break;
+            case SHA:
+                cryptedValue = doSha(plainValue);
+                break;
+            default:
+                throw new KapuaRuntimeException(KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, null, (Object[]) null);
         }
 
         return cryptedValue;
@@ -97,13 +96,13 @@ public class AuthenticationUtils {
             // Hash value
             String hashedValue;
             switch (shaAlgorithm) {
-            case "SHA256":
-                hashedValue = (new Sha256Hash(plainValue, salt)).toHex();
-                break;
-            case "SHA512":
-            default:
-                hashedValue = (new Sha512Hash(plainValue, salt)).toHex();
-                break;
+                case "SHA256":
+                    hashedValue = (new Sha256Hash(plainValue, salt)).toHex();
+                    break;
+                case "SHA512":
+                default:
+                    hashedValue = (new Sha512Hash(plainValue, salt)).toHex();
+                    break;
             }
 
             //
@@ -139,7 +138,9 @@ public class AuthenticationUtils {
      *
      * @param value the string to encrypt
      * @return the encrypted string
+     * @deprecated Since 2.0.0. Please make use of {@link CryptoUtil#encryptAes(String)}.
      */
+    @Deprecated
     public static String encryptAes(String value) {
         try {
             Key key = generateKey();
@@ -159,7 +160,9 @@ public class AuthenticationUtils {
      *
      * @param encryptedValue the string to decrypt
      * @return the decrypted string
+     * @deprecated Since 2.0.0. Please make use of {@link CryptoUtil#decryptAes(String)}.
      */
+    @Deprecated
     public static String decryptAes(String encryptedValue) {
         try {
             Key key = generateKey();
@@ -176,10 +179,12 @@ public class AuthenticationUtils {
     }
 
     /**
-     * Constructs a secret key from the given byte array.
+     * Constructs a secret key from the given byte array from {@link KapuaCryptoSettingKeys#CIPHER_KEY}.
      *
      * @return a {@link SecretKeySpec} object
+     * @deprecated Since 2.0.0. Please make use of {@link CryptoUtil}
      */
+    @Deprecated
     private static Key generateKey() {
 
         // Retrieve Cipher Settings

@@ -21,7 +21,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResult;
-import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 
 /**
  * {@link MfaOption} {@link ServiceDAO}
@@ -39,13 +38,11 @@ public class MfaOptionDAO extends ServiceDAO {
     public static MfaOption create(EntityManager em, MfaOptionCreator mfaOptionCreator) throws KapuaException {
 
         //
-        // Crypt MfaOption key
-        String cryptedSecretKey = AuthenticationUtils.encryptAes(mfaOptionCreator.getMfaSecretKey());
-
-        //
         // Create MfaOption
-        MfaOptionImpl mfaOptionImpl = new MfaOptionImpl(mfaOptionCreator.getScopeId(), mfaOptionCreator.getUserId(),
-                cryptedSecretKey);
+        MfaOptionImpl mfaOptionImpl = new MfaOptionImpl(mfaOptionCreator.getScopeId());
+        mfaOptionImpl.setUserId(mfaOptionCreator.getUserId());
+        mfaOptionImpl.setMfaSecretKey(mfaOptionCreator.getMfaSecretKey());
+
         //
         // Do create
         return ServiceDAO.create(em, mfaOptionImpl);

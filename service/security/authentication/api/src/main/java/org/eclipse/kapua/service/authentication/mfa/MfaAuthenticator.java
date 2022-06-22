@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.mfa;
 
+import org.eclipse.kapua.KapuaException;
+
 import java.util.List;
 
 /**
@@ -27,11 +29,11 @@ public interface MfaAuthenticator {
     /**
      * Validates a code generated with the authenticator app
      *
-     * @param encryptedSecret  the encoded secret key
+     * @param mfaSecretKey  the MFA secret key
      * @param verificationCode the verification code
      * @return true if the verficationCode is valid, false otherwise
      */
-    boolean authorize(String encryptedSecret, int verificationCode);
+    boolean authorize(String mfaSecretKey, int verificationCode) throws KapuaException;
 
     /**
      * Validates a scratch code
@@ -40,7 +42,7 @@ public interface MfaAuthenticator {
      * @param authCode    the plaintext authentication code
      * @return true if the code match, false otherwise
      */
-    boolean authorize(String hasedScratchCode, String authCode);
+    boolean authorize(String hasedScratchCode, String authCode) throws KapuaException;
 
     /**
      * Generates the secret key

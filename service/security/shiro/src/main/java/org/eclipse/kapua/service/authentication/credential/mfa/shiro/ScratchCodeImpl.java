@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.credential.mfa.shiro;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.AbstractKapuaUpdatableEntity;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -29,13 +28,15 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * {@link ScratchCode} implementation.
+ *
+ * @since 1.3.0
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @Entity(name = "ScratchCode")
 @Table(name = "atht_scratch_code")
-/**
- * {@link ScratchCode} implementation.
- */
 public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements ScratchCode {
 
     private static final long serialVersionUID = -2785931432917205759L;
@@ -52,6 +53,8 @@ public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements Scr
 
     /**
      * Constructor.
+     *
+     * @since 1.3.0
      */
     public ScratchCodeImpl() {
         super();
@@ -60,7 +63,8 @@ public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements Scr
     /**
      * Constructor.
      *
-     * @param scopeId The scope {@link KapuaId} to set into the {@link ScratchCode}.
+     * @param scopeId The {@link ScratchCode#getScopeId()}.
+     * @since 1.3.0
      */
     public ScratchCodeImpl(KapuaId scopeId) {
         super(scopeId);
@@ -71,23 +75,26 @@ public class ScratchCodeImpl extends AbstractKapuaUpdatableEntity implements Scr
      *
      * @param scopeId The scope {@link KapuaId} to set into the {@link ScratchCode}.
      * @param code    The code to set into the {@link ScratchCode}.
+     * @since 1.3.0
      */
     public ScratchCodeImpl(KapuaId scopeId, KapuaId mfaOptionId, String code) {
         super(scopeId);
-        this.mfaOptionId = (KapuaEid) mfaOptionId;
-        this.code = code;
+
+        setMfaOptionId(KapuaEid.parseKapuaId(mfaOptionId));
+        setCode(code);
     }
 
     /**
      * Clone constructor.
      *
-     * @param scratchCode
-     * @throws KapuaException
+     * @param scratchCode The {@link ScratchCode} to clone.
+     * @since 1.3.0
      */
-    public ScratchCodeImpl(ScratchCode scratchCode) throws KapuaException {
+    public ScratchCodeImpl(ScratchCode scratchCode) {
         super(scratchCode);
-        setCode(scratchCode.getCode());
+
         setMfaOptionId(scratchCode.getMfaOptionId());
+        setCode(scratchCode.getCode());
     }
 
     @Override

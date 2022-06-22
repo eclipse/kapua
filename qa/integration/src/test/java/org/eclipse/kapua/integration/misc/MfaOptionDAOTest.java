@@ -77,7 +77,7 @@ public class MfaOptionDAOTest extends Assert {
         Mockito.when(mfaOptionCreator.getUserId()).thenReturn(new KapuaEid(BigInteger.ONE));
 
         assertThat("Instance of MfaOption object expected.", MfaOptionDAO.create(entityManager, mfaOptionCreator), IsInstanceOf.instanceOf(MfaOption.class));
-        assertEquals("Expected and actual values should be the same.", "kOhsl1vEPvSuZcifFlMCvg", MfaOptionDAO.create(entityManager, mfaOptionCreator).getMfaSecretKey());
+        assertEquals("Expected and actual values should be the same.", "mfa secret key", MfaOptionDAO.create(entityManager, mfaOptionCreator).getMfaSecretKey());
         assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.create(entityManager, mfaOptionCreator).getScopeId());
         assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.create(entityManager, mfaOptionCreator).getUserId());
     }

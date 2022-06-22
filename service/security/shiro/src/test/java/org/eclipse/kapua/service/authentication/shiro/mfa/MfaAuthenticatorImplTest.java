@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.authentication.shiro.mfa;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
@@ -45,7 +46,7 @@ public class MfaAuthenticatorImplTest {
     }
 
     @Test
-    public void authorizeEncryptedSecretVerificationCodeParametersTest() {
+    public void authorizeEncryptedSecretVerificationCodeParametersTest() throws KapuaException {
         for (String encryptedSecret : encryptedSecrets) {
             for (int verificationCode : verificationCodes) {
                 Assert.assertFalse("False expected.", mfaAuthenticatorImpl.authorize(encryptedSecret, verificationCode));
@@ -53,15 +54,15 @@ public class MfaAuthenticatorImplTest {
         }
     }
 
-    @Test(expected = NullPointerException.class)
-    public void authorizeNullEncryptedSecretVerificationCodeParametersTest() {
+    @Test(expected = KapuaIllegalArgumentException.class)
+    public void authorizeNullEncryptedSecretVerificationCodeParametersTest() throws KapuaException {
         for (int verificationCode : verificationCodes) {
             Assert.assertFalse("False expected.", mfaAuthenticatorImpl.authorize(null, verificationCode));
         }
     }
 
     @Test
-    public void authorizeHasedScratchCodeVerificationCodeParametersFalseTest() {
+    public void authorizeHasedScratchCodeVerificationCodeParametersFalseTest() throws KapuaException {
         for (String hasedScratchCode : hashedScratchCodes) {
             for (String stringVerificationCode : stringVerificationCodes) {
                 Assert.assertFalse("False expected.", mfaAuthenticatorImpl.authorize(hasedScratchCode, stringVerificationCode));
@@ -70,7 +71,7 @@ public class MfaAuthenticatorImplTest {
     }
 
     @Test
-    public void authorizeHasedScratchCodeVerificationCodeParametersTrueTest() {
+    public void authorizeHasedScratchCodeVerificationCodeParametersTrueTest() throws KapuaException {
         Assert.assertTrue("True expected.", mfaAuthenticatorImpl.authorize("$2a$12$2AZYOAvilJyNvG8b6rBDaOSIcM3mKc6iyNQUYIXOF4ZFEAYdzM7Jm", "plainValue"));
     }
 
