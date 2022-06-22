@@ -14,6 +14,7 @@
 package org.eclipse.kapua.qa.common;
 
 import org.apache.shiro.SecurityUtils;
+import org.eclipse.kapua.commons.crypto.setting.CryptoSettingKeys;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -322,6 +323,7 @@ public class BasicSteps extends TestBase {
         if (additionalOptions!=null) {
             System.setProperty(SystemSettingKey.DB_CONNECTION_ADDITIONAL_OPTIONS.key(), additionalOptions);
         }
+        System.setProperty(CryptoSettingKeys.CRYPTO_SECRET_KEY.key(), "kapuaTestsKey!!!");
         System.setProperty("certificate.jwt.private.key", jwtKey);
         System.setProperty("certificate.jwt.certificate", jwtCertificate);
         System.setProperty("broker.ip", brokerIp);

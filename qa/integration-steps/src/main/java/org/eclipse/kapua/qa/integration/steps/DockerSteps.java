@@ -34,11 +34,9 @@ import com.spotify.docker.client.messages.Network;
 import com.spotify.docker.client.messages.NetworkConfig;
 import com.spotify.docker.client.messages.NetworkCreation;
 import com.spotify.docker.client.messages.PortBinding;
-
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
-
 import org.apache.activemq.command.BrokerInfo;
 import org.eclipse.kapua.qa.common.BasicSteps;
 import org.eclipse.kapua.qa.common.DBHelper;
@@ -219,8 +217,7 @@ public class DockerSteps {
                 logger.info("Consumers not ready after {}s... wait", (loops * WAIT_STEP / 1000));
             }
             logger.info("Consumers ready");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Error while starting full docker environment: {}", e.getMessage(), e);
             throw e;
         }
@@ -258,8 +255,7 @@ public class DockerSteps {
             synchronized (this) {
                 this.wait(WAIT_FOR_JOB_ENGINE);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Error while starting base docker environment: {}", e.getMessage(), e);
             throw e;
         }
@@ -413,14 +409,14 @@ public class DockerSteps {
         List<Image> images = DockerUtil.getDockerClient().listImages(DockerClient.ListImagesParam.allImages());
         int count = 0;
         if ((images != null) && (images.size() > 0)) {
-             count = images.size();
-             logger.info("ids:");
-             for (Image image : images) {
+            count = images.size();
+            logger.info("ids:");
+            for (Image image : images) {
                 if (filterImageToPrint(image)) {
-                   StringBuilder builder = new StringBuilder();
-                   builder.append(image.id());
-                   image.repoTags().forEach(value -> builder.append("\t").append(value));
-                   logger.info("{}", builder.toString());
+                    StringBuilder builder = new StringBuilder();
+                    builder.append(image.id());
+                    image.repoTags().forEach(value -> builder.append("\t").append(value));
+                    logger.info("{}", builder.toString());
                 }
             }
         }
@@ -446,8 +442,7 @@ public class DockerSteps {
             containerList.forEach(container -> {
                 container.names().forEach((containerName) -> logger.info("\t\t{}", containerName));
             });
-        }
-        catch (DockerException | InterruptedException e) {
+        } catch (DockerException | InterruptedException e) {
             logger.warn("Cannot print container name for step '{}'", description, e);
         }
         logger.info("Print containers ({}) DONE - {}", count, description);
@@ -598,15 +593,14 @@ public class DockerSteps {
                     printContainerLog(name);
                 }
             }
-        }
-        else {
+        } else {
             logger.info("Print containers log in exit disabled.");
         }
     }
 
     private boolean isPrintContainer(String name) {
         return BasicSteps.JOB_ENGINE_CONTAINER_NAME.equals(name) ||
-            BasicSteps.MESSAGE_BROKER_CONTAINER_NAME.equals(name);
+                BasicSteps.MESSAGE_BROKER_CONTAINER_NAME.equals(name);
     }
 
     private void printContainerLog(String name) {
@@ -622,10 +616,10 @@ public class DockerSteps {
                         Logger brokerLogger = LoggerFactory.getLogger(name);
                         brokerLogger.info("\n===================================================\n START LOG FOR CONTAINER: {} (id: {})\n===================================================", name, container.id());
                         StringBuilder builder = new StringBuilder();
-                        int i=0;
+                        int i = 0;
                         while (logStream.hasNext()) {
                             builder.append(StandardCharsets.UTF_8.decode(logStream.next().content()).toString());
-                            if (++i%100 == 0) {
+                            if (++i % 100 == 0) {
                                 brokerLogger.info(builder.toString());
                                 builder = new StringBuilder();
                             }
@@ -686,6 +680,7 @@ public class DockerSteps {
                 "commons.eventbus.url=failover:(amqp://events-broker:5672)?jms.sendTimeout=1000",
                 "certificate.jwt.private.key=file:///var/opt/activemq/key.pk8",
                 "certificate.jwt.certificate=file:///var/opt/activemq/cert.pem",
+                "crypto.secret.key=kapuaTestsKey!!!",
                 String.format("broker.ip=%s", brokerIp));
         if (envVar != null) {
             envVars.addAll(envVar);
@@ -763,7 +758,8 @@ public class DockerSteps {
                 .exposedPorts(ports)
                 .env(
                         "commons.db.schema.update=true",
-                        "BROKER_HOST=message-broker"
+                        "BROKER_HOST=message-broker",
+                        "crypto.secret.key=kapuaTestsKey!!!"
                 )
                 .image("kapua/kapua-consumer-telemetry:" + KAPUA_VERSION)
                 .build();
@@ -790,7 +786,8 @@ public class DockerSteps {
                 .exposedPorts(ports)
                 .env(
                         "commons.db.schema.update=true",
-                        "BROKER_HOST=message-broker"
+                        "BROKER_HOST=message-broker",
+                        "crypto.secret.key=kapuaTestsKey!!!"
                 )
                 .image("kapua/kapua-consumer-lifecycle:" + KAPUA_VERSION)
                 .build();
@@ -855,6 +852,9 @@ public class DockerSteps {
         return ContainerConfig.builder()
                 .hostConfig(hostConfig)
                 .exposedPorts(String.valueOf(jobEnginePort))
+                .env(
+                        "crypto.secret.key=kapuaTestsKey!!!"
+                )
                 .image("kapua/kapua-job-engine:" + KAPUA_VERSION)
                 .build();
     }
