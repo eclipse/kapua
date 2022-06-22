@@ -305,6 +305,7 @@ public class DockerSteps {
                 "commons.eventbus.url=failover:(amqp://events-broker:5672)?jms.sendTimeout=1000",
                 "certificate.jwt.private.key=file:///var/opt/activemq/key.pk8",
                 "certificate.jwt.certificate=file:///var/opt/activemq/cert.pem",
+                "crypto.secret.key=kapuaTestsKey!!!",
                 String.format("broker.ip=%s", brokerIp));
         if (envVar != null) {
             envVars.addAll(envVar);
