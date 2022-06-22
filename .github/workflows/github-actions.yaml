@@ -3,7 +3,7 @@ on: [ push, pull_request ] # Triggers the workflow on push or pull request event
 
 env:
   BUILD_OPTS: ""
-  CONFIG_OVERRIDES: "-Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost"
+  CONFIG_OVERRIDES: "-Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dcrypto.secret.key=kapuaTestsKey!!!"
   MAVEN_OPTS: "-Xmx4096m"
 
 jobs:
