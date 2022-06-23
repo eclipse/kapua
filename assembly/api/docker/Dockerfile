@@ -43,6 +43,8 @@ ENV JAVA_OPTS "-Dcommons.db.schema.update=true \
                -Djavax.xml.bind.context.factory=org.eclipse.persistence.jaxb.JAXBContextFactory \
                -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR} \
                -Djob.engine.client.auth.mode=access_token \
+               -Dcipher.key=\${CIPHER_KEY} \
+               -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY} \
                \${JETTY_DEBUG_OPTS}"
 
 USER 0

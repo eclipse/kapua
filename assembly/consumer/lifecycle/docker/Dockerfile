@@ -36,7 +36,9 @@ ENV JAVA_OPTS -Dcommons.db.schema.update=true \
               -Dconsumer.jaxb_context_class_name=org.eclipse.kapua.consumer.lifecycle.LifecycleJAXBContextProvider \
               -Djob.engine.base.url=\${JOB_ENGINE_BASE_ADDR} \
               -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
-              -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem
+              -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
+              -Dcipher.key=\${CIPHER_KEY} \
+              -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY}
 
 EXPOSE 8080
 
