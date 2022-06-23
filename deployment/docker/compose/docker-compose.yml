@@ -37,6 +37,7 @@ services:
       - es
       - events-broker
     environment:
+      - CRYPTO_SECRET_KEY
       - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
       - KAPUA_CRT
@@ -58,6 +59,7 @@ services:
       - es
       - events-broker
     environment:
+      - CRYPTO_SECRET_KEY
       - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
       - KAPUA_CA
@@ -90,6 +92,7 @@ services:
       - es
       - events-broker
     environment:
+      - CRYPTO_SECRET_KEY
       - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
       - KAPUA_CA
@@ -109,6 +112,7 @@ services:
       - db
       - events-broker
     environment:
+      - CRYPTO_SECRET_KEY
       - KAPUA_DISABLE_SSL
       - KAPUA_DISABLE_DATASTORE
       - KAPUA_CA
