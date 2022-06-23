@@ -132,7 +132,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         } catch (Exception e) {
             metricGenericErrorCount.inc();
             metricQueueGenericErrorCount.inc();
-            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
+            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         } finally {
             metricDataSaveTimeContext.stop();
         }
@@ -162,7 +162,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         } catch (Exception e) {
             metricGenericErrorCount.inc();
             metricQueueGenericErrorCount.inc();
-            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
+            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         } finally {
             metricDataSaveTimeContext.stop();
         }
@@ -179,7 +179,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         try {
             return messageStoreFacade.find(scopeId, id, fetchStyle);
         } catch (Exception e) {
-            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
+            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         }
     }
 
@@ -190,7 +190,11 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         try {
             return messageStoreFacade.query(query);
         } catch (Exception e) {
-            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getCause().getMessage());
+            throw new DatastoreException(
+                KapuaErrorCodes.INTERNAL_ERROR,
+                e,
+                e.getCause().getMessage() != null ? e.getCause().getMessage() : e.getMessage()
+            );
         }
     }
 
@@ -201,7 +205,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         try {
             return messageStoreFacade.count(query);
         } catch (Exception e) {
-            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
+            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         }
     }
 
@@ -212,7 +216,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         try {
             messageStoreFacade.delete(scopeId, id);
         } catch (Exception e) {
-            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
+            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         }
     }
 
@@ -225,7 +229,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         try {
             messageStoreFacade.delete(query);
         } catch (Exception e) {
-            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e);
+            throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         }
     }
 
