@@ -177,7 +177,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
                 throw new ClientProviderInitException(e, "Cannot init ElasticsearchClient");
             }
 
-            // Start a nre reconnect task
+            // Start a reconnect task
             reconnectExecutorTask = Executors.newScheduledThreadPool(1);
             reconnectExecutorTask.scheduleWithFixedDelay(() -> {
                 try {
@@ -185,7 +185,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
                 } catch (Exception e) {
                     LOG.info(">>> Initializing Elasticsearch REST client... Connecting... Error: {}", e.getMessage(), e);
                 }
-            }, 0, getClientReconnectConfiguration().getReconnectDelay(), TimeUnit.MILLISECONDS);
+            }, getClientReconnectConfiguration().getReconnectDelay(), getClientReconnectConfiguration().getReconnectDelay(), TimeUnit.MILLISECONDS);
 
             return this;
         }
@@ -297,18 +297,16 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             throw new ClientInitializationException(e, "Error while parsing node addresses!");
         }
 
-        boolean setCallback = false;
-        // Init internal Elasticseatch client
+        // Init internal Elasticsearch client
         RestClientBuilder restClientBuilder = RestClient.builder(hosts.toArray(new HttpHost[0]));
+        SSLContext sslContext = null;
         if (sslEnabled) {
             try {
                 SSLContextBuilder sslBuilder = SSLContexts.custom();
                 initKeyStore(sslBuilder);
                 initTrustStore(sslBuilder);
 
-                SSLContext sslContext = sslBuilder.build();
-                restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> customizeHttpClient(httpClientBuilder.setSSLContext(sslContext)));
-                setCallback = true;
+                sslContext = sslBuilder.build();
             } catch (NoSuchAlgorithmException | KeyManagementException e) {
                 throw new ClientInitializationException(e, "Failed to build SSLContext");
             }
@@ -316,17 +314,16 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
         String username = getClientConfiguration().getUsername();
         String password = getClientConfiguration().getPassword();
+        CredentialsProvider credentialsProvider = null;
         if (StringUtils.isNotBlank(username) && StringUtils.isNotBlank(password)) {
-            CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider = new BasicCredentialsProvider();
             credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
-            restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> customizeHttpClient(httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider)));
-            setCallback = true;
         }
 
         //issue #
-        if (!setCallback) {
-            restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> customizeHttpClient(httpClientBuilder));
-        }
+        final SSLContext finalSslContext = sslContext;
+        final CredentialsProvider finalCredentialsProvider = credentialsProvider;
+        restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> customizeHttpClient(httpClientBuilder, finalSslContext, finalCredentialsProvider));
 //        restClientBuilder.setFailureListener(new RestElasticsearchFailureListener());
 
         RestClient restClient = restClientBuilder.build();
@@ -343,8 +340,16 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
         return restClient;
     }
 
-    private HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
+    private HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder, SSLContext sslContext, CredentialsProvider credentialsProvider) {
         try {
+            if(sslContext != null) {
+                httpClientBuilder.setSSLContext(sslContext);
+            }
+
+            if(credentialsProvider != null) {
+                httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+            }
+
             DefaultConnectingIOReactor ioReactor = new DefaultConnectingIOReactor();
             ioReactor.setExceptionHandler(new IOReactorExceptionHandler() {
 
