@@ -40,7 +40,9 @@ ENV JAVA_OPTS -Dcommons.db.schema.update=true \
               -Dbroker.host=\${BROKER_ADDR} \
               -Dbroker.port=\${BROKER_PORT} \
               -Dcertificate.jwt.private.key=file:///etc/opt/kapua/key.pk8 \
-              -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem
+              -Dcertificate.jwt.certificate=file:///etc/opt/kapua/cert.pem \
+              -Dcipher.key=\${CIPHER_KEY} \
+              -Dcrypto.secret.key=\${CRYPTO_SECRET_KEY}
 
 EXPOSE 8080
 

@@ -14,3 +14,7 @@
 if (!$ENV:IMAGE_VERSION) {
 	$ENV:IMAGE_VERSION = "latest"
 }
+
+if (!$ENV:CRYPTO_SECRET_KEY) {
+	$ENV:CRYPTO_SECRET_KEY = "dockerSecretKey!"
+}

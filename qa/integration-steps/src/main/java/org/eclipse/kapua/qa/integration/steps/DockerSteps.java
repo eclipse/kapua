@@ -680,7 +680,7 @@ public class DockerSteps {
                 "commons.eventbus.url=failover:(amqp://events-broker:5672)?jms.sendTimeout=1000",
                 "certificate.jwt.private.key=file:///var/opt/activemq/key.pk8",
                 "certificate.jwt.certificate=file:///var/opt/activemq/cert.pem",
-                "crypto.secret.key=kapuaTestsKey!!!",
+                "CRYPTO_SECRET_KEY=kapuaTestsKey!!!",
                 String.format("broker.ip=%s", brokerIp));
         if (envVar != null) {
             envVars.addAll(envVar);
@@ -759,7 +759,7 @@ public class DockerSteps {
                 .env(
                         "commons.db.schema.update=true",
                         "BROKER_HOST=message-broker",
-                        "crypto.secret.key=kapuaTestsKey!!!"
+                        "CRYPTO_SECRET_KEY=kapuaTestsKey!!!"
                 )
                 .image("kapua/kapua-consumer-telemetry:" + KAPUA_VERSION)
                 .build();
@@ -787,7 +787,7 @@ public class DockerSteps {
                 .env(
                         "commons.db.schema.update=true",
                         "BROKER_HOST=message-broker",
-                        "crypto.secret.key=kapuaTestsKey!!!"
+                        "CRYPTO_SECRET_KEY=kapuaTestsKey!!!"
                 )
                 .image("kapua/kapua-consumer-lifecycle:" + KAPUA_VERSION)
                 .build();
@@ -853,7 +853,7 @@ public class DockerSteps {
                 .hostConfig(hostConfig)
                 .exposedPorts(String.valueOf(jobEnginePort))
                 .env(
-                        "crypto.secret.key=kapuaTestsKey!!!"
+                        "CRYPTO_SECRET_KEY=kapuaTestsKey!!!"
                 )
                 .image("kapua/kapua-job-engine:" + KAPUA_VERSION)
                 .build();

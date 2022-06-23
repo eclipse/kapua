@@ -18,7 +18,7 @@ import org.eclipse.kapua.commons.setting.SettingKey;
 /**
  * {@link SettingKey}s for {@link CryptoSettings}.
  *
- * @since 2.0.0 "crypto.secret.key=kapuaTestsKey!!!",
+ * @since 2.0.0
  */
 public enum CryptoSettingKeys implements SettingKey {
 
