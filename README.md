@@ -52,7 +52,7 @@ The team maintains some docker images in a Docker Hub repository at [Kapua Repos
 **Note:** the Docker Hub repository mentioned above is not the official project repository from Eclipse Foundation.
 ***
 
-Suppose the target is the current snapshot 1.5.5-SNAPSHOT.
+Suppose the target is the current snapshot 1.5.5.
 
 * Clone Eclipse Kapua&trade; into a local directory
 * Open an OS shell and move to Kapua project root directory
