@@ -25,7 +25,7 @@ public abstract class AbstractElasticsearchClient<C extends Closeable> implement
 
     protected String clientType;
 
-    private C client;
+    protected C client;
 
     private ElasticsearchClientConfiguration clientConfiguration;
     private ModelContext modelContext;
