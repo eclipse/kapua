@@ -24,6 +24,8 @@ import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.exception.UnsupportedTypeMappingException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.predicate.StorablePredicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.util.Arrays;
@@ -38,6 +40,7 @@ import java.util.Date;
 public class MappingUtils {
 
     private final static JsonNodeFactory JSON_NODE_FACTORY = JsonNodeFactory.instance;
+    private static final Logger LOG = LoggerFactory.getLogger(MappingUtils.class);
 
     private MappingUtils() {
     }
@@ -75,6 +78,13 @@ public class MappingUtils {
             try {
                 node.set(name, JSON_NODE_FACTORY.textNode(KapuaDateUtils.formatDate((Date) value)));
             } catch (ParseException e) {
+                LOG.warn(
+                    "The value of mapping {} of value {} is not compatible with type {}. Error: {}",
+                    name,
+                    value,
+                    Date.class,
+                    e.getMessage()
+                );
                 throw new InvalidValueMappingException(e, name, value, Date.class);
             }
         } else if (value instanceof StorableId) {
