@@ -118,7 +118,13 @@ public class RestElasticsearchClient extends AbstractElasticsearchClient<RestCli
 
     @Override
     public void close() {
-        // No resources to close
+        if(client != null) {
+            try {
+                client.close();
+            } catch (IOException e) {
+                LOG.error("Error closing client", e);
+            }
+        }
     }
 
     @Override
