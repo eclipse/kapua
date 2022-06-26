@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.datastore.internal;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.Timer.Context;
+
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -44,6 +45,8 @@ import org.eclipse.kapua.service.datastore.model.query.MessageQuery;
 import org.eclipse.kapua.service.elasticsearch.client.exception.ClientCommunicationException;
 import org.eclipse.kapua.service.storable.model.id.StorableId;
 import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.util.UUID;
@@ -55,6 +58,8 @@ import java.util.UUID;
  */
 @Singleton
 public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService implements MessageStoreService {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceImpl.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
 
@@ -132,6 +137,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         } catch (Exception e) {
             metricGenericErrorCount.inc();
             metricQueueGenericErrorCount.inc();
+            logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         } finally {
             metricDataSaveTimeContext.stop();
@@ -162,6 +168,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         } catch (Exception e) {
             metricGenericErrorCount.inc();
             metricQueueGenericErrorCount.inc();
+            logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         } finally {
             metricDataSaveTimeContext.stop();
@@ -179,6 +186,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         try {
             return messageStoreFacade.find(scopeId, id, fetchStyle);
         } catch (Exception e) {
+            logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         }
     }
@@ -190,6 +198,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         try {
             return messageStoreFacade.query(query);
         } catch (Exception e) {
+            logException(e);
             throw new DatastoreException(
                 KapuaErrorCodes.INTERNAL_ERROR,
                 e,
@@ -205,6 +214,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         try {
             return messageStoreFacade.count(query);
         } catch (Exception e) {
+            logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         }
     }
@@ -216,6 +226,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         try {
             messageStoreFacade.delete(scopeId, id);
         } catch (Exception e) {
+            logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         }
     }
@@ -229,6 +240,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         try {
             messageStoreFacade.delete(query);
         } catch (Exception e) {
+            logException(e);
             throw new DatastoreException(KapuaErrorCodes.INTERNAL_ERROR, e, e.getMessage());
         }
     }
@@ -244,4 +256,9 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         authorizationService.checkPermission(permission);
     }
 
+    private void logException(Exception e) {
+        if (e instanceof RuntimeException) {
+            logger.debug("", e);
+        }
+    }
 }
