@@ -17,7 +17,7 @@
     <parent>
         <artifactId>kapua-console</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>1.5.6-SNAPSHOT</version>
+        <version>1.5.6</version>
     </parent>
 
     <artifactId>kapua-console-module</artifactId>

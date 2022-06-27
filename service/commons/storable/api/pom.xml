@@ -17,7 +17,7 @@
     <parent>
         <artifactId>kapua-service-storable</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>1.5.6-SNAPSHOT</version>
+        <version>1.5.6</version>
     </parent>
 
     <artifactId>kapua-service-storable-api</artifactId>
