@@ -106,7 +106,7 @@ public class GwtCredential extends GwtUpdatableEntityModel {
     }
 
     public void setCredentialKey(String credentialKey) {
-        set("credentialKey", credentialKey);
+        set("credentialKey", credentialKey, false);
     }
 
     public String getUsername() {
