@@ -23,7 +23,7 @@ components:
         $ref: '../openapi.yaml#/components/schemas/kapuaId'
       required: true
   schemas:
-    triggerDefinitionProperty:
+    triggerProperty:
       type: object
       properties:
         name:
@@ -32,9 +32,14 @@ components:
           type: string
         propertyValue:
           type: string
+      required:
+        - name
+        - propertyType
+        - propertyValue
       example:
         name: jobId
         propertyType: org.eclipse.kapua.model.id.KapuaId
+        propertyValue: AQ
     triggerDefinition:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaNamedEntity'
@@ -50,7 +55,7 @@ components:
             triggerProperties:
               type: array
               items:
-                $ref: '#/components/schemas/triggerDefinitionProperty'
+                $ref: '#/components/schemas/triggerProperty'
       example:
         type: triggerDefinition
         id: AQ

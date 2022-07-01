@@ -906,8 +906,8 @@ components:
     tagListResult:
       $ref: './tag/tag.yaml#/components/schemas/tagListResult'
     ### Trigger Definition Entities ###
-    triggerDefinitionProperty:
-      $ref: './triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerDefinitionProperty'
+    triggerProperty:
+      $ref: './triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerProperty'
     triggerDefinition:
       $ref: './triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerDefinition'
     triggerDefinitionListResult:

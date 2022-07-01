@@ -67,7 +67,7 @@ components:
             triggerProperties:
               type: array
               items:
-                $ref: '../triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerDefinitionProperty'
+                $ref: '../triggerDefinition/triggerDefinition.yaml#/components/schemas/triggerProperty'
       example:
         type: triggerCreator
         name: A trigger
