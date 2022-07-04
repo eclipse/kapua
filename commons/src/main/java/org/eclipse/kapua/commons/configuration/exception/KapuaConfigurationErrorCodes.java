@@ -10,47 +10,35 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.commons.configuration;
+package org.eclipse.kapua.commons.configuration.exception;
 
 import org.eclipse.kapua.KapuaErrorCode;
 
 /**
- * Configuration error codes.
+ * {@link KapuaErrorCode}s for {@link KapuaConfigurationException}
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public enum KapuaConfigurationErrorCodes implements KapuaErrorCode {
 
     /**
-     * Internal error
+     * Internal error.
+     *
+     * @since 1.0.0
      */
     INTERNAL_ERROR,
-    /**
-     * Illegal argument
-     */
-    ILLEGAL_ARGUMENT,
-    /**
-     * Operation not allowed
-     */
-    OPERATION_NOT_ALLOWED,
-    /**
-     * Invalid attribute
-     */
-    ATTRIBUTE_INVALID,
-    /**
-     * missing required attribute
-     */
-    REQUIRED_ATTRIBUTE_MISSING,
+
     /**
      * Self limit exceeded in config
+     *
+     * @since 1.0.0
      */
-    SELF_LIMIT_EXCEEDED_IN_CONFIG,
+    LIMIT_EXCEEDED,
+
     /**
      * Parent limit exceeded in config
+     *
+     * @since 1.0.0
      */
-    PARENT_LIMIT_EXCEEDED_IN_CONFIG,
-    /**
-     * The service is not available
-     */
-    SERVICE_UNAVAILABLE
+    PARENT_LIMIT_EXCEEDED,
 }

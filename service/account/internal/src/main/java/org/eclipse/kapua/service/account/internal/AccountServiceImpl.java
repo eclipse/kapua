@@ -49,7 +49,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.TypedQuery;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -425,10 +424,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         );
     }
 
-    @Override
-    protected Map<String, Object> getConfigValues(Account entity) throws KapuaException {
-        return super.getConfigValues(entity.getId());
-    }
+//    @Override
+//    protected Map<String, Object> getConfigValues(Account entity) throws KapuaException {
+//        return super.getConfigValues(entity.getId());
+//    }
 
     private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Domain domain, Actions action) throws KapuaException {
         checkAccountPermission(scopeId, accountId, domain, action, false);

@@ -26,8 +26,8 @@ import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.KapuaUnauthenticatedException;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurationErrorCodes;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurationException;
+import org.eclipse.kapua.commons.configuration.exception.KapuaConfigurationErrorCodes;
+import org.eclipse.kapua.commons.configuration.exception.KapuaConfigurationException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
@@ -184,7 +184,7 @@ public class KapuaExceptionHandler {
             return new GwtKapuaException(GwtKapuaErrorCode.EXTERNAL_ID_ALREADY_EXIST, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaDuplicateExternalUsernameException) {
             return new GwtKapuaException(GwtKapuaErrorCode.EXTERNAL_USERNAME_ALREADY_EXIST, throwable, throwable.getMessage());
-        } else if (throwable instanceof KapuaConfigurationException && ((KapuaConfigurationException) throwable).getCode().name().equals(KapuaConfigurationErrorCodes.SELF_LIMIT_EXCEEDED_IN_CONFIG.name())) {
+        } else if (throwable instanceof KapuaConfigurationException && ((KapuaConfigurationException) throwable).getCode().name().equals(KapuaConfigurationErrorCodes.LIMIT_EXCEEDED.name())) {
             return new GwtKapuaException(GwtKapuaErrorCode.SELF_LIMIT_EXCEEDED_IN_CONFIG, throwable, throwable.getMessage());
         } else if (throwable instanceof KapuaEntityNotFoundException) {
             KapuaEntityNotFoundException kapuaEntityNotFoundException = (KapuaEntityNotFoundException) throwable;
