@@ -167,7 +167,7 @@ Scenario: Init Security Context for all scenarios
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument lockoutPolicy.maxFailures: Value -1 is out of range."
     And I configure credential service
       | type    | name                       | value  |
       | boolean | lockoutPolicy.enabled      | true   |
@@ -295,7 +295,7 @@ Scenario: Init Security Context for all scenarios
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument lockoutPolicy.resetAfter: Value -1 is out of range"
     And I configure credential service
       | type    | name                       | value  |
       | boolean | lockoutPolicy.enabled      | true   |
@@ -384,7 +384,7 @@ Scenario: Init Security Context for all scenarios
 
     Given I login as user with name "kapua-sys" and password "kapua-password"
     Then I create an account with name "acc1", organization name "acc1" and email address "acc1@org.com"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument lockoutPolicy.lockDuration: Value -1 is out of range"
     When I configure credential service
       | type    | name                       | value |
       | boolean | lockoutPolicy.enabled      | true  |
