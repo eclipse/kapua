@@ -17,8 +17,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurationErrorCodes;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurationException;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
@@ -458,7 +456,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
             // If we're going to set a new limit, check that it's not less than system limit
             int newPasswordLimit = Integer.parseInt(updatedProps.get(PASSWORD_MIN_LENGTH).toString());
             if (newPasswordLimit < systemMinimumPasswordLength || newPasswordLimit > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
-                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.ILLEGAL_ARGUMENT, PASSWORD_MIN_LENGTH, newPasswordLimit);
+                throw new KapuaIllegalArgumentException(PASSWORD_MIN_LENGTH, String.valueOf(newPasswordLimit));
             }
         }
         return valid;
