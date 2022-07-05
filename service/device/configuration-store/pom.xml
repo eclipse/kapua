@@ -1,6 +1,6 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2016, 2022 Eurotech and/or its affiliates and others
+    Copyright (c) 2022 Eurotech and/or its affiliates and others
 
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -11,33 +11,23 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua-service</artifactId>
+        <artifactId>kapua-device</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
-    <packaging>pom</packaging>
 
-    <artifactId>kapua-device</artifactId>
-    <name>${project.artifactId}</name>
+    <artifactId>kapua-configuration-store</artifactId>
+    <packaging>pom</packaging>
 
     <modules>
         <module>api</module>
-
-        <module>commons</module>
-
-        <module>call</module>
-
-        <module>asset-store</module>
-        <module>configuration-store</module>
-        <module>registry</module>
-        <module>management</module>
-
+        <module>dummy-store</module>
     </modules>
 
 </project>
