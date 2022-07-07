@@ -5,8 +5,8 @@ services:
     container_name: kapua-keycloak
     image: kapua/kapua-keycloak:${IMAGE_VERSION}
     ports:
-      - 9090:8080
-      - 9443:8443
+      - "9090:8080"
+      - "9443:8443"
     volumes:
       - "../../target/compose/sso/certs:/etc/x509/https"
     environment:
