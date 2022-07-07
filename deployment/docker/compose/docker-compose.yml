@@ -5,13 +5,13 @@ services:
     container_name: db
     image: kapua/kapua-sql:${IMAGE_VERSION}
     ports:
-      - 3306:3306
+      - "3306:3306"
   es:
     container_name: es
     image: docker.elastic.co/elasticsearch/elasticsearch:7.8.1
     ports:
-      - 9200:9200
-      - 9300:9300
+      - "9200:9200"
+      - "9300:9300"
     environment:
       - cluster.name=kapua-datastore
       - discovery.type=single-node
@@ -22,17 +22,17 @@ services:
     container_name: events-broker
     image: kapua/kapua-events-broker:${IMAGE_VERSION}
     ports:
-      - 5672:5672
+      - "5672:5672"
   message-broker:
     container_name: message-broker
     image: kapua/kapua-broker:${IMAGE_VERSION}
     expose:
       - 1893
     ports:
-      - 1883:1883
-      - 8883:8883
-      - 5682:5672
-      - 61614:61614
+      - "1883:1883"
+      - "8883:8883"
+      - "5682:5672"
+      - "61614:61614"
     depends_on:
       - db
       - events-broker
@@ -51,7 +51,7 @@ services:
     container_name: consumer-telemetry
     image: kapua/kapua-consumer-telemetry:${IMAGE_VERSION}
     ports:
-      - 8090:8080
+      - "8090:8080"
     depends_on:
       - db
       - es
@@ -65,7 +65,7 @@ services:
     container_name: consumer-lifecycle
     image: kapua/kapua-consumer-lifecycle:${IMAGE_VERSION}
     ports:
-      - 8091:8080
+      - "8091:8080"
     depends_on:
       - db
       - events-broker
@@ -78,8 +78,8 @@ services:
     container_name: kapua-console
     image: kapua/kapua-console:${IMAGE_VERSION}
     ports:
-      - 8080:8080
-      - 8443:8443
+      - "8080:8080"
+      - "8443:8443"
     depends_on:
       - db
       - es
@@ -111,8 +111,8 @@ services:
     container_name: kapua-api
     image: kapua/kapua-api:${IMAGE_VERSION}
     ports:
-      - 8081:8080
-      - 8444:8443
+      - "8081:8080"
+      - "8444:8443"
     depends_on:
       - db
       - es
