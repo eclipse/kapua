@@ -35,11 +35,15 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaErrorCode;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
+import org.eclipse.kapua.app.console.module.api.client.util.ConsoleInfo;
 import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.client.util.KapuaLoadListener;
 import org.eclipse.kapua.app.console.module.device.client.device.inventory.buttons.ContainerStartButton;
@@ -56,7 +60,8 @@ import java.util.List;
 
 public class DeviceTabInventoryTabContainer extends TabItem {
 
-    private static final ConsoleDeviceMessages MSGS = GWT.create(ConsoleDeviceMessages.class);
+    private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
+    private static final ConsoleDeviceMessages DEVICE_MSGS = GWT.create(ConsoleDeviceMessages.class);
 
     private static final GwtDeviceInventoryManagementServiceAsync GWT_DEVICE_INVENTORY_MANAGEMENT_SERVICE = GWT.create(GwtDeviceInventoryManagementService.class);
 
@@ -229,7 +234,7 @@ public class DeviceTabInventoryTabContainer extends TabItem {
         if (dirty && componentInitialized) {
 
             if (getSelectedDevice() == null) {
-                grid.getView().setEmptyText(MSGS.deviceNoDeviceSelectedOrOffline());
+                grid.getView().setEmptyText(DEVICE_MSGS.deviceNoDeviceSelectedOrOffline());
             } else {
                 storeLoader.load();
             }
@@ -239,7 +244,7 @@ public class DeviceTabInventoryTabContainer extends TabItem {
     }
 
     public void openDeviceOfflineAlertDialog() {
-        InfoDialog errorDialog = new InfoDialog(InfoDialog.InfoDialogType.INFO, MSGS.deviceOffline());
+        InfoDialog errorDialog = new InfoDialog(InfoDialog.InfoDialogType.INFO, DEVICE_MSGS.deviceOffline());
         errorDialog.show();
     }
 
@@ -249,10 +254,17 @@ public class DeviceTabInventoryTabContainer extends TabItem {
         public void loaderLoadException(LoadEvent le) {
             grid.unmask();
 
-            if (le.exception != null) {
-                FailureHandler.handle(le.exception);
-            }
+            Throwable loaderException = le.exception;
 
+            if (loaderException != null) {
+
+                if (loaderException instanceof GwtKapuaException &&
+                        ((GwtKapuaException) loaderException).getCode().equals(GwtKapuaErrorCode.DEVICE_MANAGEMENT_RESPONSE_NOT_FOUND)) {
+                    ConsoleInfo.display(MSGS.error(), "The 'containers' resource is not supported by this device!");
+                } else {
+                    FailureHandler.handle(le.exception);
+                }
+            }
         }
     }
 }
