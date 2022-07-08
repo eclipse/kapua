@@ -41,9 +41,19 @@ public interface ConfigurationStoreService {
      * Get the device configuration
      * @param scopeId
      * @param deviceId
-     * @param configurationComponentPid
      * @throws KapuaException
      * @return
      */
-    DeviceConfiguration getConfigurations(KapuaId scopeId, KapuaId deviceId, String configurationComponentPid) throws KapuaException;
+    DeviceConfiguration getConfigurations(KapuaId scopeId, KapuaId deviceId) throws KapuaException;
+
+    /**
+     * Get the component configuration
+     * @param scopeId
+     * @param deviceId
+     * @param configurationComponentPid
+     * @return
+     * @throws KapuaException
+     */
+    DeviceComponentConfiguration getConfigurations(KapuaId scopeId, KapuaId deviceId, String configurationComponentPid) throws KapuaException;
+
 }
