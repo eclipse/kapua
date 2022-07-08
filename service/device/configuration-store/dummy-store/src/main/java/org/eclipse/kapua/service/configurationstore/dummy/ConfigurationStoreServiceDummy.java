@@ -21,7 +21,13 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceConfigura
 public class ConfigurationStoreServiceDummy implements ConfigurationStoreService {
 
     @Override
-    public DeviceConfiguration getConfigurations(KapuaId scopeId, KapuaId deviceId, String configurationComponentPid) {
+    public DeviceComponentConfiguration getConfigurations(KapuaId scopeId, KapuaId deviceId, String configurationComponentPid) {
+        //nothing to do
+        return null;
+    }
+
+    @Override
+    public DeviceConfiguration getConfigurations(KapuaId scopeId, KapuaId deviceId) {
         //nothing to do
         return null;
     }
