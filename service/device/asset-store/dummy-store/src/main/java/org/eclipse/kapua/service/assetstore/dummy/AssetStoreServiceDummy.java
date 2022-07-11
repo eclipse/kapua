@@ -14,9 +14,12 @@ package org.eclipse.kapua.service.assetstore.dummy;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.assetstore.api.AssetStoreService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
+
+import java.util.Map;
 
 public class AssetStoreServiceDummy implements AssetStoreService {
 
@@ -47,4 +50,18 @@ public class AssetStoreServiceDummy implements AssetStoreService {
         //nothing to do
     }
 
+    @Override
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
+        return null;
+    }
+
+    @Override
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+
+    }
 }
