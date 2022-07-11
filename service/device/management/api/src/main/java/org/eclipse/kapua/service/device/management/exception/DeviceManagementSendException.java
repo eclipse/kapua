@@ -48,6 +48,7 @@ public class DeviceManagementSendException extends DeviceManagementException {
      */
     public DeviceManagementSendException(@NotNull Throwable cause, @NotNull KapuaRequestMessage<?, ?> requestMessage) {
         super(DeviceManagementErrorCodes.SEND_ERROR, cause, requestMessage);
+
         this.requestMessage = requestMessage;
     }
 

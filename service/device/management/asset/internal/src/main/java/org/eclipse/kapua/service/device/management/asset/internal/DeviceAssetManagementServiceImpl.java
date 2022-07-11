@@ -14,8 +14,10 @@ package org.eclipse.kapua.service.device.management.asset.internal;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.assetstore.api.AssetStoreService;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -26,6 +28,7 @@ import org.eclipse.kapua.service.device.management.asset.message.internal.AssetR
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
+import org.eclipse.kapua.service.device.management.exception.DeviceNeverConnectedException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
 
 import javax.inject.Singleton;
@@ -42,6 +45,8 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
     private static final String DEVICE_ASSETS = "deviceAssets";
+
+    private static final AssetStoreService ASSET_STORE_SERVICE = KapuaLocator.getInstance().getService(AssetStoreService.class);
 
     @Override
     public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)
@@ -80,15 +85,32 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         //
         // Do get
         DeviceCallExecutor<?, ?, ?, AssetResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(assetRequestMessage, timeout);
-        AssetResponseMessage responseMessage = deviceApplicationCall.send();
 
-        //
-        // Create event
-        createDeviceEvent(scopeId, deviceId, assetRequestMessage, responseMessage);
+        if (isDeviceConnected(scopeId, deviceId)) {
+            AssetResponseMessage responseMessage = deviceApplicationCall.send();
 
-        //
-        // Check response
-        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
+            //
+            // Create event
+            createDeviceEvent(scopeId, deviceId, assetRequestMessage, responseMessage);
+
+            //
+            // Check response
+            DeviceAssets onlineDeviceAssets = checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
+
+            //
+            // Store value and return
+            ASSET_STORE_SERVICE.storeAssets(scopeId, deviceId, onlineDeviceAssets);
+
+            return onlineDeviceAssets;
+        } else {
+            DeviceAssets offlineDeviceAssets = ASSET_STORE_SERVICE.getAssets(scopeId, deviceId, deviceAssets);
+
+            if (offlineDeviceAssets != null) {
+                return offlineDeviceAssets;
+            } else {
+                throw new DeviceNeverConnectedException(deviceId);
+            }
+        }
     }
 
     @Override
@@ -128,15 +150,32 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
         //
         // Do read
         DeviceCallExecutor<?, ?, ?, AssetResponseMessage> deviceApplicationCall = new DeviceCallExecutor<>(assetRequestMessage, timeout);
-        AssetResponseMessage responseMessage = deviceApplicationCall.send();
 
-        //
-        // Create event
-        createDeviceEvent(scopeId, deviceId, assetRequestMessage, responseMessage);
+        if (isDeviceConnected(scopeId, deviceId)) {
+            AssetResponseMessage responseMessage = deviceApplicationCall.send();
 
-        //
-        // Check response
-        return checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
+            //
+            // Create event
+            createDeviceEvent(scopeId, deviceId, assetRequestMessage, responseMessage);
+
+            //
+            // Check response
+            DeviceAssets onlineDeviceAssets = checkResponseAcceptedOrThrowError(responseMessage, () -> responseMessage.getPayload().getDeviceAssets());
+
+            //
+            // Store value and return
+            ASSET_STORE_SERVICE.storeAssetsValues(scopeId, deviceId, onlineDeviceAssets);
+
+            return onlineDeviceAssets;
+        } else {
+            DeviceAssets offlineDeviceAssetsValues = ASSET_STORE_SERVICE.getAssetsValues(scopeId, deviceId, deviceAssets);
+
+            if (offlineDeviceAssetsValues != null) {
+                return offlineDeviceAssetsValues;
+            } else {
+                throw new DeviceNeverConnectedException(deviceId);
+            }
+        }
     }
 
     @Override
