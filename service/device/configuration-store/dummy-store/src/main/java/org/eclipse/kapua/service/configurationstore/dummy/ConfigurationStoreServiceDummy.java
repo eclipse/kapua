@@ -13,10 +13,13 @@
 package org.eclipse.kapua.service.configurationstore.dummy;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.configurationstore.api.ConfigurationStoreService;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
+
+import java.util.Map;
 
 public class ConfigurationStoreServiceDummy implements ConfigurationStoreService {
 
@@ -42,4 +45,18 @@ public class ConfigurationStoreServiceDummy implements ConfigurationStoreService
         //nothing to do
     }
 
+    @Override
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
+        return null;
+    }
+
+    @Override
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+
+    }
 }

@@ -15,10 +15,11 @@ package org.eclipse.kapua.service.configurationstore.api;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 
-public interface ConfigurationStoreService extends KapuaService {
+public interface ConfigurationStoreService extends KapuaService, KapuaConfigurableService {
 
     /**
      * Store the device configuration
