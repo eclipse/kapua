@@ -15,12 +15,14 @@ package org.eclipse.kapua.service.assetstore.api;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 
-public interface AssetStoreService {
+public interface AssetStoreService extends KapuaService {
 
     /**
      * Store the asset values (with all channels related to the provided asset)
+     *
      * @param message
      * @throws KapuaException
      */
@@ -28,6 +30,7 @@ public interface AssetStoreService {
 
     /**
      * Store the asset values (with all channels related to the provided asset)
+     *
      * @param scopeId
      * @param deviceId
      * @param assets
@@ -37,6 +40,7 @@ public interface AssetStoreService {
 
     /**
      * Get the asset values (with all channels related to the provided asset)
+     *
      * @param scopeId
      * @param deviceId
      * @param assets
@@ -47,6 +51,7 @@ public interface AssetStoreService {
 
     /**
      * Store the asset definition (with all channels related to the provided asset)
+     *
      * @param scopeId
      * @param deviceId
      * @param assets
@@ -56,6 +61,7 @@ public interface AssetStoreService {
 
     /**
      * Get the asset definition (with all channels related to the provided asset)
+     *
      * @param scopeId
      * @param deviceId
      * @param assets

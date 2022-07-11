@@ -25,6 +25,10 @@
     <dependencies>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-asset-store-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-asset-api</artifactId>
         </dependency>
         <dependency>

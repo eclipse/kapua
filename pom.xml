@@ -1118,6 +1118,11 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.kapua</groupId>
+                <artifactId>kapua-asset-store-dummy</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.kapua</groupId>
                 <artifactId>kapua-configuration-store-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
