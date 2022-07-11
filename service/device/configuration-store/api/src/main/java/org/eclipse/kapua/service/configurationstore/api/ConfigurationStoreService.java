@@ -14,13 +14,15 @@ package org.eclipse.kapua.service.configurationstore.api;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 
-public interface ConfigurationStoreService {
+public interface ConfigurationStoreService extends KapuaService {
 
     /**
      * Store the device configuration
+     *
      * @param scopeId
      * @param deviceId
      * @param deviceConfiguration
@@ -30,6 +32,7 @@ public interface ConfigurationStoreService {
 
     /**
      * Store the device configuration
+     *
      * @param scopeId
      * @param deviceId
      * @param componentConfiguration
@@ -39,15 +42,17 @@ public interface ConfigurationStoreService {
 
     /**
      * Get the device configuration
+     *
      * @param scopeId
      * @param deviceId
-     * @throws KapuaException
      * @return
+     * @throws KapuaException
      */
     DeviceConfiguration getConfigurations(KapuaId scopeId, KapuaId deviceId) throws KapuaException;
 
     /**
      * Get the component configuration
+     *
      * @param scopeId
      * @param deviceId
      * @param configurationComponentPid

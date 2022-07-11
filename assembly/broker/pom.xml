@@ -25,10 +25,6 @@
     <packaging>pom</packaging>
     <artifactId>kapua-assembly-broker</artifactId>
 
-    <properties>
-        <jbatch.version>1.0.2</jbatch.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
