@@ -187,7 +187,7 @@ public class CryptoUtil {
      * @return The decoded {@link String} value.
      * @since 1.0.0
      */
-    public static String decodeBase64(String value) {
+    public static String decodeBase64(@NotNull String value) {
         byte[] decodedBytes = DatatypeConverter.parseBase64Binary(value);
         return new String(decodedBytes, StandardCharsets.UTF_8);
     }
@@ -199,7 +199,7 @@ public class CryptoUtil {
      * @return The encoded {@link Base64} value.
      * @since 1.0.0
      */
-    public static String encodeBase64(String value) {
+    public static String encodeBase64(@NotNull String value) {
         byte[] bytesValue = value.getBytes(StandardCharsets.UTF_8);
         return DatatypeConverter.printBase64Binary(bytesValue);
     }
@@ -253,7 +253,7 @@ public class CryptoUtil {
      * @return The {@link Cipher} for the given secret key.
      * @since 2.0.0
      */
-    private static synchronized Cipher getDecryptCipherForKey(String alternativeSecretKey) {
+    private static synchronized Cipher getDecryptCipherForKey(@NotNull String alternativeSecretKey) {
         return ALTERNATIVES_AES_CIPHERS_DECRYPT.computeIfAbsent(alternativeSecretKey, secretKey -> {
             try {
                 Key key = new SecretKeySpec(secretKey.getBytes(), AES_ALGORITHM);
@@ -279,7 +279,7 @@ public class CryptoUtil {
      * @return The {@link Cipher} for the given secret key.
      * @since 2.0.0
      */
-    private static synchronized Cipher getEncryptCipherForKey(String alternativeSecretKey) {
+    private static synchronized Cipher getEncryptCipherForKey(@NotNull String alternativeSecretKey) {
         return ALTERNATIVES_AES_CIPHERS_ENCRYPT.computeIfAbsent(alternativeSecretKey, secretKey -> {
             try {
                 Key key = new SecretKeySpec(secretKey.getBytes(), AES_ALGORITHM);
