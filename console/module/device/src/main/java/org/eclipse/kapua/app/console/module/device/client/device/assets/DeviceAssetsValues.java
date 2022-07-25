@@ -236,21 +236,9 @@ public class DeviceAssetsValues extends LayoutContainer {
             @Override
             protected void load(Object loadConfig, AsyncCallback<List<GwtDeviceAsset>> callback) {
                 if (selectedDevice != null && dirty && initialized) {
-                    if (selectedDevice.isOnline()) {
-                        tree.mask(MSGS.loading());
-                        gwtDeviceAssetService.get(
-                                (PagingLoadConfig) loadConfig,
-                                currentSession.getSelectedAccountId(),
-                                selectedDevice.getId(),
-                                new GwtDeviceAssets(),
-                                callback);
-                    } else {
-                        List<GwtDeviceAsset> assets = new ArrayList<GwtDeviceAsset>();
-                        GwtDeviceAsset asset = new GwtDeviceAsset();
-                        asset.setName(DEVICE_MSGS.assetNoAssets());
-                        assets.add(asset);
-                        callback.onSuccess(assets);
-                    }
+                    tree.mask(MSGS.loading());
+
+                    gwtDeviceAssetService.get((PagingLoadConfig) loadConfig, currentSession.getSelectedAccountId(), selectedDevice.getId(), new GwtDeviceAssets(), callback);
                 } else {
                     List<GwtDeviceAsset> assets = new ArrayList<GwtDeviceAsset>();
                     GwtDeviceAsset asset = new GwtDeviceAsset();

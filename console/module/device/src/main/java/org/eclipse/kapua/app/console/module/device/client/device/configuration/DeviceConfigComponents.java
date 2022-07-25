@@ -278,18 +278,8 @@ public class DeviceConfigComponents extends LayoutContainer {
             @Override
             protected void load(Object loadConfig, AsyncCallback<List<GwtConfigComponent>> callback) {
                 if (selectedDevice != null && dirty && initialized) {
-                    if (selectedDevice.isOnline()) {
-                        configPanel.mask(MSGS.loading());
-                        gwtDeviceManagementService.findDeviceConfigurations(selectedDevice, callback);
-                    } else {
-                        List<GwtConfigComponent> comps = new ArrayList<GwtConfigComponent>();
-                        GwtConfigComponent comp = new GwtConfigComponent();
-                        comp.setId(DEVICE_MSGS.deviceNoDeviceSelected());
-                        comp.setName(DEVICE_MSGS.deviceNoComponents());
-                        comp.setDescription(DEVICE_MSGS.deviceNoConfigSupported());
-                        comps.add(comp);
-                        callback.onSuccess(comps);
-                    }
+                    configPanel.mask(MSGS.loading());
+                    gwtDeviceManagementService.findDeviceConfigurations(selectedDevice, callback);
                 } else {
                     List<GwtConfigComponent> comps = new ArrayList<GwtConfigComponent>();
                     GwtConfigComponent comp = new GwtConfigComponent();
@@ -453,6 +443,7 @@ public class DeviceConfigComponents extends LayoutContainer {
             if (devConfPanel != null) {
                 devConfPanel.removeAll();
                 devConfPanel.removeFromParent();
+
                 devConfPanel = null;
                 configPanel.layout();
             }
@@ -471,13 +462,14 @@ public class DeviceConfigComponents extends LayoutContainer {
         }
         if (configComponent != null) {
 
-            devConfPanel = new DeviceConfigPanel(configComponent, gwtSession);
+            devConfPanel = new DeviceConfigPanel(configComponent, gwtSession, !selectedDevice.isOnline());
+
             devConfPanel.addListener(Events.Change, new Listener<BaseEvent>() {
 
                 @Override
                 public void handleEvent(BaseEvent be) {
-                    apply.setEnabled(true);
-                    reset.setEnabled(true);
+                    apply.setEnabled(selectedDevice.isOnline());
+                    reset.setEnabled(selectedDevice.isOnline());
                     gwtSession.setFormDirty(true);
                 }
             });
@@ -640,20 +632,19 @@ public class DeviceConfigComponents extends LayoutContainer {
 
         @Override
         public void loaderLoadException(LoadEvent le) {
-
-            if (le.exception != null && le.exception instanceof GwtKapuaException) {
+            if (le.exception instanceof GwtKapuaException) {
                 FailureHandler.handle(le.exception);
-            } else {
-                ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
             }
 
-            List<ModelData> comps = new ArrayList<ModelData>();
+            treeStore.removeAll();
+
             GwtConfigComponent comp = new GwtConfigComponent();
             comp.setId(DEVICE_MSGS.deviceNoDeviceSelected());
             comp.setName(DEVICE_MSGS.deviceNoComponents());
             comp.setDescription(DEVICE_MSGS.deviceNoConfigSupported());
+
+            List<ModelData> comps = new ArrayList<ModelData>();
             comps.add(comp);
-            treeStore.removeAll();
             treeStore.add(comps, false);
 
             configPanel.unmask();

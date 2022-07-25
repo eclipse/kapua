@@ -49,8 +49,14 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
         if (gwtDevice != null) {
-            setEnabled(gwtDevice.isOnline() && currentSession.hasPermission(DeviceManagementSessionPermission.read()));
+            setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.read()));
             getHeader().setVisible(gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_ASSET_V1));
+
+            if (!gwtDevice.isOnline()) {
+                setText(MSGS.assets() + " (Offline)");
+            } else {
+                setText(MSGS.assets());
+            }
         } else {
             setEnabled(false);
             getHeader().setVisible(false);

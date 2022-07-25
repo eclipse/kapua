@@ -81,16 +81,20 @@ public class DeviceConfigPanel extends LayoutContainer {
     private ComponentPlugin dirtyPlugin;
     private GwtSession currentSession;
 
+    private boolean readOnly;
+
     private static final String CONFIG_MIN_VALUE = "configMinValue";
     private static final String CONFIG_MAX_VALUE = "configMaxValue";
 
-    public DeviceConfigPanel(GwtConfigComponent configComponent, GwtSession currentSession) {
+    public DeviceConfigPanel(GwtConfigComponent configComponent, GwtSession currentSession, boolean readOnly) {
         super(new FitLayout());
         setScrollMode(Scroll.AUTO);
         setBorders(false);
 
         this.currentSession = currentSession;
         this.configComponent = configComponent;
+        this.readOnly = readOnly;
+
         infoPlugin = new ComponentPlugin() {
 
             @Override
@@ -315,7 +319,7 @@ public class DeviceConfigPanel extends LayoutContainer {
         layout.setLabelWidth(Constants.LABEL_WIDTH_CONFIG_FORM);
         actionFieldSet.setLayout(layout);
 
-        Field<?> field = null;
+        Field<?> field;
         for (GwtConfigParameter param : configComponent.getParameters()) {
 
             if (param.getCardinality() == 0 || param.getCardinality() == 1 || param.getCardinality() == -1) {
@@ -324,6 +328,8 @@ public class DeviceConfigPanel extends LayoutContainer {
                 field = paintMultiFieldConfigParameter(param);
             }
             field.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
+            field.setReadOnly(field.isReadOnly() || readOnly);
+
             actionFieldSet.add(field, formData);
         }
 

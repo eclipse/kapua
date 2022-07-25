@@ -43,8 +43,10 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
 
     public DeviceTabConfiguration(GwtSession currentSession) {
         super(currentSession, MSGS.tabConfiguration(), new KapuaIcon(IconSet.WRENCH));
+
         configComponents = new DeviceConfigComponents(currentSession, this);
         configSnapshots = new DeviceConfigSnapshots(currentSession, this);
+
         setEnabled(false);
         getHeader().setVisible(false);
     }
@@ -52,13 +54,21 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
     @Override
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
+
         if (gwtDevice != null) {
-            setEnabled(gwtDevice.isOnline() && currentSession.hasPermission(DeviceManagementSessionPermission.read()));
+            setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.read()));
             getHeader().setVisible(gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_CONFIGURATION));
+
+            if (!gwtDevice.isOnline()) {
+                setText(MSGS.tabConfiguration() + " (Offline)");
+            } else {
+                setText(MSGS.tabConfiguration());
+            }
         } else {
             setEnabled(false);
             getHeader().setVisible(false);
         }
+
         doRefresh();
     }
 
@@ -74,9 +84,14 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
         } else if (tabsPanel.getSelectedItem() == tabSnapshots) {
             configSnapshots.refresh();
         }
+
         if (selectedEntity != null) {
+            // Configurations
             configComponents.setDevice(selectedEntity);
+
+            // Snapshot
             configSnapshots.setDevice(selectedEntity);
+            tabSnapshots.setEnabled(selectedEntity.isOnline());
         }
     }
 
