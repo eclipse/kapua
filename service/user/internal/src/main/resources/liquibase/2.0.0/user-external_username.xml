@@ -18,12 +18,46 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd"
         logicalFilePath="KapuaDB/changelog-user-2.0.0.xml">
 
-    <changeSet id="changelog-user_2.0.0_external-username" author="eurotech">
+    <!--  This has been commented since UNIQUE creates an index on the field, which makes this column creation incompatible  -->
+    <!--  with MySQL/MariaDB databases that have a length limit of 767 bytes per index. -->
+    <!--  Index will be redefined as NOT UNIQUE with an index on the column to improve query performances  -->
+    <!--    -->
+    <!--    <changeSet id="changelog-user_2.0.0_external-username" author="eurotech">-->
+    <!--        <addColumn tableName="usr_user">-->
+    <!--            <column name="external_username" type="varchar(1024)">-->
+    <!--                <constraints unique="true"/>-->
+    <!--            </column>-->
+    <!--        </addColumn>-->
+    <!--    </changeSet>-->
+
+    <changeSet id="changelog-user_2.0.0_external-username-fix-create" author="eurotech">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="usr_user" columnName="external_username"/>
+            </not>
+        </preConditions>
+
         <addColumn tableName="usr_user">
-            <column name="external_username" type="varchar(1024)">
-                <constraints unique="true"/>
-            </column>
+            <column name="external_username" type="varchar(255)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="changelog-user_2.0.0_external-username-fix-modify" author="eurotech">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="usr_user" columnName="external_username"/>
+        </preConditions>
 
+        <modifyDataType tableName="usr_user" columnName="external_username" newDataType="varchar(255)"/>
+    </changeSet>
+
+    <changeSet id="changelog-user_2.0.0_external-username-fix-index" author="eurotech">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists tableName="usr_user" indexName="idx_externalUsername"/>
+            </not>
+        </preConditions>
+
+        <createIndex tableName="usr_user" indexName="idx_externalUsername">
+            <column name="external_username"/>
+        </createIndex>
+    </changeSet>
 </databaseChangeLog>
