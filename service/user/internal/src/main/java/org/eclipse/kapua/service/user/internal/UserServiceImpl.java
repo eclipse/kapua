@@ -86,6 +86,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         ArgumentValidator.notNull(userCreator.getScopeId().getId(), "userCreator.scopeId");
         ArgumentValidator.notEmptyOrNull(userCreator.getName(), "userCreator.name");
         ArgumentValidator.match(userCreator.getName(), CommonsValidationRegex.NAME_REGEXP, "userCreator.name");
+        ArgumentValidator.lengthRange(userCreator.getName(), 3, 255, "userCreator.name");
         ArgumentValidator.match(userCreator.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "userCreator.email");
         ArgumentValidator.notNull(userCreator.getStatus(), "userCreator.status");
 
@@ -93,8 +94,10 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         if (userCreator.getUserType() == UserType.EXTERNAL) {
             if (userCreator.getExternalId() != null) {
                 ArgumentValidator.notEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
+                ArgumentValidator.lengthRange(userCreator.getExternalId(), 3, 255, "userCreator.externalId");
             } else {
                 ArgumentValidator.notEmptyOrNull(userCreator.getExternalUsername(), "userCreator.externalUsername");
+                ArgumentValidator.lengthRange(userCreator.getExternalUsername(), 3, 255, "userCreator.externalUsername");
             }
         } else if (userCreator.getUserType() == UserType.INTERNAL) {
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
@@ -150,6 +153,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         ArgumentValidator.notNull(user.getScopeId(), "user.scopeId");
         ArgumentValidator.notEmptyOrNull(user.getName(), "user.name");
         ArgumentValidator.match(user.getName(), CommonsValidationRegex.NAME_REGEXP, "user.name");
+        ArgumentValidator.lengthRange(user.getExternalId(), 3, 255, "user.name");
         ArgumentValidator.match(user.getEmail(), CommonsValidationRegex.EMAIL_REGEXP, "user.email");
         ArgumentValidator.notNull(user.getStatus(), "user.status");
         ArgumentValidator.notNull(user.getUserType(), "user.userType");
@@ -157,8 +161,10 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         if (user.getUserType() == UserType.EXTERNAL) {
             if (user.getExternalId() != null) {
                 ArgumentValidator.notEmptyOrNull(user.getExternalId(), "user.externalId");
+                ArgumentValidator.lengthRange(user.getExternalId(), 3, 255, "user.externalId");
             } else {
                 ArgumentValidator.notEmptyOrNull(user.getExternalUsername(), "user.externalUsername");
+                ArgumentValidator.lengthRange(user.getExternalUsername(), 3, 255, "user.externalUsername");
             }
         } else if (user.getUserType() == UserType.INTERNAL) {
             ArgumentValidator.isEmptyOrNull(user.getExternalId(), "user.externalId");
