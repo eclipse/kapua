@@ -17,10 +17,13 @@ import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.assetstore.api.AssetStoreService;
+import org.eclipse.kapua.service.assetstore.config.api.DeviceAssetStoreConfiguration;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 
+import javax.inject.Singleton;
 import java.util.Map;
 
+@Singleton
 public class AssetStoreServiceDummy implements AssetStoreService {
 
     @Override
@@ -62,6 +65,16 @@ public class AssetStoreServiceDummy implements AssetStoreService {
 
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+
+    }
+
+    @Override
+    public DeviceAssetStoreConfiguration getApplicationConfiguration(KapuaId scopeId, KapuaId deviceId) {
+        return null;
+    }
+
+    @Override
+    public void setApplicationConfiguration(KapuaId scopeId, KapuaId deviceId, DeviceAssetStoreConfiguration assetStoreConfiguration) {
 
     }
 }

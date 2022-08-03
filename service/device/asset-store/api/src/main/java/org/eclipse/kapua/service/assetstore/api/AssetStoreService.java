@@ -16,10 +16,12 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
+import org.eclipse.kapua.service.assetstore.config.api.DeviceAssetStoreConfiguration;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
+import org.eclipse.kapua.service.device.management.app.config.ConfigurableDeviceAppManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
 
-public interface AssetStoreService extends KapuaService, KapuaConfigurableService {
+public interface AssetStoreService extends KapuaService, KapuaConfigurableService, ConfigurableDeviceAppManagementService<DeviceAssetStoreConfiguration> {
 
     /**
      * Store the asset values (with all channels related to the provided asset)
