@@ -31,6 +31,7 @@ public class DeviceXmlRegistry {
      * Creates a new {@link Device}
      *
      * @return
+     * @since 1.0.0
      */
     public Device newDevice() {
         return DEVICE_FACTORY.newEntity(null);
@@ -40,6 +41,7 @@ public class DeviceXmlRegistry {
      * Creates a new device creator
      *
      * @return
+     * @since 1.0.0
      */
     public DeviceCreator newDeviceCreator() {
         return DEVICE_FACTORY.newCreator(null, null);
@@ -49,6 +51,7 @@ public class DeviceXmlRegistry {
      * Creates a new device list result
      *
      * @return
+     * @since 1.0.0
      */
     public DeviceListResult newDeviceListResult() {
         return DEVICE_FACTORY.newListResult();
