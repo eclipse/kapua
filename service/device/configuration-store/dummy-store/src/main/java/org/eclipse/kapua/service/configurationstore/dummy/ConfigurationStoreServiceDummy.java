@@ -16,11 +16,14 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.configurationstore.api.ConfigurationStoreService;
+import org.eclipse.kapua.service.configurationstore.config.api.DeviceConfigurationStoreConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 
+import javax.inject.Singleton;
 import java.util.Map;
 
+@Singleton
 public class ConfigurationStoreServiceDummy implements ConfigurationStoreService {
 
     @Override
@@ -57,6 +60,16 @@ public class ConfigurationStoreServiceDummy implements ConfigurationStoreService
 
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+
+    }
+
+    @Override
+    public DeviceConfigurationStoreConfiguration getApplicationConfiguration(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
+        return null;
+    }
+
+    @Override
+    public void setApplicationConfiguration(KapuaId scopeId, KapuaId deviceId, DeviceConfigurationStoreConfiguration applicationConfiguration) throws KapuaException {
 
     }
 }
