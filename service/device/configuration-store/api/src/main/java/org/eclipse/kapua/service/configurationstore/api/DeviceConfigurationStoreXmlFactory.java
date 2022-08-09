@@ -12,10 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.configurationstore.api;
 
-import org.eclipse.kapua.model.KapuaObjectFactory;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.configurationstore.config.api.DeviceConfigurationStoreConfiguration;
 
-public interface DeviceConfigurationStoreFactory extends KapuaObjectFactory {
+import javax.xml.bind.annotation.XmlRegistry;
 
-    DeviceConfigurationStoreConfiguration newDeviceConfigurationStoreConfiguration();
+@XmlRegistry
+public class DeviceConfigurationStoreXmlFactory {
+
+    private final DeviceConfigurationStoreFactory factory = KapuaLocator.getInstance().getFactory(DeviceConfigurationStoreFactory.class);
+
+    public DeviceConfigurationStoreConfiguration newDeviceConfigurationStoreConfiguration() {
+        return factory.newDeviceConfigurationStoreConfiguration();
+    }
 }

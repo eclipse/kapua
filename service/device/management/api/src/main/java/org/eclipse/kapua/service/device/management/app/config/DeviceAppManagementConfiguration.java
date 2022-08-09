@@ -12,7 +12,5 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.app.config;
 
-import org.eclipse.kapua.model.KapuaUpdatableEntity;
-
-public interface DeviceAppManagementConfiguration extends KapuaUpdatableEntity {
+public interface DeviceAppManagementConfiguration {
 }
