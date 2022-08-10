@@ -206,7 +206,7 @@ public class DeviceAssetsValues extends LayoutContainer {
             }
         });
 
-        settings = new KapuaButton("Settings", new KapuaIcon(IconSet.COG), new SelectionListener<ButtonEvent>() {
+        settings = new KapuaButton("Store Settings", new KapuaIcon(IconSet.COG), new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
                 DeviceAssetStoreSettingsDialog deviceAssetStoreSettingsDialog = new DeviceAssetStoreSettingsDialog(selectedDevice);

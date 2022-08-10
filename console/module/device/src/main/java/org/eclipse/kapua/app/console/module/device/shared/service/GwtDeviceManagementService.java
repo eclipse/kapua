@@ -22,6 +22,7 @@ import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.bundles.GwtBundle;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.command.GwtDeviceCommandInput;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.command.GwtDeviceCommandOutput;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.configurations.GwtDeviceConfigurationStoreSettings;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.configurations.GwtSnapshot;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.packages.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.packages.GwtPackageInstallRequest;
@@ -107,6 +108,10 @@ public interface GwtDeviceManagementService extends RemoteService {
      */
     void updateComponentConfiguration(GwtXSRFToken xsrfToken, GwtDevice device, GwtConfigComponent configComponent)
             throws GwtKapuaException;
+
+    GwtDeviceConfigurationStoreSettings getDeviceConfigurationSettings(String scopeId, String deviceId) throws GwtKapuaException;
+
+    void setDeviceConfigurationSettings(GwtXSRFToken xsrfToken, String scopeId, String deviceId, GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings) throws GwtKapuaException;
 
     //
     // Snapshots
