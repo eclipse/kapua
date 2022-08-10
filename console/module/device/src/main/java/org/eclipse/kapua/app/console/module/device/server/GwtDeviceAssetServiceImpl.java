@@ -20,12 +20,17 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssetChannel;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssetStoreSettings;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssets;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceAssetService;
 import org.eclipse.kapua.app.console.module.device.shared.util.GwtKapuaDeviceModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.service.assetstore.api.AssetStoreService;
+import org.eclipse.kapua.service.assetstore.api.DeviceAssetStoreFactory;
+import org.eclipse.kapua.service.assetstore.config.api.AssetStoreEnablementPolicy;
+import org.eclipse.kapua.service.assetstore.config.api.DeviceAssetStoreConfiguration;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
@@ -40,6 +45,9 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
     private static final long serialVersionUID = -7140054857264920053L;
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DeviceAssetManagementService assetService = locator.getService(DeviceAssetManagementService.class);
+
+    private final AssetStoreService deviceAssetStoreService = locator.getService(AssetStoreService.class);
+    private final DeviceAssetStoreFactory deviceAssetStoreFactory = locator.getFactory(DeviceAssetStoreFactory.class);
 
     @Override
     public List<GwtDeviceAsset> read(String scopeId, String deviceId, GwtDeviceAssets deviceAssets) throws GwtKapuaException {
@@ -96,6 +104,42 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
             KapuaExceptionHandler.handle(t);
         }
         return gwtAssets.getAssets();
+    }
+
+    @Override
+    public GwtDeviceAssetStoreSettings getSettings(String scopeIdString, String deviceIdString) throws GwtKapuaException {
+        try {
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+            KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
+
+            DeviceAssetStoreConfiguration deviceAssetStoreSettings = deviceAssetStoreService.getApplicationConfiguration(scopeId, deviceId);
+
+            GwtDeviceAssetStoreSettings gwtDeviceAssetStoreSettings = new GwtDeviceAssetStoreSettings();
+            gwtDeviceAssetStoreSettings.setStoreEnablementPolicy(GwtDeviceAssetStoreSettings.GwtDeviceAssetStoreEnablementPolicy.valueOf(deviceAssetStoreSettings.getAssetStoreEnablementPolicy().name()));
+
+            return gwtDeviceAssetStoreSettings;
+        } catch (Throwable t) {
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
+        }
+    }
+
+    @Override
+    public void setSettings(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceAssetStoreSettings gwtDeviceAssetStoreSettings) throws GwtKapuaException {
+        checkXSRFToken(xsrfToken);
+
+        try {
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+            KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
+
+            DeviceAssetStoreConfiguration deviceAssetStoreSettings = deviceAssetStoreFactory.newDeviceAssetStoreConfiguration();
+            deviceAssetStoreSettings.setScopeId(scopeId);
+            deviceAssetStoreSettings.setDeviceId(deviceId);
+            deviceAssetStoreSettings.setAssetStoreEnablementPolicy(AssetStoreEnablementPolicy.valueOf(gwtDeviceAssetStoreSettings.getStoreEnablementPolicy()));
+
+            deviceAssetStoreService.setApplicationConfiguration(scopeId, deviceId, deviceAssetStoreSettings);
+        } catch (Throwable t) {
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
+        }
     }
 
     @Override
