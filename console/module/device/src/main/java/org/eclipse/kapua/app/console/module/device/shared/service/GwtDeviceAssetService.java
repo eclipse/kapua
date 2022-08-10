@@ -19,6 +19,7 @@ import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAsset;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssetChannel;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssetStoreSettings;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAssets;
 
 import java.util.List;
@@ -26,16 +27,17 @@ import java.util.List;
 @RemoteServiceRelativePath("asset")
 public interface GwtDeviceAssetService extends RemoteService {
 
-    public List<GwtDeviceAsset> read(String scopeId, String deviceId, GwtDeviceAssets deviceAssets)
-            throws GwtKapuaException;
+    List<GwtDeviceAsset> read(String scopeId, String deviceId, GwtDeviceAssets deviceAssets) throws GwtKapuaException;
 
-    public void write(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceAsset deviceAsset)
-            throws GwtKapuaException;
+    void write(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceAsset deviceAsset) throws GwtKapuaException;
 
-    public List<GwtDeviceAsset> get(PagingLoadConfig pagingLoadConfig, String scopeIdString, String deviceIdString, GwtDeviceAssets deviceAssets)
-            throws GwtKapuaException;
+    List<GwtDeviceAsset> get(PagingLoadConfig pagingLoadConfig, String scopeIdString, String deviceIdString, GwtDeviceAssets deviceAssets) throws GwtKapuaException;
 
-    public GwtDeviceAssetChannel trickGWT(GwtDeviceAssetChannel channel);
+    GwtDeviceAssetStoreSettings getSettings(String scopeId, String deviceId) throws GwtKapuaException;
 
-    // PagingLoadResult<GwtUser> query(PagingLoadConfig pagingLoadConfig, GwtAccessRoleQuery query) throws GwtKapuaException;
+    void setSettings(GwtXSRFToken xsrfToken, String scopeId, String deviceId, GwtDeviceAssetStoreSettings gwtDeviceAssetStoreSettings) throws GwtKapuaException;
+
+    GwtDeviceAssetChannel trickGWT(GwtDeviceAssetChannel channel);
+
+
 }

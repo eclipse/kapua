@@ -46,7 +46,10 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
+import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
@@ -61,6 +64,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.module.device.client.device.assets.settings.DeviceAssetStoreSettingsDialog;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.assets.GwtDeviceAsset;
@@ -93,6 +97,8 @@ public class DeviceAssetsValues extends LayoutContainer {
 
     private Button apply;
     private Button reset;
+
+    private Button settings;
 
     private ContentPanel assetValuesContainer;
     private DeviceAssetsPanel assetValuesPanel;
@@ -199,14 +205,27 @@ public class DeviceAssetsValues extends LayoutContainer {
                 }
             }
         });
+
+        settings = new KapuaButton("Settings", new KapuaIcon(IconSet.COG), new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                DeviceAssetStoreSettingsDialog deviceAssetStoreSettingsDialog = new DeviceAssetStoreSettingsDialog(selectedDevice);
+                deviceAssetStoreSettingsDialog.show();
+            }
+        });
+
+        refreshButton.setEnabled(false);
         apply.setEnabled(false);
         reset.setEnabled(false);
-        refreshButton.setEnabled(false);
+        settings.setEnabled(true);
+
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(apply);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(reset);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(settings);
     }
 
     private void initAssetPanel() {
