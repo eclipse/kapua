@@ -51,6 +51,7 @@ import org.eclipse.kapua.app.console.module.api.client.messages.ConsoleMessages;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.DiscardButton;
+import org.eclipse.kapua.app.console.module.api.client.ui.button.KapuaButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.RefreshButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.button.SaveButton;
 import org.eclipse.kapua.app.console.module.api.client.ui.dialog.InfoDialog;
@@ -66,6 +67,7 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenService;
 import org.eclipse.kapua.app.console.module.api.shared.service.GwtSecurityTokenServiceAsync;
+import org.eclipse.kapua.app.console.module.device.client.device.configuration.settings.DeviceConfigurationsStoreSettingsDialog;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
@@ -97,6 +99,8 @@ public class DeviceConfigComponents extends LayoutContainer {
 
     private Button apply;
     private Button reset;
+
+    private Button settings;
 
     private ContentPanel configPanel;
     private DeviceConfigPanel devConfPanel;
@@ -241,14 +245,25 @@ public class DeviceConfigComponents extends LayoutContainer {
             }
         });
 
+        settings = new KapuaButton("Store Settings", new KapuaIcon(IconSet.COG), new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent buttonEvent) {
+                DeviceConfigurationsStoreSettingsDialog deviceAssetStoreSettingsDialog = new DeviceConfigurationsStoreSettingsDialog(selectedDevice);
+                deviceAssetStoreSettingsDialog.show();
+            }
+        });
+
         apply.setEnabled(false);
         reset.setEnabled(false);
         gwtSession.setFormDirty(false);
+
         toolBar.add(refreshButton);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(apply);
         toolBar.add(new SeparatorToolItem());
         toolBar.add(reset);
+        toolBar.add(new SeparatorToolItem());
+        toolBar.add(settings);
     }
 
     private void initConfigPanel() {
