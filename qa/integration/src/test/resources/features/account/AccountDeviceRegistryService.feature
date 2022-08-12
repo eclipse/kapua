@@ -96,7 +96,7 @@ Scenario: Init Security Context for all scenarios
     When I create a device with name "Device1"
     When I create a device with name "Device2"
     When I create a device with name "Device3"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "ServiceConfigurationLimitExceededException" with the text "*"
     Then I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |

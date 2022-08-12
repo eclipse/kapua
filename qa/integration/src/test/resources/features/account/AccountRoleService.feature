@@ -94,7 +94,7 @@ Scenario: Init Security Context for all scenarios
     Given I select account "acc1"
     When I create role "role1" in account "acc1"
     When I create role "role2" in account "acc1"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "ServiceConfigurationLimitExceededException" with the text "*"
     And I configure the role service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |
