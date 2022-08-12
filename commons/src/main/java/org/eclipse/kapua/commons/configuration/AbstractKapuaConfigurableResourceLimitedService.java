@@ -13,8 +13,8 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.exception.KapuaConfigurationErrorCodes;
-import org.eclipse.kapua.commons.configuration.exception.KapuaConfigurationException;
+import org.eclipse.kapua.commons.configuration.exception.ServiceConfigurationLimitExceededException;
+import org.eclipse.kapua.commons.configuration.exception.ServiceConfigurationParentLimitExceededException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.CacheFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
@@ -111,14 +111,18 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     @Override
     protected boolean validateNewConfigValuesCoherence(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId) throws KapuaException {
         super.validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
-        int availableChildEntitiesWithNewConfig = allowedChildEntities(scopeId, null, updatedProps);
+
+        // Validate against current scope
+        long availableChildEntitiesWithNewConfig = allowedChildEntities(scopeId, null, updatedProps);
         if (availableChildEntitiesWithNewConfig < 0) {
-            throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.LIMIT_EXCEEDED);
+            throw new ServiceConfigurationLimitExceededException(getServicePid(), scopeId, -availableChildEntitiesWithNewConfig);
         }
+
+        // Validate against parent scope
         if (parentId != null) {
-            int availableParentEntitiesWithCurrentConfig = allowedChildEntities(parentId, scopeId);
+            long availableParentEntitiesWithCurrentConfig = allowedChildEntities(parentId, scopeId);
             if (availableParentEntitiesWithCurrentConfig - availableChildEntitiesWithNewConfig < 0) {
-                throw new KapuaConfigurationException(KapuaConfigurationErrorCodes.PARENT_LIMIT_EXCEEDED);
+                throw new ServiceConfigurationParentLimitExceededException(getServicePid(), parentId, -(availableParentEntitiesWithCurrentConfig - availableChildEntitiesWithNewConfig));
             }
         }
         return true;
@@ -132,7 +136,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
      * @throws KapuaException
      * @since 1.0.0
      */
-    protected int allowedChildEntities(KapuaId scopeId) throws KapuaException {
+    protected long allowedChildEntities(KapuaId scopeId) throws KapuaException {
         return allowedChildEntities(scopeId, null, null);
     }
 
@@ -148,7 +152,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
      * @throws KapuaException
      * @since 1.0.0
      */
-    protected int allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId) throws KapuaException {
+    protected long allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId) throws KapuaException {
         return allowedChildEntities(scopeId, targetScopeId, null);
     }
 
@@ -166,7 +170,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
      * @throws KapuaException
      * @since 1.0.0
      */
-    protected int allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId, Map<String, Object> configuration) throws KapuaException {
+    protected long allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId, Map<String, Object> configuration) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
         S service = locator.getService(serviceClass);
         F factory = locator.getFactory(factoryClass);
@@ -196,13 +200,14 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
                     // maxNumberChildEntities can be null if such property is disabled via the
                     // isPropertyEnabled() method in the service implementation. In such case,
                     // it makes sense to treat the service as it had 0 available entities
-                    Integer maxNumberChildEntities = (Integer) childConfigValues.get("maxNumberChildEntities");
-                    childCount += maxNumberChildEntities != null ? maxNumberChildEntities : 0;
+                    boolean childAllowInfiniteChildEntities = (Boolean) childConfigValues.get("infiniteChildEntities");
+                    Integer childMaxNumberChildEntities = (Integer) childConfigValues.get("maxNumberChildEntities");
+                    childCount += childAllowInfiniteChildEntities ? Integer.MAX_VALUE : (childMaxNumberChildEntities != null ? childMaxNumberChildEntities : 0);
                 }
 
                 // Max allowed for this account
                 int maxChildAccounts = (int) finalConfig.get("maxNumberChildEntities");
-                return (int) (maxChildAccounts - currentUsedEntities - childCount);
+                return maxChildAccounts - currentUsedEntities - childCount;
             });
         }
         return Integer.MAX_VALUE;

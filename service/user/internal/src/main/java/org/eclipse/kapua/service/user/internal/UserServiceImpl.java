@@ -90,7 +90,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
         }
 
-        int remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
+        long remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
         if (remainingChildEntities <= 0) {
             LOGGER.info("Exceeded child limit - remaining: {}", remainingChildEntities);
             throw new KapuaMaxNumberOfItemsReachedException("Users");

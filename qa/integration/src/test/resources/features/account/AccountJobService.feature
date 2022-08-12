@@ -96,7 +96,7 @@ Scenario: Init Security Context for all scenarios
     When I create a job with the name "job1"
     When I create a job with the name "job2"
     When I create a job with the name "job3"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "ServiceConfigurationLimitExceededException" with the text "*"
     And I configure the job service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |
