@@ -552,4 +552,13 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         return true;
     }
 
+    /**
+     * Gets the {@link KapuaConfigurableService} pid.
+     *
+     * @return The {@link KapuaConfigurableService} pid.
+     * @since 2.0.0
+     */
+    public String getServicePid() {
+        return pid;
+    }
 }

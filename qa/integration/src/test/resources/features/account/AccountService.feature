@@ -284,7 +284,7 @@ Scenario: Init Security Context for all scenarios
     When I query for all sub-accounts in "acc1"
     Then I find 2 accounts
     Then I select account "acc1"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "ServiceConfigurationLimitExceededException" with the text "*"
     When I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |
