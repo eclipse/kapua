@@ -29,16 +29,26 @@ public enum KapuaConfigurationErrorCodes implements KapuaErrorCode {
     INTERNAL_ERROR,
 
     /**
-     * Self limit exceeded in config
-     *
+     * @see ServiceConfigurationLimitExceededException
      * @since 1.0.0
      */
     LIMIT_EXCEEDED,
 
     /**
-     * Parent limit exceeded in config
-     *
+     * @see ServiceConfigurationLimitExceededException
+     * @since 2.0.0
+     */
+    LIMIT_EXCEEDED_BY,
+
+    /**
+     * @see ServiceConfigurationParentLimitExceededException
      * @since 1.0.0
      */
     PARENT_LIMIT_EXCEEDED,
+
+    /**
+     * @see ServiceConfigurationParentLimitExceededException
+     * @since 2.0.0
+     */
+    PARENT_LIMIT_EXCEEDED_BY,
 }
