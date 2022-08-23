@@ -11,22 +11,47 @@ info:
     name: Eclipse Public License 2.0
     url: https://www.eclipse.org/legal/epl-2.0
 
-paths: {}
+paths: { }
 
 components:
   parameters:
     targetId:
       name: targetId
       in: path
-      description: The ID of the Job Target on which to perform the operation
+      description: The entity ID of the on which perform the operations
       schema:
         $ref: '../openapi.yaml#/components/schemas/kapuaId'
       required: true
   schemas:
+    jobTargetCreator:
+      allOf:
+        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntityCreator'
+        - type: object
+          properties:
+            jobId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the Job to attach the target to
+            jobTargetId:
+              allOf:
+                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
+                - description: The ID of the Device to attach the target to
+          example:
+            type: jobTargetCreator
+            jobId: auSoU2ph1bY
+            jobTargetId: JMQdKuPgUjE
     jobTarget:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntity'
         - $ref: '#/components/schemas/jobTargetCreator'
+        - type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/jobTargetStatus'
+            stepIndex:
+              type: integer
+            statusMessage:
+              type: string
       example:
         type: jobTarget
         id: Y-vYl9TKaf8
@@ -40,18 +65,6 @@ components:
         jobTargetId: VBk_ZDZSOV0
         status: PROCESS_OK
         stepIndex: 0
-    jobTargetCreator:
-      allOf:
-        - $ref: '../openapi.yaml#/components/schemas/kapuaUpdatableEntityCreator'
-        - type: object
-          properties:
-            jobTargetId:
-              allOf:
-                - $ref: '../openapi.yaml#/components/schemas/kapuaId'
-                - description: The ID of the Device to attach the target to
-          example:
-            type: jobTargetCreator
-            jobTargetId: JMQdKuPgUjE
     jobTargetListResult:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
@@ -78,3 +91,11 @@ components:
                 jobTargetId: VBk_ZDZSOV0
                 status: PROCESS_OK
                 stepIndex: 0
+    jobTargetStatus:
+      type: string
+      enum:
+        - PROCESS_OK
+        - PROCESS_FAILED
+        - PROCESS_AWAITING
+        - AWAITING_COMPLETION
+        - NOTIFIED_COMPLETION
