@@ -190,11 +190,7 @@ public class GwtUserServiceImpl extends KapuaRemoteServiceServlet implements Gwt
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtScopeId);
             KapuaId userId = GwtKapuaCommonsModelConverter.convertKapuaId(gwtUserId);
 
-            User user = USER_SERVICE.find(scopeId, userId);
-
-            if (user != null) {
-                USER_SERVICE.delete(user);
-            }
+            USER_SERVICE.delete(scopeId, userId);
         } catch (Throwable t) {
             KapuaExceptionHandler.handle(t);
         }
