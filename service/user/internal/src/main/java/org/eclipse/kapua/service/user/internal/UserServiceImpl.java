@@ -246,6 +246,17 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
+    public void delete(User user) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(user, "user");
+
+        //
+        // Do delete
+        delete(user.getScopeId(), user.getId());
+    }
+
+    @Override
     //@RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId userId) throws KapuaException {
         //
@@ -276,12 +287,6 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Do  delete
         entityManagerSession.doTransactedAction(EntityManagerContainer.<User>create().onResultHandler(em -> UserDAO.delete(em, scopeId, userId))
                 .onAfterHandler((emptyParam) -> entityCache.remove(scopeId, userId)));
-    }
-
-    @Override
-    public void delete(User user) throws KapuaException {
-        ArgumentValidator.notNull(user, "user");
-        delete(user.getScopeId(), user.getId());
     }
 
     @Override
