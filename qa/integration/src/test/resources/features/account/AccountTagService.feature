@@ -94,7 +94,7 @@ Scenario: Init Security Context for all scenarios
     Given I select account "acc1"
     When I create tag with name "tag1" without description
     When I create tag with name "tag2" without description
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "ServiceConfigurationLimitExceededException" with the text "The maximum of resources for the org.eclipse.kapua.service.tag.TagService service for the account"
     When I configure the tag service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |
