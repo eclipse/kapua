@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -74,10 +73,8 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.GROUP_DOMAIN, Actions.write, groupCreator.getScopeId()));
 
         //
-        // Check limits
-        if (allowedChildEntities(groupCreator.getScopeId()) <= 0) {
-            throw new KapuaMaxNumberOfItemsReachedException("Groups");
-        }
+        // Check entity limit
+        checkAllowedEntities(groupCreator.getScopeId(), "Groups");
 
         //
         // Check duplicate name
