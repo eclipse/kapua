@@ -19,7 +19,6 @@ import org.eclipse.kapua.KapuaDuplicateNameInAnotherAccountError;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -90,15 +89,13 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalId(), "userCreator.externalId");
         }
 
-        long remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
-        if (remainingChildEntities <= 0) {
-            LOGGER.info("Exceeded child limit - remaining: {}", remainingChildEntities);
-            throw new KapuaMaxNumberOfItemsReachedException("Users");
-        }
-
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
+
+        //
+        // Check entity limit
+        checkAllowedEntities(userCreator.getScopeId(), "Users");
 
         //
         // Check duplicate name

@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.tag.internal;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaProvider;
@@ -69,10 +68,8 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         authorizationService.checkPermission(permissionFactory.newPermission(TagDomains.TAG_DOMAIN, Actions.write, tagCreator.getScopeId()));
 
         //
-        // Check limit
-        if (allowedChildEntities(tagCreator.getScopeId()) <= 0) {
-            throw new KapuaMaxNumberOfItemsReachedException("Tags");
-        }
+        // Check entity limit
+        checkAllowedEntities(tagCreator.getScopeId(), "Tags");
 
         //
         // Check duplicate name
