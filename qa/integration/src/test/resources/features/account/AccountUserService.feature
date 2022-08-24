@@ -94,7 +94,7 @@ Scenario: Init Security Context for all scenarios
     Given I select account "acc1"
     When I create user with name "user0"
     And I create user with name "user1"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "ServiceConfigurationLimitExceededException" with the text "The maximum of resources for the org.eclipse.kapua.service.user.UserService service for the account"
     When I configure user service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |
