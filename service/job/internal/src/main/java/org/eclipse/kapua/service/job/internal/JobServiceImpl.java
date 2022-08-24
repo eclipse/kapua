@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.job.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
@@ -92,10 +91,8 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
 
         //
-        // Check limits
-        if (allowedChildEntities(creator.getScopeId()) <= 0) {
-            throw new KapuaMaxNumberOfItemsReachedException("Jobs");
-        }
+        // Check entity limit
+        checkAllowedEntities(creator.getScopeId(), "Jobs");
 
         //
         // Check duplicate name
