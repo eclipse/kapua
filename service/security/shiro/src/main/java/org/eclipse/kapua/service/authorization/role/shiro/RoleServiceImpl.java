@@ -16,7 +16,6 @@ import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -85,10 +84,8 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         authorizationService.checkPermission(permissionFactory.newPermission(AuthorizationDomains.ROLE_DOMAIN, Actions.write, roleCreator.getScopeId()));
 
         //
-        // Check limits
-        if (allowedChildEntities(roleCreator.getScopeId()) <= 0) {
-            throw new KapuaMaxNumberOfItemsReachedException("Roles");
-        }
+        // Check entity limit
+        checkAllowedEntities(roleCreator.getScopeId(), "Roles");
 
         //
         // Check duplicate name

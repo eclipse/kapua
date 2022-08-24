@@ -13,6 +13,7 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.exception.ServiceConfigurationLimitExceededException;
 import org.eclipse.kapua.commons.configuration.exception.ServiceConfigurationParentLimitExceededException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityCacheFactory;
@@ -129,6 +130,20 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
     }
 
     /**
+     * Checks if the given scope {@link KapuaId} can have more entities for this {@link KapuaConfigurableService}.
+     *
+     * @param scopeId    The scope {@link KapuaId} to check.
+     * @param entityType The entity type of this {@link KapuaConfigurableService}
+     * @throws KapuaException
+     * @since 2.0.0
+     */
+    protected void checkAllowedEntities(KapuaId scopeId, String entityType) throws KapuaException {
+        if (allowedChildEntities(scopeId) <= 0) {
+            throw new KapuaMaxNumberOfItemsReachedException(entityType);
+        }
+    }
+
+    /**
      * Gets the number of remaining allowed entity for the given scope, according to the {@link KapuaConfigurableService#getConfigValues(KapuaId)}
      *
      * @param scopeId The scope {@link KapuaId}.
@@ -212,17 +227,4 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
         }
         return Integer.MAX_VALUE;
     }
-
-//
-//    /**
-//     * Gets the {@link ServiceConfig} values for the given {@link Account}.
-//     * This method defaults to {@link Account#getId()}, but implementations can change it to use other attributes.
-//     *
-//     * @param account The account from which get the id.
-//     * @return The scoped configurations for the given {@link Account}.
-//     * @throws KapuaException
-//     */
-//    protected Map<String, Object> getConfigValues(Account account) throws KapuaException {
-//        return getConfigValues(account.getId());
-//    }
 }
