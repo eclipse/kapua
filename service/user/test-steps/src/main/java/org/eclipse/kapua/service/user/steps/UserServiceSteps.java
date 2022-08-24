@@ -276,7 +276,7 @@ public class UserServiceSteps extends TestBase {
         try {
             primeException();
             User user = (User) stepData.get("User");
-            userService.delete(user);
+            userService.delete(user.getScopeId(), user.getId());
         } catch (KapuaException ke) {
             verifyException(ke);
         }
@@ -460,7 +460,7 @@ public class UserServiceSteps extends TestBase {
         User user = (User) stepData.get("User");
         try {
             primeException();
-            userService.delete(user);
+            userService.delete(user.getScopeId(), user.getId());
         } catch (KapuaException ke) {
             verifyException(ke);
         }
@@ -684,7 +684,7 @@ public class UserServiceSteps extends TestBase {
         try {
             User userToDelete = userService.findByName(userName);
             if (userToDelete != null) {
-                userService.delete(userToDelete);
+                userService.delete(userToDelete.getScopeId(), userToDelete.getId());
             }
         } catch (KapuaException e) {
             verifyException(e);

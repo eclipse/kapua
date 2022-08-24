@@ -21,11 +21,12 @@ import org.eclipse.kapua.service.KapuaUpdatableEntityService;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 /**
- * UserService exposes APIs to manage User object under an Account.<br>
+ * UserService exposes APIs to manage User object under an Account.
+ * <p>
  * It includes APIs to create, update, find, list and delete Users.<br>
  * Instances of the UserService can be acquired through the ServiceLocator.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public interface UserService extends KapuaEntityService<User, UserCreator>,
         KapuaUpdatableEntityService<User>,
@@ -57,11 +58,13 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
     User update(User user) throws KapuaException;
 
     /**
-     * Delete the supplied User.
+     * Deletes the given {@link User}.
      *
-     * @param user
+     * @param user The {@link User} to delete
      * @throws KapuaException
+     * @deprecated Since 2.0.0. Please make use of {@link #delete(KapuaId, KapuaId)}
      */
+    @Deprecated
     void delete(User user) throws KapuaException;
 
     /**
