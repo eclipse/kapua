@@ -16,8 +16,8 @@
 
 Feature: Account User Service Integration Tests
 
-@setup
-Scenario: Initialize test environment
+  @setup
+  Scenario: Initialize test environment
     Given Init Jaxb Context
     And Init Security Context
 
@@ -95,7 +95,7 @@ Scenario: Initialize test environment
     Given I select account "acc1"
     When I create user with name "user0"
     And I create user with name "user1"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "ServiceConfigurationLimitExceededException" with the text "The maximum of resources for the org.eclipse.kapua.service.user.UserService service for the account"
     When I configure user service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |
@@ -126,6 +126,6 @@ Scenario: Initialize test environment
     Then No exception was thrown
     And I logout
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-  Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

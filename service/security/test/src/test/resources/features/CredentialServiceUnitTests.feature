@@ -65,7 +65,7 @@ Feature: Credentials
   Set a custom minimum value for password length that is not equal or higher to the default system limit must result in
   an error
     Given I create default test-user
-    And I expect the exception "KapuaConfigurationException"
+    And I expect the exception "KapuaIllegalArgumentException"
     And I configure the credential service
       | type    | name                       | value |
       | boolean | lockoutPolicy.enabled      | true  |

@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -49,7 +48,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.TypedQuery;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -100,10 +98,8 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, accountCreator.getScopeId()));
 
         //
-        // Check child account policy
-        if (allowedChildEntities(accountCreator.getScopeId()) <= 0) {
-            throw new KapuaMaxNumberOfItemsReachedException("Accounts");
-        }
+        // Check entity limit
+        checkAllowedEntities(accountCreator.getScopeId(), "Accounts");
 
         //
         // Check if the parent account exists
@@ -425,10 +421,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         );
     }
 
-    @Override
-    protected Map<String, Object> getConfigValues(Account entity) throws KapuaException {
-        return super.getConfigValues(entity.getId());
-    }
+//    @Override
+//    protected Map<String, Object> getConfigValues(Account entity) throws KapuaException {
+//        return super.getConfigValues(entity.getId());
+//    }
 
     private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Domain domain, Actions action) throws KapuaException {
         checkAccountPermission(scopeId, accountId, domain, action, false);

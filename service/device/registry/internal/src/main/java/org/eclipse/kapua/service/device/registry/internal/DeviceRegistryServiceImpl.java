@@ -16,7 +16,6 @@ import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -78,10 +77,8 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         DeviceValidation.validateCreatePreconditions(deviceCreator);
 
         //
-        // Check limits
-        if (allowedChildEntities(deviceCreator.getScopeId()) <= 0) {
-            throw new KapuaMaxNumberOfItemsReachedException("Devices");
-        }
+        // Check entity limit
+        checkAllowedEntities(deviceCreator.getScopeId(), "Devices");
 
         //
         // Check duplicate clientId

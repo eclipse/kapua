@@ -16,8 +16,8 @@
 
 Feature: Account Device Registry Service Integration Tests
 
-@setup
-Scenario: Initialize test environment
+  @setup
+  Scenario: Initialize test environment
     Given Init Jaxb Context
     And Init Security Context
 
@@ -97,7 +97,7 @@ Scenario: Initialize test environment
     When I create a device with name "Device1"
     When I create a device with name "Device2"
     When I create a device with name "Device3"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "ServiceConfigurationLimitExceededException" with the text "*"
     Then I configure the device registry service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |
@@ -128,6 +128,6 @@ Scenario: Initialize test environment
     Then No exception was thrown
     And I logout
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-  Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context

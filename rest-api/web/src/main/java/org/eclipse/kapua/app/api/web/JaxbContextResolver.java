@@ -38,6 +38,8 @@ import org.eclipse.kapua.app.api.core.exception.model.JobStartingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.JobStoppingExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.MfaRequiredExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.SelfManagedOnlyExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.ServiceConfigurationLimitExceededExceptionInfo;
+import org.eclipse.kapua.app.api.core.exception.model.ServiceConfigurationParentLimitExceededExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.SubjectUnauthorizedExceptionInfo;
 import org.eclipse.kapua.app.api.core.exception.model.ThrowableInfo;
 import org.eclipse.kapua.app.api.core.model.CountResult;
@@ -376,6 +378,10 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     DeviceManagementSendExceptionInfo.class,
                     DeviceManagementTimeoutExceptionInfo.class,
                     DeviceNotConnectedExceptionInfo.class,
+
+                    // Service Configuration Exception Info
+                    ServiceConfigurationLimitExceededExceptionInfo.class,
+                    ServiceConfigurationParentLimitExceededExceptionInfo.class,
 
                     // Commons
                     KapuaSerializable.class,

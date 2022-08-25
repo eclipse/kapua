@@ -18,7 +18,6 @@ import org.eclipse.kapua.KapuaDuplicateExternalUsernameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.KapuaMaxNumberOfItemsReachedException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -104,15 +103,13 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             ArgumentValidator.isEmptyOrNull(userCreator.getExternalUsername(), "userCreator.externalUsername");
         }
 
-        int remainingChildEntities = allowedChildEntities(userCreator.getScopeId());
-        if (remainingChildEntities <= 0) {
-            LOGGER.info("Exceeded child limit - remaining: {}", remainingChildEntities);
-            throw new KapuaMaxNumberOfItemsReachedException("Users");
-        }
-
         //
         // Check Access
         authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
+
+        //
+        // Check entity limit
+        checkAllowedEntities(userCreator.getScopeId(), "Users");
 
         //
         // Check duplicate name
@@ -240,6 +237,17 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     @Override
+    public void delete(User user) throws KapuaException {
+        //
+        // Argument Validation
+        ArgumentValidator.notNull(user, "user");
+
+        //
+        // Do delete
+        delete(user.getScopeId(), user.getId());
+    }
+
+    @Override
     //@RaiseServiceEvent
     public void delete(KapuaId scopeId, KapuaId userId) throws KapuaException {
         //
@@ -270,12 +278,6 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
         // Do  delete
         entityManagerSession.doTransactedAction(EntityManagerContainer.<User>create().onResultHandler(em -> UserDAO.delete(em, scopeId, userId))
                 .onAfterHandler((emptyParam) -> entityCache.remove(scopeId, userId)));
-    }
-
-    @Override
-    public void delete(User user) throws KapuaException {
-        ArgumentValidator.notNull(user, "user");
-        delete(user.getScopeId(), user.getId());
     }
 
     @Override

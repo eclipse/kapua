@@ -15,8 +15,8 @@
 
 Feature: Account Service Tests
 
-@setup
-Scenario: Initialize test environment
+  @setup
+  Scenario: Initialize test environment
     Given Init Jaxb Context
     And Init Security Context
 
@@ -285,7 +285,7 @@ Scenario: Initialize test environment
     When I query for all sub-accounts in "acc1"
     Then I find 2 accounts
     Then I select account "acc1"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "ServiceConfigurationLimitExceededException" with the text "The maximum of resources for the org.eclipse.kapua.service.account.AccountService service for the account"
     When I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |
@@ -313,7 +313,7 @@ Scenario: Initialize test environment
     When I query for all sub-accounts in "acc1"
     Then I find 2 accounts
     Then I select account "acc1"
-    Given I expect the exception "KapuaConfigurationException" with the text "*"
+    Given I expect the exception "ServiceConfigurationLimitExceededException" with the text "The maximum of resources for the org.eclipse.kapua.service.account.AccountService service for the account"
     When I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | false |
@@ -391,6 +391,6 @@ Scenario: Initialize test environment
     Then No exception was thrown
     And I logout
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-  Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context
