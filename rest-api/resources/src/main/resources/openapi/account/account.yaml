@@ -91,7 +91,7 @@ components:
             modifiedBy: AQ
             optlock: 2
             name: acme-inc
-            expirationDate: '2019-31-12T00:00:00.000Z'
+            expirationDate: '2019-12-31T00:00:00.000Z'
             organization:
               addressLine1: 123 Looney Tunes Drive
               addressLine2: Block 1
@@ -165,7 +165,7 @@ components:
             organizationCountry: United States
             organizationPersonName: Wile Ethelbert Coyote
             organizationPhoneNumber: +1 (555) 123 4567
-            expirationDate: '2019-31-12T00:00:00.000Z'
+            expirationDate: '2019-12-31T00:00:00.000Z'
     accountListResult:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
