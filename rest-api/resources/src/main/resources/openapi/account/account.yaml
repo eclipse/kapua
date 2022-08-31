@@ -164,7 +164,7 @@ components:
             organizationStateProvinceCounty: Green County, GC
             organizationCountry: United States
             organizationPersonName: Wile Ethelbert Coyote
-            phoneNumber: +1 (555) 123 4567
+            organizationPhoneNumber: +1 (555) 123 4567
             expirationDate: '2019-31-12T00:00:00.000Z'
     accountListResult:
       allOf:
