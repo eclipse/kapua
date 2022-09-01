@@ -61,6 +61,7 @@ components:
               - domain: broker
                 action: connect
                 forwardable: true
+                targetScopeId: AQ
     roleListResult:
       allOf:
         - $ref: '../openapi.yaml#/components/schemas/kapuaListResult'
