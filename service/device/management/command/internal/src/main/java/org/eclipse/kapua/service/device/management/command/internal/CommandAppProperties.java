@@ -79,7 +79,8 @@ public enum CommandAppProperties implements KapuaAppProperties {
     /**
      * Command timed out flag
      */
-    APP_PROPERTY_TIMED_OUT("kapua.cmd.timed.out"),;
+    APP_PROPERTY_TIMED_OUT("kapua.cmd.timed.out"),
+    ;
 
     private String value;
 

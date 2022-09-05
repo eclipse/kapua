@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.translator.jms.kura;
+package org.eclipse.kapua.translator.jms.kura.lifecycle;
 
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthChannel;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraBirthMessage;
@@ -27,22 +27,27 @@ import java.util.Date;
  */
 public class TranslatorLifeBirthJmsKura extends AbstractTranslatorLifecycleJmsKura<KuraBirthChannel, KuraBirthPayload, KuraBirthMessage> {
 
+    /**
+     * Constructor.
+     *
+     * @since 1.2.0
+     */
     public TranslatorLifeBirthJmsKura() {
         super(KuraBirthMessage.class);
     }
 
     @Override
-    public KuraBirthMessage createLifecycleMessage(KuraBirthChannel kuraBirthChannel, Date receivedOn, KuraBirthPayload kuraBirthPayload) {
+    public KuraBirthMessage createMessage(KuraBirthChannel kuraBirthChannel, Date receivedOn, KuraBirthPayload kuraBirthPayload) {
         return new KuraBirthMessage(kuraBirthChannel, receivedOn, kuraBirthPayload);
     }
 
     @Override
-    public KuraBirthPayload createLifecyclePayload() {
+    public KuraBirthPayload createPayload() {
         return new KuraBirthPayload();
     }
 
     @Override
-    public KuraBirthChannel createLifecycleChannel(String messageClassifier, String scopeName, String clientId) {
+    public KuraBirthChannel createChannel(String messageClassifier, String scopeName, String clientId) {
         return new KuraBirthChannel(messageClassifier, scopeName, clientId);
     }
 }

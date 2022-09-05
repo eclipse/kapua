@@ -15,10 +15,9 @@ package org.eclipse.kapua.service.device.management.configuration.internal;
 import org.eclipse.kapua.service.device.management.message.KapuaAppProperties;
 
 /**
- * /**
  * Device application configuration properties definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public enum DeviceConfigurationAppProperties implements KapuaAppProperties {
     /**
@@ -28,7 +27,8 @@ public enum DeviceConfigurationAppProperties implements KapuaAppProperties {
     /**
      * Application version
      */
-    APP_VERSION("1.0.0"),;
+    APP_VERSION("1.0.0"),
+    ;
 
     private String value;
 

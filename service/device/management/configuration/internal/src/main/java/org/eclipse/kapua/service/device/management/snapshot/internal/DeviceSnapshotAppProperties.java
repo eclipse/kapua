@@ -27,7 +27,8 @@ public enum DeviceSnapshotAppProperties implements KapuaAppProperties {
     /**
      * Application version
      */
-    APP_VERSION("1.0.0"),;
+    APP_VERSION("1.0.0"),
+    ;
 
     private String value;
 

@@ -11,7 +11,7 @@
  *     Eurotech - initial API and implementation
  *     Red Hat Inc
  *******************************************************************************/
-package org.eclipse.kapua.translator.jms.kura;
+package org.eclipse.kapua.translator.jms.kura.lifecycle;
 
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingChannel;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraMissingMessage;
@@ -28,22 +28,27 @@ import java.util.Date;
  */
 public class TranslatorLifeMissingJmsKura extends AbstractTranslatorLifecycleJmsKura<KuraMissingChannel, KuraMissingPayload, KuraMissingMessage> {
 
+    /**
+     * Constructor.
+     *
+     * @since 1.2.0
+     */
     public TranslatorLifeMissingJmsKura() {
         super(KuraMissingMessage.class);
     }
 
     @Override
-    public KuraMissingMessage createLifecycleMessage(KuraMissingChannel kuraMissingChannel, Date receivedOn, KuraMissingPayload kuraMissingPayload) {
+    public KuraMissingMessage createMessage(KuraMissingChannel kuraMissingChannel, Date receivedOn, KuraMissingPayload kuraMissingPayload) {
         return new KuraMissingMessage(kuraMissingChannel, receivedOn, kuraMissingPayload);
     }
 
     @Override
-    public KuraMissingPayload createLifecyclePayload() {
+    public KuraMissingPayload createPayload() {
         return new KuraMissingPayload();
     }
 
     @Override
-    public KuraMissingChannel createLifecycleChannel(String messageClassifier, String scopeName, String clientId) {
+    public KuraMissingChannel createChannel(String messageClassifier, String scopeName, String clientId) {
         return new KuraMissingChannel(messageClassifier, scopeName, clientId);
     }
 

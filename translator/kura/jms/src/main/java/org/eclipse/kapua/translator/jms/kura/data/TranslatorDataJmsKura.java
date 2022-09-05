@@ -10,42 +10,35 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.translator.jms.kura;
+package org.eclipse.kapua.translator.jms.kura.data;
 
-import org.eclipse.kapua.message.internal.MessageException;
-import org.eclipse.kapua.service.device.call.kura.Kura;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataChannel;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataMessage;
 import org.eclipse.kapua.service.device.call.message.kura.data.KuraDataPayload;
 import org.eclipse.kapua.translator.Translator;
 import org.eclipse.kapua.translator.exception.InvalidChannelException;
-import org.eclipse.kapua.translator.exception.InvalidMessageException;
-import org.eclipse.kapua.translator.exception.InvalidPayloadException;
-import org.eclipse.kapua.translator.exception.TranslateException;
 import org.eclipse.kapua.translator.exception.TranslatorErrorCodes;
 import org.eclipse.kapua.translator.exception.TranslatorException;
+import org.eclipse.kapua.translator.jms.kura.AbstractTranslatorJmsKura;
 import org.eclipse.kapua.transport.message.jms.JmsMessage;
-import org.eclipse.kapua.transport.message.jms.JmsPayload;
 import org.eclipse.kapua.transport.message.jms.JmsTopic;
+
+import java.util.Date;
 
 /**
  * {@link Translator} implementation from {@link JmsMessage} to {@link KuraDataMessage}
  *
  * @since 1.0.0
  */
-public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessage> {
+public class TranslatorDataJmsKura extends AbstractTranslatorJmsKura<KuraDataChannel, KuraDataPayload, KuraDataMessage> {
 
-    @Override
-    public KuraDataMessage translate(JmsMessage jmsMessage) throws TranslateException {
-        try {
-            KuraDataChannel kuraChannel = translate(jmsMessage.getTopic());
-            KuraDataPayload kuraPayload = translate(jmsMessage.getPayload());
-            return new KuraDataMessage(kuraChannel, jmsMessage.getReceivedOn(), kuraPayload);
-        } catch (InvalidChannelException | InvalidPayloadException te) {
-            throw te;
-        } catch (Exception e) {
-            throw new InvalidMessageException(e, jmsMessage);
-        }
+    /**
+     * Constructor.
+     *
+     * @since 2.0.0
+     */
+    public TranslatorDataJmsKura() {
+        super(KuraDataMessage.class);
     }
 
     /**
@@ -56,6 +49,7 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
      * @throws InvalidChannelException if translation encounters any error (i.e.: not enough {@link JmsTopic#getSplittedTopic()} tokens.
      * @since 1.0.0
      */
+    @Override
     public KuraDataChannel translate(JmsTopic jmsTopic) throws InvalidChannelException {
         try {
             String[] topicTokens = jmsTopic.getSplittedTopic();
@@ -77,38 +71,24 @@ public class TranslatorDataJmsKura extends Translator<JmsMessage, KuraDataMessag
         }
     }
 
-    /**
-     * Translates the given {@link JmsPayload} to the {@link KuraDataPayload} equivalent.
-     * <p>
-     * If {@link JmsPayload#getBody()} is not {@link Kura} protobuf encoded the raw data will be put into {@link KuraDataPayload#getBody()}
-     *
-     * @param jmsPayload The {@link JmsPayload} to translate.
-     * @return The translated {@link KuraDataPayload}
-     * @throws InvalidPayloadException if translation encounters any error.
-     * @since 1.0.0
-     */
-    public KuraDataPayload translate(JmsPayload jmsPayload) throws InvalidPayloadException {
-        try {
-            KuraDataPayload kuraDataPayload = new KuraDataPayload();
-
-            if (jmsPayload.hasBody()) {
-                byte[] mqttBody = jmsPayload.getBody();
-
-                try {
-                    kuraDataPayload.readFromByteArray(mqttBody);
-                } catch (MessageException ex) {
-                    kuraDataPayload.setBody(mqttBody);
-                }
-            }
-            return kuraDataPayload;
-        } catch (Exception e) {
-            throw new InvalidPayloadException(e, jmsPayload);
-        }
+    @Override
+    public KuraDataMessage createMessage(KuraDataChannel deviceChannel, Date receivedOn, KuraDataPayload devicePayload) {
+        return new KuraDataMessage(deviceChannel, receivedOn, devicePayload);
     }
 
     @Override
-    public Class<JmsMessage> getClassFrom() {
-        return JmsMessage.class;
+    public KuraDataChannel createChannel(String messageClassifier, String scopeName, String clientId) {
+        return new KuraDataChannel(scopeName, clientId);
+    }
+
+    @Override
+    public KuraDataPayload createPayload() {
+        return new KuraDataPayload();
+    }
+
+    @Override
+    public boolean isRawPayloadToBody() {
+        return Boolean.TRUE;
     }
 
     @Override

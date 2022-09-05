@@ -29,6 +29,10 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-management-configuration-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-configuration-message-api</artifactId>
+        </dependency>
 
         <!-- Internal dependencies -->
         <dependency>
