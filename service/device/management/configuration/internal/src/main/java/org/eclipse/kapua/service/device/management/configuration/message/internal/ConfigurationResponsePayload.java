@@ -17,11 +17,15 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
+import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
+import java.util.stream.Collectors;
 
 /**
  * {@link DeviceConfiguration} {@link KapuaResponsePayload} implementation.
@@ -29,6 +33,8 @@ import javax.validation.constraints.NotNull;
  * @since 1.0.0
  */
 public class ConfigurationResponsePayload extends KapuaResponsePayloadImpl implements KapuaResponsePayload {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigurationResponsePayload.class);
 
     private static final long serialVersionUID = 3537585208524333690L;
 
@@ -62,5 +68,16 @@ public class ConfigurationResponsePayload extends KapuaResponsePayloadImpl imple
     public void setDeviceConfigurations(@NotNull DeviceConfiguration deviceConfiguration) throws Exception {
         String bodyString = XmlUtil.marshal(deviceConfiguration);
         setBody(bodyString.getBytes(CHAR_ENCODING));
+    }
+
+    @Override
+    public String toDisplayString() {
+        try {
+            return "Read configuration components: " + getDeviceConfigurations().getComponentConfigurations().stream().map(DeviceComponentConfiguration::getId).sorted(String::compareTo).collect(Collectors.joining(", "));
+        } catch (Exception e) {
+            LOG.warn("Error while invoking ConfigurationResponsePayload.toDisplayString(). Defaulting to KapuaResponsePayload.toDisplayString(). Error: {}", e.getMessage());
+        }
+
+        return super.toDisplayString();
     }
 }
