@@ -12,16 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.internal;
 
-import java.util.Map;
-
 import org.eclipse.kapua.commons.configuration.metatype.TocdImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 
+import java.util.Map;
+
 /**
  * Device component configuration entity implementation.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class DeviceComponentConfigurationImpl implements DeviceComponentConfiguration {
 
@@ -31,15 +31,18 @@ public class DeviceComponentConfigurationImpl implements DeviceComponentConfigur
     private Map<String, Object> properties;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     public DeviceComponentConfigurationImpl() {
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
-     * @param id
+     * @param id The {@link DeviceComponentConfiguration#getId()}
+     * @since 1.0.0
      */
     public DeviceComponentConfigurationImpl(String id) {
         this.id = id;

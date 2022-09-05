@@ -23,9 +23,9 @@ import javax.xml.bind.annotation.XmlType;
 import java.util.List;
 
 /**
- * Device configuration entity definition.
+ * {@link DeviceConfiguration} definition.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 @XmlRootElement(name = "configurations")
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -33,10 +33,28 @@ import java.util.List;
 public interface DeviceConfiguration extends KapuaSerializable {
 
     /**
-     * Get the device component configuration list
+     * Gets the {@link List} of {@link DeviceComponentConfiguration}.
      *
-     * @return
+     * @return The {@link List} of {@link DeviceComponentConfiguration}.
+     * @since 1.0.0
      */
     @XmlElement(name = "configuration")
     List<DeviceComponentConfiguration> getComponentConfigurations();
+
+    /**
+     * Adds a {@link DeviceComponentConfiguration} to the {@link List} of {@link DeviceComponentConfiguration}.
+     *
+     * @param componentConfiguration The {@link DeviceComponentConfiguration} to add.
+     * @since 2.0.0
+     */
+    void addComponentConfiguration(DeviceComponentConfiguration componentConfiguration);
+
+    /**
+     * Sets the {@link List} of {@link DeviceComponentConfiguration}.
+     *
+     * @param componentConfigurations The {@link List} of {@link DeviceComponentConfiguration}.
+     * @since 2.0.0
+     */
+    void setComponentConfigurations(List<DeviceComponentConfiguration> componentConfigurations);
+
 }

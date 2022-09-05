@@ -29,6 +29,7 @@ org.eclipse.kapua.translator.kura.kapua.TranslatorLifeBirthKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorLifeDisconnectKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorLifeMissingKuraKapua
 org.eclipse.kapua.translator.kura.kapua.TranslatorAppNotifyKuraKapua
+org.eclipse.kapua.translator.kura.kapua.event.TranslatorEventConfigurationKuraKapua
 org.eclipse.kapua.translator.kura.kapua.inventory.TranslatorAppInventoryBundlesKuraKapua
 org.eclipse.kapua.translator.kura.kapua.inventory.TranslatorAppInventoryContainersKuraKapua
 org.eclipse.kapua.translator.kura.kapua.inventory.TranslatorAppInventoryListKuraKapua

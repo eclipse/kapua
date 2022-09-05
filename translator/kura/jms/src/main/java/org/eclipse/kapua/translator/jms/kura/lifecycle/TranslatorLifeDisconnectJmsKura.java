@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.translator.jms.kura;
+package org.eclipse.kapua.translator.jms.kura.lifecycle;
 
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectChannel;
 import org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraDisconnectMessage;
@@ -27,22 +27,27 @@ import java.util.Date;
  */
 public class TranslatorLifeDisconnectJmsKura extends AbstractTranslatorLifecycleJmsKura<KuraDisconnectChannel, KuraDisconnectPayload, KuraDisconnectMessage> {
 
+    /**
+     * Constructor.
+     *
+     * @since 1.2.0
+     */
     public TranslatorLifeDisconnectJmsKura() {
         super(KuraDisconnectMessage.class);
     }
 
     @Override
-    public KuraDisconnectMessage createLifecycleMessage(KuraDisconnectChannel kuraDisconnectChannel, Date receivedOn, KuraDisconnectPayload kuraDisconnectPayload) {
+    public KuraDisconnectMessage createMessage(KuraDisconnectChannel kuraDisconnectChannel, Date receivedOn, KuraDisconnectPayload kuraDisconnectPayload) {
         return new KuraDisconnectMessage(kuraDisconnectChannel, receivedOn, kuraDisconnectPayload);
     }
 
     @Override
-    public KuraDisconnectPayload createLifecyclePayload() {
+    public KuraDisconnectPayload createPayload() {
         return new KuraDisconnectPayload();
     }
 
     @Override
-    public KuraDisconnectChannel createLifecycleChannel(String messageClassifier, String scopeName, String clientId) {
+    public KuraDisconnectChannel createChannel(String messageClassifier, String scopeName, String clientId) {
         return new KuraDisconnectChannel(messageClassifier, scopeName, clientId);
     }
 }
