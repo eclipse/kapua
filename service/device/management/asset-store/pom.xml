@@ -18,29 +18,16 @@
 
     <parent>
         <groupId>org.eclipse.kapua</groupId>
-        <artifactId>kapua-asset-store</artifactId>
+        <artifactId>kapua-device-management</artifactId>
         <version>1.7.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>kapua-asset-store-api</artifactId>
+    <artifactId>kapua-device-management-asset-store</artifactId>
+    <packaging>pom</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-message-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-service-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-commons</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-management-asset-api</artifactId>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>api</module>
+        <module>dummy-store</module>
+    </modules>
 
 </project>

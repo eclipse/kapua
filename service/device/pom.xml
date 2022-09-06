@@ -32,7 +32,6 @@
 
         <module>call</module>
 
-        <module>asset-store</module>
         <module>configuration-store</module>
         <module>registry</module>
         <module>management</module>

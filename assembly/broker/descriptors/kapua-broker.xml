@@ -262,10 +262,8 @@
                 <include>${pom.groupId}:kapua-device-management-api</include>
                 <include>${pom.groupId}:kapua-device-management-asset-api</include>
                 <include>${pom.groupId}:kapua-device-management-asset-internal</include>
-                <include>${pom.groupId}:kapua-asset-store-api</include>
-                <include>${pom.groupId}:kapua-asset-store-dummy</include>
-                <include>${pom.groupId}:kapua-configuration-store-api</include>
-                <include>${pom.groupId}:kapua-configuration-store-dummy</include>
+                <include>${pom.groupId}:kapua-device-management-asset-store-api</include>
+                <include>${pom.groupId}:kapua-device-management-asset-store-dummy</include>
                 <include>${pom.groupId}:kapua-device-management-bundle-api</include>
                 <include>${pom.groupId}:kapua-device-management-bundle-internal</include>
                 <include>${pom.groupId}:kapua-device-management-command-api</include>
