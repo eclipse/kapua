@@ -29,6 +29,7 @@
         <module>api</module>
 
         <module>asset</module>
+        <module>asset-store</module>
         <module>bundle</module>
         <module>command</module>
         <module>configuration</module>

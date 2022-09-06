@@ -27,11 +27,11 @@
     <dependencies>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-asset-store-dummy</artifactId>
+            <artifactId>kapua-device-management-asset-internal</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-device-management-asset-internal</artifactId>
+            <artifactId>kapua-device-management-asset-store-dummy</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
