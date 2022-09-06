@@ -31,6 +31,7 @@
         <module>bundle</module>
         <module>command</module>
         <module>configuration</module>
+        <module>configuration-store</module>
         <module>inventory</module>
         <module>keystore</module>
         <module>packages</module>
