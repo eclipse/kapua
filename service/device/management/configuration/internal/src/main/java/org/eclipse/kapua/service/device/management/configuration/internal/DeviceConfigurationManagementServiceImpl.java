@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.internal;
 
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -20,7 +21,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.configurationstore.api.ConfigurationStoreService;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
@@ -34,6 +34,7 @@ import org.eclipse.kapua.service.device.management.configuration.message.interna
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestMessage;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationRequestPayload;
 import org.eclipse.kapua.service.device.management.configuration.message.internal.ConfigurationResponseMessage;
+import org.eclipse.kapua.service.device.management.configuration.store.DeviceConfigurationStoreService;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
 import org.eclipse.kapua.service.device.management.exception.DeviceNeverConnectedException;
 import org.eclipse.kapua.service.device.management.message.KapuaMethod;
@@ -57,7 +58,7 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
     private static final String SCOPE_ID = "scopeId";
     private static final String DEVICE_ID = "deviceId";
 
-    private static final ConfigurationStoreService CONFIGURATION_STORE_SERVICE = KapuaLocator.getInstance().getService(ConfigurationStoreService.class);
+    private static final DeviceConfigurationStoreService CONFIGURATION_STORE_SERVICE = KapuaLocator.getInstance().getService(DeviceConfigurationStoreService.class);
 
     @Override
     public DeviceConfiguration get(KapuaId scopeId, KapuaId deviceId, String configurationId, String configurationComponentPid, Long timeout)
@@ -106,7 +107,13 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
             //
             // Store config and return
-            CONFIGURATION_STORE_SERVICE.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration);
+            if (Strings.isNullOrEmpty(configurationComponentPid)) {
+                // If all DeviceConfiguration has been requested, store it overriding any previous value
+                CONFIGURATION_STORE_SERVICE.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration);
+            } else {
+                // If only one DeviceComponentConfiguration has been requested, store it overriding only the selected DeviceComponentConfiguration
+                CONFIGURATION_STORE_SERVICE.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration.getComponentConfigurations().get(0));
+            }
 
             return onlineDeviceConfiguration;
         } else {

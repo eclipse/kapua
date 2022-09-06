@@ -27,15 +27,15 @@ import org.eclipse.kapua.app.console.module.device.shared.util.GwtKapuaDeviceMod
 import org.eclipse.kapua.app.console.module.device.shared.util.KapuaGwtDeviceModelConverter;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.assetstore.api.AssetStoreService;
-import org.eclipse.kapua.service.assetstore.api.DeviceAssetStoreFactory;
-import org.eclipse.kapua.service.assetstore.config.api.AssetStoreEnablementPolicy;
-import org.eclipse.kapua.service.assetstore.config.api.DeviceAssetStoreConfiguration;
 import org.eclipse.kapua.service.device.management.asset.DeviceAsset;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannelMode;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
+import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreFactory;
+import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService;
+import org.eclipse.kapua.service.device.management.asset.store.settings.DeviceAssetStoreEnablementPolicy;
+import org.eclipse.kapua.service.device.management.asset.store.settings.DeviceAssetStoreSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DeviceAssetManagementService assetService = locator.getService(DeviceAssetManagementService.class);
 
-    private final AssetStoreService deviceAssetStoreService = locator.getService(AssetStoreService.class);
+    private final DeviceAssetStoreService deviceAssetStoreService = locator.getService(DeviceAssetStoreService.class);
     private final DeviceAssetStoreFactory deviceAssetStoreFactory = locator.getFactory(DeviceAssetStoreFactory.class);
 
     @Override
@@ -112,10 +112,10 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
             KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
 
-            DeviceAssetStoreConfiguration deviceAssetStoreSettings = deviceAssetStoreService.getApplicationConfiguration(scopeId, deviceId);
+            DeviceAssetStoreSettings deviceAssetStoreSettings = deviceAssetStoreService.getApplicationSettings(scopeId, deviceId);
 
             GwtDeviceAssetStoreSettings gwtDeviceAssetStoreSettings = new GwtDeviceAssetStoreSettings();
-            gwtDeviceAssetStoreSettings.setStoreEnablementPolicy(GwtDeviceAssetStoreSettings.GwtDeviceAssetStoreEnablementPolicy.valueOf(deviceAssetStoreSettings.getAssetStoreEnablementPolicy().name()));
+            gwtDeviceAssetStoreSettings.setStoreEnablementPolicy(GwtDeviceAssetStoreSettings.GwtDeviceAssetStoreEnablementPolicy.valueOf(deviceAssetStoreSettings.getEnablementPolicy().name()));
 
             return gwtDeviceAssetStoreSettings;
         } catch (Throwable t) {
@@ -131,12 +131,12 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
             KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
 
-            DeviceAssetStoreConfiguration deviceAssetStoreSettings = deviceAssetStoreFactory.newDeviceAssetStoreConfiguration();
+            DeviceAssetStoreSettings deviceAssetStoreSettings = deviceAssetStoreFactory.newDeviceAssetStoreSettings();
             deviceAssetStoreSettings.setScopeId(scopeId);
             deviceAssetStoreSettings.setDeviceId(deviceId);
-            deviceAssetStoreSettings.setAssetStoreEnablementPolicy(AssetStoreEnablementPolicy.valueOf(gwtDeviceAssetStoreSettings.getStoreEnablementPolicy()));
+            deviceAssetStoreSettings.setEnablementPolicy(DeviceAssetStoreEnablementPolicy.valueOf(gwtDeviceAssetStoreSettings.getStoreEnablementPolicy()));
 
-            deviceAssetStoreService.setApplicationConfiguration(scopeId, deviceId, deviceAssetStoreSettings);
+            deviceAssetStoreService.setApplicationSettings(scopeId, deviceId, deviceAssetStoreSettings);
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);
         }

@@ -18,11 +18,11 @@ import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.configurationstore.api.ConfigurationStoreService;
-import org.eclipse.kapua.service.configurationstore.config.api.DeviceConfigurationStoreConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
+import org.eclipse.kapua.service.device.management.configuration.store.DeviceConfigurationStoreService;
+import org.eclipse.kapua.service.device.management.configuration.store.settings.DeviceConfigurationStoreSettings;
 import org.eclipse.kapua.service.device.registry.Device;
 
 import javax.ws.rs.Consumes;
@@ -42,7 +42,7 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
     private final KapuaLocator locator = KapuaLocator.getInstance();
     private final DeviceConfigurationManagementService configurationService = locator.getService(DeviceConfigurationManagementService.class);
 
-    private final ConfigurationStoreService configurationStoreService = locator.getService(ConfigurationStoreService.class);
+    private final DeviceConfigurationStoreService deviceConfigurationStoreService = locator.getService(DeviceConfigurationStoreService.class);
 
     /**
      * Returns the current configuration of the device.
@@ -147,11 +147,11 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
     @GET
     @Path("_settings")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public DeviceConfigurationStoreConfiguration getSettings(
+    public DeviceConfigurationStoreSettings getSettings(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId)
             throws KapuaException {
-        return configurationStoreService.getApplicationConfiguration(scopeId, deviceId);
+        return deviceConfigurationStoreService.getApplicationSettings(scopeId, deviceId);
     }
 
     @POST
@@ -160,8 +160,8 @@ public class DeviceManagementConfigurations extends AbstractKapuaResource {
     public Response postSettings(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            DeviceConfigurationStoreConfiguration deviceConfigurationStoreConfiguration) throws KapuaException {
-        configurationStoreService.setApplicationConfiguration(scopeId, deviceId, deviceConfigurationStoreConfiguration);
+            DeviceConfigurationStoreSettings deviceConfigurationStoreSettings) throws KapuaException {
+        deviceConfigurationStoreService.setApplicationSettings(scopeId, deviceId, deviceConfigurationStoreSettings);
 
         return returnNoContent();
     }

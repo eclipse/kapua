@@ -18,12 +18,12 @@ import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.assetstore.api.AssetStoreService;
-import org.eclipse.kapua.service.assetstore.config.api.DeviceAssetStoreConfiguration;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetChannel;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
+import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService;
+import org.eclipse.kapua.service.device.management.asset.store.settings.DeviceAssetStoreSettings;
 import org.eclipse.kapua.service.device.registry.Device;
 
 import javax.ws.rs.GET;
@@ -42,7 +42,7 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     private final DeviceAssetManagementService deviceManagementAssetService = locator.getService(DeviceAssetManagementService.class);
     private final DeviceAssetFactory deviceAssetFilter = locator.getFactory(DeviceAssetFactory.class);
 
-    private final AssetStoreService assetStoreService = locator.getService(AssetStoreService.class);
+    private final DeviceAssetStoreService deviceAssetStoreService = locator.getService(DeviceAssetStoreService.class);
 
     /**
      * Returns the list of all the Assets configured on the device.
@@ -128,11 +128,11 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     @GET
     @Path("_settings")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public DeviceAssetStoreConfiguration getSettings(
+    public DeviceAssetStoreSettings getSettings(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId)
             throws KapuaException {
-        return assetStoreService.getApplicationConfiguration(scopeId, deviceId);
+        return deviceAssetStoreService.getApplicationSettings(scopeId, deviceId);
     }
 
     @POST
@@ -141,8 +141,8 @@ public class DeviceManagementAssets extends AbstractKapuaResource {
     public Response postSettings(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("deviceId") EntityId deviceId,
-            DeviceAssetStoreConfiguration deviceAssetStoreConfiguration) throws KapuaException {
-        assetStoreService.setApplicationConfiguration(scopeId, deviceId, deviceAssetStoreConfiguration);
+            DeviceAssetStoreSettings deviceAssetStoreSettings) throws KapuaException {
+        deviceAssetStoreService.setApplicationSettings(scopeId, deviceId, deviceAssetStoreSettings);
 
         return returnNoContent();
     }

@@ -123,7 +123,6 @@ public class DeviceConfigurationsStoreSettingsDialog extends SimpleDialog {
 
             @Override
             public void onSuccess(GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings) {
-//                configurationStoreEnablement.setSimpleValue(GwtDeviceConfigurationStoreSettings.GwtDeviceConfigurationStoreEnablementPolicy.ENABLED);
                 configurationStoreEnablement.setSimpleValue(gwtDeviceConfigurationStoreSettings.getStoreEnablementPolicyEnum());
             }
         });
