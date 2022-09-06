@@ -123,7 +123,6 @@ public class DeviceAssetStoreSettingsDialog extends SimpleDialog {
 
             @Override
             public void onSuccess(GwtDeviceAssetStoreSettings gwtDeviceAssetStoreSettings) {
-//                assetStoreEnablement.setSimpleValue(GwtDeviceAssetStoreSettings.GwtDeviceAssetStoreEnablementPolicy.ENABLED);
                 assetStoreEnablement.setSimpleValue(gwtDeviceAssetStoreSettings.getStoreEnablementPolicyEnum());
             }
         });

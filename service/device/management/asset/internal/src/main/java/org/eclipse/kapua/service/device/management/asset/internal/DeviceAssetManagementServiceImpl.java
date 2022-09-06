@@ -17,7 +17,6 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.assetstore.api.AssetStoreService;
 import org.eclipse.kapua.service.device.management.DeviceManagementDomains;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
@@ -25,6 +24,7 @@ import org.eclipse.kapua.service.device.management.asset.message.internal.AssetR
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestMessage;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetRequestPayload;
 import org.eclipse.kapua.service.device.management.asset.message.internal.AssetResponseMessage;
+import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService;
 import org.eclipse.kapua.service.device.management.commons.AbstractDeviceManagementServiceImpl;
 import org.eclipse.kapua.service.device.management.commons.call.DeviceCallExecutor;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementRequestContentException;
@@ -46,7 +46,7 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
     private static final String DEVICE_ID = "deviceId";
     private static final String DEVICE_ASSETS = "deviceAssets";
 
-    private static final AssetStoreService ASSET_STORE_SERVICE = KapuaLocator.getInstance().getService(AssetStoreService.class);
+    private static final DeviceAssetStoreService ASSET_STORE_SERVICE = KapuaLocator.getInstance().getService(DeviceAssetStoreService.class);
 
     @Override
     public DeviceAssets get(KapuaId scopeId, KapuaId deviceId, DeviceAssets deviceAssets, Long timeout)

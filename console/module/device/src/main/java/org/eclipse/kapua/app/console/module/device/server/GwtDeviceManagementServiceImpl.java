@@ -50,10 +50,6 @@ import org.eclipse.kapua.model.config.metatype.KapuaTicon;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.config.metatype.KapuaToption;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.configurationstore.api.ConfigurationStoreService;
-import org.eclipse.kapua.service.configurationstore.api.DeviceConfigurationStoreFactory;
-import org.eclipse.kapua.service.configurationstore.config.api.ConfigurationStoreEnablementPolicy;
-import org.eclipse.kapua.service.configurationstore.config.api.DeviceConfigurationStoreConfiguration;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -65,6 +61,10 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceComponent
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
+import org.eclipse.kapua.service.device.management.configuration.store.DeviceConfigurationStoreFactory;
+import org.eclipse.kapua.service.device.management.configuration.store.DeviceConfigurationStoreService;
+import org.eclipse.kapua.service.device.management.configuration.store.settings.DeviceConfigurationStoreEnablementPolicy;
+import org.eclipse.kapua.service.device.management.configuration.store.settings.DeviceConfigurationStoreSettings;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
@@ -127,7 +127,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
     private static final DeviceConfigurationManagementService CONFIGURATION_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceConfigurationManagementService.class);
     private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = LOCATOR.getFactory(DeviceConfigurationFactory.class);
 
-    private static final ConfigurationStoreService DEVICE_CONFIGURATION_STORE_SERVICE = LOCATOR.getService(ConfigurationStoreService.class);
+    private static final DeviceConfigurationStoreService DEVICE_CONFIGURATION_STORE_SERVICE = LOCATOR.getService(DeviceConfigurationStoreService.class);
 
     private static final DeviceConfigurationStoreFactory DEVICE_CONFIGURATION_STORE_FACTORY = LOCATOR.getFactory(DeviceConfigurationStoreFactory.class);
 
@@ -463,10 +463,10 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
             KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
 
-            DeviceConfigurationStoreConfiguration deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_SERVICE.getApplicationConfiguration(scopeId, deviceId);
+            DeviceConfigurationStoreSettings deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_SERVICE.getApplicationSettings(scopeId, deviceId);
 
             GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings = new GwtDeviceConfigurationStoreSettings();
-            gwtDeviceConfigurationStoreSettings.setStoreEnablementPolicy(GwtDeviceConfigurationStoreSettings.GwtDeviceConfigurationStoreEnablementPolicy.valueOf(deviceConfigurationStoreSettings.getConfigurationStoreEnablementPolicy().name()));
+            gwtDeviceConfigurationStoreSettings.setStoreEnablementPolicy(GwtDeviceConfigurationStoreSettings.GwtDeviceConfigurationStoreEnablementPolicy.valueOf(deviceConfigurationStoreSettings.getEnablementPolicy().name()));
 
             return gwtDeviceConfigurationStoreSettings;
         } catch (Throwable t) {
@@ -482,12 +482,12 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
             KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
 
-            DeviceConfigurationStoreConfiguration deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_FACTORY.newDeviceConfigurationStoreConfiguration();
+            DeviceConfigurationStoreSettings deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_FACTORY.newDeviceConfigurationStoreSettings();
             deviceConfigurationStoreSettings.setScopeId(scopeId);
             deviceConfigurationStoreSettings.setDeviceId(deviceId);
-            deviceConfigurationStoreSettings.setConfigurationStoreEnablementPolicy(ConfigurationStoreEnablementPolicy.valueOf(gwtDeviceConfigurationStoreSettings.getStoreEnablementPolicy()));
+            deviceConfigurationStoreSettings.setEnablementPolicy(DeviceConfigurationStoreEnablementPolicy.valueOf(gwtDeviceConfigurationStoreSettings.getStoreEnablementPolicy()));
 
-            DEVICE_CONFIGURATION_STORE_SERVICE.setApplicationConfiguration(scopeId, deviceId, deviceConfigurationStoreSettings);
+            DEVICE_CONFIGURATION_STORE_SERVICE.setApplicationSettings(scopeId, deviceId, deviceConfigurationStoreSettings);
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);
         }

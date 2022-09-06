@@ -75,7 +75,6 @@ import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.xml.AccountParentPathXmlAdapter;
 import org.eclipse.kapua.service.account.xml.AccountXmlRegistry;
-import org.eclipse.kapua.service.assetstore.config.api.DeviceAssetStoreConfiguration;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationCredentials;
 import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
@@ -138,7 +137,6 @@ import org.eclipse.kapua.service.authorization.role.RoleXmlRegistry;
 import org.eclipse.kapua.service.config.ServiceComponentConfiguration;
 import org.eclipse.kapua.service.config.ServiceConfiguration;
 import org.eclipse.kapua.service.config.ServiceConfigurationXmlRegistry;
-import org.eclipse.kapua.service.configurationstore.config.api.DeviceConfigurationStoreConfiguration;
 import org.eclipse.kapua.service.datastore.model.ChannelInfo;
 import org.eclipse.kapua.service.datastore.model.ChannelInfoListResult;
 import org.eclipse.kapua.service.datastore.model.ClientInfo;
@@ -172,6 +170,7 @@ import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInv
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
+import org.eclipse.kapua.service.device.management.asset.store.settings.DeviceAssetStoreSettings;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleXmlRegistry;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -181,6 +180,7 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandXmlRegis
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationXmlRegistry;
+import org.eclipse.kapua.service.device.management.configuration.store.settings.DeviceConfigurationStoreSettings;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
@@ -468,7 +468,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     // Device Management Assets
                     DeviceAssets.class,
-                    DeviceAssetStoreConfiguration.class,
+                    DeviceAssetStoreSettings.class,
                     DeviceAssetXmlRegistry.class,
 
                     // Device Management Bundles
@@ -486,7 +486,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KuraDeviceConfiguration.class,
                     DeviceConfiguration.class,
                     DeviceComponentConfiguration.class,
-                    DeviceConfigurationStoreConfiguration.class,
+                    DeviceConfigurationStoreSettings.class,
                     DeviceConfigurationXmlRegistry.class,
 
                     // Device Management Inventory
