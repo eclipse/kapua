@@ -81,8 +81,11 @@ services:
       - KEYCLOAK_CLIENT_ID
       - KEYCLOAK_REALM
   kapua-api:
+    &kapua-api
     container_name: kapua-api
     image: kapua/kapua-api:${IMAGE_VERSION}
+    profiles:
+      - swagger
     ports:
       - "8081:8080"
       - "8444:8443"
@@ -102,6 +105,11 @@ services:
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
       - LOGBACK_LOG_LEVEL
+  kapua-api-no-swagger:
+    <<: *kapua-api
+    profiles:
+      - no-swagger
+    entrypoint: ["bash", "-c", "/var/opt/jetty/webapps/root/doc/run-jetty-without-swagger.sh"]
   job-engine:
     container_name: job-engine
     image: kapua/kapua-job-engine:${IMAGE_VERSION}
