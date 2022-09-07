@@ -24,6 +24,7 @@ docker_common() {
 docker_compose() {
 
     declare -a COMPOSE_FILES;
+    declare -a PROFILES;
 
     # Debug Mode
     if [[ "$1" == true ]]; then
@@ -52,7 +53,14 @@ docker_compose() {
 
     fi
 
-    docker-compose -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
+    if [[ "$4" == false ]]; then
+      echo "Swagger disabled!"
+      PROFILES+=("no-swagger")
+    else
+      PROFILES+=("swagger")
+    fi
+
+    docker-compose --profile ${PROFILES[@]} -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
 }
 
 print_usage_deploy() {
@@ -63,6 +71,7 @@ OPEN_LOGS=false
 DEV_MODE=false
 DEBUG_MODE=false
 SSO_MODE=false
+SWAGGER=true
 for option in "$@"; do
   case $option in
     --logs)
@@ -77,6 +86,9 @@ for option in "$@"; do
     --sso)
       SSO_MODE=true
       ;;
+    --no-swagger)
+      SWAGGER=false
+      ;;
     -*)
       echo "ERROR: Unrecognised option $option"
       exit 1
@@ -89,7 +101,7 @@ done
 docker_common
 
 echo "Deploying Eclipse Kapua..."
-docker_compose ${DEBUG_MODE} ${DEV_MODE} ${SSO_MODE} || {
+docker_compose ${DEBUG_MODE} ${DEV_MODE} ${SSO_MODE} ${SWAGGER} || {
     echo "Deploying Eclipse Kapua... ERROR!"
     exit 1
 }
