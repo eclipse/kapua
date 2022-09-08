@@ -27,7 +27,7 @@ import java.io.IOException;
 
 public class SwaggerUIFilter implements Filter {
     private final Logger logger =
-        LoggerFactory.getLogger(CORSResponseFilter.class);
+        LoggerFactory.getLogger(SwaggerUIFilter.class);
     private boolean swaggerEnable;
 
 
