@@ -24,7 +24,6 @@ docker_common() {
 docker_compose() {
 
     declare -a COMPOSE_FILES;
-    declare -a PROFILES;
 
     # Debug Mode
     if [[ "$1" == true ]]; then
@@ -48,17 +47,15 @@ docker_compose() {
 
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/sso/docker-compose.console-sso.yml")
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/sso/docker-compose.keycloak.yml")
-
     fi
 
+    # Swagger UI
     if [[ "$4" == false ]]; then
       echo "Swagger disabled!"
-      PROFILES+=("no-swagger")
-    else
-      PROFILES+=("swagger")
     fi
+    export KAPUA_SWAGGER_ENABLE=$4
 
-    docker-compose --profile ${PROFILES[@]} -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
+    docker-compose -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
 }
 
 print_usage_deploy() {
