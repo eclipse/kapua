@@ -22,8 +22,8 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <packaging>pom</packaging>
     <artifactId>kapua-assembly-broker</artifactId>
+    <packaging>pom</packaging>
 
     <dependencies>
         <dependency>

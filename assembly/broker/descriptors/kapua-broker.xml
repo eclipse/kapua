@@ -301,6 +301,7 @@
                 <include>${pom.groupId}:kapua-device-management-configuration-internal</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-store-api</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-store-dummy</include>
+                <include>${pom.groupId}:kapua-device-management-configuration-message-api</include>
                 <include>${pom.groupId}:kapua-device-management-packages-api</include>
                 <include>${pom.groupId}:kapua-device-management-packages-internal</include>
                 <include>${pom.groupId}:kapua-job-api</include>
