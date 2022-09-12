@@ -258,7 +258,7 @@ public class ChannelInfoRegistryServiceImpl extends AbstractKapuaService impleme
     }
 
     @Override
-    protected boolean isServiceEnabled(KapuaId scopeId) {
+    public boolean isServiceEnabled(KapuaId scopeId) {
         return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
     }
 

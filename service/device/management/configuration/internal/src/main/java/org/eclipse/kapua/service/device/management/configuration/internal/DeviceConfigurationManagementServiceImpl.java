@@ -107,20 +107,20 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
             //
             // Store config and return
-            if (Strings.isNullOrEmpty(configurationComponentPid)) {
-                // If all DeviceConfiguration has been requested, store it overriding any previous value
-                CONFIGURATION_STORE_SERVICE.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration);
-            } else {
-                // If only one DeviceComponentConfiguration has been requested, store it overriding only the selected DeviceComponentConfiguration
-                CONFIGURATION_STORE_SERVICE.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration.getComponentConfigurations().get(0));
+            if (CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId)) {
+                if (Strings.isNullOrEmpty(configurationComponentPid)) {
+                    // If all DeviceConfiguration has been requested, store it overriding any previous value
+                    CONFIGURATION_STORE_SERVICE.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration);
+                } else {
+                    // If only one DeviceComponentConfiguration has been requested, store it overriding only the selected DeviceComponentConfiguration
+                    CONFIGURATION_STORE_SERVICE.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration.getComponentConfigurations().get(0));
+                }
             }
 
             return onlineDeviceConfiguration;
         } else {
-            DeviceConfiguration offlineDeviceConfiguration = CONFIGURATION_STORE_SERVICE.getConfigurations(scopeId, deviceId);
-
-            if (offlineDeviceConfiguration != null) {
-                return offlineDeviceConfiguration;
+            if (CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId)) {
+                return CONFIGURATION_STORE_SERVICE.getConfigurations(scopeId, deviceId);
             } else {
                 throw new DeviceNeverConnectedException(deviceId);
             }

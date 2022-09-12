@@ -91,45 +91,24 @@ public interface GwtDeviceManagementService extends RemoteService {
     // Configurations
     //
 
-    /**
-     * Returns the configuration of a Device as the list of all the configurable components.
-     *
-     * @param device
-     * @return
-     */
     List<GwtConfigComponent> findDeviceConfigurations(GwtDevice device)
             throws GwtKapuaException;
 
-    /**
-     * Updates the configuration of the provided component.
-     *
-     * @param device
-     * @param configComponent
-     */
     void updateComponentConfiguration(GwtXSRFToken xsrfToken, GwtDevice device, GwtConfigComponent configComponent)
             throws GwtKapuaException;
 
-    GwtDeviceConfigurationStoreSettings getDeviceConfigurationSettings(String scopeId, String deviceId) throws GwtKapuaException;
+    boolean isStoreServiceEnabled(String scopeIdString) throws GwtKapuaException;
 
-    void setDeviceConfigurationSettings(GwtXSRFToken xsrfToken, String scopeId, String deviceId, GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings) throws GwtKapuaException;
+    GwtDeviceConfigurationStoreSettings getApplicationSettings(String scopeId, String deviceId) throws GwtKapuaException;
+
+    void setApplicationSettings(GwtXSRFToken xsrfToken, String scopeId, String deviceId, GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings) throws GwtKapuaException;
 
     //
     // Snapshots
     //
-
-    /**
-     * @param device
-     * @return
-     * @throws GwtKapuaException
-     */
     ListLoadResult<GwtSnapshot> findDeviceSnapshots(GwtDevice device)
             throws GwtKapuaException;
 
-    /**
-     * @param device
-     * @param snapshot
-     * @throws GwtKapuaException
-     */
     void rollbackDeviceSnapshot(GwtXSRFToken xsfrToken, GwtDevice device, GwtSnapshot snapshot)
             throws GwtKapuaException;
 
@@ -148,15 +127,6 @@ public interface GwtDeviceManagementService extends RemoteService {
     //
     // Commands
     //
-
-    /**
-     * Executes a command on a remote Device.
-     *
-     * @param xsfrToken
-     * @param device
-     * @param commandInput
-     * @return
-     */
     GwtDeviceCommandOutput executeCommand(GwtXSRFToken xsfrToken, GwtDevice device, GwtDeviceCommandInput commandInput)
             throws GwtKapuaException;
 

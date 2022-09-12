@@ -82,7 +82,7 @@ public class DeviceAssetStoreSettingsDialog extends SimpleDialog {
 
         gwtDeviceAssetStoreSettings.setStoreEnablementPolicy(assetStoreEnablement.getSimpleValue());
 
-        GWT_DEVICE_ASSET_SERVICE_ASYNC.setSettings(xsrfToken, gwtDevice.getScopeId(), gwtDevice.getId(), gwtDeviceAssetStoreSettings, new AsyncCallback<Void>() {
+        GWT_DEVICE_ASSET_SERVICE_ASYNC.setApplicationSettings(xsrfToken, gwtDevice.getScopeId(), gwtDevice.getId(), gwtDeviceAssetStoreSettings, new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable t) {
                 unmask();
@@ -113,7 +113,7 @@ public class DeviceAssetStoreSettingsDialog extends SimpleDialog {
     }
 
     private void loadSettings() {
-        GWT_DEVICE_ASSET_SERVICE_ASYNC.getSettings(gwtDevice.getScopeId(), gwtDevice.getId(), new AsyncCallback<GwtDeviceAssetStoreSettings>() {
+        GWT_DEVICE_ASSET_SERVICE_ASYNC.getApplicationSettings(gwtDevice.getScopeId(), gwtDevice.getId(), new AsyncCallback<GwtDeviceAssetStoreSettings>() {
             @Override
             public void onFailure(Throwable t) {
                 assetStoreEnablement.setEmptyText("Error while loading settings!");

@@ -275,6 +275,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
     //
     // Configurations
     //
+
     @Override
     public List<GwtConfigComponent> findDeviceConfigurations(GwtDevice device)
             throws GwtKapuaException {
@@ -457,8 +458,22 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
         }
     }
 
+    //
+    // Configuration Store Settings
+    // 
+
+    public boolean isStoreServiceEnabled(String scopeIdString) throws GwtKapuaException {
+        try {
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+
+            return DEVICE_CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId);
+        } catch (Throwable t) {
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
+        }
+    }
+
     @Override
-    public GwtDeviceConfigurationStoreSettings getDeviceConfigurationSettings(String scopeIdString, String deviceIdString) throws GwtKapuaException {
+    public GwtDeviceConfigurationStoreSettings getApplicationSettings(String scopeIdString, String deviceIdString) throws GwtKapuaException {
         try {
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
             KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
@@ -475,7 +490,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
     }
 
     @Override
-    public void setDeviceConfigurationSettings(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings) throws GwtKapuaException {
+    public void setApplicationSettings(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings) throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
         try {

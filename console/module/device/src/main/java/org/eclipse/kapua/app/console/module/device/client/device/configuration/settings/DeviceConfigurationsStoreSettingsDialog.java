@@ -82,7 +82,7 @@ public class DeviceConfigurationsStoreSettingsDialog extends SimpleDialog {
 
         gwtDeviceConfigurationStoreSettings.setStoreEnablementPolicy(configurationStoreEnablement.getSimpleValue());
 
-        GWT_DEVICE_MANAGEMENT_SERVICE.setDeviceConfigurationSettings(xsrfToken, gwtDevice.getScopeId(), gwtDevice.getId(), gwtDeviceConfigurationStoreSettings, new AsyncCallback<Void>() {
+        GWT_DEVICE_MANAGEMENT_SERVICE.setApplicationSettings(xsrfToken, gwtDevice.getScopeId(), gwtDevice.getId(), gwtDeviceConfigurationStoreSettings, new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable t) {
                 unmask();
@@ -113,7 +113,7 @@ public class DeviceConfigurationsStoreSettingsDialog extends SimpleDialog {
     }
 
     private void loadSettings() {
-        GWT_DEVICE_MANAGEMENT_SERVICE.getDeviceConfigurationSettings(gwtDevice.getScopeId(), gwtDevice.getId(), new AsyncCallback<GwtDeviceConfigurationStoreSettings>() {
+        GWT_DEVICE_MANAGEMENT_SERVICE.getApplicationSettings(gwtDevice.getScopeId(), gwtDevice.getId(), new AsyncCallback<GwtDeviceConfigurationStoreSettings>() {
             @Override
             public void onFailure(Throwable t) {
                 configurationStoreEnablement.setEmptyText("Error while loading settings!");
