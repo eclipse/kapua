@@ -12,10 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.service;
 
+import org.eclipse.kapua.model.id.KapuaId;
+
 /**
  * {@link KapuaService} definition.
  *
  * @since 1.0.0
  */
 public interface KapuaService {
+
+    /**
+     * Whether this {@link KapuaService} is enabled for the given scope {@link KapuaId}.
+     *
+     * @param scopeId The scope {@link KapuaId} for which to check.
+     * @return {@code true} if the {@link KapuaService} is enabled, {@code false} otherwise.
+     * @since 2.0.0
+     */
+    default boolean isServiceEnabled(KapuaId scopeId) {
+        return true;
+    }
 }
