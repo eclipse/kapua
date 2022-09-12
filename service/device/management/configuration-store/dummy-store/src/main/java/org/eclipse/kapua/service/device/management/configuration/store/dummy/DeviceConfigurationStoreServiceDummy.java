@@ -70,4 +70,9 @@ public class DeviceConfigurationStoreServiceDummy implements DeviceConfiguration
     @Override
     public void setApplicationSettings(KapuaId scopeId, KapuaId deviceId, DeviceConfigurationStoreSettings deviceApplicationSettings) {
     }
+
+    @Override
+    public boolean isServiceEnabled(KapuaId scopeId) {
+        return false;
+    }
 }

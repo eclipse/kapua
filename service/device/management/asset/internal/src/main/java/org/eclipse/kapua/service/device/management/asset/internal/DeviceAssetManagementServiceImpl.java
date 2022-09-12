@@ -99,14 +99,14 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
             //
             // Store value and return
-            ASSET_STORE_SERVICE.storeAssets(scopeId, deviceId, onlineDeviceAssets);
+            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId)) {
+                ASSET_STORE_SERVICE.storeAssets(scopeId, deviceId, onlineDeviceAssets);
+            }
 
             return onlineDeviceAssets;
         } else {
-            DeviceAssets offlineDeviceAssets = ASSET_STORE_SERVICE.getAssets(scopeId, deviceId, deviceAssets);
-
-            if (offlineDeviceAssets != null) {
-                return offlineDeviceAssets;
+            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId)) {
+                return ASSET_STORE_SERVICE.getAssets(scopeId, deviceId, deviceAssets);
             } else {
                 throw new DeviceNeverConnectedException(deviceId);
             }
@@ -164,14 +164,14 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
             //
             // Store value and return
-            ASSET_STORE_SERVICE.storeAssetsValues(scopeId, deviceId, onlineDeviceAssets);
+            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId)) {
+                ASSET_STORE_SERVICE.storeAssetsValues(scopeId, deviceId, onlineDeviceAssets);
+            }
 
             return onlineDeviceAssets;
         } else {
-            DeviceAssets offlineDeviceAssetsValues = ASSET_STORE_SERVICE.getAssetsValues(scopeId, deviceId, deviceAssets);
-
-            if (offlineDeviceAssetsValues != null) {
-                return offlineDeviceAssetsValues;
+            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId)) {
+                return ASSET_STORE_SERVICE.getAssetsValues(scopeId, deviceId, deviceAssets);
             } else {
                 throw new DeviceNeverConnectedException(deviceId);
             }

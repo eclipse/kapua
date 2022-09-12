@@ -106,8 +106,21 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
         return gwtAssets.getAssets();
     }
 
+    //
+    // Asset Store Settings
+    //
+    public boolean isStoreServiceEnabled(String scopeIdString) throws GwtKapuaException {
+        try {
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+
+            return deviceAssetStoreService.isServiceEnabled(scopeId);
+        } catch (Throwable t) {
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
+        }
+    }
+
     @Override
-    public GwtDeviceAssetStoreSettings getSettings(String scopeIdString, String deviceIdString) throws GwtKapuaException {
+    public GwtDeviceAssetStoreSettings getApplicationSettings(String scopeIdString, String deviceIdString) throws GwtKapuaException {
         try {
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
             KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
@@ -124,7 +137,7 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
     }
 
     @Override
-    public void setSettings(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceAssetStoreSettings gwtDeviceAssetStoreSettings) throws GwtKapuaException {
+    public void setApplicationSettings(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceAssetStoreSettings gwtDeviceAssetStoreSettings) throws GwtKapuaException {
         checkXSRFToken(xsrfToken);
 
         try {

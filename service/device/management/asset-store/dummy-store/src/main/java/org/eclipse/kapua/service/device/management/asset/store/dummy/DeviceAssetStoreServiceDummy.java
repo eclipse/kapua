@@ -74,4 +74,9 @@ public class DeviceAssetStoreServiceDummy implements DeviceAssetStoreService {
     @Override
     public void setApplicationSettings(KapuaId scopeId, KapuaId deviceId, DeviceAssetStoreSettings deviceApplicationSettings) {
     }
+
+    @Override
+    public boolean isServiceEnabled(KapuaId scopeId) {
+        return false;
+    }
 }
