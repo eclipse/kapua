@@ -55,7 +55,7 @@ paths:
               type: account
               optlock: 2
               name: acme-inc
-              expirationDate: '2019-31-12T00:00:00.000Z'
+              expirationDate: '2019-12-31T00:00:00.000Z'
               organization:
                 addressLine1: 123 Looney Tunes Drive
                 addressLine2: Block 1
