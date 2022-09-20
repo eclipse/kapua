@@ -1,4 +1,4 @@
-name: kapua-continuous-integration
+name: Kapua CI
 on: [ push, pull_request ] # Triggers the workflow on push or pull request events
 
 env:
@@ -25,6 +25,13 @@ jobs:
       - run: mvn -v
       - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
       - run: bash <(curl -s https://codecov.io/bash)
+  license-check:
+    # Documentation: https://github.com/eclipse/dash-licenses#reusable-github-workflow-for-automatic-license-check-and-ip-team-review-requests
+    uses: eclipse/dash-licenses/.github/workflows/mavenLicenseCheck.yml@master
+    with:
+      projectId: iot.kapua
+    secrets:
+      gitlabAPIToken: ${{ secrets.IOT_KAPUA_GITLAB_API_TOKEN }} # We should ask Eclipse to add this secret at some point. Currently, we do not want to do automatic license vetting submission.
   test-brokerAcl:
     needs: build-kapua
     runs-on: ubuntu-latest
