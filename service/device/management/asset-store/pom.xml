@@ -27,7 +27,7 @@
 
     <modules>
         <module>api</module>
-        <module>dummy-store</module>
+        <module>dummy</module>
     </modules>
 
 </project>
