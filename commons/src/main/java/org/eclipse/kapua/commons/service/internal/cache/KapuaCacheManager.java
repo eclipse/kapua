@@ -104,6 +104,7 @@ public class KapuaCacheManager {
         ConfigurationPrinter
                 .create()
                 .withLogger(LOGGER)
+                .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
                 .withTitle("Cache Configuration")
                 .addParameter("Caching provider class name", CACHING_PROVIDER_CLASS_NAME)
                 .addParameter("Default caching provider class name", DEFAULT_CACHING_PROVIDER_CLASS_NAME)
