@@ -31,7 +31,7 @@ jobs:
     with:
       projectId: iot.kapua
     secrets:
-      gitlabAPIToken: ${{ secrets.IOT_KAPUA_GITLAB_API_TOKEN }} # We should ask Eclipse to add this secret at some point. Currently, we do not want to do automatic license vetting submission.
+      gitlabAPIToken: ${{ secrets.KAPUA_GITLAB_API_TOKEN }} # We should ask Eclipse to add this secret at some point. Currently, we do not want to do automatic license vetting submission.
   test-brokerAcl:
     needs: build-kapua
     runs-on: ubuntu-latest
