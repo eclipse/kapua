@@ -214,6 +214,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         ArgumentValidator.notNull(credential.getCredentialType(), "credential.credentialType");
         ArgumentValidator.notEmptyOrNull(credential.getCredentialKey(), "credential.credentialKey");
 
+        // These check are not correct, since they're applied to an already encrypted password
         if (CredentialType.PASSWORD == credential.getCredentialType()) {
             //
             // Validate Password length
