@@ -33,6 +33,8 @@ import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtCre
 import org.eclipse.kapua.app.console.module.authentication.shared.util.GwtKapuaAuthenticationModelConverter;
 import org.eclipse.kapua.app.console.module.authentication.shared.util.KapuaGwtAuthenticationModelConverter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
@@ -45,6 +47,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialQuery;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
+import org.eclipse.kapua.service.authentication.exception.PasswordLengthException;
 import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.eclipse.kapua.service.authentication.shiro.utils.CryptAlgorithm;
 import org.eclipse.kapua.service.user.User;
@@ -73,6 +76,9 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
 
     private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
     private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
+
+    // this should be removed due to the refactoring in update method
+    private static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
 
     @Override
     public PagingLoadResult<GwtCredential> query(PagingLoadConfig loadConfig, final GwtCredentialQuery gwtCredentialQuery) throws GwtKapuaException {
@@ -170,6 +176,32 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         // Checking XSRF token
         checkXSRFToken(gwtXsrfToken);
 
+        // Validate password, this check should be moved to CredentialServiceImpl.
+        // There, this check already exists, but it's useless since it's done on
+        // the encrypted password
+        Credential credential =
+            GwtKapuaAuthenticationModelConverter.convertCredential(gwtCredential);
+        try {
+            // Validate Password length
+            int minPasswordLength = CREDENTIAL_SERVICE.getMinimumPasswordLength(
+                credential.getScopeId());
+            if (gwtCredential.getCredentialKey().length() < minPasswordLength ||
+                gwtCredential.getCredentialKey().length() >
+                    SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+                throw new PasswordLengthException(
+                    minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+            }
+
+            // Validate Password regex
+            ArgumentValidator.match(
+                gwtCredential.getCredentialKey(),
+                CommonsValidationRegex.PASSWORD_REGEXP,
+                "credential.credentialKey"
+            );
+
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
         //
         // Do update
         GwtCredential gwtCredentialUpdated = null;
@@ -185,7 +217,6 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
                 Credential currentCredential = CREDENTIAL_SERVICE.find(scopeId, credentialId);
                 gwtCredential.setCredentialKey(currentCredential.getCredentialKey());
             }
-
             Credential credentialUpdated = CREDENTIAL_SERVICE.update(GwtKapuaAuthenticationModelConverter.convertCredential(gwtCredential));
             User user = USER_SERVICE.find(credentialUpdated.getScopeId(), credentialUpdated.getUserId());
 
