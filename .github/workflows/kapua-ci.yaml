@@ -7,7 +7,8 @@ env:
   MAVEN_OPTS: "-Xmx4096m"
 
 jobs:
-  build-kapua:
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2 # Checks out a copy of the repository on the ubuntu-latest machine
@@ -26,15 +27,8 @@ jobs:
       - run: docker images -a  # used as log (should show only github environment standard docker images; if kapua images are present, something is wrong)
       - run: mvn -B ${BUILD_OPTS} -DskipTests clean install
       - run: bash <(curl -s https://codecov.io/bash)
-  license-check:
-    # Documentation: https://github.com/eclipse/dash-licenses#reusable-github-workflow-for-automatic-license-check-and-ip-team-review-requests
-    uses: eclipse/dash-licenses/.github/workflows/mavenLicenseCheck.yml@master
-    with:
-      projectId: iot.kapua
-    secrets:
-      gitlabAPIToken: ${{ secrets.KAPUA_GITLAB_API_TOKEN }} # We should ask Eclipse to add this secret at some point. Currently, we do not want to do automatic license vetting submission.
   test-brokerAcl:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -57,7 +51,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@brokerAcl" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-tag:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -78,7 +72,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@tag" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-broker:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -101,7 +95,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@broker" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-device:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -124,7 +118,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@device" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-device-management:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -147,7 +141,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@deviceManagement" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-connection:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -170,7 +164,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@connection" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-datastore:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -193,7 +187,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@datastore" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-user:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -214,7 +208,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@user" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-userIntegrationBase:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -237,7 +231,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@userIntegrationBase" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-userIntegration:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -260,7 +254,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@userIntegration" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-security:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -281,7 +275,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@security" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobsAndScheduler:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -302,7 +296,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobs or @scheduler" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobsIntegrationBase:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -325,7 +319,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobsIntegrationBase" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobsIntegration:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -348,7 +342,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobsIntegration" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-triggerService:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -371,7 +365,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerService" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-triggerServiceIntegrationBase:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -394,7 +388,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerServiceIntegrationBase" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-triggerServiceIntegration:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -417,7 +411,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@triggerServiceIntegration" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-accountAndTranslator:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -438,7 +432,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@account or @translator" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineStepDefinitions:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -461,7 +455,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStepDefinitions" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineStartOfflineDevice:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -484,7 +478,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStartOfflineDevice" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineStartOnlineDevice:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -507,7 +501,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineStartOnlineDevice" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineRestartOfflineDevice:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -530,7 +524,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOfflineDevice" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineRestartOnlineDevice:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -553,7 +547,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOnlineDevice" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineRestartOnlineDeviceSecondPart:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -576,7 +570,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineRestartOnlineDeviceSecondPart" verify
       - run: bash <(curl -s https://codecov.io/bash)
   test-jobEngineServiceStop:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -599,7 +593,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@jobEngineServiceStop" verify
       - run: bash <(curl -s https://codecov.io/bash)
   junit-tests:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -620,7 +614,7 @@ jobs:
           command: ./ci-output.sh mvn -B ${BUILD_OPTS} ${CONFIG_OVERRIDES} -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' verify
       - run: bash <(curl -s https://codecov.io/bash)
   build-javadoc:
-    needs: build-kapua
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
