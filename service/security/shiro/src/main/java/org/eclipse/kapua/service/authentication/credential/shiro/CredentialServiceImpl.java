@@ -216,20 +216,22 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         ArgumentValidator.notNull(credential.getCredentialType(), "credential.credentialType");
         ArgumentValidator.notEmptyOrNull(credential.getCredentialKey(), "credential.credentialKey");
 
-        // FIXME These check are not correct, since they're applied to an already encrypted password
-        if (CredentialType.PASSWORD == credential.getCredentialType()) {
-            //
-            // Validate Password length
-            int minPasswordLength = getMinimumPasswordLength(credential.getScopeId());
-            if (credential.getCredentialKey().length() < minPasswordLength ||
-                    credential.getCredentialKey().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
-                throw new PasswordLengthException(minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
-            }
-
-            //
-            // Validate Password regex
-            ArgumentValidator.match(credential.getCredentialKey(), CommonsValidationRegex.PASSWORD_REGEXP, "credential.credentialKey");
-        }
+        // FIXME These check are not correct, since they're applied to an
+        //  already encrypted password. Checks are moved temporary to
+        //  GwtCredentialServiceImpl#update
+//        if (CredentialType.PASSWORD == credential.getCredentialType()) {
+//            //
+//            // Validate Password length
+//            int minPasswordLength = getMinimumPasswordLength(credential.getScopeId());
+//            if (credential.getCredentialKey().length() < minPasswordLength ||
+//                    credential.getCredentialKey().length() > SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+//                throw new PasswordLengthException(minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+//            }
+//
+//            //
+//            // Validate Password regex
+//            ArgumentValidator.match(credential.getCredentialKey(), CommonsValidationRegex.PASSWORD_REGEXP, "credential.credentialKey");
+//        }
 
         //
         // Check access
