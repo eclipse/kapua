@@ -1,0 +1,23 @@
+name: License Checking
+on:
+  push:
+    branches:
+      - 'develop'
+      - 'release-**'
+  pull_request:
+    branches:
+      - 'develop'
+      - 'release-**'
+  issue_comment:
+    types: [created]
+
+jobs:
+  # Documentation: https://github.com/eclipse/dash-licenses#reusable-github-workflow-for-automatic-license-check-and-ip-team-review-requests
+  eclipse-dash-license-tool-run:
+#    if: ${{ github.event.issue.pull_request }}
+    name: Eclipse Dash License Tool
+    uses: eclipse/dash-licenses/.github/workflows/mavenLicenseCheck.yml@master
+    with:
+      projectId: iot.kapua
+    secrets:
+      gitlabAPIToken: ${{ secrets.KAPUA_GITLAB_API_TOKEN }} # We should ask Eclipse to add this secret at some point. Currently, we do not want to do automatic license vetting submission.
