@@ -77,7 +77,7 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
     private static final UserService USER_SERVICE = LOCATOR.getService(UserService.class);
     private static final UserFactory USER_FACTORY = LOCATOR.getFactory(UserFactory.class);
 
-    // this should be removed due to the refactoring in update method
+    // this should be removed due to the refactoring in fixPasswordValidationBypass method
     private static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
 
     @Override
@@ -176,32 +176,8 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         // Checking XSRF token
         checkXSRFToken(gwtXsrfToken);
 
-        // Validate password, this check should be moved to CredentialServiceImpl.
-        // There, this check already exists, but it's useless since it's done on
-        // the encrypted password
-        Credential credential =
-            GwtKapuaAuthenticationModelConverter.convertCredential(gwtCredential);
-        try {
-            // Validate Password length
-            int minPasswordLength = CREDENTIAL_SERVICE.getMinimumPasswordLength(
-                credential.getScopeId());
-            if (gwtCredential.getCredentialKey().length() < minPasswordLength ||
-                gwtCredential.getCredentialKey().length() >
-                    SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
-                throw new PasswordLengthException(
-                    minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
-            }
+        fixPasswordValidationBypass(gwtCredential);
 
-            // Validate Password regex
-            ArgumentValidator.match(
-                gwtCredential.getCredentialKey(),
-                CommonsValidationRegex.PASSWORD_REGEXP,
-                "credential.credentialKey"
-            );
-
-        } catch (Throwable t) {
-            KapuaExceptionHandler.handle(t);
-        }
         //
         // Do update
         GwtCredential gwtCredentialUpdated = null;
@@ -231,6 +207,43 @@ public class GwtCredentialServiceImpl extends KapuaRemoteServiceServlet implemen
         // Return result
         return gwtCredentialUpdated;
     }
+
+
+    /**
+     * Validate password, this check should be moved to
+     * CredentialServiceImpl. There, this check already exist,
+     * but it's useless since it's done on the already encrypted password
+     * @param gwtCredential
+     * @throws GwtKapuaException
+     */
+    private void fixPasswordValidationBypass(GwtCredential gwtCredential)
+    throws GwtKapuaException {
+        Credential credential =
+            GwtKapuaAuthenticationModelConverter.convertCredential(
+                gwtCredential);
+        try {
+            // Validate Password length
+            int minPasswordLength = CREDENTIAL_SERVICE.getMinimumPasswordLength(
+                credential.getScopeId());
+            if (gwtCredential.getCredentialKey().length() < minPasswordLength ||
+                gwtCredential.getCredentialKey().length() >
+                    SYSTEM_MAXIMUM_PASSWORD_LENGTH) {
+                throw new PasswordLengthException(
+                    minPasswordLength, SYSTEM_MAXIMUM_PASSWORD_LENGTH);
+            }
+
+            // Validate Password regex
+            ArgumentValidator.match(
+                gwtCredential.getCredentialKey(),
+                CommonsValidationRegex.PASSWORD_REGEXP,
+                "credential.credentialKey"
+            );
+
+        } catch (Throwable t) {
+            KapuaExceptionHandler.handle(t);
+        }
+    }
+
 
     @Override
     public void changePassword(GwtXSRFToken gwtXsrfToken, String oldPassword, final String newPassword, String mfaCode, String stringUserId, String stringScopeId) throws GwtKapuaException {
