@@ -109,11 +109,12 @@ public class GwtDeviceAssetServiceImpl extends KapuaRemoteServiceServlet impleme
     //
     // Asset Store Settings
     //
-    public boolean isStoreServiceEnabled(String scopeIdString) throws GwtKapuaException {
+    public boolean isStoreServiceEnabled(String scopeIdString, String deviceIdString) throws GwtKapuaException {
         try {
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+            KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
 
-            return deviceAssetStoreService.isServiceEnabled(scopeId);
+            return deviceAssetStoreService.isServiceEnabled(scopeId) && deviceAssetStoreService.isApplicationEnabled(scopeId, deviceId);
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);
         }

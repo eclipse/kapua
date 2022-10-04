@@ -97,7 +97,7 @@ public interface GwtDeviceManagementService extends RemoteService {
     void updateComponentConfiguration(GwtXSRFToken xsrfToken, GwtDevice device, GwtConfigComponent configComponent)
             throws GwtKapuaException;
 
-    boolean isStoreServiceEnabled(String scopeIdString) throws GwtKapuaException;
+    boolean isStoreServiceEnabled(String scopeIdString, String deviceIdString) throws GwtKapuaException;
 
     GwtDeviceConfigurationStoreSettings getApplicationSettings(String scopeId, String deviceId) throws GwtKapuaException;
 

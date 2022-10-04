@@ -77,6 +77,13 @@ public enum DeviceManagementErrorCodes implements KapuaErrorCode {
     //
 
     /**
+     * See {@link DeviceManagementApplicationDisabledException}.
+     *
+     * @since 2.0.0
+     */
+    APPLICATION_DISABLED,
+
+    /**
      * See {@link DeviceNotConnectedException}.
      *
      * @since 1.0.0

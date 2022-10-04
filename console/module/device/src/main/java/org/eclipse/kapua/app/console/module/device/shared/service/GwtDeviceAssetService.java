@@ -33,7 +33,7 @@ public interface GwtDeviceAssetService extends RemoteService {
 
     List<GwtDeviceAsset> get(PagingLoadConfig pagingLoadConfig, String scopeIdString, String deviceIdString, GwtDeviceAssets deviceAssets) throws GwtKapuaException;
 
-    boolean isStoreServiceEnabled(String scopeIdString) throws GwtKapuaException;
+    boolean isStoreServiceEnabled(String scopeIdString, String deviceIdString) throws GwtKapuaException;
 
     GwtDeviceAssetStoreSettings getApplicationSettings(String scopeId, String deviceId) throws GwtKapuaException;
 
