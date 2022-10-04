@@ -58,9 +58,10 @@ public class DeviceTabAssets extends KapuaTabItem<GwtDevice> {
         if (gwtDevice != null) {
             setEnabled(gwtDevice.isOnline() && currentSession.hasPermission(DeviceManagementSessionPermission.read()));
             getHeader().setVisible(gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_ASSET_V1));
+            setText(MSGS.assets());
 
             if (!gwtDevice.isOnline()) {
-                GWT_DEVICE_ASSET_SERVICE.isStoreServiceEnabled(gwtDevice.getScopeId(), new AsyncCallback<Boolean>() {
+                GWT_DEVICE_ASSET_SERVICE.isStoreServiceEnabled(gwtDevice.getScopeId(), gwtDevice.getId(), new AsyncCallback<Boolean>() {
                     @Override
                     public void onFailure(Throwable t) {
                         FailureHandler.handle(t);

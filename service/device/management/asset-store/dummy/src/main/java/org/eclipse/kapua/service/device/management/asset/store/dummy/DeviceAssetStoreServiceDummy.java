@@ -79,4 +79,9 @@ public class DeviceAssetStoreServiceDummy implements DeviceAssetStoreService {
     public boolean isServiceEnabled(KapuaId scopeId) {
         return false;
     }
+
+    @Override
+    public boolean isApplicationEnabled(KapuaId scopeId, KapuaId deviceId) {
+        return false;
+    }
 }

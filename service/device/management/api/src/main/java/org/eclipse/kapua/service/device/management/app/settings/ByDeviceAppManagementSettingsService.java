@@ -47,4 +47,18 @@ public interface ByDeviceAppManagementSettingsService<C extends ByDeviceAppManag
      * @since 2.0.0
      */
     void setApplicationSettings(KapuaId scopeId, KapuaId deviceId, C deviceApplicationSettings) throws KapuaException;
+
+    /**
+     * Whether the {@link Device} application is enabled for the given {@link Device} or not.
+     * <p>
+     * Default implementation returns always {@code true}
+     *
+     * @param scopeId  The {@link Device#getScopeId()}.
+     * @param deviceId The {@link Device#getId()}
+     * @return {@code true} if application is enabled, {@code false} otherwise.
+     * @throws KapuaException
+     */
+    default boolean isApplicationEnabled(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
+        return true;
+    }
 }

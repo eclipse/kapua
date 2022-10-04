@@ -107,7 +107,8 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
             //
             // Store config and return
-            if (CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId)) {
+            if (CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId) &&
+                    CONFIGURATION_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId)) {
                 if (Strings.isNullOrEmpty(configurationComponentPid)) {
                     // If all DeviceConfiguration has been requested, store it overriding any previous value
                     CONFIGURATION_STORE_SERVICE.storeConfigurations(scopeId, deviceId, onlineDeviceConfiguration);
@@ -119,7 +120,8 @@ public class DeviceConfigurationManagementServiceImpl extends AbstractDeviceMana
 
             return onlineDeviceConfiguration;
         } else {
-            if (CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId)) {
+            if (CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId) &&
+                    CONFIGURATION_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId)) {
                 return CONFIGURATION_STORE_SERVICE.getConfigurations(scopeId, deviceId);
             } else {
                 throw new DeviceNeverConnectedException(deviceId);

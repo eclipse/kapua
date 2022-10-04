@@ -462,11 +462,12 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
     // Configuration Store Settings
     // 
 
-    public boolean isStoreServiceEnabled(String scopeIdString) throws GwtKapuaException {
+    public boolean isStoreServiceEnabled(String scopeIdString, String deviceIdString) throws GwtKapuaException {
         try {
             KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+            KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
 
-            return DEVICE_CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId);
+            return DEVICE_CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId) && DEVICE_CONFIGURATION_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId);
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);
         }

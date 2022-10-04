@@ -99,7 +99,8 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
             //
             // Store value and return
-            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId)) {
+            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId) &&
+                    ASSET_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId)) {
                 ASSET_STORE_SERVICE.storeAssets(scopeId, deviceId, onlineDeviceAssets);
             }
 
@@ -164,13 +165,15 @@ public class DeviceAssetManagementServiceImpl extends AbstractDeviceManagementSe
 
             //
             // Store value and return
-            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId)) {
+            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId) &&
+                    ASSET_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId)) {
                 ASSET_STORE_SERVICE.storeAssetsValues(scopeId, deviceId, onlineDeviceAssets);
             }
 
             return onlineDeviceAssets;
         } else {
-            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId)) {
+            if (ASSET_STORE_SERVICE.isServiceEnabled(scopeId) &&
+                    ASSET_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId)) {
                 return ASSET_STORE_SERVICE.getAssetsValues(scopeId, deviceId, deviceAssets);
             } else {
                 throw new DeviceNeverConnectedException(deviceId);
