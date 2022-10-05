@@ -112,7 +112,7 @@ public class CredentialAddDialog extends EntityAddEditDialog {
                 password.clearInvalid();
                 confirmPassword.clearInvalid();
                 if (password.isVisible() && confirmPassword.isVisible()) {
-                    DialogUtils.resizeDialog(CredentialAddDialog.this, 400, 335);
+                    DialogUtils.resizeDialog(CredentialAddDialog.this, 400, 390);
                     passwordTooltip.show();
                     password.setAllowBlank(false);
                 } else {
