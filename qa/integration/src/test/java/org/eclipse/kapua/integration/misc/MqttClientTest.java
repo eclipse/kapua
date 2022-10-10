@@ -15,6 +15,7 @@ package org.eclipse.kapua.integration.misc;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -24,6 +25,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 /**
  * Topic listener class that implements implementation of mqtt listener that listens on
@@ -33,6 +35,8 @@ import org.junit.Test;
  * FIXME Make it friendlier for usage. Suggestions please!
  * FIXME Describe process of recording kapua - kura communication and how to use recrded files.
  */
+
+@Category(JUnitTests.class)
 public class MqttClientTest extends Assert {
 
     /**
