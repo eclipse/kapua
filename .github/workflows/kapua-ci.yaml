@@ -11,13 +11,13 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2 # Checks out a copy of the repository on the ubuntu-latest machine
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3 # Checks out a copy of the repository on the ubuntu-latest machine
+      - uses: actions/setup-java@v3
         with:
-          java-version: '8' # The JDK version to make available on the path.
-          # java-package: jdk # (jre, jdk, or jdk+fx) - defaults to jdk
-          # architecture: x64 # (x64 or x86) - defaults to x64
-      - uses: actions/cache@v2 # Cache local Maven repository to reuse dependencies
+          distribution: 'zulu'
+          java-version: '8'
+          cache: 'maven'
+      - uses: actions/cache@v3 # Cache local Maven repository to reuse dependencies
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -30,17 +30,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -51,17 +53,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -72,17 +76,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -93,17 +99,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -114,17 +122,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -135,17 +145,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -156,17 +168,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -177,17 +191,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -198,17 +214,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -219,17 +237,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -240,17 +260,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -261,17 +283,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -282,17 +306,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -303,17 +329,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -324,17 +352,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -345,17 +375,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -366,17 +398,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -387,17 +421,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -408,17 +444,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -429,17 +467,19 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - uses: nick-invision/retry@v2.4.0
+      - uses: nick-fields/retry@v2.8.1
         with:
           timeout_minutes: 30
           retry_on: error
@@ -450,11 +490,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
         with:
+          distribution: 'zulu'
           java-version: '8'
-      - uses: actions/cache@v2
+          cache: 'maven'
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
