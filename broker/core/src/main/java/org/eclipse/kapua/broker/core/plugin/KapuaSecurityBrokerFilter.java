@@ -69,6 +69,9 @@ import org.eclipse.kapua.service.authentication.LoginCredentials;
 import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,6 +159,8 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     private AuthenticationService authenticationService = KapuaLocator.getInstance().getService(AuthenticationService.class);
     private CredentialsFactory credentialsFactory = KapuaLocator.getInstance().getFactory(CredentialsFactory.class);
     private AccountService accountService = KapuaLocator.getInstance().getService(AccountService.class);
+    private DeviceRegistryService
+        deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
 
     private Map<String, Object> options;
 
@@ -454,6 +459,16 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     account.getName(), info, (((TransportConnector) context.getConnector()).getName()));
             kapuaSecurityContext.updateOldConnectionId(CONNECTION_MAP.get(kapuaSecurityContext.getFullClientId()));
             loginShiroLoginTimeContext.stop();
+
+            Device device = KapuaSecurityUtils.doPrivileged(() ->
+                deviceRegistryService.findByClientId(
+                    accessToken.getScopeId(), info.getClientId()
+                )
+            );
+            if (DeviceStatus.DISABLED.equals(device.getStatus())) {
+                logger.warn("Device {} is disabled", info.getClientId());
+                throw new SecurityException("Device is disabled");
+            }
 
             CONNECTION_MAP.put(kapuaSecurityContext.getFullClientId(), info.getConnectionId().getValue());
 
