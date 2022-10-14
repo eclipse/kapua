@@ -157,7 +157,7 @@ components:
         clientId: testDevice
         status: ENABLED
         displayName: Test Device
-        serialNumber: 1234567890
+        serialNumber: "1234567890"
         modelId: Test Model
         biosVersion: N/A
         firmwareVersion: N/A
@@ -238,7 +238,7 @@ components:
             clientId: testDevice
             status: ENABLED
             displayName: Test Device
-            serialNumber: 1234567890
+            serialNumber: "1234567890"
             modelId: Test Model
             biosVersion: N/A
             firmwareVersion: N/A
