@@ -14,7 +14,7 @@
 @deviceRegistry
 
 Feature: Device Registry Integration
-  Device Registy integration test scenarios. These scenarios test higher level device service functionality
+  Device Registry integration test scenarios. These scenarios test higher level device service functionality
   with all services live.
 
 Scenario: Init Security Context for all scenarios
