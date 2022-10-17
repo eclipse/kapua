@@ -6,25 +6,52 @@ We use `gitbook` to build the documentation.
 
 ## Kapua
 
-Kapua is being compiled with Maven. 
+Kapua is being compiled with Maven.
+For a quick build of Kapua, for testing purposes and packaged with the web console build, we recommend the command:
 
-You can run the Kapua full build issuing the command:
+`mvn clean install -DskipTests=true -Pdev,console`
 
-    mvn clean install
+There are 3 build options you can use, based on the need to perform the various tests, these are now reported in ascending order of building times.
 
-Don't forget to also add the `console` Maven profile if you are interested in building the Web Console as well:
+1. Build without tests:
 
-    mvn clean install -Pconsole
+   `mvn clean install -DskipTests=true`
 
-If you only want to run Kapua locally for testing you can speed up the build
-by using:
+2. Build executing only unit tests:
+```
+    mvn clean install -Dcommons.settings.hotswap=true -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true
+```
 
-    mvn clean install -Pdev -DskipTests=true
+For the next build option, considering that some integration tests require access to services deployed in a docker container, first of all, you have to launch these 2 commands in order to build and create the docker containers (NB: now make sure the docker daemon is running!)
+```
+    mvn clean install -DskipTests=true  -Pconsole
+    mvn clean install -f ./assembly -DskipTests  -Pconsole,docker
+```
+Attention: if the kapua containers are already running in your environment, for example in the case of a previous building that terminated abnormally, please stop their execution before proceeding with the next build commands
 
-Again, add the `console` profile as well if needed:
+3. Build executing both unit tests and integration tests. The first 2 commands execute the integration tests, the last execute a complete build with unit tests:
+```
+    mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@env_none”
+    mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags=“@env_docker_base”
+    mvn clean install -Dcommons.settings.hotswap=true -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true
+```
 
-    mvn clean install -Pdev,console -DskipTests=true
+Note: there are 2 maven profiles than can be used in the building options above
+1. The "console" profile allows building the web console if needed.
 
+   Usage example, building without tests & with the web console:
+
+   `mvn clean install -DskipTests=true -Pconsole`
+
+2. The "dev" profile speeds up some building processes.
+
+   Usage example, in the scenario in which you only want to run Kapua locally for testing:
+
+   `mvn clean install -DskipTests=true -Pdev`
+
+   then, if needed, add the console profile as well:
+
+   `mvn clean install -DskipTests=true -Pdev, console`
 ## Documentation
 
 Before you can build documentation, you need to install `gitbook`
@@ -64,15 +91,15 @@ After you installed brew you can install npm by:
 To build documentation, run `gitbook build` from either `docs/developer-guide/en` or `docs/user-manual/en`
 
 ## Continuous integration
- 
+
 Kapua is running CI builds in the following public environments:
 
-- GitHub Actions  ![GitHub Actions CI](https://img.shields.io/github/workflow/status/eclipse/kapua/kapua-continuous-integration?label=GitHub%20Action%20CI&logo=GitHub) 
+- GitHub Actions  ![GitHub Actions CI](https://img.shields.io/github/workflow/status/eclipse/kapua/kapua-continuous-integration?label=GitHub%20Action%20CI&logo=GitHub)
 - Eclipse Hudson  ![Hudson](https://img.shields.io/jenkins/build?jobUrl=https:%2F%2Fci.eclipse.org%2Fkapua%2Fjob%2Fdevelop-build&label=Jenkins%20Build)
 
 Please be sure that both environments are "green" (i.e. all tests pass) after you commit any changes into `develop` branch.
 
-We also use CI server sponsored by [Red Hat](https://www.redhat.com/en) to automatically push latest Docker images to 
+We also use CI server sponsored by [Red Hat](https://www.redhat.com/en) to automatically push latest Docker images to
 [Kapua DockerHub account](https://hub.docker.com/r/kapua/). Red Hat CI server checks for code changes every 15 minutes and pushes updated version
 of images if needed.
 
