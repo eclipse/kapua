@@ -215,9 +215,9 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
                     // maxNumberChildEntities can be null if such property is disabled via the
                     // isPropertyEnabled() method in the service implementation. In such case,
                     // it makes sense to treat the service as it had 0 available entities
-                    boolean childAllowInfiniteChildEntities = (Boolean) childConfigValues.get("infiniteChildEntities");
-                    Integer childMaxNumberChildEntities = (Integer) childConfigValues.get("maxNumberChildEntities");
-                    childCount += childAllowInfiniteChildEntities ? Integer.MAX_VALUE : (childMaxNumberChildEntities != null ? childMaxNumberChildEntities : 0);
+                    boolean childAllowInfiniteChildEntities = (boolean) childConfigValues.getOrDefault("infiniteChildEntities", false);
+                    Integer childMaxNumberChildEntities = (Integer) childConfigValues.getOrDefault("maxNumberChildEntities", 0);
+                    childCount += childAllowInfiniteChildEntities ? Integer.MAX_VALUE : childMaxNumberChildEntities;
                 }
 
                 // Max allowed for this account
