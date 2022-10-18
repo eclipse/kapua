@@ -164,7 +164,7 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
         column.setSortable(false);
         configs.add(column);
 
-        column = new ColumnConfig("adress1", 120);
+        column = new ColumnConfig("address1", 120);
         column.setHidden(true);
         column.setHeader(ACCOUNT_MSGS.accountTableAddress1());
         column.setWidth(150);
