@@ -161,11 +161,11 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
     }
 
     public String getAddress1() {
-        return (String) getUnescaped("adress1");
+        return (String) getUnescaped("address1");
     }
 
-    public void setAddress1(String adress1) {
-        set("adress1", adress1);
+    public void setAddress1(String address1) {
+        set("address1", address1);
     }
 
     public String getAddress2() {
