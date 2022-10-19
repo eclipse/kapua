@@ -64,7 +64,7 @@
         <hikaricp.version>4.0.3</hikaricp.version>
         <hk2-api.version>2.5.0-b05</hk2-api.version>
         <httpcomponents.version>4.5.13</httpcomponents.version>
-        <jackson.version>2.13.1</jackson.version>
+        <jackson.version>2.13.4.1</jackson.version>
         <javassist.version>3.26.0-GA</javassist.version>
         <javax-annotation-api.version>1.2</javax-annotation-api.version>
         <javax-batch-api.version>1.0.1</javax-batch-api.version>
