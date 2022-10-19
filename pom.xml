@@ -30,7 +30,7 @@
         <!-- Dependencies versions -->
         <activemq.version>5.14.5</activemq.version>
         <aopalliance.version>1.0</aopalliance.version>
-        <artemis.version>2.2.0</artemis.version>
+        <artemis.version>2.19.0</artemis.version>
         <assertj.version>3.2.0</assertj.version>
         <camel.version>2.16.3</camel.version>
         <checker-framework.version>3.15.0</checker-framework.version>

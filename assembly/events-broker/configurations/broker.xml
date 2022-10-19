@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 <!--
-    Copyright (c) 2017, 2022 Red Hat Inc and others
+    Copyright (c) 2019, 2022 Eurotech and/or its affiliates and others
 
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -9,8 +9,7 @@
     SPDX-License-Identifier: EPL-2.0
 
     Contributors:
-        Red Hat Inc - initial API and implementation
-        Eurotech
+        Eurotech - initial API and implementation
  -->
 
 <configuration xmlns="urn:activemq"
@@ -19,27 +18,16 @@
 
     <core xmlns="urn:activemq:core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="urn:activemq:core ">
-
         <name>0.0.0.0</name>
-
         <persistence-enabled>true</persistence-enabled>
-
-        <!-- this could be ASYNCIO or NIO
-         -->
+        <!-- this could be ASYNCIO or NIO -->
         <journal-type>NIO</journal-type>
-
-        <paging-directory>./data/paging</paging-directory>
-
-        <bindings-directory>./data/bindings</bindings-directory>
-
-        <journal-directory>./data/journal</journal-directory>
-
-        <large-messages-directory>./data/large-messages</large-messages-directory>
-
+        <paging-directory>./data/kapua/paging</paging-directory>
+        <bindings-directory>./data/kapua/bindings</bindings-directory>
+        <journal-directory>./data/kapua/journal</journal-directory>
+        <large-messages-directory>./data/kapua/large-messages</large-messages-directory>
         <journal-datasync>true</journal-datasync>
-
         <journal-min-files>2</journal-min-files>
-
         <journal-pool-files>-1</journal-pool-files>
 
         <!--
@@ -76,7 +64,6 @@
         -->
         <journal-buffer-timeout>44000</journal-buffer-timeout>
 
-
         <!-- how often we are looking for how many bytes are being used on the disk in ms -->
         <disk-scan-period>5000</disk-scan-period>
 
@@ -93,27 +80,19 @@
               <global-max-size>100Mb</global-max-size>
         -->
 
-        <acceptors>
-            <!-- useEpoll means: it will use Netty epoll if you are on a system (Linux) that supports it -->
+        <!-- Acceptors notes -->
+        <!-- useEpoll means: it will use Netty epoll if you are on a system (Linux) that supports it -->
             <!-- amqpCredits: The number of credits sent to AMQP producers -->
             <!-- amqpLowCredits: The server will send the # credits specified at amqpCredits at this low mark -->
-
-            <!-- Acceptor for every supported protocol -->
-            <acceptor name="artemis">tcp://0.0.0.0:61616?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300</acceptor>
-
-            <!-- AMQP Acceptor.  Listens on default AMQP port for AMQP traffic.-->
-            <acceptor name="amqp">tcp://0.0.0.0:5672?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpMinCredits=300</acceptor>
-
-            <!-- STOMP Acceptor. -->
-            <acceptor name="stomp">tcp://0.0.0.0:61613?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=STOMP;useEpoll=true</acceptor>
-
-            <!-- HornetQ Compatibility Acceptor.  Enables HornetQ Core and STOMP for legacy HornetQ clients. -->
-            <acceptor name="hornetq">tcp://0.0.0.0:5445?protocols=HORNETQ,STOMP;useEpoll=true</acceptor>
-
-            <!-- MQTT Acceptor -->
+        <!-- 
+        <acceptors>
             <acceptor name="mqtt">tcp://0.0.0.0:1883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true</acceptor>
-
         </acceptors>
+        -->
+        <acceptors>
+            <acceptor name="amqp">tcp://0.0.0.0:5672?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpMinCredits=300</acceptor>
+        </acceptors>
+        <!-- allowLinkStealing=true -->
 
         <security-settings>
             <security-setting match="#">
@@ -145,6 +124,7 @@
                 <auto-create-addresses>true</auto-create-addresses>
                 <auto-create-jms-queues>true</auto-create-jms-queues>
                 <auto-create-jms-topics>true</auto-create-jms-topics>
+                <default-address-routing-type>ANYCAST</default-address-routing-type>
             </address-setting>
             <!--default for catch all-->
             <address-setting match="#">
@@ -159,6 +139,7 @@
                 <auto-create-addresses>true</auto-create-addresses>
                 <auto-create-jms-queues>true</auto-create-jms-queues>
                 <auto-create-jms-topics>true</auto-create-jms-topics>
+                <default-address-routing-type>ANYCAST</default-address-routing-type>
             </address-setting>
         </address-settings>
 
