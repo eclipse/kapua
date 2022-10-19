@@ -24,6 +24,80 @@
     <packaging>pom</packaging>
     <artifactId>kapua-assembly-events-broker</artifactId>
 
+        <dependencies>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-assembly-java-base</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>apache-artemis</artifactId>
+            <version>${artemis.version}</version>
+            <classifier>bin</classifier>
+            <type>tar.gz</type>
+            <!--
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+             -->
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>kapua-events-broker</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>descriptors/kapua-events-broker.xml</descriptor>
+                            </descriptors>
+                            <tarLongFileMode>posix</tarLongFileMode>
+                            <finalName>kapua-events-broker-${project.version}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack-artemis</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.activemq</groupId>
+                                    <artifactId>apache-artemis</artifactId>
+                                    <classifier>bin</classifier>
+                                    <type>tar.gz</type>
+                                    <outputDirectory>target/dependencies/artemis</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <profiles>
         <profile>
             <id>release</id>
@@ -44,12 +118,10 @@
                                     <name>${docker.account}/kapua-events-broker</name>
                                     <build>
                                         <assembly>
-                                            <descriptor>${project.basedir}/descriptors/events-broker.xml</descriptor>
-                                            <basedir>/</basedir>
-                                            <mode>tgz</mode>
-                                            <tarLongFileMode>posix</tarLongFileMode>
+                                            <descriptor>${project.basedir}/descriptors/kapua-events-broker.xml</descriptor>
                                         </assembly>
                                         <dockerFile>${project.basedir}/docker/Dockerfile</dockerFile>
+                                        <filter>@</filter>
                                     </build>
                                 </image>
                             </images>
