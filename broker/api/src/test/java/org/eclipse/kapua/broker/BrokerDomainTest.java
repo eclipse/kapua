@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class BrokerDomainTest extends Assert {
+public class BrokerDomainTest {
 
     BrokerDomain brokerDomain;
     BrokerDomain secondBrokerDomain;
@@ -34,29 +35,29 @@ public class BrokerDomainTest extends Assert {
 
     @Test
     public void getNameTest() {
-        assertEquals("Expected and actual values should be the same.", "broker", brokerDomain.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", "broker", brokerDomain.getName());
     }
 
     @Test
     public void getActionsTest() {
-        assertEquals("Expected and actual values should be the same.", "[connect]", brokerDomain.getActions().toString());
+        Assert.assertEquals("Expected and actual values should be the same.", "[connect]", brokerDomain.getActions().toString());
     }
 
     @Test
     public void getGroupableTest() {
-        assertFalse("False expected.", brokerDomain.getGroupable());
+        Assert.assertFalse("False expected.", brokerDomain.getGroupable());
     }
 
     @Test
     public void equalsTest() {
-        assertTrue("True expected.", brokerDomain.equals(secondBrokerDomain));
+        Assert.assertTrue("True expected.", brokerDomain.equals(secondBrokerDomain));
         for (Object object : objects) {
-            assertFalse("False expected.", brokerDomain.equals(object));
+            Assert.assertFalse("False expected.", brokerDomain.equals(object));
         }
     }
 
     @Test
     public void hashCodeTest() {
-        assertNotNull("NotNull expected.", brokerDomain.hashCode());
+        Assert.assertNotNull("NotNull expected.", brokerDomain.hashCode());
     }
 }
