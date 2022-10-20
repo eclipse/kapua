@@ -19,13 +19,14 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 
+
 @Category(JUnitTests.class)
-public class SystemUtilsTest extends Assert {
+public class SystemUtilsTest {
 
     @Test
     public void privateConstrutorTest() throws Exception {
         Constructor<SystemUtils> constructor = SystemUtils.class.getDeclaredConstructor();
-        assertEquals(constructor.isAccessible(), false);
+        Assert.assertEquals(constructor.isAccessible(), false);
         constructor.setAccessible(true);
         constructor.newInstance((Object[]) null);
     }
@@ -34,9 +35,9 @@ public class SystemUtilsTest extends Assert {
     public void getNodeUriTest() throws Exception {
         try {
             URI uri = new URI("tcp://localhost:1893");
-            assertEquals(SystemUtils.getNodeURI(), uri);
+            Assert.assertEquals(SystemUtils.getNodeURI(), uri);
         } catch (Exception ex) {
-            fail("The URI is incorrect!");
+            Assert.fail("The URI is incorrect!");
         }
     }
 
@@ -44,7 +45,7 @@ public class SystemUtilsTest extends Assert {
     public void getNodeUriUdpTest() throws Exception {
         try {
             URI uri = new URI("udp://localhost:1893");
-            assertNotEquals(SystemUtils.getNodeURI(), uri);
+            Assert.assertNotEquals(SystemUtils.getNodeURI(), uri);
         } catch (Exception ex) {
             //expected
         }
@@ -55,7 +56,7 @@ public class SystemUtilsTest extends Assert {
         try {
             URI uri = new URI(null);
             SystemUtils.getNodeURI();
-            fail("The URI cannot be null");
+            Assert.fail("The URI cannot be null");
         } catch (Exception ex) {
             //expected
         }

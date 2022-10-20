@@ -24,8 +24,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
+
 @Category(JUnitTests.class)
-public class ArgumentValidatorTest extends Assert {
+public class ArgumentValidatorTest {
 
     private final static Random RANDOM = RandomUtils.getInstance();
 
@@ -42,7 +43,7 @@ public class ArgumentValidatorTest extends Assert {
         try {
             ArgumentValidator.match(argVal, CommonsValidationRegex.SIMPLE_NAME_REGEXP, "Null_test_case");
         } catch (Exception ex) {
-            fail("No exception expected for: " + argVal);
+            Assert.fail("No exception expected for: " + argVal);
         }
     }
 
@@ -64,7 +65,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
                 ArgumentValidator.match(listOfFalseStringsSimpleName[i], CommonsValidationRegex.SIMPLE_NAME_REGEXP, "SIMPLE_NAME_test_case");
-                fail("Exception expected for: " + listOfFalseStringsSimpleName[i]);
+                Assert.fail("Exception expected for: " + listOfFalseStringsSimpleName[i]);
             } catch (KapuaIllegalArgumentException e) {
                 // Expected
             }
@@ -74,7 +75,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.match(listOfPermittedStringsSimpleName[i], CommonsValidationRegex.SIMPLE_NAME_REGEXP, "SIMPLE_NAME_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStringsSimpleName[i]);
+                Assert.fail("No exception expected for: " + listOfPermittedStringsSimpleName[i]);
             }
         }
     }
@@ -98,7 +99,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
                 ArgumentValidator.match(listOfFalseStringsName[i], CommonsValidationRegex.NAME_REGEXP, "NAME_REGEXP_test_case");
-                fail("Exception expected for: " + listOfFalseStringsName[i]);
+                Assert.fail("Exception expected for: " + listOfFalseStringsName[i]);
             } catch (KapuaIllegalArgumentException e) {
                 // Expected
             }
@@ -108,7 +109,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.match(listOfPermittedStringsName[i], CommonsValidationRegex.NAME_REGEXP, "NAME_REGEXP_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStringsName[i]);
+                Assert.fail("No exception expected for: " + listOfPermittedStringsName[i]);
             }
         }
     }
@@ -132,7 +133,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
                 ArgumentValidator.match(listOfFalseStringsNameSpace[i], CommonsValidationRegex.NAME_SPACE_REGEXP, "NAME_SPACE_REGEXP_test_case");
-                fail("Exception expected for: " + listOfFalseStringsNameSpace[i]);
+                Assert.fail("Exception expected for: " + listOfFalseStringsNameSpace[i]);
             } catch (KapuaIllegalArgumentException e) {
                 // Expected
             }
@@ -141,7 +142,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.match(listOfPermittedStringsNameSpace[i], CommonsValidationRegex.NAME_SPACE_REGEXP, "NAME_SPACE_REGEXP_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStringsNameSpace[i]);
+                Assert.fail("No exception expected for: " + listOfPermittedStringsNameSpace[i]);
             }
         }
     }
@@ -166,7 +167,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
                 ArgumentValidator.match(listOfFalseStringsNameSpace[i], CommonsValidationRegex.NAME_SPACE_COLON_REGEXP, "NAME_SPACE_COLON_REGEXP_test_case");
-                fail("Exception expected for: " + listOfFalseStringsNameSpace[i]);
+                Assert.fail("Exception expected for: " + listOfFalseStringsNameSpace[i]);
             } catch (KapuaIllegalArgumentException e) {
                 // Expected
             }
@@ -175,7 +176,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.match(listOfPermittedStringsNameSpace[i], CommonsValidationRegex.NAME_SPACE_COLON_REGEXP, "NAME_SPACE_COLON_REGEXP_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStringsNameSpace[i]);
+                Assert.fail("No exception expected for: " + listOfPermittedStringsNameSpace[i]);
             }
         }
     }
@@ -199,7 +200,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfFalseStringsMACaddress; i++) {
             try {
                 ArgumentValidator.match(listOfFalseStringsMACaddressRegExp[i], CommonsValidationRegex.MAC_ADDRESS_REGEXP, "MAC_ADDRESS_test_case");
-                fail("Exception expected for: " + listOfFalseStringsMACaddressRegExp[i]);
+                Assert.fail("Exception expected for: " + listOfFalseStringsMACaddressRegExp[i]);
             } catch (KapuaIllegalArgumentException ex) {
                 // Expected
             }
@@ -208,7 +209,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.match(listOfPermittedStringsMACaddressRegExp[i], CommonsValidationRegex.MAC_ADDRESS_REGEXP, "MAC_ADDRESS_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStringsMACaddressRegExp[i]);
+                Assert.fail("No exception expected for: " + listOfPermittedStringsMACaddressRegExp[i]);
             }
         }
     }
@@ -236,7 +237,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
                 ArgumentValidator.match(listOfFalseStringsPasswordRegExp[i], CommonsValidationRegex.PASSWORD_REGEXP, "PASSWORD_REGEXP_test_case");
-                fail("Exception expected for: " + listOfFalseStringsPasswordRegExp[i]);
+                Assert.fail("Exception expected for: " + listOfFalseStringsPasswordRegExp[i]);
             } catch (KapuaIllegalArgumentException ex) {
                 // Expected
             }
@@ -245,7 +246,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.match(listOfPermittedStringsPasswordRegExp[i], CommonsValidationRegex.PASSWORD_REGEXP, "PASSWORD_REGEXP_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStringsPasswordRegExp[i]);
+                Assert.fail("No exception expected for: " + listOfPermittedStringsPasswordRegExp[i]);
             }
         }
     }
@@ -285,7 +286,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
                 ArgumentValidator.match(listOfFalseStringsEmailRegExp[i], CommonsValidationRegex.EMAIL_REGEXP, "EMAIL_test_case");
-                fail("Exception expected for: " + listOfFalseStringsEmailRegExp[i]);
+                Assert.fail("Exception expected for: " + listOfFalseStringsEmailRegExp[i]);
             } catch (KapuaIllegalArgumentException ex) {
                 // Expected
             }
@@ -294,7 +295,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.match(listOfPermittedStringsEmailRegExp[i], CommonsValidationRegex.EMAIL_REGEXP, "EMAIL_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStringsEmailRegExp[i]);
+                Assert.fail("No exception expected for: " + listOfPermittedStringsEmailRegExp[i]);
             }
         }
     }
@@ -314,7 +315,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < notValidLocalIp.length; i++) {
             try {
                 ArgumentValidator.match(notValidLocalIp[i], CommonsValidationRegex.LOCAL_IP_ADDRESS_REGEXP, "LocalIP_test_case");
-                fail("Exception expected for: " + notValidLocalIp[i]);
+                Assert.fail("Exception expected for: " + notValidLocalIp[i]);
             } catch (Exception ex) {
                 // Expected
             }
@@ -326,7 +327,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.match(validLocalIp[i], CommonsValidationRegex.LOCAL_IP_ADDRESS_REGEXP, "LocalIP_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + validLocalIp[i]);
+                Assert.fail("No exception expected for: " + validLocalIp[i]);
             }
         }
     }
@@ -342,7 +343,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < notValidIp.length; i++) {
             try {
                 ArgumentValidator.match(notValidIp[i], CommonsValidationRegex.IP_ADDRESS_REGEXP, "IP_test_case");
-                fail("Exception expected for: " + notValidIp[i]);
+                Assert.fail("Exception expected for: " + notValidIp[i]);
             } catch (Exception ex) {
                 // Expected
             }
@@ -355,7 +356,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.match(validIp[i], CommonsValidationRegex.IP_ADDRESS_REGEXP, "IP_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + validIp[i]);
+                Assert.fail("No exception expected for: " + validIp[i]);
             }
         }
     }
@@ -378,7 +379,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfFalseStringsNullTest; i++) {
             try {
                 ArgumentValidator.notNull(listOfFalseStringsNullTest[i], "NULL_test_case");
-                fail("Exception expeected for: " + listOfFalseStringsNullTest[i]);
+                Assert.fail("Exception expeected for: " + listOfFalseStringsNullTest[i]);
             } catch (KapuaIllegalNullArgumentException ex) {
                 // Expected
             }
@@ -387,7 +388,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.notNull(listOfPermittedStringNullTest[i], "NULL_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStringNullTest[i]);
+                Assert.fail("No exception expected for: " + listOfPermittedStringNullTest[i]);
             }
         }
     }
@@ -410,7 +411,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfFalseStringsNullTest; i++) {
             try {
                 ArgumentValidator.isNull(listOfFalseStringsNullTest[i], "NULL_test_case");
-                fail("Exception expeected for: " + listOfFalseStringsNullTest[i]);
+                Assert.fail("Exception expeected for: " + listOfFalseStringsNullTest[i]);
             } catch (KapuaIllegalArgumentException ex) {
                 // Expected
             }
@@ -419,7 +420,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.isNull(listOfPermittedStringNullTest[i], "NULL_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStringNullTest[i]);
+                Assert.fail("No exception expected for: " + listOfPermittedStringNullTest[i]);
             }
         }
     }
@@ -439,7 +440,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfFalseStringsEmptyOrNull; i++) {
             try {
                 ArgumentValidator.isEmptyOrNull(listOfFalseStringsEmptyOrNull[i], "EMPTY_OR_NULL_test_case");
-                fail("Exception expeected for: " + listOfFalseStringsEmptyOrNull[i]);
+                Assert.fail("Exception expeected for: " + listOfFalseStringsEmptyOrNull[i]);
             } catch (KapuaIllegalArgumentException ex) {
                 // Expected
             }
@@ -448,7 +449,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.isEmptyOrNull(listOfPermittedStringsEmptyOrNull[i], "EMPTY_OR_NULL_test_case");
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStringsEmptyOrNull[i]);
+                Assert.fail("No exception expected for: " + listOfPermittedStringsEmptyOrNull[i]);
             }
         }
     }
@@ -462,7 +463,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
                 ArgumentValidator.notEmptyOrNull(listOfFalseStrings[i], "notEmptyOrNullTest");
-                fail("Exception expected for: " + listOfFalseStrings[i]);
+                Assert.fail("Exception expected for: " + listOfFalseStrings[i]);
             } catch (Exception ex) {
                 // Expected
             }
@@ -472,7 +473,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.notEmptyOrNull(listOfPermittedStrings[i], "notEmptyOrNullTest");
             } catch (Exception ex) {
-                fail("No Exception expected for: " + listOfPermittedStrings[i]);
+                Assert.fail("No Exception expected for: " + listOfPermittedStrings[i]);
             }
         }
     }
@@ -486,13 +487,13 @@ public class ArgumentValidatorTest extends Assert {
         int sizeOfPermitted = listOfChoicesPermitted.length;
         try {
             ArgumentValidator.notEmptyOrNull(object1, "notEmptyOrNullTest");
-            fail("Exception expected!");
+            Assert.fail("Exception expected!");
         } catch (Exception ex) {
             // Expected
         }
         try {
             ArgumentValidator.notEmptyOrNull(object2, "notEmptyOrNullTest");
-            fail("Exception expected!");
+            Assert.fail("Exception expected!");
         } catch (Exception ex) {
             // Expected
         }
@@ -500,7 +501,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.notEmptyOrNull(listOfChoicesPermitted, "notEmptyOrNullTest");
             } catch (Exception ex) {
-                fail("No exception expected!");
+                Assert.fail("No exception expected!");
             }
         }
     }
@@ -519,35 +520,35 @@ public class ArgumentValidatorTest extends Assert {
         longList.add((long) 1.1234);
         try {
             ArgumentValidator.notEmptyOrNull(stringList1, "notEmptyOrNullTest");
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
             // Expected
         }
         try {
             ArgumentValidator.notEmptyOrNull(stringList2, "notEmptyOrNullTest");
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
             // Expected
         }
         try {
             ArgumentValidator.notEmptyOrNull(stringList3, "notEmptyOrNullTest");
         } catch (Exception ex) {
-            fail("No exception expected.");
+            Assert.fail("No exception expected.");
         }
         try {
             ArgumentValidator.notEmptyOrNull(integerList, "notEmptyOrNullTest");
         } catch (Exception ex) {
-            fail("No exception expected.");
+            Assert.fail("No exception expected.");
         }
         try {
             ArgumentValidator.notEmptyOrNull(booleanList, "notEmptyOrNullTest");
         } catch (Exception ex) {
-            fail("No exception expected.");
+            Assert.fail("No exception expected.");
         }
         try {
             ArgumentValidator.notEmptyOrNull(longList, "notEmptyOrNullTest");
         } catch (Exception ex) {
-            fail("No exception expected.");
+            Assert.fail("No exception expected.");
         }
     }
 
@@ -561,7 +562,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < sizeOfNegative; i++) {
             try {
                 ArgumentValidator.notNegative(listOfNegative[i], "not null test");
-                fail("Exception expected for : " + listOfNegative[i]);
+                Assert.fail("Exception expected for : " + listOfNegative[i]);
             } catch (Exception ex) {
                 // Expected
             }
@@ -570,7 +571,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.notNegative(listOfPositive[i], "not null test");
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPositive[i]);
+                Assert.fail("No exception expected for: " + listOfPositive[i]);
             }
         }
     }
@@ -599,7 +600,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < startTimeFalse.length; i++) {
             try {
                 ArgumentValidator.dateRange(startTimeFalse[i], endTimeFalse[i]);
-                fail("Exception expected for: " + i);
+                Assert.fail("Exception expected for: " + i);
             } catch (Exception ex) {
                 // Expected
             }
@@ -608,7 +609,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.dateRange(startTimeOK[i], endTimeOK[i]);
             } catch (Exception ex) {
-                fail("No exception expected for: " + startTimeOK[i] + endTimeOK[i]);
+                Assert.fail("No exception expected for: " + startTimeOK[i] + endTimeOK[i]);
             }
         }
     }
@@ -645,7 +646,7 @@ public class ArgumentValidatorTest extends Assert {
         for (int i = 0; i < startTimeNOK.length; i++) {
             try {
                 ArgumentValidator.dateRange(startTimeNOK[i], endTimeNOK[i]);
-                fail("Exception expected for LONG: " + i);
+                Assert.fail("Exception expected for LONG: " + i);
             } catch (Exception ex) {
                 // Expected
             }
@@ -654,7 +655,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.dateRange(startTimeOK[i], endTimeOK[i]);
             } catch (Exception ex) {
-                fail("No exception expected for: " + startTimeOK[i] + endTimeOK[i]);
+                Assert.fail("No exception expected for: " + startTimeOK[i] + endTimeOK[i]);
             }
         }
     }
@@ -668,7 +669,7 @@ public class ArgumentValidatorTest extends Assert {
         for (long element : numRangeFalse) {
             try {
                 ArgumentValidator.numRange(element, minValue, maxValue, "numRange test");
-                fail("Exception expected for: " + element);
+                Assert.fail("Exception expected for: " + element);
             } catch (Exception ex) {
                 // Expected
             }
@@ -677,7 +678,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.numRange(element, minValue, maxValue, "numRange test");
             } catch (Exception ex) {
-                fail("No exception expected for: " + element);
+                Assert.fail("No exception expected for: " + element);
             }
         }
     }
@@ -688,13 +689,13 @@ public class ArgumentValidatorTest extends Assert {
             //Positive test
             ArgumentValidator.areEqual("parameter", "parameter", "londonIsGoodIdea");
         } catch (KapuaIllegalArgumentException ex) {
-            fail("No exception expected");
+            Assert.fail("No exception expected");
             System.out.println(ex);
         }
         try {
             //Negative test
             ArgumentValidator.areEqual("parameter1", "parameter", "londonIsGoodIdea");
-            fail("An exception expected");
+            Assert.fail("An exception expected");
         } catch (KapuaIllegalArgumentException ex) {
             //expected
         }
@@ -711,13 +712,13 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
-                fail("Value less than allowed min length. Min length is: " + minLength);
+                Assert.fail("Value less than allowed min length. Min length is: " + minLength);
             }
         }
         for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
-                fail("Value less than allowed min length. Min length is: " + minLength);
+                Assert.fail("Value less than allowed min length. Min length is: " + minLength);
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -733,7 +734,7 @@ public class ArgumentValidatorTest extends Assert {
         for (String element : valueForTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
-                fail("Value over than allowed max length. Max length is: " + maxLength);
+                Assert.fail("Value over than allowed max length. Max length is: " + maxLength);
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -751,13 +752,13 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
-                fail("Value over than allowed max length. Max length is: " + maxLength);
+                Assert.fail("Value over than allowed max length. Max length is: " + maxLength);
             }
         }
         for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
-                fail("Exception expected.");
+                Assert.fail("Exception expected.");
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -774,13 +775,13 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.lengthRange(element, null, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
-                fail("Value over than allowed max length. Max length is: " + maxLength);
+                Assert.fail("Value over than allowed max length. Max length is: " + maxLength);
             }
         }
         for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, null, maxLength, "londonIsGoodIdea");
-                fail("Value over than allowed max length. Max length is: " + maxLength);
+                Assert.fail("Value over than allowed max length. Max length is: " + maxLength);
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -798,13 +799,13 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.lengthRange(element, minLength, null, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
-                fail("No exception expected");
+                Assert.fail("No exception expected");
             }
         }
         for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, null, "londonIsGoodIdea");
-                fail("Exception expected.");
+                Assert.fail("Exception expected.");
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -822,7 +823,7 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.lengthRange(element, null, null, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
-                fail("No exception expected");
+                Assert.fail("No exception expected");
             }
         }
     }
@@ -839,13 +840,13 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
-                fail("No exception expected");
+                Assert.fail("No exception expected");
             }
         }
         for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, 255, "londonIsGoodIdea");
-                fail("Exception expected.");
+                Assert.fail("Exception expected.");
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -862,7 +863,7 @@ public class ArgumentValidatorTest extends Assert {
         for (String element : valueForTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
-                fail("Exception expected");
+                Assert.fail("Exception expected");
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -881,13 +882,13 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
-                fail("Exception expected");
+                Assert.fail("Exception expected");
             }
         }
         for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
-                fail("Exception expected.");
+                Assert.fail("Exception expected.");
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -905,13 +906,13 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
             } catch (KapuaIllegalArgumentException ex) {
-                fail("No exception expected");
+                Assert.fail("No exception expected");
             }
         }
         for (String element : valueForNegativeTest) {
             try {
                 ArgumentValidator.lengthRange(element, minLength, maxLength, "londonIsGoodIdea");
-                fail("Exception expected.");
+                Assert.fail("Exception expected.");
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -928,13 +929,13 @@ public class ArgumentValidatorTest extends Assert {
             try {
                 ArgumentValidator.validateEntityName(value, argName);
             } catch (KapuaIllegalArgumentException ex) {
-                fail("Value less than allowed min length. Min length is: 3");
+                Assert.fail("Value less than allowed min length. Min length is: 3");
             }
         }
         for (String value : valueForNegativeTest) {
             try {
                 ArgumentValidator.validateEntityName(value, argName);
-                fail("Exception expected.");
+                Assert.fail("Exception expected.");
             } catch (KapuaIllegalArgumentException ex) {
                 //expected
             }
@@ -945,7 +946,7 @@ public class ArgumentValidatorTest extends Assert {
     public void extendedValidateEntityAllNullTest() throws Exception {
         try {
             ArgumentValidator.validateEntityName(null, null, null, "validateEntityName2Test");
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
             //expected
         }
@@ -956,7 +957,7 @@ public class ArgumentValidatorTest extends Assert {
         try {
             ArgumentValidator.validateEntityName("validName", null, null, "validateEntityName2Test");
         } catch (Exception ex) {
-            fail("No exception expected.");
+            Assert.fail("No exception expected.");
         }
     }
 
@@ -964,7 +965,7 @@ public class ArgumentValidatorTest extends Assert {
     public void extendedValidateEntityNameEmptyNameTest() throws Exception {
         try {
             ArgumentValidator.validateEntityName("", null, null, "validateEntityName2Test");
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
             //expected
         }
@@ -975,7 +976,7 @@ public class ArgumentValidatorTest extends Assert {
         try {
             ArgumentValidator.validateEntityName("validName", 3, 255, "validateEntityName2Test");
         } catch (Exception ex) {
-            fail("No exception expected.");
+            Assert.fail("No exception expected.");
         }
     }
 
@@ -983,7 +984,7 @@ public class ArgumentValidatorTest extends Assert {
     public void extendedValidateEntityNameLessThanMinLengthTest() throws Exception {
         try {
             ArgumentValidator.validateEntityName("v", 3, 255, "validateEntityName2Test");
-            fail("Value less than allowed min length.");
+            Assert.fail("Value less than allowed min length.");
         } catch (KapuaIllegalArgumentException ex) {
             //expected
         }
@@ -993,7 +994,7 @@ public class ArgumentValidatorTest extends Assert {
     public void extendedValidateEntityNameGreaterThanMaxLengthTest() throws Exception {
         try {
             ArgumentValidator.validateEntityName("validName", 3, 5, "validateEntityName2Test");
-            fail("Value greater than allowed max length.");
+            Assert.fail("Value greater than allowed max length.");
         } catch (KapuaIllegalArgumentException ex) {
             //expected
         }
@@ -1003,7 +1004,7 @@ public class ArgumentValidatorTest extends Assert {
     public void extendedValidateEntityNameMinGreaterThanMaxLengthTest() throws Exception {
         try {
             ArgumentValidator.validateEntityName("validName", 9, 8, "validateEntityName2Test");
-            fail("Value greater than allowed max length.");
+            Assert.fail("Value greater than allowed max length.");
         } catch (KapuaIllegalArgumentException ex) {
             //expected
         }
@@ -1014,7 +1015,7 @@ public class ArgumentValidatorTest extends Assert {
         try {
             ArgumentValidator.validateEntityName("validName", 9, 9, "validateEntityName2Test");
         } catch (KapuaIllegalArgumentException ex) {
-            fail("No exception expected");
+            Assert.fail("No exception expected");
         }
     }
 
@@ -1023,7 +1024,7 @@ public class ArgumentValidatorTest extends Assert {
         try {
             ArgumentValidator.validateEntityName("validName", -2147483648, 255, "validateEntityName2Test");
         } catch (KapuaIllegalArgumentException ex) {
-            fail("No exception expected");
+            Assert.fail("No exception expected");
         }
     }
 
@@ -1032,7 +1033,7 @@ public class ArgumentValidatorTest extends Assert {
         try {
             ArgumentValidator.validateEntityName("validName", 3, 2147483647, "validateEntityName2Test");
         } catch (KapuaIllegalArgumentException ex) {
-            fail("No exception expected");
+            Assert.fail("No exception expected");
         }
     }
 
@@ -1041,7 +1042,7 @@ public class ArgumentValidatorTest extends Assert {
         try {
             ArgumentValidator.validateEntityName("validName", -2147483648, 2147483647, "validateEntityName2Test");
         } catch (KapuaIllegalArgumentException ex) {
-            fail("No exception expected");
+            Assert.fail("No exception expected");
         }
     }
 
@@ -1050,7 +1051,7 @@ public class ArgumentValidatorTest extends Assert {
         try {
             ArgumentValidator.validateEntityName("validName", null, 255, "validateEntityName2Test");
         } catch (KapuaIllegalArgumentException ex) {
-            fail("No exception expected");
+            Assert.fail("No exception expected");
         }
     }
 
@@ -1059,7 +1060,7 @@ public class ArgumentValidatorTest extends Assert {
         try {
             ArgumentValidator.validateEntityName("validName", 3, null, "validateEntityName2Test");
         } catch (KapuaIllegalArgumentException ex) {
-            fail("No exception expected");
+            Assert.fail("No exception expected");
         }
     }
 }

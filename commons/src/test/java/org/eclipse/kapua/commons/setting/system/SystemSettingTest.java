@@ -20,8 +20,9 @@ import org.junit.experimental.categories.Category;
 
 import java.lang.reflect.Constructor;
 
+
 @Category(JUnitTests.class)
-public class SystemSettingTest extends Assert {
+public class SystemSettingTest {
 
     @Test
     public void systemSettingTest() throws Exception {
@@ -32,11 +33,11 @@ public class SystemSettingTest extends Assert {
 
     @Test
     public void getInstanceTest() {
-        assertThat("Instance of SystemSetting expected.", SystemSetting.getInstance(), IsInstanceOf.instanceOf(SystemSetting.class));
+        Assert.assertThat("Instance of SystemSetting expected.", SystemSetting.getInstance(), IsInstanceOf.instanceOf(SystemSetting.class));
     }
 
     @Test
     public void getMessageClassifierTest() {
-        assertEquals("Expected and actual values should be the same.", "$EDC", SystemSetting.getInstance().getMessageClassifier());
+        Assert.assertEquals("Expected and actual values should be the same.", "$EDC", SystemSetting.getInstance().getMessageClassifier());
     }
 }

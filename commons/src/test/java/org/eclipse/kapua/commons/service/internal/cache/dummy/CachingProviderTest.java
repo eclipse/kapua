@@ -23,8 +23,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
+
 @Category(JUnitTests.class)
-public class CachingProviderTest extends Assert {
+public class CachingProviderTest {
 
     @Test
     public void getCacheManagerWithPropertiesTest() throws URISyntaxException {
@@ -33,25 +34,25 @@ public class CachingProviderTest extends Assert {
         properties.setProperty("Key", "value");
         URI uri = new URI("String");
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        assertEquals(cachingProvider.getCacheManager(), cachingProvider.getCacheManager(uri, classloader, properties));
+        Assert.assertEquals(cachingProvider.getCacheManager(), cachingProvider.getCacheManager(uri, classloader, properties));
     }
 
     @Test
     public void getDefaultClassLoaderTest() {
         CachingProvider cachingProvider = new CachingProvider();
-        assertNull("Null expected", cachingProvider.getDefaultClassLoader());
+        Assert.assertNull("Null expected", cachingProvider.getDefaultClassLoader());
     }
 
     @Test
     public void getDefaultURITest() {
         CachingProvider cachingProvider = new CachingProvider();
-        assertNull("Null expected", cachingProvider.getDefaultURI());
+        Assert.assertNull("Null expected", cachingProvider.getDefaultURI());
     }
 
     @Test
     public void getDefaultPropertiesTest() {
         CachingProvider cachingProvider = new CachingProvider();
-        assertNull("Null expected", cachingProvider.getDefaultProperties());
+        Assert.assertNull("Null expected", cachingProvider.getDefaultProperties());
     }
 
     @Test
@@ -59,13 +60,13 @@ public class CachingProviderTest extends Assert {
         CachingProvider cachingProvider = new CachingProvider();
         URI uri = new URI("String");
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        assertEquals(cachingProvider.getCacheManager(), cachingProvider.getCacheManager(uri, classloader));
+        Assert.assertEquals(cachingProvider.getCacheManager(), cachingProvider.getCacheManager(uri, classloader));
     }
 
     @Test
     public void getCacheManagerTest() {
         CachingProvider cachingProvider = new CachingProvider();
-        assertEquals(CacheManager.getInstance(), cachingProvider.getCacheManager());
+        Assert.assertEquals(CacheManager.getInstance(), cachingProvider.getCacheManager());
     }
 
     @Test
@@ -92,6 +93,6 @@ public class CachingProviderTest extends Assert {
     @Test
     public void isSupportedTest() {
         CachingProvider cachingProvider = new CachingProvider();
-        assertFalse(cachingProvider.isSupported(OptionalFeature.STORE_BY_REFERENCE));
+        Assert.assertFalse(cachingProvider.isSupported(OptionalFeature.STORE_BY_REFERENCE));
     }
 } 

@@ -23,15 +23,16 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Objects;
 
+
 @Category(JUnitTests.class)
-public class ComposedKeyTest extends Assert {
+public class ComposedKeyTest {
 
     @Test
     public void constructorTest() {
         KapuaId kapuaId = new KapuaIdImpl(BigInteger.ONE);
         Serializable key = new ComposedKey(kapuaId, null);
         ComposedKey composedKey = new ComposedKey(kapuaId, key);
-        assertNotNull(composedKey);
+        Assert.assertNotNull(composedKey);
     }
 
     @Test
@@ -46,10 +47,10 @@ public class ComposedKeyTest extends Assert {
                 ComposedKey composedKey2 = new ComposedKey(null, key);
                 ComposedKey composedKey3 = new ComposedKey(kapuaIdList[i], null);
                 ComposedKey composedKey4 = new ComposedKey(null, null);
-                assertEquals("Exception not expected", Objects.hash(kapuaIdList[i], key), composedKey1.hashCode());
-                assertEquals("Exception not expected", Objects.hash(null, key), composedKey2.hashCode());
-                assertEquals("Exception not expected", Objects.hash(kapuaIdList[i], null), composedKey3.hashCode());
-                assertEquals("Exception not expected", Objects.hash(null, null), composedKey4.hashCode());
+                Assert.assertEquals("Exception not expected", Objects.hash(kapuaIdList[i], key), composedKey1.hashCode());
+                Assert.assertEquals("Exception not expected", Objects.hash(null, key), composedKey2.hashCode());
+                Assert.assertEquals("Exception not expected", Objects.hash(kapuaIdList[i], null), composedKey3.hashCode());
+                Assert.assertEquals("Exception not expected", Objects.hash(null, null), composedKey4.hashCode());
             }
         }
     }
@@ -67,13 +68,13 @@ public class ComposedKeyTest extends Assert {
         ComposedKey composedKey5 = new ComposedKey(kapuaId1, key1);
         String stringObject = "String";
 
-        assertTrue("Expected true", composedKey1.equals(composedKey1));
-        assertFalse("Expected false", composedKey1.equals(null));
-        assertFalse("Expected false", composedKey1.equals(stringObject));
-        assertFalse("Expected false", composedKey1.equals(composedKey2));
-        assertFalse("Expected false", composedKey1.equals(composedKey3));
-        assertFalse("Expected false", composedKey1.equals(composedKey4));
-        assertTrue("Expected true", composedKey1.equals(composedKey5));
+        Assert.assertTrue("Expected true", composedKey1.equals(composedKey1));
+        Assert.assertFalse("Expected false", composedKey1.equals(null));
+        Assert.assertFalse("Expected false", composedKey1.equals(stringObject));
+        Assert.assertFalse("Expected false", composedKey1.equals(composedKey2));
+        Assert.assertFalse("Expected false", composedKey1.equals(composedKey3));
+        Assert.assertFalse("Expected false", composedKey1.equals(composedKey4));
+        Assert.assertTrue("Expected true", composedKey1.equals(composedKey5));
     }
 
     @Test
@@ -84,9 +85,9 @@ public class ComposedKeyTest extends Assert {
         ComposedKey composedKey2 = new ComposedKey(kapuaId, key);
         ComposedKey composedKey3 = new ComposedKey(null, null);
 
-        assertEquals("Exception not expected", kapuaId, composedKey1.getScopeId());
-        assertEquals("Exception not expected", kapuaId, composedKey2.getScopeId());
-        assertNull("Expected null", composedKey3.getScopeId());
+        Assert.assertEquals("Exception not expected", kapuaId, composedKey1.getScopeId());
+        Assert.assertEquals("Exception not expected", kapuaId, composedKey2.getScopeId());
+        Assert.assertNull("Expected null", composedKey3.getScopeId());
     }
 
     @Test
@@ -97,8 +98,8 @@ public class ComposedKeyTest extends Assert {
         ComposedKey composedKey2 = new ComposedKey(null, null);
         ComposedKey composedKey3 = new ComposedKey(null, key);
 
-        assertEquals("Exception not expected", key, composedKey1.getKey());
-        assertNull("Expected null", composedKey2.getKey());
-        assertEquals("Exception not expected", key, composedKey3.getKey());
+        Assert.assertEquals("Exception not expected", key, composedKey1.getKey());
+        Assert.assertNull("Expected null", composedKey2.getKey());
+        Assert.assertEquals("Exception not expected", key, composedKey3.getKey());
     }
 } 

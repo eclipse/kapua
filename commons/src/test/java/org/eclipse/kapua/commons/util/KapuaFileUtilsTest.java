@@ -95,7 +95,6 @@ public class KapuaFileUtilsTest {
                 "https://opensource.apple.com/source/cups/cups-218/cups/data/iso-8859-1.txt",
                 "http://txt2html.sourceforge.net/sample.txt",
                 "https://www.lipsum.com/"};
-
         for (String stringURL : stringUrls) {
             try {
                 File file = KapuaFileUtils.getAsFile(stringURL);
