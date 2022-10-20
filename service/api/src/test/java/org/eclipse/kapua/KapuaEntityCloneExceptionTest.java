@@ -20,8 +20,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class KapuaEntityCloneExceptionTest extends Assert {
+public class KapuaEntityCloneExceptionTest {
 
     String[] entityType;
     KapuaEntity[] kapuaEntity;
@@ -39,11 +40,11 @@ public class KapuaEntityCloneExceptionTest extends Assert {
         for (String type : entityType) {
             for (KapuaEntity entity : kapuaEntity) {
                 KapuaEntityCloneException kapuaEntityCloneException = new KapuaEntityCloneException(type, entity);
-                assertEquals("Expected and actual values should be the same.", KapuaRuntimeErrorCodes.ENTITY_CLONE_ERROR, kapuaEntityCloneException.getCode());
-                assertEquals("Expected and actual values should be the same.", type, kapuaEntityCloneException.getEntityType());
-                assertEquals("Expected and actual values should be the same.", entity, kapuaEntityCloneException.getEntity());
-                assertNull("Null expected.", kapuaEntityCloneException.getCause());
-                assertEquals("Expected and actual values should be the same.", "Severe error while cloning: " + type, kapuaEntityCloneException.getMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", KapuaRuntimeErrorCodes.ENTITY_CLONE_ERROR, kapuaEntityCloneException.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", type, kapuaEntityCloneException.getEntityType());
+                Assert.assertEquals("Expected and actual values should be the same.", entity, kapuaEntityCloneException.getEntity());
+                Assert.assertNull("Null expected.", kapuaEntityCloneException.getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", "Severe error while cloning: " + type, kapuaEntityCloneException.getMessage());
             }
         }
     }
@@ -54,11 +55,11 @@ public class KapuaEntityCloneExceptionTest extends Assert {
             for (KapuaEntity entity : kapuaEntity) {
                 for (Throwable throwable : throwables) {
                     KapuaEntityCloneException kapuaEntityCloneException = new KapuaEntityCloneException(throwable, type, entity);
-                    assertEquals("Expected and actual values should be the same.", KapuaRuntimeErrorCodes.ENTITY_CLONE_ERROR, kapuaEntityCloneException.getCode());
-                    assertEquals("Expected and actual values should be the same.", type, kapuaEntityCloneException.getEntityType());
-                    assertEquals("Expected and actual values should be the same.", entity, kapuaEntityCloneException.getEntity());
-                    assertEquals("Expected and actual values should be the same.", throwable, kapuaEntityCloneException.getCause());
-                    assertEquals("Expected and actual values should be the same.", "Severe error while cloning: " + type, kapuaEntityCloneException.getMessage());
+                    Assert.assertEquals("Expected and actual values should be the same.", KapuaRuntimeErrorCodes.ENTITY_CLONE_ERROR, kapuaEntityCloneException.getCode());
+                    Assert.assertEquals("Expected and actual values should be the same.", type, kapuaEntityCloneException.getEntityType());
+                    Assert.assertEquals("Expected and actual values should be the same.", entity, kapuaEntityCloneException.getEntity());
+                    Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaEntityCloneException.getCause());
+                    Assert.assertEquals("Expected and actual values should be the same.", "Severe error while cloning: " + type, kapuaEntityCloneException.getMessage());
                 }
             }
         }

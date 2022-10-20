@@ -28,8 +28,9 @@ import org.mockito.Mockito;
 import java.util.Date;
 import java.util.UUID;
 
+
 @Category(JUnitTests.class)
-public class JsonDatastoreMessageTest extends Assert {
+public class JsonDatastoreMessageTest {
 
     DatastoreMessage datastoreMessage;
     UUID id;
@@ -93,17 +94,17 @@ public class JsonDatastoreMessageTest extends Assert {
     public void jsonDatastoreMessageWithParameterTest() {
         JsonDatastoreMessage jsonDatastoreMessage = new JsonDatastoreMessage(datastoreMessage);
 
-        assertEquals("Expected and actual values should be the same.", id, jsonDatastoreMessage.getId());
-        assertEquals("Expected and actual values should be the same.", storableId, jsonDatastoreMessage.getDatastoreId());
-        assertEquals("Expected and actual values should be the same.", timestamp, jsonDatastoreMessage.getTimestamp());
-        assertEquals("Expected and actual values should be the same.", scopeId, jsonDatastoreMessage.getScopeId());
-        assertEquals("Expected and actual values should be the same.", deviceId, jsonDatastoreMessage.getDeviceId());
-        assertEquals("Expected and actual values should be the same.", clientId, jsonDatastoreMessage.getClientId());
-        assertEquals("Expected and actual values should be the same.", receivedOn, jsonDatastoreMessage.getReceivedOn());
-        assertEquals("Expected and actual values should be the same.", sentOn, jsonDatastoreMessage.getSentOn());
-        assertEquals("Expected and actual values should be the same.", capturedOn, jsonDatastoreMessage.getCapturedOn());
-        assertEquals("Expected and actual values should be the same.", kapuaPosition, jsonDatastoreMessage.getPosition());
-        assertEquals("Expected and actual values should be the same.", kapuaDataChannel, jsonDatastoreMessage.getChannel());
+        Assert.assertEquals("Expected and actual values should be the same.", id, jsonDatastoreMessage.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", storableId, jsonDatastoreMessage.getDatastoreId());
+        Assert.assertEquals("Expected and actual values should be the same.", timestamp, jsonDatastoreMessage.getTimestamp());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, jsonDatastoreMessage.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", deviceId, jsonDatastoreMessage.getDeviceId());
+        Assert.assertEquals("Expected and actual values should be the same.", clientId, jsonDatastoreMessage.getClientId());
+        Assert.assertEquals("Expected and actual values should be the same.", receivedOn, jsonDatastoreMessage.getReceivedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", sentOn, jsonDatastoreMessage.getSentOn());
+        Assert.assertEquals("Expected and actual values should be the same.", capturedOn, jsonDatastoreMessage.getCapturedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", kapuaPosition, jsonDatastoreMessage.getPosition());
+        Assert.assertEquals("Expected and actual values should be the same.", kapuaDataChannel, jsonDatastoreMessage.getChannel());
         Assert.assertNotNull("NotNull expected.", jsonDatastoreMessage.getPayload());
     }
 
@@ -121,8 +122,8 @@ public class JsonDatastoreMessageTest extends Assert {
         jsonDatastoreMessage1.setDatastoreId(datastoreId);
         jsonDatastoreMessage2.setDatastoreId(datastoreId);
 
-        assertEquals("Expected and actual values should be the same.", datastoreId, jsonDatastoreMessage1.getDatastoreId());
-        assertEquals("Expected and actual values should be the same.", datastoreId, jsonDatastoreMessage2.getDatastoreId());
+        Assert.assertEquals("Expected and actual values should be the same.", datastoreId, jsonDatastoreMessage1.getDatastoreId());
+        Assert.assertEquals("Expected and actual values should be the same.", datastoreId, jsonDatastoreMessage2.getDatastoreId());
 
         jsonDatastoreMessage1.setDatastoreId(null);
         jsonDatastoreMessage2.setDatastoreId(null);
@@ -141,8 +142,8 @@ public class JsonDatastoreMessageTest extends Assert {
             jsonDatastoreMessage1.setTimestamp(newTimestamp);
             jsonDatastoreMessage2.setTimestamp(newTimestamp);
 
-            assertEquals("Expected and actual values should be the same.", newTimestamp, jsonDatastoreMessage1.getTimestamp());
-            assertEquals("Expected and actual values should be the same.", newTimestamp, jsonDatastoreMessage2.getTimestamp());
+            Assert.assertEquals("Expected and actual values should be the same.", newTimestamp, jsonDatastoreMessage1.getTimestamp());
+            Assert.assertEquals("Expected and actual values should be the same.", newTimestamp, jsonDatastoreMessage2.getTimestamp());
         }
 
         jsonDatastoreMessage1.setTimestamp(null);

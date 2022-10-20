@@ -17,15 +17,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class XmlAdaptedNameTypeValueObjectTest extends Assert {
+public class XmlAdaptedNameTypeValueObjectTest {
 
     @Test
     public void xmlAdaptedNameTypeValueObjectTest() {
         XmlAdaptedNameTypeValueObject xmlAdaptedNameTypeValueObject = new XmlAdaptedNameTypeValueObject();
-        assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getName());
-        assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValueType());
-        assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValue());
+        Assert.assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getName());
+        Assert.assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValueType());
+        Assert.assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValue());
     }
 
     @Test
@@ -35,7 +36,7 @@ public class XmlAdaptedNameTypeValueObjectTest extends Assert {
 
         for (String name : names) {
             xmlAdaptedNameTypeValueObject.setName(name);
-            assertEquals("Expected and actual values should be the same.", name, xmlAdaptedNameTypeValueObject.getName());
+            Assert.assertEquals("Expected and actual values should be the same.", name, xmlAdaptedNameTypeValueObject.getName());
         }
     }
 }

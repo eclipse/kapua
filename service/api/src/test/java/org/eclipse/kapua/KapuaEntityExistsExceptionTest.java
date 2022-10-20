@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 
 import java.math.BigInteger;
 
+
 @Category(JUnitTests.class)
-public class KapuaEntityExistsExceptionTest extends Assert {
+public class KapuaEntityExistsExceptionTest {
 
     Throwable[] throwables;
     KapuaId[] ids;
@@ -39,10 +40,10 @@ public class KapuaEntityExistsExceptionTest extends Assert {
         for (Throwable throwable : throwables) {
             for (KapuaId id : ids) {
                 KapuaEntityExistsException kapuaEntityExistsException = new KapuaEntityExistsException(throwable, id);
-                assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_ALREADY_EXISTS, kapuaEntityExistsException.getCode());
-                assertEquals("Expected and actual values should be the same.", id, kapuaEntityExistsException.getId());
-                assertEquals("Expected and actual values should be the same.", throwable, kapuaEntityExistsException.getCause());
-                assertEquals("Expected and actual values should be the same.", "Error: ", kapuaEntityExistsException.getMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_ALREADY_EXISTS, kapuaEntityExistsException.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", id, kapuaEntityExistsException.getId());
+                Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaEntityExistsException.getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", "Error: ", kapuaEntityExistsException.getMessage());
             }
         }
     }

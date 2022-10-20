@@ -23,8 +23,9 @@ import org.mockito.Mockito;
 
 import javax.ws.rs.core.Response;
 
+
 @Category(JUnitTests.class)
-public class SubjectUnauthorizedExceptionInfoTest extends Assert {
+public class SubjectUnauthorizedExceptionInfoTest {
 
     Response.Status[] statusList;
     int[] expectedStatusCodes;
@@ -51,9 +52,9 @@ public class SubjectUnauthorizedExceptionInfoTest extends Assert {
     public void subjectUnauthorizedExceptionInfoWithoutParametersTest() {
         SubjectUnauthorizedExceptionInfo subjectUnauthorizedExceptionInfo = new SubjectUnauthorizedExceptionInfo();
 
-        assertNull("Null expected.", subjectUnauthorizedExceptionInfo.getKapuaErrorCode());
-        assertEquals("Expected and actual values should be the same.", 0, subjectUnauthorizedExceptionInfo.getHttpErrorCode());
-        assertNull("Null expected.", subjectUnauthorizedExceptionInfo.getPermission());
+        Assert.assertNull("Null expected.", subjectUnauthorizedExceptionInfo.getKapuaErrorCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, subjectUnauthorizedExceptionInfo.getHttpErrorCode());
+        Assert.assertNull("Null expected.", subjectUnauthorizedExceptionInfo.getPermission());
     }
 
     @Test
@@ -61,9 +62,9 @@ public class SubjectUnauthorizedExceptionInfoTest extends Assert {
         for (int i = 0; i < statusList.length; i++) {
             SubjectUnauthorizedExceptionInfo subjectUnauthorizedExceptionInfo = new SubjectUnauthorizedExceptionInfo(statusList[i], subjectUnauthorizedException);
 
-            assertEquals("Expected and actual values should be the same.", "SUBJECT_UNAUTHORIZED", subjectUnauthorizedExceptionInfo.getKapuaErrorCode());
-            assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], subjectUnauthorizedExceptionInfo.getHttpErrorCode());
-            assertEquals("Expected and actual values should be the same.", permission, subjectUnauthorizedExceptionInfo.getPermission());
+            Assert.assertEquals("Expected and actual values should be the same.", "SUBJECT_UNAUTHORIZED", subjectUnauthorizedExceptionInfo.getKapuaErrorCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], subjectUnauthorizedExceptionInfo.getHttpErrorCode());
+            Assert.assertEquals("Expected and actual values should be the same.", permission, subjectUnauthorizedExceptionInfo.getPermission());
         }
     }
 

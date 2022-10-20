@@ -23,13 +23,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class ObjectValueConverterTest extends Assert {
+public class ObjectValueConverterTest {
 
     @Test
     public void objectValueConverterTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<ObjectValueConverter> objectValueConverter = ObjectValueConverter.class.getDeclaredConstructor();
-        assertTrue(Modifier.isPrivate(objectValueConverter.getModifiers()));
+        Assert.assertTrue(Modifier.isPrivate(objectValueConverter.getModifiers()));
         objectValueConverter.setAccessible(true);
         objectValueConverter.newInstance();
     }
@@ -43,10 +44,10 @@ public class ObjectValueConverterTest extends Assert {
         Object object = new Object();
 
         for (int i = 0; i < objects.length; i++) {
-            assertEquals("Expected and actual values should be the same.", expectedString[i], ObjectValueConverter.toString(objects[i]));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedString[i], ObjectValueConverter.toString(objects[i]));
         }
-        assertNull("Null expected.", ObjectValueConverter.toString(null));
-        assertEquals("Expected and actual values should be the same.", object.toString(), ObjectValueConverter.toString(object));
+        Assert.assertNull("Null expected.", ObjectValueConverter.toString(null));
+        Assert.assertEquals("Expected and actual values should be the same.", object.toString(), ObjectValueConverter.toString(object));
     }
 
     @Test
@@ -57,15 +58,15 @@ public class ObjectValueConverterTest extends Assert {
         Class[] byteClasses = {byte[].class, Byte[].class};
 
         for (int i = 0; i < stringValue.length; i++) {
-            assertEquals(expectedObjects[i], ObjectValueConverter.fromString(stringValue[i], classes[i]));
+            Assert.assertEquals(expectedObjects[i], ObjectValueConverter.fromString(stringValue[i], classes[i]));
         }
 
         for (Class byteClass : byteClasses) {
-            assertThat("Instance of byte[] expected.", ObjectValueConverter.fromString("byteArray", byteClass), IsInstanceOf.instanceOf(byte[].class));
+        Assert.assertThat("Instance of byte[] expected.", ObjectValueConverter.fromString("byteArray", byteClass), IsInstanceOf.instanceOf(byte[].class));
         }
 
         for (Class clazz : classes) {
-            assertNull(ObjectValueConverter.fromString(null, clazz));
+            Assert.assertNull(ObjectValueConverter.fromString(null, clazz));
         }
     }
 

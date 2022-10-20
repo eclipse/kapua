@@ -23,8 +23,9 @@ import org.mockito.Mockito;
 import java.util.LinkedList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class JsonMessageListResultTest extends Assert {
+public class JsonMessageListResultTest {
 
     ResultList<JsonDatastoreMessage> resultList;
     List expectedList;
@@ -58,8 +59,8 @@ public class JsonMessageListResultTest extends Assert {
     public void jsonMessageListResultWithParameterTest() {
         JsonMessageListResult jsonMessageListResult = new JsonMessageListResult(resultList);
 
-        assertEquals("Expected and actual values should be the same.", expectedList, jsonMessageListResult.getItems());
-        assertEquals("Expected and actual values should be the same.", (Long) 3L, jsonMessageListResult.getTotalCount());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedList, jsonMessageListResult.getItems());
+        Assert.assertEquals("Expected and actual values should be the same.", (Long) 3L, jsonMessageListResult.getTotalCount());
     }
 
     @Test(expected = NullPointerException.class)

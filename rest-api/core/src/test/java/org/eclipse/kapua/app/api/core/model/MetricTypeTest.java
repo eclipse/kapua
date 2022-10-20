@@ -20,8 +20,9 @@ import org.junit.experimental.categories.Category;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class MetricTypeTest extends Assert {
+public class MetricTypeTest {
 
     @Test
     public void metricTypeTest() throws KapuaIllegalArgumentException {
@@ -30,7 +31,7 @@ public class MetricTypeTest extends Assert {
 
         for (int i = 0; i < types.length; i++) {
             MetricType metricType = new MetricType(types[i]);
-            assertEquals("Expected and actual values should be the same.", expectedClasses[i], metricType.getType());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedClasses[i], metricType.getType());
         }
     }
 

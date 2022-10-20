@@ -22,8 +22,9 @@ import org.mockito.Mockito;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 @Category(JUnitTests.class)
-public class KapuaTokenAuthenticationFilterTest extends Assert {
+public class KapuaTokenAuthenticationFilterTest {
 
     HttpServletRequest request;
     HttpServletResponse response;
@@ -42,22 +43,22 @@ public class KapuaTokenAuthenticationFilterTest extends Assert {
     public void isAccessAllowedTrueTest() {
         Mockito.when(request.getMethod()).thenReturn("OPTIONS");
         for (Object mappedValue : mappedValues) {
-            assertTrue("True expected.", kapuaTokenAuthenticationFilter.isAccessAllowed(request, response, mappedValue));
+            Assert.assertTrue("True expected.", kapuaTokenAuthenticationFilter.isAccessAllowed(request, response, mappedValue));
         }
     }
 
     @Test
     public void onAccessDeniedTest() throws Exception {
-        assertTrue("True expected.", kapuaTokenAuthenticationFilter.onAccessDenied(request, response));
+        Assert.assertTrue("True expected.", kapuaTokenAuthenticationFilter.onAccessDenied(request, response));
     }
 
     @Test
     public void onAccessDeniedNullRequestTest() throws Exception {
-        assertTrue("True expected.", kapuaTokenAuthenticationFilter.onAccessDenied(null, response));
+        Assert.assertTrue("True expected.", kapuaTokenAuthenticationFilter.onAccessDenied(null, response));
     }
 
     @Test(expected = NullPointerException.class)
     public void onAccessDeniedNullResponseTest() throws Exception {
-        assertTrue("True expected.", kapuaTokenAuthenticationFilter.onAccessDenied(request, null));
+        Assert.assertTrue("True expected.", kapuaTokenAuthenticationFilter.onAccessDenied(request, null));
     }
 }

@@ -18,8 +18,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class SortOrderTest extends Assert {
+public class SortOrderTest {
 
     @Test
     public void fromStringTest() throws KapuaIllegalArgumentException {
@@ -27,7 +28,7 @@ public class SortOrderTest extends Assert {
         SortOrder[] expectedValues = {SortOrder.ASCENDING, SortOrder.DESCENDING};
 
         for (int i = 0; i < stringValue.length; i++) {
-            assertEquals("Expected and actual values should be the same.", expectedValues[i], SortOrder.fromString(stringValue[i]));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedValues[i], SortOrder.fromString(stringValue[i]));
         }
     }
 

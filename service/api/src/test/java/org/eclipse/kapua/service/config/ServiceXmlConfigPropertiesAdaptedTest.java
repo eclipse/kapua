@@ -17,13 +17,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ServiceXmlConfigPropertiesAdaptedTest extends Assert {
+public class ServiceXmlConfigPropertiesAdaptedTest {
 
     @Test
     public void serviceXmlConfigPropertiesAdaptedTest() {
         ServiceXmlConfigPropertiesAdapted serviceXmlConfigPropertiesAdapted = new ServiceXmlConfigPropertiesAdapted();
-        assertNull("Null expected.", serviceXmlConfigPropertiesAdapted.getProperties());
+        Assert.assertNull("Null expected.", serviceXmlConfigPropertiesAdapted.getProperties());
     }
 
     @Test
@@ -42,10 +43,10 @@ public class ServiceXmlConfigPropertiesAdaptedTest extends Assert {
                 for (ServiceXmlConfigPropertyAdapted.ConfigPropertyType type : configPropertyType) {
                     ServiceXmlConfigPropertyAdapted[] properties = {null, new ServiceXmlConfigPropertyAdapted(), new ServiceXmlConfigPropertyAdapted(name, type, value)};
                     serviceXmlConfigPropertiesAdapted.setProperties(properties);
-                    assertEquals("Expected and actual values should be the same.", properties, serviceXmlConfigPropertiesAdapted.getProperties());
+                    Assert.assertEquals("Expected and actual values should be the same.", properties, serviceXmlConfigPropertiesAdapted.getProperties());
 
                     serviceXmlConfigPropertiesAdapted.setProperties(null);
-                    assertNull("Null expected", serviceXmlConfigPropertiesAdapted.getProperties());
+                    Assert.assertNull("Null expected", serviceXmlConfigPropertiesAdapted.getProperties());
                 }
             }
         }

@@ -22,8 +22,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+
 @Category(JUnitTests.class)
-public class DateXmlAdapterTest extends Assert {
+public class DateXmlAdapterTest {
 
     DateXmlAdapter dateXmlAdapter;
     Date date;
@@ -39,12 +40,12 @@ public class DateXmlAdapterTest extends Assert {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DateXmlAdapter.DATE_FORMAT);
         dateFormat.setTimeZone(TimeZone.getTimeZone(DateXmlAdapter.TIME_ZONE_UTC));
         String expectedString = dateFormat.format(date);
-        assertEquals("Expected and actual values should be the same.", expectedString, dateXmlAdapter.marshal(date));
+        Assert.assertEquals("Expected and actual values should be the same.", expectedString, dateXmlAdapter.marshal(date));
     }
 
     @Test
     public void marshalNullTest() throws Exception {
-        assertNull("Null expected", dateXmlAdapter.marshal(null));
+        Assert.assertNull("Null expected", dateXmlAdapter.marshal(null));
     }
 
     @Test
@@ -53,14 +54,14 @@ public class DateXmlAdapterTest extends Assert {
         dateFormat.setTimeZone(TimeZone.getTimeZone(DateXmlAdapter.TIME_ZONE_UTC));
         String dateStringValue = dateFormat.format(date);
 
-        assertEquals("Expected and actual values should be the same.", date, dateXmlAdapter.unmarshal(dateStringValue));
+        Assert.assertEquals("Expected and actual values should be the same.", date, dateXmlAdapter.unmarshal(dateStringValue));
     }
 
     @Test
     public void unmarshalNullOrEmptyStringsTest() {
         String[] nullOrEmptyStrings = {null, ""};
         for (String nullOrEmptyString : nullOrEmptyStrings) {
-            assertNull("Null expected", dateXmlAdapter.unmarshal(nullOrEmptyString));
+            Assert.assertNull("Null expected", dateXmlAdapter.unmarshal(nullOrEmptyString));
         }
     }
 

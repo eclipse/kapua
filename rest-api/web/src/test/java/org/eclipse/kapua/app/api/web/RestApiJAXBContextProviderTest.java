@@ -25,8 +25,9 @@ import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Providers;
 import javax.xml.bind.JAXBContext;
 
+
 @Category(JUnitTests.class)
-public class RestApiJAXBContextProviderTest extends Assert {
+public class RestApiJAXBContextProviderTest {
 
     RestApiJAXBContextProvider restApiJAXBContextProvider;
     Providers providers;
@@ -47,9 +48,9 @@ public class RestApiJAXBContextProviderTest extends Assert {
 
         try {
             restApiJAXBContextProvider.getJAXBContext();
-            fail("KapuaException expected.");
+            Assert.fail("KapuaException expected.");
         } catch (Exception e) {
-            assertEquals("KapuaException expected.", "org.eclipse.kapua.KapuaException: An internal error occurred: Unable to find any provider..", e.toString());
+            Assert.assertEquals("KapuaException expected.", "org.eclipse.kapua.KapuaException: An internal error occurred: Unable to find any provider..", e.toString());
         }
     }
 
@@ -62,9 +63,9 @@ public class RestApiJAXBContextProviderTest extends Assert {
 
         try {
             restApiJAXBContextProvider.getJAXBContext();
-            fail("KapuaException expected.");
+            Assert.fail("KapuaException expected.");
         } catch (Exception e) {
-            assertEquals("KapuaException expected.", "org.eclipse.kapua.KapuaException: An internal error occurred: Unable to get a JAXBContext..", e.toString());
+            Assert.assertEquals("KapuaException expected.", "org.eclipse.kapua.KapuaException: An internal error occurred: Unable to get a JAXBContext..", e.toString());
         }
     }
 
@@ -75,6 +76,6 @@ public class RestApiJAXBContextProviderTest extends Assert {
         Mockito.when(providers.getContextResolver(JAXBContext.class, MediaType.APPLICATION_XML_TYPE)).thenReturn(contextResolver);
         Mockito.when(contextResolver.getContext(JAXBContext.class)).thenReturn(jaxbContext);
 
-        assertTrue("True expected.", restApiJAXBContextProvider.getJAXBContext() instanceof JAXBContext);
+        Assert.assertTrue("True expected.", restApiJAXBContextProvider.getJAXBContext() instanceof JAXBContext);
     }
 }

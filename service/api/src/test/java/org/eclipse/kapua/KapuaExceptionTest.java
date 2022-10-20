@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaExceptionTest extends Assert {
+public class KapuaExceptionTest {
 
     String expectedErrorMessage;
     Object argument1, argument2, argument3;
@@ -41,90 +42,90 @@ public class KapuaExceptionTest extends Assert {
     public void kapuaExceptionKapuaErrorCodeParameterTest() {
         KapuaException kapuaException = new KapuaException(kapuaErrorCode);
 
-        assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaException.getCode());
-        assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getMessage());
-        assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getLocalizedMessage());
-        assertNull("Null expected.", kapuaException.getCause());
-        assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getLocalizedMessage());
+        Assert.assertNull("Null expected.", kapuaException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
     }
 
     @Test
     public void kapuaExceptionNullKapuaErrorCodeParameterTest() {
         KapuaException kapuaException = new KapuaException(null);
-        assertNull("Null expected.", kapuaException.getCode());
-        assertNull("Null expected.", kapuaException.getCause());
-        assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
+        Assert.assertNull("Null expected.", kapuaException.getCode());
+        Assert.assertNull("Null expected.", kapuaException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
         try {
             kapuaException.getMessage();
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
         try {
             kapuaException.getLocalizedMessage();
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
     @Test
     public void kapuaExceptionKapuaErrorCodeObjectParametersTest() {
         KapuaException kapuaException = new KapuaException(kapuaErrorCode, argument1, argument2, argument3);
-        assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaException.getCode());
-        assertEquals("Expected and actual values should be the same.", "The entity of type " + argument1 + " with id/name " + argument2 + " was not found.", kapuaException.getMessage());
-        assertEquals("Expected and actual values should be the same.", "The entity of type " + argument1 + " with id/name " + argument2 + " was not found.", kapuaException.getLocalizedMessage());
-        assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
-        assertNull("Null expected.", kapuaException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "The entity of type " + argument1 + " with id/name " + argument2 + " was not found.", kapuaException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", "The entity of type " + argument1 + " with id/name " + argument2 + " was not found.", kapuaException.getLocalizedMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
+        Assert.assertNull("Null expected.", kapuaException.getCause());
     }
 
     @Test
     public void kapuaExceptionNullKapuaErrorCodeObjectParametersTest() {
         KapuaException kapuaException = new KapuaException(null, argument1, argument2, argument3);
-        assertNull("Null expected.", kapuaException.getCode());
-        assertNull("Null expected.", kapuaException.getCause());
-        assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
+        Assert.assertNull("Null expected.", kapuaException.getCode());
+        Assert.assertNull("Null expected.", kapuaException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
         try {
             kapuaException.getMessage();
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
         try {
             kapuaException.getLocalizedMessage();
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
     @Test
     public void kapuaExceptionKapuaErrorCodeNullObjectParametersTest() {
         KapuaException kapuaException = new KapuaException(kapuaErrorCode, null);
-        assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaException.getCode());
-        assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getMessage());
-        assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getLocalizedMessage());
-        assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
-        assertNull("Null expected.", kapuaException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getLocalizedMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
+        Assert.assertNull("Null expected.", kapuaException.getCause());
     }
 
     @Test
     public void kapuaExceptionNullKapuaErrorCodeNullObjectParametersTest() {
         KapuaException kapuaException = new KapuaException(null, null);
-        assertNull("Null expected.", kapuaException.getCode());
-        assertNull("Null expected.", kapuaException.getCause());
-        assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
+        Assert.assertNull("Null expected.", kapuaException.getCode());
+        Assert.assertNull("Null expected.", kapuaException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
         try {
             kapuaException.getMessage();
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
         try {
             kapuaException.getLocalizedMessage();
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -132,11 +133,11 @@ public class KapuaExceptionTest extends Assert {
     public void kapuaExceptionKapuaErrorCodeThrowableObjectParametersTest() {
         for (Throwable throwable : throwables) {
             KapuaException kapuaException = new KapuaException(kapuaErrorCode, throwable, argument1, argument2, argument3);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaException.getCode());
-            assertEquals("Expected and actual values should be the same.", "The entity of type " + argument1 + " with id/name " + argument2 + " was not found.", kapuaException.getMessage());
-            assertEquals("Expected and actual values should be the same.", "The entity of type " + argument1 + " with id/name " + argument2 + " was not found.", kapuaException.getLocalizedMessage());
-            assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
-            assertEquals("Expected and actual values should be the same.", throwable, kapuaException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "The entity of type " + argument1 + " with id/name " + argument2 + " was not found.", kapuaException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", "The entity of type " + argument1 + " with id/name " + argument2 + " was not found.", kapuaException.getLocalizedMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
+            Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaException.getCause());
         }
     }
 
@@ -144,20 +145,20 @@ public class KapuaExceptionTest extends Assert {
     public void kapuaExceptionNullKapuaErrorCodeThrowableObjectParametersTest() {
         for (Throwable throwable : throwables) {
             KapuaException kapuaException = new KapuaException(null, throwable, argument1, argument2, argument3);
-            assertNull("Null expected.", kapuaException.getCode());
-            assertEquals("Expected and actual values should be the same.", throwable, kapuaException.getCause());
-            assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
+            Assert.assertNull("Null expected.", kapuaException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
             try {
                 kapuaException.getMessage();
-                fail("NullPointerException expected.");
+                Assert.fail("NullPointerException expected.");
             } catch (Exception e) {
-                assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
             }
             try {
                 kapuaException.getLocalizedMessage();
-                fail("NullPointerException expected.");
+                Assert.fail("NullPointerException expected.");
             } catch (Exception e) {
-                assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
             }
         }
     }
@@ -166,11 +167,11 @@ public class KapuaExceptionTest extends Assert {
     public void kapuaExceptionKapuaErrorCodeThrowableNullObjectParametersTest() {
         for (Throwable throwable : throwables) {
             KapuaException kapuaException = new KapuaException(kapuaErrorCode, throwable, null);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaException.getCode());
-            assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getMessage());
-            assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getLocalizedMessage());
-            assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
-            assertEquals("Expected and actual values should be the same.", throwable, kapuaException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", "The entity of type {0} with id/name {1} was not found.", kapuaException.getLocalizedMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
+            Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaException.getCause());
         }
     }
 
@@ -178,20 +179,20 @@ public class KapuaExceptionTest extends Assert {
     public void kapuaExceptionNullKapuaErrorCodeThrowableNullObjectParametersTest() {
         for (Throwable throwable : throwables) {
             KapuaException kapuaException = new KapuaException(null, throwable, null);
-            assertNull("Null expected.", kapuaException.getCode());
-            assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
-            assertEquals("Expected and actual values should be the same.", throwable, kapuaException.getCause());
+            Assert.assertNull("Null expected.", kapuaException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
+            Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaException.getCause());
             try {
                 kapuaException.getMessage();
-                fail("NullPointerException expected.");
+                Assert.fail("NullPointerException expected.");
             } catch (Exception e) {
-                assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
             }
             try {
                 kapuaException.getLocalizedMessage();
-                fail("NullPointerException expected.");
+                Assert.fail("NullPointerException expected.");
             } catch (Exception e) {
-                assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
             }
         }
     }
@@ -203,13 +204,13 @@ public class KapuaExceptionTest extends Assert {
 
         for (Throwable throwable : cause) {
             for (String msg : messages) {
-                assertThat("Instance of KapuaException expected.", KapuaException.internalError(throwable, msg), IsInstanceOf.instanceOf(KapuaException.class));
-                assertEquals("Expected and actual values should be the same.", new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, throwable, msg).toString(), KapuaException.internalError(throwable, msg).toString());
-                assertEquals("Expected and actual values should be the same.", "An internal error occurred: " + msg + ".", KapuaException.internalError(throwable, msg).getMessage());
-                assertEquals("Expected and actual values should be the same.", "An internal error occurred: " + msg + ".", KapuaException.internalError(throwable, msg).getLocalizedMessage());
-                assertEquals("Expected and actual values should be the same.", throwable, KapuaException.internalError(throwable, msg).getCause());
-                assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.INTERNAL_ERROR, KapuaException.internalError(throwable, msg).getCode());
-                assertEquals("Expected and actual values should be the same.", expectedErrorMessage, KapuaException.internalError(throwable, msg).getKapuaErrorMessagesBundle());
+                Assert.assertThat("Instance of KapuaException expected.", KapuaException.internalError(throwable, msg), IsInstanceOf.instanceOf(KapuaException.class));
+                Assert.assertEquals("Expected and actual values should be the same.", new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, throwable, msg).toString(), KapuaException.internalError(throwable, msg).toString());
+                Assert.assertEquals("Expected and actual values should be the same.", "An internal error occurred: " + msg + ".", KapuaException.internalError(throwable, msg).getMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", "An internal error occurred: " + msg + ".", KapuaException.internalError(throwable, msg).getLocalizedMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", throwable, KapuaException.internalError(throwable, msg).getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.INTERNAL_ERROR, KapuaException.internalError(throwable, msg).getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, KapuaException.internalError(throwable, msg).getKapuaErrorMessagesBundle());
             }
         }
     }
@@ -223,18 +224,18 @@ public class KapuaExceptionTest extends Assert {
         String[] arguments = {"Message", "java.lang.Throwable"};
 
         for (int i = 0; i < throwables.length; i++) {
-            assertThat("Instance of KapuaException expected.", KapuaException.internalError(throwables[i]), IsInstanceOf.instanceOf(KapuaException.class));
-            assertEquals("Expected and actual values should be the same.", new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, throwables[i], arguments[i]).toString(), KapuaException.internalError(throwables[i]).toString());
-            assertEquals("Expected and actual values should be the same.", expectedMessage[i], KapuaException.internalError(throwables[i]).getMessage());
-            assertEquals("Expected and actual values should be the same.", throwables[i], KapuaException.internalError(throwables[i]).getCause());
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.INTERNAL_ERROR, KapuaException.internalError(throwables[i]).getCode());
-            assertEquals("Expected and actual values should be the same.", expectedErrorMessage, KapuaException.internalError(throwables[i]).getKapuaErrorMessagesBundle());
+            Assert.assertThat("Instance of KapuaException expected.", KapuaException.internalError(throwables[i]), IsInstanceOf.instanceOf(KapuaException.class));
+            Assert.assertEquals("Expected and actual values should be the same.", new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, throwables[i], arguments[i]).toString(), KapuaException.internalError(throwables[i]).toString());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedMessage[i], KapuaException.internalError(throwables[i]).getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", throwables[i], KapuaException.internalError(throwables[i]).getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.INTERNAL_ERROR, KapuaException.internalError(throwables[i]).getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, KapuaException.internalError(throwables[i]).getKapuaErrorMessagesBundle());
         }
         try {
             KapuaException.internalError(nullThrowable);
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -243,12 +244,12 @@ public class KapuaExceptionTest extends Assert {
         String[] messages = {"Message", null};
 
         for (String msg : messages) {
-            assertThat("Instance of KapuaRuntimeException expected.", KapuaException.internalError(msg), IsInstanceOf.instanceOf(KapuaException.class));
-            assertEquals("Expected and actual values should be the same.", new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, null, msg).toString(), KapuaException.internalError(msg).toString());
-            assertEquals("Expected and actual values should be the same.", "An internal error occurred: " + msg + ".", KapuaException.internalError(msg).getMessage());
-            assertNull("Null expected.", KapuaException.internalError(msg).getCause());
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.INTERNAL_ERROR, KapuaException.internalError(msg).getCode());
-            assertEquals("Expected and actual values should be the same.", expectedErrorMessage, KapuaException.internalError(msg).getKapuaErrorMessagesBundle());
+            Assert.assertThat("Instance of KapuaRuntimeException expected.", KapuaException.internalError(msg), IsInstanceOf.instanceOf(KapuaException.class));
+            Assert.assertEquals("Expected and actual values should be the same.", new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, null, msg).toString(), KapuaException.internalError(msg).toString());
+            Assert.assertEquals("Expected and actual values should be the same.", "An internal error occurred: " + msg + ".", KapuaException.internalError(msg).getMessage());
+            Assert.assertNull("Null expected.", KapuaException.internalError(msg).getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.INTERNAL_ERROR, KapuaException.internalError(msg).getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, KapuaException.internalError(msg).getKapuaErrorMessagesBundle());
         }
     }
 

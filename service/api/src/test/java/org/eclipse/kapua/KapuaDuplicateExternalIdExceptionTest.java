@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaDuplicateExternalIdExceptionTest extends Assert {
+public class KapuaDuplicateExternalIdExceptionTest {
 
     String[] duplicatedExternalId;
 
@@ -32,9 +33,9 @@ public class KapuaDuplicateExternalIdExceptionTest extends Assert {
     public void kapuaDuplicateExternalIdExceptionTest() {
         for (String id : duplicatedExternalId) {
             KapuaDuplicateExternalIdException kapuaDuplicateExternalIdException = new KapuaDuplicateExternalIdException(id);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.DUPLICATE_EXTERNAL_ID, kapuaDuplicateExternalIdException.getCode());
-            assertNull("Null expected", kapuaDuplicateExternalIdException.getCause());
-            assertEquals("Expected and actual values should be the same.", "An entity with the same external Id " + id + " already exists.", kapuaDuplicateExternalIdException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.DUPLICATE_EXTERNAL_ID, kapuaDuplicateExternalIdException.getCode());
+            Assert.assertNull("Null expected", kapuaDuplicateExternalIdException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", "An entity with the same external Id " + id + " already exists.", kapuaDuplicateExternalIdException.getMessage());
         }
     }
 

@@ -23,13 +23,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class ObjectTypeConverterTest extends Assert {
+public class ObjectTypeConverterTest {
 
     @Test
     public void objectTypeConverterTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<ObjectTypeConverter> objectTypeConverter = ObjectTypeConverter.class.getDeclaredConstructor();
-        assertTrue(Modifier.isPrivate(objectTypeConverter.getModifiers()));
+        Assert.assertTrue(Modifier.isPrivate(objectTypeConverter.getModifiers()));
         objectTypeConverter.setAccessible(true);
         objectTypeConverter.newInstance();
     }
@@ -39,13 +40,13 @@ public class ObjectTypeConverterTest extends Assert {
         Class[] classes = {String.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class, Date.class, byte[].class, Byte[].class, KapuaIdImpl.class};
         String[] expectedString = {"string", "integer", "long", "float", "double", "boolean", "date", "binary", "binary", "org.eclipse.kapua.model.id.KapuaIdImpl"};
         for (int i = 0; i < classes.length; i++) {
-            assertEquals("Expected and actual values should be the same.", expectedString[i], ObjectTypeConverter.toString(classes[i]));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedString[i], ObjectTypeConverter.toString(classes[i]));
         }
     }
 
     @Test
     public void toStringNullParameterTest() {
-        assertNull("Null expected.", ObjectTypeConverter.toString(null));
+        Assert.assertNull("Null expected.", ObjectTypeConverter.toString(null));
     }
 
     @Test
@@ -53,13 +54,13 @@ public class ObjectTypeConverterTest extends Assert {
         String[] stringValue = {"string", "integer", "int", "long", "float", "double", "boolean", "date", "binary", "org.eclipse.kapua.model.id.KapuaIdImpl"};
         Class[] expectedClasses = {String.class, Integer.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class, Date.class, byte[].class, KapuaIdImpl.class};
         for (int i = 0; i < stringValue.length; i++) {
-            assertEquals("Expected and actual values should be the same.", expectedClasses[i].toString(), ObjectTypeConverter.fromString(stringValue[i]).toString());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedClasses[i].toString(), ObjectTypeConverter.fromString(stringValue[i]).toString());
         }
     }
 
     @Test
     public void fromStringNullParameterTest() throws ClassNotFoundException {
-        assertNull("Null expected.", ObjectTypeConverter.fromString(null));
+        Assert.assertNull("Null expected.", ObjectTypeConverter.fromString(null));
     }
 
     @Test(expected = ClassNotFoundException.class)

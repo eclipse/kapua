@@ -22,18 +22,19 @@ import org.junit.experimental.categories.Category;
 import java.math.BigInteger;
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class ServiceEventTest extends Assert {
+public class ServiceEventTest {
 
     @Test
     public void setAndGetIdTest() {
         ServiceEvent serviceEvent = new ServiceEvent();
         String[] ids = {"id", null};
 
-        assertNull("Null expected.", serviceEvent.getId());
+        Assert.assertNull("Null expected.", serviceEvent.getId());
         for (String id : ids) {
             serviceEvent.setId(id);
-            assertEquals("Expected and actual values should be the same.", id, serviceEvent.getId());
+            Assert.assertEquals("Expected and actual values should be the same.", id, serviceEvent.getId());
         }
     }
 
@@ -42,10 +43,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         String[] contextIds = {"contextId.", null};
 
-        assertNull("Null expected", serviceEvent.getContextId());
+        Assert.assertNull("Null expected", serviceEvent.getContextId());
         for (String contextId : contextIds) {
             serviceEvent.setContextId(contextId);
-            assertEquals("Expected and actual values should be the same.", contextId, serviceEvent.getContextId());
+            Assert.assertEquals("Expected and actual values should be the same.", contextId, serviceEvent.getContextId());
         }
     }
 
@@ -54,10 +55,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         Date[] timestamps = {new Date(), null};
 
-        assertNull("Null expected.", serviceEvent.getTimestamp());
+        Assert.assertNull("Null expected.", serviceEvent.getTimestamp());
         for (Date timestamp : timestamps) {
             serviceEvent.setTimestamp(timestamp);
-            assertEquals("Expected and actual values should be the same.", timestamp, serviceEvent.getTimestamp());
+            Assert.assertEquals("Expected and actual values should be the same.", timestamp, serviceEvent.getTimestamp());
         }
     }
 
@@ -66,10 +67,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         KapuaId[] userIds = {new KapuaIdImpl(BigInteger.ONE), null};
 
-        assertNull("Null expected.", serviceEvent.getUserId());
+        Assert.assertNull("Null expected.", serviceEvent.getUserId());
         for (KapuaId userId : userIds) {
             serviceEvent.setUserId(userId);
-            assertEquals("Expected and actual values should be the same.", userId, serviceEvent.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", userId, serviceEvent.getUserId());
         }
     }
 
@@ -78,10 +79,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         String[] services = {"service", null};
 
-        assertNull("Null expected.", serviceEvent.getService());
+        Assert.assertNull("Null expected.", serviceEvent.getService());
         for (String service : services) {
             serviceEvent.setService(service);
-            assertEquals("Expected and actual values should be the same.", service, serviceEvent.getService());
+            Assert.assertEquals("Expected and actual values should be the same.", service, serviceEvent.getService());
         }
     }
 
@@ -90,10 +91,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         String[] entityTypes = {"entityType", null};
 
-        assertNull("Null expected.", serviceEvent.getEntityType());
+        Assert.assertNull("Null expected.", serviceEvent.getEntityType());
         for (String entityType : entityTypes) {
             serviceEvent.setEntityType(entityType);
-            assertEquals("Expected and actual values should be the same.", entityType, serviceEvent.getEntityType());
+            Assert.assertEquals("Expected and actual values should be the same.", entityType, serviceEvent.getEntityType());
         }
     }
 
@@ -102,10 +103,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         KapuaId[] scopeIds = {new KapuaIdImpl(BigInteger.ONE), null};
 
-        assertNull("Null expected.", serviceEvent.getScopeId());
+        Assert.assertNull("Null expected.", serviceEvent.getScopeId());
         for (KapuaId scopeId : scopeIds) {
             serviceEvent.setScopeId(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, serviceEvent.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, serviceEvent.getScopeId());
         }
     }
 
@@ -114,10 +115,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         KapuaId[] entityScopeIds = {new KapuaIdImpl(BigInteger.ONE), null};
 
-        assertNull("Null expected.", serviceEvent.getEntityScopeId());
+        Assert.assertNull("Null expected.", serviceEvent.getEntityScopeId());
         for (KapuaId entityScopeId : entityScopeIds) {
             serviceEvent.setEntityScopeId(entityScopeId);
-            assertEquals("Expected and actual values should be the same.", entityScopeId, serviceEvent.getEntityScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", entityScopeId, serviceEvent.getEntityScopeId());
         }
     }
 
@@ -126,10 +127,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         KapuaId[] entityIds = {new KapuaIdImpl(BigInteger.ONE), null};
 
-        assertNull("Null expected", serviceEvent.getEntityId());
+        Assert.assertNull("Null expected", serviceEvent.getEntityId());
         for (KapuaId entityId : entityIds) {
             serviceEvent.setEntityId(entityId);
-            assertEquals("Expected and actual values should be the same.", entityId, serviceEvent.getEntityId());
+            Assert.assertEquals("Expected and actual values should be the same.", entityId, serviceEvent.getEntityId());
         }
     }
 
@@ -138,10 +139,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         String[] operations = {"operation", null};
 
-        assertNull("Null expected.", serviceEvent.getOperation());
+        Assert.assertNull("Null expected.", serviceEvent.getOperation());
         for (String operation : operations) {
             serviceEvent.setOperation(operation);
-            assertEquals("Expected and actual values should be the same.", operation, serviceEvent.getOperation());
+            Assert.assertEquals("Expected and actual values should be the same.", operation, serviceEvent.getOperation());
         }
     }
 
@@ -150,10 +151,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         String[] inputs = {"inputs", null};
 
-        assertNull("Null expected.", serviceEvent.getInputs());
+        Assert.assertNull("Null expected.", serviceEvent.getInputs());
         for (String input : inputs) {
             serviceEvent.setInputs(input);
-            assertEquals("Expected and actual values should be the same.", input, serviceEvent.getInputs());
+            Assert.assertEquals("Expected and actual values should be the same.", input, serviceEvent.getInputs());
         }
     }
 
@@ -162,10 +163,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         String[] outputs = {"outputs", null};
 
-        assertNull("Null expected.", serviceEvent.getOutputs());
+        Assert.assertNull("Null expected.", serviceEvent.getOutputs());
         for (String output : outputs) {
             serviceEvent.setOutputs(output);
-            assertEquals("Expected and actual values should be the same.", output, serviceEvent.getOutputs());
+            Assert.assertEquals("Expected and actual values should be the same.", output, serviceEvent.getOutputs());
         }
     }
 
@@ -174,10 +175,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         ServiceEvent.EventStatus[] eventStatus = {null, ServiceEvent.EventStatus.TRIGGERED, ServiceEvent.EventStatus.SEND_ERROR, ServiceEvent.EventStatus.SENT};
 
-        assertNull("Null expected.", serviceEvent.getStatus());
+        Assert.assertNull("Null expected.", serviceEvent.getStatus());
         for (ServiceEvent.EventStatus status : eventStatus) {
             serviceEvent.setStatus(status);
-            assertEquals("Expected and actual values should be the same.", status, serviceEvent.getStatus());
+            Assert.assertEquals("Expected and actual values should be the same.", status, serviceEvent.getStatus());
         }
     }
 
@@ -186,10 +187,10 @@ public class ServiceEventTest extends Assert {
         ServiceEvent serviceEvent = new ServiceEvent();
         String[] notes = {"notes", null};
 
-        assertNull("Null expected.", serviceEvent.getNote());
+        Assert.assertNull("Null expected.", serviceEvent.getNote());
         for (String note : notes) {
             serviceEvent.setNote(note);
-            assertEquals("Expected and actual values should be the same.", note, serviceEvent.getNote());
+            Assert.assertEquals("Expected and actual values should be the same.", note, serviceEvent.getNote());
         }
     }
 }

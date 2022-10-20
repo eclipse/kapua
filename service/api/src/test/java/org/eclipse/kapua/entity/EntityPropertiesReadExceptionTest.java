@@ -18,8 +18,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class EntityPropertiesReadExceptionTest extends Assert {
+public class EntityPropertiesReadExceptionTest {
 
     @Test
     public void entityPropertiesReadExceptionTest() {
@@ -32,10 +33,10 @@ public class EntityPropertiesReadExceptionTest extends Assert {
                 for (String properties : stringProperties) {
                     EntityPropertiesReadException entityPropertiesReadException = new EntityPropertiesReadException(ex, attribute, properties);
 
-                    assertEquals("Expected and actual values should be the same.", attribute, entityPropertiesReadException.getAttribute());
-                    assertEquals("Expected and actual values should be the same.", properties, entityPropertiesReadException.getStringProperties());
-                    assertEquals("Expected and actual values should be the same.", KapuaRuntimeErrorCodes.ENTITY_PROPERTIES_READ_ERROR, entityPropertiesReadException.getCode());
-                    assertEquals("Expected and actual values should be the same.", ex, entityPropertiesReadException.getCause());
+                    Assert.assertEquals("Expected and actual values should be the same.", attribute, entityPropertiesReadException.getAttribute());
+                    Assert.assertEquals("Expected and actual values should be the same.", properties, entityPropertiesReadException.getStringProperties());
+                    Assert.assertEquals("Expected and actual values should be the same.", KapuaRuntimeErrorCodes.ENTITY_PROPERTIES_READ_ERROR, entityPropertiesReadException.getCode());
+                    Assert.assertEquals("Expected and actual values should be the same.", ex, entityPropertiesReadException.getCause());
                 }
             }
         }
