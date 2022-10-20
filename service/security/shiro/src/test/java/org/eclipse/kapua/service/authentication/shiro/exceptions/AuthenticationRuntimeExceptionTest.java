@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class AuthenticationRuntimeExceptionTest extends Assert {
+public class AuthenticationRuntimeExceptionTest {
 
     KapuaAuthenticationErrorCodes[] kapuaAuthenticationErrorCodes;
     Object stringArgument, intArgument, booleanArgument;
@@ -47,21 +48,21 @@ public class AuthenticationRuntimeExceptionTest extends Assert {
     public void authenticationRuntimeExceptionCodeParameterTest() {
         for (KapuaAuthenticationErrorCodes kapuaAuthenticationErrorCode : kapuaAuthenticationErrorCodes) {
             AuthenticationRuntimeException authenticationRuntimeException = new AuthenticationRuntimeException(kapuaAuthenticationErrorCode);
-            assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, authenticationRuntimeException.getCode());
-            assertEquals("Expected and actual values should be the same.", errorMessageWithoutArguments, authenticationRuntimeException.getMessage());
-            assertNull("Null expected.", authenticationRuntimeException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, authenticationRuntimeException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", errorMessageWithoutArguments, authenticationRuntimeException.getMessage());
+            Assert.assertNull("Null expected.", authenticationRuntimeException.getCause());
         }
     }
 
     @Test
     public void authenticationRuntimeExceptionNullCodeParameterTest() {
         AuthenticationRuntimeException authenticationRuntimeException = new AuthenticationRuntimeException(null);
-        assertNull("Null expected.", authenticationRuntimeException.getCode());
-        assertNull("Null expected.", authenticationRuntimeException.getCause());
+        Assert.assertNull("Null expected.", authenticationRuntimeException.getCode());
+        Assert.assertNull("Null expected.", authenticationRuntimeException.getCause());
         try {
             authenticationRuntimeException.getMessage();
         } catch (Exception e) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -69,21 +70,21 @@ public class AuthenticationRuntimeExceptionTest extends Assert {
     public void authenticationRuntimeExceptionCodeArgumentParametersTest() {
         for (KapuaAuthenticationErrorCodes kapuaAuthenticationErrorCode : kapuaAuthenticationErrorCodes) {
             AuthenticationRuntimeException authenticationRuntimeException = new AuthenticationRuntimeException(kapuaAuthenticationErrorCode, stringArgument, intArgument, booleanArgument);
-            assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, authenticationRuntimeException.getCode());
-            assertEquals("Expected and actual values should be the same.", errorMessageWithArguments, authenticationRuntimeException.getMessage());
-            assertNull("Null expected.", authenticationRuntimeException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, authenticationRuntimeException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", errorMessageWithArguments, authenticationRuntimeException.getMessage());
+            Assert.assertNull("Null expected.", authenticationRuntimeException.getCause());
         }
     }
 
     @Test
     public void authenticationRuntimeExceptionNullCodeArgumentParametersTest() {
         AuthenticationRuntimeException authenticationRuntimeException = new AuthenticationRuntimeException(null, stringArgument, intArgument, booleanArgument);
-        assertNull("Null expected.", authenticationRuntimeException.getCode());
-        assertNull("Null expected.", authenticationRuntimeException.getCause());
+        Assert.assertNull("Null expected.", authenticationRuntimeException.getCode());
+        Assert.assertNull("Null expected.", authenticationRuntimeException.getCause());
         try {
             authenticationRuntimeException.getMessage();
         } catch (Exception e) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -91,9 +92,9 @@ public class AuthenticationRuntimeExceptionTest extends Assert {
     public void authenticationRuntimeExceptionCodeNullArgumentParametersTest() {
         for (KapuaAuthenticationErrorCodes kapuaAuthenticationErrorCode : kapuaAuthenticationErrorCodes) {
             AuthenticationRuntimeException authenticationRuntimeException = new AuthenticationRuntimeException(kapuaAuthenticationErrorCode, null);
-            assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, authenticationRuntimeException.getCode());
-            assertEquals("Expected and actual values should be the same.", errorMessageWithoutArguments, authenticationRuntimeException.getMessage());
-            assertNull("Null expected.", authenticationRuntimeException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, authenticationRuntimeException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", errorMessageWithoutArguments, authenticationRuntimeException.getMessage());
+            Assert.assertNull("Null expected.", authenticationRuntimeException.getCause());
         }
     }
 
@@ -102,9 +103,9 @@ public class AuthenticationRuntimeExceptionTest extends Assert {
         for (KapuaAuthenticationErrorCodes kapuaAuthenticationErrorCode : kapuaAuthenticationErrorCodes) {
             for (Throwable throwable : throwables) {
                 AuthenticationRuntimeException authenticationRuntimeException = new AuthenticationRuntimeException(kapuaAuthenticationErrorCode, throwable, stringArgument, intArgument, booleanArgument);
-                assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, authenticationRuntimeException.getCode());
-                assertEquals("Expected and actual values should be the same.", errorMessageWithArguments, authenticationRuntimeException.getMessage());
-                assertEquals("Expected and actual values should be the same.", throwable, authenticationRuntimeException.getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, authenticationRuntimeException.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", errorMessageWithArguments, authenticationRuntimeException.getMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", throwable, authenticationRuntimeException.getCause());
             }
         }
     }
@@ -113,12 +114,12 @@ public class AuthenticationRuntimeExceptionTest extends Assert {
     public void authenticationRuntimeExceptionNullCodeCauseArgumentsParametersTest() {
         for (Throwable throwable : throwables) {
             AuthenticationRuntimeException authenticationRuntimeException = new AuthenticationRuntimeException(null, throwable, stringArgument, intArgument, booleanArgument);
-            assertNull("Null expected.", authenticationRuntimeException.getCode());
-            assertEquals("Expected and actual values should be the same.", throwable, authenticationRuntimeException.getCause());
+            Assert.assertNull("Null expected.", authenticationRuntimeException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", throwable, authenticationRuntimeException.getCause());
             try {
                 authenticationRuntimeException.getMessage();
             } catch (Exception e) {
-                assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), e.toString());
+                Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), e.toString());
             }
         }
     }
@@ -128,9 +129,9 @@ public class AuthenticationRuntimeExceptionTest extends Assert {
         for (KapuaAuthenticationErrorCodes kapuaAuthenticationErrorCode : kapuaAuthenticationErrorCodes) {
             for (Throwable throwable : throwables) {
                 AuthenticationRuntimeException authenticationRuntimeException = new AuthenticationRuntimeException(kapuaAuthenticationErrorCode, throwable, null);
-                assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, authenticationRuntimeException.getCode());
-                assertEquals("Expected and actual values should be the same.", errorMessageWithoutArguments, authenticationRuntimeException.getMessage());
-                assertEquals("Expected and actual values should be the same.", throwable, authenticationRuntimeException.getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, authenticationRuntimeException.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", errorMessageWithoutArguments, authenticationRuntimeException.getMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", throwable, authenticationRuntimeException.getCause());
             }
         }
     }

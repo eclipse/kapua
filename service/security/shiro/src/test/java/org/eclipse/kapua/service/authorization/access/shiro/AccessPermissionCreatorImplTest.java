@@ -20,30 +20,31 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class AccessPermissionCreatorImplTest extends Assert {
+public class AccessPermissionCreatorImplTest {
 
     @Test
     public void accessPermissionCreatorImplTest() {
         AccessPermissionCreatorImpl accessPermissionCreatorImpl = new AccessPermissionCreatorImpl(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionCreatorImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionCreatorImpl.getScopeId());
     }
 
     @Test
     public void accessPermissionCreatorImplNullTest() {
         AccessPermissionCreatorImpl accessPermissionCreatorImpl = new AccessPermissionCreatorImpl(null);
-        assertNull("Null expected.", accessPermissionCreatorImpl.getScopeId());
+        Assert.assertNull("Null expected.", accessPermissionCreatorImpl.getScopeId());
     }
 
     @Test
     public void setAndGetAccessInfoIdTest() {
         AccessPermissionCreatorImpl accessPermissionCreatorImpl = new AccessPermissionCreatorImpl(KapuaId.ONE);
 
-        assertNull("Null expected.", accessPermissionCreatorImpl.getAccessInfoId());
+        Assert.assertNull("Null expected.", accessPermissionCreatorImpl.getAccessInfoId());
         accessPermissionCreatorImpl.setAccessInfoId(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionCreatorImpl.getAccessInfoId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionCreatorImpl.getAccessInfoId());
         accessPermissionCreatorImpl.setAccessInfoId(null);
-        assertNull("Null expected.", accessPermissionCreatorImpl.getAccessInfoId());
+        Assert.assertNull("Null expected.", accessPermissionCreatorImpl.getAccessInfoId());
     }
 
     @Test
@@ -51,10 +52,10 @@ public class AccessPermissionCreatorImplTest extends Assert {
         AccessPermissionCreatorImpl accessPermissionCreatorImpl = new AccessPermissionCreatorImpl(KapuaId.ONE);
         Permission permission = Mockito.mock(Permission.class);
 
-        assertNull("Null expected.", accessPermissionCreatorImpl.getPermission());
+        Assert.assertNull("Null expected.", accessPermissionCreatorImpl.getPermission());
         accessPermissionCreatorImpl.setPermission(permission);
-        assertEquals("Expected and actual values should be the same.", permission, accessPermissionCreatorImpl.getPermission());
+        Assert.assertEquals("Expected and actual values should be the same.", permission, accessPermissionCreatorImpl.getPermission());
         accessPermissionCreatorImpl.setPermission(null);
-        assertNull("Null expected.", accessPermissionCreatorImpl.getPermission());
+        Assert.assertNull("Null expected.", accessPermissionCreatorImpl.getPermission());
     }
 }

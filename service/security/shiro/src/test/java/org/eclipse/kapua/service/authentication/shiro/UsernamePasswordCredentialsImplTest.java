@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class UsernamePasswordCredentialsImplTest extends Assert {
+public class UsernamePasswordCredentialsImplTest {
 
     String[] usernames, passwords, newUsernames, newPasswords, trustKeys, authenticationCodes;
     UsernamePasswordCredentialsImpl usernamePasswordCredentialsImpl;
@@ -49,11 +50,11 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
 
         UsernamePasswordCredentialsImpl second = new UsernamePasswordCredentialsImpl(first);
 
-        assertNotEquals("UsernamePasswordCredentialImpl", first, second);
-        assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
-        assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
-        assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
-        assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
+        Assert.assertNotEquals("UsernamePasswordCredentialImpl", first, second);
+        Assert.assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
+        Assert.assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
+        Assert.assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
+        Assert.assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
 
     }
 
@@ -65,11 +66,11 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
 
         UsernamePasswordCredentialsImpl second = new UsernamePasswordCredentialsImpl(first);
 
-        assertNotEquals("UsernamePasswordCredentialImpl", first, second);
-        assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
-        assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
-        assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
-        assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
+        Assert.assertNotEquals("UsernamePasswordCredentialImpl", first, second);
+        Assert.assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
+        Assert.assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
+        Assert.assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
+        Assert.assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
     }
 
     @Test
@@ -78,8 +79,8 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
 
         UsernamePasswordCredentialsImpl second = UsernamePasswordCredentialsImpl.parse(null);
 
-        assertNull("Parsed UsernamePasswordCredentialsImpl", second);
-        assertEquals("UsernamePasswordCredentialImpl", first, second);
+        Assert.assertNull("Parsed UsernamePasswordCredentialsImpl", second);
+        Assert.assertEquals("UsernamePasswordCredentialImpl", first, second);
     }
 
     @Test
@@ -90,11 +91,11 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
 
         UsernamePasswordCredentialsImpl second = UsernamePasswordCredentialsImpl.parse(first);
 
-        assertEquals("UsernamePasswordCredentialImpl", first, second);
-        assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
-        assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
-        assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
-        assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
+        Assert.assertEquals("UsernamePasswordCredentialImpl", first, second);
+        Assert.assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
+        Assert.assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
+        Assert.assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
+        Assert.assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
     }
 
     @Test
@@ -105,11 +106,11 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
 
         UsernamePasswordCredentialsImpl second = UsernamePasswordCredentialsImpl.parse(first);
 
-        assertNotEquals("UsernamePasswordCredentialImpl", first, second);
-        assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
-        assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
-        assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
-        assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
+        Assert.assertNotEquals("UsernamePasswordCredentialImpl", first, second);
+        Assert.assertEquals("UsernamePasswordCredential.username", first.getUsername(), second.getUsername());
+        Assert.assertEquals("UsernamePasswordCredential.password", first.getPassword(), second.getPassword());
+        Assert.assertEquals("UsernamePasswordCredential.trustKey", first.getTrustKey(), second.getTrustKey());
+        Assert.assertEquals("UsernamePasswordCredential.authenticationCode", first.getAuthenticationCode(), second.getAuthenticationCode());
     }
 
     @Test
@@ -117,12 +118,12 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
         for (String username : usernames) {
             for (String password : passwords) {
                 UsernamePasswordCredentialsImpl usernamePasswordCredentialsImpl = new UsernamePasswordCredentialsImpl(username, password);
-                assertEquals("Expected and actual values should be the same.", username, usernamePasswordCredentialsImpl.getUsername());
-                assertEquals("Expected and actual values should be the same.", username, usernamePasswordCredentialsImpl.getPrincipal());
-                assertEquals("Expected and actual values should be the same.", password, usernamePasswordCredentialsImpl.getPassword());
-                assertEquals("Expected and actual values should be the same.", password, usernamePasswordCredentialsImpl.getCredentials());
-                assertNull("Null expected.", usernamePasswordCredentialsImpl.getAuthenticationCode());
-                assertNull("Null expected.", usernamePasswordCredentialsImpl.getTrustKey());
+                Assert.assertEquals("Expected and actual values should be the same.", username, usernamePasswordCredentialsImpl.getUsername());
+                Assert.assertEquals("Expected and actual values should be the same.", username, usernamePasswordCredentialsImpl.getPrincipal());
+                Assert.assertEquals("Expected and actual values should be the same.", password, usernamePasswordCredentialsImpl.getPassword());
+                Assert.assertEquals("Expected and actual values should be the same.", password, usernamePasswordCredentialsImpl.getCredentials());
+                Assert.assertNull("Null expected.", usernamePasswordCredentialsImpl.getAuthenticationCode());
+                Assert.assertNull("Null expected.", usernamePasswordCredentialsImpl.getTrustKey());
             }
         }
     }
@@ -131,8 +132,8 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
     public void setAndGetUsernameAndPrincipalTest() {
         for (String newUsername : newUsernames) {
             usernamePasswordCredentialsImpl.setUsername(newUsername);
-            assertEquals("Expected and actual values should be the same.", newUsername, usernamePasswordCredentialsImpl.getUsername());
-            assertEquals("Expected and actual values should be the same.", newUsername, usernamePasswordCredentialsImpl.getPrincipal());
+            Assert.assertEquals("Expected and actual values should be the same.", newUsername, usernamePasswordCredentialsImpl.getUsername());
+            Assert.assertEquals("Expected and actual values should be the same.", newUsername, usernamePasswordCredentialsImpl.getPrincipal());
         }
     }
 
@@ -140,8 +141,8 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
     public void setAndGetPasswordAndCredentialsTest() {
         for (String newPassword : newPasswords) {
             usernamePasswordCredentialsImpl.setPassword(newPassword);
-            assertEquals("Expected and actual values should be the same.", newPassword, usernamePasswordCredentialsImpl.getPassword());
-            assertEquals("Expected and actual values should be the same.", newPassword, usernamePasswordCredentialsImpl.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", newPassword, usernamePasswordCredentialsImpl.getPassword());
+            Assert.assertEquals("Expected and actual values should be the same.", newPassword, usernamePasswordCredentialsImpl.getCredentials());
         }
     }
 
@@ -149,7 +150,7 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
     public void setAndGetAuthenticationCodeTest() {
         for (String authenticationCode : authenticationCodes) {
             usernamePasswordCredentialsImpl.setAuthenticationCode(authenticationCode);
-            assertEquals("Expected and actual values should be the same.", authenticationCode, usernamePasswordCredentialsImpl.getAuthenticationCode());
+            Assert.assertEquals("Expected and actual values should be the same.", authenticationCode, usernamePasswordCredentialsImpl.getAuthenticationCode());
         }
     }
 
@@ -157,7 +158,7 @@ public class UsernamePasswordCredentialsImplTest extends Assert {
     public void setAndGetTrustKeyTest() {
         for (String trustKey : trustKeys) {
             usernamePasswordCredentialsImpl.setTrustKey(trustKey);
-            assertEquals("Expected and actual values should be the same.", trustKey, usernamePasswordCredentialsImpl.getTrustKey());
+            Assert.assertEquals("Expected and actual values should be the same.", trustKey, usernamePasswordCredentialsImpl.getTrustKey());
         }
     }
 }

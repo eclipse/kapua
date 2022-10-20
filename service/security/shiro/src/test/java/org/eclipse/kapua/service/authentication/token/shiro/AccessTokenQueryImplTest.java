@@ -21,26 +21,27 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class AccessTokenQueryImplTest extends Assert {
+public class AccessTokenQueryImplTest {
 
     @Test
     public void accessTokenQueryImplTest() throws Exception {
         Constructor<AccessTokenQueryImpl> accessTokenQueryImpl = AccessTokenQueryImpl.class.getDeclaredConstructor();
         accessTokenQueryImpl.setAccessible(true);
         accessTokenQueryImpl.newInstance();
-        assertTrue("True expected.", Modifier.isPrivate(accessTokenQueryImpl.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isPrivate(accessTokenQueryImpl.getModifiers()));
     }
 
     @Test
     public void accessTokenQueryImplTestScopeIdParameterTest() {
         AccessTokenQueryImpl accessTokenQueryImpl = new AccessTokenQueryImpl(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenQueryImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenQueryImpl.getScopeId());
     }
 
     @Test
     public void accessTokenQueryImplTestNullScopeIdParameterTest() {
         AccessTokenQueryImpl accessTokenQueryImpl = new AccessTokenQueryImpl(null);
-        assertNull("Null expected.", accessTokenQueryImpl.getScopeId());
+        Assert.assertNull("Null expected.", accessTokenQueryImpl.getScopeId());
     }
 }

@@ -25,8 +25,9 @@ import org.mockito.Mockito;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Category(JUnitTests.class)
-public class LoginInfoImplTest extends Assert {
+public class LoginInfoImplTest {
 
     LoginInfoImpl loginInfoImpl;
     Set<RolePermission> rolePermissions;
@@ -42,18 +43,18 @@ public class LoginInfoImplTest extends Assert {
     @Test
     public void setAndGetAccessTokenTest() {
         AccessToken[] accessTokens = {null, Mockito.mock(AccessToken.class)};
-        assertNull("Null expected.", loginInfoImpl.getAccessToken());
+        Assert.assertNull("Null expected.", loginInfoImpl.getAccessToken());
         for (AccessToken accessToken : accessTokens) {
             loginInfoImpl.setAccessToken(accessToken);
-            assertEquals("Expected and actual values should be the same.", accessToken, loginInfoImpl.getAccessToken());
+            Assert.assertEquals("Expected and actual values should be the same.", accessToken, loginInfoImpl.getAccessToken());
         }
     }
 
     @Test
     public void setAndGetRolePermissionEmptySetTest() {
-        assertNull("Null expected.", loginInfoImpl.getRolePermission());
+        Assert.assertNull("Null expected.", loginInfoImpl.getRolePermission());
         loginInfoImpl.setRolePermission(rolePermissions);
-        assertEquals("Expected and actual values should be the same.", rolePermissions, loginInfoImpl.getRolePermission());
+        Assert.assertEquals("Expected and actual values should be the same.", rolePermissions, loginInfoImpl.getRolePermission());
     }
 
     @Test
@@ -61,23 +62,23 @@ public class LoginInfoImplTest extends Assert {
         rolePermissions.add(Mockito.mock(RolePermission.class));
         rolePermissions.add(Mockito.mock(RolePermission.class));
 
-        assertNull("Null expected.", loginInfoImpl.getRolePermission());
+        Assert.assertNull("Null expected.", loginInfoImpl.getRolePermission());
         loginInfoImpl.setRolePermission(rolePermissions);
-        assertEquals("Expected and actual values should be the same.", rolePermissions, loginInfoImpl.getRolePermission());
+        Assert.assertEquals("Expected and actual values should be the same.", rolePermissions, loginInfoImpl.getRolePermission());
     }
 
     @Test
     public void setAndGetRolePermissionNullTest() {
-        assertNull("Null expected.", loginInfoImpl.getRolePermission());
+        Assert.assertNull("Null expected.", loginInfoImpl.getRolePermission());
         loginInfoImpl.setRolePermission(null);
-        assertNull("Null expected.", loginInfoImpl.getRolePermission());
+        Assert.assertNull("Null expected.", loginInfoImpl.getRolePermission());
     }
 
     @Test
     public void setAndGetAccessPermissionEmptySetTest() {
-        assertNull("Null expected.", loginInfoImpl.getAccessPermission());
+        Assert.assertNull("Null expected.", loginInfoImpl.getAccessPermission());
         loginInfoImpl.setAccessPermission(accessPermissions);
-        assertEquals("Expected and actual values should be the same.", accessPermissions, loginInfoImpl.getAccessPermission());
+        Assert.assertEquals("Expected and actual values should be the same.", accessPermissions, loginInfoImpl.getAccessPermission());
     }
 
     @Test
@@ -85,15 +86,15 @@ public class LoginInfoImplTest extends Assert {
         accessPermissions.add(Mockito.mock(AccessPermission.class));
         accessPermissions.add(Mockito.mock(AccessPermission.class));
 
-        assertNull("Null expected.", loginInfoImpl.getAccessPermission());
+        Assert.assertNull("Null expected.", loginInfoImpl.getAccessPermission());
         loginInfoImpl.setAccessPermission(accessPermissions);
-        assertEquals("Expected and actual values should be the same.", accessPermissions, loginInfoImpl.getAccessPermission());
+        Assert.assertEquals("Expected and actual values should be the same.", accessPermissions, loginInfoImpl.getAccessPermission());
     }
 
     @Test
     public void setAndGetAccessPermissionNullTest() {
-        assertNull("Null expected.", loginInfoImpl.getAccessPermission());
+        Assert.assertNull("Null expected.", loginInfoImpl.getAccessPermission());
         loginInfoImpl.setAccessPermission(null);
-        assertNull("Null expected.", loginInfoImpl.getAccessPermission());
+        Assert.assertNull("Null expected.", loginInfoImpl.getAccessPermission());
     }
 }

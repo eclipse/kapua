@@ -25,8 +25,9 @@ import org.mockito.Mockito;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class LoginAuthenticationInfoTest extends Assert {
+public class LoginAuthenticationInfoTest {
 
     String[] realmNames;
     Account account;
@@ -47,28 +48,28 @@ public class LoginAuthenticationInfoTest extends Assert {
     public void loginAuthenticationInfoTest() {
         for (String realmName : realmNames) {
             LoginAuthenticationInfo loginAuthenticationInfo = new LoginAuthenticationInfo(realmName, account, user, credentials, credentialServiceConfig);
-            assertEquals("Expected and actual values should be the same.", user, loginAuthenticationInfo.getUser());
-            assertEquals("Expected and actual values should be the same.", account, loginAuthenticationInfo.getAccount());
-            assertEquals("Expected and actual values should be the same.", realmName, loginAuthenticationInfo.getRealmName());
-            assertFalse("False expected.", loginAuthenticationInfo.getPrincipals().isEmpty());
-            assertEquals("Expected and actual values should be the same.", credentials, loginAuthenticationInfo.getCredentials());
-            assertEquals("Expected and actual values should be the same.", credentialServiceConfig, loginAuthenticationInfo.getCredentialServiceConfig());
+            Assert.assertEquals("Expected and actual values should be the same.", user, loginAuthenticationInfo.getUser());
+            Assert.assertEquals("Expected and actual values should be the same.", account, loginAuthenticationInfo.getAccount());
+            Assert.assertEquals("Expected and actual values should be the same.", realmName, loginAuthenticationInfo.getRealmName());
+            Assert.assertFalse("False expected.", loginAuthenticationInfo.getPrincipals().isEmpty());
+            Assert.assertEquals("Expected and actual values should be the same.", credentials, loginAuthenticationInfo.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", credentialServiceConfig, loginAuthenticationInfo.getCredentialServiceConfig());
         }
     }
 
     @Test
     public void loginAuthenticationInfoNullNameTest() {
         LoginAuthenticationInfo loginAuthenticationInfo = new LoginAuthenticationInfo(null, account, user, credentials, credentialServiceConfig);
-        assertEquals("Expected and actual values should be the same.", user, loginAuthenticationInfo.getUser());
-        assertEquals("Expected and actual values should be the same.", account, loginAuthenticationInfo.getAccount());
-        assertNull("Null expected.", loginAuthenticationInfo.getRealmName());
-        assertEquals("Expected and actual values should be the same.", credentials, loginAuthenticationInfo.getCredentials());
-        assertEquals("Expected and actual values should be the same.", credentialServiceConfig, loginAuthenticationInfo.getCredentialServiceConfig());
+        Assert.assertEquals("Expected and actual values should be the same.", user, loginAuthenticationInfo.getUser());
+        Assert.assertEquals("Expected and actual values should be the same.", account, loginAuthenticationInfo.getAccount());
+        Assert.assertNull("Null expected.", loginAuthenticationInfo.getRealmName());
+        Assert.assertEquals("Expected and actual values should be the same.", credentials, loginAuthenticationInfo.getCredentials());
+        Assert.assertEquals("Expected and actual values should be the same.", credentialServiceConfig, loginAuthenticationInfo.getCredentialServiceConfig());
         try {
             loginAuthenticationInfo.getPrincipals();
-            fail("IllegalArgumentException expected.");
+            Assert.fail("IllegalArgumentException expected.");
         } catch (Exception e) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException("realmName argument cannot be null.").toString(), e.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException("realmName argument cannot be null.").toString(), e.toString());
         }
     }
 
@@ -76,12 +77,12 @@ public class LoginAuthenticationInfoTest extends Assert {
     public void loginAuthenticationInfoNullAccountTest() {
         for (String realmName : realmNames) {
             LoginAuthenticationInfo loginAuthenticationInfo = new LoginAuthenticationInfo(realmName, null, user, credentials, credentialServiceConfig);
-            assertEquals("Expected and actual values should be the same.", user, loginAuthenticationInfo.getUser());
-            assertEquals("Expected and actual values should be the same.", realmName, loginAuthenticationInfo.getRealmName());
-            assertNull("Null expected.", loginAuthenticationInfo.getAccount());
-            assertFalse("False expected.", loginAuthenticationInfo.getPrincipals().isEmpty());
-            assertEquals("Expected and actual values should be the same.", credentials, loginAuthenticationInfo.getCredentials());
-            assertEquals("Expected and actual values should be the same.", credentialServiceConfig, loginAuthenticationInfo.getCredentialServiceConfig());
+            Assert.assertEquals("Expected and actual values should be the same.", user, loginAuthenticationInfo.getUser());
+            Assert.assertEquals("Expected and actual values should be the same.", realmName, loginAuthenticationInfo.getRealmName());
+            Assert.assertNull("Null expected.", loginAuthenticationInfo.getAccount());
+            Assert.assertFalse("False expected.", loginAuthenticationInfo.getPrincipals().isEmpty());
+            Assert.assertEquals("Expected and actual values should be the same.", credentials, loginAuthenticationInfo.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", credentialServiceConfig, loginAuthenticationInfo.getCredentialServiceConfig());
         }
     }
 
@@ -89,16 +90,16 @@ public class LoginAuthenticationInfoTest extends Assert {
     public void loginAuthenticationInfoNullUserTest() {
         for (String realmName : realmNames) {
             LoginAuthenticationInfo loginAuthenticationInfo = new LoginAuthenticationInfo(realmName, account, null, credentials, credentialServiceConfig);
-            assertNull("Null expected.", loginAuthenticationInfo.getUser());
-            assertEquals("Expected and actual values should be the same.", account, loginAuthenticationInfo.getAccount());
-            assertEquals("Expected and actual values should be the same.", realmName, loginAuthenticationInfo.getRealmName());
-            assertEquals("Expected and actual values should be the same.", credentials, loginAuthenticationInfo.getCredentials());
-            assertEquals("Expected and actual values should be the same.", credentialServiceConfig, loginAuthenticationInfo.getCredentialServiceConfig());
+            Assert.assertNull("Null expected.", loginAuthenticationInfo.getUser());
+            Assert.assertEquals("Expected and actual values should be the same.", account, loginAuthenticationInfo.getAccount());
+            Assert.assertEquals("Expected and actual values should be the same.", realmName, loginAuthenticationInfo.getRealmName());
+            Assert.assertEquals("Expected and actual values should be the same.", credentials, loginAuthenticationInfo.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", credentialServiceConfig, loginAuthenticationInfo.getCredentialServiceConfig());
             try {
                 loginAuthenticationInfo.getPrincipals();
-                fail("IllegalArgumentException expected.");
+                Assert.fail("IllegalArgumentException expected.");
             } catch (Exception e) {
-                assertEquals("Expected and actual values should be the same.", new NullPointerException("principal argument cannot be null.").toString(), e.toString());
+                Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException("principal argument cannot be null.").toString(), e.toString());
             }
         }
     }
@@ -107,12 +108,12 @@ public class LoginAuthenticationInfoTest extends Assert {
     public void loginAuthenticationInfoNullCredentialsTest() {
         for (String realmName : realmNames) {
             LoginAuthenticationInfo loginAuthenticationInfo = new LoginAuthenticationInfo(realmName, account, user, null, credentialServiceConfig);
-            assertEquals("Expected and actual values should be the same.", user, loginAuthenticationInfo.getUser());
-            assertEquals("Expected and actual values should be the same.", account, loginAuthenticationInfo.getAccount());
-            assertEquals("Expected and actual values should be the same.", realmName, loginAuthenticationInfo.getRealmName());
-            assertFalse("False expected.", loginAuthenticationInfo.getPrincipals().isEmpty());
-            assertNull("Null expected.", loginAuthenticationInfo.getCredentials());
-            assertEquals("Expected and actual values should be the same.", credentialServiceConfig, loginAuthenticationInfo.getCredentialServiceConfig());
+            Assert.assertEquals("Expected and actual values should be the same.", user, loginAuthenticationInfo.getUser());
+            Assert.assertEquals("Expected and actual values should be the same.", account, loginAuthenticationInfo.getAccount());
+            Assert.assertEquals("Expected and actual values should be the same.", realmName, loginAuthenticationInfo.getRealmName());
+            Assert.assertFalse("False expected.", loginAuthenticationInfo.getPrincipals().isEmpty());
+            Assert.assertNull("Null expected.", loginAuthenticationInfo.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", credentialServiceConfig, loginAuthenticationInfo.getCredentialServiceConfig());
         }
     }
 
@@ -120,12 +121,12 @@ public class LoginAuthenticationInfoTest extends Assert {
     public void loginAuthenticationInfoNullCredentialServiceConfigTest() {
         for (String realmName : realmNames) {
             LoginAuthenticationInfo loginAuthenticationInfo = new LoginAuthenticationInfo(realmName, account, user, credentials, null);
-            assertEquals("Expected and actual values should be the same.", user, loginAuthenticationInfo.getUser());
-            assertEquals("Expected and actual values should be the same.", account, loginAuthenticationInfo.getAccount());
-            assertEquals("Expected and actual values should be the same.", realmName, loginAuthenticationInfo.getRealmName());
-            assertFalse("False expected.", loginAuthenticationInfo.getPrincipals().isEmpty());
-            assertEquals("Expected and actual values should be the same.", credentials, loginAuthenticationInfo.getCredentials());
-            assertNull("Null expected.", loginAuthenticationInfo.getCredentialServiceConfig());
+            Assert.assertEquals("Expected and actual values should be the same.", user, loginAuthenticationInfo.getUser());
+            Assert.assertEquals("Expected and actual values should be the same.", account, loginAuthenticationInfo.getAccount());
+            Assert.assertEquals("Expected and actual values should be the same.", realmName, loginAuthenticationInfo.getRealmName());
+            Assert.assertFalse("False expected.", loginAuthenticationInfo.getPrincipals().isEmpty());
+            Assert.assertEquals("Expected and actual values should be the same.", credentials, loginAuthenticationInfo.getCredentials());
+            Assert.assertNull("Null expected.", loginAuthenticationInfo.getCredentialServiceConfig());
         }
     }
 }

@@ -17,8 +17,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class CredentialServiceImplTest extends Assert {
+public class CredentialServiceImplTest {
 
     @Test
     public void credentialServiceImplMinimumPasswordLengthTest() {
@@ -26,7 +27,7 @@ public class CredentialServiceImplTest extends Assert {
         try {
             new CredentialServiceImpl();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -36,7 +37,7 @@ public class CredentialServiceImplTest extends Assert {
         try {
             new CredentialServiceImpl();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -46,7 +47,7 @@ public class CredentialServiceImplTest extends Assert {
         try {
             new CredentialServiceImpl();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -56,7 +57,7 @@ public class CredentialServiceImplTest extends Assert {
         try {
             new CredentialServiceImpl();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -66,7 +67,7 @@ public class CredentialServiceImplTest extends Assert {
         try {
             new CredentialServiceImpl();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -76,7 +77,7 @@ public class CredentialServiceImplTest extends Assert {
         try {
             new CredentialServiceImpl();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -86,7 +87,7 @@ public class CredentialServiceImplTest extends Assert {
         try {
             new CredentialServiceImpl();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 }

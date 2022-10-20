@@ -24,8 +24,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class AccessPermissionFactoryImplTest extends Assert {
+public class AccessPermissionFactoryImplTest {
 
     AccessPermissionFactoryImpl accessPermissionFactoryImpl;
     KapuaId[] scopeIds;
@@ -39,33 +40,33 @@ public class AccessPermissionFactoryImplTest extends Assert {
     @Test
     public void newEntityTest() {
         for (KapuaId scopeId : scopeIds) {
-            assertTrue("True expected.", accessPermissionFactoryImpl.newEntity(scopeId) instanceof AccessPermission);
+            Assert.assertTrue("True expected.", accessPermissionFactoryImpl.newEntity(scopeId) instanceof AccessPermission);
         }
     }
 
     @Test
     public void newCreatorTest() {
         for (KapuaId scopeId : scopeIds) {
-            assertTrue("True expected.", accessPermissionFactoryImpl.newCreator(scopeId) instanceof AccessPermissionCreator);
+            Assert.assertTrue("True expected.", accessPermissionFactoryImpl.newCreator(scopeId) instanceof AccessPermissionCreator);
         }
     }
 
     @Test
     public void newQueryTest() {
         for (KapuaId scopeId : scopeIds) {
-            assertTrue("True expected.", accessPermissionFactoryImpl.newQuery(scopeId) instanceof AccessPermissionQuery);
+            Assert.assertTrue("True expected.", accessPermissionFactoryImpl.newQuery(scopeId) instanceof AccessPermissionQuery);
         }
     }
 
     @Test
     public void newListResultTest() {
-        assertTrue("True expected.", accessPermissionFactoryImpl.newListResult() instanceof AccessPermissionListResult);
+        Assert.assertTrue("True expected.", accessPermissionFactoryImpl.newListResult() instanceof AccessPermissionListResult);
     }
 
     @Test
     public void cloneTest() {
         AccessPermission accessPermission = Mockito.mock(AccessPermission.class);
-        assertTrue("True expected.", accessPermissionFactoryImpl.clone(accessPermission) instanceof AccessPermission);
+        Assert.assertTrue("True expected.", accessPermissionFactoryImpl.clone(accessPermission) instanceof AccessPermission);
     }
 
     @Test(expected = NullPointerException.class)
