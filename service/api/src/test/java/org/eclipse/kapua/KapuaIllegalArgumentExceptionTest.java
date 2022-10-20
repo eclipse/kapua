@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaIllegalArgumentExceptionTest extends Assert {
+public class KapuaIllegalArgumentExceptionTest {
 
     String[] argumentName;
     String[] argumentValue;
@@ -61,11 +62,11 @@ public class KapuaIllegalArgumentExceptionTest extends Assert {
         for (String name : argumentName) {
             for (String value : argumentValue) {
                 KapuaIllegalArgumentException kapuaIllegalArgumentException = new KapuaIllegalArgumentException(name, value);
-                assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ILLEGAL_ARGUMENT, kapuaIllegalArgumentException.getCode());
-                assertEquals("Expected and actual values should be the same.", name, kapuaIllegalArgumentException.getArgumentName());
-                assertEquals("Expected and actual values should be the same.", value, kapuaIllegalArgumentException.getArgumentValue());
-                assertEquals("Expected and actual values should be the same.", "An illegal value was provided for the argument " + name + ": " + value + ".", kapuaIllegalArgumentException.getMessage());
-                assertNull("Null expected.", kapuaIllegalArgumentException.getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ILLEGAL_ARGUMENT, kapuaIllegalArgumentException.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", name, kapuaIllegalArgumentException.getArgumentName());
+                Assert.assertEquals("Expected and actual values should be the same.", value, kapuaIllegalArgumentException.getArgumentValue());
+                Assert.assertEquals("Expected and actual values should be the same.", "An illegal value was provided for the argument " + name + ": " + value + ".", kapuaIllegalArgumentException.getMessage());
+                Assert.assertNull("Null expected.", kapuaIllegalArgumentException.getCause());
             }
         }
     }
@@ -102,11 +103,11 @@ public class KapuaIllegalArgumentExceptionTest extends Assert {
 
                 for (int i = 0; i < kapuaErrorCodes.length; i++) {
                     KapuaIllegalArgumentException kapuaIllegalArgumentException = new KapuaIllegalArgumentException(kapuaErrorCodes[i], name, value);
-                    assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], kapuaErrorCodes[i], kapuaIllegalArgumentException.getCode());
-                    assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], name, kapuaIllegalArgumentException.getArgumentName());
-                    assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], value, kapuaIllegalArgumentException.getArgumentValue());
-                    assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], message[i], kapuaIllegalArgumentException.getMessage());
-                    assertNull("Null expected for KapuaErrorCode: " + kapuaErrorCodes[i], kapuaIllegalArgumentException.getCause());
+                    Assert.assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], kapuaErrorCodes[i], kapuaIllegalArgumentException.getCode());
+                    Assert.assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], name, kapuaIllegalArgumentException.getArgumentName());
+                    Assert.assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], value, kapuaIllegalArgumentException.getArgumentValue());
+                    Assert.assertEquals("Expected and actual values should be the same for Kapua ErrorCode: " + kapuaErrorCodes[i], message[i], kapuaIllegalArgumentException.getMessage());
+                    Assert.assertNull("Null expected for KapuaErrorCode: " + kapuaErrorCodes[i], kapuaIllegalArgumentException.getCause());
                 }
             }
         }
@@ -117,10 +118,10 @@ public class KapuaIllegalArgumentExceptionTest extends Assert {
         for (String name : argumentName) {
             for (String value : argumentValue) {
                 KapuaIllegalArgumentException kapuaIllegalArgumentException = new KapuaIllegalArgumentException(null, name, value);
-                assertNull("Null expected.", kapuaIllegalArgumentException.getCode());
-                assertEquals("Expected and actual values should be the same.", name, kapuaIllegalArgumentException.getArgumentName());
-                assertEquals("Expected and actual values should be the same.", value, kapuaIllegalArgumentException.getArgumentValue());
-                assertNull("Null expected.", kapuaIllegalArgumentException.getCause());
+                Assert.assertNull("Null expected.", kapuaIllegalArgumentException.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", name, kapuaIllegalArgumentException.getArgumentName());
+                Assert.assertEquals("Expected and actual values should be the same.", value, kapuaIllegalArgumentException.getArgumentValue());
+                Assert.assertNull("Null expected.", kapuaIllegalArgumentException.getCause());
                 kapuaIllegalArgumentException.getMessage();
             }
         }

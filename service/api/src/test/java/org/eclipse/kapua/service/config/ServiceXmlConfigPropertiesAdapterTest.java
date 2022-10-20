@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class ServiceXmlConfigPropertiesAdapterTest extends Assert {
+public class ServiceXmlConfigPropertiesAdapterTest {
 
     ServiceXmlConfigPropertiesAdapter serviceXmlConfigPropertiesAdapter;
     Map[] expectedProperties;
@@ -82,13 +83,13 @@ public class ServiceXmlConfigPropertiesAdapterTest extends Assert {
 
         for (Object value : values) {
             props.put("key", value);
-            assertThat("Instance of ServiceXmlConfigPropertiesAdapted expected.", serviceXmlConfigPropertiesAdapter.marshal(props), IsInstanceOf.instanceOf(ServiceXmlConfigPropertiesAdapted.class));
+        Assert.assertThat("Instance of ServiceXmlConfigPropertiesAdapted expected.", serviceXmlConfigPropertiesAdapter.marshal(props), IsInstanceOf.instanceOf(ServiceXmlConfigPropertiesAdapted.class));
         }
     }
 
     @Test
     public void marshalNullPropsTest() {
-        assertThat("Instance of ServiceXmlConfigPropertiesAdapted expected.", serviceXmlConfigPropertiesAdapter.marshal(null), IsInstanceOf.instanceOf(ServiceXmlConfigPropertiesAdapted.class));
+        Assert.assertThat("Instance of ServiceXmlConfigPropertiesAdapted expected.", serviceXmlConfigPropertiesAdapter.marshal(null), IsInstanceOf.instanceOf(ServiceXmlConfigPropertiesAdapted.class));
     }
 
     @Test
@@ -108,19 +109,19 @@ public class ServiceXmlConfigPropertiesAdapterTest extends Assert {
             ServiceXmlConfigPropertyAdapted serviceXmlConfigPropertyAdapted2 = new ServiceXmlConfigPropertyAdapted(name, configPropertyType[i], stringValue);
             ServiceXmlConfigPropertyAdapted[] properties1 = {serviceXmlConfigPropertyAdapted1, serviceXmlConfigPropertyAdapted2};
 
-            assertThat("Instance of Map expected.", serviceXmlConfigPropertiesAdapter.unmarshal(serviceXmlConfigPropertiesAdapted), IsInstanceOf.instanceOf(Map.class));
+        Assert.assertThat("Instance of Map expected.", serviceXmlConfigPropertiesAdapter.unmarshal(serviceXmlConfigPropertiesAdapted), IsInstanceOf.instanceOf(Map.class));
 
             serviceXmlConfigPropertiesAdapted.setProperties(properties1);
 
-            assertThat("Instance of Map expected.", serviceXmlConfigPropertiesAdapter.unmarshal(serviceXmlConfigPropertiesAdapted), IsInstanceOf.instanceOf(Map.class));
-            assertEquals("Expected and actual values should be the same.", expectedProperties[i], serviceXmlConfigPropertiesAdapter.unmarshal(serviceXmlConfigPropertiesAdapted));
+        Assert.assertThat("Instance of Map expected.", serviceXmlConfigPropertiesAdapter.unmarshal(serviceXmlConfigPropertiesAdapted), IsInstanceOf.instanceOf(Map.class));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedProperties[i], serviceXmlConfigPropertiesAdapter.unmarshal(serviceXmlConfigPropertiesAdapted));
 
             serviceXmlConfigPropertyAdapted1.setArray(true);
             serviceXmlConfigPropertyAdapted2.setArray(true);
             ServiceXmlConfigPropertyAdapted[] properties2 = {serviceXmlConfigPropertyAdapted1, serviceXmlConfigPropertyAdapted2};
             serviceXmlConfigPropertiesAdapted.setProperties(properties2);
 
-            assertThat("Instance of Map expected.", serviceXmlConfigPropertiesAdapter.unmarshal(serviceXmlConfigPropertiesAdapted), IsInstanceOf.instanceOf(Map.class));
+        Assert.assertThat("Instance of Map expected.", serviceXmlConfigPropertiesAdapter.unmarshal(serviceXmlConfigPropertiesAdapted), IsInstanceOf.instanceOf(Map.class));
         }
     }
 

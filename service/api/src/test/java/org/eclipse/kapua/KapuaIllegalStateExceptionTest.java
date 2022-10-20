@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaIllegalStateExceptionTest extends Assert {
+public class KapuaIllegalStateExceptionTest {
 
     String[] message = {"Message", null};
     Throwable[] throwables = {new Throwable(), null};
@@ -34,9 +35,9 @@ public class KapuaIllegalStateExceptionTest extends Assert {
     public void kapuaIllegalStateExceptionStringParameterTest() {
         for (String msg : message) {
             KapuaIllegalStateException kapuaIllegalStateExceptionTest = new KapuaIllegalStateException(msg);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ILLEGAL_STATE, kapuaIllegalStateExceptionTest.getCode());
-            assertEquals("Expected and actual values should be the same.", "The application is in a illegal state: " + msg + ".", kapuaIllegalStateExceptionTest.getMessage());
-            assertNull("Null expected.", kapuaIllegalStateExceptionTest.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ILLEGAL_STATE, kapuaIllegalStateExceptionTest.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "The application is in a illegal state: " + msg + ".", kapuaIllegalStateExceptionTest.getMessage());
+            Assert.assertNull("Null expected.", kapuaIllegalStateExceptionTest.getCause());
         }
     }
 
@@ -45,9 +46,9 @@ public class KapuaIllegalStateExceptionTest extends Assert {
         for (String msg : message) {
             for (Throwable throwable : throwables) {
                 KapuaIllegalStateException kapuaIllegalStateExceptionTest = new KapuaIllegalStateException(msg, throwable);
-                assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ILLEGAL_STATE, kapuaIllegalStateExceptionTest.getCode());
-                assertEquals("Expected and actual values should be the same.", "The application is in a illegal state: " + msg + ".", kapuaIllegalStateExceptionTest.getMessage());
-                assertEquals("Expected and actual values should be the same.", throwable, kapuaIllegalStateExceptionTest.getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ILLEGAL_STATE, kapuaIllegalStateExceptionTest.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", "The application is in a illegal state: " + msg + ".", kapuaIllegalStateExceptionTest.getMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaIllegalStateExceptionTest.getCause());
             }
         }
     }

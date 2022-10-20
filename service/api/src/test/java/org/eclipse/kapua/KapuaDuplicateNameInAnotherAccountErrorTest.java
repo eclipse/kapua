@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaDuplicateNameInAnotherAccountErrorTest extends Assert {
+public class KapuaDuplicateNameInAnotherAccountErrorTest {
 
     String[] duplicateNames;
 
@@ -32,9 +33,9 @@ public class KapuaDuplicateNameInAnotherAccountErrorTest extends Assert {
     public void kapuaDuplicateNameInAnotherAccountErrorTest() {
         for (String duplicateName : duplicateNames) {
             KapuaDuplicateNameInAnotherAccountError kapuaDuplicateNameInAnotherAccountError = new KapuaDuplicateNameInAnotherAccountError(duplicateName);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, kapuaDuplicateNameInAnotherAccountError.getCode());
-            assertNull("Null expected", kapuaDuplicateNameInAnotherAccountError.getCause());
-            assertEquals("Expected and actual values should be the same.", "An entity with the same name " + duplicateName, kapuaDuplicateNameInAnotherAccountError.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, kapuaDuplicateNameInAnotherAccountError.getCode());
+            Assert.assertNull("Null expected", kapuaDuplicateNameInAnotherAccountError.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", "An entity with the same name " + duplicateName, kapuaDuplicateNameInAnotherAccountError.getMessage());
         }
     }
 

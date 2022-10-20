@@ -21,8 +21,9 @@ import org.junit.experimental.categories.Category;
 
 import javax.ws.rs.core.Response;
 
+
 @Category(JUnitTests.class)
-public class IllegalNullArgumentExceptionInfoTest extends Assert {
+public class IllegalNullArgumentExceptionInfoTest {
 
     Response.Status[] statusList;
     int[] expectedStatusCodes;
@@ -47,9 +48,9 @@ public class IllegalNullArgumentExceptionInfoTest extends Assert {
     public void illegalNullArgumentExceptionInfoWithoutParametersTest() {
         IllegalNullArgumentExceptionInfo illegalNullArgumentExceptionInfo = new IllegalNullArgumentExceptionInfo();
 
-        assertNull("Null expected.", illegalNullArgumentExceptionInfo.getKapuaErrorCode());
-        assertEquals("Expected and actual values should be the same.", 0, illegalNullArgumentExceptionInfo.getHttpErrorCode());
-        assertNull("Null expected.", illegalNullArgumentExceptionInfo.getArgumenName());
+        Assert.assertNull("Null expected.", illegalNullArgumentExceptionInfo.getKapuaErrorCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, illegalNullArgumentExceptionInfo.getHttpErrorCode());
+        Assert.assertNull("Null expected.", illegalNullArgumentExceptionInfo.getArgumenName());
     }
 
     @Test
@@ -57,9 +58,9 @@ public class IllegalNullArgumentExceptionInfoTest extends Assert {
         for (int i = 0; i < statusList.length; i++) {
             IllegalNullArgumentExceptionInfo illegalNullArgumentExceptionInfo = new IllegalNullArgumentExceptionInfo(statusList[i], kapuaIllegalNullArgumentException);
 
-            assertEquals("Expected and actual values should be the same.", "ILLEGAL_NULL_ARGUMENT", illegalNullArgumentExceptionInfo.getKapuaErrorCode());
-            assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], illegalNullArgumentExceptionInfo.getHttpErrorCode());
-            assertEquals("Expected and actual values should be the same.", "name", illegalNullArgumentExceptionInfo.getArgumenName());
+            Assert.assertEquals("Expected and actual values should be the same.", "ILLEGAL_NULL_ARGUMENT", illegalNullArgumentExceptionInfo.getKapuaErrorCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], illegalNullArgumentExceptionInfo.getHttpErrorCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "name", illegalNullArgumentExceptionInfo.getArgumenName());
         }
     }
 

@@ -19,14 +19,15 @@ import org.junit.experimental.categories.Category;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class XmlAdaptedTypeValueObjectTest extends Assert {
+public class XmlAdaptedTypeValueObjectTest {
 
     @Test
     public void xmlAdaptedNameTypeValueObjectTest() {
         XmlAdaptedNameTypeValueObject xmlAdaptedNameTypeValueObject = new XmlAdaptedNameTypeValueObject();
-        assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValueType());
-        assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValue());
+        Assert.assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValueType());
+        Assert.assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValue());
     }
 
     @Test
@@ -34,11 +35,11 @@ public class XmlAdaptedTypeValueObjectTest extends Assert {
         XmlAdaptedNameTypeValueObject xmlAdaptedNameTypeValueObject = new XmlAdaptedNameTypeValueObject();
         Class[] classes = {String.class, Integer.class, Long.class, Float.class, Double.class, Boolean.class, Date.class, Byte.class};
 
-        assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValueType());
+        Assert.assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValueType());
 
         for (Class clazz : classes) {
             xmlAdaptedNameTypeValueObject.setValueType(clazz);
-            assertEquals("Expected and actual values should be the same.", clazz, xmlAdaptedNameTypeValueObject.getValueType());
+            Assert.assertEquals("Expected and actual values should be the same.", clazz, xmlAdaptedNameTypeValueObject.getValueType());
         }
     }
 
@@ -47,11 +48,11 @@ public class XmlAdaptedTypeValueObjectTest extends Assert {
         XmlAdaptedNameTypeValueObject xmlAdaptedNameTypeValueObject = new XmlAdaptedNameTypeValueObject();
         String[] values = {"Name", null};
 
-        assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValue());
+        Assert.assertNull("Null expected.", xmlAdaptedNameTypeValueObject.getValue());
 
         for (String value : values) {
             xmlAdaptedNameTypeValueObject.setValue(value);
-            assertEquals("Expected and actual values should be the same.", value, xmlAdaptedNameTypeValueObject.getValue());
+            Assert.assertEquals("Expected and actual values should be the same.", value, xmlAdaptedNameTypeValueObject.getValue());
         }
     }
 }

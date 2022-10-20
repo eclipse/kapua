@@ -17,8 +17,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class StorableEntityIdTest extends Assert {
+public class StorableEntityIdTest {
 
     @Test
     public void storableEntityIdWithParameterTest() {
@@ -26,8 +27,8 @@ public class StorableEntityIdTest extends Assert {
 
         for (String id : ids) {
             StorableEntityId storableEntityId = new StorableEntityId(id);
-            assertEquals("Expected and actual values should be the same.", id, storableEntityId.getId());
-            assertEquals("Expected and actual values should be the same.", id, storableEntityId.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", id, storableEntityId.getId());
+            Assert.assertEquals("Expected and actual values should be the same.", id, storableEntityId.toString());
         }
     }
 
@@ -58,11 +59,11 @@ public class StorableEntityIdTest extends Assert {
             storableEntityId1.setId(id);
             storableEntityId2.setId(id);
 
-            assertEquals("Expected and actual values should be the same.", id, storableEntityId1.getId());
-            assertEquals("Expected and actual values should be the same.", id, storableEntityId1.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", id, storableEntityId1.getId());
+            Assert.assertEquals("Expected and actual values should be the same.", id, storableEntityId1.toString());
 
-            assertEquals("Expected and actual values should be the same.", id, storableEntityId2.getId());
-            assertEquals("Expected and actual values should be the same.", id, storableEntityId2.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", id, storableEntityId2.getId());
+            Assert.assertEquals("Expected and actual values should be the same.", id, storableEntityId2.toString());
         }
     }
 } 

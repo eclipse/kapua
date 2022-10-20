@@ -20,19 +20,20 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class KapuaApiCoreSettingTest extends Assert {
+public class KapuaApiCoreSettingTest {
 
     @Test
     public void kapuaApiCoreSettingTest() throws Exception {
         Constructor<KapuaApiCoreSetting> kapuaApiCoreSetting = KapuaApiCoreSetting.class.getDeclaredConstructor();
         kapuaApiCoreSetting.setAccessible(true);
         kapuaApiCoreSetting.newInstance();
-        assertTrue("True expected.", Modifier.isPrivate(kapuaApiCoreSetting.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isPrivate(kapuaApiCoreSetting.getModifiers()));
     }
 
     @Test
     public void getInstanceTest() {
-        assertTrue("True expected.", KapuaApiCoreSetting.getInstance() instanceof KapuaApiCoreSetting);
+        Assert.assertTrue("True expected.", KapuaApiCoreSetting.getInstance() instanceof KapuaApiCoreSetting);
     }
 }

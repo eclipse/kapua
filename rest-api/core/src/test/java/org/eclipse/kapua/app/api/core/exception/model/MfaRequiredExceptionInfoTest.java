@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 
 import javax.ws.rs.core.Response;
 
+
 @Category(JUnitTests.class)
-public class MfaRequiredExceptionInfoTest extends Assert {
+public class MfaRequiredExceptionInfoTest {
 
     Response.Status[] statusList;
     int[] expectedStatusCodes;
@@ -60,9 +61,9 @@ public class MfaRequiredExceptionInfoTest extends Assert {
     public void mfaRequiredExceptionInfoWithoutParametersTest() {
         MfaRequiredExceptionInfo mfaRequiredExceptionInfo = new MfaRequiredExceptionInfo();
 
-        assertNull("Null expected.", mfaRequiredExceptionInfo.getKapuaErrorCode());
-        assertEquals("Expected and actual values should be the same.", 0, mfaRequiredExceptionInfo.getHttpErrorCode());
-        assertNull("Null expected.", mfaRequiredExceptionInfo.getMessage());
+        Assert.assertNull("Null expected.", mfaRequiredExceptionInfo.getKapuaErrorCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, mfaRequiredExceptionInfo.getHttpErrorCode());
+        Assert.assertNull("Null expected.", mfaRequiredExceptionInfo.getMessage());
     }
 
     @Test
@@ -72,9 +73,9 @@ public class MfaRequiredExceptionInfoTest extends Assert {
                 kapuaException = new KapuaAuthenticationException(errorCodes[j]);
 
                 MfaRequiredExceptionInfo mfaRequiredExceptionInfo = new MfaRequiredExceptionInfo(statusList[i], kapuaException);
-                assertEquals("Expected and actual values should be the same.", expectedKapuaErrorCode[j], mfaRequiredExceptionInfo.getKapuaErrorCode());
-                assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], mfaRequiredExceptionInfo.getHttpErrorCode());
-                assertEquals("Expected and actual values should be the same.", "Error: ", mfaRequiredExceptionInfo.getMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedKapuaErrorCode[j], mfaRequiredExceptionInfo.getKapuaErrorCode());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], mfaRequiredExceptionInfo.getHttpErrorCode());
+                Assert.assertEquals("Expected and actual values should be the same.", "Error: ", mfaRequiredExceptionInfo.getMessage());
             }
         }
     }

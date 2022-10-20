@@ -26,8 +26,9 @@ import org.mockito.Mockito;
 import java.util.LinkedList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class JsonMessageQueryTest extends Assert {
+public class JsonMessageQueryTest {
 
     KapuaId kapuaId;
     JsonMessageQuery jsonMessageQuery1, jsonMessageQuery2;
@@ -46,7 +47,7 @@ public class JsonMessageQueryTest extends Assert {
         JsonMessageQuery jsonMessageQuery = new JsonMessageQuery();
 
         Assert.assertNull("Null expected.", jsonMessageQuery.getScopeId());
-        assertEquals("Expected and actual values should be the same.", StorableFetchStyle.SOURCE_FULL, jsonMessageQuery.getFetchStyle());
+        Assert.assertEquals("Expected and actual values should be the same.", StorableFetchStyle.SOURCE_FULL, jsonMessageQuery.getFetchStyle());
         Assert.assertNotNull("NotNull expected.", jsonMessageQuery.getFetchAttributes());
         Assert.assertFalse("False expected.", jsonMessageQuery.isAskTotalCount());
     }
@@ -55,8 +56,8 @@ public class JsonMessageQueryTest extends Assert {
     public void jsonMessageQueryWithParameterTest() {
         JsonMessageQuery jsonMessageQuery = new JsonMessageQuery(kapuaId);
 
-        assertEquals("Expected and actual values should be the same.", kapuaId, jsonMessageQuery.getScopeId());
-        assertEquals("Expected and actual values should be the same.", StorableFetchStyle.SOURCE_FULL, jsonMessageQuery.getFetchStyle());
+        Assert.assertEquals("Expected and actual values should be the same.", kapuaId, jsonMessageQuery.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", StorableFetchStyle.SOURCE_FULL, jsonMessageQuery.getFetchStyle());
         Assert.assertNotNull("NotNull expected.", jsonMessageQuery.getFetchAttributes());
         Assert.assertFalse("False expected.", jsonMessageQuery.isAskTotalCount());
     }
@@ -66,7 +67,7 @@ public class JsonMessageQueryTest extends Assert {
         JsonMessageQuery jsonMessageQuery = new JsonMessageQuery(null);
 
         Assert.assertNull("Null expected.", jsonMessageQuery.getScopeId());
-        assertEquals("Expected and actual values should be the same.", StorableFetchStyle.SOURCE_FULL, jsonMessageQuery.getFetchStyle());
+        Assert.assertEquals("Expected and actual values should be the same.", StorableFetchStyle.SOURCE_FULL, jsonMessageQuery.getFetchStyle());
         Assert.assertNotNull("NotNull expected.", jsonMessageQuery.getFetchAttributes());
         Assert.assertFalse("False expected.", jsonMessageQuery.isAskTotalCount());
     }
@@ -76,8 +77,8 @@ public class JsonMessageQueryTest extends Assert {
         jsonMessageQuery1.setScopeId(KapuaId.ANY);
         jsonMessageQuery2.setScopeId(KapuaId.ANY);
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, jsonMessageQuery1.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, jsonMessageQuery2.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, jsonMessageQuery1.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, jsonMessageQuery2.getScopeId());
 
         jsonMessageQuery1.setScopeId(null);
         jsonMessageQuery2.setScopeId(null);
@@ -93,8 +94,8 @@ public class JsonMessageQueryTest extends Assert {
         jsonMessageQuery1.setPredicate(storablePredicate);
         jsonMessageQuery2.setPredicate(storablePredicate);
 
-        assertEquals("Expected and actual values should be the same.", storablePredicate, jsonMessageQuery1.getPredicate());
-        assertEquals("Expected and actual values should be the same.", storablePredicate, jsonMessageQuery2.getPredicate());
+        Assert.assertEquals("Expected and actual values should be the same.", storablePredicate, jsonMessageQuery1.getPredicate());
+        Assert.assertEquals("Expected and actual values should be the same.", storablePredicate, jsonMessageQuery2.getPredicate());
 
         jsonMessageQuery1.setPredicate(null);
         jsonMessageQuery2.setPredicate(null);
@@ -111,8 +112,8 @@ public class JsonMessageQueryTest extends Assert {
             jsonMessageQuery1.setOffset(offset);
             jsonMessageQuery2.setOffset(offset);
 
-            assertEquals("Expected and actual values should be the same.", offset, jsonMessageQuery1.getOffset());
-            assertEquals("Expected and actual values should be the same.", offset, jsonMessageQuery2.getOffset());
+            Assert.assertEquals("Expected and actual values should be the same.", offset, jsonMessageQuery1.getOffset());
+            Assert.assertEquals("Expected and actual values should be the same.", offset, jsonMessageQuery2.getOffset());
         }
 
         jsonMessageQuery1.setOffset(null);
@@ -130,8 +131,8 @@ public class JsonMessageQueryTest extends Assert {
             jsonMessageQuery1.setLimit(limit);
             jsonMessageQuery2.setLimit(limit);
 
-            assertEquals("Expected and actual values should be the same.", limit, jsonMessageQuery1.getLimit());
-            assertEquals("Expected and actual values should be the same.", limit, jsonMessageQuery2.getLimit());
+            Assert.assertEquals("Expected and actual values should be the same.", limit, jsonMessageQuery1.getLimit());
+            Assert.assertEquals("Expected and actual values should be the same.", limit, jsonMessageQuery2.getLimit());
         }
 
         jsonMessageQuery1.setLimit(null);
@@ -149,8 +150,8 @@ public class JsonMessageQueryTest extends Assert {
             jsonMessageQuery1.setAskTotalCount(askTotalCount);
             jsonMessageQuery2.setAskTotalCount(askTotalCount);
 
-            assertEquals("Expected and actual values should be the same.", askTotalCount, jsonMessageQuery1.isAskTotalCount());
-            assertEquals("Expected and actual values should be the same.", askTotalCount, jsonMessageQuery2.isAskTotalCount());
+            Assert.assertEquals("Expected and actual values should be the same.", askTotalCount, jsonMessageQuery1.isAskTotalCount());
+            Assert.assertEquals("Expected and actual values should be the same.", askTotalCount, jsonMessageQuery2.isAskTotalCount());
         }
     }
 
@@ -160,8 +161,8 @@ public class JsonMessageQueryTest extends Assert {
             jsonMessageQuery1.setFetchStyle(fetchStyle);
             jsonMessageQuery2.setFetchStyle(fetchStyle);
 
-            assertEquals("Expected and actual values should be the same.", fetchStyle, jsonMessageQuery1.getFetchStyle());
-            assertEquals("Expected and actual values should be the same.", fetchStyle, jsonMessageQuery2.getFetchStyle());
+            Assert.assertEquals("Expected and actual values should be the same.", fetchStyle, jsonMessageQuery1.getFetchStyle());
+            Assert.assertEquals("Expected and actual values should be the same.", fetchStyle, jsonMessageQuery2.getFetchStyle());
         }
         jsonMessageQuery1.setFetchStyle(null);
         jsonMessageQuery2.setFetchStyle(null);
@@ -187,8 +188,8 @@ public class JsonMessageQueryTest extends Assert {
         jsonMessageQuery1.setFetchAttributes(fetchAttributeNames);
         jsonMessageQuery2.setFetchAttributes(fetchAttributeNames);
 
-        assertEquals("Expected and actual values should be the same.", expectedValue, jsonMessageQuery1.getFetchAttributes());
-        assertEquals("Expected and actual values should be the same.", expectedValue, jsonMessageQuery2.getFetchAttributes());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedValue, jsonMessageQuery1.getFetchAttributes());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedValue, jsonMessageQuery2.getFetchAttributes());
 
         jsonMessageQuery1.addFetchAttributes(attributeName3);
         jsonMessageQuery2.addFetchAttributes(attributeName3);
@@ -196,8 +197,8 @@ public class JsonMessageQueryTest extends Assert {
         expectedValue.add(attributeName3);
         expectedValue.add(attributeName3);
 
-        assertEquals("Expected and actual values should be the same.", expectedValue, jsonMessageQuery1.getFetchAttributes());
-        assertEquals("Expected and actual values should be the same.", expectedValue, jsonMessageQuery2.getFetchAttributes());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedValue, jsonMessageQuery1.getFetchAttributes());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedValue, jsonMessageQuery2.getFetchAttributes());
 
         jsonMessageQuery1.setFetchAttributes(null);
         jsonMessageQuery2.setFetchAttributes(null);
@@ -217,8 +218,8 @@ public class JsonMessageQueryTest extends Assert {
         jsonMessageQuery1.setSortFields(sortFields);
         jsonMessageQuery2.setSortFields(sortFields);
 
-        assertEquals("Expected and actual values should be the same.", sortFields, jsonMessageQuery1.getSortFields());
-        assertEquals("Expected and actual values should be the same.", sortFields, jsonMessageQuery2.getSortFields());
+        Assert.assertEquals("Expected and actual values should be the same.", sortFields, jsonMessageQuery1.getSortFields());
+        Assert.assertEquals("Expected and actual values should be the same.", sortFields, jsonMessageQuery2.getSortFields());
 
         jsonMessageQuery1.setSortFields(null);
         jsonMessageQuery2.setSortFields(null);
@@ -279,7 +280,7 @@ public class JsonMessageQueryTest extends Assert {
 
     @Test
     public void getFieldsTest() {
-        assertEquals("Expected and actual values should be the same.", 6, jsonMessageQuery1.getFields().length);
-        assertEquals("Expected and actual values should be the same.", 6, jsonMessageQuery2.getFields().length);
+        Assert.assertEquals("Expected and actual values should be the same.", 6, jsonMessageQuery1.getFields().length);
+        Assert.assertEquals("Expected and actual values should be the same.", 6, jsonMessageQuery2.getFields().length);
     }
 } 
