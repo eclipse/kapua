@@ -31,8 +31,8 @@ Attention: if the kapua containers are already running in your environment, for 
 
 3. Build executing both unit tests and integration tests. The first 2 commands execute the integration tests, the last execute a complete build with unit tests:
 ```
-    mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@env_none”
-    mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags=“@env_docker_base”
+    mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@env_none"
+    mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@env_docker_base"
     mvn clean install -Dcommons.settings.hotswap=true -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true
 ```
 
