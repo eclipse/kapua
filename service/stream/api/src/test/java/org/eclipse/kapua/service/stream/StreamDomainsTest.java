@@ -21,13 +21,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class StreamDomainsTest extends Assert {
+public class StreamDomainsTest {
 
     @Test
     public void streamDomainsTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<StreamDomains> streamDomains = StreamDomains.class.getDeclaredConstructor();
-        assertTrue(Modifier.isPrivate(streamDomains.getModifiers()));
+        Assert.assertTrue(Modifier.isPrivate(streamDomains.getModifiers()));
         streamDomains.setAccessible(true);
         streamDomains.newInstance();
     }

@@ -27,8 +27,9 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class RoleFactoryImplTest extends Assert {
+public class RoleFactoryImplTest {
 
     RoleFactoryImpl roleFactoryImpl;
     KapuaId scopeId;
@@ -56,64 +57,64 @@ public class RoleFactoryImplTest extends Assert {
 
     @Test
     public void newEntityTest() {
-        assertTrue("True expected.", roleFactoryImpl.newEntity(scopeId) instanceof Role);
-        assertEquals("Expected and actual values should be the same.", scopeId, roleFactoryImpl.newEntity(scopeId).getScopeId());
+        Assert.assertTrue("True expected.", roleFactoryImpl.newEntity(scopeId) instanceof Role);
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, roleFactoryImpl.newEntity(scopeId).getScopeId());
     }
 
     @Test
     public void newEntityNullTest() {
-        assertTrue("True expected.", roleFactoryImpl.newEntity(null) instanceof Role);
-        assertNull("Null expected.", roleFactoryImpl.newEntity(null).getScopeId());
+        Assert.assertTrue("True expected.", roleFactoryImpl.newEntity(null) instanceof Role);
+        Assert.assertNull("Null expected.", roleFactoryImpl.newEntity(null).getScopeId());
     }
 
     @Test
     public void newCreatorTest() {
-        assertTrue("True expected.", roleFactoryImpl.newCreator(scopeId) instanceof RoleCreator);
-        assertEquals("Expected and actual values should be the same.", scopeId, roleFactoryImpl.newCreator(scopeId).getScopeId());
+        Assert.assertTrue("True expected.", roleFactoryImpl.newCreator(scopeId) instanceof RoleCreator);
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, roleFactoryImpl.newCreator(scopeId).getScopeId());
     }
 
     @Test
     public void newCreatorNullTest() {
-        assertTrue("True expected.", roleFactoryImpl.newCreator(null) instanceof RoleCreator);
-        assertNull("Null expected.", roleFactoryImpl.newCreator(null).getScopeId());
+        Assert.assertTrue("True expected.", roleFactoryImpl.newCreator(null) instanceof RoleCreator);
+        Assert.assertNull("Null expected.", roleFactoryImpl.newCreator(null).getScopeId());
     }
 
     @Test
     public void newQueryTest() {
-        assertTrue("True expected.", roleFactoryImpl.newQuery(scopeId) instanceof RoleQuery);
-        assertEquals("Expected and actual values should be the same.", scopeId, roleFactoryImpl.newQuery(scopeId).getScopeId());
+        Assert.assertTrue("True expected.", roleFactoryImpl.newQuery(scopeId) instanceof RoleQuery);
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, roleFactoryImpl.newQuery(scopeId).getScopeId());
     }
 
     @Test
     public void newQueryNullTest() {
-        assertTrue("True expected.", roleFactoryImpl.newQuery(null) instanceof RoleQuery);
-        assertNull("Null expected.", roleFactoryImpl.newQuery(null).getScopeId());
+        Assert.assertTrue("True expected.", roleFactoryImpl.newQuery(null) instanceof RoleQuery);
+        Assert.assertNull("Null expected.", roleFactoryImpl.newQuery(null).getScopeId());
     }
 
     @Test
     public void newListResultTest() {
-        assertTrue("True expected.", roleFactoryImpl.newListResult() instanceof RoleListResult);
-        assertTrue("True expected.", roleFactoryImpl.newListResult().isEmpty());
+        Assert.assertTrue("True expected.", roleFactoryImpl.newListResult() instanceof RoleListResult);
+        Assert.assertTrue("True expected.", roleFactoryImpl.newListResult().isEmpty());
     }
 
     @Test
     public void newRolePermissionTest() {
-        assertTrue("True expected.", roleFactoryImpl.newRolePermission() instanceof RolePermission);
+        Assert.assertTrue("True expected.", roleFactoryImpl.newRolePermission() instanceof RolePermission);
     }
 
     @Test
     public void cloneTest() {
         Role resultRole = roleFactoryImpl.clone(role);
 
-        assertEquals("Expected and actual values should be the same.", "role name", resultRole.getName());
-        assertEquals("Expected and actual values should be the same.", "role description", resultRole.getDescription());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultRole.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultRole.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultRole.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, resultRole.getCreatedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultRole.getModifiedBy());
-        assertEquals("Expected and actual values should be the same.", modifiedOn, resultRole.getModifiedOn());
-        assertEquals("Expected and actual values should be the same.", 11, resultRole.getOptlock());
+        Assert.assertEquals("Expected and actual values should be the same.", "role name", resultRole.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", "role description", resultRole.getDescription());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultRole.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultRole.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultRole.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, resultRole.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultRole.getModifiedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, resultRole.getModifiedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", 11, resultRole.getOptlock());
     }
 
     @Test
@@ -121,7 +122,7 @@ public class RoleFactoryImplTest extends Assert {
         try {
             roleFactoryImpl.clone(null);
         } catch (Exception e) {
-            assertEquals("Expected and actual values should be the same", "org.eclipse.kapua.KapuaEntityCloneException: Severe error while cloning: role", e.toString());
+            Assert.assertEquals("Expected and actual values should be the same", "org.eclipse.kapua.KapuaEntityCloneException: Severe error while cloning: role", e.toString());
         }
     }
 }

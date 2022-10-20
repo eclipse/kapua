@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+
 @Category(JUnitTests.class)
-public class MqttPayloadTest extends Assert {
+public class MqttPayloadTest {
 
     MqttPayload mqttPayload;
 
@@ -44,37 +45,37 @@ public class MqttPayloadTest extends Assert {
     @Test
     public void mqttPayloadSetAndGetTest() {
         mqttPayload.setBody(body);
-        assertEquals("Expected and actual values should be the same!", body, mqttPayload.getBody());
+        Assert.assertEquals("Expected and actual values should be the same!", body, mqttPayload.getBody());
     }
 
     @Test
     public void mqttPayloadSetAndGetNullTest() {
         mqttPayload.setBody(null);
-        assertNull("Null expected!", mqttPayload.getBody());
+        Assert.assertNull("Null expected!", mqttPayload.getBody());
     }
 
     @Test
     public void hasBodyTest() {
         mqttPayload.setBody(body);
-        assertTrue("Should contain body value!", mqttPayload.hasBody());
-        assertEquals("Expected and actual values should be the same!", body, mqttPayload.getBody());
+        Assert.assertTrue("Should contain body value!", mqttPayload.hasBody());
+        Assert.assertEquals("Expected and actual values should be the same!", body, mqttPayload.getBody());
     }
 
     @Test
     public void hasBodyNullTest() {
         mqttPayload.setBody(null);
-        assertFalse("Should not contain body value!", mqttPayload.hasBody());
-        assertNull("Null expected!", mqttPayload.getBody());
+        Assert.assertFalse("Should not contain body value!", mqttPayload.hasBody());
+        Assert.assertNull("Null expected!", mqttPayload.getBody());
     }
 
     @Test
     public void toStringTest() {
-        assertEquals("ISMkJSYnKCk9P+KBhEDigLnigLrigqzCsMK34oCaLC4tOzpfw4jLh8K/PD7Cq+KAmOKAneKAmcOJw5jiiI97fQ==", mqttPayload.toString());
+        Assert.assertEquals("ISMkJSYnKCk9P+KBhEDigLnigLrigqzCsMK34oCaLC4tOzpfw4jLh8K/PD7Cq+KAmOKAneKAmcOJw5jiiI97fQ==", mqttPayload.toString());
     }
 
     @Test
     public void toStringEmptyTest() {
         mqttPayload.setBody("".getBytes());
-        assertEquals("Empty string expected!", "", mqttPayload.toString());
+        Assert.assertEquals("Empty string expected!", "", mqttPayload.toString());
     }
 }

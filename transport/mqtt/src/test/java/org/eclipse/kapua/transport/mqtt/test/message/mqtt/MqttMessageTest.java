@@ -23,8 +23,9 @@ import org.junit.experimental.categories.Category;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class MqttMessageTest extends Assert {
+public class MqttMessageTest {
 
     MqttTopic requestTopic, responseTopic;
     MqttPayload mqttPayload;
@@ -41,76 +42,76 @@ public class MqttMessageTest extends Assert {
     @Test
     public void mqttMessageConstructorTest() {
         MqttMessage mqttMessage = new MqttMessage(requestTopic, responseTopic, mqttPayload);
-        assertEquals("Expected and actual value should be the same!", requestTopic, mqttMessage.getRequestTopic());
-        assertEquals("Expected and actual value should be the same!", responseTopic, mqttMessage.getResponseTopic());
-        assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
+        Assert.assertEquals("Expected and actual value should be the same!", requestTopic, mqttMessage.getRequestTopic());
+        Assert.assertEquals("Expected and actual value should be the same!", responseTopic, mqttMessage.getResponseTopic());
+        Assert.assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
     }
 
     @Test
     public void mqttMessageConstructorRequestTopicNullTest() {
         MqttMessage mqttMessage = new MqttMessage(null, responseTopic, mqttPayload);
-        assertNull("Null expected!", mqttMessage.getRequestTopic());
-        assertEquals("Expected and actual value should be the same!", responseTopic, mqttMessage.getResponseTopic());
-        assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
+        Assert.assertNull("Null expected!", mqttMessage.getRequestTopic());
+        Assert.assertEquals("Expected and actual value should be the same!", responseTopic, mqttMessage.getResponseTopic());
+        Assert.assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
     }
 
     @Test
     public void mqttMessageConstructorRequestPayloadNullTest() {
         MqttMessage mqttMessage = new MqttMessage(requestTopic, responseTopic, null);
-        assertEquals("Expected and actual value should be the same!", requestTopic, mqttMessage.getRequestTopic());
-        assertEquals("Expected and actual value should be the same!", responseTopic, mqttMessage.getResponseTopic());
-        assertEquals("Expected and actual value should be the same!", "", mqttMessage.getPayload().toString());
+        Assert.assertEquals("Expected and actual value should be the same!", requestTopic, mqttMessage.getRequestTopic());
+        Assert.assertEquals("Expected and actual value should be the same!", responseTopic, mqttMessage.getResponseTopic());
+        Assert.assertEquals("Expected and actual value should be the same!", "", mqttMessage.getPayload().toString());
     }
 
     @Test
     public void mqttMessageConstructorResponseTopicNullTest() {
         MqttMessage mqttMessage = new MqttMessage(requestTopic, (MqttTopic) null, mqttPayload);
-        assertEquals("Expected and actual value should be the same!", requestTopic , mqttMessage.getRequestTopic());
-        assertNull("Null expected!", mqttMessage.getResponseTopic());
-        assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
+        Assert.assertEquals("Expected and actual value should be the same!", requestTopic , mqttMessage.getRequestTopic());
+        Assert.assertNull("Null expected!", mqttMessage.getResponseTopic());
+        Assert.assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
     }
 
     @Test
     public void mqttMessageConstructor2Test() {
         MqttMessage mqttMessage = new MqttMessage(requestTopic, date, mqttPayload);
-        assertEquals("Expected and actual value should be the same!", requestTopic, mqttMessage.getRequestTopic());
-        assertEquals("Expected and actual value should be the same!", date, mqttMessage.getTimestamp());
-        assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
+        Assert.assertEquals("Expected and actual value should be the same!", requestTopic, mqttMessage.getRequestTopic());
+        Assert.assertEquals("Expected and actual value should be the same!", date, mqttMessage.getTimestamp());
+        Assert.assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
     }
 
     @Test
     public void mqttMessageConstructor2MqttRequestNullTest() {
         MqttMessage mqttMessage = new MqttMessage(null, date, mqttPayload);
-        assertNull("Null expected!", mqttMessage.getRequestTopic());
-        assertEquals("Expected and actual value should be the same!", date, mqttMessage.getTimestamp());
-        assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
+        Assert.assertNull("Null expected!", mqttMessage.getRequestTopic());
+        Assert.assertEquals("Expected and actual value should be the same!", date, mqttMessage.getTimestamp());
+        Assert.assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
     }
 
     @Test
     public void mqttMessageConstructor2RequestPayloadNullTest() {
         MqttMessage mqttMessage = new MqttMessage(requestTopic, date, null);
-        assertEquals("Expected and actual value should be the same!", requestTopic, mqttMessage.getRequestTopic());
-        assertEquals("Expected and actual value should be the same!", date, mqttMessage.getTimestamp());
-        assertEquals("Expected and actual value should be the same!", "", mqttMessage.getPayload().toString());
+        Assert.assertEquals("Expected and actual value should be the same!", requestTopic, mqttMessage.getRequestTopic());
+        Assert.assertEquals("Expected and actual value should be the same!", date, mqttMessage.getTimestamp());
+        Assert.assertEquals("Expected and actual value should be the same!", "", mqttMessage.getPayload().toString());
     }
 
     @Test
     public void mqttMessageConstructor2DateNullTest() {
         MqttMessage mqttMessage = new MqttMessage(requestTopic, (Date) null, mqttPayload);
-        assertEquals("Expected and actual value should be the same!", requestTopic , mqttMessage.getRequestTopic());
-        assertNull("Null expected!", mqttMessage.getResponseTopic());
-        assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
+        Assert.assertEquals("Expected and actual value should be the same!", requestTopic , mqttMessage.getRequestTopic());
+        Assert.assertNull("Null expected!", mqttMessage.getResponseTopic());
+        Assert.assertEquals("Expected and actual value should be the same!", mqttPayload, mqttMessage.getPayload());
     }
 
     @Test
     public void expectResponseTest() {
         MqttMessage mqttMessage = new MqttMessage(requestTopic, responseTopic, mqttPayload);
-        assertTrue("The response should not be null!", mqttMessage.expectResponse());
+        Assert.assertTrue("The response should not be null!", mqttMessage.expectResponse());
     }
 
     @Test
     public void toStringTest() {
         MqttMessage mqttMessage = new MqttMessage(requestTopic, responseTopic, mqttPayload);
-        assertEquals("null, requestTopic, cGF5bG9hZC5jb2Rl", mqttMessage.toString());
+        Assert.assertEquals("null, requestTopic, cGF5bG9hZC5jb2Rl", mqttMessage.toString());
     }
 }
