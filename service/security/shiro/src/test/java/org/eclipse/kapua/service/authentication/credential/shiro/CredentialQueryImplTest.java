@@ -18,15 +18,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class CredentialQueryImplTest extends Assert {
+public class CredentialQueryImplTest {
 
     @Test
     public void credentialQueryImplWithoutParameterTest() {
         CredentialQueryImpl credentialQueryImpl = new CredentialQueryImpl();
-        assertNull("Null expected.", credentialQueryImpl.getScopeId());
-        assertNull("credentialQueryImpl.sortCriteria", credentialQueryImpl.getSortCriteria());
-        assertNotNull("credentialQueryImpl.defaultSortCriteria", credentialQueryImpl.getDefaultSortCriteria());
+        Assert.assertNull("Null expected.", credentialQueryImpl.getScopeId());
+        Assert.assertNull("credentialQueryImpl.sortCriteria", credentialQueryImpl.getSortCriteria());
+        Assert.assertNotNull("credentialQueryImpl.defaultSortCriteria", credentialQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
@@ -34,9 +35,9 @@ public class CredentialQueryImplTest extends Assert {
         KapuaId[] scopeIds = {null, KapuaId.ONE};
         for (KapuaId scopeId : scopeIds) {
             CredentialQueryImpl credentialQueryImpl = new CredentialQueryImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, credentialQueryImpl.getScopeId());
-            assertNull("credentialQueryImpl.sortCriteria", credentialQueryImpl.getSortCriteria());
-            assertNotNull("credentialQueryImpl.defaultSortCriteria", credentialQueryImpl.getDefaultSortCriteria());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, credentialQueryImpl.getScopeId());
+            Assert.assertNull("credentialQueryImpl.sortCriteria", credentialQueryImpl.getSortCriteria());
+            Assert.assertNotNull("credentialQueryImpl.defaultSortCriteria", credentialQueryImpl.getDefaultSortCriteria());
         }
     }
 }

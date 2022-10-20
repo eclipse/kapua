@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class AccessInfoCacheFactoryTest extends Assert {
+public class AccessInfoCacheFactoryTest {
 
     AccessInfoCacheFactory accessInfoCacheFactory;
 
@@ -31,16 +32,16 @@ public class AccessInfoCacheFactoryTest extends Assert {
 
     @Test
     public void accessInfoCacheFactoryTest() {
-        assertEquals("Expected and actual values should be the same.", "AccessInfoId", accessInfoCacheFactory.getEntityIdCacheName());
+        Assert.assertEquals("Expected and actual values should be the same.", "AccessInfoId", accessInfoCacheFactory.getEntityIdCacheName());
     }
 
     @Test
     public void createCacheTest() {
-        assertTrue("True expected.", accessInfoCacheFactory.createCache() instanceof EntityCache);
+        Assert.assertTrue("True expected.", accessInfoCacheFactory.createCache() instanceof EntityCache);
     }
 
     @Test
     public void getInstanceTest() {
-        assertEquals("Expected and actual values should be the same.", "AccessInfoId", AccessInfoCacheFactory.getInstance().getEntityIdCacheName());
+        Assert.assertEquals("Expected and actual values should be the same.", "AccessInfoId", AccessInfoCacheFactory.getInstance().getEntityIdCacheName());
     }
 }

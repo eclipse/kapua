@@ -21,30 +21,31 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class MfaAuthenticatorServiceLocatorTest extends Assert {
+public class MfaAuthenticatorServiceLocatorTest {
 
     @Test
     public void mfaAuthenticatorServiceLocatorTest() throws Exception {
         Constructor<MfaAuthenticatorServiceLocator> mfaAuthenticatorServiceLocator = MfaAuthenticatorServiceLocator.class.getDeclaredConstructor();
         mfaAuthenticatorServiceLocator.setAccessible(true);
         mfaAuthenticatorServiceLocator.newInstance();
-        assertTrue("True expected.", Modifier.isPrivate(mfaAuthenticatorServiceLocator.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isPrivate(mfaAuthenticatorServiceLocator.getModifiers()));
     }
 
     @Test
     public void getInstanceNullLocatorTest() {
-        assertTrue("True expected.", MfaAuthenticatorServiceLocator.getInstance() instanceof MfaAuthenticatorServiceLocator);
+        Assert.assertTrue("True expected.", MfaAuthenticatorServiceLocator.getInstance() instanceof MfaAuthenticatorServiceLocator);
     }
 
     @Test
     public void getInstanceTest() {
         MfaAuthenticatorServiceLocator.getInstance();
-        assertTrue("True expected.", MfaAuthenticatorServiceLocator.getInstance() instanceof MfaAuthenticatorServiceLocator);
+        Assert.assertTrue("True expected.", MfaAuthenticatorServiceLocator.getInstance() instanceof MfaAuthenticatorServiceLocator);
     }
 
     @Test
     public void getMfaAuthenticatorTest() {
-        assertTrue("True expected.", MfaAuthenticatorServiceLocator.getInstance().getMfaAuthenticator() instanceof MfaAuthenticator);
+        Assert.assertTrue("True expected.", MfaAuthenticatorServiceLocator.getInstance().getMfaAuthenticator() instanceof MfaAuthenticator);
     }
 }

@@ -18,14 +18,15 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class JwtCertificateNotFoundExceptionTest extends Assert {
+public class JwtCertificateNotFoundExceptionTest {
 
     @Test
     public void jwtCertificateNotFoundExceptionTest() {
         JwtCertificateNotFoundException jwtCertificateNotFoundException = new JwtCertificateNotFoundException();
-        assertEquals("Expected and actual values should be the same.", KapuaAuthenticationErrorCodes.JWT_CERTIFICATE_NOT_FOUND, jwtCertificateNotFoundException.getCode());
-        assertEquals("Expected and actual values should be the same.", "Error: ", jwtCertificateNotFoundException.getMessage());
-        assertNull("Null expected.", jwtCertificateNotFoundException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaAuthenticationErrorCodes.JWT_CERTIFICATE_NOT_FOUND, jwtCertificateNotFoundException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "Error: ", jwtCertificateNotFoundException.getMessage());
+        Assert.assertNull("Null expected.", jwtCertificateNotFoundException.getCause());
     }
 }

@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class RefreshTokenCredentialsImplTest extends Assert {
+public class RefreshTokenCredentialsImplTest {
 
     String[] idsToken, refreshTokens, newIdsToken, newRefreshTokens;
     RefreshTokenCredentialsImpl refreshTokenCredentialsImpl;
@@ -37,8 +38,8 @@ public class RefreshTokenCredentialsImplTest extends Assert {
         for (String idToken : idsToken) {
             for (String refreshToken : refreshTokens) {
                 refreshTokenCredentialsImpl = new RefreshTokenCredentialsImpl(idToken, refreshToken);
-                assertEquals("Expected and actual values should be the same.", idToken, refreshTokenCredentialsImpl.getTokenId());
-                assertEquals("Expected and actual values should be the same.", refreshToken, refreshTokenCredentialsImpl.getRefreshToken());
+                Assert.assertEquals("Expected and actual values should be the same.", idToken, refreshTokenCredentialsImpl.getTokenId());
+                Assert.assertEquals("Expected and actual values should be the same.", refreshToken, refreshTokenCredentialsImpl.getRefreshToken());
             }
         }
     }
@@ -48,7 +49,7 @@ public class RefreshTokenCredentialsImplTest extends Assert {
         refreshTokenCredentialsImpl = new RefreshTokenCredentialsImpl("token id", "refresh token");
         for (String newIdToken : newIdsToken) {
             refreshTokenCredentialsImpl.setTokenId(newIdToken);
-            assertEquals("Expected and actual values should be the same.", newIdToken, refreshTokenCredentialsImpl.getTokenId());
+            Assert.assertEquals("Expected and actual values should be the same.", newIdToken, refreshTokenCredentialsImpl.getTokenId());
         }
     }
 
@@ -57,7 +58,7 @@ public class RefreshTokenCredentialsImplTest extends Assert {
         refreshTokenCredentialsImpl = new RefreshTokenCredentialsImpl("token id", "refresh token");
         for (String newRefreshToken : newRefreshTokens) {
             refreshTokenCredentialsImpl.setRefreshToken(newRefreshToken);
-            assertEquals("Expected and actual values should be the same.", newRefreshToken, refreshTokenCredentialsImpl.getRefreshToken());
+            Assert.assertEquals("Expected and actual values should be the same.", newRefreshToken, refreshTokenCredentialsImpl.getRefreshToken());
         }
     }
 }

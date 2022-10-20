@@ -21,8 +21,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class AccessInfoCacheTest extends Assert {
+public class AccessInfoCacheTest {
 
     String[] idCacheNames, nameCacheNames;
     AccessInfo kapuaEntity;
@@ -39,7 +40,7 @@ public class AccessInfoCacheTest extends Assert {
         for (String idCacheName : idCacheNames) {
             for (String nameCacheName : nameCacheNames) {
                 AccessInfoCache accessInfoCache = new AccessInfoCache(idCacheName, nameCacheName);
-                assertNotNull("NotNull expected.", accessInfoCache.accessInfoByUserIdCache);
+                Assert.assertNotNull("NotNull expected.", accessInfoCache.accessInfoByUserIdCache);
             }
         }
     }
@@ -64,7 +65,7 @@ public class AccessInfoCacheTest extends Assert {
             for (String nameCacheName : nameCacheNames) {
                 AccessInfoCache accessInfoCache = new AccessInfoCache(idCacheName, nameCacheName);
                 //COMMENT: This method always returns null, due to method get(Object key) in Cache.java which always returns null
-                assertNull("Null expected.", accessInfoCache.getByUserId(KapuaId.ONE, KapuaId.ONE));
+                Assert.assertNull("Null expected.", accessInfoCache.getByUserId(KapuaId.ONE, KapuaId.ONE));
             }
         }
     }
@@ -75,7 +76,7 @@ public class AccessInfoCacheTest extends Assert {
             for (String nameCacheName : nameCacheNames) {
                 AccessInfoCache accessInfoCache = new AccessInfoCache(idCacheName, nameCacheName);
                 //COMMENT: This method always returns null, due to method get(Object key) in Cache.java which always returns null
-                assertNull("Null expected.", accessInfoCache.getByUserId(null, KapuaId.ONE));
+                Assert.assertNull("Null expected.", accessInfoCache.getByUserId(null, KapuaId.ONE));
             }
         }
     }
@@ -85,7 +86,7 @@ public class AccessInfoCacheTest extends Assert {
         for (String idCacheName : idCacheNames) {
             for (String nameCacheName : nameCacheNames) {
                 AccessInfoCache accessInfoCache = new AccessInfoCache(idCacheName, nameCacheName);
-                assertNull("Null expected.", accessInfoCache.getByUserId(KapuaId.ONE, null));
+                Assert.assertNull("Null expected.", accessInfoCache.getByUserId(KapuaId.ONE, null));
             }
         }
     }
@@ -98,7 +99,7 @@ public class AccessInfoCacheTest extends Assert {
                 try {
                     accessInfoCache.put(kapuaEntity);
                 } catch (Exception e) {
-                    fail("Exception not expected.");
+                    Assert.fail("Exception not expected.");
                 }
             }
         }
@@ -112,7 +113,7 @@ public class AccessInfoCacheTest extends Assert {
                 try {
                     accessInfoCache.put(null);
                 } catch (Exception e) {
-                    fail("Exception not expected.");
+                    Assert.fail("Exception not expected.");
                 }
             }
         }
@@ -129,7 +130,7 @@ public class AccessInfoCacheTest extends Assert {
                 //            accessInfoByUserIdCache.remove(((AccessInfo) kapuaEntity).getUserId());
                 //        }
                 //and this method always returns null
-                assertNull("Null expected.", accessInfoCache.remove(KapuaId.ONE, KapuaId.ONE));
+                Assert.assertNull("Null expected.", accessInfoCache.remove(KapuaId.ONE, KapuaId.ONE));
             }
         }
     }
@@ -145,7 +146,7 @@ public class AccessInfoCacheTest extends Assert {
                 //            accessInfoByUserIdCache.remove(((AccessInfo) kapuaEntity).getUserId());
                 //        }
                 //and this method always returns null
-                assertNull("Null expected.", accessInfoCache.remove(null, KapuaId.ONE));
+                Assert.assertNull("Null expected.", accessInfoCache.remove(null, KapuaId.ONE));
             }
         }
     }
@@ -155,7 +156,7 @@ public class AccessInfoCacheTest extends Assert {
         for (String idCacheName : idCacheNames) {
             for (String nameCacheName : nameCacheNames) {
                 AccessInfoCache accessInfoCache = new AccessInfoCache(idCacheName, nameCacheName);
-                assertNull("Null expected.", accessInfoCache.remove(KapuaId.ONE, (KapuaId) null));
+                Assert.assertNull("Null expected.", accessInfoCache.remove(KapuaId.ONE, (KapuaId) null));
             }
         }
     }

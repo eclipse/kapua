@@ -25,8 +25,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class MessageStoreConfigurationTest extends Assert {
+public class MessageStoreConfigurationTest {
 
     @Test
     public void test1() {

@@ -18,8 +18,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ApiKeyCredentialsImplTest extends Assert {
+public class ApiKeyCredentialsImplTest {
 
     @Test(expected = NullPointerException.class)
     public void apiKeyCredentialsImplCloneConstructorNullTest() {
@@ -32,8 +33,8 @@ public class ApiKeyCredentialsImplTest extends Assert {
 
         ApiKeyCredentialsImpl second = new ApiKeyCredentialsImpl(first);
 
-        assertNotEquals("ApiKeyCredentialImpl", first, second);
-        assertEquals("ApiKeyCredential.apiKey", first.getApiKey(), second.getApiKey());
+        Assert.assertNotEquals("ApiKeyCredentialImpl", first, second);
+        Assert.assertEquals("ApiKeyCredential.apiKey", first.getApiKey(), second.getApiKey());
     }
 
     @Test
@@ -42,8 +43,8 @@ public class ApiKeyCredentialsImplTest extends Assert {
 
         ApiKeyCredentialsImpl second = new ApiKeyCredentialsImpl(first);
 
-        assertNotEquals("ApiKeyCredentialImpl", first, second);
-        assertEquals("ApiKeyCredential.apiKey", first.getApiKey(), second.getApiKey());
+        Assert.assertNotEquals("ApiKeyCredentialImpl", first, second);
+        Assert.assertEquals("ApiKeyCredential.apiKey", first.getApiKey(), second.getApiKey());
     }
 
     @Test
@@ -52,8 +53,8 @@ public class ApiKeyCredentialsImplTest extends Assert {
 
         ApiKeyCredentialsImpl second = ApiKeyCredentialsImpl.parse(null);
 
-        assertNull("Parsed ApiKeyCredentialsImpl", second);
-        assertEquals("ApiKeyCredentialImpl", first, second);
+        Assert.assertNull("Parsed ApiKeyCredentialsImpl", second);
+        Assert.assertEquals("ApiKeyCredentialImpl", first, second);
     }
 
     @Test
@@ -62,8 +63,8 @@ public class ApiKeyCredentialsImplTest extends Assert {
 
         ApiKeyCredentialsImpl second = ApiKeyCredentialsImpl.parse(first);
 
-        assertEquals("ApiKeyCredentialImpl", first, second);
-        assertEquals("ApiKeyCredential.apiKey", first.getApiKey(), second.getApiKey());
+        Assert.assertEquals("ApiKeyCredentialImpl", first, second);
+        Assert.assertEquals("ApiKeyCredential.apiKey", first.getApiKey(), second.getApiKey());
     }
 
     @Test
@@ -72,8 +73,8 @@ public class ApiKeyCredentialsImplTest extends Assert {
 
         ApiKeyCredentialsImpl second = ApiKeyCredentialsImpl.parse(first);
 
-        assertNotEquals("ApiKeyCredentialImpl", first, second);
-        assertEquals("ApiKeyCredential.apiKey", first.getApiKey(), second.getApiKey());
+        Assert.assertNotEquals("ApiKeyCredentialImpl", first, second);
+        Assert.assertEquals("ApiKeyCredential.apiKey", first.getApiKey(), second.getApiKey());
     }
 
     @Test
@@ -82,9 +83,9 @@ public class ApiKeyCredentialsImplTest extends Assert {
 
         for (String apiKey : apiKeys) {
             ApiKeyCredentialsImpl apiKeyCredentialsImpl = new ApiKeyCredentialsImpl(apiKey);
-            assertEquals("Expected and actual values should be the same.", apiKey, apiKeyCredentialsImpl.getApiKey());
-            assertEquals("Expected and actual values should be the same.", apiKey, apiKeyCredentialsImpl.getPrincipal());
-            assertEquals("Expected and actual values should be the same.", apiKey, apiKeyCredentialsImpl.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", apiKey, apiKeyCredentialsImpl.getApiKey());
+            Assert.assertEquals("Expected and actual values should be the same.", apiKey, apiKeyCredentialsImpl.getPrincipal());
+            Assert.assertEquals("Expected and actual values should be the same.", apiKey, apiKeyCredentialsImpl.getCredentials());
         }
     }
 
@@ -95,9 +96,9 @@ public class ApiKeyCredentialsImplTest extends Assert {
 
         for (String newApiKey : newApiKeys) {
             apiKeyCredentialsImpl.setApiKey(newApiKey);
-            assertEquals("Expected and actual values should be the same.", newApiKey, apiKeyCredentialsImpl.getApiKey());
-            assertEquals("Expected and actual values should be the same.", newApiKey, apiKeyCredentialsImpl.getPrincipal());
-            assertEquals("Expected and actual values should be the same.", newApiKey, apiKeyCredentialsImpl.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", newApiKey, apiKeyCredentialsImpl.getApiKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newApiKey, apiKeyCredentialsImpl.getPrincipal());
+            Assert.assertEquals("Expected and actual values should be the same.", newApiKey, apiKeyCredentialsImpl.getCredentials());
         }
     }
 }
