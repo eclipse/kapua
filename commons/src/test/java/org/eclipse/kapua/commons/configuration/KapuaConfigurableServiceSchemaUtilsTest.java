@@ -18,8 +18,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
+public class KapuaConfigurableServiceSchemaUtilsTest {
 
     @Test(expected = NullPointerException.class)
     public void scriptSessionWithNullArgumentsTest() {
@@ -41,7 +42,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
         try {
             KapuaConfigurableServiceSchemaUtils.scriptSession(KapuaConfigurableServiceSchemaUtils.DEFAULT_PATH, KapuaConfigurableServiceSchemaUtils.DEFAULT_FILTER);
         } catch (Exception e) {
-            fail("Exception should not be thrown");
+            Assert.fail("Exception should not be thrown");
         }
     }
 
@@ -50,7 +51,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
         try {
             KapuaConfigurableServiceSchemaUtils.scriptSession("", KapuaConfigurableServiceSchemaUtils.DEFAULT_FILTER);
         } catch (Exception e) {
-            fail("Exception should not be thrown");
+            Assert.fail("Exception should not be thrown");
         }
     }
 
@@ -59,7 +60,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
         try {
             KapuaConfigurableServiceSchemaUtils.scriptSession("wrong/path", KapuaConfigurableServiceSchemaUtils.DEFAULT_FILTER);
         } catch (Exception e) {
-            fail("Exception should not be thrown");
+            Assert.fail("Exception should not be thrown");
         }
     }
 
@@ -68,7 +69,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
         try {
             KapuaConfigurableServiceSchemaUtils.scriptSession(KapuaConfigurableServiceSchemaUtils.DEFAULT_PATH, "");
         } catch (Exception e) {
-            fail("Exception should not be thrown");
+            Assert.fail("Exception should not be thrown");
         }
     }
 
@@ -77,7 +78,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
         try {
             KapuaConfigurableServiceSchemaUtils.scriptSession(KapuaConfigurableServiceSchemaUtils.DEFAULT_PATH, "*.wrong");
         } catch (Exception e) {
-            fail("Exception should not be thrown");
+            Assert.fail("Exception should not be thrown");
         }
     }
 
@@ -86,7 +87,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
         try {
             KapuaConfigurableServiceSchemaUtils.createSchemaObjects(KapuaConfigurableServiceSchemaUtils.DEFAULT_PATH);
         } catch (Exception e) {
-            fail("Exception should not be thrown");
+            Assert.fail("Exception should not be thrown");
         }
     }
 
@@ -95,7 +96,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
         try {
             KapuaConfigurableServiceSchemaUtils.createSchemaObjects("wrong/path");
         } catch (Exception e) {
-            fail("Exception should not be thrown");
+            Assert.fail("Exception should not be thrown");
         }
     }
 
@@ -106,7 +107,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
             try {
                 KapuaConfigurableServiceSchemaUtils.createSchemaObjects(path);
             } catch (Exception e) {
-                fail("Exception should not be thrown");
+                Assert.fail("Exception should not be thrown");
             }
         }
     }
@@ -122,7 +123,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
         try {
             KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(KapuaConfigurableServiceSchemaUtils.DEFAULT_PATH);
         } catch (Exception e) {
-            fail("Exception should not be thrown");
+            Assert.fail("Exception should not be thrown");
         }
     }
 
@@ -133,7 +134,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
             try {
                 KapuaConfigurableServiceSchemaUtils.dropSchemaObjects(path);
             } catch (Exception e) {
-                fail("Exception should not be thrown");
+                Assert.fail("Exception should not be thrown");
             }
         }
     }
@@ -143,7 +144,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
         try {
             KapuaConfigurableServiceSchemaUtils.dropSchemaObjects("wrong/path");
         } catch (Exception e) {
-            fail("Exception should not be thrown");
+            Assert.fail("Exception should not be thrown");
         }
     }
 
@@ -152,7 +153,7 @@ public class KapuaConfigurableServiceSchemaUtilsTest extends Assert {
         try {
             KapuaConfigurableServiceSchemaUtils.dropSchemaObjects("");
         } catch (Exception e) {
-            fail("Exception should not be thrown");
+            Assert.fail("Exception should not be thrown");
         }
     }
 

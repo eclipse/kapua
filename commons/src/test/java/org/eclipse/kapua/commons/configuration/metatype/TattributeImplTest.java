@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class TattributeImplTest extends Assert {
+public class TattributeImplTest {
 
     @Before
     public void createInstanceOfClass() {
@@ -31,18 +32,18 @@ public class TattributeImplTest extends Assert {
 
     @Test
     public void getValueTest() {
-        assertTrue(tattributeImpl.getValue().isEmpty());
+        Assert.assertTrue(tattributeImpl.getValue().isEmpty());
     }
 
     @Test
     public void getAnyTest() {
-        assertTrue(tattributeImpl.getAny().isEmpty());
+        Assert.assertTrue(tattributeImpl.getAny().isEmpty());
     }
 
     @Test
     public void setAndGetAdrefToNullTest() {
         tattributeImpl.setAdref(null);
-        assertNull(tattributeImpl.getAdref());
+        Assert.assertNull(tattributeImpl.getAdref());
     }
 
     @Test
@@ -50,14 +51,14 @@ public class TattributeImplTest extends Assert {
         String[] permittedValues = {"", "!@#$%^^&**(-()_)+/|", "regularAdref", "regular Adref", "49", "regularAdref49", "ADREF", "246465494135646120009090049684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             tattributeImpl.setAdref(value);
-            assertTrue(tattributeImpl.getAdref().contains(value));
+            Assert.assertTrue(tattributeImpl.getAdref().contains(value));
         }
     }
 
     @Test
     public void setAndGetContentToNullTest() {
         tattributeImpl.setContent(null);
-        assertNull(tattributeImpl.getContent());
+        Assert.assertNull(tattributeImpl.getContent());
     }
 
     @Test
@@ -65,12 +66,12 @@ public class TattributeImplTest extends Assert {
         String[] permittedValues = {"", "!@#$%^^&**(-()_)+/|", "regularContent", "regular Content", "49", "regularContent49", "CONTENT", "246465494135646120009090049684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             tattributeImpl.setContent(value);
-            assertTrue(tattributeImpl.getContent().contains(value));
+            Assert.assertTrue(tattributeImpl.getContent().contains(value));
         }
     }
 
     @Test
     public void getOtherAttributesTest() {
-        assertTrue(tattributeImpl.getOtherAttributes().isEmpty());
+        Assert.assertTrue(tattributeImpl.getOtherAttributes().isEmpty());
     }
 }

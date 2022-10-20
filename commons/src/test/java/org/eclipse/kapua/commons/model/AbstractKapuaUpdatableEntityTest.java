@@ -30,8 +30,9 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 
+
 @Category(JUnitTests.class)
-public class AbstractKapuaUpdatableEntityTest extends Assert {
+public class AbstractKapuaUpdatableEntityTest {
 
     private final static Random RANDOM = RandomUtils.getInstance();
 
@@ -59,7 +60,7 @@ public class AbstractKapuaUpdatableEntityTest extends Assert {
     public void abstractKapuaUpdatableEntityScopeIdTest() {
         KapuaId scopeId = new KapuaEid();
         AbstractKapuaUpdatableEntity updatableEntity = new ActualKapuaUpdatableEntity(scopeId);
-        assertEquals("Actual and expected values are not the same!", scopeId, updatableEntity.getScopeId());
+        Assert.assertEquals("Actual and expected values are not the same!", scopeId, updatableEntity.getScopeId());
     }
 
     @Test
@@ -71,11 +72,11 @@ public class AbstractKapuaUpdatableEntityTest extends Assert {
         AbstractKapuaUpdatableEntity updatableEntity = new ActualKapuaUpdatableEntity(entity);
         updatableEntity.setModifiedOn(new Date());
         updatableEntity.setModifiedBy(new KapuaEid());
-        assertNotNull("Expected true", updatableEntity.getModifiedOn());
-        assertNotNull("Expected true", updatableEntity.getModifiedBy());
-        assertNotNull("Expected true", updatableEntity.getOptlock());
-        assertNotNull("Expected true", updatableEntity.getEntityAttributes());
-        assertNotNull("Expected true", updatableEntity.getEntityProperties());
+        Assert.assertNotNull("Expected true", updatableEntity.getModifiedOn());
+        Assert.assertNotNull("Expected true", updatableEntity.getModifiedBy());
+        Assert.assertNotNull("Expected true", updatableEntity.getOptlock());
+        Assert.assertNotNull("Expected true", updatableEntity.getEntityAttributes());
+        Assert.assertNotNull("Expected true", updatableEntity.getEntityProperties());
     }
 
     @Test
@@ -84,7 +85,7 @@ public class AbstractKapuaUpdatableEntityTest extends Assert {
         AbstractKapuaUpdatableEntity updatableEntity = new ActualKapuaUpdatableEntity(scopeId);
         Date modifiedOn = new Date();
         updatableEntity.setModifiedOn(modifiedOn);
-        assertEquals("Actual and expected values are not the same!", modifiedOn, updatableEntity.getModifiedOn());
+        Assert.assertEquals("Actual and expected values are not the same!", modifiedOn, updatableEntity.getModifiedOn());
     }
 
     @Test
@@ -93,7 +94,7 @@ public class AbstractKapuaUpdatableEntityTest extends Assert {
         AbstractKapuaUpdatableEntity updatableEntity = new ActualKapuaUpdatableEntity(scopeId);
         KapuaId modifiedBy = new KapuaEid();
         updatableEntity.setModifiedBy(modifiedBy);
-        assertEquals("Actual and expected values are not the same!", modifiedBy, updatableEntity.getModifiedBy());
+        Assert.assertEquals("Actual and expected values are not the same!", modifiedBy, updatableEntity.getModifiedBy());
     }
 
     @Test
@@ -102,7 +103,7 @@ public class AbstractKapuaUpdatableEntityTest extends Assert {
         AbstractKapuaUpdatableEntity updatableEntity = new ActualKapuaUpdatableEntity(scopeId);
         int optlock = 25;
         updatableEntity.setOptlock(optlock);
-        assertEquals("Actual and expected values are not the same!", optlock, updatableEntity.getOptlock());
+        Assert.assertEquals("Actual and expected values are not the same!", optlock, updatableEntity.getOptlock());
     }
 
     @Test(expected = IOException.class)
@@ -146,8 +147,8 @@ public class AbstractKapuaUpdatableEntityTest extends Assert {
         Mockito.when(mockedSession.getUserId()).thenReturn(new KapuaEid(eid));
         KapuaSecurityUtils.setSession(mockedSession);
         updatableEntity.prePersistsAction();
-        assertNotNull("Expected true", updatableEntity.getModifiedBy());
-        assertNotNull("Expected true", updatableEntity.getModifiedOn());
+        Assert.assertNotNull("Expected true", updatableEntity.getModifiedBy());
+        Assert.assertNotNull("Expected true", updatableEntity.getModifiedOn());
     }
 
     @Test
@@ -158,7 +159,7 @@ public class AbstractKapuaUpdatableEntityTest extends Assert {
         Mockito.when(mockedSession.getUserId()).thenReturn(new KapuaEid(eid));
         KapuaSecurityUtils.setSession(mockedSession);
         updatableEntity.preUpdateAction();
-        assertNotNull("Expected true", updatableEntity.getModifiedBy());
-        assertNotNull("Expected true", updatableEntity.getModifiedOn());
+        Assert.assertNotNull("Expected true", updatableEntity.getModifiedBy());
+        Assert.assertNotNull("Expected true", updatableEntity.getModifiedOn());
     }
 }

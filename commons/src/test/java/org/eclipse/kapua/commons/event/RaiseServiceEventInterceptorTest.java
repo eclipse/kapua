@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
+
 @Category(JUnitTests.class)
-public class RaiseServiceEventInterceptorTest extends Assert {
+public class RaiseServiceEventInterceptorTest {
 
     @Before
     public void createInstanceOfClass() {
@@ -44,10 +45,10 @@ public class RaiseServiceEventInterceptorTest extends Assert {
         privateEnumStringACTION.setAccessible(true);
         privateEnumStringCOUNT.setAccessible(true);
 
-        assertEquals("The fields are not equal", "private static final java.lang.String org.eclipse.kapua.commons.event.RaiseServiceEventInterceptor.MODULE", privateEnumStringMODULE.toString());
-        assertEquals("The fields are not equal", "private static final java.lang.String org.eclipse.kapua.commons.event.RaiseServiceEventInterceptor.COMPONENT", privateEnumStringCOMPONENT.toString());
-        assertEquals("The fields are not equal", "private static final java.lang.String org.eclipse.kapua.commons.event.RaiseServiceEventInterceptor.ACTION", privateEnumStringACTION.toString());
-        assertEquals("The fields are not equal", "private static final java.lang.String org.eclipse.kapua.commons.event.RaiseServiceEventInterceptor.COUNT", privateEnumStringCOUNT.toString());
+        Assert.assertEquals("The fields are not equal", "private static final java.lang.String org.eclipse.kapua.commons.event.RaiseServiceEventInterceptor.MODULE", privateEnumStringMODULE.toString());
+        Assert.assertEquals("The fields are not equal", "private static final java.lang.String org.eclipse.kapua.commons.event.RaiseServiceEventInterceptor.COMPONENT", privateEnumStringCOMPONENT.toString());
+        Assert.assertEquals("The fields are not equal", "private static final java.lang.String org.eclipse.kapua.commons.event.RaiseServiceEventInterceptor.ACTION", privateEnumStringACTION.toString());
+        Assert.assertEquals("The fields are not equal", "private static final java.lang.String org.eclipse.kapua.commons.event.RaiseServiceEventInterceptor.COUNT", privateEnumStringCOUNT.toString());
 
     }
 
@@ -65,8 +66,8 @@ public class RaiseServiceEventInterceptorTest extends Assert {
         Object wrongIdValue = wrongId.get(raiseServiceEventInterceptor);
         Object wrongEntityValue = wrongEntity.get(raiseServiceEventInterceptor);
 
-        assertTrue(wrongIdValue instanceof Counter);
-        assertTrue(wrongEntityValue instanceof Counter);
+        Assert.assertTrue(wrongIdValue instanceof Counter);
+        Assert.assertTrue(wrongEntityValue instanceof Counter);
     }
 
     @Test(expected = NullPointerException.class)

@@ -17,8 +17,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ObjectFactoryImplTest extends Assert {
+public class ObjectFactoryImplTest {
 
     @Test
     public void testCreateTicon() {

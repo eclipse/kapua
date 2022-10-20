@@ -28,9 +28,10 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 
+
 @Category(JUnitTests.class)
 @RunWith(value = Parameterized.class)
-public class AbstractKapuaEntityCreatorTest extends Assert {
+public class AbstractKapuaEntityCreatorTest {
 
     private final static Random RANDOM = RandomUtils.getInstance();
 
@@ -61,6 +62,6 @@ public class AbstractKapuaEntityCreatorTest extends Assert {
         KapuaId scopeId = new KapuaEid(eid);
         AbstractKapuaEntityCreator kapuaEntityCreator = new ActualKapuaEntityCreator(scopeId);
         AbstractKapuaEntityCreator kapuaCopyEntityCreator = new ActualKapuaEntityCreator(kapuaEntityCreator);
-        assertEquals("Those entities should have the same scopeId.", kapuaEntityCreator.getScopeId(), kapuaCopyEntityCreator.getScopeId());
+        Assert.assertEquals("Those entities should have the same scopeId.", kapuaEntityCreator.getScopeId(), kapuaCopyEntityCreator.getScopeId());
     }
 }

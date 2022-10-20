@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 import java.math.BigInteger;
 import java.util.Random;
 
+
 @Category(JUnitTests.class)
-public class KapuaIdFactoryImplTest extends Assert {
+public class KapuaIdFactoryImplTest {
 
     private final static Random RANDOM = RandomUtils.getInstance();
 
@@ -34,7 +35,7 @@ public class KapuaIdFactoryImplTest extends Assert {
         KapuaId actualKapuaId = kapuaIdFactoryImpl.newKapuaId(shortId);
         KapuaId expectedKapuaId = KapuaEid.parseCompactId(shortId);
 
-        assertEquals("Actual and expected values are not the same", expectedKapuaId.getId(), actualKapuaId.getId());
+        Assert.assertEquals("Actual and expected values are not the same", expectedKapuaId.getId(), actualKapuaId.getId());
     }
 
     @Test
@@ -48,9 +49,9 @@ public class KapuaIdFactoryImplTest extends Assert {
         KapuaId actualKapuaIdMax = kapuaIdFactoryImpl.newKapuaId(bigIntegerMaxValue);
         KapuaId actualKapuaIdMin = kapuaIdFactoryImpl.newKapuaId(bigIntegerMinValue);
 
-        assertEquals("Actual and expected values are not the same", bigInteger, actualKapuaId.getId());
-        assertEquals("Actual and expected values are not the same", bigIntegerMaxValue, actualKapuaIdMax.getId());
-        assertEquals("Actual and expected values are not the same", bigIntegerMinValue, actualKapuaIdMin.getId());
-        assertNull("Actual value should be null", actualKapuaIdNull.getId());
+        Assert.assertEquals("Actual and expected values are not the same", bigInteger, actualKapuaId.getId());
+        Assert.assertEquals("Actual and expected values are not the same", bigIntegerMaxValue, actualKapuaIdMax.getId());
+        Assert.assertEquals("Actual and expected values are not the same", bigIntegerMinValue, actualKapuaIdMin.getId());
+        Assert.assertNull("Actual value should be null", actualKapuaIdNull.getId());
     }
 }

@@ -25,9 +25,10 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 
+
 @Category(JUnitTests.class)
 @RunWith(value = Parameterized.class)
-public class KapuaEidConverterTest extends Assert {
+public class KapuaEidConverterTest {
 
     private final static Random RANDOM = RandomUtils.getInstance();
 
@@ -48,14 +49,14 @@ public class KapuaEidConverterTest extends Assert {
     public void convertToDatabaseColumnTest() {
         KapuaEid kapuaEid = new KapuaEid(eid);
         KapuaEidConverter kapuaEidConverter = new KapuaEidConverter();
-        assertEquals("Actual and expected values are not the same", eid, kapuaEidConverter.convertToDatabaseColumn(kapuaEid));
+        Assert.assertEquals("Actual and expected values are not the same", eid, kapuaEidConverter.convertToDatabaseColumn(kapuaEid));
     }
 
     @Test
     public void convertToEntityAttributeTest() {
         KapuaEidConverter kapuaEidConverter = new KapuaEidConverter();
         KapuaEid kapuaEid = kapuaEidConverter.convertToEntityAttribute(eid);
-        assertEquals("Actual and expected values are not the same", eid, kapuaEid.getId());
+        Assert.assertEquals("Actual and expected values are not the same", eid, kapuaEid.getId());
     }
 
 }
