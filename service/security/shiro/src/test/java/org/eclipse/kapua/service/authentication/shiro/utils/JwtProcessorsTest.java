@@ -22,19 +22,20 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class JwtProcessorsTest extends Assert {
+public class JwtProcessorsTest {
 
     @Test
     public void jwtProcessorsTest() throws Exception {
         Constructor<JwtProcessors> jwtProcessors = JwtProcessors.class.getDeclaredConstructor();
         jwtProcessors.setAccessible(true);
         jwtProcessors.newInstance();
-        assertTrue("True expected.", Modifier.isPrivate(jwtProcessors.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isPrivate(jwtProcessors.getModifiers()));
     }
 
     @Test
     public void createDefaultTest() throws OpenIDException {
-        assertTrue("True expected.", JwtProcessors.createDefault() instanceof JwtProcessor);
+        Assert.assertTrue("True expected.", JwtProcessors.createDefault() instanceof JwtProcessor);
     }
 }

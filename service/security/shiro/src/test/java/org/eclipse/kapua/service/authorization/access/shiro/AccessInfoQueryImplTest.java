@@ -18,27 +18,28 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class AccessInfoQueryImplTest extends Assert {
+public class AccessInfoQueryImplTest {
 
     @Test
     public void accessInfoQueryImplWithoutParameterTest() {
         AccessInfoQueryImpl accessInfoQueryImpl = new AccessInfoQueryImpl();
 
-        assertNull("Null expected.", accessInfoQueryImpl.getScopeId());
+        Assert.assertNull("Null expected.", accessInfoQueryImpl.getScopeId());
     }
 
     @Test
     public void accessInfoQueryImplScopeIdParameterTest() {
         AccessInfoQueryImpl accessInfoQueryImpl = new AccessInfoQueryImpl(KapuaId.ONE);
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoQueryImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoQueryImpl.getScopeId());
     }
 
     @Test
     public void accessInfoQueryImplNullScopeIdParameterTest() {
         AccessInfoQueryImpl accessInfoQueryImpl = new AccessInfoQueryImpl(null);
 
-        assertNull("Null expected.", accessInfoQueryImpl.getScopeId());
+        Assert.assertNull("Null expected.", accessInfoQueryImpl.getScopeId());
     }
 }

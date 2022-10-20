@@ -18,15 +18,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class MfaOptionQueryImplTest extends Assert {
+public class MfaOptionQueryImplTest {
 
     @Test
     public void mfaOptionQueryImplTest() {
         MfaOptionQueryImpl mfaOptionQueryImpl = new MfaOptionQueryImpl();
-        assertNull("Null expected.", mfaOptionQueryImpl.getScopeId());
-        assertNull("mfaOptionQueryImpl.sortCriteria", mfaOptionQueryImpl.getSortCriteria());
-        assertNotNull("mfaOptionQueryImpl.defaultSortCriteria", mfaOptionQueryImpl.getDefaultSortCriteria());
+        Assert.assertNull("Null expected.", mfaOptionQueryImpl.getScopeId());
+        Assert.assertNull("mfaOptionQueryImpl.sortCriteria", mfaOptionQueryImpl.getSortCriteria());
+        Assert.assertNotNull("mfaOptionQueryImpl.defaultSortCriteria", mfaOptionQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
@@ -35,9 +36,9 @@ public class MfaOptionQueryImplTest extends Assert {
 
         for (KapuaId scopeId : scopeIds) {
             MfaOptionQueryImpl mfaOptionQueryImpl = new MfaOptionQueryImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionQueryImpl.getScopeId());
-            assertNull("mfaOptionQueryImpl.sortCriteria", mfaOptionQueryImpl.getSortCriteria());
-            assertNotNull("mfaOptionQueryImpl.defaultSortCriteria", mfaOptionQueryImpl.getDefaultSortCriteria());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionQueryImpl.getScopeId());
+            Assert.assertNull("mfaOptionQueryImpl.sortCriteria", mfaOptionQueryImpl.getSortCriteria());
+            Assert.assertNotNull("mfaOptionQueryImpl.defaultSortCriteria", mfaOptionQueryImpl.getDefaultSortCriteria());
         }
     }
 }

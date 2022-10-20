@@ -18,8 +18,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class AccessTokenCredentialsImplTest extends Assert {
+public class AccessTokenCredentialsImplTest {
 
     @Test(expected = NullPointerException.class)
     public void accessTokenCredentialsImplCloneConstructorNullTest() {
@@ -32,8 +33,8 @@ public class AccessTokenCredentialsImplTest extends Assert {
 
         AccessTokenCredentialsImpl second = new AccessTokenCredentialsImpl(first);
 
-        assertNotEquals("AccessTokenCredentialImpl", first, second);
-        assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
+        Assert.assertNotEquals("AccessTokenCredentialImpl", first, second);
+        Assert.assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
     }
 
     @Test
@@ -42,8 +43,8 @@ public class AccessTokenCredentialsImplTest extends Assert {
 
         AccessTokenCredentialsImpl second = new AccessTokenCredentialsImpl(first);
 
-        assertNotEquals("AccessTokenCredentialImpl", first, second);
-        assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
+        Assert.assertNotEquals("AccessTokenCredentialImpl", first, second);
+        Assert.assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
     }
 
     @Test
@@ -52,8 +53,8 @@ public class AccessTokenCredentialsImplTest extends Assert {
 
         AccessTokenCredentialsImpl second = AccessTokenCredentialsImpl.parse(null);
 
-        assertNull("Parsed AccessTokenCredentialsImpl", second);
-        assertEquals("AccessTokenCredentialImpl", first, second);
+        Assert.assertNull("Parsed AccessTokenCredentialsImpl", second);
+        Assert.assertEquals("AccessTokenCredentialImpl", first, second);
     }
 
     @Test
@@ -62,8 +63,8 @@ public class AccessTokenCredentialsImplTest extends Assert {
 
         AccessTokenCredentialsImpl second = AccessTokenCredentialsImpl.parse(first);
 
-        assertEquals("AccessTokenCredentialImpl", first, second);
-        assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
+        Assert.assertEquals("AccessTokenCredentialImpl", first, second);
+        Assert.assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
     }
 
     @Test
@@ -72,8 +73,8 @@ public class AccessTokenCredentialsImplTest extends Assert {
 
         AccessTokenCredentialsImpl second = AccessTokenCredentialsImpl.parse(first);
 
-        assertNotEquals("AccessTokenCredentialImpl", first, second);
-        assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
+        Assert.assertNotEquals("AccessTokenCredentialImpl", first, second);
+        Assert.assertEquals("AccessTokenCredential.tokenId", first.getTokenId(), second.getTokenId());
     }
 
 
@@ -83,9 +84,9 @@ public class AccessTokenCredentialsImplTest extends Assert {
 
         for (String tokenId : tokenIds) {
             AccessTokenCredentialsImpl accessTokenCredentialsImpl = new AccessTokenCredentialsImpl(tokenId);
-            assertEquals("Expected and actual values should be the same.", tokenId, accessTokenCredentialsImpl.getTokenId());
-            assertEquals("Expected and actual values should be the same.", tokenId, accessTokenCredentialsImpl.getPrincipal());
-            assertEquals("Expected and actual values should be the same.", tokenId, accessTokenCredentialsImpl.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", tokenId, accessTokenCredentialsImpl.getTokenId());
+            Assert.assertEquals("Expected and actual values should be the same.", tokenId, accessTokenCredentialsImpl.getPrincipal());
+            Assert.assertEquals("Expected and actual values should be the same.", tokenId, accessTokenCredentialsImpl.getCredentials());
         }
     }
 
@@ -96,9 +97,9 @@ public class AccessTokenCredentialsImplTest extends Assert {
 
         for (String newTokenId : newTokenIds) {
             accessTokenCredentialsImpl.setTokenId(newTokenId);
-            assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenCredentialsImpl.getTokenId());
-            assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenCredentialsImpl.getPrincipal());
-            assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenCredentialsImpl.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenCredentialsImpl.getTokenId());
+            Assert.assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenCredentialsImpl.getPrincipal());
+            Assert.assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenCredentialsImpl.getCredentials());
         }
     }
 }

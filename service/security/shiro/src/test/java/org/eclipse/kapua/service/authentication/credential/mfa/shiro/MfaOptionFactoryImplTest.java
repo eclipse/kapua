@@ -28,8 +28,9 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class MfaOptionFactoryImplTest extends Assert {
+public class MfaOptionFactoryImplTest {
 
     MfaOptionFactoryImpl mfaOptionFactoryImpl;
     KapuaId[] scopeIds;
@@ -56,9 +57,9 @@ public class MfaOptionFactoryImplTest extends Assert {
             for (KapuaEid userId : userIds) {
                 for (String mfaSecretKey : mfaSecretKeys) {
                     MfaOptionCreatorImpl mfaOptionCreatorImpl = mfaOptionFactoryImpl.newCreator(scopeId, userId, mfaSecretKey);
-                    assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionCreatorImpl.getScopeId());
-                    assertEquals("Expected and actual values should be the same.", userId, mfaOptionCreatorImpl.getUserId());
-                    assertEquals("Expected and actual values should be the same.", mfaSecretKey, mfaOptionCreatorImpl.getMfaSecretKey());
+                    Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionCreatorImpl.getScopeId());
+                    Assert.assertEquals("Expected and actual values should be the same.", userId, mfaOptionCreatorImpl.getUserId());
+                    Assert.assertEquals("Expected and actual values should be the same.", mfaSecretKey, mfaOptionCreatorImpl.getMfaSecretKey());
                 }
             }
         }
@@ -66,14 +67,14 @@ public class MfaOptionFactoryImplTest extends Assert {
 
     @Test
     public void newListResultTest() {
-        assertTrue("Instance of MfaOptionListResult expected.", mfaOptionFactoryImpl.newListResult() instanceof MfaOptionListResult);
+        Assert.assertTrue("Instance of MfaOptionListResult expected.", mfaOptionFactoryImpl.newListResult() instanceof MfaOptionListResult);
     }
 
     @Test
     public void newEntityTest() {
         for (KapuaId scopeId : scopeIds) {
             MfaOption mfaOption = mfaOptionFactoryImpl.newEntity(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, mfaOption.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOption.getScopeId());
         }
     }
 
@@ -83,9 +84,9 @@ public class MfaOptionFactoryImplTest extends Assert {
             for (KapuaId userId : userIds) {
                 for (String mfaSecretKey : mfaSecretKeys) {
                     MfaOption mfaOption = mfaOptionFactoryImpl.newMfaOption(scopeId, userId, mfaSecretKey);
-                    assertEquals("Expected and actual values should be the same.", scopeId, mfaOption.getScopeId());
-                    assertEquals("Expected and actual values should be the same.", userId, mfaOption.getUserId());
-                    assertEquals("Expected and actual values should be the same.", mfaSecretKey, mfaOption.getMfaSecretKey());
+                    Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOption.getScopeId());
+                    Assert.assertEquals("Expected and actual values should be the same.", userId, mfaOption.getUserId());
+                    Assert.assertEquals("Expected and actual values should be the same.", mfaSecretKey, mfaOption.getMfaSecretKey());
                 }
             }
         }
@@ -95,7 +96,7 @@ public class MfaOptionFactoryImplTest extends Assert {
     public void newQueryTest() {
         for (KapuaId scopeId : scopeIds) {
             MfaOptionQuery mfaOptionQuery = mfaOptionFactoryImpl.newQuery(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionQuery.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionQuery.getScopeId());
         }
     }
 
@@ -103,7 +104,7 @@ public class MfaOptionFactoryImplTest extends Assert {
     public void newCreatorScopeIdParameterTest() {
         for (KapuaId scopeId : scopeIds) {
             MfaOptionCreator mfaOptionCreator = mfaOptionFactoryImpl.newCreator(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionCreator.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionCreator.getScopeId());
         }
     }
 
@@ -120,14 +121,14 @@ public class MfaOptionFactoryImplTest extends Assert {
 
         MfaOption mfaOptionResult = mfaOptionFactoryImpl.clone(mfaOption);
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionResult.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionResult.getUserId());
-        assertEquals("Expected and actual values should be the same.", "mfa secret key", mfaOptionResult.getMfaSecretKey());
-        assertEquals("Expected and actual values should be the same.", "thrust key", mfaOptionResult.getTrustKey());
-        assertEquals("Expected and actual values should be the same.", trustExpirationDate, mfaOptionResult.getTrustExpirationDate());
-        assertEquals("Expected and actual values should be the same.", modifiedOn, mfaOptionResult.getModifiedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionResult.getModifiedBy());
-        assertEquals("Expected and actual values should be the same.", 10, mfaOptionResult.getOptlock());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionResult.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionResult.getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", "mfa secret key", mfaOptionResult.getMfaSecretKey());
+        Assert.assertEquals("Expected and actual values should be the same.", "thrust key", mfaOptionResult.getTrustKey());
+        Assert.assertEquals("Expected and actual values should be the same.", trustExpirationDate, mfaOptionResult.getTrustExpirationDate());
+        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, mfaOptionResult.getModifiedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionResult.getModifiedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", 10, mfaOptionResult.getOptlock());
     }
 
     @Test(expected = KapuaEntityCloneException.class)

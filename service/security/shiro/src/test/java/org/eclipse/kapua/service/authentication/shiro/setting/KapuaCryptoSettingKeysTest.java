@@ -17,15 +17,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaCryptoSettingKeysTest extends Assert {
+public class KapuaCryptoSettingKeysTest {
 
     @Test
     public void keyTest() {
-        assertEquals("Expected and actual values should be the same.", "crypto.key", KapuaCryptoSettingKeys.CRYPTO_KEY.key());
-        assertEquals("Expected and actual values should be the same.", "crypto.bCrypt.logRounds", KapuaCryptoSettingKeys.CRYPTO_BCRYPT_LOG_ROUNDS.key());
-        assertEquals("Expected and actual values should be the same.", "crypto.sha.algorithm", KapuaCryptoSettingKeys.CRYPTO_SHA_ALGORITHM.key());
-        assertEquals("Expected and actual values should be the same.", "crypto.sha.salt.length", KapuaCryptoSettingKeys.CRYPTO_SHA_SALT_LENGTH.key());
-        assertEquals("Expected and actual values should be the same.", "cipher.key", KapuaCryptoSettingKeys.CIPHER_KEY.key());
+        Assert.assertEquals("Expected and actual values should be the same.", "crypto.key", KapuaCryptoSettingKeys.CRYPTO_KEY.key());
+        Assert.assertEquals("Expected and actual values should be the same.", "crypto.bCrypt.logRounds", KapuaCryptoSettingKeys.CRYPTO_BCRYPT_LOG_ROUNDS.key());
+        Assert.assertEquals("Expected and actual values should be the same.", "crypto.sha.algorithm", KapuaCryptoSettingKeys.CRYPTO_SHA_ALGORITHM.key());
+        Assert.assertEquals("Expected and actual values should be the same.", "crypto.sha.salt.length", KapuaCryptoSettingKeys.CRYPTO_SHA_SALT_LENGTH.key());
+        Assert.assertEquals("Expected and actual values should be the same.", "cipher.key", KapuaCryptoSettingKeys.CIPHER_KEY.key());
     }
 }

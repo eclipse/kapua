@@ -30,8 +30,9 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class CredentialFactoryImplTest extends Assert {
+public class CredentialFactoryImplTest {
 
     CredentialFactoryImpl credentialFactoryImpl;
     KapuaId[] scopeIds;
@@ -66,12 +67,12 @@ public class CredentialFactoryImplTest extends Assert {
                         for (CredentialStatus credentialStatus : credentialStatuses) {
                             for (Date date : dates) {
                                 CredentialCreatorImpl credentialCreatorImpl = credentialFactoryImpl.newCreator(scopeId, userId, credentialType, credentialKey, credentialStatus, date);
-                                assertEquals("Expected and actual values should be the same.", scopeId, credentialCreatorImpl.getScopeId());
-                                assertEquals("Expected and actual values should be the same.", userId, credentialCreatorImpl.getUserId());
-                                assertEquals("Expected and actual values should be the same.", credentialType, credentialCreatorImpl.getCredentialType());
-                                assertEquals("Expected and actual values should be the same.", credentialKey, credentialCreatorImpl.getCredentialPlainKey());
-                                assertEquals("Expected and actual values should be the same.", credentialStatus, credentialCreatorImpl.getCredentialStatus());
-                                assertEquals("Expected and actual values should be the same.", date, credentialCreatorImpl.getExpirationDate());
+                                Assert.assertEquals("Expected and actual values should be the same.", scopeId, credentialCreatorImpl.getScopeId());
+                                Assert.assertEquals("Expected and actual values should be the same.", userId, credentialCreatorImpl.getUserId());
+                                Assert.assertEquals("Expected and actual values should be the same.", credentialType, credentialCreatorImpl.getCredentialType());
+                                Assert.assertEquals("Expected and actual values should be the same.", credentialKey, credentialCreatorImpl.getCredentialPlainKey());
+                                Assert.assertEquals("Expected and actual values should be the same.", credentialStatus, credentialCreatorImpl.getCredentialStatus());
+                                Assert.assertEquals("Expected and actual values should be the same.", date, credentialCreatorImpl.getExpirationDate());
                             }
                         }
                     }
@@ -82,14 +83,14 @@ public class CredentialFactoryImplTest extends Assert {
 
     @Test
     public void newListResultTest() {
-        assertTrue("True expected.", credentialFactoryImpl.newListResult() instanceof CredentialListResult);
+        Assert.assertTrue("True expected.", credentialFactoryImpl.newListResult() instanceof CredentialListResult);
     }
 
     @Test
     public void newEntityTest() {
         for (KapuaId scopeId : scopeIds) {
             Credential credential = credentialFactoryImpl.newEntity(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, credential.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, credential.getScopeId());
         }
     }
 
@@ -102,12 +103,12 @@ public class CredentialFactoryImplTest extends Assert {
                         for (CredentialStatus credentialStatus : credentialStatuses) {
                             for (Date date : dates) {
                                 Credential credential = credentialFactoryImpl.newCredential(scopeId, userId, credentialType, credentialKey, credentialStatus, date);
-                                assertEquals("Expected and actual values should be the same.", scopeId, credential.getScopeId());
-                                assertEquals("Expected and actual values should be the same.", userId, credential.getUserId());
-                                assertEquals("Expected and actual values should be the same.", credentialType, credential.getCredentialType());
-                                assertEquals("Expected and actual values should be the same.", credentialKey, credential.getCredentialKey());
-                                assertEquals("Expected and actual values should be the same.", credentialStatus, credential.getStatus());
-                                assertEquals("Expected and actual values should be the same.", date, credential.getExpirationDate());
+                                Assert.assertEquals("Expected and actual values should be the same.", scopeId, credential.getScopeId());
+                                Assert.assertEquals("Expected and actual values should be the same.", userId, credential.getUserId());
+                                Assert.assertEquals("Expected and actual values should be the same.", credentialType, credential.getCredentialType());
+                                Assert.assertEquals("Expected and actual values should be the same.", credentialKey, credential.getCredentialKey());
+                                Assert.assertEquals("Expected and actual values should be the same.", credentialStatus, credential.getStatus());
+                                Assert.assertEquals("Expected and actual values should be the same.", date, credential.getExpirationDate());
 
                             }
                         }
@@ -121,7 +122,7 @@ public class CredentialFactoryImplTest extends Assert {
     public void newQueryTest() {
         for (KapuaId scopeId : scopeIds) {
             CredentialQuery credentialQuery = credentialFactoryImpl.newQuery(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, credentialQuery.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, credentialQuery.getScopeId());
         }
     }
 
@@ -129,7 +130,7 @@ public class CredentialFactoryImplTest extends Assert {
     public void newCreatorScopeIdParameterTest() {
         for (KapuaId scopeId : scopeIds) {
             CredentialCreator credentialCreator = credentialFactoryImpl.newCreator(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, credentialCreator.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, credentialCreator.getScopeId());
         }
     }
 
@@ -146,14 +147,14 @@ public class CredentialFactoryImplTest extends Assert {
 
         Credential credentialResult = credentialFactoryImpl.clone(credential);
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, credentialResult.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, credentialResult.getUserId());
-        assertEquals("Expected and actual values should be the same.", CredentialType.JWT, credentialResult.getCredentialType());
-        assertEquals("Expected and actual values should be the same.", "key", credentialResult.getCredentialKey());
-        assertEquals("Expected and actual values should be the same.", expirationDate, credentialResult.getExpirationDate());
-        assertEquals("Expected and actual values should be the same.", modifiedOn, credentialResult.getModifiedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, credentialResult.getModifiedBy());
-        assertEquals("Expected and actual values should be the same.", 10, credentialResult.getOptlock());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, credentialResult.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, credentialResult.getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", CredentialType.JWT, credentialResult.getCredentialType());
+        Assert.assertEquals("Expected and actual values should be the same.", "key", credentialResult.getCredentialKey());
+        Assert.assertEquals("Expected and actual values should be the same.", expirationDate, credentialResult.getExpirationDate());
+        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, credentialResult.getModifiedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, credentialResult.getModifiedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", 10, credentialResult.getOptlock());
     }
 
     @Test(expected = KapuaEntityCloneException.class)

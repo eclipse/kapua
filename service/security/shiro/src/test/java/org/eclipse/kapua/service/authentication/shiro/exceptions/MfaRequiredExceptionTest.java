@@ -17,12 +17,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class MfaRequiredExceptionTest extends Assert {
+public class MfaRequiredExceptionTest {
 
     @Test
     public void mfaRequiredExceptionTest() {
         MfaRequiredException mfaRequiredException = new MfaRequiredException();
-        assertEquals("Expected and actual values should be the same.", "This user requires Multi Factor Authentication.", mfaRequiredException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", "This user requires Multi Factor Authentication.", mfaRequiredException.getMessage());
     }
 }

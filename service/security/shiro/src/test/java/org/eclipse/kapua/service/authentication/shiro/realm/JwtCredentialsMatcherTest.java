@@ -24,8 +24,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class JwtCredentialsMatcherTest extends Assert {
+public class JwtCredentialsMatcherTest {
 
     JwtProcessor jwtProcessor;
     JwtCredentialsImpl authenticationToken;
@@ -47,7 +48,7 @@ public class JwtCredentialsMatcherTest extends Assert {
         try {
             new JwtCredentialsMatcher(null);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -59,7 +60,7 @@ public class JwtCredentialsMatcherTest extends Assert {
     @Test
     public void doCredentialsMatchNullAuthenticationInfoNullJwtTest() {
         Mockito.when(authenticationToken.getIdToken()).thenReturn(null);
-        assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, null));
+        Assert.assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, null));
     }
 
     @Test(expected = NullPointerException.class)
@@ -72,7 +73,7 @@ public class JwtCredentialsMatcherTest extends Assert {
     public void doCredentialsMatchNullJwtTest() {
         Mockito.when(authenticationToken.getIdToken()).thenReturn(null);
 
-        assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 
     @Test
@@ -80,7 +81,7 @@ public class JwtCredentialsMatcherTest extends Assert {
         Mockito.when(authenticationToken.getIdToken()).thenReturn("idToken");
         Mockito.when(authenticationInfo.getCredentials()).thenReturn("credential");
 
-        assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 
     @Test
@@ -89,7 +90,7 @@ public class JwtCredentialsMatcherTest extends Assert {
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
         Mockito.when(credential.getCredentialKey()).thenReturn("credential key");
 
-        assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 
     @Test
@@ -99,7 +100,7 @@ public class JwtCredentialsMatcherTest extends Assert {
         Mockito.when(credential.getCredentialKey()).thenReturn("idToken");
         Mockito.when(jwtProcessor.validate("idToken")).thenReturn(false);
 
-        assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 
     @Test
@@ -109,7 +110,7 @@ public class JwtCredentialsMatcherTest extends Assert {
         Mockito.when(credential.getCredentialKey()).thenReturn("idToken");
         Mockito.when(jwtProcessor.validate("idToken")).thenReturn(true);
 
-        assertTrue("True expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertTrue("True expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 
     @Test
@@ -120,6 +121,6 @@ public class JwtCredentialsMatcherTest extends Assert {
         Mockito.when(credential.getCredentialKey()).thenReturn("idToken");
         Mockito.when(jwtProcessor.validate("idToken")).thenThrow(Mockito.mock(OpenIDException.class));
 
-        assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertFalse("False expected.", jwtCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 }

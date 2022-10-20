@@ -22,8 +22,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class ApiKeyCredentialsMatcherTest extends Assert {
+public class ApiKeyCredentialsMatcherTest {
 
     ApiKeyCredentialsMatcher apiKeyCredentialsMatcher;
     JwtCredentialsImpl authenticationToken;
@@ -56,7 +57,7 @@ public class ApiKeyCredentialsMatcherTest extends Assert {
         Mockito.when(authenticationInfo.getCredentials()).thenReturn(credential);
         Mockito.when(credential.getCredentialType()).thenReturn(CredentialType.PASSWORD);
 
-        assertFalse("False expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertFalse("False expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 
     @Test
@@ -66,7 +67,7 @@ public class ApiKeyCredentialsMatcherTest extends Assert {
         Mockito.when(credential.getCredentialType()).thenReturn(CredentialType.API_KEY);
         Mockito.when(credential.getCredentialKey()).thenReturn("FullApiK:Credential");
 
-        assertFalse("False expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertFalse("False expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 
     @Test
@@ -76,7 +77,7 @@ public class ApiKeyCredentialsMatcherTest extends Assert {
         Mockito.when(credential.getCredentialType()).thenReturn(CredentialType.API_KEY);
         Mockito.when(credential.getCredentialKey()).thenReturn("FullApiK:$2a$12$2AZYOAvilJyNvG8b6rBDaOSIcM3mKc6iyNQUYIXOF4ZFEAYdzM7Jm");
 
-        assertFalse("False expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertFalse("False expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 
     @Test
@@ -86,6 +87,6 @@ public class ApiKeyCredentialsMatcherTest extends Assert {
         Mockito.when(credential.getCredentialType()).thenReturn(CredentialType.API_KEY);
         Mockito.when(credential.getCredentialKey()).thenReturn("FullApiK:$2a$12$2AZYOAvilJyNvG8b6rBDaOSIcM3mKc6iyNQUYIXOF4ZFEAYdzM7Jm");
 
-        assertTrue("True expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertTrue("True expected.", apiKeyCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 }

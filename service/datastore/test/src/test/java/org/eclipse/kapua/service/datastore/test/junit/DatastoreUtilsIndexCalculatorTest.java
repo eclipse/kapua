@@ -35,8 +35,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+
 @Category(JUnitTests.class)
-public class DatastoreUtilsIndexCalculatorTest extends Assert {
+public class DatastoreUtilsIndexCalculatorTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtilsIndexCalculatorTest.class);
 
@@ -105,7 +106,7 @@ public class DatastoreUtilsIndexCalculatorTest extends Assert {
 
     @Test
     public void dataIndexNameByScopeId() {
-        assertEquals("1-data-message-*", DatastoreUtils.getDataIndexName(KapuaId.ONE));
+        Assert.assertEquals("1-data-message-*", DatastoreUtils.getDataIndexName(KapuaId.ONE));
     }
 
     @Test
@@ -113,30 +114,30 @@ public class DatastoreUtilsIndexCalculatorTest extends Assert {
 
         // Index by Week
         String weekIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), DatastoreUtils.INDEXING_WINDOW_OPTION_WEEK);
-        assertEquals("1-data-message-2017-01", weekIndexName);
+        Assert.assertEquals("1-data-message-2017-01", weekIndexName);
 
         // Index by Day
         String dayIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), DatastoreUtils.INDEXING_WINDOW_OPTION_DAY);
-        assertEquals("1-data-message-2017-01-02", dayIndexName);
+        Assert.assertEquals("1-data-message-2017-01-02", dayIndexName);
 
         // Index by Hour
         String hourIndexName = DatastoreUtils.getDataIndexName(KapuaId.ONE, sdf.parse("02/01/2017 13:12 +0100").getTime(), DatastoreUtils.INDEXING_WINDOW_OPTION_HOUR);
-        assertEquals("1-data-message-2017-01-02-12", hourIndexName);     // Index Hour is UTC!
+        Assert.assertEquals("1-data-message-2017-01-02-12", hourIndexName);     // Index Hour is UTC!
     }
 
     @Test
     public void channelIndexNameByScopeId() {
-        assertEquals("1-data-channel", DatastoreUtils.getChannelIndexName(KapuaId.ONE));
+        Assert.assertEquals("1-data-channel", DatastoreUtils.getChannelIndexName(KapuaId.ONE));
     }
 
     @Test
     public void clientIndexNameByScopeId() {
-        assertEquals("1-data-client", DatastoreUtils.getClientIndexName(KapuaId.ONE));
+        Assert.assertEquals("1-data-client", DatastoreUtils.getClientIndexName(KapuaId.ONE));
     }
 
     @Test
     public void metricIndexNameByScopeId() {
-        assertEquals("1-data-metric", DatastoreUtils.getMetricIndexName(KapuaId.ONE));
+        Assert.assertEquals("1-data-metric", DatastoreUtils.getMetricIndexName(KapuaId.ONE));
     }
 
     private void performTest(Date startDate, Date endDate, String[] expectedIndexes) throws DatastoreException {
@@ -203,12 +204,12 @@ public class DatastoreUtilsIndexCalculatorTest extends Assert {
 
     private void compareResult(String[] expected, String[] result) {
         if (result != null) {
-            assertEquals("Wrong result size!", (expected != null ? expected.length : 0), result.length);
+            Assert.assertEquals("Wrong result size!", (expected != null ? expected.length : 0), result.length);
             for (int i = 0; i < result.length; i++) {
-                assertEquals(String.format("Wrong result at position {0}!", i), expected[i], result[i]);
+                Assert.assertEquals(String.format("Wrong result at position {0}!", i), expected[i], result[i]);
             }
         } else {
-            assertTrue("Wrong result size!", expected == null || expected.length <= 0);
+            Assert.assertTrue("Wrong result size!", expected == null || expected.length <= 0);
         }
     }
 

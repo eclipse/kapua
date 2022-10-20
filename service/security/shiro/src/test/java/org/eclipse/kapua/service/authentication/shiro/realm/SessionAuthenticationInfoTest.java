@@ -22,8 +22,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class SessionAuthenticationInfoTest extends Assert {
+public class SessionAuthenticationInfoTest {
 
     String[] realmNames;
     Account account;
@@ -42,28 +43,28 @@ public class SessionAuthenticationInfoTest extends Assert {
     public void sessionAuthenticationInfoTest() {
         for (String realmName : realmNames) {
             SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(realmName, account, user, accessToken);
-            assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
-            assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
-            assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());
-            assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getAccessToken());
-            assertFalse("False expected.", sessionAuthenticationInfo.getPrincipals().isEmpty());
-            assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
+            Assert.assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
+            Assert.assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());
+            Assert.assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getAccessToken());
+            Assert.assertFalse("False expected.", sessionAuthenticationInfo.getPrincipals().isEmpty());
+            Assert.assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getCredentials());
         }
     }
 
     @Test
     public void sessionAuthenticationInfoNullNameTest() {
         SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(null, account, user, accessToken);
-        assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
-        assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
-        assertNull("Null expected.", sessionAuthenticationInfo.getRealmName());
-        assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getAccessToken());
-        assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getCredentials());
+        Assert.assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
+        Assert.assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
+        Assert.assertNull("Null expected.", sessionAuthenticationInfo.getRealmName());
+        Assert.assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getAccessToken());
+        Assert.assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getCredentials());
         try {
             sessionAuthenticationInfo.getPrincipals();
-            fail("IllegalArgumentException expected.");
+            Assert.fail("IllegalArgumentException expected.");
         } catch (Exception e) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException("realmName argument cannot be null.").toString(), e.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException("realmName argument cannot be null.").toString(), e.toString());
         }
     }
 
@@ -71,12 +72,12 @@ public class SessionAuthenticationInfoTest extends Assert {
     public void sessionAuthenticationInfoNullAccountTest() {
         for (String realmName : realmNames) {
             SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(realmName, null, user, accessToken);
-            assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
-            assertNull("Null expected.", sessionAuthenticationInfo.getAccount());
-            assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());
-            assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getAccessToken());
-            assertFalse("False expected.", sessionAuthenticationInfo.getPrincipals().isEmpty());
-            assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
+            Assert.assertNull("Null expected.", sessionAuthenticationInfo.getAccount());
+            Assert.assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());
+            Assert.assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getAccessToken());
+            Assert.assertFalse("False expected.", sessionAuthenticationInfo.getPrincipals().isEmpty());
+            Assert.assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getCredentials());
         }
     }
 
@@ -84,16 +85,16 @@ public class SessionAuthenticationInfoTest extends Assert {
     public void sessionAuthenticationInfoNullUserTest() {
         for (String realmName : realmNames) {
             SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(realmName, account, null, accessToken);
-            assertNull("Null expected.", sessionAuthenticationInfo.getUser());
-            assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
-            assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());
-            assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getAccessToken());
-            assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getCredentials());
+            Assert.assertNull("Null expected.", sessionAuthenticationInfo.getUser());
+            Assert.assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
+            Assert.assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());
+            Assert.assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getAccessToken());
+            Assert.assertEquals("Expected and actual values should be the same.", accessToken, sessionAuthenticationInfo.getCredentials());
             try {
                 sessionAuthenticationInfo.getPrincipals();
-                fail("IllegalArgumentException expected.");
+                Assert.fail("IllegalArgumentException expected.");
             } catch (Exception e) {
-                assertEquals("Expected and actual values should be the same.", new NullPointerException("principal argument cannot be null.").toString(), e.toString());
+                Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException("principal argument cannot be null.").toString(), e.toString());
             }
         }
     }
@@ -102,12 +103,12 @@ public class SessionAuthenticationInfoTest extends Assert {
     public void sessionAuthenticationInfoNullAccessTokenTest() {
         for (String realmName : realmNames) {
             SessionAuthenticationInfo sessionAuthenticationInfo = new SessionAuthenticationInfo(realmName, account, user, null);
-            assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
-            assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
-            assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());
-            assertNull("Null expected.", sessionAuthenticationInfo.getAccessToken());
-            assertFalse("False expected.", sessionAuthenticationInfo.getPrincipals().isEmpty());
-            assertNull("Null expected.", sessionAuthenticationInfo.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", user, sessionAuthenticationInfo.getUser());
+            Assert.assertEquals("Expected and actual values should be the same.", account, sessionAuthenticationInfo.getAccount());
+            Assert.assertEquals("Expected and actual values should be the same.", realmName, sessionAuthenticationInfo.getRealmName());
+            Assert.assertNull("Null expected.", sessionAuthenticationInfo.getAccessToken());
+            Assert.assertFalse("False expected.", sessionAuthenticationInfo.getPrincipals().isEmpty());
+            Assert.assertNull("Null expected.", sessionAuthenticationInfo.getCredentials());
         }
     }
 }

@@ -27,8 +27,9 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class AccessInfoFactoryImplTest extends Assert {
+public class AccessInfoFactoryImplTest {
 
     AccessInfoFactoryImpl accessInfoFactoryImpl;
     KapuaId scopeId;
@@ -58,63 +59,63 @@ public class AccessInfoFactoryImplTest extends Assert {
     public void newEntityTest() {
         AccessInfo accessInfo = accessInfoFactoryImpl.newEntity(scopeId);
 
-        assertNull("Null expected.", accessInfo.getScopeId());
+        Assert.assertNull("Null expected.", accessInfo.getScopeId());
     }
 
     @Test
     public void newEntityNullTest() {
         AccessInfo accessInfo = accessInfoFactoryImpl.newEntity(null);
 
-        assertNull("Null expected.", accessInfo.getScopeId());
+        Assert.assertNull("Null expected.", accessInfo.getScopeId());
     }
 
     @Test
     public void newCreatorTest() {
         AccessInfoCreator accessInfoCreator = accessInfoFactoryImpl.newCreator(scopeId);
 
-        assertEquals("Expected and actual values should be the same.", scopeId, accessInfoCreator.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, accessInfoCreator.getScopeId());
     }
 
     @Test
     public void newCreatorNullTest() {
         AccessInfoCreator accessInfoCreator = accessInfoFactoryImpl.newCreator(null);
 
-        assertNull("Null expected.", accessInfoCreator.getScopeId());
+        Assert.assertNull("Null expected.", accessInfoCreator.getScopeId());
     }
 
     @Test
     public void newQueryTest() {
         AccessInfoQuery accessInfoQuery = accessInfoFactoryImpl.newQuery(scopeId);
 
-        assertEquals("Expected and actual values should be the same.", scopeId, accessInfoQuery.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, accessInfoQuery.getScopeId());
     }
 
     @Test
     public void newQueryNullTest() {
         AccessInfoQuery accessInfoQuery = accessInfoFactoryImpl.newQuery(null);
 
-        assertNull("Null expected.", accessInfoQuery.getScopeId());
+        Assert.assertNull("Null expected.", accessInfoQuery.getScopeId());
     }
 
     @Test
     public void newListResultTest() {
         AccessInfoListResult accessInfoListResult = accessInfoFactoryImpl.newListResult();
 
-        assertTrue("True expected.", accessInfoListResult.isEmpty());
+        Assert.assertTrue("True expected.", accessInfoListResult.isEmpty());
     }
 
     @Test
     public void cloneTest() {
         AccessInfo resultAccessInfo = accessInfoFactoryImpl.clone(accessInfo);
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultAccessInfo.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessInfo.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultAccessInfo.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, resultAccessInfo.getCreatedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessInfo.getModifiedBy());
-        assertEquals("Expected and actual values should be the same.", modifiedOn, resultAccessInfo.getModifiedOn());
-        assertEquals("Expected and actual values should be the same.", 11, resultAccessInfo.getOptlock());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessInfo.getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultAccessInfo.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessInfo.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultAccessInfo.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, resultAccessInfo.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessInfo.getModifiedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, resultAccessInfo.getModifiedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", 11, resultAccessInfo.getOptlock());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessInfo.getUserId());
     }
 
     @Test(expected = KapuaEntityCloneException.class)
