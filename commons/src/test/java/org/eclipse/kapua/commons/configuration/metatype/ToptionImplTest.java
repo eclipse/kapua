@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ToptionImplTest extends Assert {
+public class ToptionImplTest {
 
     @Before
     public void createInstanceOfClass() {
@@ -31,13 +32,13 @@ public class ToptionImplTest extends Assert {
 
     @Test
     public void getAnyWithNullTest() {
-        assertTrue(toption.getAny().isEmpty());
+        Assert.assertTrue(toption.getAny().isEmpty());
     }
 
     @Test
     public void setAndGetLabelToNullTest() {
         toption.setLabel(null);
-        assertNull(toption.getLabel());
+        Assert.assertNull(toption.getLabel());
     }
 
     @Test
@@ -45,14 +46,14 @@ public class ToptionImplTest extends Assert {
         String[] permittedValues = {"", "!@#$%^^&**(-()_)+/|", "regularLabel", "regular Label", "49", "regularLabel49", "LABEL", "246465494135646120009090049684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             toption.setLabel(value);
-            assertTrue(toption.getLabel().contains(value));
+            Assert.assertTrue(toption.getLabel().contains(value));
         }
     }
 
     @Test
     public void setAndGetValueToNullTest() {
         toption.setValue(null);
-        assertNull(toption.getValue());
+        Assert.assertNull(toption.getValue());
     }
 
     @Test
@@ -60,12 +61,12 @@ public class ToptionImplTest extends Assert {
         String[] permittedValues = {"", "!@#$%^^&**(-()_)+/|", "regularValue", "regular Value", "49", "regularValue49", "VALUE", "246465494135646120009090049684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             toption.setValue(value);
-            assertTrue(toption.getValue().contains(value));
+            Assert.assertTrue(toption.getValue().contains(value));
         }
     }
 
     @Test
     public void getOtherAttributesTest() {
-        assertTrue(toption.getOtherAttributes().isEmpty());
+        Assert.assertTrue(toption.getOtherAttributes().isEmpty());
     }
 }

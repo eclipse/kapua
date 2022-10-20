@@ -17,34 +17,35 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ServiceEntryTest extends Assert {
+public class ServiceEntryTest {
 
     @Test
     public void constructorRegularTest() throws Exception {
         ServiceEntry serviceEntry = new ServiceEntry("serviceName", "serviceAddress");
-        assertEquals("Expected and actual values are not equal!", "serviceName", serviceEntry.getServiceName());
-        assertEquals("Expected and actual values are not equal!", "serviceAddress", serviceEntry.getAddress());
+        Assert.assertEquals("Expected and actual values are not equal!", "serviceName", serviceEntry.getServiceName());
+        Assert.assertEquals("Expected and actual values are not equal!", "serviceAddress", serviceEntry.getAddress());
     }
 
     @Test
     public void constructorNullTest() throws Exception {
         ServiceEntry serviceEntry = new ServiceEntry(null, null);
-        assertNull("Null expected!", serviceEntry.getServiceName());
-        assertNull("Null expected!", serviceEntry.getAddress());
+        Assert.assertNull("Null expected!", serviceEntry.getServiceName());
+        Assert.assertNull("Null expected!", serviceEntry.getAddress());
     }
 
     @Test
     public void constructorNameNullTest() throws Exception {
         ServiceEntry serviceEntry = new ServiceEntry(null, "serviceAddress");
-        assertNull("Null expected!", serviceEntry.getServiceName());
-        assertEquals("Expected and actual values are not equal!", "serviceAddress", serviceEntry.getAddress());
+        Assert.assertNull("Null expected!", serviceEntry.getServiceName());
+        Assert.assertEquals("Expected and actual values are not equal!", "serviceAddress", serviceEntry.getAddress());
     }
 
     @Test
     public void constructorAddressNullTest() throws Exception {
         ServiceEntry serviceEntry = new ServiceEntry("serviceName", null);
-        assertEquals("Expected and actual values are not equal!", "serviceName", serviceEntry.getServiceName());
-        assertNull("Null expected!", serviceEntry.getAddress());
+        Assert.assertEquals("Expected and actual values are not equal!", "serviceName", serviceEntry.getServiceName());
+        Assert.assertNull("Null expected!", serviceEntry.getAddress());
     }
 }

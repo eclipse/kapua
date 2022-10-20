@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 
 import java.util.Properties;
 
+
 @Category(JUnitTests.class)
-public class ServiceConfigImplTest extends Assert {
+public class ServiceConfigImplTest {
     ServiceConfigImpl serviceConfigImpl;
 
     @Before
@@ -35,25 +36,25 @@ public class ServiceConfigImplTest extends Assert {
     @Test
     public void constructorWithNoValuesTest() {
         ServiceConfigImpl config = new ServiceConfigImpl();
-        assertNull(config.getPid());
+        Assert.assertNull(config.getPid());
     }
 
     @Test
     public void setPidRegularTest() {
         serviceConfigImpl.setPid("123");
-        assertEquals(serviceConfigImpl.getPid(), "123");
+        Assert.assertEquals(serviceConfigImpl.getPid(), "123");
     }
 
     @Test
     public void setPidNullValueTest() {
         serviceConfigImpl.setPid(null);
-        assertNull(serviceConfigImpl.getPid());
+        Assert.assertNull(serviceConfigImpl.getPid());
     }
 
     @Test
     public void setConfigurationsNullValueTest() throws KapuaException {
         serviceConfigImpl.setConfigurations(null);
-        assertEquals(serviceConfigImpl.getConfigurations(), new Properties());
+        Assert.assertEquals(serviceConfigImpl.getConfigurations(), new Properties());
     }
 
     @Test
@@ -61,11 +62,11 @@ public class ServiceConfigImplTest extends Assert {
         Properties properties = new Properties();
         properties.setProperty("prop1", "value1");
         serviceConfigImpl.setConfigurations(properties);
-        assertEquals(serviceConfigImpl.getConfigurations(), properties);
+        Assert.assertEquals(serviceConfigImpl.getConfigurations(), properties);
     }
 
     @Test
     public void getTypeTest() {
-        assertEquals(serviceConfigImpl.getType(), ServiceConfig.TYPE);
+        Assert.assertEquals(serviceConfigImpl.getType(), ServiceConfig.TYPE);
     }
 }

@@ -26,8 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class TocdImplTest extends Assert {
+public class TocdImplTest {
 
     @Before
     public void createInstanceOfClasses() {
@@ -49,7 +50,7 @@ public class TocdImplTest extends Assert {
 
     @Test
     public void getADTest() {
-        assertTrue(tocdImpl.getAD().isEmpty());
+        Assert.assertTrue(tocdImpl.getAD().isEmpty());
     }
 
     @Test
@@ -57,7 +58,7 @@ public class TocdImplTest extends Assert {
         List<KapuaTad> expectedValues = new ArrayList<>();
         expectedValues.add(tadImpl);
         tocdImpl.setAD(expectedValues);
-        assertEquals("tocdImpl.ad", expectedValues, tocdImpl.getAD());
+        Assert.assertEquals("tocdImpl.ad", expectedValues, tocdImpl.getAD());
     }
 
     @Test
@@ -65,12 +66,12 @@ public class TocdImplTest extends Assert {
         tocdImpl.addAD(tadImpl3);
         tocdImpl.addAD(tadImpl2);
         tocdImpl.getAD();
-        assertTrue(tocdImpl.getAD().contains(tadImpl3) && tocdImpl.getAD().contains(tadImpl2));
+        Assert.assertTrue(tocdImpl.getAD().contains(tadImpl3) && tocdImpl.getAD().contains(tadImpl2));
     }
 
     @Test
     public void getIconTest(){
-        assertTrue(tocdImpl.getIcon().isEmpty());
+        Assert.assertTrue(tocdImpl.getIcon().isEmpty());
     }
 
     @Test
@@ -78,7 +79,7 @@ public class TocdImplTest extends Assert {
         List<KapuaTicon> listOfObj = new ArrayList<>();
         listOfObj.add(ticon);
         tocdImpl.setIcon(listOfObj);
-        assertEquals("tocdImpl.icon", listOfObj, tocdImpl.getIcon());
+        Assert.assertEquals("tocdImpl.icon", listOfObj, tocdImpl.getIcon());
     }
 
     @Test
@@ -86,12 +87,12 @@ public class TocdImplTest extends Assert {
         tocdImpl.addIcon(ticon);
         tocdImpl.addIcon(ticon2);
         tocdImpl.getIcon();
-        assertTrue(tocdImpl.getIcon().contains(ticon) && tocdImpl.getIcon().contains(ticon2));
+        Assert.assertTrue(tocdImpl.getIcon().contains(ticon) && tocdImpl.getIcon().contains(ticon2));
     }
 
     @Test
     public void getAnyTest() {
-        assertTrue(tocdImpl.getAny().isEmpty());
+        Assert.assertTrue(tocdImpl.getAny().isEmpty());
     }
 
     @Test
@@ -100,20 +101,20 @@ public class TocdImplTest extends Assert {
         options.add(ticon);
         options.add(ticon2);
         tocdImpl.setAny(options);
-        assertEquals("tocdImpl.any", options, tocdImpl.getAny());
+        Assert.assertEquals("tocdImpl.any", options, tocdImpl.getAny());
     }
 
     @Test
     public void addAndGetAnyTest() {
         tocdImpl.addAny(ticon);
         tocdImpl.addAny(ticon2);
-        assertTrue(tocdImpl.getAny().contains(ticon) && tocdImpl.getAny().contains(ticon2));
+        Assert.assertTrue(tocdImpl.getAny().contains(ticon) && tocdImpl.getAny().contains(ticon2));
     }
 
     @Test
     public void setAndGetNameToNullTest() {
         tocdImpl.setName(null);
-        assertNull(tocdImpl.getName());
+        Assert.assertNull(tocdImpl.getName());
     }
 
     @Test
@@ -121,14 +122,14 @@ public class TocdImplTest extends Assert {
         String[] permittedValues = {"", "!@#$%^^&**(-()_)+/|", "regularName", "regular Name", "49", "regularName49", "REGULAR", "246465494135646120009090049684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             tocdImpl.setName(value);
-            assertTrue(tocdImpl.getName().contains(value));
+            Assert.assertTrue(tocdImpl.getName().contains(value));
         }
     }
 
     @Test
     public void setAndGetDescriptionToNullTest() {
         tocdImpl.setDescription(null);
-        assertNull(tocdImpl.getDescription());
+        Assert.assertNull(tocdImpl.getDescription());
     }
 
     @Test
@@ -136,14 +137,14 @@ public class TocdImplTest extends Assert {
         String[] permittedValues = {"", "!@#$%^^&**(-()_)+/|", "regular Description", "49", "regularDescription49", "DESCRIPTION", "246465494135646120009090049684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             tocdImpl.setDescription(value);
-            assertTrue(tocdImpl.getDescription().contains(value));
+            Assert.assertTrue(tocdImpl.getDescription().contains(value));
         }
     }
 
     @Test
     public void setAndGetIdToNullTest() {
         tocdImpl.setId(null);
-        assertNull(tocdImpl.getId());
+        Assert.assertNull(tocdImpl.getId());
     }
 
     @Test
@@ -151,7 +152,7 @@ public class TocdImplTest extends Assert {
         String[] permittedValues = {"", "regularId", "49", "regular Id", "regular id with spaces", "!@#$%&*()_+/->,<", "ID", "id123"};
         for (String value : permittedValues) {
             tocdImpl.setId(value);
-            assertTrue(tocdImpl.getId().contains(value));
+            Assert.assertTrue(tocdImpl.getId().contains(value));
         }
     }
 
@@ -167,12 +168,12 @@ public class TocdImplTest extends Assert {
         tocdImpl.putOtherAttribute(QName.valueOf("2"),"b");
         tocdImpl.putOtherAttribute(QName.valueOf("3"),"c");
 
-        assertEquals("tocdImpl.otherAttributes", expectedValues, tocdImpl.getOtherAttributes());
+        Assert.assertEquals("tocdImpl.otherAttributes", expectedValues, tocdImpl.getOtherAttributes());
     }
 
     @Test
     public void getOtherAttributeTest() {
-        assertTrue(tocdImpl.getOtherAttributes().isEmpty());
+        Assert.assertTrue(tocdImpl.getOtherAttributes().isEmpty());
     }
 
     @Test
@@ -184,6 +185,6 @@ public class TocdImplTest extends Assert {
         values.put(QName.valueOf("3"), "c");
 
         tocdImpl.setOtherAttributes(values);
-        assertEquals("tocdImpl.otherAttributes", values, tocdImpl.getOtherAttributes());
+        Assert.assertEquals("tocdImpl.otherAttributes", values, tocdImpl.getOtherAttributes());
     }
 }

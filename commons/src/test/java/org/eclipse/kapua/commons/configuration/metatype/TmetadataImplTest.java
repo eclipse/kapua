@@ -26,8 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class TmetadataImplTest extends Assert {
+public class TmetadataImplTest {
 
     @Before
     public void createInstanceOfClasses() {
@@ -44,7 +45,7 @@ public class TmetadataImplTest extends Assert {
 
     @Test
     public void getOCDTest() {
-        assertTrue(tmetadata.getOCD().isEmpty());
+        Assert.assertTrue(tmetadata.getOCD().isEmpty());
     }
 
     @Test
@@ -53,12 +54,12 @@ public class TmetadataImplTest extends Assert {
         ocd.add(tocd);
         ocd.add(emptyTocd);
         tmetadata.setOCD(ocd);
-        assertEquals("tmetadata.ocd", ocd, tmetadata.getOCD());
+        Assert.assertEquals("tmetadata.ocd", ocd, tmetadata.getOCD());
     }
 
     @Test
     public void getDesignateTest() {
-        assertTrue(tmetadata.getDesignate().isEmpty());
+        Assert.assertTrue(tmetadata.getDesignate().isEmpty());
     }
 
     @Test
@@ -66,12 +67,12 @@ public class TmetadataImplTest extends Assert {
         List<KapuaTdesignate> designate = new ArrayList<>();
         designate.add(tdesignate);
         tmetadata.setDesignate(designate);
-        assertEquals("tmetadata.designate", designate, tmetadata.getDesignate());
+        Assert.assertEquals("tmetadata.designate", designate, tmetadata.getDesignate());
     }
 
     @Test
     public void getAnyTest() {
-        assertTrue(tmetadata.getAny().isEmpty());
+        Assert.assertTrue(tmetadata.getAny().isEmpty());
     }
 
     @Test
@@ -80,13 +81,13 @@ public class TmetadataImplTest extends Assert {
         options.add(tocd);
         options.add(emptyTocd);
         tmetadata.setAny(options);
-        assertEquals("tmetadata.ocd", options, tmetadata.getAny());
+        Assert.assertEquals("tmetadata.ocd", options, tmetadata.getAny());
     }
 
     @Test
     public void setAndGetLocalizationToNullTest() {
         tmetadata.setLocalization(null);
-        assertNull(tmetadata.getLocalization());
+        Assert.assertNull(tmetadata.getLocalization());
     }
 
     @Test
@@ -94,13 +95,13 @@ public class TmetadataImplTest extends Assert {
         String[] permittedValues = {"", "!@#$%^^&**(-()_)+/|", "regularLocalization", "regular Localization", "49", "regularLocalization49", "LOCALIZATION", "246465494135646120009090049684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             tmetadata.setLocalization(value);
-            assertTrue(tmetadata.getLocalization().contains(value));
+            Assert.assertTrue(tmetadata.getLocalization().contains(value));
         }
     }
 
     @Test
     public void testGetOtherAttribute() {
-        assertTrue(tmetadata.getOtherAttributes().isEmpty());
+        Assert.assertTrue(tmetadata.getOtherAttributes().isEmpty());
     }
 
     @Test
@@ -112,6 +113,6 @@ public class TmetadataImplTest extends Assert {
         values.put(QName.valueOf("3"), "c");
 
         tmetadata.setOtherAttributes(values);
-        assertEquals("tmetadata.otherAttributes", values, tmetadata.getOtherAttributes());
+        Assert.assertEquals("tmetadata.otherAttributes", values, tmetadata.getOtherAttributes());
     }
 }

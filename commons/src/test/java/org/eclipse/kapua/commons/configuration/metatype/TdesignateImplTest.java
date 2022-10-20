@@ -20,8 +20,9 @@ import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 
+
 @Category(JUnitTests.class)
-public class TdesignateImplTest extends Assert {
+public class TdesignateImplTest {
 
     @Before
     public void createInstanceOfClass() {
@@ -34,25 +35,25 @@ public class TdesignateImplTest extends Assert {
     @Test
     public void setAndGetObjectToNullTest() {
         tdesignate.setObject(null);
-        assertNull(tdesignate.getObject());
+        Assert.assertNull(tdesignate.getObject());
     }
 
     @Test
     public void setAndGetObjectTest() {
         TobjectImpl tobject = new TobjectImpl();
         tdesignate.setObject(tobject);
-        assertEquals("tdesignate.object", tobject, tdesignate.getObject());
+        Assert.assertEquals("tdesignate.object", tobject, tdesignate.getObject());
     }
 
     @Test
     public void getAnyTest() {
-        assertTrue(tdesignate.getAny().isEmpty());
+        Assert.assertTrue(tdesignate.getAny().isEmpty());
     }
 
     @Test
     public void setAndGetAnyToNullTest() {
         tdesignate.setAny(null);
-        assertTrue(tdesignate.getAny().isEmpty());
+        Assert.assertTrue(tdesignate.getAny().isEmpty());
     }
 
     @Test
@@ -67,13 +68,13 @@ public class TdesignateImplTest extends Assert {
         objectArrayList.add(new ToptionImpl());
 
         tdesignate.setAny(objectArrayList);
-        assertEquals("tdesignate.any", objectArrayList, tdesignate.getAny());
+        Assert.assertEquals("tdesignate.any", objectArrayList, tdesignate.getAny());
     }
 
     @Test
     public void setAndGetPidToNullTest() {
         tdesignate.setPid(null);
-        assertNull(tdesignate.getPid());
+        Assert.assertNull(tdesignate.getPid());
     }
 
     @Test
@@ -81,14 +82,14 @@ public class TdesignateImplTest extends Assert {
         String[] permittedValues = {"", "!@#$%^^&**(-()_)+/|", "regularPid", "regular Pid", "49", "regularPid49", "PID", "2 46 465494 13564612 0009 09004 9684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             tdesignate.setPid(value);
-            assertTrue(tdesignate.getPid().contains(value));
+            Assert.assertTrue(tdesignate.getPid().contains(value));
         }
     }
 
     @Test
     public void setAndGetFactoryPidToNullTest() {
         tdesignate.setFactoryPid(null);
-        assertNull(tdesignate.getFactoryPid());
+        Assert.assertNull(tdesignate.getFactoryPid());
     }
 
     @Test
@@ -96,14 +97,14 @@ public class TdesignateImplTest extends Assert {
         String[] permittedValues = {"", "!@#$%^^&**(-()_)+/|", "regularPid", "regular Pid", "49", "regularPid49", "PID", "2 46 465494 13564612 0009 09004 9684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             tdesignate.setFactoryPid(value);
-            assertTrue(tdesignate.getFactoryPid().contains(value));
+            Assert.assertTrue(tdesignate.getFactoryPid().contains(value));
         }
     }
 
     @Test
     public void setAndGetBundleToNullTest() {
         tdesignate.setBundle(null);
-        assertNull(tdesignate.getBundle());
+        Assert.assertNull(tdesignate.getBundle());
     }
 
     @Test
@@ -111,14 +112,14 @@ public class TdesignateImplTest extends Assert {
         String[] permittedValues = {"", "!@#$%^^&**(-()_)+/|", "regularBundle", "regular Bundle", "49", "regularBundle49", "BUNDLE", "2 46 465494 13564612 0009 09004 9684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             tdesignate.setBundle(value);
-            assertTrue(tdesignate.getBundle().contains(value));
+            Assert.assertTrue(tdesignate.getBundle().contains(value));
         }
     }
 
     @Test
     public void setAndGetOptionalToNullTest() {
         tdesignate.setOptional(null);
-        assertFalse(tdesignate.isOptional());
+        Assert.assertFalse(tdesignate.isOptional());
     }
 
     @Test
@@ -126,14 +127,14 @@ public class TdesignateImplTest extends Assert {
         boolean[] permittedValues = {false, true};
         for (boolean value : permittedValues) {
             tdesignate.setOptional(value);
-            assertEquals("tdesignate.isOptional", value, tdesignate.isOptional());
+            Assert.assertEquals("tdesignate.isOptional", value, tdesignate.isOptional());
         }
     }
 
     @Test
     public void setAndGetMergeToNullTest() {
         tdesignate.setMerge(null);
-        assertFalse(tdesignate.isMerge());
+        Assert.assertFalse(tdesignate.isMerge());
     }
 
     @Test
@@ -141,18 +142,18 @@ public class TdesignateImplTest extends Assert {
         boolean[] permittedValues = {false, true};
         for (boolean value : permittedValues) {
             tdesignate.setMerge(value);
-            assertEquals("tdesignate.isMerge", value, tdesignate.isMerge());
+            Assert.assertEquals("tdesignate.isMerge", value, tdesignate.isMerge());
         }
     }
 
     @Test
     public void getOtherAttributesTest() {
-        assertTrue(tdesignate.getOtherAttributes().isEmpty());
+        Assert.assertTrue(tdesignate.getOtherAttributes().isEmpty());
     }
 
     @Test
     public void setAndGetOtherAttributesToNullTest() {
         tdesignate.setOtherAttributes(null);
-        assertNull(tdesignate.getOtherAttributes());
+        Assert.assertNull(tdesignate.getOtherAttributes());
     }
 }

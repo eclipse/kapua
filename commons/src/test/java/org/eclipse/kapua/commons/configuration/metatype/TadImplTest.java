@@ -25,8 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class TadImplTest extends Assert {
+public class TadImplTest {
 
     @Before
     public void createInstanceOfClasses() {
@@ -43,7 +44,7 @@ public class TadImplTest extends Assert {
     @Test
     public void getOptionToNullTest() {
         tadImpl.getOption();
-        assertTrue(tadImpl.getOption().isEmpty());
+        Assert.assertTrue(tadImpl.getOption().isEmpty());
     }
 
     @Test
@@ -51,7 +52,7 @@ public class TadImplTest extends Assert {
         List<KapuaToption> option = new ArrayList<>();
         option.add(toption);
         tadImpl.setOption(option);
-        assertEquals("tadImpl.option", option, tadImpl.getOption());
+        Assert.assertEquals("tadImpl.option", option, tadImpl.getOption());
     }
 
     @Test
@@ -63,12 +64,12 @@ public class TadImplTest extends Assert {
         tadImpl.addOption(toption);
         tadImpl.addOption(toption2);
 
-        assertEquals("tadImpl.option", options, tadImpl.getOption());
+        Assert.assertEquals("tadImpl.option", options, tadImpl.getOption());
     }
 
     @Test
     public void getAnyTest() {
-        assertTrue(tadImpl.getAny().isEmpty());
+        Assert.assertTrue(tadImpl.getAny().isEmpty());
     }
 
     @Test
@@ -78,13 +79,13 @@ public class TadImplTest extends Assert {
         options.add(toption2);
         options.add(null);
         tadImpl.setAny(options);
-        assertEquals("tadImpl.option", options, tadImpl.getAny());
+        Assert.assertEquals("tadImpl.option", options, tadImpl.getAny());
     }
 
     @Test
     public void setAndGetNameToNullTest() {
         tadImpl.setName(null);
-        assertNull(tadImpl.getName());
+        Assert.assertNull(tadImpl.getName());
     }
 
     @Test
@@ -92,14 +93,14 @@ public class TadImplTest extends Assert {
         String[] permittedValues = {"", "regularName", "49", "regular Name", "regular name with spaces", "!@#$%&*()_+/->,<", "NAME", "name123"};
         for (String value : permittedValues) {
             tadImpl.setName(value);
-            assertTrue(tadImpl.getName().contains(value));
+            Assert.assertTrue(tadImpl.getName().contains(value));
         }
     }
 
     @Test
     public void setAndGetDescriptionToNullTest() {
         tadImpl.setDescription(null);
-        assertNull(tadImpl.getDescription());
+        Assert.assertNull(tadImpl.getDescription());
     }
 
     @Test
@@ -107,14 +108,14 @@ public class TadImplTest extends Assert {
         String[] permittedValues = {"", "regularDescription", "49", "regular Description", "regular description with spaces", "!@#$%&*()_+/->,<", "DESCRIPTION", "description123"};
         for (String value : permittedValues) {
             tadImpl.setDescription(value);
-            assertTrue(tadImpl.getDescription().contains(value));
+            Assert.assertTrue(tadImpl.getDescription().contains(value));
         }
     }
 
     @Test
     public void setAndGetIdToNullTest() {
         tadImpl.setId(null);
-        assertNull(tadImpl.getId());
+        Assert.assertNull(tadImpl.getId());
     }
 
     @Test
@@ -122,74 +123,74 @@ public class TadImplTest extends Assert {
         String[] permittedValues = {"", "regularId", "49", "regular Id", "regular id with spaces", "!@#$%&*()_+/->,<", "ID", "id123"};
         for (String value : permittedValues) {
             tadImpl.setId(value);
-            assertTrue(tadImpl.getId().contains(value));
+            Assert.assertTrue(tadImpl.getId().contains(value));
         }
     }
 
     @Test
     public void setAndGetTypeStringTest() {
         tadImpl.setType(TscalarImpl.STRING);
-        assertEquals("tadImpl.type", TscalarImpl.STRING, tadImpl.getType());
+        Assert.assertEquals("tadImpl.type", TscalarImpl.STRING, tadImpl.getType());
     }
 
     @Test
     public void setAndGetTypeLongTest() {
         tadImpl.setType(TscalarImpl.LONG);
-        assertEquals("tadImpl.type", TscalarImpl.LONG, tadImpl.getType());
+        Assert.assertEquals("tadImpl.type", TscalarImpl.LONG, tadImpl.getType());
     }
 
     @Test
     public void setAndGetTypeDoubleTest() {
         tadImpl.setType(TscalarImpl.DOUBLE);
-        assertEquals("tadImpl.type", TscalarImpl.DOUBLE, tadImpl.getType());
+        Assert.assertEquals("tadImpl.type", TscalarImpl.DOUBLE, tadImpl.getType());
     }
 
     @Test
     public void setAndGetTypeFloatTest() {
         tadImpl.setType(TscalarImpl.FLOAT);
-        assertEquals("tadImpl.type", TscalarImpl.FLOAT, tadImpl.getType());
+        Assert.assertEquals("tadImpl.type", TscalarImpl.FLOAT, tadImpl.getType());
     }
 
     @Test
     public void setAndGetTypeIntegerTest() {
         tadImpl.setType(TscalarImpl.INTEGER);
-        assertEquals("tadImpl.type", TscalarImpl.INTEGER, tadImpl.getType());
+        Assert.assertEquals("tadImpl.type", TscalarImpl.INTEGER, tadImpl.getType());
     }
 
     @Test
     public void setAndGetTypeByteTest() {
         tadImpl.setType(TscalarImpl.BYTE);
-        assertEquals("tadImpl.type", TscalarImpl.BYTE, tadImpl.getType());
+        Assert.assertEquals("tadImpl.type", TscalarImpl.BYTE, tadImpl.getType());
     }
 
     @Test
     public void setAndGetTypeCharTest() {
         tadImpl.setType(TscalarImpl.CHAR);
-        assertEquals("tadImpl.type", TscalarImpl.CHAR, tadImpl.getType());
+        Assert.assertEquals("tadImpl.type", TscalarImpl.CHAR, tadImpl.getType());
     }
 
     @Test
     public void setAndGetTypeBooleanTest() {
         tadImpl.setType(TscalarImpl.BOOLEAN);
-        assertEquals("tadImpl.type", TscalarImpl.BOOLEAN, tadImpl.getType());
+        Assert.assertEquals("tadImpl.type", TscalarImpl.BOOLEAN, tadImpl.getType());
     }
 
     @Test
     public void setAndGetTypeShortTest() {
         tadImpl.setType(TscalarImpl.SHORT);
-        assertEquals("tadImpl.type", TscalarImpl.SHORT, tadImpl.getType());
+        Assert.assertEquals("tadImpl.type", TscalarImpl.SHORT, tadImpl.getType());
     }
 
     @Test
     public void setAndGetTypePasswordTest() {
         tadImpl.setType(TscalarImpl.PASSWORD);
-        assertEquals("tadImpl.type", TscalarImpl.PASSWORD, tadImpl.getType());
+        Assert.assertEquals("tadImpl.type", TscalarImpl.PASSWORD, tadImpl.getType());
     }
 
     @Test
     public void setAndGetCardinalityToNullTest() {
         tadImpl.setCardinality(null);
-        assertEquals("tadImpl.cardinality", 0, (int) tadImpl.getCardinality());
+        Assert.assertEquals("tadImpl.cardinality", 0, (int) tadImpl.getCardinality());
     }
 
     @Test
@@ -197,14 +198,14 @@ public class TadImplTest extends Assert {
         int[] permittedValues = {1, 10, 100, 500, -2147483648, 2147483647, 0};
         for (int value : permittedValues) {
             tadImpl.setCardinality(value);
-            assertEquals("tadImpl.cardinality", Integer.valueOf(value), tadImpl.getCardinality());
+            Assert.assertEquals("tadImpl.cardinality", Integer.valueOf(value), tadImpl.getCardinality());
         }
     }
 
     @Test
     public void setAndGetMinToNullTest() {
         tadImpl.setMin(null);
-        assertNull(tadImpl.getMin());
+        Assert.assertNull(tadImpl.getMin());
     }
 
     @Test
@@ -212,14 +213,14 @@ public class TadImplTest extends Assert {
         String[] permittedValues = {"", "regularMin", "49", "regular Min", "regular min with spaces", "!@#$%&*()_+/->,<", "MIN", "min123"};
         for (String value : permittedValues) {
             tadImpl.setMin(value);
-            assertTrue(tadImpl.getMin().contains(value));
+            Assert.assertTrue(tadImpl.getMin().contains(value));
         }
     }
 
     @Test
     public void setAndGetMaxToNullTest() {
         tadImpl.setMax(null);
-        assertNull(tadImpl.getMax());
+        Assert.assertNull(tadImpl.getMax());
     }
 
     @Test
@@ -227,14 +228,14 @@ public class TadImplTest extends Assert {
         String[] permittedValues = {"", "regularMax", "49", "regular Max", "regular max with spaces", "!@#$%&*()_+/->,<", "MAX", "max123"};
         for (String value : permittedValues) {
             tadImpl.setMax(value);
-            assertTrue(tadImpl.getMax().contains(value));
+            Assert.assertTrue(tadImpl.getMax().contains(value));
         }
     }
 
     @Test
     public void setAndGetDefaultToNullTest() {
         tadImpl.setDefault(null);
-        assertNull(tadImpl.getDefault());
+        Assert.assertNull(tadImpl.getDefault());
     }
 
     @Test
@@ -242,14 +243,14 @@ public class TadImplTest extends Assert {
         String[] permittedValues = {"", "regularDefault", "49", "regular Default", "regular default with spaces", "!@#$%&*()_+/->,<", "DEFAULT", "default123"};
         for (String value : permittedValues) {
             tadImpl.setDefault(value);
-            assertTrue(tadImpl.getDefault().contains(value));
+            Assert.assertTrue(tadImpl.getDefault().contains(value));
         }
     }
 
     @Test
     public void setIsRequiredToNullTest() {
         tadImpl.setRequired(null);
-        assertTrue(tadImpl.isRequired());
+        Assert.assertTrue(tadImpl.isRequired());
     }
 
     @Test
@@ -257,7 +258,7 @@ public class TadImplTest extends Assert {
         boolean[] permittedValues = {false, true};
         for (boolean value : permittedValues) {
             tadImpl.setRequired(value);
-            assertEquals("tadImpl.value", value, tadImpl.isRequired());
+            Assert.assertEquals("tadImpl.value", value, tadImpl.isRequired());
         }
     }
 
@@ -273,11 +274,11 @@ public class TadImplTest extends Assert {
         tadImpl.putOtherAttribute(QName.valueOf("2"),"b");
         tadImpl.putOtherAttribute(QName.valueOf("3"),"c");
 
-        assertEquals("tadImpl.attributes", expectedValues, tadImpl.getOtherAttributes());
+        Assert.assertEquals("tadImpl.attributes", expectedValues, tadImpl.getOtherAttributes());
     }
 
     @Test
     public void getOtherAttributeTest() {
-        assertTrue(tadImpl.getOtherAttributes().isEmpty());
+        Assert.assertTrue(tadImpl.getOtherAttributes().isEmpty());
     }
 }

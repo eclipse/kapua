@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 /**
  * {@link MetricsService} factory.
  */
+
 @Category(JUnitTests.class)
-public class MetricServiceFactoryTest extends Assert {
+public class MetricServiceFactoryTest {
 
     public static MetricsService instance2;
 
