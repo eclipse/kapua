@@ -25,8 +25,9 @@ import org.junit.experimental.categories.Category;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class KapuaDeviceDataTest extends Assert {
+public class KapuaDeviceDataTest {
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final KapuaDataMessageFactory KAPUA_DATA_MESSAGE_FACTORY = LOCATOR.getFactory(KapuaDataMessageFactory.class);
@@ -40,7 +41,7 @@ public class KapuaDeviceDataTest extends Assert {
         semanticParts.add("part3");
 
         kapuaDataChannel.setSemanticParts(semanticParts);
-        assertEquals("part1/part2/part3", kapuaDataChannel.toString());
+        Assert.assertEquals("part1/part2/part3", kapuaDataChannel.toString());
     }
 
     @Test
@@ -48,13 +49,13 @@ public class KapuaDeviceDataTest extends Assert {
         KapuaDataMessage kapuaDataMessage = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
 
         kapuaDataMessage.setClientId("clientId-1");
-        assertEquals("clientId-1", kapuaDataMessage.getClientId());
+        Assert.assertEquals("clientId-1", kapuaDataMessage.getClientId());
     }
 
     @Test
     public void kapuaDataPayloadDefaultConstructor() {
         KapuaDataPayload kapuaDataPayload = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataPayload();
 
-        assertNotNull(kapuaDataPayload);
+        Assert.assertNotNull(kapuaDataPayload);
     }
 }

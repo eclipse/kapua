@@ -28,8 +28,9 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class RolePermissionFactoryTest extends Assert {
+public class RolePermissionFactoryTest {
 
     RolePermissionFactoryImpl rolePermissionFactoryImpl;
     KapuaId scopeId;
@@ -56,56 +57,56 @@ public class RolePermissionFactoryTest extends Assert {
 
     @Test
     public void newEntityTest() {
-        assertTrue("True expected.", rolePermissionFactoryImpl.newEntity(scopeId) instanceof RolePermission);
-        assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionFactoryImpl.newEntity(scopeId).getScopeId());
+        Assert.assertTrue("True expected.", rolePermissionFactoryImpl.newEntity(scopeId) instanceof RolePermission);
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionFactoryImpl.newEntity(scopeId).getScopeId());
     }
 
     @Test
     public void newEntityNullTest() {
-        assertTrue("True expected.", rolePermissionFactoryImpl.newEntity(null) instanceof RolePermission);
-        assertNull("Null expected.", rolePermissionFactoryImpl.newEntity(null).getScopeId());
+        Assert.assertTrue("True expected.", rolePermissionFactoryImpl.newEntity(null) instanceof RolePermission);
+        Assert.assertNull("Null expected.", rolePermissionFactoryImpl.newEntity(null).getScopeId());
     }
 
     @Test
     public void newCreatorTest() {
-        assertTrue("True expected.", rolePermissionFactoryImpl.newCreator(scopeId) instanceof RolePermissionCreator);
-        assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionFactoryImpl.newCreator(scopeId).getScopeId());
+        Assert.assertTrue("True expected.", rolePermissionFactoryImpl.newCreator(scopeId) instanceof RolePermissionCreator);
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionFactoryImpl.newCreator(scopeId).getScopeId());
     }
 
     @Test
     public void newCreatorNullTest() {
-        assertTrue("True expected.", rolePermissionFactoryImpl.newCreator(null) instanceof RolePermissionCreator);
-        assertNull("Null expected.", rolePermissionFactoryImpl.newCreator(null).getScopeId());
+        Assert.assertTrue("True expected.", rolePermissionFactoryImpl.newCreator(null) instanceof RolePermissionCreator);
+        Assert.assertNull("Null expected.", rolePermissionFactoryImpl.newCreator(null).getScopeId());
     }
 
     @Test
     public void newQueryTest() {
-        assertTrue("True expected.", rolePermissionFactoryImpl.newQuery(scopeId) instanceof RolePermissionQuery);
-        assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionFactoryImpl.newQuery(scopeId).getScopeId());
+        Assert.assertTrue("True expected.", rolePermissionFactoryImpl.newQuery(scopeId) instanceof RolePermissionQuery);
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionFactoryImpl.newQuery(scopeId).getScopeId());
     }
 
     @Test
     public void newQueryNullTest() {
-        assertTrue("True expected.", rolePermissionFactoryImpl.newQuery(null) instanceof RolePermissionQuery);
-        assertNull("Null expected.", rolePermissionFactoryImpl.newQuery(null).getScopeId());
+        Assert.assertTrue("True expected.", rolePermissionFactoryImpl.newQuery(null) instanceof RolePermissionQuery);
+        Assert.assertNull("Null expected.", rolePermissionFactoryImpl.newQuery(null).getScopeId());
     }
 
     @Test
     public void newListResultTest() {
-        assertTrue("True expected.", rolePermissionFactoryImpl.newListResult() instanceof RolePermissionListResult);
-        assertTrue("True expected.", rolePermissionFactoryImpl.newListResult().isEmpty());
+        Assert.assertTrue("True expected.", rolePermissionFactoryImpl.newListResult() instanceof RolePermissionListResult);
+        Assert.assertTrue("True expected.", rolePermissionFactoryImpl.newListResult().isEmpty());
     }
 
     @Test
     public void cloneTest() {
         RolePermission resultRolePermission = rolePermissionFactoryImpl.clone(rolePermission);
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultRolePermission.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultRolePermission.getRoleId());
-        assertEquals("Expected and actual values should be the same.", permission, resultRolePermission.getPermission());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultRolePermission.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultRolePermission.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, resultRolePermission.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultRolePermission.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultRolePermission.getRoleId());
+        Assert.assertEquals("Expected and actual values should be the same.", permission, resultRolePermission.getPermission());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultRolePermission.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultRolePermission.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, resultRolePermission.getCreatedOn());
     }
 
     @Test(expected = NullPointerException.class)

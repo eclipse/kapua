@@ -44,8 +44,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class AccessPermissionDAOTest extends Assert {
+public class AccessPermissionDAOTest {
 
     EntityManager entityManager;
     AccessPermissionCreator creator;
@@ -72,10 +73,10 @@ public class AccessPermissionDAOTest extends Assert {
         Mockito.when(creator.getAccessInfoId()).thenReturn(KapuaId.ANY);
         Mockito.when(creator.getPermission()).thenReturn(permission);
 
-        assertTrue("True expected.", AccessPermissionDAO.create(entityManager, creator) instanceof AccessPermission);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessPermissionDAO.create(entityManager, creator).getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, AccessPermissionDAO.create(entityManager, creator).getAccessInfoId());
-        assertEquals("Expected and actual values should be the same.", permission, AccessPermissionDAO.create(entityManager, creator).getPermission());
+        Assert.assertTrue("True expected.", AccessPermissionDAO.create(entityManager, creator) instanceof AccessPermission);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessPermissionDAO.create(entityManager, creator).getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, AccessPermissionDAO.create(entityManager, creator).getAccessInfoId());
+        Assert.assertEquals("Expected and actual values should be the same.", permission, AccessPermissionDAO.create(entityManager, creator).getPermission());
     }
 
     @Test(expected = KapuaEntityExistsException.class)
@@ -137,14 +138,14 @@ public class AccessPermissionDAOTest extends Assert {
         Mockito.when(entityManager.find(AccessPermissionImpl.class, accessPermissionId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ANY);
 
-        assertNull("Null expected.", AccessPermissionDAO.find(entityManager, scopeId, accessPermissionId));
+        Assert.assertNull("Null expected.", AccessPermissionDAO.find(entityManager, scopeId, accessPermissionId));
     }
 
     @Test
     public void findNullEntityToFindTest() {
         Mockito.when(entityManager.find(AccessPermissionImpl.class, accessPermissionId)).thenReturn(null);
 
-        assertNull("Null expected.", AccessPermissionDAO.find(entityManager, scopeId, accessPermissionId));
+        Assert.assertNull("Null expected.", AccessPermissionDAO.find(entityManager, scopeId, accessPermissionId));
     }
 
     @Test
@@ -152,7 +153,7 @@ public class AccessPermissionDAOTest extends Assert {
         Mockito.when(entityManager.find(AccessPermissionImpl.class, accessPermissionId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        assertTrue("True expected.", AccessPermissionDAO.find(entityManager, scopeId, accessPermissionId) instanceof AccessPermission);
+        Assert.assertTrue("True expected.", AccessPermissionDAO.find(entityManager, scopeId, accessPermissionId) instanceof AccessPermission);
     }
 
     @Test(expected = NullPointerException.class)
@@ -165,8 +166,8 @@ public class AccessPermissionDAOTest extends Assert {
         Mockito.when(entityManager.find(AccessPermissionImpl.class, accessPermissionId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", AccessPermissionDAO.find(entityManager, null, accessPermissionId) instanceof AccessPermission);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessPermissionDAO.find(entityManager, null, accessPermissionId).getScopeId());
+        Assert.assertTrue("True expected.", AccessPermissionDAO.find(entityManager, null, accessPermissionId) instanceof AccessPermission);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessPermissionDAO.find(entityManager, null, accessPermissionId).getScopeId());
     }
 
     @Test
@@ -174,8 +175,8 @@ public class AccessPermissionDAOTest extends Assert {
         Mockito.when(entityManager.find(AccessPermissionImpl.class, null)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", AccessPermissionDAO.find(entityManager, scopeId, null) instanceof AccessPermission);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessPermissionDAO.find(entityManager, scopeId, null).getScopeId());
+        Assert.assertTrue("True expected.", AccessPermissionDAO.find(entityManager, scopeId, null) instanceof AccessPermission);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessPermissionDAO.find(entityManager, scopeId, null).getScopeId());
     }
 
     @Test
@@ -198,7 +199,7 @@ public class AccessPermissionDAOTest extends Assert {
         Mockito.when(kapuaQuery.getFetchAttributes()).thenReturn(list);
         Mockito.when(entityManager.createQuery(criteriaQuery1)).thenReturn(query);
 
-        assertTrue("True expected.", AccessPermissionDAO.query(entityManager, kapuaQuery) instanceof AccessPermissionListResult);
+        Assert.assertTrue("True expected.", AccessPermissionDAO.query(entityManager, kapuaQuery) instanceof AccessPermissionListResult);
     }
 
     @Test(expected = NullPointerException.class)
@@ -247,7 +248,7 @@ public class AccessPermissionDAOTest extends Assert {
         for (long number : longNumberList) {
             Mockito.doReturn(number).when(query).getSingleResult();
 
-            assertEquals("Expected and actual values should be the same.", number, AccessPermissionDAO.count(entityManager, kapuaQuery));
+            Assert.assertEquals("Expected and actual values should be the same.", number, AccessPermissionDAO.count(entityManager, kapuaQuery));
         }
     }
 
@@ -265,7 +266,7 @@ public class AccessPermissionDAOTest extends Assert {
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(AccessPermissionImpl.class, accessPermissionId)).thenReturn(entityToFindOrDelete);
 
-        assertTrue("True expected.", AccessPermissionDAO.delete(entityManager, scopeId, accessPermissionId) instanceof AccessPermission);
+        Assert.assertTrue("True expected.", AccessPermissionDAO.delete(entityManager, scopeId, accessPermissionId) instanceof AccessPermission);
     }
 
     @Test(expected = NullPointerException.class)
@@ -277,7 +278,7 @@ public class AccessPermissionDAOTest extends Assert {
     public void deleteNullScopeIdTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(AccessPermissionImpl.class, accessPermissionId)).thenReturn(entityToFindOrDelete);
 
-        assertTrue("True expected.", AccessPermissionDAO.delete(entityManager, null, accessPermissionId) instanceof AccessPermission);
+        Assert.assertTrue("True expected.", AccessPermissionDAO.delete(entityManager, null, accessPermissionId) instanceof AccessPermission);
     }
 
     @Test(expected = NullPointerException.class)

@@ -30,8 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class AdminAuthenticationLogicTest extends Assert {
+public class AdminAuthenticationLogicTest {
 
     Map<String, Object> options;
     KapuaSecurityContext kapuaSecurityContext;
@@ -53,7 +54,7 @@ public class AdminAuthenticationLogicTest extends Assert {
         try {
             new AdminAuthenticationLogic(options);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -67,7 +68,7 @@ public class AdminAuthenticationLogicTest extends Assert {
         try {
             new AdminAuthenticationLogic(options);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -80,11 +81,11 @@ public class AdminAuthenticationLogicTest extends Assert {
     public void connectWithoutPrefixTest() throws KapuaException {
         List<AuthorizationEntry> authorizationEntryList = adminAuthenticationLogic.connect(kapuaSecurityContext);
 
-        assertEquals("Expected and actual values should be the same.", 2, authorizationEntryList.size());
-        assertEquals("Expected and actual values should be the same.", "null>", authorizationEntryList.get(0).getAddress());
-        assertEquals("Expected and actual values should be the same.", Acl.ALL, authorizationEntryList.get(0).getAcl());
-        assertEquals("Expected and actual values should be the same.", "nullnull", authorizationEntryList.get(1).getAddress());
-        assertEquals("Expected and actual values should be the same.", Acl.WRITE_ADMIN, authorizationEntryList.get(1).getAcl());
+        Assert.assertEquals("Expected and actual values should be the same.", 2, authorizationEntryList.size());
+        Assert.assertEquals("Expected and actual values should be the same.", "null>", authorizationEntryList.get(0).getAddress());
+        Assert.assertEquals("Expected and actual values should be the same.", Acl.ALL, authorizationEntryList.get(0).getAcl());
+        Assert.assertEquals("Expected and actual values should be the same.", "nullnull", authorizationEntryList.get(1).getAddress());
+        Assert.assertEquals("Expected and actual values should be the same.", Acl.WRITE_ADMIN, authorizationEntryList.get(1).getAcl());
     }
 
     @Test
@@ -95,11 +96,11 @@ public class AdminAuthenticationLogicTest extends Assert {
 
         List<AuthorizationEntry> authorizationEntryList = adminAuthenticationLogic.connect(kapuaSecurityContext);
 
-        assertEquals("Expected and actual values should be the same.", 2, authorizationEntryList.size());
-        assertEquals("Expected and actual values should be the same.", "prefix>", authorizationEntryList.get(0).getAddress());
-        assertEquals("Expected and actual values should be the same.", Acl.ALL, authorizationEntryList.get(0).getAcl());
-        assertEquals("Expected and actual values should be the same.", "prefixadvisory_prefix", authorizationEntryList.get(1).getAddress());
-        assertEquals("Expected and actual values should be the same.", Acl.WRITE_ADMIN, authorizationEntryList.get(1).getAcl());
+        Assert.assertEquals("Expected and actual values should be the same.", 2, authorizationEntryList.size());
+        Assert.assertEquals("Expected and actual values should be the same.", "prefix>", authorizationEntryList.get(0).getAddress());
+        Assert.assertEquals("Expected and actual values should be the same.", Acl.ALL, authorizationEntryList.get(0).getAcl());
+        Assert.assertEquals("Expected and actual values should be the same.", "prefixadvisory_prefix", authorizationEntryList.get(1).getAddress());
+        Assert.assertEquals("Expected and actual values should be the same.", Acl.WRITE_ADMIN, authorizationEntryList.get(1).getAcl());
     }
 
     @Test(expected = NullPointerException.class)
@@ -114,9 +115,9 @@ public class AdminAuthenticationLogicTest extends Assert {
         Mockito.when(kapuaSecurityContext.isMissing()).thenReturn(true);
 
         for (Throwable throwable : throwables) {
-            assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
-            assertFalse("False expected.", (adminAuthenticationLogic.disconnect(kapuaSecurityContext, throwable)));
-            assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
+            Assert.assertFalse("False expected.", (adminAuthenticationLogic.disconnect(kapuaSecurityContext, throwable)));
+            Assert.assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
         }
     }
 
@@ -127,9 +128,9 @@ public class AdminAuthenticationLogicTest extends Assert {
         Mockito.when(kapuaSecurityContext.isMissing()).thenReturn(false);
 
         for (Throwable throwable : throwables) {
-            assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
-            assertTrue("True expected.", (adminAuthenticationLogic.disconnect(kapuaSecurityContext, throwable)));
-            assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
+            Assert.assertTrue("True expected.", (adminAuthenticationLogic.disconnect(kapuaSecurityContext, throwable)));
+            Assert.assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
         }
     }
 
@@ -140,9 +141,9 @@ public class AdminAuthenticationLogicTest extends Assert {
         Mockito.when(kapuaSecurityContext.isMissing()).thenReturn(false);
 
         for (Throwable throwable : throwables) {
-            assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
-            assertFalse("False expected.", (adminAuthenticationLogic.disconnect(kapuaSecurityContext, throwable)));
-            assertEquals("Expected and actual values should be the same.", 1, adminStealingLinkDisconnectCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
+            Assert.assertFalse("False expected.", (adminAuthenticationLogic.disconnect(kapuaSecurityContext, throwable)));
+            Assert.assertEquals("Expected and actual values should be the same.", 1, adminStealingLinkDisconnectCount.getCount());
 
             adminStealingLinkDisconnectCount.dec();
         }
@@ -155,9 +156,9 @@ public class AdminAuthenticationLogicTest extends Assert {
         Mockito.when(kapuaSecurityContext.isMissing()).thenReturn(true);
 
         for (Throwable throwable : throwables) {
-            assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
-            assertFalse("False expected.", (adminAuthenticationLogic.disconnect(kapuaSecurityContext, throwable)));
-            assertEquals("Expected and actual values should be the same.", 1, adminStealingLinkDisconnectCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, adminStealingLinkDisconnectCount.getCount());
+            Assert.assertFalse("False expected.", (adminAuthenticationLogic.disconnect(kapuaSecurityContext, throwable)));
+            Assert.assertEquals("Expected and actual values should be the same.", 1, adminStealingLinkDisconnectCount.getCount());
 
             adminStealingLinkDisconnectCount.dec();
         }

@@ -23,8 +23,9 @@ import org.junit.experimental.categories.Category;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class KapuaChannelTest extends Assert {
+public class KapuaChannelTest {
 
     KapuaDataChannel kapuaDataChannel;
 
@@ -42,7 +43,7 @@ public class KapuaChannelTest extends Assert {
         kapuaDataChannel.setSemanticParts(semanticParts);
         List<String> getSemanticParts = kapuaDataChannel.getSemanticParts();
 
-        assertEquals(semanticParts, getSemanticParts);
+        Assert.assertEquals(semanticParts, getSemanticParts);
     }
 
     @Test
@@ -54,7 +55,7 @@ public class KapuaChannelTest extends Assert {
         kapuaDataChannel.setSemanticParts(semanticParts);
         String toString = kapuaDataChannel.toString();
 
-        assertEquals("part1/part2/part3", toString);
+        Assert.assertEquals("part1/part2/part3", toString);
     }
 
     @Test
@@ -64,7 +65,7 @@ public class KapuaChannelTest extends Assert {
         kapuaDataChannel.setSemanticParts(semanticParts);
         String toString = kapuaDataChannel.toString();
 
-        assertEquals("", toString);
+        Assert.assertEquals("", toString);
     }
 
     @Test
@@ -73,7 +74,7 @@ public class KapuaChannelTest extends Assert {
         kapuaDataChannel.setSemanticParts(null);
         String toString = kapuaDataChannel.toString();
 
-        assertEquals("", toString);
+        Assert.assertEquals("", toString);
     }
 
 }

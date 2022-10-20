@@ -51,6 +51,7 @@ import org.eclipse.kapua.service.storable.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.RangePredicate;
 import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.junit.BeforeClass;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -118,7 +119,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         try {
             DatastoreClientFactory.getInstance();
             storeMessage("ssl_test/no_ssl");
-            fail("ClientException should be thrown!");
+            Assert.fail("ClientException should be thrown!");
         } catch (ClientException e) {
             // good
         } finally {
@@ -140,7 +141,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
             DatastoreClientFactory.getInstance();
             storeMessage("ssl_test/ssl");
         } catch (ClientException e) {
-            fail("No ClientException should be thrown!");
+            Assert.fail("No ClientException should be thrown!");
         } finally {
             DatastoreClientFactory.close();
         }
@@ -160,7 +161,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
             DatastoreClientFactory.getInstance();
             storeMessage("ssl_test/ssl_trust_server_no_trust_store_set");
         } catch (ClientException e) {
-            fail("No ClientException should be thrown!");
+            Assert.fail("No ClientException should be thrown!");
         } finally {
             DatastoreClientFactory.close();
         }
@@ -180,7 +181,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
             DatastoreClientFactory.getInstance();
             storeMessage("ssl_test/ssl_trust_server_default_trust_store_set");
         } catch (ClientException e) {
-            fail("No ClientException should be thrown!");
+            Assert.fail("No ClientException should be thrown!");
         } finally {
             DatastoreClientFactory.close();
         }
@@ -200,7 +201,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
             DatastoreClientFactory.getInstance();
             storeMessage("ssl_test/ssl_trust_server_self_signed_tust");
         } catch (ClientException e) {
-            fail("No ClientException should be thrown!");
+            Assert.fail("No ClientException should be thrown!");
         } finally {
             DatastoreClientFactory.close();
         }
@@ -227,7 +228,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
         MessageQuery messageQuery = getBaseMessageQuery(KapuaEid.ONE, 10);
         setMessageQueryBaseCriteria(messageQuery, clientId, new DateRange(Date.from(currentInstant.minusSeconds(3600)), date));
         long count = MESSAGE_STORE_SERVICE.count(messageQuery);
-        assertEquals(messagesCount, count);
+        Assert.assertEquals(messagesCount, count);
 
     }
 
