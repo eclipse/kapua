@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class TransmissionExceptionTest extends Assert {
+public class TransmissionExceptionTest {
 
     TransmissionException transmissionException;
     Throwable throwable;
@@ -36,65 +37,65 @@ public class TransmissionExceptionTest extends Assert {
     @Test
     public void transmissionExceptionDefaultConstructorTest() {
         TransmissionException transmissionException = new TransmissionException();
-        assertThat("Expected and actual values should be the same!", transmissionException, IsInstanceOf.instanceOf(TransmissionException.class));
+        Assert.assertThat("Expected and actual values should be the same!", transmissionException, IsInstanceOf.instanceOf(TransmissionException.class));
     }
 
     @Test
     public void transmissionExceptionTwoParameterConstructorValidTest() {
         for (String value : stringValues) {
             transmissionException = new TransmissionException(value, throwable);
-            assertEquals("Expected and actual values should be the same!", value, transmissionException.getMessage());
-            assertEquals("Expected and actual values should be the same!", throwable, transmissionException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same!", value, transmissionException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same!", throwable, transmissionException.getCause());
         }
     }
 
     @Test
     public void transmissionExceptionTwoParametersNullMessageTest() {
         transmissionException = new TransmissionException(null, throwable);
-        assertNull("Null expected!", transmissionException.getMessage());
-        assertEquals("Expected and actual values should be the same!", throwable, transmissionException.getCause());
+        Assert.assertNull("Null expected!", transmissionException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same!", throwable, transmissionException.getCause());
     }
 
     @Test
     public void transmissionExceptionTwoParametersNullCauseTest() {
         for (String value : stringValues) {
             transmissionException = new TransmissionException(value, null);
-            assertEquals("Expected and actual values should be the same!", value, transmissionException.getMessage());
-            assertNull("Null expected!", transmissionException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same!", value, transmissionException.getMessage());
+            Assert.assertNull("Null expected!", transmissionException.getCause());
         }
     }
 
     @Test
     public void transmissionExceptionTwoParametersNullTest() {
         transmissionException = new TransmissionException(null, null);
-        assertNull("Null expected!", transmissionException.getMessage());
-        assertNull("Null expected!", transmissionException.getCause());
+        Assert.assertNull("Null expected!", transmissionException.getMessage());
+        Assert.assertNull("Null expected!", transmissionException.getCause());
     }
 
     @Test
     public void transmissionExceptionMessageConstructorValidTest() {
         for (String value : stringValues) {
             transmissionException = new TransmissionException(value);
-            assertEquals("Expected and actual values should be the same!", value, transmissionException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same!", value, transmissionException.getMessage());
         }
     }
 
     @Test
     public void transmissionExceptionMessageConstructorNullTest() {
         transmissionException = new TransmissionException((String) null);
-        assertNull("Null expected!", transmissionException.getMessage());
+        Assert.assertNull("Null expected!", transmissionException.getMessage());
     }
 
     @Test
     public void transmissionExceptionThrowableConstructorValidTest() {
         transmissionException = new TransmissionException(throwable);
-        assertEquals("Expected and actual values should be the same!", throwable, transmissionException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same!", throwable, transmissionException.getCause());
     }
 
     @Test
     public void transmissionExceptionThrowableConstructorNullTest() {
         transmissionException = new TransmissionException(throwable);
-        assertEquals("Expected and actual values should be the same!", throwable, transmissionException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same!", throwable, transmissionException.getCause());
     }
 
     @Test (expected = TransmissionException.class)

@@ -23,8 +23,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class PayloadTest extends Assert {
+public class PayloadTest {
 
     Object[] objectValues = new Object[]{1, 2147483647, -2147483648, true, false, 3.4028235E38, 1.4E-45, 1.7976931348623157E308, 4.9E-324, 9223372036854775807L, -9223372036854775808L, "String", 'S'};
     String[] keys = {"", "!#$%&'()=?⁄@‹›€°·‚,.-;:_Èˇ¿<>«‘”’ÉØ∏{}|ÆæÒuF8FFÔÓÌÏÎÅ«»Ç◊Ñˆ¯Èˇ", "regularNaming", "regular Naming", "49", "regularNaming49", "NAMING", "246465494135646120009090049684646496468456468496846464968496844"};
@@ -34,10 +35,10 @@ public class PayloadTest extends Assert {
         for (Object objValue : objectValues) {
             for (String keyValue : keys) {
                 Payload payload = new Payload.Builder().timestamp(Instant.now()).put(keyValue, objValue).build();
-                assertNotNull("Object should not be null!", payload);
-                assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
-                assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
-                assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
+                Assert.assertNotNull("Object should not be null!", payload);
+                Assert.assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
+                Assert.assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
+                Assert.assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
             }
         }
     }
@@ -62,10 +63,10 @@ public class PayloadTest extends Assert {
         for (Object objValue : objectValues) {
             for (String keyValue : keys) {
                 Payload payload = new Payload.Builder().timestamp(Instant.now()).values(Collections.singletonMap(keyValue, objValue)).build();
-                assertNotNull("Object should not be null!", payload);
-                assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
-                assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
-                assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
+                Assert.assertNotNull("Object should not be null!", payload);
+                Assert.assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
+                Assert.assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
+                Assert.assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
             }
         }
     }
@@ -75,22 +76,22 @@ public class PayloadTest extends Assert {
         Payload.Builder builder = new Payload.Builder();
         Payload payload = builder.build();
         String expectedString = "[Payload - timestamp: " + payload.getTimestamp() +", values: " + payload.getValues() +"]";
-        assertEquals("Expected and actual values should be the same!", expectedString, payload.toString());
+        Assert.assertEquals("Expected and actual values should be the same!", expectedString, payload.toString());
     }
 
     @Test
     public void builderTimestampTest(){
         Payload.Builder builder = new Payload.Builder();
         Payload payload = builder.build();
-        assertEquals("Expected and actual values should be the same!", builder,builder.timestamp(payload.getTimestamp()));
-        assertEquals("Expected and actual values should be the same!", builder.timestamp(),builder.timestamp(payload.getTimestamp()).timestamp());
+        Assert.assertEquals("Expected and actual values should be the same!", builder,builder.timestamp(payload.getTimestamp()));
+        Assert.assertEquals("Expected and actual values should be the same!", builder.timestamp(),builder.timestamp(payload.getTimestamp()).timestamp());
     }
 
     @Test
     public void payloadBuilderValuesTest() {
         final Map<String, Object> expectedValues = new HashMap<>();
         Payload.Builder builder = new Payload.Builder();
-        assertEquals("Expected and actual values should be the same!", expectedValues, builder.values());
+        Assert.assertEquals("Expected and actual values should be the same!", expectedValues, builder.values());
     }
 
     @Test(expected = NullPointerException.class)
@@ -118,10 +119,10 @@ public class PayloadTest extends Assert {
         for (Object objValue : objectValues) {
             for (String keyValue : keys) {
                 Payload payload = Payload.of(keyValue, objValue);
-                assertNotNull("Object should not be null!", payload);
-                assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
-                assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
-                assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
+                Assert.assertNotNull("Object should not be null!", payload);
+                Assert.assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
+                Assert.assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
+                Assert.assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
             }
         }
     }
@@ -131,10 +132,10 @@ public class PayloadTest extends Assert {
         for (Object objValue : objectValues) {
             for (String keyValue : keys) {
                 Payload payload = Payload.of(Collections.singletonMap(keyValue, objValue));
-                assertNotNull("Object should not be null!", payload);
-                assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
-                assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
-                assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
+                Assert.assertNotNull("Object should not be null!", payload);
+                Assert.assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
+                Assert.assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
+                Assert.assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
             }
         }
     }
@@ -144,10 +145,10 @@ public class PayloadTest extends Assert {
         for (Object objValue : objectValues) {
             for (String keyValue : keys) {
                 Payload payload = Payload.of(Instant.now(), keyValue, objValue);
-                assertNotNull("Object should not be null!", payload);
-                assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
-                assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
-                assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
+                Assert.assertNotNull("Object should not be null!", payload);
+                Assert.assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
+                Assert.assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
+                Assert.assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
             }
         }
     }
@@ -157,10 +158,10 @@ public class PayloadTest extends Assert {
         for (Object objValue : objectValues) {
             for (String keyValue : keys) {
                 Payload payload = Payload.of(Instant.now(), Collections.singletonMap(keyValue, objValue));
-                assertNotNull("Object should not be null!", payload);
-                assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
-                assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
-                assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
+                Assert.assertNotNull("Object should not be null!", payload);
+                Assert.assertEquals("Expected and actual values should be the same!", 1, payload.getValues().size());
+                Assert.assertEquals("Expected and actual values should be the same!", objValue, payload.getValues().get(keyValue));
+                Assert.assertFalse("No exception expected!", Instant.now().isBefore(payload.getTimestamp()));
             }
         }
     }

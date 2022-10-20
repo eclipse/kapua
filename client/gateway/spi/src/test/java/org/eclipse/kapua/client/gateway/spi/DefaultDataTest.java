@@ -26,8 +26,9 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class DefaultDataTest extends Assert {
+public class DefaultDataTest {
 
     private DefaultApplication application;
     private List<String> segments;
@@ -45,20 +46,20 @@ public class DefaultDataTest extends Assert {
 
     @Test
     public void sendNullTest() {
-        assertEquals("Expected and actual values should be the same.", application.publish(topic, null), data.send((Payload) null));
+        Assert.assertEquals("Expected and actual values should be the same.", application.publish(topic, null), data.send((Payload) null));
     }
 
     @Test
     public void sendTest() {
         Payload payload = Mockito.mock(Payload.class);
-        assertEquals("Expected and actual values should be the same.", application.publish(topic, payload), data.send(payload));
+        Assert.assertEquals("Expected and actual values should be the same.", application.publish(topic, payload), data.send(payload));
     }
 
     @Test
     public void subscribeTest() throws Exception {
         final MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         final ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertEquals("Expected and actual values should be the same.", application.subscribe(topic, messageHandler, errorHandler), data.subscribe(messageHandler, errorHandler));
+        Assert.assertEquals("Expected and actual values should be the same.", application.subscribe(topic, messageHandler, errorHandler), data.subscribe(messageHandler, errorHandler));
     }
 
     @Test(expected = NullPointerException.class)

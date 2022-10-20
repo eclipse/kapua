@@ -25,8 +25,9 @@ import org.junit.experimental.categories.Category;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class ProtocolDescriptorTest extends Assert {
+public class ProtocolDescriptorTest {
 
     @Before
     public void resetSettings() throws KapuaException {
@@ -36,26 +37,26 @@ public class ProtocolDescriptorTest extends Assert {
     @Test
     public void nonNullProviderTest() {
         ProtocolDescriptorProvider provider = ProtocolDescriptorProviders.getInstance();
-        assertNotNull("Null not expected.", provider);
+        Assert.assertNotNull("Null not expected.", provider);
     }
 
     @Test
     public void defaultDescriptorFromProviderTest() {
         ProtocolDescriptorProvider provider = ProtocolDescriptorProviders.getInstance();
         ProtocolDescriptor descriptor = provider.getDescriptor("foo");
-        assertNotNull("Null not expected.", descriptor);
+        Assert.assertNotNull("Null not expected.", descriptor);
     }
 
     @Test
     public void getDescriptorFromProvidersClassTest() {
-        assertNotNull("Null not expected.", ProtocolDescriptorProviders.getDescriptor("foo"));
+        Assert.assertNotNull("Null not expected.", ProtocolDescriptorProviders.getDescriptor("foo"));
     }
 
     @Test
     public void getTransportProtocolTest() {
         ProtocolDescriptorProvider provider = ProtocolDescriptorProviders.getInstance();
         ProtocolDescriptor descriptor = provider.getDescriptor("foo");
-        assertEquals("Expected and actual values should be the same.", "MQTT", descriptor.getTransportProtocol());
+        Assert.assertEquals("Expected and actual values should be the same.", "MQTT", descriptor.getTransportProtocol());
     }
 
     @Test
@@ -66,7 +67,7 @@ public class ProtocolDescriptorTest extends Assert {
         Tests.runWithProperties(properties, () -> {
             DefaultProtocolDescriptionProvider provider = new DefaultProtocolDescriptionProvider();
             ProtocolDescriptor descriptor = provider.getDescriptor("foo");
-            assertNull("Null expected.", descriptor);
+            Assert.assertNull("Null expected.", descriptor);
         });
     }
 
@@ -86,7 +87,7 @@ public class ProtocolDescriptorTest extends Assert {
         Tests.runWithProperties(properties, () -> {
             DefaultProtocolDescriptionProvider provider = new DefaultProtocolDescriptionProvider();
             ProtocolDescriptor descriptor = provider.getDescriptor("foo");
-            assertNotNull("Null not expected.", descriptor);
+            Assert.assertNotNull("Null not expected.", descriptor);
         });
     }
 
@@ -99,7 +100,7 @@ public class ProtocolDescriptorTest extends Assert {
         Tests.runWithProperties(properties, () -> {
             DefaultProtocolDescriptionProvider provider = new DefaultProtocolDescriptionProvider();
             ProtocolDescriptor descriptor = provider.getDescriptor("foo");
-            assertNull("Null expected.", descriptor);
+            Assert.assertNull("Null expected.", descriptor);
         });
     }
 
@@ -111,16 +112,16 @@ public class ProtocolDescriptorTest extends Assert {
 
         Tests.runWithProperties(properties, () -> {
             DefaultProtocolDescriptionProvider provider = new DefaultProtocolDescriptionProvider();
-            assertNull("Null expected.", provider.getDescriptor("foo"));
+            Assert.assertNull("Null expected.", provider.getDescriptor("foo"));
 
             ProtocolDescriptor descriptor = provider.getDescriptor("mqtt");
-            assertNotNull("Null not expected.", descriptor);
+            Assert.assertNotNull("Null not expected.", descriptor);
 
-            assertEquals("Expected and actual values should be the same.", org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsMessage.class, descriptor.getDeviceClass(MessageType.APP));
-            assertEquals("Expected and actual values should be the same.", org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage.class, descriptor.getKapuaClass(MessageType.APP));
+            Assert.assertEquals("Expected and actual values should be the same.", org.eclipse.kapua.service.device.call.message.kura.lifecycle.KuraAppsMessage.class, descriptor.getDeviceClass(MessageType.APP));
+            Assert.assertEquals("Expected and actual values should be the same.", org.eclipse.kapua.message.device.lifecycle.KapuaAppsMessage.class, descriptor.getKapuaClass(MessageType.APP));
 
-            assertNull("Null expected.", descriptor.getDeviceClass(MessageType.DATA));
-            assertNull("Null expected.", descriptor.getKapuaClass(MessageType.DATA));
+            Assert.assertNull("Null expected.", descriptor.getDeviceClass(MessageType.DATA));
+            Assert.assertNull("Null expected.", descriptor.getKapuaClass(MessageType.DATA));
         });
     }
 
