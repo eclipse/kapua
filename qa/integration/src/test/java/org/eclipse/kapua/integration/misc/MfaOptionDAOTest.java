@@ -47,8 +47,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class MfaOptionDAOTest extends Assert {
+public class MfaOptionDAOTest {
 
     EntityManager entityManager;
     MfaOptionCreator mfaOptionCreator;
@@ -76,10 +77,10 @@ public class MfaOptionDAOTest extends Assert {
         Mockito.when(mfaOptionCreator.getScopeId()).thenReturn(KapuaId.ONE);
         Mockito.when(mfaOptionCreator.getUserId()).thenReturn(new KapuaEid(BigInteger.ONE));
 
-        assertThat("Instance of MfaOption object expected.", MfaOptionDAO.create(entityManager, mfaOptionCreator), IsInstanceOf.instanceOf(MfaOption.class));
-        assertEquals("Expected and actual values should be the same.", "kOhsl1vEPvSuZcifFlMCvg", MfaOptionDAO.create(entityManager, mfaOptionCreator).getMfaSecretKey());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.create(entityManager, mfaOptionCreator).getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.create(entityManager, mfaOptionCreator).getUserId());
+        Assert.assertThat("Instance of MfaOption object expected.", MfaOptionDAO.create(entityManager, mfaOptionCreator), IsInstanceOf.instanceOf(MfaOption.class));
+        Assert.assertEquals("Expected and actual values should be the same.", "kOhsl1vEPvSuZcifFlMCvg", MfaOptionDAO.create(entityManager, mfaOptionCreator).getMfaSecretKey());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.create(entityManager, mfaOptionCreator).getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.create(entityManager, mfaOptionCreator).getUserId());
     }
 
     @Test(expected = KapuaEntityExistsException.class)
@@ -143,9 +144,9 @@ public class MfaOptionDAOTest extends Assert {
         Mockito.when(entityToFindOrDelete.getCreatedOn()).thenReturn(createdOn);
         Mockito.when(entityToFindOrDelete.getCreatedBy()).thenReturn(createdBy);
 
-        assertThat("Instance of MfaOption object expected.", MfaOptionDAO.update(entityManager, mfaOption), IsInstanceOf.instanceOf(MfaOption.class));
-        assertEquals("Expected and actual values should be the same.", createdBy, MfaOptionDAO.update(entityManager, mfaOption).getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, MfaOptionDAO.update(entityManager, mfaOption).getCreatedOn());
+        Assert.assertThat("Instance of MfaOption object expected.", MfaOptionDAO.update(entityManager, mfaOption), IsInstanceOf.instanceOf(MfaOption.class));
+        Assert.assertEquals("Expected and actual values should be the same.", createdBy, MfaOptionDAO.update(entityManager, mfaOption).getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, MfaOptionDAO.update(entityManager, mfaOption).getCreatedOn());
     }
 
     @Test(expected = NullPointerException.class)
@@ -167,8 +168,8 @@ public class MfaOptionDAOTest extends Assert {
         Mockito.when(entityManager.find(MfaOptionImpl.class, mfaOptionId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertThat("Instance of MfaOption object expected.", MfaOptionDAO.find(entityManager, scopeId, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.find(entityManager, scopeId, mfaOptionId).getScopeId());
+        Assert.assertThat("Instance of MfaOption object expected.", MfaOptionDAO.find(entityManager, scopeId, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.find(entityManager, scopeId, mfaOptionId).getScopeId());
     }
 
     @Test
@@ -176,14 +177,14 @@ public class MfaOptionDAOTest extends Assert {
         Mockito.when(entityManager.find(MfaOptionImpl.class, mfaOptionId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ANY);
 
-        assertNull("Null expected.", MfaOptionDAO.find(entityManager, scopeId, mfaOptionId));
+        Assert.assertNull("Null expected.", MfaOptionDAO.find(entityManager, scopeId, mfaOptionId));
     }
 
     @Test
     public void findNullEntityToFindTest() {
         Mockito.when(entityManager.find(MfaOptionImpl.class, mfaOptionId)).thenReturn(null);
 
-        assertNull("Null expected.", MfaOptionDAO.find(entityManager, scopeId, mfaOptionId));
+        Assert.assertNull("Null expected.", MfaOptionDAO.find(entityManager, scopeId, mfaOptionId));
     }
 
     @Test
@@ -191,7 +192,7 @@ public class MfaOptionDAOTest extends Assert {
         Mockito.when(entityManager.find(MfaOptionImpl.class, mfaOptionId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        assertThat("Instance of MfaOption object expected.", MfaOptionDAO.find(entityManager, scopeId, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
+        Assert.assertThat("Instance of MfaOption object expected.", MfaOptionDAO.find(entityManager, scopeId, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -204,8 +205,8 @@ public class MfaOptionDAOTest extends Assert {
         Mockito.when(entityManager.find(MfaOptionImpl.class, mfaOptionId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertThat("Instance of MfaOption object expected.", MfaOptionDAO.find(entityManager, null, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.find(entityManager, null, mfaOptionId).getScopeId());
+        Assert.assertThat("Instance of MfaOption object expected.", MfaOptionDAO.find(entityManager, null, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.find(entityManager, null, mfaOptionId).getScopeId());
     }
 
     @Test
@@ -213,8 +214,8 @@ public class MfaOptionDAOTest extends Assert {
         Mockito.when(entityManager.find(MfaOptionImpl.class, null)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertThat("Instance of MfaOption object expected.", MfaOptionDAO.find(entityManager, scopeId, null), IsInstanceOf.instanceOf(MfaOption.class));
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.find(entityManager, scopeId, null).getScopeId());
+        Assert.assertThat("Instance of MfaOption object expected.", MfaOptionDAO.find(entityManager, scopeId, null), IsInstanceOf.instanceOf(MfaOption.class));
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, MfaOptionDAO.find(entityManager, scopeId, null).getScopeId());
     }
 
     @Test
@@ -237,7 +238,7 @@ public class MfaOptionDAOTest extends Assert {
         Mockito.when(kapuaQuery.getFetchAttributes()).thenReturn(list);
         Mockito.when(entityManager.createQuery(criteriaQuery1)).thenReturn(query);
 
-        assertThat("Instance of MfaOptionListResult object expected.", MfaOptionDAO.query(entityManager, kapuaQuery), IsInstanceOf.instanceOf(MfaOptionListResult.class));
+        Assert.assertThat("Instance of MfaOptionListResult object expected.", MfaOptionDAO.query(entityManager, kapuaQuery), IsInstanceOf.instanceOf(MfaOptionListResult.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -286,8 +287,8 @@ public class MfaOptionDAOTest extends Assert {
         for (long number : longNumberList) {
             Mockito.doReturn(number).when(query).getSingleResult();
 
-            assertThat("Long object expected.", MfaOptionDAO.count(entityManager, kapuaQuery), IsInstanceOf.instanceOf(Long.class));
-            assertEquals("Expected and actual values should be the same.", number, MfaOptionDAO.count(entityManager, kapuaQuery));
+        Assert.assertThat("Long object expected.", MfaOptionDAO.count(entityManager, kapuaQuery), IsInstanceOf.instanceOf(Long.class));
+            Assert.assertEquals("Expected and actual values should be the same.", number, MfaOptionDAO.count(entityManager, kapuaQuery));
         }
     }
 
@@ -305,7 +306,7 @@ public class MfaOptionDAOTest extends Assert {
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(MfaOptionImpl.class, mfaOptionId)).thenReturn(entityToFindOrDelete);
 
-        assertThat("Instance of MfaOption object expected.", MfaOptionDAO.delete(entityManager, scopeId, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
+        Assert.assertThat("Instance of MfaOption object expected.", MfaOptionDAO.delete(entityManager, scopeId, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -317,7 +318,7 @@ public class MfaOptionDAOTest extends Assert {
     public void deleteNullScopeIdTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(MfaOptionImpl.class, mfaOptionId)).thenReturn(entityToFindOrDelete);
 
-        assertThat("Instance of MfaOption object expected.", MfaOptionDAO.delete(entityManager, null, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
+        Assert.assertThat("Instance of MfaOption object expected.", MfaOptionDAO.delete(entityManager, null, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
     }
 
     @Test(expected = NullPointerException.class)

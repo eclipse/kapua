@@ -18,15 +18,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class MessageExceptionTest extends Assert {
+public class MessageExceptionTest {
 
     @Test
     public void invalidDestinationText() throws Exception {
         MessageException ex = new MessageException(MessageErrorCodes.INVALID_DESTINATION);
         String message = ex.getLocalizedMessage();
 
-        assertEquals("Invalid destination", message);
+        Assert.assertEquals("Invalid destination", message);
     }
 
     @Test
@@ -34,7 +35,7 @@ public class MessageExceptionTest extends Assert {
         MessageException ex = new MessageException(MessageErrorCodes.INVALID_MESSAGE);
         String message = ex.getLocalizedMessage();
 
-        assertEquals("Invalid message", message);
+        Assert.assertEquals("Invalid message", message);
     }
 
     @Test
@@ -42,7 +43,7 @@ public class MessageExceptionTest extends Assert {
         MessageException ex = new MessageException(MessageErrorCodes.INVALID_METRIC_TYPE, "int");
         String message = ex.getLocalizedMessage();
 
-        assertEquals("Invalid metric type int", message);
+        Assert.assertEquals("Invalid metric type int", message);
     }
 
     @Test
@@ -52,6 +53,6 @@ public class MessageExceptionTest extends Assert {
                 0);
         String message = ex.getLocalizedMessage();
 
-        assertEquals("Invalid metric value 0", message);
+        Assert.assertEquals("Invalid metric value 0", message);
     }
 }

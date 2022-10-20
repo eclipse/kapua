@@ -28,14 +28,15 @@ import org.mockito.Mockito;
 
 import java.math.BigInteger;
 
+
 @Category(JUnitTests.class)
-public class EventStoreServiceImplTest extends Assert {
+public class EventStoreServiceImplTest {
 
     @Test
     public void eventStoreServiceImplTest() {
         EntityManagerFactory entityManagerFactory = Mockito.mock(EntityManagerFactory.class);
         EventStoreServiceImpl eventStoreServiceImpl = new EventStoreServiceImpl(entityManagerFactory);
-        assertThat("EventStoreServiceImpl object expected.", eventStoreServiceImpl, IsInstanceOf.instanceOf(EventStoreServiceImpl.class));
+        Assert.assertThat("EventStoreServiceImpl object expected.", eventStoreServiceImpl, IsInstanceOf.instanceOf(EventStoreServiceImpl.class));
     }
 
     @Test
@@ -49,7 +50,7 @@ public class EventStoreServiceImplTest extends Assert {
             try {
                 eventStoreServiceImpl.create(eventStoreRecordCreator);
             } catch (Exception e) {
-                assertEquals("Expected and actual values should be the same.", unsupportedOperationException.toString(), e.toString());
+                Assert.assertEquals("Expected and actual values should be the same.", unsupportedOperationException.toString(), e.toString());
             }
         }
     }

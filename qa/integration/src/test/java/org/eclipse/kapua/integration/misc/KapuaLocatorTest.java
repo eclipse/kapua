@@ -19,12 +19,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaLocatorTest extends Assert {
+public class KapuaLocatorTest {
 
     @Test
     public void getInstanceTest() {
      KapuaLocator kapuaLocator = KapuaLocator.getInstance();
-        assertThat("Instance of KapuaLocator expected.", kapuaLocator, IsInstanceOf.instanceOf(KapuaLocator.class));
+        Assert.assertThat("Instance of KapuaLocator expected.", kapuaLocator, IsInstanceOf.instanceOf(KapuaLocator.class));
     }
 }

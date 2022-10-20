@@ -23,8 +23,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class AccessTokenAuthenticationRealmTest extends Assert {
+public class AccessTokenAuthenticationRealmTest {
 
     AccessTokenAuthenticatingRealm accessTokenAuthenticatingRealm;
 
@@ -35,19 +36,19 @@ public class AccessTokenAuthenticationRealmTest extends Assert {
 
     @Test
     public void accessTokenAuthenticatingRealmTest() {
-        assertEquals("Expected and actual values should be the same.", "accessTokenAuthenticatingRealm", accessTokenAuthenticatingRealm.getName());
-        assertNotNull("NotNull expected.", accessTokenAuthenticatingRealm.getCredentialsMatcher());
+        Assert.assertEquals("Expected and actual values should be the same.", "accessTokenAuthenticatingRealm", accessTokenAuthenticatingRealm.getName());
+        Assert.assertNotNull("NotNull expected.", accessTokenAuthenticatingRealm.getCredentialsMatcher());
     }
 
     @Test
     public void supportsTrueTest() {
         AccessTokenCredentialsImpl authenticationToken = new AccessTokenCredentialsImpl("token id");
-        assertTrue("True expected.", accessTokenAuthenticatingRealm.supports(authenticationToken));
+        Assert.assertTrue("True expected.", accessTokenAuthenticatingRealm.supports(authenticationToken));
     }
 
     @Test
     public void supportsFalseTest() {
         AuthenticationToken authenticationToken = Mockito.mock(AuthenticationToken.class);
-        assertFalse("False expected.", accessTokenAuthenticatingRealm.supports(authenticationToken));
+        Assert.assertFalse("False expected.", accessTokenAuthenticatingRealm.supports(authenticationToken));
     }
 }

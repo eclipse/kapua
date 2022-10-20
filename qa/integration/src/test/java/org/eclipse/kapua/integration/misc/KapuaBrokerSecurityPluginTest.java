@@ -23,8 +23,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class KapuaBrokerSecurityPluginTest extends Assert {
+public class KapuaBrokerSecurityPluginTest {
 
     KapuaBrokerSecurityPlugin kapuaBrokerApplicationPlugin;
     Broker broker;
@@ -45,35 +46,35 @@ public class KapuaBrokerSecurityPluginTest extends Assert {
         Mockito.when(broker.getBrokerId()).thenReturn(brokerId);
         Mockito.when(broker.getBrokerService()).thenReturn(brokerService);
 
-        assertTrue("Instance of Broker expected.", kapuaBrokerApplicationPlugin.installPlugin(broker) instanceof Broker);
-        assertEquals("Expected and actual values should be the same.", "name", kapuaBrokerApplicationPlugin.installPlugin(broker).getBrokerName());
-        assertEquals("Expected and actual values should be the same.", brokerId, kapuaBrokerApplicationPlugin.installPlugin(broker).getBrokerId());
-        assertEquals("Expected and actual values should be the same.", brokerService, kapuaBrokerApplicationPlugin.installPlugin(broker).getBrokerService());
+        Assert.assertTrue("Instance of Broker expected.", kapuaBrokerApplicationPlugin.installPlugin(broker) instanceof Broker);
+        Assert.assertEquals("Expected and actual values should be the same.", "name", kapuaBrokerApplicationPlugin.installPlugin(broker).getBrokerName());
+        Assert.assertEquals("Expected and actual values should be the same.", brokerId, kapuaBrokerApplicationPlugin.installPlugin(broker).getBrokerId());
+        Assert.assertEquals("Expected and actual values should be the same.", brokerService, kapuaBrokerApplicationPlugin.installPlugin(broker).getBrokerService());
     }
 
     @Test
     public void installPluginNullTest() throws Exception {
-        assertTrue("Instance of Broker expected.", kapuaBrokerApplicationPlugin.installPlugin(null) instanceof Broker);
+        Assert.assertTrue("Instance of Broker expected.", kapuaBrokerApplicationPlugin.installPlugin(null) instanceof Broker);
 
         try {
             kapuaBrokerApplicationPlugin.installPlugin(null).getBrokerName();
-            fail("NullPointer exception expected.");
+            Assert.fail("NullPointer exception expected.");
         } catch (Exception e) {
-            assertEquals("NullPointer exception expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointer exception expected.", new NullPointerException().toString(), e.toString());
         }
 
         try {
             kapuaBrokerApplicationPlugin.installPlugin(null).getBrokerId();
-            fail("NullPointer exception expected.");
+            Assert.fail("NullPointer exception expected.");
         } catch (Exception e) {
-            assertEquals("NullPointer exception expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointer exception expected.", new NullPointerException().toString(), e.toString());
         }
 
         try {
             kapuaBrokerApplicationPlugin.installPlugin(null).getBrokerService();
-            fail("NullPointer exception expected.");
+            Assert.fail("NullPointer exception expected.");
         } catch (Exception e) {
-            assertEquals("NullPointer exception expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointer exception expected.", new NullPointerException().toString(), e.toString());
         }
     }
 }

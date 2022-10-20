@@ -21,7 +21,6 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -33,7 +32,7 @@ import org.junit.Test;
  * FIXME Make it friendlier for usage. Suggestions please!
  * FIXME Describe process of recording kapua - kura communication and how to use recrded files.
  */
-public class MqttClientTest extends Assert {
+public class MqttClientTest {
 
     /**
      * Mqtt broker URI.

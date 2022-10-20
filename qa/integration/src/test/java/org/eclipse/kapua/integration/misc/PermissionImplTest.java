@@ -25,13 +25,14 @@ import org.mockito.Mockito;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class PermissionImplTest extends Assert {
+public class PermissionImplTest {
 
     @Test
     public void permissionImplWithoutParametersTest() throws Exception {
         Constructor<PermissionImpl> permissionImpl = PermissionImpl.class.getDeclaredConstructor();
-        assertTrue("True expected.", Modifier.isProtected(permissionImpl.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isProtected(permissionImpl.getModifiers()));
         permissionImpl.setAccessible(true);
         permissionImpl.newInstance();
     }
@@ -47,11 +48,11 @@ public class PermissionImplTest extends Assert {
         Mockito.when(permission.getForwardable()).thenReturn(true);
 
         PermissionImpl permissionImpl = new PermissionImpl(permission);
-        assertEquals("Expected and actual values should be the same.", "domain", permissionImpl.getDomain());
-        assertEquals("Expected and actual values should be the same.", Actions.connect, permissionImpl.getAction());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, permissionImpl.getTargetScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, permissionImpl.getGroupId());
-        assertTrue("True expected.", permissionImpl.getForwardable());
+        Assert.assertEquals("Expected and actual values should be the same.", "domain", permissionImpl.getDomain());
+        Assert.assertEquals("Expected and actual values should be the same.", Actions.connect, permissionImpl.getAction());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, permissionImpl.getTargetScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, permissionImpl.getGroupId());
+        Assert.assertTrue("True expected.", permissionImpl.getForwardable());
     }
 
     @Test
@@ -64,11 +65,11 @@ public class PermissionImplTest extends Assert {
         for (String domain : domains) {
             for (Actions action : actions) {
                 PermissionImpl permissionImpl = new PermissionImpl(domain, action, targetScopeId, groupId);
-                assertEquals("Expected and actual values should be the same.", domain, permissionImpl.getDomain());
-                assertEquals("Expected and actual values should be the same.", action, permissionImpl.getAction());
-                assertEquals("Expected and actual values should be the same.", KapuaId.ANY, permissionImpl.getTargetScopeId());
-                assertEquals("Expected and actual values should be the same.", KapuaId.ONE, permissionImpl.getGroupId());
-                assertFalse("False expected.", permissionImpl.getForwardable());
+                Assert.assertEquals("Expected and actual values should be the same.", domain, permissionImpl.getDomain());
+                Assert.assertEquals("Expected and actual values should be the same.", action, permissionImpl.getAction());
+                Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, permissionImpl.getTargetScopeId());
+                Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, permissionImpl.getGroupId());
+                Assert.assertFalse("False expected.", permissionImpl.getForwardable());
             }
         }
     }
@@ -85,11 +86,11 @@ public class PermissionImplTest extends Assert {
             for (Actions action : actions) {
                 for (boolean forwardable : forwardables) {
                     PermissionImpl permissionImpl = new PermissionImpl(domain, action, targetScopeId, groupId,forwardable);
-                    assertEquals("Expected and actual values should be the same.", domain, permissionImpl.getDomain());
-                    assertEquals("Expected and actual values should be the same.", action, permissionImpl.getAction());
-                    assertEquals("Expected and actual values should be the same.", KapuaId.ANY, permissionImpl.getTargetScopeId());
-                    assertEquals("Expected and actual values should be the same.", KapuaId.ONE, permissionImpl.getGroupId());
-                    assertEquals("Expected and actual values should be the same.", forwardable, permissionImpl.getForwardable());
+                    Assert.assertEquals("Expected and actual values should be the same.", domain, permissionImpl.getDomain());
+                    Assert.assertEquals("Expected and actual values should be the same.", action, permissionImpl.getAction());
+                    Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, permissionImpl.getTargetScopeId());
+                    Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, permissionImpl.getGroupId());
+                    Assert.assertEquals("Expected and actual values should be the same.", forwardable, permissionImpl.getForwardable());
                 }
             }
         }

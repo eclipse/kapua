@@ -23,8 +23,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class AccessTokenCredentialsMatcherTest extends Assert {
+public class AccessTokenCredentialsMatcherTest {
 
     AuthenticationToken authenticationToken;
     SessionAuthenticationInfo authenticationInfo;
@@ -46,7 +47,7 @@ public class AccessTokenCredentialsMatcherTest extends Assert {
         Mockito.when(authenticationToken.getCredentials()).thenReturn(jwt);
         Mockito.when(authenticationInfo.getAccessToken()).thenReturn(accessToken);
         Mockito.when(accessToken.getTokenId()).thenReturn("token id");
-        assertFalse("False expected.", accessTokenCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertFalse("False expected.", accessTokenCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 
     @Test
@@ -54,6 +55,6 @@ public class AccessTokenCredentialsMatcherTest extends Assert {
         Mockito.when(authenticationToken.getCredentials()).thenReturn(jwt);
         Mockito.when(authenticationInfo.getAccessToken()).thenReturn(accessToken);
         Mockito.when(accessToken.getTokenId()).thenReturn(jwt);
-        assertFalse("False expected.", accessTokenCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
+        Assert.assertFalse("False expected.", accessTokenCredentialsMatcher.doCredentialsMatch(authenticationToken, authenticationInfo));
     }
 }
