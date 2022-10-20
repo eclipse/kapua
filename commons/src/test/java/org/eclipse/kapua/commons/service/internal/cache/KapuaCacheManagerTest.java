@@ -21,8 +21,9 @@ import org.junit.experimental.categories.Category;
 import javax.cache.Cache;
 import java.lang.reflect.Constructor;
 
+
 @Category(JUnitTests.class)
-public class KapuaCacheManagerTest extends Assert {
+public class KapuaCacheManagerTest {
 
     @Test
     public void kapuaCacheManagerTest() throws Exception {
@@ -36,13 +37,13 @@ public class KapuaCacheManagerTest extends Assert {
         String cacheName = "cacheName";
         NullPointerException nullPointerException = new NullPointerException();
 
-        assertNotNull("Null not expected.", KapuaCacheManager.getCache(cacheName));
-        assertThat("Cache object expected.", KapuaCacheManager.getCache(cacheName), IsInstanceOf.instanceOf(Cache.class));
+        Assert.assertNotNull("Null not expected.", KapuaCacheManager.getCache(cacheName));
+        Assert.assertThat("Cache object expected.", KapuaCacheManager.getCache(cacheName), IsInstanceOf.instanceOf(Cache.class));
 
         try {
             KapuaCacheManager.getCache(null);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
         }
     }
 

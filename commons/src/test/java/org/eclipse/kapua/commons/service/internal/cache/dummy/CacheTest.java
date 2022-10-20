@@ -26,8 +26,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+
 @Category(JUnitTests.class)
-public class CacheTest extends Assert {
+public class CacheTest {
 
     @Test
     public void constructorTest() throws Exception {
@@ -40,7 +41,7 @@ public class CacheTest extends Assert {
     public void getTest() {
         Cache cache = new Cache();
         Object object = "Key";
-        assertNull("Null expected", cache.get(object));
+        Assert.assertNull("Null expected", cache.get(object));
     }
 
     @Test
@@ -65,7 +66,7 @@ public class CacheTest extends Assert {
             try {
                 cache.getAll(setList[i]);
             } catch (Exception e) {
-                assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
             }
         }
     }
@@ -80,7 +81,7 @@ public class CacheTest extends Assert {
             try {
                 cache.containsKey(listOfObjects[i]);
             } catch (Exception e) {
-                assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
             }
         }
     }
@@ -110,7 +111,7 @@ public class CacheTest extends Assert {
                 try {
                     cache.loadAll(setList[i], replaceExistingValues[i], completionListener);
                 } catch (Exception e) {
-                    assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                    Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
                 }
             }
         }
@@ -133,7 +134,7 @@ public class CacheTest extends Assert {
         try {
             cache.getAndPut(key, value);
         } catch (Exception e) {
-            assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+            Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
         }
     }
 
@@ -151,7 +152,7 @@ public class CacheTest extends Assert {
                 try {
                     cache.putAll(map);
                 } catch (Exception e) {
-                    assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                    Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
                 }
             }
         }
@@ -169,7 +170,7 @@ public class CacheTest extends Assert {
                 try {
                     cache.putIfAbsent(keyList[i], valueList[j]);
                 } catch (Exception e) {
-                    assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                    Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
                 }
             }
         }
@@ -181,7 +182,7 @@ public class CacheTest extends Assert {
         Object[] keyList = new Object[]{null, "String", 1, 100000, 12333.333, 10.0f, 10L, 10d, 'c', true, false};
 
         for (int i = 0; i < keyList.length; i++) {
-            assertTrue("True expected", cache.remove(keyList[i]));
+            Assert.assertTrue("True expected", cache.remove(keyList[i]));
         }
     }
 
@@ -197,7 +198,7 @@ public class CacheTest extends Assert {
                 try {
                     cache.remove(keyList[i], valueList[j]);
                 } catch (Exception e) {
-                    assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                    Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
                 }
             }
         }
@@ -213,7 +214,7 @@ public class CacheTest extends Assert {
             try {
                 cache.getAndRemove(keyList[i]);
             } catch (Exception e) {
-                assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
             }
         }
     }
@@ -232,7 +233,7 @@ public class CacheTest extends Assert {
                     try {
                         cache.replace(keyList[i], oldValueList[j], newValueList[k]);
                     } catch (Exception e) {
-                        assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                        Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
                     }
                 }
             }
@@ -251,7 +252,7 @@ public class CacheTest extends Assert {
                 try {
                     cache.replace(keyList[i], valueList[j]);
                 } catch (Exception e) {
-                    assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                    Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
                 }
             }
         }
@@ -269,7 +270,7 @@ public class CacheTest extends Assert {
                 try {
                     cache.getAndReplace(keyList[i], valueList[j]);
                 } catch (Exception e) {
-                    assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                    Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
                 }
             }
         }
@@ -297,7 +298,7 @@ public class CacheTest extends Assert {
             try {
                 cache.removeAll(setList[i]);
             } catch (Exception e) {
-                assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
             }
         }
     }
@@ -309,7 +310,7 @@ public class CacheTest extends Assert {
         try {
             cache.removeAll();
         } catch (Exception e) {
-            assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+            Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
         }
     }
 
@@ -326,7 +327,7 @@ public class CacheTest extends Assert {
         try {
             cache.getName();
         } catch (Exception e) {
-            assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+            Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
         }
     }
 
@@ -337,7 +338,7 @@ public class CacheTest extends Assert {
         try {
             cache.getCacheManager();
         } catch (Exception e) {
-            assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+            Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
         }
     }
 
@@ -348,7 +349,7 @@ public class CacheTest extends Assert {
         try {
             cache.close();
         } catch (Exception e) {
-            assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+            Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
         }
     }
 
@@ -359,7 +360,7 @@ public class CacheTest extends Assert {
         try {
             cache.isClosed();
         } catch (Exception e) {
-            assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+            Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
         }
     }
 
@@ -370,7 +371,7 @@ public class CacheTest extends Assert {
         try {
             cache.registerCacheEntryListener(null);
         } catch (Exception e) {
-            assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+            Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
         }
     }
 
@@ -381,7 +382,7 @@ public class CacheTest extends Assert {
         try {
             cache.deregisterCacheEntryListener(null);
         } catch (Exception e) {
-            assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+            Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
         }
     }
 
@@ -392,7 +393,7 @@ public class CacheTest extends Assert {
         try {
             cache.iterator();
         } catch (Exception e) {
-            assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+            Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
         }
     }
 
@@ -406,7 +407,7 @@ public class CacheTest extends Assert {
             try {
                 cache.unwrap(clazz[i]);
             } catch (Exception e) {
-                assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
             }
         }
     }
@@ -433,7 +434,7 @@ public class CacheTest extends Assert {
             try {
                 cache.invokeAll(setList[i], null, "String", "string", "str");
             } catch (Exception e) {
-                assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
             }
         }
     }
@@ -445,7 +446,7 @@ public class CacheTest extends Assert {
         try {
             cache.invoke("key", null, "String", "string", "str");
         } catch (Exception e) {
-            assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+            Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
         }
     }
 
@@ -459,7 +460,7 @@ public class CacheTest extends Assert {
             try {
                 cache.getConfiguration(clazz[i]);
             } catch (Exception e) {
-                assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
+                Assert.assertEquals("UnsupportedOperationException expected", unsupportedOperationException.toString(), e.toString());
             }
         }
     }

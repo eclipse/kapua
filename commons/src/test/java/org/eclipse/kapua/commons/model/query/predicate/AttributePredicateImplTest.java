@@ -24,9 +24,10 @@ import org.junit.runners.Parameterized.Parameters;
 import java.util.Arrays;
 import java.util.Collection;
 
+
 @Category(JUnitTests.class)
 @RunWith(value = Parameterized.class)
-public class AttributePredicateImplTest extends Assert {
+public class AttributePredicateImplTest {
 
     private final String attributeName;
 
@@ -57,50 +58,50 @@ public class AttributePredicateImplTest extends Assert {
     public void attributePredicateImplTest() {
         String attributeValueStr = "";
         AttributePredicateImpl<String> attributePredicateStr = new AttributePredicateImpl<>(attributeName, attributeValueStr);
-        assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateStr.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", attributeValueStr, attributePredicateStr.getAttributeValue());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateStr.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeValueStr, attributePredicateStr.getAttributeValue());
 
         Integer attributeValueInt = 1234567890;
         AttributePredicateImpl<Integer> attributePredicateInt = new AttributePredicateImpl<>(attributeName, attributeValueInt);
-        assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateInt.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", attributeValueInt, attributePredicateInt.getAttributeValue());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateInt.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeValueInt, attributePredicateInt.getAttributeValue());
 
         Double attributeValueDouble = 123.23d;
         AttributePredicateImpl<Double> attributePredicateDouble = new AttributePredicateImpl<>(attributeName, attributeValueDouble);
-        assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateDouble.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", attributeValueDouble, attributePredicateDouble.getAttributeValue());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateDouble.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeValueDouble, attributePredicateDouble.getAttributeValue());
 
         Character attributeValueChar = 'a';
         AttributePredicateImpl<Character> attributePredicateChar = new AttributePredicateImpl<>(attributeName, attributeValueChar);
-        assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateChar.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", attributeValueChar, attributePredicateChar.getAttributeValue());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateChar.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeValueChar, attributePredicateChar.getAttributeValue());
 
         Long attributeValueLong = 12345678910L;
         AttributePredicateImpl<Long> attributePredicateLong = new AttributePredicateImpl<>(attributeName, attributeValueLong);
-        assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateLong.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", attributeValueLong, attributePredicateLong.getAttributeValue());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateLong.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeValueLong, attributePredicateLong.getAttributeValue());
 
         AttributePredicateImpl<Boolean> attributePredicateBooleanTrue = new AttributePredicateImpl<>(attributeName, true);
-        assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateBooleanTrue.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", true, attributePredicateBooleanTrue.getAttributeValue());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateBooleanTrue.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", true, attributePredicateBooleanTrue.getAttributeValue());
         AttributePredicateImpl<Boolean> attributePredicateBooleanFalse = new AttributePredicateImpl<>(attributeName, false);
-        assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateBooleanFalse.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", false, attributePredicateBooleanFalse.getAttributeValue());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateBooleanFalse.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", false, attributePredicateBooleanFalse.getAttributeValue());
 
         Short attributeValueShort = Short.MAX_VALUE;
         AttributePredicateImpl<Short> attributePredicateShort = new AttributePredicateImpl<>(attributeName, attributeValueShort);
-        assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateShort.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", attributeValueShort, attributePredicateShort.getAttributeValue());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateShort.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeValueShort, attributePredicateShort.getAttributeValue());
 
         Float attributeValueFloat = 123.23f;
         AttributePredicateImpl<Float> attributePredicateFloat = new AttributePredicateImpl<>(attributeName, attributeValueFloat);
-        assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateFloat.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", attributeValueFloat, attributePredicateFloat.getAttributeValue());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, attributePredicateFloat.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeValueFloat, attributePredicateFloat.getAttributeValue());
     }
 
     @Test
     public void getOperatorTest() {
         AttributePredicate<Integer> attributePredicate = new AttributePredicateImpl<>(attributeName, 1234567890, operator);
-        assertEquals("Actual and expected values are not the same!", operator, attributePredicate.getOperator());
+        Assert.assertEquals("Actual and expected values are not the same!", operator, attributePredicate.getOperator());
     }
 }

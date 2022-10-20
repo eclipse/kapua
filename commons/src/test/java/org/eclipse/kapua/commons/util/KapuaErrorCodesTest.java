@@ -17,15 +17,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaErrorCodesTest extends Assert {
+public class KapuaErrorCodesTest {
 
     @Test
     public void testIdGenerationError() {
         try {
-            assertNotNull(KapuaCommonsErrorCodes.valueOf("ID_GENERATION_ERROR"));
+            Assert.assertNotNull(KapuaCommonsErrorCodes.valueOf("ID_GENERATION_ERROR"));
         } catch (Exception ex) {
-            fail("ID_GENERATION_ERROR Enum does not exist");
+            Assert.fail("ID_GENERATION_ERROR Enum does not exist");
         }
     }
 }

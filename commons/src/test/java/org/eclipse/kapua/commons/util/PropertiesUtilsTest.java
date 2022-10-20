@@ -22,8 +22,9 @@ import java.lang.reflect.Constructor;
 import java.util.Date;
 import java.util.Properties;
 
+
 @Category(JUnitTests.class)
-public class PropertiesUtilsTest extends Assert {
+public class PropertiesUtilsTest {
 
     @Test
     public void testConstructor() throws Exception {
@@ -92,24 +93,24 @@ public class PropertiesUtilsTest extends Assert {
         //Positive tests
         for (int i = 0; i < inputString.length; i++) {
             try {
-                assertEquals(validPropArray[i], PropertiesUtils.readPropertiesFromString(inputString[i]));
+                Assert.assertEquals(validPropArray[i], PropertiesUtils.readPropertiesFromString(inputString[i]));
             } catch (AssertionError e) {
-                fail("Assertion Error not expected for " + inputString[i]);
+                Assert.fail("Assertion Error not expected for " + inputString[i]);
             }
         }
         for (int i = 0; i < emptyOrNullString.length; i++) {
             try {
-                assertEquals(emptyProp1, PropertiesUtils.readPropertiesFromString(emptyOrNullString[i]));
+                Assert.assertEquals(emptyProp1, PropertiesUtils.readPropertiesFromString(emptyOrNullString[i]));
             } catch (AssertionError e) {
-                fail("Assertion Error not expected for " + emptyOrNullString[i]);
+                Assert.fail("Assertion Error not expected for " + emptyOrNullString[i]);
             }
         }
 
         //Negative tests
         for (int i = 0; i < inputString.length; i++) {
             try {
-                assertEquals(invalidPropArray[i], PropertiesUtils.readPropertiesFromString(inputString[i]));
-                fail("Assertion Error expected");
+                Assert.assertEquals(invalidPropArray[i], PropertiesUtils.readPropertiesFromString(inputString[i]));
+                Assert.fail("Assertion Error expected");
             } catch (AssertionError e) {
                 //Expected
             }
@@ -117,8 +118,8 @@ public class PropertiesUtilsTest extends Assert {
 
         for (int i = 0; i < emptyOrNullString.length; i++) {
             try {
-                assertEquals(emptyProp2, PropertiesUtils.readPropertiesFromString(emptyOrNullString[i]));
-                fail("Assertion Error expected");
+                Assert.assertEquals(emptyProp2, PropertiesUtils.readPropertiesFromString(emptyOrNullString[i]));
+                Assert.fail("Assertion Error expected");
             } catch (AssertionError e) {
                 //Expected
             }
@@ -162,31 +163,31 @@ public class PropertiesUtilsTest extends Assert {
         //Positive tests
         for (int i = 0; i < propArray.length; i++) {
             try {
-                assertEquals(validOutputString[i], PropertiesUtils.writePropertiesToString(propArray[i]));
+                Assert.assertEquals(validOutputString[i], PropertiesUtils.writePropertiesToString(propArray[i]));
             } catch (ComparisonFailure failure) {
-                fail("Comparison Failure not expected for " + propArray[i]);
+                Assert.fail("Comparison Failure not expected for " + propArray[i]);
             }
         }
 
         try {
-            assertNull(PropertiesUtils.writePropertiesToString(null));
+            Assert.assertNull(PropertiesUtils.writePropertiesToString(null));
         } catch (AssertionError e) {
-            fail("Assertion Error not expected for null properties");
+            Assert.fail("Assertion Error not expected for null properties");
         }
 
         //Negative tests
         for (int i = 0; i < propArray.length; i++) {
             try {
-                assertEquals(invalidOutputString[i], PropertiesUtils.writePropertiesToString(propArray[i]));
-                fail("Comparison Failure expected");
+                Assert.assertEquals(invalidOutputString[i], PropertiesUtils.writePropertiesToString(propArray[i]));
+                Assert.fail("Comparison Failure expected");
             } catch (ComparisonFailure failure) {
                 //Expected
             }
         }
 
         try {
-            assertEquals(emptyString, PropertiesUtils.writePropertiesToString(null));
-            fail("Assertion Error expected");
+            Assert.assertEquals(emptyString, PropertiesUtils.writePropertiesToString(null));
+            Assert.fail("Assertion Error expected");
         } catch (AssertionError e) {
             //Expected
         }

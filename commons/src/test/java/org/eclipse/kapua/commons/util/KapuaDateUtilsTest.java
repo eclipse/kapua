@@ -21,8 +21,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaDateUtilsTest extends Assert {
+public class KapuaDateUtilsTest {
 
     @Test
     public void testConstructor() throws Exception {
@@ -57,12 +58,12 @@ public class KapuaDateUtilsTest extends Assert {
                 try {
                     Assert.assertNull(KapuaDateUtils.parseDate(listOfFalseStrings[i]));
                 } catch (Exception ex) {
-                    fail("No exception expected for Null");
+                    Assert.fail("No exception expected for Null");
                 }
             } else {
                 try {
                     KapuaDateUtils.parseDate(listOfFalseStrings[i]);
-                    fail("Exception expected for: " + listOfFalseStrings[i]);
+                    Assert.fail("Exception expected for: " + listOfFalseStrings[i]);
                 } catch (Exception ex) {
                     // Expected
                 }
@@ -73,7 +74,7 @@ public class KapuaDateUtilsTest extends Assert {
             try {
                 KapuaDateUtils.parseDate(listOfPermittedStrings[i]);
             } catch (Exception ex) {
-                fail("No exception expected for: " + listOfPermittedStrings[i]);
+                Assert.fail("No exception expected for: " + listOfPermittedStrings[i]);
             }
         }
     }
@@ -86,13 +87,13 @@ public class KapuaDateUtilsTest extends Assert {
         try {
             Assert.assertNull(KapuaDateUtils.formatDate(falseDate));
         } catch (Exception ex) {
-            fail("No exception expected for Null");
+            Assert.fail("No exception expected for Null");
         }
         // Positive tests
         try {
             KapuaDateUtils.formatDate(permittedDate);
         } catch (Exception ex) {
-            fail("No exception expected for: " + permittedDate);
+            Assert.fail("No exception expected for: " + permittedDate);
         }
     }
 }

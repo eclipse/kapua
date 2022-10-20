@@ -27,8 +27,9 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
+
 @Category(JUnitTests.class)
-public class AbstractBaseKapuaSettingTest extends Assert {
+public class AbstractBaseKapuaSettingTest {
 
     SimpleSettingKey key;
     Map<String, Object> map;
@@ -51,23 +52,23 @@ public class AbstractBaseKapuaSettingTest extends Assert {
 
     @Test
     public void fromMapNullTest() {
-        assertNull("Null expected.", AbstractBaseKapuaSetting.fromMap(null));
+        Assert.assertNull("Null expected.", AbstractBaseKapuaSetting.fromMap(null));
     }
 
     @Test
     public void fromMapEmptyMapTest() {
-        assertThat("Instance of AbstractBaseKapuaSetting expected.", AbstractBaseKapuaSetting.fromMap(map), IsInstanceOf.instanceOf(AbstractBaseKapuaSetting.class));
-        assertNotNull("Null not expected.", AbstractBaseKapuaSetting.fromMap(map).config);
-        assertFalse("False expected.", AbstractBaseKapuaSetting.fromMap(map).isSystemPropertyHotSwap());
+        Assert.assertThat("Instance of AbstractBaseKapuaSetting expected.", AbstractBaseKapuaSetting.fromMap(map), IsInstanceOf.instanceOf(AbstractBaseKapuaSetting.class));
+        Assert.assertNotNull("Null not expected.", AbstractBaseKapuaSetting.fromMap(map).config);
+        Assert.assertFalse("False expected.", AbstractBaseKapuaSetting.fromMap(map).isSystemPropertyHotSwap());
     }
 
     @Test
     public void fromMapTest() {
         map.put("Key", "Value");
-        assertThat("Instance of AbstractBaseKapuaSetting expected.", AbstractBaseKapuaSetting.fromMap(map), IsInstanceOf.instanceOf(AbstractBaseKapuaSetting.class));
-        assertNotNull("Null not expected.", AbstractBaseKapuaSetting.fromMap(map).config);
-        assertFalse("False expected.", AbstractBaseKapuaSetting.fromMap(map).isSystemPropertyHotSwap());
-        assertTrue("True expected.", AbstractBaseKapuaSetting.fromMap(map).config.containsKey("Key"));
+        Assert.assertThat("Instance of AbstractBaseKapuaSetting expected.", AbstractBaseKapuaSetting.fromMap(map), IsInstanceOf.instanceOf(AbstractBaseKapuaSetting.class));
+        Assert.assertNotNull("Null not expected.", AbstractBaseKapuaSetting.fromMap(map).config);
+        Assert.assertFalse("False expected.", AbstractBaseKapuaSetting.fromMap(map).isSystemPropertyHotSwap());
+        Assert.assertTrue("True expected.", AbstractBaseKapuaSetting.fromMap(map).config.containsKey("Key"));
     }
 
     @Test(expected = NullPointerException.class)
@@ -77,22 +78,22 @@ public class AbstractBaseKapuaSettingTest extends Assert {
 
     @Test
     public void abstractBaseKapuaSettingEmptyMapTest() {
-        assertEquals("Expected and actual values should be the same.", dataConfiguration, abstractBaseKapuaSetting.config);
-        assertFalse("False expected.", abstractBaseKapuaSetting.isSystemPropertyHotSwap());
+        Assert.assertEquals("Expected and actual values should be the same.", dataConfiguration, abstractBaseKapuaSetting.config);
+        Assert.assertFalse("False expected.", abstractBaseKapuaSetting.isSystemPropertyHotSwap());
     }
 
     @Test
     public void abstractBaseKapuaSettingTest() {
         map.put("Key", 10);
 
-        assertEquals("Expected and actual values should be the same.", dataConfiguration, abstractBaseKapuaSetting.config);
-        assertFalse("False expected.", abstractBaseKapuaSetting.isSystemPropertyHotSwap());
-        assertTrue("True expected.", abstractBaseKapuaSetting.config.containsKey("Key"));
+        Assert.assertEquals("Expected and actual values should be the same.", dataConfiguration, abstractBaseKapuaSetting.config);
+        Assert.assertFalse("False expected.", abstractBaseKapuaSetting.isSystemPropertyHotSwap());
+        Assert.assertTrue("True expected.", abstractBaseKapuaSetting.config.containsKey("Key"));
     }
 
     @Test
     public void getNullClassEmptyMapTest() {
-        assertNull("Null expected.", abstractBaseKapuaSetting.get(null, key));
+        Assert.assertNull("Null expected.", abstractBaseKapuaSetting.get(null, key));
     }
 
     @Test(expected = NullPointerException.class)
@@ -110,13 +111,13 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getTest() {
         for (int i = 0; i < objects.length; i++) {
             map.put("Key", objects[i]);
-            assertEquals("Expected and actual values should be the same.", objects[i], abstractBaseKapuaSetting.get(classes[i], key));
+            Assert.assertEquals("Expected and actual values should be the same.", objects[i], abstractBaseKapuaSetting.get(classes[i], key));
         }
     }
 
     @Test
     public void getDefaultValueNullClassEmptyMapTest() {
-        assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.get(null, key, 10));
+        Assert.assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.get(null, key, 10));
     }
 
     @Test(expected = NullPointerException.class)
@@ -134,7 +135,7 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getNullDefaultValueTest() {
         for (int i = 0; i < objects.length; i++) {
             map.put("Key", objects[i]);
-            assertEquals("Expected and actual values should be the same.", objects[i], abstractBaseKapuaSetting.get(classes[i], key, null));
+            Assert.assertEquals("Expected and actual values should be the same.", objects[i], abstractBaseKapuaSetting.get(classes[i], key, null));
         }
     }
 
@@ -142,14 +143,14 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getDefaultValueTest() {
         for (int i = 0; i < objects.length; i++) {
             map.put("Key", objects[i]);
-            assertEquals("Expected and actual values should be the same.", objects[i], abstractBaseKapuaSetting.get(classes[i], key, 10));
+            Assert.assertEquals("Expected and actual values should be the same.", objects[i], abstractBaseKapuaSetting.get(classes[i], key, 10));
         }
     }
 
     @Test
     public void getListNullClassEmptyMapTest() {
-        assertThat("Instance of List expected.", abstractBaseKapuaSetting.getList(null, key), IsInstanceOf.instanceOf(List.class));
-        assertTrue("True expected.", abstractBaseKapuaSetting.getList(null, key).isEmpty());
+        Assert.assertThat("Instance of List expected.", abstractBaseKapuaSetting.getList(null, key), IsInstanceOf.instanceOf(List.class));
+        Assert.assertTrue("True expected.", abstractBaseKapuaSetting.getList(null, key).isEmpty());
     }
 
     @Test(expected = NullPointerException.class)
@@ -169,25 +170,25 @@ public class AbstractBaseKapuaSettingTest extends Assert {
         List expectedList = new LinkedList();
         expectedList.add(10);
 
-        assertEquals("Expected and actual values should be the same.", expectedList, abstractBaseKapuaSetting.getList(Integer.class, key));
+        Assert.assertEquals("Expected and actual values should be the same.", expectedList, abstractBaseKapuaSetting.getList(Integer.class, key));
     }
 
     @Test
     public void getMapNullClassKeyRegexTest() {
-        assertTrue("True expected.", abstractBaseKapuaSetting.getMap(null, key, "Key").isEmpty());
+        Assert.assertTrue("True expected.", abstractBaseKapuaSetting.getMap(null, key, "Key").isEmpty());
 
         map.put("Key", "Value");
         Map<String, Object> expectedMap = new HashMap();
 
-        assertTrue("True expected.", abstractBaseKapuaSetting.getMap(null, key, "Key").isEmpty());
-        assertEquals("Expected and actual values should be the same.", expectedMap, abstractBaseKapuaSetting.getMap(null, key, "Key"));
+        Assert.assertTrue("True expected.", abstractBaseKapuaSetting.getMap(null, key, "Key").isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedMap, abstractBaseKapuaSetting.getMap(null, key, "Key"));
 
         map.put("Key.Key", "Value");
         try {
             abstractBaseKapuaSetting.getMap(null, key, "Key");
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -198,22 +199,22 @@ public class AbstractBaseKapuaSettingTest extends Assert {
 
     @Test
     public void getMapClassKeyNullRegexTest() {
-        assertTrue("True expected.", abstractBaseKapuaSetting.getMap(String.class, key, null).isEmpty());
+        Assert.assertTrue("True expected.", abstractBaseKapuaSetting.getMap(String.class, key, null).isEmpty());
 
         map.put("Key", "Value");
         try {
             abstractBaseKapuaSetting.getMap(String.class, key, null);
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
 
         map.put("Key.Key", "Value");
         try {
             abstractBaseKapuaSetting.getMap(String.class, key, null);
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -222,26 +223,26 @@ public class AbstractBaseKapuaSettingTest extends Assert {
         map.put("Key", "Value");
         Map<String, Object> expectedMap = new HashMap();
 
-        assertTrue("True expected.", abstractBaseKapuaSetting.getMap(String.class, key, "Key").isEmpty());
-        assertEquals("Expected and actual values should be the same.", expectedMap, abstractBaseKapuaSetting.getMap(String.class, key, "Key"));
+        Assert.assertTrue("True expected.", abstractBaseKapuaSetting.getMap(String.class, key, "Key").isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedMap, abstractBaseKapuaSetting.getMap(String.class, key, "Key"));
 
         map.put("Key.Key", "Value");
         expectedMap.put("Key", "Value");
 
-        assertFalse("False expected.", abstractBaseKapuaSetting.getMap(String.class, key, "Key").isEmpty());
-        assertEquals("Expected and actual values should be the same.", expectedMap, abstractBaseKapuaSetting.getMap(String.class, key, "Key"));
+        Assert.assertFalse("False expected.", abstractBaseKapuaSetting.getMap(String.class, key, "Key").isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedMap, abstractBaseKapuaSetting.getMap(String.class, key, "Key"));
     }
 
     @Test
     public void getMapNullClassKeyTest() {
-        assertTrue("True expected.", abstractBaseKapuaSetting.getMap(null, key).isEmpty());
+        Assert.assertTrue("True expected.", abstractBaseKapuaSetting.getMap(null, key).isEmpty());
 
         map.put("Key.key", "Value");
         try {
             abstractBaseKapuaSetting.getMap(null, key);
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -256,7 +257,7 @@ public class AbstractBaseKapuaSettingTest extends Assert {
         Map<String, Object> expectedMap = new HashMap();
         expectedMap.put("key", "Value");
 
-        assertEquals("Expected and actual values should be the same.", expectedMap, abstractBaseKapuaSetting.getMap(String.class, key));
+        Assert.assertEquals("Expected and actual values should be the same.", expectedMap, abstractBaseKapuaSetting.getMap(String.class, key));
     }
 
     @Test(expected = NullPointerException.class)
@@ -268,13 +269,13 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getIntTest() {
         map.put("Key", 10);
 
-        assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key));
+        Assert.assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key));
 
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
-        assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key));
+        Assert.assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key));
 
         System.setProperty("Key", "10");
-        assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key));
+        Assert.assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key));
         System.clearProperty("Key");
     }
 
@@ -302,16 +303,16 @@ public class AbstractBaseKapuaSettingTest extends Assert {
 
     @Test
     public void getIntDefaultValueTest() {
-        assertEquals("Expected and actual values should be the same.", 20, abstractBaseKapuaSetting.getInt(key, 20));
+        Assert.assertEquals("Expected and actual values should be the same.", 20, abstractBaseKapuaSetting.getInt(key, 20));
 
         map.put("Key", 10);
-        assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, 10));
+        Assert.assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, 10));
 
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
-        assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, 10));
+        Assert.assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, 10));
 
         System.setProperty("Key", "10");
-        assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, 10));
+        Assert.assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, 10));
         System.clearProperty("Key");
     }
 
@@ -327,15 +328,15 @@ public class AbstractBaseKapuaSettingTest extends Assert {
 
     @Test
     public void getIntDefaultValueIntegerClassTest() {
-        assertEquals("Expected and actual values should be the same.", 20, abstractBaseKapuaSetting.getInt(key, (Integer) 20));
+        Assert.assertEquals("Expected and actual values should be the same.", 20, abstractBaseKapuaSetting.getInt(key, (Integer) 20));
 
         map.put("Key", 10);
-        assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, (Integer) 10));
+        Assert.assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, (Integer) 10));
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, (Integer) 10));
+        Assert.assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, (Integer) 10));
         System.setProperty("Key", "10");
-        assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, (Integer) 10));
+        Assert.assertEquals("Expected and actual values should be the same.", 10, abstractBaseKapuaSetting.getInt(key, (Integer) 10));
         System.clearProperty("Key");
     }
 
@@ -348,12 +349,12 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getBooleanTest() {
         map.put("Key", true);
 
-        assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key));
+        Assert.assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key));
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key));
+        Assert.assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key));
         System.setProperty("Key", "true");
-        assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key));
+        Assert.assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key));
         System.clearProperty("Key");
     }
 
@@ -369,15 +370,15 @@ public class AbstractBaseKapuaSettingTest extends Assert {
 
     @Test
     public void getBooleanDefaultValueTest() {
-        assertFalse("Expected and actual values should be the same.", abstractBaseKapuaSetting.getBoolean(key, false));
+        Assert.assertFalse("Expected and actual values should be the same.", abstractBaseKapuaSetting.getBoolean(key, false));
 
         map.put("Key", true);
-        assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, true));
+        Assert.assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, true));
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, true));
+        Assert.assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, true));
         System.setProperty("Key", "true");
-        assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, true));
+        Assert.assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, true));
         System.clearProperty("Key");
     }
 
@@ -395,12 +396,12 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getBooleanDefaultValueBooleanClassTest() {
         map.put("Key", true);
 
-        assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, (Boolean) true));
+        Assert.assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, (Boolean) true));
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, (Boolean) true));
+        Assert.assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, (Boolean) true));
         System.setProperty("Key", "true");
-        assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, (Boolean) true));
+        Assert.assertEquals("Expected and actual values should be the same.", true, abstractBaseKapuaSetting.getBoolean(key, (Boolean) true));
         System.clearProperty("Key");
     }
 
@@ -413,20 +414,20 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getStringTest() {
         map.put("Key", "Value");
 
-        assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key));
+        Assert.assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key));
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key));
+        Assert.assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key));
         System.setProperty("Key", "Value");
-        assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key));
+        Assert.assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key));
         System.clearProperty("Key");
     }
 
     @Test
     public void getStringNullDefaultValueTest() {
-        assertNull("Null expected.", abstractBaseKapuaSetting.getString(key, null));
+        Assert.assertNull("Null expected.", abstractBaseKapuaSetting.getString(key, null));
         map.put("Key", "Value");
-        assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key, null));
+        Assert.assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key, null));
     }
 
     @Test(expected = NullPointerException.class)
@@ -436,15 +437,15 @@ public class AbstractBaseKapuaSettingTest extends Assert {
 
     @Test
     public void getStringDefaultValueTest() {
-        assertEquals("Expected and actual values should be the same.", "Default Value", abstractBaseKapuaSetting.getString(key, "Default Value"));
+        Assert.assertEquals("Expected and actual values should be the same.", "Default Value", abstractBaseKapuaSetting.getString(key, "Default Value"));
 
         map.put("Key", "Value");
-        assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key, "Value"));
+        Assert.assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key, "Value"));
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key, "Value"));
+        Assert.assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key, "Value"));
         System.setProperty("Key", "Value");
-        assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key, "Value"));
+        Assert.assertEquals("Expected and actual values should be the same.", "Value", abstractBaseKapuaSetting.getString(key, "Value"));
         System.clearProperty("Key");
     }
 
@@ -457,12 +458,12 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getLongTest() {
         map.put("Key", 10L);
 
-        assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key));
+        Assert.assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key));
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key));
+        Assert.assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key));
         System.setProperty("Key", "10");
-        assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key));
+        Assert.assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key));
         System.clearProperty("Key");
     }
 
@@ -480,12 +481,12 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getLongDefaultValueTest() {
         map.put("Key", 10L);
 
-        assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, 10L));
+        Assert.assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, 10L));
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, 10L));
+        Assert.assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, 10L));
         System.setProperty("Key", "10");
-        assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, 10L));
+        Assert.assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, 10L));
         System.clearProperty("Key");
     }
 
@@ -493,12 +494,12 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getLongDefaultValueLongClassTest() {
         map.put("Key", 10L);
 
-        assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, (Long) 10L));
+        Assert.assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, (Long) 10L));
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, (Long) 10L));
+        Assert.assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, (Long) 10L));
         System.setProperty("Key", "10");
-        assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, (Long) 10L));
+        Assert.assertEquals("Expected and actual values should be the same.", 10L, abstractBaseKapuaSetting.getLong(key, (Long) 10L));
         System.clearProperty("Key");
     }
 
@@ -521,13 +522,13 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getFloatTest() {
         map.put("Key", 10.11);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key), 0.2);
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key), 0.2);
         System.setProperty("Key", "10.11");
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key), 0.2);
         System.clearProperty("Key");
     }
 
@@ -545,12 +546,12 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getFloatDefaultValueTest() {
         map.put("Key", 10.11);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, 10.11f), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, 10.11f), 0.2);
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, 10.11f), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, 10.11f), 0.2);
         System.setProperty("Key", "10.11");
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, 10.11f), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, 10.11f), 0.2);
         System.clearProperty("Key");
     }
 
@@ -568,12 +569,12 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getFloatDefaultValueFloatClassTest() {
         map.put("Key", 10.11);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, (Float) 10.11f), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, (Float) 10.11f), 0.2);
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, (Float) 10.11f), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, (Float) 10.11f), 0.2);
         System.setProperty("Key", "10.11");
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, (Float) 10.11f), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getFloat(key, (Float) 10.11f), 0.2);
         System.clearProperty("Key");
     }
 
@@ -588,13 +589,13 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getDoubleTest() {
         map.put("Key", 10.11);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key), 0.2);
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key), 0.2);
         System.setProperty("Key", "10.11");
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key), 0.2);
         System.clearProperty("Key");
     }
 
@@ -612,12 +613,12 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getDoubleDefaultValueTest() {
         map.put("Key", 10.11);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, 10.11), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, 10.11), 0.2);
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, 10.11), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, 10.11), 0.2);
         System.setProperty("Key", "10.11");
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, 10.11), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, 10.11), 0.2);
         System.clearProperty("Key");
     }
 
@@ -635,12 +636,12 @@ public class AbstractBaseKapuaSettingTest extends Assert {
     public void getDoubleDefaultValueDoubleClassTest() {
         map.put("Key", 10.11);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, (Double) 10.11), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, (Double) 10.11), 0.2);
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
 
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, (Double) 10.11), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, (Double) 10.11), 0.2);
         System.setProperty("Key", "10.11");
-        assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, (Double) 10.11), 0.2);
+        Assert.assertEquals("Expected and actual values should be the same.", 10.11, abstractBaseKapuaSetting.getDouble(key, (Double) 10.11), 0.2);
         System.clearProperty("Key");
     }
 
@@ -651,10 +652,10 @@ public class AbstractBaseKapuaSettingTest extends Assert {
 
     @Test
     public void isSystemPropertyHotSwapTest() {
-        assertFalse("False expected.", abstractBaseKapuaSetting.isSystemPropertyHotSwap());
+        Assert.assertFalse("False expected.", abstractBaseKapuaSetting.isSystemPropertyHotSwap());
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(true);
-        assertTrue("True expected.", abstractBaseKapuaSetting.isSystemPropertyHotSwap());
+        Assert.assertTrue("True expected.", abstractBaseKapuaSetting.isSystemPropertyHotSwap());
         abstractBaseKapuaSetting.setSystemPropertyHotSwap(false);
-        assertFalse("False expected.", abstractBaseKapuaSetting.isSystemPropertyHotSwap());
+        Assert.assertFalse("False expected.", abstractBaseKapuaSetting.isSystemPropertyHotSwap());
     }
 }

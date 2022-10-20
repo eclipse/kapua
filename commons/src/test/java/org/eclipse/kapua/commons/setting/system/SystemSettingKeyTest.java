@@ -17,8 +17,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class SystemSettingKeyTest extends Assert {
+public class SystemSettingKeyTest {
 
     @Test
     public void keyTest() {
@@ -55,7 +56,7 @@ public class SystemSettingKeyTest extends Assert {
                 "commons.cache.provider.classname", "commons.cache.local.tmetadata.maxsize", "commons.cache.config.url", "commons.cache.config.ttl", "commons.cache.config.expiryPolicy"};
 
         for (int i = 0; i < systemSettings.length; i++) {
-            assertEquals("Expected and actual values should be the same.", expectedValue[i], systemSettings[i].key());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedValue[i], systemSettings[i].key());
         }
     }
 }

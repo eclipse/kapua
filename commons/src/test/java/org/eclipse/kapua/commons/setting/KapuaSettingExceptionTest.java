@@ -17,8 +17,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaSettingExceptionTest extends Assert {
+public class KapuaSettingExceptionTest {
 
     Throwable throwable = new Throwable("throwable_error_message");
     String kapuaErrorMessage = "kapua-setting-service-error-messages";
@@ -27,37 +28,37 @@ public class KapuaSettingExceptionTest extends Assert {
     @Test
     public void kapuaSettingExceptionNullTest() {
         KapuaSettingException kapuaSettingException = new KapuaSettingException(null);
-        assertNull("Null expected!", kapuaSettingException.getCode());
-        assertNull("Null expected!", kapuaSettingException.getCause());
-        assertEquals("Expected and actual values should be the same!", "Error: ", kapuaSettingException.getMessage());
-        assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
+        Assert.assertNull("Null expected!", kapuaSettingException.getCode());
+        Assert.assertNull("Null expected!", kapuaSettingException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same!", "Error: ", kapuaSettingException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
     }
 
     @Test
     public void kapuaSettingExceptionInvalidResourceNameTest() {
         KapuaSettingException kapuaSettingException = new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_NAME);
-        assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
-        assertNull("Null expected!", kapuaSettingException.getCause());
-        assertEquals("Expected and actual values should be the same!", "Error: ", kapuaSettingException.getMessage());
-        assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
+        Assert.assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
+        Assert.assertNull("Null expected!", kapuaSettingException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same!", "Error: ", kapuaSettingException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
     }
 
     @Test
     public void kapuaSettingExceptionInvalidResourceFileTest() {
         KapuaSettingException kapuaSettingException = new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_FILE);
-        assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_FILE", kapuaSettingException.getCode().toString());
-        assertNull("Null expected!", kapuaSettingException.getCause());
-        assertEquals("Expected and actual values should be the same!", "Error: ", kapuaSettingException.getMessage());
-        assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
+        Assert.assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_FILE", kapuaSettingException.getCode().toString());
+        Assert.assertNull("Null expected!", kapuaSettingException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same!", "Error: ", kapuaSettingException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
     }
 
     @Test
     public void kapuaSettingExceptionResourceNotFoundTest() {
         KapuaSettingException kapuaSettingException = new KapuaSettingException(KapuaSettingErrorCodes.RESOURCE_NOT_FOUND);
-        assertEquals("Expected and actual values should be the same!", "RESOURCE_NOT_FOUND", kapuaSettingException.getCode().toString());
-        assertNull("Null expected!", kapuaSettingException.getCause());
-        assertEquals("Expected and actual values should be the same!", "Error: ", kapuaSettingException.getMessage());
-        assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
+        Assert.assertEquals("Expected and actual values should be the same!", "RESOURCE_NOT_FOUND", kapuaSettingException.getCode().toString());
+        Assert.assertNull("Null expected!", kapuaSettingException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same!", "Error: ", kapuaSettingException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
     }
 
     @Test
@@ -65,38 +66,38 @@ public class KapuaSettingExceptionTest extends Assert {
         Object[] arguments = new Object[]{"invalid_resource_name", 1, 10L, 10.34, 5.99f, 'D', "", true, false, -128, 127, -32768, 32767, -2147483648, 2147483647, -9223372036854775808L, 9223372036854775807L};
         for (Object value : arguments) {
             KapuaSettingException kapuaSettingException = new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_NAME, value);
-            assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
-            assertNull("Null expected!", kapuaSettingException.getCause());
-            assertEquals("Expected and actual values should be the same!", "Error: " + value, kapuaSettingException.getMessage());
-            assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
+            Assert.assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
+            Assert.assertNull("Null expected!", kapuaSettingException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same!", "Error: " + value, kapuaSettingException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
         }
     }
 
     @Test
     public void kapuaSettingExceptionWithNullObjArgTest() {
         KapuaSettingException kapuaSettingException = new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_NAME, (Object) null);
-        assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
-        assertNull("Null expected!", kapuaSettingException.getCause());
-        assertEquals("Expected and actual values should be the same!", "Error: " + null, kapuaSettingException.getMessage());
-        assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
+        Assert.assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
+        Assert.assertNull("Null expected!", kapuaSettingException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same!", "Error: " + null, kapuaSettingException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
     }
 
     @Test
     public void kapuaSettingExceptionWithThrowableAndNullObjArgTest() {
         KapuaSettingException kapuaSettingException = new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_NAME, throwable, (Object) null);
-        assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
-        assertEquals("Expected and actual values should be the same!", throwable, kapuaSettingException.getCause());
-        assertEquals("Expected and actual values should be the same!", "Error: " + null, kapuaSettingException.getMessage());
-        assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
+        Assert.assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
+        Assert.assertEquals("Expected and actual values should be the same!", throwable, kapuaSettingException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same!", "Error: " + null, kapuaSettingException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
     }
 
     @Test
     public void kapuaSettingExceptionWithNullThrowableAndNullObjArgTest() {
         KapuaSettingException kapuaSettingException = new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_NAME, null, (Object) null);
-        assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
-        assertNull("Null expected!", kapuaSettingException.getCause());
-        assertEquals("Expected and actual values should be the same!", "Error: " + null, kapuaSettingException.getMessage());
-        assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
+        Assert.assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
+        Assert.assertNull("Null expected!", kapuaSettingException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same!", "Error: " + null, kapuaSettingException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
     }
 
     @Test
@@ -104,10 +105,10 @@ public class KapuaSettingExceptionTest extends Assert {
         Object[] arguments = new Object[]{"invalid_resource_name", 1, 10L, 10.34, 5.99f, 'D', "", true, false, -128, 127, -32768, 32767, -2147483648, 2147483647, -9223372036854775808L, 9223372036854775807L};
         for (Object value : arguments) {
             KapuaSettingException kapuaSettingException = new KapuaSettingException(KapuaSettingErrorCodes.INVALID_RESOURCE_NAME, throwable, value);
-            assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
-            assertEquals("Null expected!", throwable, kapuaSettingException.getCause());
-            assertEquals("Expected and actual values should be the same!", kapuaSettingException.getMessage(), "Error: " + value);
-            assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
+            Assert.assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", kapuaSettingException.getCode().toString());
+            Assert.assertEquals("Null expected!", throwable, kapuaSettingException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same!", kapuaSettingException.getMessage(), "Error: " + value);
+            Assert.assertEquals("Expected and actual values should be the same!", kapuaErrorMessage, kapuaSettingException.getKapuaErrorMessagesBundle());
         }
     }
 

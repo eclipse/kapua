@@ -23,9 +23,10 @@ import org.junit.runners.Parameterized.Parameters;
 
 import java.util.Arrays;
 
+
 @Category(JUnitTests.class)
 @RunWith(value = Parameterized.class)
-public class FieldSortCriteriaImplTest extends Assert {
+public class FieldSortCriteriaImplTest {
 
     private final String attributeName;
     private SortOrder sortOrder;
@@ -50,11 +51,11 @@ public class FieldSortCriteriaImplTest extends Assert {
     public void fieldSortCriteriaImplTest() {
         SortOrder sortOrderAscending = SortOrder.ASCENDING;
         FieldSortCriteriaImpl fieldSortCriteriaAscending = new FieldSortCriteriaImpl(attributeName, sortOrderAscending);
-        assertEquals("Actual and expected values are not the same!", attributeName, fieldSortCriteriaAscending.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", sortOrderAscending, fieldSortCriteriaAscending.getSortOrder());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, fieldSortCriteriaAscending.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", sortOrderAscending, fieldSortCriteriaAscending.getSortOrder());
         SortOrder sortOrderDescending = SortOrder.DESCENDING;
         FieldSortCriteriaImpl fieldSortCriteriaDescending = new FieldSortCriteriaImpl(attributeName, sortOrderDescending);
-        assertEquals("Actual and expected values are not the same!", attributeName, fieldSortCriteriaDescending.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", sortOrderDescending, fieldSortCriteriaDescending.getSortOrder());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, fieldSortCriteriaDescending.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", sortOrderDescending, fieldSortCriteriaDescending.getSortOrder());
     }
 }
