@@ -27,8 +27,9 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class GroupFactoryImplTest extends Assert {
+public class GroupFactoryImplTest {
 
     GroupFactoryImpl groupFactoryImpl;
     KapuaId scopeId;
@@ -60,8 +61,8 @@ public class GroupFactoryImplTest extends Assert {
     public void newCreatorScopeIdNameParametersTest() {
         for (String name : names) {
             GroupCreator groupCreator = groupFactoryImpl.newCreator(scopeId, name);
-            assertEquals("Expected and actual values should be the same.", name, groupCreator.getName());
-            assertEquals("Expected and actual values should be the same.", scopeId, groupCreator.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", name, groupCreator.getName());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, groupCreator.getScopeId());
         }
     }
 
@@ -69,72 +70,72 @@ public class GroupFactoryImplTest extends Assert {
     public void newCreatorNullScopeIdNameParametersTest() {
         for (String name : names) {
             GroupCreator groupCreator = groupFactoryImpl.newCreator(null, name);
-            assertEquals("Expected and actual values should be the same.", name, groupCreator.getName());
-            assertNull("Null expected.", groupCreator.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", name, groupCreator.getName());
+            Assert.assertNull("Null expected.", groupCreator.getScopeId());
         }
     }
 
     @Test
     public void newCreatorScopeIdNullNameParametersTest() {
         GroupCreator groupCreator = groupFactoryImpl.newCreator(scopeId, null);
-        assertNull("Null expected.", groupCreator.getName());
-        assertEquals("Expected and actual values should be the same.", scopeId, groupCreator.getScopeId());
+        Assert.assertNull("Null expected.", groupCreator.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, groupCreator.getScopeId());
     }
 
     @Test
     public void newEntityTest() {
         Group group = groupFactoryImpl.newEntity(scopeId);
-        assertEquals("Expected and actual values should be the same.", scopeId, group.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, group.getScopeId());
     }
 
     @Test
     public void newEntityNullTest() {
         Group group = groupFactoryImpl.newEntity(null);
-        assertNull("Null expected.", group.getScopeId());
+        Assert.assertNull("Null expected.", group.getScopeId());
     }
 
     @Test
     public void newListResultTest() {
         GroupListResult groupListResult = groupFactoryImpl.newListResult();
-        assertTrue("True expected.", groupListResult.isEmpty());
+        Assert.assertTrue("True expected.", groupListResult.isEmpty());
     }
 
     @Test
     public void newQueryTest() {
         GroupQuery groupQuery = groupFactoryImpl.newQuery(scopeId);
-        assertEquals("Expected and actual values should be the same.", scopeId, groupQuery.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, groupQuery.getScopeId());
     }
 
     @Test
     public void newQueryNullTest() {
         GroupQuery groupQuery = groupFactoryImpl.newQuery(null);
-        assertNull("Null expected.", groupQuery.getScopeId());
+        Assert.assertNull("Null expected.", groupQuery.getScopeId());
     }
 
     @Test
     public void newCreatorTest() {
         GroupCreator groupCreator = groupFactoryImpl.newCreator(scopeId);
-        assertEquals("Expected and actual values should be the same.", scopeId, groupCreator.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, groupCreator.getScopeId());
     }
 
     @Test
     public void newCreatorNullTest() {
         GroupCreator groupCreator = groupFactoryImpl.newCreator(null);
-        assertNull("Null expected.", groupCreator.getScopeId());
+        Assert.assertNull("Null expected.", groupCreator.getScopeId());
     }
 
     @Test
     public void cloneTest() {
         Group resultGroup = groupFactoryImpl.clone(group);
-        assertEquals("Expected and actual values should be the same.", "group name", resultGroup.getName());
-        assertEquals("Expected and actual values should be the same.", "description", resultGroup.getDescription());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultGroup.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultGroup.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultGroup.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, resultGroup.getCreatedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultGroup.getModifiedBy());
-        assertEquals("Expected and actual values should be the same.", modifiedOn, resultGroup.getModifiedOn());
-        assertEquals("Expected and actual values should be the same.", 11, resultGroup.getOptlock());
+        Assert.assertEquals("Expected and actual values should be the same.", "group name", resultGroup.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", "description", resultGroup.getDescription());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultGroup.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultGroup.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultGroup.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, resultGroup.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultGroup.getModifiedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, resultGroup.getModifiedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", 11, resultGroup.getOptlock());
     }
 
     @Test(expected = KapuaEntityCloneException.class)

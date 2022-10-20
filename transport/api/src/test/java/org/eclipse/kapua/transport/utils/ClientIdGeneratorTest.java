@@ -21,8 +21,9 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class ClientIdGeneratorTest extends Assert {
+public class ClientIdGeneratorTest {
 
     ClientIdGenerator clientIdGenerator;
 
@@ -34,7 +35,7 @@ public class ClientIdGeneratorTest extends Assert {
     @Test
     public void clientIdGeneratorTest() throws Exception {
         Constructor<ClientIdGenerator> clientIdGenerator = ClientIdGenerator.class.getDeclaredConstructor();
-        assertTrue(Modifier.isPrivate(clientIdGenerator.getModifiers()));
+        Assert.assertTrue(Modifier.isPrivate(clientIdGenerator.getModifiers()));
         clientIdGenerator.setAccessible(true);
         clientIdGenerator.newInstance();
     }
@@ -42,7 +43,7 @@ public class ClientIdGeneratorTest extends Assert {
     @Test
     public void nextWithoutParameterTest() {
         String newId = clientIdGenerator.next();
-        assertTrue("True expected.", newId.startsWith("Id"));
+        Assert.assertTrue("True expected.", newId.startsWith("Id"));
     }
 
     @Test
@@ -50,13 +51,13 @@ public class ClientIdGeneratorTest extends Assert {
         String[] parameters = {"1", "testtest", "1232153", "!!$%&/&(())", "a1"};
         for (String parameter : parameters) {
             String newId = clientIdGenerator.next(parameter);
-            assertTrue("True expected.", newId.startsWith(parameter));
+            Assert.assertTrue("True expected.", newId.startsWith(parameter));
         }
     }
 
     @Test
     public void nextWithNullParameterTest() {
         String newId = clientIdGenerator.next(null);
-        assertTrue("True expected.", newId.startsWith("null"));
+        Assert.assertTrue("True expected.", newId.startsWith("null"));
     }
 }

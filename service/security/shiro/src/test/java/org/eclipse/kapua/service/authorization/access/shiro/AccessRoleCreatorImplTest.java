@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class AccessRoleCreatorImplTest extends Assert {
+public class AccessRoleCreatorImplTest {
 
     AccessRoleCreatorImpl accessRoleCreatorImpl;
 
@@ -31,34 +32,34 @@ public class AccessRoleCreatorImplTest extends Assert {
 
     @Test
     public void accessRoleCreatorImplTest() {
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessRoleCreatorImpl.getScopeId());
-        assertNull("Null expected.", accessRoleCreatorImpl.getAccessInfoId());
-        assertNull("Null expected.", accessRoleCreatorImpl.getRoleId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessRoleCreatorImpl.getScopeId());
+        Assert.assertNull("Null expected.", accessRoleCreatorImpl.getAccessInfoId());
+        Assert.assertNull("Null expected.", accessRoleCreatorImpl.getRoleId());
     }
 
     @Test
     public void accessRoleCreatorImplNullTest() {
         AccessRoleCreatorImpl accessRoleCreatorImplNullId = new AccessRoleCreatorImpl(null);
-        assertNull("Null expected.", accessRoleCreatorImplNullId.getScopeId());
-        assertNull("Null expected.", accessRoleCreatorImplNullId.getAccessInfoId());
-        assertNull("Null expected.", accessRoleCreatorImplNullId.getRoleId());
+        Assert.assertNull("Null expected.", accessRoleCreatorImplNullId.getScopeId());
+        Assert.assertNull("Null expected.", accessRoleCreatorImplNullId.getAccessInfoId());
+        Assert.assertNull("Null expected.", accessRoleCreatorImplNullId.getRoleId());
     }
 
     @Test
     public void setAndGetAccessInfoIdTest() {
         accessRoleCreatorImpl.setAccessInfoId(KapuaId.ANY);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessRoleCreatorImpl.getAccessInfoId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessRoleCreatorImpl.getAccessInfoId());
 
         accessRoleCreatorImpl.setAccessInfoId(null);
-        assertNull("Null expected.", accessRoleCreatorImpl.getAccessInfoId());
+        Assert.assertNull("Null expected.", accessRoleCreatorImpl.getAccessInfoId());
     }
 
     @Test
     public void setAndGetRoleIdTest() {
         accessRoleCreatorImpl.setRoleId(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessRoleCreatorImpl.getRoleId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessRoleCreatorImpl.getRoleId());
 
         accessRoleCreatorImpl.setRoleId(null);
-        assertNull("Null expected.", accessRoleCreatorImpl.getRoleId());
+        Assert.assertNull("Null expected.", accessRoleCreatorImpl.getRoleId());
     }
 }

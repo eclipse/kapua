@@ -26,8 +26,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Category(JUnitTests.class)
-public class DomainImplTest extends Assert {
+public class DomainImplTest {
 
     Domain domain;
     Date createdOn;
@@ -55,38 +56,38 @@ public class DomainImplTest extends Assert {
 
     @Test
     public void domainImplWithoutParametersTest() {
-        assertNull("Null expected.", domainImpl1.getScopeId());
-        assertNull("Null expected.", domainImpl1.getName());
-        assertNull("Null expected.", domainImpl1.getActions());
-        assertFalse("False expected.", domainImpl1.getGroupable());
+        Assert.assertNull("Null expected.", domainImpl1.getScopeId());
+        Assert.assertNull("Null expected.", domainImpl1.getName());
+        Assert.assertNull("Null expected.", domainImpl1.getActions());
+        Assert.assertFalse("False expected.", domainImpl1.getGroupable());
     }
 
     @Test
     public void domainImplScopeIdParameterTest() {
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domainImpl2.getScopeId());
-        assertNull("Null expected.", domainImpl2.getName());
-        assertNull("Null expected.", domainImpl2.getActions());
-        assertFalse("False expected.", domainImpl2.getGroupable());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domainImpl2.getScopeId());
+        Assert.assertNull("Null expected.", domainImpl2.getName());
+        Assert.assertNull("Null expected.", domainImpl2.getActions());
+        Assert.assertFalse("False expected.", domainImpl2.getGroupable());
     }
 
     @Test
     public void domainImplNullScopeIdParameterTest() {
         DomainImpl domainImpl = new DomainImpl((KapuaId) null);
-        assertNull("Null expected.", domainImpl.getScopeId());
-        assertNull("Null expected.", domainImpl.getName());
-        assertNull("Null expected.", domainImpl.getActions());
-        assertFalse("False expected.", domainImpl.getGroupable());
+        Assert.assertNull("Null expected.", domainImpl.getScopeId());
+        Assert.assertNull("Null expected.", domainImpl.getName());
+        Assert.assertNull("Null expected.", domainImpl.getActions());
+        Assert.assertFalse("False expected.", domainImpl.getGroupable());
     }
 
     @Test
     public void domainImplDomainParameterTest() {
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domainImpl3.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, domainImpl3.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domainImpl3.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, domainImpl3.getCreatedOn());
-        assertEquals("Expected and actual values should be the same.", "name", domainImpl3.getName());
-        assertEquals("Expected and actual values should be the same.", actions, domainImpl3.getActions());
-        assertTrue("True expected.", domainImpl3.getGroupable());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domainImpl3.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, domainImpl3.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domainImpl3.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, domainImpl3.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", "name", domainImpl3.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", actions, domainImpl3.getActions());
+        Assert.assertTrue("True expected.", domainImpl3.getGroupable());
     }
 
     @Test(expected = NullPointerException.class)
@@ -102,17 +103,17 @@ public class DomainImplTest extends Assert {
             domainImpl1.setName(newName);
             domainImpl2.setName(newName);
             domainImpl3.setName(newName);
-            assertEquals("Expected and actual values should be the same.", newName, domainImpl1.getName());
-            assertEquals("Expected and actual values should be the same.", newName, domainImpl2.getName());
-            assertEquals("Expected and actual values should be the same.", newName, domainImpl3.getName());
+            Assert.assertEquals("Expected and actual values should be the same.", newName, domainImpl1.getName());
+            Assert.assertEquals("Expected and actual values should be the same.", newName, domainImpl2.getName());
+            Assert.assertEquals("Expected and actual values should be the same.", newName, domainImpl3.getName());
         }
 
         domainImpl1.setName(null);
         domainImpl2.setName(null);
         domainImpl3.setName(null);
-        assertNull("Null expected.", domainImpl1.getName());
-        assertNull("Null expected.", domainImpl2.getName());
-        assertNull("Null expected.", domainImpl3.getName());
+        Assert.assertNull("Null expected.", domainImpl1.getName());
+        Assert.assertNull("Null expected.", domainImpl2.getName());
+        Assert.assertNull("Null expected.", domainImpl3.getName());
     }
 
     @Test
@@ -122,12 +123,12 @@ public class DomainImplTest extends Assert {
         domainImpl1.setActions(newActions);
         domainImpl2.setActions(newActions);
         domainImpl3.setActions(newActions);
-        assertEquals("Expected and actual values should be the same.", newActions, domainImpl1.getActions());
-        assertEquals("Expected and actual values should be the same.", newActions, domainImpl2.getActions());
-        assertEquals("Expected and actual values should be the same.", newActions, domainImpl3.getActions());
-        assertTrue("True expected", domainImpl1.getActions().isEmpty());
-        assertTrue("True expected", domainImpl2.getActions().isEmpty());
-        assertTrue("True expected", domainImpl3.getActions().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", newActions, domainImpl1.getActions());
+        Assert.assertEquals("Expected and actual values should be the same.", newActions, domainImpl2.getActions());
+        Assert.assertEquals("Expected and actual values should be the same.", newActions, domainImpl3.getActions());
+        Assert.assertTrue("True expected", domainImpl1.getActions().isEmpty());
+        Assert.assertTrue("True expected", domainImpl2.getActions().isEmpty());
+        Assert.assertTrue("True expected", domainImpl3.getActions().isEmpty());
 
         newActions.add(Actions.read);
         newActions.add(Actions.delete);
@@ -138,19 +139,19 @@ public class DomainImplTest extends Assert {
         domainImpl2.setActions(newActions);
         domainImpl3.setActions(newActions);
 
-        assertEquals("Expected and actual values should be the same.", newActions, domainImpl1.getActions());
-        assertEquals("Expected and actual values should be the same.", newActions, domainImpl2.getActions());
-        assertEquals("Expected and actual values should be the same.", newActions, domainImpl3.getActions());
-        assertEquals("Expected and actual values should be the same.", 5, domainImpl1.getActions().size());
-        assertEquals("Expected and actual values should be the same.", 5, domainImpl2.getActions().size());
-        assertEquals("Expected and actual values should be the same.", 5, domainImpl3.getActions().size());
+        Assert.assertEquals("Expected and actual values should be the same.", newActions, domainImpl1.getActions());
+        Assert.assertEquals("Expected and actual values should be the same.", newActions, domainImpl2.getActions());
+        Assert.assertEquals("Expected and actual values should be the same.", newActions, domainImpl3.getActions());
+        Assert.assertEquals("Expected and actual values should be the same.", 5, domainImpl1.getActions().size());
+        Assert.assertEquals("Expected and actual values should be the same.", 5, domainImpl2.getActions().size());
+        Assert.assertEquals("Expected and actual values should be the same.", 5, domainImpl3.getActions().size());
 
         domainImpl1.setActions(null);
         domainImpl2.setActions(null);
         domainImpl3.setActions(null);
-        assertNull("Null expected.", domainImpl1.getActions());
-        assertNull("Null expected.", domainImpl2.getActions());
-        assertNull("Null expected.", domainImpl3.getActions());
+        Assert.assertNull("Null expected.", domainImpl1.getActions());
+        Assert.assertNull("Null expected.", domainImpl2.getActions());
+        Assert.assertNull("Null expected.", domainImpl3.getActions());
     }
 
     @Test
@@ -162,25 +163,25 @@ public class DomainImplTest extends Assert {
             domainImpl2.setGroupable(groupable);
             domainImpl3.setGroupable(groupable);
 
-            assertEquals("Expected and actual values should be the same.", groupable, domainImpl1.getGroupable());
-            assertEquals("Expected and actual values should be the same.", groupable, domainImpl2.getGroupable());
-            assertEquals("Expected and actual values should be the same.", groupable, domainImpl3.getGroupable());
+            Assert.assertEquals("Expected and actual values should be the same.", groupable, domainImpl1.getGroupable());
+            Assert.assertEquals("Expected and actual values should be the same.", groupable, domainImpl2.getGroupable());
+            Assert.assertEquals("Expected and actual values should be the same.", groupable, domainImpl3.getGroupable());
         }
     }
 
     @Test
     public void equalsSameObjectTest() {
-        assertTrue("True expected.", domainImpl1.equals(domainImpl1));
+        Assert.assertTrue("True expected.", domainImpl1.equals(domainImpl1));
     }
 
     @Test
     public void equalsNullTest() {
-        assertFalse("False expected.", domainImpl1.equals(null));
+        Assert.assertFalse("False expected.", domainImpl1.equals(null));
     }
 
     @Test
     public void equalsObjectTest() {
-        assertFalse("False expected.", domainImpl1.equals(new Object()));
+        Assert.assertFalse("False expected.", domainImpl1.equals(new Object()));
     }
 
     @Test
@@ -192,7 +193,7 @@ public class DomainImplTest extends Assert {
         domainImpl1.setActions(actions);
         domainImpl2.setActions(actions);
 
-        assertTrue("True expected.", domainImpl1.equals(domainImpl2));
+        Assert.assertTrue("True expected.", domainImpl1.equals(domainImpl2));
     }
 
     @Test
@@ -204,7 +205,7 @@ public class DomainImplTest extends Assert {
         domainImpl1.setActions(actions);
         domainImpl2.setActions(actions);
 
-        assertFalse("False expected.", domainImpl1.equals(domainImpl2));
+        Assert.assertFalse("False expected.", domainImpl1.equals(domainImpl2));
     }
 
     @Test
@@ -216,7 +217,7 @@ public class DomainImplTest extends Assert {
         domainImpl1.setActions(actions);
         domainImpl2.setActions(actions);
 
-        assertFalse("False expected.", domainImpl1.equals(domainImpl2));
+        Assert.assertFalse("False expected.", domainImpl1.equals(domainImpl2));
     }
 
     @Test
@@ -229,24 +230,24 @@ public class DomainImplTest extends Assert {
         domainImpl1.setActions(actions);
         domainImpl2.setActions(new HashSet<>());
 
-        assertFalse("False expected.", domainImpl1.equals(domainImpl2));
+        Assert.assertFalse("False expected.", domainImpl1.equals(domainImpl2));
     }
 
     @Test
     public void hashCodeTest() {
-        assertEquals("Expected and actual values should be the same.", 31028, domainImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 31028, domainImpl1.hashCode());
     }
 
     @Test
     public void hashCodeNameTest() {
         domainImpl1.setName("name");
-        assertEquals("Expected and actual values should be the same.", -1052803841, domainImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", -1052803841, domainImpl1.hashCode());
     }
 
     @Test
     public void hashCodeEmptyActionsTest() {
         domainImpl1.setActions(actions);
-        assertEquals("Expected and actual values should be the same.", 31028, domainImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 31028, domainImpl1.hashCode());
     }
 
     @Test
@@ -258,19 +259,19 @@ public class DomainImplTest extends Assert {
         actions.add(Actions.write);
         domainImpl1.setActions(actions);
 
-        assertEquals("Expected and actual values should be the same.", 31 * actions.hashCode() + 31028, domainImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 31 * actions.hashCode() + 31028, domainImpl1.hashCode());
     }
 
     @Test
     public void hashCodeGroupableTrueTest() {
         domainImpl1.setGroupable(true);
-        assertEquals("Expected and actual values should be the same.", 31022, domainImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 31022, domainImpl1.hashCode());
     }
 
     @Test
     public void hashCodeGroupableFalseTest() {
         domainImpl1.setGroupable(false);
-        assertEquals("Expected and actual values should be the same.", 31028, domainImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 31028, domainImpl1.hashCode());
     }
 
     @Test
@@ -278,6 +279,6 @@ public class DomainImplTest extends Assert {
         domainImpl1.setName("name");
         domainImpl1.setActions(actions);
         domainImpl1.setGroupable(true);
-        assertEquals("Expected and actual values should be the same.", -1052803847, domainImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", -1052803847, domainImpl1.hashCode());
     }
 }

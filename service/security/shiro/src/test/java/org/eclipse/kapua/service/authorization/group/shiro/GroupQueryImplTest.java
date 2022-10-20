@@ -18,22 +18,23 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class GroupQueryImplTest extends Assert {
+public class GroupQueryImplTest {
 
     @Test
     public void groupQueryImplTest() {
         GroupQueryImpl groupQueryImpl = new GroupQueryImpl(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, groupQueryImpl.getScopeId());
-        assertNull("groupQueryImpl.sortCriteria", groupQueryImpl.getSortCriteria());
-        assertNotNull("groupQueryImpl.defaultSortCriteria", groupQueryImpl.getDefaultSortCriteria());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, groupQueryImpl.getScopeId());
+        Assert.assertNull("groupQueryImpl.sortCriteria", groupQueryImpl.getSortCriteria());
+        Assert.assertNotNull("groupQueryImpl.defaultSortCriteria", groupQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
     public void groupQueryImplNullTest() {
         GroupQueryImpl groupQueryImpl = new GroupQueryImpl(null);
-        assertNull("Null expected.", groupQueryImpl.getScopeId());
-        assertNull("groupQueryImpl.sortCriteria", groupQueryImpl.getSortCriteria());
-        assertNotNull("groupQueryImpl.defaultSortCriteria", groupQueryImpl.getDefaultSortCriteria());
+        Assert.assertNull("Null expected.", groupQueryImpl.getScopeId());
+        Assert.assertNull("groupQueryImpl.sortCriteria", groupQueryImpl.getSortCriteria());
+        Assert.assertNotNull("groupQueryImpl.defaultSortCriteria", groupQueryImpl.getDefaultSortCriteria());
     }
 }

@@ -20,8 +20,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class SubjectUnauthorizedExceptionTest extends Assert {
+public class SubjectUnauthorizedExceptionTest {
 
     Permission permission, newPermission;
     SubjectUnauthorizedException subjectUnauthorizedException;
@@ -37,29 +38,29 @@ public class SubjectUnauthorizedExceptionTest extends Assert {
 
     @Test
     public void subjectUnauthorizedExceptionTest() {
-        assertEquals("Expected and actual values should be the same.", KapuaAuthorizationErrorCodes.SUBJECT_UNAUTHORIZED, subjectUnauthorizedException.getCode());
-        assertNull("Null expected.", subjectUnauthorizedException.getCause());
-        assertEquals("Expected and actual values should be the same.", "User does not have permission to perform this action. Missing permission: " + permission + ". Please perform a new login to refresh users permissions.", subjectUnauthorizedException.getMessage());
-        assertEquals("Expected and actual values should be the same.", permission, subjectUnauthorizedException.getPermission());
-        assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, subjectUnauthorizedException.getKapuaErrorMessagesBundle());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaAuthorizationErrorCodes.SUBJECT_UNAUTHORIZED, subjectUnauthorizedException.getCode());
+        Assert.assertNull("Null expected.", subjectUnauthorizedException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", "User does not have permission to perform this action. Missing permission: " + permission + ". Please perform a new login to refresh users permissions.", subjectUnauthorizedException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", permission, subjectUnauthorizedException.getPermission());
+        Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, subjectUnauthorizedException.getKapuaErrorMessagesBundle());
     }
 
     @Test
     public void subjectUnauthorizedExceptionNullTest() {
         subjectUnauthorizedException = new SubjectUnauthorizedException(null);
-        assertEquals("Expected and actual values should be the same.", KapuaAuthorizationErrorCodes.SUBJECT_UNAUTHORIZED, subjectUnauthorizedException.getCode());
-        assertNull("Null expected.", subjectUnauthorizedException.getCause());
-        assertEquals("Expected and actual values should be the same.", "User does not have permission to perform this action. Missing permission: null. Please perform a new login to refresh users permissions.", subjectUnauthorizedException.getMessage());
-        assertNull("Null expected.", subjectUnauthorizedException.getPermission());
-        assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, subjectUnauthorizedException.getKapuaErrorMessagesBundle());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaAuthorizationErrorCodes.SUBJECT_UNAUTHORIZED, subjectUnauthorizedException.getCode());
+        Assert.assertNull("Null expected.", subjectUnauthorizedException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", "User does not have permission to perform this action. Missing permission: null. Please perform a new login to refresh users permissions.", subjectUnauthorizedException.getMessage());
+        Assert.assertNull("Null expected.", subjectUnauthorizedException.getPermission());
+        Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, subjectUnauthorizedException.getKapuaErrorMessagesBundle());
     }
 
     @Test
     public void setAndGetPermissionTest() {
         subjectUnauthorizedException.setPermission(newPermission);
-        assertEquals("Expected and actual values should be the same.", newPermission, subjectUnauthorizedException.getPermission());
+        Assert.assertEquals("Expected and actual values should be the same.", newPermission, subjectUnauthorizedException.getPermission());
 
         subjectUnauthorizedException.setPermission(null);
-        assertNull("Null expected.", subjectUnauthorizedException.getPermission());
+        Assert.assertNull("Null expected.", subjectUnauthorizedException.getPermission());
     }
 }

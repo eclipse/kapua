@@ -18,24 +18,25 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class DomainQueryImplTest extends Assert {
+public class DomainQueryImplTest {
 
     @Test
     public void domainQueryImplWithoutParametersTest() {
         DomainQueryImpl domainQueryImpl = new DomainQueryImpl();
-        assertNull("Null expected.", domainQueryImpl.getScopeId());
+        Assert.assertNull("Null expected.", domainQueryImpl.getScopeId());
     }
 
     @Test
     public void domainQueryImplScopeIdParameterTest() {
         DomainQueryImpl domainQueryImpl = new DomainQueryImpl(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domainQueryImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domainQueryImpl.getScopeId());
     }
 
     @Test
     public void domainQueryImplNullScopeIdParameterTest() {
         DomainQueryImpl domainQueryImpl = new DomainQueryImpl(null);
-        assertNull("Null expected.", domainQueryImpl.getScopeId());
+        Assert.assertNull("Null expected.", domainQueryImpl.getScopeId());
     }
 }

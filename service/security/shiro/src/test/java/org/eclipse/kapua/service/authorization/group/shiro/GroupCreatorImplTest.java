@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class GroupCreatorImplTest extends Assert {
+public class GroupCreatorImplTest {
 
     String[] names;
     KapuaId scopeId;
@@ -35,8 +36,8 @@ public class GroupCreatorImplTest extends Assert {
     public void groupCreatorImplScopeIdNameParametersTest() {
         for (String name : names) {
             GroupCreatorImpl groupCreatorImpl = new GroupCreatorImpl(scopeId, name);
-            assertEquals("Expected and actual values should be the same.", scopeId, groupCreatorImpl.getScopeId());
-            assertEquals("Expected and actual values should be the same.", name, groupCreatorImpl.getName());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, groupCreatorImpl.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", name, groupCreatorImpl.getName());
         }
     }
 
@@ -44,36 +45,36 @@ public class GroupCreatorImplTest extends Assert {
     public void groupCreatorImplNullScopeIdNameParametersTest() {
         for (String name : names) {
             GroupCreatorImpl groupCreatorImpl = new GroupCreatorImpl(null, name);
-            assertNull("Null expected.", groupCreatorImpl.getScopeId());
-            assertEquals("Expected and actual values should be the same.", name, groupCreatorImpl.getName());
+            Assert.assertNull("Null expected.", groupCreatorImpl.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", name, groupCreatorImpl.getName());
         }
     }
 
     @Test
     public void groupCreatorImplScopeIdNullNameParametersTest() {
         GroupCreatorImpl groupCreatorImpl = new GroupCreatorImpl(scopeId, null);
-        assertEquals("Expected and actual values should be the same.", scopeId, groupCreatorImpl.getScopeId());
-        assertNull("Null expected.", groupCreatorImpl.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, groupCreatorImpl.getScopeId());
+        Assert.assertNull("Null expected.", groupCreatorImpl.getName());
     }
 
     @Test
     public void groupCreatorImplNullScopeIdNullNameParametersTest() {
         GroupCreatorImpl groupCreatorImpl = new GroupCreatorImpl(null, null);
-        assertNull("Null expected.", groupCreatorImpl.getScopeId());
-        assertNull("Null expected.", groupCreatorImpl.getName());
+        Assert.assertNull("Null expected.", groupCreatorImpl.getScopeId());
+        Assert.assertNull("Null expected.", groupCreatorImpl.getName());
     }
 
     @Test
     public void groupCreatorImplScopeIdParameterTest() {
         GroupCreatorImpl groupCreatorImpl = new GroupCreatorImpl(scopeId);
-        assertEquals("Expected and actual values should be the same.", scopeId, groupCreatorImpl.getScopeId());
-        assertNull("Null expected.", groupCreatorImpl.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, groupCreatorImpl.getScopeId());
+        Assert.assertNull("Null expected.", groupCreatorImpl.getName());
     }
 
     @Test
     public void groupCreatorImplNullScopeIdParameterTest() {
         GroupCreatorImpl groupCreatorImpl = new GroupCreatorImpl(null);
-        assertNull("Null expected.", groupCreatorImpl.getScopeId());
-        assertNull("Null expected.", groupCreatorImpl.getName());
+        Assert.assertNull("Null expected.", groupCreatorImpl.getScopeId());
+        Assert.assertNull("Null expected.", groupCreatorImpl.getName());
     }
 }

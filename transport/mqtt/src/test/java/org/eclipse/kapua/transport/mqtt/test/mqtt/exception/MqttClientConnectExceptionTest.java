@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+
 @Category(JUnitTests.class)
-public class MqttClientConnectExceptionTest extends Assert {
+public class MqttClientConnectExceptionTest {
 
     MqttClientConnectException exception1, exception2;
     Throwable cause;
@@ -44,9 +45,9 @@ public class MqttClientConnectExceptionTest extends Assert {
         URI[] uriPermittedFormats = { new URI("https://john.doe@www.example.com:123/forum/questions/?tag=networking&order=newest#top"), new URI("ldap://[2001:db8::7]/c=GB?objectClass?one"), new URI("mailto:Username.example@example.com"), new URI("news:comp.infosystems.www.servers.unix"), new URI("tel:+1-816-555-1212"), new URI("telnet://192.0.2.16:80/"), new URI("urn:oasis:names:specification:docbook:dtd:xml:4.1.2")};
         for (URI value : uriPermittedFormats) {
             MqttClientConnectException exception = new MqttClientConnectException(clientID, username, value);
-            assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
-            assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
-            assertEquals("Expected and actual values should be the same!", value, exception.getUri());
+            Assert.assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
+            Assert.assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
+            Assert.assertEquals("Expected and actual values should be the same!", value, exception.getUri());
         }
     }
 
@@ -54,11 +55,11 @@ public class MqttClientConnectExceptionTest extends Assert {
     public void constructorURINullTest() {
         try {
             MqttClientConnectException exception = new MqttClientConnectException(clientID, username, null);
-            assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
-            assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
-            assertNull("Null expected!", exception.getUri());
+            Assert.assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
+            Assert.assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
+            Assert.assertNull("Null expected!", exception.getUri());
         } catch (Exception ex) {
-            fail("No exception expected!");
+            Assert.fail("No exception expected!");
         }
     }
 
@@ -68,11 +69,11 @@ public class MqttClientConnectExceptionTest extends Assert {
         for (URI value : uriPermittedFormats) {
             try {
                 MqttClientConnectException exception = new MqttClientConnectException(clientID, null, value);
-                assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
-                assertNull("Null expected!", exception.getUsername());
-                assertEquals("Expected and actual values should be the same!", value, exception.getUri());
+                Assert.assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
+                Assert.assertNull("Null expected!", exception.getUsername());
+                Assert.assertEquals("Expected and actual values should be the same!", value, exception.getUri());
             } catch (Exception ex) {
-                fail("No exception expected!");
+                Assert.fail("No exception expected!");
             }
         }
     }
@@ -83,11 +84,11 @@ public class MqttClientConnectExceptionTest extends Assert {
         for (URI value : uriPermittedFormats) {
             try {
                 MqttClientConnectException exception = new MqttClientConnectException(null, username, value);
-                assertNull("Null expected!", exception.getClientId());
-                assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
-                assertEquals("Expected and actual values should be the same!", value, exception.getUri());
+                Assert.assertNull("Null expected!", exception.getClientId());
+                Assert.assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
+                Assert.assertEquals("Expected and actual values should be the same!", value, exception.getUri());
             } catch (Exception ex) {
-                fail("No exception expected!");
+                Assert.fail("No exception expected!");
             }
         }
     }
@@ -96,11 +97,11 @@ public class MqttClientConnectExceptionTest extends Assert {
     public void constructorAllNullTest() {
         try {
             MqttClientConnectException exception = new MqttClientConnectException(null, null, null);
-            assertNull("Null expected!", exception.getClientId());
-            assertNull("Null expected!", exception.getUsername());
-            assertNull("Null expected!", exception.getUri());
+            Assert.assertNull("Null expected!", exception.getClientId());
+            Assert.assertNull("Null expected!", exception.getUsername());
+            Assert.assertNull("Null expected!", exception.getUri());
         } catch (Exception ex) {
-            fail("No exception expected!");
+            Assert.fail("No exception expected!");
         }
     }
 
@@ -115,13 +116,13 @@ public class MqttClientConnectExceptionTest extends Assert {
         for (URI value : uriPermittedFormats) {
             try {
                 MqttClientConnectException exception = new MqttClientConnectException(cause, clientID, username, value);
-                assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
-                assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
-                assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
-                assertEquals("Expected and actual values should be the same!", value, exception.getUri());
-                assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
+                Assert.assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
+                Assert.assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
+                Assert.assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
+                Assert.assertEquals("Expected and actual values should be the same!", value, exception.getUri());
+                Assert.assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
             } catch (Exception ex) {
-                fail("No exception expected!");
+                Assert.fail("No exception expected!");
             }
         }
     }
@@ -132,13 +133,13 @@ public class MqttClientConnectExceptionTest extends Assert {
         for (URI value : uriPermittedFormats) {
             try {
                 MqttClientConnectException exception = new MqttClientConnectException(null, clientID, username, value);
-                assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
-                assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
-                assertNull("Null expected!", exception.getCause());
-                assertEquals("Expected and actual values should be the same!", value, exception.getUri());
-                assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
+                Assert.assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
+                Assert.assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
+                Assert.assertNull("Null expected!", exception.getCause());
+                Assert.assertEquals("Expected and actual values should be the same!", value, exception.getUri());
+                Assert.assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
             } catch (Exception ex) {
-                fail("No exception expected!");
+                Assert.fail("No exception expected!");
             }
         }
     }
@@ -149,13 +150,13 @@ public class MqttClientConnectExceptionTest extends Assert {
         for (URI value : uriPermittedFormats) {
             try {
                 MqttClientConnectException exception = new MqttClientConnectException(cause, null, username, value);
-                assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
-                assertNull("Null expected!", exception.getClientId());
-                assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
-                assertEquals("Expected and actual values should be the same!", value, exception.getUri());
-                assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
+                Assert.assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
+                Assert.assertNull("Null expected!", exception.getClientId());
+                Assert.assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
+                Assert.assertEquals("Expected and actual values should be the same!", value, exception.getUri());
+                Assert.assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
             } catch (Exception ex) {
-                fail("No exception expected!");
+                Assert.fail("No exception expected!");
             }
         }
     }
@@ -166,13 +167,13 @@ public class MqttClientConnectExceptionTest extends Assert {
         for (URI value : uriPermittedFormats) {
             try {
                 MqttClientConnectException exception = new MqttClientConnectException(cause, clientID, null, value);
-                assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
-                assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
-                assertNull("Null expected!", exception.getUsername());
-                assertEquals("Expected and actual values should be the same!", value, exception.getUri());
-                assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
+                Assert.assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
+                Assert.assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
+                Assert.assertNull("Null expected!", exception.getUsername());
+                Assert.assertEquals("Expected and actual values should be the same!", value, exception.getUri());
+                Assert.assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
             } catch (Exception ex) {
-                fail("No exception expected!");
+                Assert.fail("No exception expected!");
             }
         }
     }
@@ -181,13 +182,13 @@ public class MqttClientConnectExceptionTest extends Assert {
     public void secondConstructorURINullTest() {
         try {
             MqttClientConnectException exception = new MqttClientConnectException(cause, clientID, username, null);
-            assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
-            assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
-            assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
-            assertNull("Null expected!", exception.getUri());
-            assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
+            Assert.assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
+            Assert.assertEquals("Expected and actual values should be the same!", clientID, exception.getClientId());
+            Assert.assertEquals("Expected and actual values should be the same!", username, exception.getUsername());
+            Assert.assertNull("Null expected!", exception.getUri());
+            Assert.assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
         } catch (Exception ex) {
-            fail("No exception expected!");
+            Assert.fail("No exception expected!");
         }
     }
 
@@ -195,13 +196,13 @@ public class MqttClientConnectExceptionTest extends Assert {
     public void secondConstructorAllNullTest() {
         try {
             MqttClientConnectException exception = new MqttClientConnectException(null, null, null, null);
-            assertNull("Null expected!", exception.getCause());
-            assertNull("Null expected!", exception.getClientId());
-            assertNull("Null expected!", exception.getUsername());
-            assertNull("Null expected!", exception.getUri());
-            assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
+            Assert.assertNull("Null expected!", exception.getCause());
+            Assert.assertNull("Null expected!", exception.getClientId());
+            Assert.assertNull("Null expected!", exception.getUsername());
+            Assert.assertNull("Null expected!", exception.getUri());
+            Assert.assertEquals("Expected and actual values should be the same!", "CONNECT_ERROR", exception.getCode().toString());
         } catch (Exception ex) {
-            fail("No exception expected!");
+            Assert.fail("No exception expected!");
         }
     }
 

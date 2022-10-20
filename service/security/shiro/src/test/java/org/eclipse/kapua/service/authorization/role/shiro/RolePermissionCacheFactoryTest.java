@@ -20,20 +20,21 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class RolePermissionCacheFactoryTest extends Assert {
+public class RolePermissionCacheFactoryTest {
 
     @Test
     public void rolePermissionCacheFactoryTest() throws Exception {
         Constructor<RolePermissionCacheFactory> rolePermissionCacheFactory = RolePermissionCacheFactory.class.getDeclaredConstructor();
         rolePermissionCacheFactory.setAccessible(true);
         rolePermissionCacheFactory.newInstance();
-        assertTrue("True expected.", Modifier.isPrivate(rolePermissionCacheFactory.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isPrivate(rolePermissionCacheFactory.getModifiers()));
     }
 
     @Test
     public void getInstanceTest() {
-        assertTrue("True expected.", RolePermissionCacheFactory.getInstance() instanceof RolePermissionCacheFactory);
-        assertEquals("Expected and actual values should be the same.", "RolePermissionId", RolePermissionCacheFactory.getInstance().getEntityIdCacheName());
+        Assert.assertTrue("True expected.", RolePermissionCacheFactory.getInstance() instanceof RolePermissionCacheFactory);
+        Assert.assertEquals("Expected and actual values should be the same.", "RolePermissionId", RolePermissionCacheFactory.getInstance().getEntityIdCacheName());
     }
 }
