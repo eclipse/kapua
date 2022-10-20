@@ -33,8 +33,9 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+
 @Category(JUnitTests.class)
-public class KapuaSerializableBodyWriterTest extends Assert {
+public class KapuaSerializableBodyWriterTest {
 
     KapuaSerializableBodyWriter kapuaSerializableBodyWriter;
     Annotation[] annotations;
@@ -65,57 +66,57 @@ public class KapuaSerializableBodyWriterTest extends Assert {
 
     @Test
     public void isWriteableTest() {
-        assertTrue("True expected.", kapuaSerializableBodyWriter.isWriteable(String.class, genericType, annotations, mediaType));
+        Assert.assertTrue("True expected.", kapuaSerializableBodyWriter.isWriteable(String.class, genericType, annotations, mediaType));
     }
 
     @Test
     public void isWriteableNullTypeTest() {
-        assertTrue("True expected.", kapuaSerializableBodyWriter.isWriteable(null, genericType, annotations, mediaType));
+        Assert.assertTrue("True expected.", kapuaSerializableBodyWriter.isWriteable(null, genericType, annotations, mediaType));
     }
 
     @Test
     public void isWriteableNullGenericTypeTest() {
-        assertTrue("True expected.", kapuaSerializableBodyWriter.isWriteable(String.class, null, annotations, mediaType));
+        Assert.assertTrue("True expected.", kapuaSerializableBodyWriter.isWriteable(String.class, null, annotations, mediaType));
     }
 
     @Test
     public void isWriteableNullAnnotationsTest() {
-        assertTrue("True expected.", kapuaSerializableBodyWriter.isWriteable(String.class, genericType, null, mediaType));
+        Assert.assertTrue("True expected.", kapuaSerializableBodyWriter.isWriteable(String.class, genericType, null, mediaType));
     }
 
     @Test
     public void isWriteableNullMediaTypeTest() {
-        assertTrue("True expected.", kapuaSerializableBodyWriter.isWriteable(String.class, genericType, annotations, null));
+        Assert.assertTrue("True expected.", kapuaSerializableBodyWriter.isWriteable(String.class, genericType, annotations, null));
     }
 
     @Test
     public void getSizeTest() {
-        assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(kapuaSerializable, String.class, genericType, annotations, mediaType));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(kapuaSerializable, String.class, genericType, annotations, mediaType));
     }
 
     @Test
     public void getSizeNullKapuaSerializableTest() {
-        assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(null, String.class, genericType, annotations, mediaType));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(null, String.class, genericType, annotations, mediaType));
     }
 
     @Test
     public void getSizeNullTypeTest() {
-        assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(kapuaSerializable, null, genericType, annotations, mediaType));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(kapuaSerializable, null, genericType, annotations, mediaType));
     }
 
     @Test
     public void getSizeNullGenericTypeTest() {
-        assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(kapuaSerializable, String.class, null, annotations, mediaType));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(kapuaSerializable, String.class, null, annotations, mediaType));
     }
 
     @Test
     public void getSizeNullAnnotationsTest() {
-        assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(kapuaSerializable, String.class, genericType, null, mediaType));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(kapuaSerializable, String.class, genericType, null, mediaType));
     }
 
     @Test
     public void getSizeNullMediaTypeTest() {
-        assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(kapuaSerializable, String.class, genericType, annotations, null));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, kapuaSerializableBodyWriter.getSize(kapuaSerializable, String.class, genericType, annotations, null));
     }
 
     @Test(expected = WebApplicationException.class)
@@ -146,7 +147,7 @@ public class KapuaSerializableBodyWriterTest extends Assert {
         try {
             kapuaSerializableBodyWriter.writeTo(kapuaSerializable, String.class, genericType, annotations, mediaType, httpHeaders, outputStream);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 

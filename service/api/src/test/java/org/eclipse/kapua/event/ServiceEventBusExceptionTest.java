@@ -18,8 +18,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ServiceEventBusExceptionTest extends Assert {
+public class ServiceEventBusExceptionTest {
 
     @Test
     public void serviceEventBusExceptionThrowableCauseTest() {
@@ -27,9 +28,9 @@ public class ServiceEventBusExceptionTest extends Assert {
 
         for (Throwable throwable : throwables) {
             ServiceEventBusException serviceEventBusException = new ServiceEventBusException(throwable);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.INTERNAL_ERROR, serviceEventBusException.getCode());
-            assertEquals("Expected and actual values should be the same.", throwable, serviceEventBusException.getCause());
-            assertEquals("Expected and actual values should be the same.", "An internal error occurred: {0}.", serviceEventBusException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.INTERNAL_ERROR, serviceEventBusException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", throwable, serviceEventBusException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", "An internal error occurred: {0}.", serviceEventBusException.getMessage());
         }
     }
 
@@ -39,9 +40,9 @@ public class ServiceEventBusExceptionTest extends Assert {
 
         for (String message : messages) {
             ServiceEventBusException serviceEventBusException = new ServiceEventBusException(message);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.INTERNAL_ERROR, serviceEventBusException.getCode());
-            assertNull("Null expected.", serviceEventBusException.getCause());
-            assertEquals("Expected and actual values should be the same.", "An internal error occurred: " + message + ".", serviceEventBusException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.INTERNAL_ERROR, serviceEventBusException.getCode());
+            Assert.assertNull("Null expected.", serviceEventBusException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", "An internal error occurred: " + message + ".", serviceEventBusException.getMessage());
         }
     }
 }

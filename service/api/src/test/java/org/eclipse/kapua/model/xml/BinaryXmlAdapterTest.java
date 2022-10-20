@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class BinaryXmlAdapterTest extends Assert {
+public class BinaryXmlAdapterTest {
 
     BinaryXmlAdapter binaryXmlAdapter;
 
@@ -33,22 +34,22 @@ public class BinaryXmlAdapterTest extends Assert {
     public void marshalTest() {
         byte[] byteArray = {-128, -10, 0, 1, 10, 127, 11};
         String expectedString = "gPYAAQp/Cw==";
-        assertEquals("Expected and actual values should be the same.", expectedString, binaryXmlAdapter.marshal(byteArray));
+        Assert.assertEquals("Expected and actual values should be the same.", expectedString, binaryXmlAdapter.marshal(byteArray));
     }
 
     @Test
     public void marshalNullTest() {
-        assertNull("Null expected", binaryXmlAdapter.marshal(null));
+        Assert.assertNull("Null expected", binaryXmlAdapter.marshal(null));
     }
 
     @Test
     public void unmarshalTest() {
         String stringValue = "gPYAAQp/Cw==";
-        assertThat("Instance of byte[] expected.", binaryXmlAdapter.unmarshal(stringValue), IsInstanceOf.instanceOf(byte[].class));
+        Assert.assertThat("Instance of byte[] expected.", binaryXmlAdapter.unmarshal(stringValue), IsInstanceOf.instanceOf(byte[].class));
     }
 
     @Test
     public void unmarshalNullTest() {
-        assertNull("Null expected", binaryXmlAdapter.unmarshal(null));
+        Assert.assertNull("Null expected", binaryXmlAdapter.unmarshal(null));
     }
 }

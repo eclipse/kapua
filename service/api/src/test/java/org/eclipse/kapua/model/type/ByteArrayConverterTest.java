@@ -23,8 +23,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class ByteArrayConverterTest extends Assert {
+public class ByteArrayConverterTest {
 
     Byte[] byteClassArray;
     byte[] byteArray;
@@ -40,14 +41,14 @@ public class ByteArrayConverterTest extends Assert {
     @Test
     public void byteArrayConverterTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<ByteArrayConverter> byteArrayConverter = ByteArrayConverter.class.getDeclaredConstructor();
-        assertTrue(Modifier.isPrivate(byteArrayConverter.getModifiers()));
+        Assert.assertTrue(Modifier.isPrivate(byteArrayConverter.getModifiers()));
         byteArrayConverter.setAccessible(true);
         byteArrayConverter.newInstance();
     }
 
     @Test
     public void toStringByteClassParameterTest() {
-        assertEquals("Expected and actual values should be the same.", expectedString, ByteArrayConverter.toString(byteClassArray));
+        Assert.assertEquals("Expected and actual values should be the same.", expectedString, ByteArrayConverter.toString(byteClassArray));
     }
 
     @Test(expected = NullPointerException.class)
@@ -57,7 +58,7 @@ public class ByteArrayConverterTest extends Assert {
 
     @Test
     public void toStringTest() {
-        assertEquals("Expected and actual values should be the same.", expectedString, ByteArrayConverter.toString(byteArray));
+        Assert.assertEquals("Expected and actual values should be the same.", expectedString, ByteArrayConverter.toString(byteArray));
     }
 
     @Test(expected = NullPointerException.class)
@@ -68,7 +69,7 @@ public class ByteArrayConverterTest extends Assert {
     @Test
     public void fromStringTest() {
         String stringValue = "String Value";
-        assertThat("Instance of byte[] expected.", ByteArrayConverter.fromString(stringValue), IsInstanceOf.instanceOf(byte[].class));
+        Assert.assertThat("Instance of byte[] expected.", ByteArrayConverter.fromString(stringValue), IsInstanceOf.instanceOf(byte[].class));
     }
 
     @Test(expected = NullPointerException.class)

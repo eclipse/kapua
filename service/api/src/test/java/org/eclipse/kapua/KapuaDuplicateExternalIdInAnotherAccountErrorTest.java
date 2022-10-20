@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaDuplicateExternalIdInAnotherAccountErrorTest extends Assert {
+public class KapuaDuplicateExternalIdInAnotherAccountErrorTest {
 
     String[] duplicateExternalId;
 
@@ -32,9 +33,9 @@ public class KapuaDuplicateExternalIdInAnotherAccountErrorTest extends Assert {
     public void kapuaDuplicateExternalIdInAnotherAccountErrorTest() {
         for (String id : duplicateExternalId) {
             KapuaDuplicateExternalIdInAnotherAccountError kapuaDuplicateExternalIdInAnotherAccountError = new KapuaDuplicateExternalIdInAnotherAccountError(id);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, kapuaDuplicateExternalIdInAnotherAccountError.getCode());
-            assertNull("Null expected", kapuaDuplicateExternalIdInAnotherAccountError.getCause());
-            assertEquals("Expected and actual values should be the same.", "An entity with the same external id " + id + " already exists in another account.", kapuaDuplicateExternalIdInAnotherAccountError.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.EXTERNAL_ID_ALREADY_EXIST_IN_ANOTHER_ACCOUNT, kapuaDuplicateExternalIdInAnotherAccountError.getCode());
+            Assert.assertNull("Null expected", kapuaDuplicateExternalIdInAnotherAccountError.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", "An entity with the same external id " + id + " already exists in another account.", kapuaDuplicateExternalIdInAnotherAccountError.getMessage());
         }
     }
 

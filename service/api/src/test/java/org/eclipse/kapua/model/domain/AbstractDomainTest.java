@@ -21,8 +21,9 @@ import org.junit.experimental.categories.Category;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Category(JUnitTests.class)
-public class AbstractDomainTest extends Assert {
+public class AbstractDomainTest {
 
     private class AbstractDomainImpl extends AbstractDomain {
 
@@ -54,18 +55,18 @@ public class AbstractDomainTest extends Assert {
         AbstractDomain abstractDomain2 = new AbstractDomainImpl();
         Object[] objects = {0, 10, 100000, "String", 'c', -10, -1000000000, -100000000000L, 10L, 10.0f, null, 10.10d, true, false};
 
-        assertTrue("True expected.", abstractDomain1.equals(abstractDomain1));
-        assertFalse("False expected.", abstractDomain1.equals(null));
+        Assert.assertTrue("True expected.", abstractDomain1.equals(abstractDomain1));
+        Assert.assertFalse("False expected.", abstractDomain1.equals(null));
         for (Object object : objects) {
-            assertFalse("False expected.", abstractDomain1.equals(object));
+            Assert.assertFalse("False expected.", abstractDomain1.equals(object));
         }
-        assertTrue("True expected.", abstractDomain1.equals(abstractDomain2));
+        Assert.assertTrue("True expected.", abstractDomain1.equals(abstractDomain2));
     }
 
     @Test
     public void hashCodeTest() {
         AbstractDomain abstractDomain = new AbstractDomainImpl();
 
-        assertThat("Instance of Integer expected.", abstractDomain.hashCode(), IsInstanceOf.instanceOf(Integer.class));
+        Assert.assertThat("Instance of Integer expected.", abstractDomain.hashCode(), IsInstanceOf.instanceOf(Integer.class));
     }
 }

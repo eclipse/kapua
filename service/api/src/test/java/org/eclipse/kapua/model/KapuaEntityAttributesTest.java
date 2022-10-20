@@ -21,13 +21,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class KapuaEntityAttributesTest extends Assert {
+public class KapuaEntityAttributesTest {
 
     @Test
     public void kapuaEntityAttributesTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<KapuaEntityAttributes> kapuaEntityAttributes = KapuaEntityAttributes.class.getDeclaredConstructor();
-        assertTrue(Modifier.isProtected(kapuaEntityAttributes.getModifiers()));
+        Assert.assertTrue(Modifier.isProtected(kapuaEntityAttributes.getModifiers()));
         kapuaEntityAttributes.setAccessible(true);
         kapuaEntityAttributes.newInstance();
     }

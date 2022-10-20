@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaDuplicateNameExceptionTest extends Assert {
+public class KapuaDuplicateNameExceptionTest {
 
     String[] duplicatedNames;
 
@@ -32,9 +33,9 @@ public class KapuaDuplicateNameExceptionTest extends Assert {
     public void kapuaDuplicateNameExceptionStringParameterTest() {
         for (String duplicatedName : duplicatedNames) {
             KapuaDuplicateNameException kapuaDuplicateNameExceptions = new KapuaDuplicateNameException(duplicatedName);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.DUPLICATE_NAME, kapuaDuplicateNameExceptions.getCode());
-            assertNull("Null expected", kapuaDuplicateNameExceptions.getCause());
-            assertEquals("Expected and actual values should be the same.", "An entity with the same name " + duplicatedName + " already exists.", kapuaDuplicateNameExceptions.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.DUPLICATE_NAME, kapuaDuplicateNameExceptions.getCode());
+            Assert.assertNull("Null expected", kapuaDuplicateNameExceptions.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", "An entity with the same name " + duplicatedName + " already exists.", kapuaDuplicateNameExceptions.getMessage());
         }
     }
 

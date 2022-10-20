@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ServiceXmlConfigPropertyAdaptedTest extends Assert {
+public class ServiceXmlConfigPropertyAdaptedTest {
 
     ServiceXmlConfigPropertyAdapted.ConfigPropertyType[] configPropertyType;
     String[][] stringValues;
@@ -38,11 +39,11 @@ public class ServiceXmlConfigPropertyAdaptedTest extends Assert {
     @Test
     public void serviceXmlConfigPropertyAdaptedTest() {
         ServiceXmlConfigPropertyAdapted serviceXmlConfigPropertyAdapted = new ServiceXmlConfigPropertyAdapted();
-        assertNull("Null expected.", serviceXmlConfigPropertyAdapted.getName());
-        assertFalse("False expected.", serviceXmlConfigPropertyAdapted.getArray());
-        assertNull("Null expected.", serviceXmlConfigPropertyAdapted.getType());
-        assertFalse("False expected.", serviceXmlConfigPropertyAdapted.isEncrypted());
-        assertNull("Null expected.", serviceXmlConfigPropertyAdapted.getValues());
+        Assert.assertNull("Null expected.", serviceXmlConfigPropertyAdapted.getName());
+        Assert.assertFalse("False expected.", serviceXmlConfigPropertyAdapted.getArray());
+        Assert.assertNull("Null expected.", serviceXmlConfigPropertyAdapted.getType());
+        Assert.assertFalse("False expected.", serviceXmlConfigPropertyAdapted.isEncrypted());
+        Assert.assertNull("Null expected.", serviceXmlConfigPropertyAdapted.getValues());
     }
 
     @Test
@@ -51,11 +52,11 @@ public class ServiceXmlConfigPropertyAdaptedTest extends Assert {
             for (ServiceXmlConfigPropertyAdapted.ConfigPropertyType type : configPropertyType) {
                 for (String[] value : stringValues) {
                     ServiceXmlConfigPropertyAdapted serviceXmlConfigPropertyAdapted = new ServiceXmlConfigPropertyAdapted(name, type, value);
-                    assertNull("Null expected.", serviceXmlConfigPropertyAdapted.getName());
-                    assertFalse("False expected.", serviceXmlConfigPropertyAdapted.getArray());
-                    assertEquals("Expected and actual values should be the same.", type, serviceXmlConfigPropertyAdapted.getType());
-                    assertFalse("False expected", serviceXmlConfigPropertyAdapted.isEncrypted());
-                    assertEquals("Expected and actual values should be the same.", value, serviceXmlConfigPropertyAdapted.getValues());
+                    Assert.assertNull("Null expected.", serviceXmlConfigPropertyAdapted.getName());
+                    Assert.assertFalse("False expected.", serviceXmlConfigPropertyAdapted.getArray());
+                    Assert.assertEquals("Expected and actual values should be the same.", type, serviceXmlConfigPropertyAdapted.getType());
+                    Assert.assertFalse("False expected", serviceXmlConfigPropertyAdapted.isEncrypted());
+                    Assert.assertEquals("Expected and actual values should be the same.", value, serviceXmlConfigPropertyAdapted.getValues());
                 }
             }
         }
@@ -73,8 +74,8 @@ public class ServiceXmlConfigPropertyAdaptedTest extends Assert {
                     for (String newName : newNames) {
                         serviceXmlConfigPropertyAdapted1.setName(newName);
                         serviceXmlConfigPropertyAdapted2.setName(newName);
-                        assertEquals("Expected and actual values should be the same.", newName, serviceXmlConfigPropertyAdapted1.getName());
-                        assertEquals("Expected and actual values should be the same.", newName, serviceXmlConfigPropertyAdapted2.getName());
+                        Assert.assertEquals("Expected and actual values should be the same.", newName, serviceXmlConfigPropertyAdapted1.getName());
+                        Assert.assertEquals("Expected and actual values should be the same.", newName, serviceXmlConfigPropertyAdapted2.getName());
                     }
                 }
             }
@@ -93,8 +94,8 @@ public class ServiceXmlConfigPropertyAdaptedTest extends Assert {
                     for (Boolean array : arrays) {
                         serviceXmlConfigPropertyAdapted1.setArray(array);
                         serviceXmlConfigPropertyAdapted2.setArray(array);
-                        assertEquals("Expected and actual values should be the same.", array, serviceXmlConfigPropertyAdapted1.getArray());
-                        assertEquals("Expected and actual values should be the same.", array, serviceXmlConfigPropertyAdapted2.getArray());
+                        Assert.assertEquals("Expected and actual values should be the same.", array, serviceXmlConfigPropertyAdapted1.getArray());
+                        Assert.assertEquals("Expected and actual values should be the same.", array, serviceXmlConfigPropertyAdapted2.getArray());
                     }
                 }
             }
@@ -110,8 +111,8 @@ public class ServiceXmlConfigPropertyAdaptedTest extends Assert {
                 for (ServiceXmlConfigPropertyAdapted.ConfigPropertyType type : configPropertyType) {
                     serviceXmlConfigPropertyAdapted1.setType(type);
                     serviceXmlConfigPropertyAdapted2.setType(type);
-                    assertEquals("Expected and actual values should be the same.", type, serviceXmlConfigPropertyAdapted1.getType());
-                    assertEquals("Expected and actual values should be the same.", type, serviceXmlConfigPropertyAdapted2.getType());
+                    Assert.assertEquals("Expected and actual values should be the same.", type, serviceXmlConfigPropertyAdapted1.getType());
+                    Assert.assertEquals("Expected and actual values should be the same.", type, serviceXmlConfigPropertyAdapted2.getType());
                 }
             }
         }
@@ -129,8 +130,8 @@ public class ServiceXmlConfigPropertyAdaptedTest extends Assert {
                     for (Boolean encrypted : isEncrypted) {
                         serviceXmlConfigPropertyAdapted1.setEncrypted(encrypted);
                         serviceXmlConfigPropertyAdapted2.setEncrypted(encrypted);
-                        assertEquals("Expected and actual values should be the same.", encrypted, serviceXmlConfigPropertyAdapted1.isEncrypted());
-                        assertEquals("Expected and actual values should be the same.", encrypted, serviceXmlConfigPropertyAdapted2.isEncrypted());
+                        Assert.assertEquals("Expected and actual values should be the same.", encrypted, serviceXmlConfigPropertyAdapted1.isEncrypted());
+                        Assert.assertEquals("Expected and actual values should be the same.", encrypted, serviceXmlConfigPropertyAdapted2.isEncrypted());
                     }
                 }
             }
@@ -149,8 +150,8 @@ public class ServiceXmlConfigPropertyAdaptedTest extends Assert {
                     for (String[] newValue : newValues) {
                         serviceXmlConfigPropertyAdapted1.setValues(newValue);
                         serviceXmlConfigPropertyAdapted2.setValues(newValue);
-                        assertEquals("Expected and actual values should be the same.", newValue, serviceXmlConfigPropertyAdapted1.getValues());
-                        assertEquals("Expected and actual values should be the same.", newValue, serviceXmlConfigPropertyAdapted2.getValues());
+                        Assert.assertEquals("Expected and actual values should be the same.", newValue, serviceXmlConfigPropertyAdapted1.getValues());
+                        Assert.assertEquals("Expected and actual values should be the same.", newValue, serviceXmlConfigPropertyAdapted2.getValues());
                     }
                 }
             }

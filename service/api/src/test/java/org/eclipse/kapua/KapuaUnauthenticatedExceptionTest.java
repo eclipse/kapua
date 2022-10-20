@@ -17,15 +17,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaUnauthenticatedExceptionTest extends Assert {
+public class KapuaUnauthenticatedExceptionTest {
 
     @Test
     public void kapuaUnauthenticatedExceptionTest() {
         KapuaUnauthenticatedException kapuaUnauthenticatedException = new KapuaUnauthenticatedException();
-        assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.UNAUTHENTICATED, kapuaUnauthenticatedException.getCode());
-        assertNull("Null expected.", kapuaUnauthenticatedException.getCause());
-        assertEquals("Expected and actual values should be the same.", "No authenticated Subject found in context.", kapuaUnauthenticatedException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.UNAUTHENTICATED, kapuaUnauthenticatedException.getCode());
+        Assert.assertNull("Null expected.", kapuaUnauthenticatedException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", "No authenticated Subject found in context.", kapuaUnauthenticatedException.getMessage());
     }
 
     @Test(expected = KapuaUnauthenticatedException.class)

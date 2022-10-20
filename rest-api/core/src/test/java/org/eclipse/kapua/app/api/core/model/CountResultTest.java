@@ -17,13 +17,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class CountResultTest extends Assert {
+public class CountResultTest {
 
     @Test
     public void countResultWithoutParameterTest() {
         CountResult countResult = new CountResult();
-        assertEquals("Expected and actual values should be the same.", 0, countResult.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, countResult.getCount());
     }
 
     @Test
@@ -32,7 +33,7 @@ public class CountResultTest extends Assert {
 
         for (long countValue : countValues) {
             CountResult countResult = new CountResult(countValue);
-            assertEquals("Expected and actual values should be the same.", countValue, countResult.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", countValue, countResult.getCount());
         }
     }
 
@@ -46,8 +47,8 @@ public class CountResultTest extends Assert {
             countResult1.setCount(countValue);
             countResult2.setCount(countValue);
 
-            assertEquals("Expected and actual values should be the same.", countValue, countResult1.getCount());
-            assertEquals("Expected and actual values should be the same.", countValue, countResult2.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", countValue, countResult1.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", countValue, countResult2.getCount());
         }
     }
 } 

@@ -30,8 +30,9 @@ import org.mockito.Mockito;
 import java.util.Date;
 import java.util.UUID;
 
+
 @Category(JUnitTests.class)
-public class JsonKapuaDataMessageTest extends Assert {
+public class JsonKapuaDataMessageTest {
 
     KapuaDataMessage kapuaDataMessage;
     UUID id;
@@ -97,15 +98,15 @@ public class JsonKapuaDataMessageTest extends Assert {
     public void jsonKapuaDataMessageWithParameterTest() {
         JsonKapuaDataMessage jsonKapuaDataMessage = new JsonKapuaDataMessage(kapuaDataMessage);
 
-        assertEquals("Expected and actual values should be the same.", id, jsonKapuaDataMessage.getId());
-        assertEquals("Expected and actual values should be the same.", scopeId, jsonKapuaDataMessage.getScopeId());
-        assertEquals("Expected and actual values should be the same.", deviceId, jsonKapuaDataMessage.getDeviceId());
-        assertEquals("Expected and actual values should be the same.", clientId, jsonKapuaDataMessage.getClientId());
-        assertEquals("Expected and actual values should be the same.", receivedOn, jsonKapuaDataMessage.getReceivedOn());
-        assertEquals("Expected and actual values should be the same.", sentOn, jsonKapuaDataMessage.getSentOn());
-        assertEquals("Expected and actual values should be the same.", capturedOn, jsonKapuaDataMessage.getCapturedOn());
-        assertEquals("Expected and actual values should be the same.", kapuaPosition, jsonKapuaDataMessage.getPosition());
-        assertEquals("Expected and actual values should be the same.", kapuaDataChannel, jsonKapuaDataMessage.getChannel());
+        Assert.assertEquals("Expected and actual values should be the same.", id, jsonKapuaDataMessage.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, jsonKapuaDataMessage.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", deviceId, jsonKapuaDataMessage.getDeviceId());
+        Assert.assertEquals("Expected and actual values should be the same.", clientId, jsonKapuaDataMessage.getClientId());
+        Assert.assertEquals("Expected and actual values should be the same.", receivedOn, jsonKapuaDataMessage.getReceivedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", sentOn, jsonKapuaDataMessage.getSentOn());
+        Assert.assertEquals("Expected and actual values should be the same.", capturedOn, jsonKapuaDataMessage.getCapturedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", kapuaPosition, jsonKapuaDataMessage.getPosition());
+        Assert.assertEquals("Expected and actual values should be the same.", kapuaDataChannel, jsonKapuaDataMessage.getChannel());
         Assert.assertNotNull("NotNull expected.", jsonKapuaDataMessage.getPayload());
     }
 
@@ -121,8 +122,8 @@ public class JsonKapuaDataMessageTest extends Assert {
         jsonKapuaDataMessage1.setId(newId);
         jsonKapuaDataMessage2.setId(newId);
 
-        assertEquals("Expected and actual values should be the same.", newId, jsonKapuaDataMessage1.getId());
-        assertEquals("Expected and actual values should be the same.", newId, jsonKapuaDataMessage2.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", newId, jsonKapuaDataMessage1.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", newId, jsonKapuaDataMessage2.getId());
 
         jsonKapuaDataMessage1.setId(null);
         jsonKapuaDataMessage2.setId(null);
@@ -138,8 +139,8 @@ public class JsonKapuaDataMessageTest extends Assert {
         jsonKapuaDataMessage1.setScopeId(newScopeId);
         jsonKapuaDataMessage2.setScopeId(newScopeId);
 
-        assertEquals("Expected and actual values should be the same.", newScopeId, jsonKapuaDataMessage1.getScopeId());
-        assertEquals("Expected and actual values should be the same.", newScopeId, jsonKapuaDataMessage2.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", newScopeId, jsonKapuaDataMessage1.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", newScopeId, jsonKapuaDataMessage2.getScopeId());
 
         jsonKapuaDataMessage1.setScopeId(null);
         jsonKapuaDataMessage2.setScopeId(null);
@@ -155,8 +156,8 @@ public class JsonKapuaDataMessageTest extends Assert {
         jsonKapuaDataMessage1.setDeviceId(newDeviceId);
         jsonKapuaDataMessage2.setDeviceId(newDeviceId);
 
-        assertEquals("Expected and actual values should be the same.", newDeviceId, jsonKapuaDataMessage1.getDeviceId());
-        assertEquals("Expected and actual values should be the same.", newDeviceId, jsonKapuaDataMessage2.getDeviceId());
+        Assert.assertEquals("Expected and actual values should be the same.", newDeviceId, jsonKapuaDataMessage1.getDeviceId());
+        Assert.assertEquals("Expected and actual values should be the same.", newDeviceId, jsonKapuaDataMessage2.getDeviceId());
 
         jsonKapuaDataMessage1.setDeviceId(null);
         jsonKapuaDataMessage2.setDeviceId(null);
@@ -173,8 +174,8 @@ public class JsonKapuaDataMessageTest extends Assert {
             jsonKapuaDataMessage1.setClientId(newClientID);
             jsonKapuaDataMessage2.setClientId(newClientID);
 
-            assertEquals("Expected and actual values should be the same.", newClientID, jsonKapuaDataMessage1.getClientId());
-            assertEquals("Expected and actual values should be the same.", newClientID, jsonKapuaDataMessage2.getClientId());
+            Assert.assertEquals("Expected and actual values should be the same.", newClientID, jsonKapuaDataMessage1.getClientId());
+            Assert.assertEquals("Expected and actual values should be the same.", newClientID, jsonKapuaDataMessage2.getClientId());
         }
 
         jsonKapuaDataMessage1.setClientId(null);
@@ -190,8 +191,8 @@ public class JsonKapuaDataMessageTest extends Assert {
             jsonKapuaDataMessage1.setReceivedOn(newReceivedOn);
             jsonKapuaDataMessage2.setReceivedOn(newReceivedOn);
 
-            assertEquals("Expected and actual values should be the same.", newReceivedOn, jsonKapuaDataMessage1.getReceivedOn());
-            assertEquals("Expected and actual values should be the same.", newReceivedOn, jsonKapuaDataMessage2.getReceivedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newReceivedOn, jsonKapuaDataMessage1.getReceivedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newReceivedOn, jsonKapuaDataMessage2.getReceivedOn());
         }
 
         jsonKapuaDataMessage1.setReceivedOn(null);
@@ -207,8 +208,8 @@ public class JsonKapuaDataMessageTest extends Assert {
             jsonKapuaDataMessage1.setSentOn(newSentOn);
             jsonKapuaDataMessage2.setSentOn(newSentOn);
 
-            assertEquals("Expected and actual values should be the same.", newSentOn, jsonKapuaDataMessage1.getSentOn());
-            assertEquals("Expected and actual values should be the same.", newSentOn, jsonKapuaDataMessage2.getSentOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newSentOn, jsonKapuaDataMessage1.getSentOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newSentOn, jsonKapuaDataMessage2.getSentOn());
         }
 
         jsonKapuaDataMessage1.setSentOn(null);
@@ -224,8 +225,8 @@ public class JsonKapuaDataMessageTest extends Assert {
             jsonKapuaDataMessage1.setCapturedOn(newCapturedOn);
             jsonKapuaDataMessage2.setCapturedOn(newCapturedOn);
 
-            assertEquals("Expected and actual values should be the same.", newCapturedOn, jsonKapuaDataMessage1.getCapturedOn());
-            assertEquals("Expected and actual values should be the same.", newCapturedOn, jsonKapuaDataMessage2.getCapturedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newCapturedOn, jsonKapuaDataMessage1.getCapturedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newCapturedOn, jsonKapuaDataMessage2.getCapturedOn());
         }
 
         jsonKapuaDataMessage1.setCapturedOn(null);
@@ -242,8 +243,8 @@ public class JsonKapuaDataMessageTest extends Assert {
         jsonKapuaDataMessage1.setPosition(newPosition);
         jsonKapuaDataMessage2.setPosition(newPosition);
 
-        assertEquals("Expected and actual values should be the same.", newPosition, jsonKapuaDataMessage1.getPosition());
-        assertEquals("Expected and actual values should be the same.", newPosition, jsonKapuaDataMessage2.getPosition());
+        Assert.assertEquals("Expected and actual values should be the same.", newPosition, jsonKapuaDataMessage1.getPosition());
+        Assert.assertEquals("Expected and actual values should be the same.", newPosition, jsonKapuaDataMessage2.getPosition());
 
         jsonKapuaDataMessage1.setPosition(null);
         jsonKapuaDataMessage2.setPosition(null);
@@ -259,8 +260,8 @@ public class JsonKapuaDataMessageTest extends Assert {
         jsonKapuaDataMessage1.setChannel(newChannel);
         jsonKapuaDataMessage2.setChannel(newChannel);
 
-        assertEquals("Expected and actual values should be the same.", newChannel, jsonKapuaDataMessage1.getChannel());
-        assertEquals("Expected and actual values should be the same.", newChannel, jsonKapuaDataMessage2.getChannel());
+        Assert.assertEquals("Expected and actual values should be the same.", newChannel, jsonKapuaDataMessage1.getChannel());
+        Assert.assertEquals("Expected and actual values should be the same.", newChannel, jsonKapuaDataMessage2.getChannel());
 
         jsonKapuaDataMessage1.setChannel(null);
         jsonKapuaDataMessage2.setChannel(null);
@@ -276,8 +277,8 @@ public class JsonKapuaDataMessageTest extends Assert {
         jsonKapuaDataMessage1.setPayload(newJsonKapuaPayload);
         jsonKapuaDataMessage2.setPayload(newJsonKapuaPayload);
 
-        assertEquals("Expected and actual values should be the same.", newJsonKapuaPayload, jsonKapuaDataMessage1.getPayload());
-        assertEquals("Expected and actual values should be the same.", newJsonKapuaPayload, jsonKapuaDataMessage2.getPayload());
+        Assert.assertEquals("Expected and actual values should be the same.", newJsonKapuaPayload, jsonKapuaDataMessage1.getPayload());
+        Assert.assertEquals("Expected and actual values should be the same.", newJsonKapuaPayload, jsonKapuaDataMessage2.getPayload());
 
         jsonKapuaDataMessage1.setPayload((JsonKapuaPayload) null);
         jsonKapuaDataMessage2.setPayload((JsonKapuaPayload) null);

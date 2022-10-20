@@ -23,8 +23,9 @@ import org.junit.experimental.categories.Category;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+
 @Category(JUnitTests.class)
-public class AbstractKapuaResourceTest extends Assert {
+public class AbstractKapuaResourceTest {
 
     private class AbstractKapuaResourceImpl extends AbstractKapuaResource {
 
@@ -42,7 +43,7 @@ public class AbstractKapuaResourceTest extends Assert {
     @Test
     public void returnNotNullEntityTest() {
         for (Object object : objects) {
-            assertEquals("Expected and actual values should be the same.", object, abstractKapuaResource.returnNotNullEntity(object));
+            Assert.assertEquals("Expected and actual values should be the same.", object, abstractKapuaResource.returnNotNullEntity(object));
         }
     }
 
@@ -50,27 +51,27 @@ public class AbstractKapuaResourceTest extends Assert {
     public void returnNotNullEntityNullTest() {
         try {
             abstractKapuaResource.returnNotNullEntity(null);
-            fail("WebApplicationException expected.");
+            Assert.fail("WebApplicationException expected.");
         } catch (Exception e) {
-            assertEquals("WebApplicationException expected.", new WebApplicationException(Response.Status.NOT_FOUND).toString(), e.toString());
+            Assert.assertEquals("WebApplicationException expected.", new WebApplicationException(Response.Status.NOT_FOUND).toString(), e.toString());
         }
     }
 
     @Test
     public void returnOkTest() {
-        assertEquals("Expected and actual values should be the same.", "OutboundJaxrsResponse{status=200, reason=OK, hasEntity=false, closed=false, buffered=false}", abstractKapuaResource.returnOk().toString());
+        Assert.assertEquals("Expected and actual values should be the same.", "OutboundJaxrsResponse{status=200, reason=OK, hasEntity=false, closed=false, buffered=false}", abstractKapuaResource.returnOk().toString());
     }
 
     @Test
     public void returnNoContentTest() {
-        assertEquals("Expected and actual values should be the same.", "OutboundJaxrsResponse{status=204, reason=No Content, hasEntity=false, closed=false, buffered=false}", abstractKapuaResource.returnNoContent().toString());
+        Assert.assertEquals("Expected and actual values should be the same.", "OutboundJaxrsResponse{status=204, reason=No Content, hasEntity=false, closed=false, buffered=false}", abstractKapuaResource.returnNoContent().toString());
     }
 
     @Test
     public void returnCreatedTest() {
         for (Object object : objects) {
-            assertEquals("Expected and actual values should be the same.", "OutboundJaxrsResponse{status=201, reason=Created, hasEntity=true, closed=false, buffered=false}", abstractKapuaResource.returnCreated(object).toString());
-            assertEquals("Expected and actual values should be the same.", object, abstractKapuaResource.returnCreated(object).getEntity());
+            Assert.assertEquals("Expected and actual values should be the same.", "OutboundJaxrsResponse{status=201, reason=Created, hasEntity=true, closed=false, buffered=false}", abstractKapuaResource.returnCreated(object).toString());
+            Assert.assertEquals("Expected and actual values should be the same.", object, abstractKapuaResource.returnCreated(object).getEntity());
         }
     }
 }
