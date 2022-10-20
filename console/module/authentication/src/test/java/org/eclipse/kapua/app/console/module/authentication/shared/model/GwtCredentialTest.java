@@ -14,7 +14,7 @@ package org.eclipse.kapua.app.console.module.authentication.shared.model;
 
 import org.junit.Assert;
 import org.junit.Test;
-@Category(JUnitTests.class)
+
 public class GwtCredentialTest {
 
     @Test
