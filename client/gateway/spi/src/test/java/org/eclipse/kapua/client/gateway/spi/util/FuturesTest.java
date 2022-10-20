@@ -25,26 +25,27 @@ import java.lang.reflect.Modifier;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+
 @Category(JUnitTests.class)
-public class FuturesTest extends Assert {
+public class FuturesTest {
 
     @Test
     public void futuresTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<Futures> constructor = Futures.class.getDeclaredConstructor();
-        assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+        Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
     }
 
     @Test(expected = NullPointerException.class)
     public void completedExceptionallyThrowableNullTest() {
-        assertThat("Instance of CompletableFuture expected", Futures.completedExceptionally(null), IsInstanceOf.instanceOf(CompletableFuture.class));
+        Assert.assertThat("Instance of CompletableFuture expected", Futures.completedExceptionally(null), IsInstanceOf.instanceOf(CompletableFuture.class));
     }
 
     @Test
     public void completedExceptionallyTest() {
         Throwable error = new Throwable();
-        assertThat("Instance of CompletableFuture expected", Futures.completedExceptionally(error), IsInstanceOf.instanceOf(CompletableFuture.class));
+        Assert.assertThat("Instance of CompletableFuture expected", Futures.completedExceptionally(error), IsInstanceOf.instanceOf(CompletableFuture.class));
     }
 
     @Test(expected = InvocationTargetException.class)
@@ -52,6 +53,6 @@ public class FuturesTest extends Assert {
         Method method = Futures.class.getDeclaredMethod("reportTo", CompletionStage.class, CompletableFuture.class);
         method.setAccessible(true);
         CompletionStage<String> completionStageNull = (CompletionStage<String>) method.invoke(null, null, null);
-        assertNull(completionStageNull);
+        Assert.assertNull(completionStageNull);
     }
 }

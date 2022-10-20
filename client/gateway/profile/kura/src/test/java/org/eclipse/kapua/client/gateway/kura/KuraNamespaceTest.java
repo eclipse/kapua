@@ -21,8 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KuraNamespaceTest extends Assert {
+public class KuraNamespaceTest {
 
     Builder builder;
     String accountName;
@@ -47,7 +48,7 @@ public class KuraNamespaceTest extends Assert {
 
     @Test
     public void builderAccountNameStringParameterTest() {
-        assertThat("Instance of Builder expected.", builder.accountName(accountName), IsInstanceOf.instanceOf(Builder.class));
+        Assert.assertThat("Instance of Builder expected.", builder.accountName(accountName), IsInstanceOf.instanceOf(Builder.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -64,12 +65,12 @@ public class KuraNamespaceTest extends Assert {
 
     @Test
     public void builderAccountNameTest() {
-        assertEquals("Expected and actual values should be the same.", accountName, builder.accountName(accountName).accountName());
+        Assert.assertEquals("Expected and actual values should be the same.", accountName, builder.accountName(accountName).accountName());
     }
 
     @Test
     public void builderBuildTest() {
-        assertThat("Instance of KuraNamespace expected.", kuraNamespace, IsInstanceOf.instanceOf(KuraNamespace.class));
+        Assert.assertThat("Instance of KuraNamespace expected.", kuraNamespace, IsInstanceOf.instanceOf(KuraNamespace.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -115,6 +116,6 @@ public class KuraNamespaceTest extends Assert {
     public void dataTopicTest() {
         String expectedString = accountName + "/" + clientId + "/" + applicationId + "/" + path;
 
-        assertEquals("Expected and actual values should be the same.", expectedString, kuraNamespace.dataTopic(clientId, applicationId, topic));
+        Assert.assertEquals("Expected and actual values should be the same.", expectedString, kuraNamespace.dataTopic(clientId, applicationId, topic));
     }
 }

@@ -24,13 +24,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.concurrent.CompletableFuture;
 
+
 @Category(JUnitTests.class)
-public class CallbacksTest extends Assert {
+public class CallbacksTest {
 
     @Test
     public void callbacksTest() throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
         Constructor<Callbacks> constructor = Callbacks.class.getDeclaredConstructor();
-        assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+        Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
     }

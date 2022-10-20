@@ -20,13 +20,14 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class BrokerDomainsTest extends Assert {
+public class BrokerDomainsTest {
 
     @Test
     public void brokerDomainsTest() throws Exception {
         Constructor<BrokerDomains> brokerDomains = BrokerDomains.class.getDeclaredConstructor();
-        assertTrue("True expected.", Modifier.isPrivate(brokerDomains.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isPrivate(brokerDomains.getModifiers()));
         brokerDomains.setAccessible(true);
         brokerDomains.newInstance();
     }
@@ -34,6 +35,6 @@ public class BrokerDomainsTest extends Assert {
     @Test
     public void brokerDomainTest() {
         BrokerDomain brokerDomain = BrokerDomains.BROKER_DOMAIN;
-        assertNotNull("NotNull expected.", brokerDomain);
+        Assert.assertNotNull("NotNull expected.", brokerDomain);
     }
 }

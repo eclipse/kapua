@@ -24,8 +24,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class KuraBinaryPayloadCodecTest extends Assert {
+public class KuraBinaryPayloadCodecTest {
 
     KuraBinaryPayloadCodec.Builder builder;
     Payload payload;
@@ -38,8 +39,8 @@ public class KuraBinaryPayloadCodecTest extends Assert {
 
     @Test
     public void builderBuildTest() {
-        assertNotNull("Null not expected", builder);
-        assertThat("Instance of KuraBinaryPayloadCodec expected.", builder.build(), IsInstanceOf.instanceOf(KuraBinaryPayloadCodec.class));
+        Assert.assertNotNull("Null not expected", builder);
+        Assert.assertThat("Instance of KuraBinaryPayloadCodec expected.", builder.build(), IsInstanceOf.instanceOf(KuraBinaryPayloadCodec.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -52,8 +53,8 @@ public class KuraBinaryPayloadCodecTest extends Assert {
     public void encodeNullBufferTest() throws Exception {
         Mockito.when(payload.getTimestamp()).thenReturn(Instant.ofEpochSecond(10L));
 
-        assertNotNull("Null not expected.", builder.build().encode(payload, null));
-        assertThat("Instance of ByteBuffer expected.", builder.build().encode(payload, null), IsInstanceOf.instanceOf(ByteBuffer.class));
+        Assert.assertNotNull("Null not expected.", builder.build().encode(payload, null));
+        Assert.assertThat("Instance of ByteBuffer expected.", builder.build().encode(payload, null), IsInstanceOf.instanceOf(ByteBuffer.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -66,8 +67,8 @@ public class KuraBinaryPayloadCodecTest extends Assert {
         ByteBuffer byteBuffer = Mockito.mock(ByteBuffer.class);
         Mockito.when(payload.getTimestamp()).thenReturn(Instant.ofEpochSecond(10L));
 
-        assertNotNull("Null not expected.", builder.build().encode(payload, byteBuffer));
-        assertThat("Instance of ByteBuffer expected.", builder.build().encode(payload, byteBuffer), IsInstanceOf.instanceOf(ByteBuffer.class));
+        Assert.assertNotNull("Null not expected.", builder.build().encode(payload, byteBuffer));
+        Assert.assertThat("Instance of ByteBuffer expected.", builder.build().encode(payload, byteBuffer), IsInstanceOf.instanceOf(ByteBuffer.class));
     }
 
     @Test
@@ -75,8 +76,8 @@ public class KuraBinaryPayloadCodecTest extends Assert {
         ByteBuffer byteBuffer = ByteBuffer.allocate(100);
         Mockito.when(payload.getTimestamp()).thenReturn(Instant.ofEpochSecond(10L));
 
-        assertThat("Instance of ByteBuffer expected.", builder.build().encode(payload, byteBuffer), IsInstanceOf.instanceOf(ByteBuffer.class));
-        assertEquals("Expected and actual values should be the same.", 100, builder.build().encode(payload, byteBuffer).limit());
+        Assert.assertThat("Instance of ByteBuffer expected.", builder.build().encode(payload, byteBuffer), IsInstanceOf.instanceOf(ByteBuffer.class));
+        Assert.assertEquals("Expected and actual values should be the same.", 100, builder.build().encode(payload, byteBuffer).limit());
     }
 
     @Test(expected = NullPointerException.class)
@@ -88,7 +89,7 @@ public class KuraBinaryPayloadCodecTest extends Assert {
     public void decodeTest() throws Exception {
         ByteBuffer byteBuffer = Mockito.mock(ByteBuffer.class);
 
-        assertNotNull("Null not expected.", builder.build().decode(byteBuffer));
-        assertThat("Instance of Payload expected.", builder.build().decode(byteBuffer), IsInstanceOf.instanceOf(Payload.class));
+        Assert.assertNotNull("Null not expected.", builder.build().decode(byteBuffer));
+        Assert.assertThat("Instance of Payload expected.", builder.build().decode(byteBuffer), IsInstanceOf.instanceOf(Payload.class));
     }
 }
