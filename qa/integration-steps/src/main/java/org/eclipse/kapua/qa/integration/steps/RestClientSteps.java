@@ -38,7 +38,7 @@ import java.net.URL;
 import java.util.List;
 
 @ScenarioScoped
-public class RestClientSteps extends Assert {
+public class RestClientSteps {
 
     private static final Logger logger = LoggerFactory.getLogger(RestClientSteps.class);
 
@@ -142,7 +142,7 @@ public class RestClientSteps extends Assert {
     public void restResponseContaining(String checkStr) throws Exception {
 
         String restResponse = (String) stepData.get(REST_RESPONSE);
-        assertTrue(String.format("Response %s doesn't include %s.", restResponse, checkStr),
+        Assert.assertTrue(String.format("Response %s doesn't include %s.", restResponse, checkStr),
                 restResponse.contains(checkStr));
     }
 
@@ -162,7 +162,7 @@ public class RestClientSteps extends Assert {
 
         String restResponse = (String) stepData.get(REST_RESPONSE);
         Account account = (Account) stepData.get(var);
-        assertTrue(String.format("Response %s doesn't include %s.", restResponse, account.getId() + "-data-message" + checkStr),
+        Assert.assertTrue(String.format("Response %s doesn't include %s.", restResponse, account.getId() + "-data-message" + checkStr),
                 restResponse.contains(account.getId() + "-data-message" + checkStr));
     }
 
@@ -172,7 +172,7 @@ public class RestClientSteps extends Assert {
         String restResponse = (String) stepData.get(REST_RESPONSE);
         XmlUtil.setContextProvider(new RestJAXBContextProvider());
         AccessToken token = XmlUtil.unmarshalJson(restResponse, AccessToken.class, null);
-        assertTrue("Token is null.", token.getTokenId() != null);
+        Assert.assertTrue("Token is null.", token.getTokenId() != null);
         stepData.put(TOKEN_ID, token.getTokenId());
     }
 

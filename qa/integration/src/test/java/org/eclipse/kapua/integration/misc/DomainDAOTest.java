@@ -51,8 +51,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
 @Category(JUnitTests.class)
-public class DomainDAOTest extends Assert {
+public class DomainDAOTest {
 
     EntityManager entityManager;
     DomainCreator domainCreator;
@@ -79,10 +80,10 @@ public class DomainDAOTest extends Assert {
         Mockito.when(domainCreator.getGroupable()).thenReturn(true);
         Mockito.when(domainCreator.getActions()).thenReturn(actions);
 
-        assertTrue("True expected.", DomainDAO.create(entityManager, domainCreator) instanceof Domain);
-        assertEquals("Expected and actual values should be the same.", "name", DomainDAO.create(entityManager, domainCreator).getName());
-        assertTrue("True expected.", DomainDAO.create(entityManager, domainCreator).getGroupable());
-        assertEquals("Expected and actual values should be the same.", actions, DomainDAO.create(entityManager, domainCreator).getActions());
+        Assert.assertTrue("True expected.", DomainDAO.create(entityManager, domainCreator) instanceof Domain);
+        Assert.assertEquals("Expected and actual values should be the same.", "name", DomainDAO.create(entityManager, domainCreator).getName());
+        Assert.assertTrue("True expected.", DomainDAO.create(entityManager, domainCreator).getGroupable());
+        Assert.assertEquals("Expected and actual values should be the same.", actions, DomainDAO.create(entityManager, domainCreator).getActions());
     }
 
     @Test
@@ -91,10 +92,10 @@ public class DomainDAOTest extends Assert {
         Mockito.when(domainCreator.getGroupable()).thenReturn(true);
         Mockito.when(domainCreator.getActions()).thenReturn(null);
 
-        assertTrue("True expected.", DomainDAO.create(entityManager, domainCreator) instanceof Domain);
-        assertEquals("Expected and actual values should be the same.", "name", DomainDAO.create(entityManager, domainCreator).getName());
-        assertTrue("True expected.", DomainDAO.create(entityManager, domainCreator).getGroupable());
-        assertNull("Null expected.", DomainDAO.create(entityManager, domainCreator).getActions());
+        Assert.assertTrue("True expected.", DomainDAO.create(entityManager, domainCreator) instanceof Domain);
+        Assert.assertEquals("Expected and actual values should be the same.", "name", DomainDAO.create(entityManager, domainCreator).getName());
+        Assert.assertTrue("True expected.", DomainDAO.create(entityManager, domainCreator).getGroupable());
+        Assert.assertNull("Null expected.", DomainDAO.create(entityManager, domainCreator).getActions());
     }
 
     @Test(expected = KapuaEntityExistsException.class)
@@ -160,8 +161,8 @@ public class DomainDAOTest extends Assert {
         Mockito.when(entityManager.find(DomainImpl.class, domainId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", DomainDAO.find(entityManager, scopeId, domainId) instanceof Domain);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, DomainDAO.find(entityManager, scopeId, domainId).getScopeId());
+        Assert.assertTrue("True expected.", DomainDAO.find(entityManager, scopeId, domainId) instanceof Domain);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, DomainDAO.find(entityManager, scopeId, domainId).getScopeId());
     }
 
     @Test
@@ -169,14 +170,14 @@ public class DomainDAOTest extends Assert {
         Mockito.when(entityManager.find(DomainImpl.class, domainId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ANY);
 
-        assertNull("Null expected.", DomainDAO.find(entityManager, scopeId, domainId));
+        Assert.assertNull("Null expected.", DomainDAO.find(entityManager, scopeId, domainId));
     }
 
     @Test
     public void findNullEntityToFindTest() {
         Mockito.when(entityManager.find(DomainImpl.class, domainId)).thenReturn(null);
 
-        assertNull("Null expected.", DomainDAO.find(entityManager, scopeId, domainId));
+        Assert.assertNull("Null expected.", DomainDAO.find(entityManager, scopeId, domainId));
     }
 
     @Test
@@ -184,7 +185,7 @@ public class DomainDAOTest extends Assert {
         Mockito.when(entityManager.find(DomainImpl.class, domainId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        assertTrue("True expected.", DomainDAO.find(entityManager, scopeId, domainId) instanceof Domain);
+        Assert.assertTrue("True expected.", DomainDAO.find(entityManager, scopeId, domainId) instanceof Domain);
     }
 
     @Test(expected = NullPointerException.class)
@@ -197,8 +198,8 @@ public class DomainDAOTest extends Assert {
         Mockito.when(entityManager.find(DomainImpl.class, domainId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", DomainDAO.find(entityManager, null, domainId) instanceof Domain);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, DomainDAO.find(entityManager, null, domainId).getScopeId());
+        Assert.assertTrue("True expected.", DomainDAO.find(entityManager, null, domainId) instanceof Domain);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, DomainDAO.find(entityManager, null, domainId).getScopeId());
     }
 
     @Test
@@ -206,8 +207,8 @@ public class DomainDAOTest extends Assert {
         Mockito.when(entityManager.find(DomainImpl.class, null)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", DomainDAO.find(entityManager, scopeId, null) instanceof Domain);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, DomainDAO.find(entityManager, scopeId, null).getScopeId());
+        Assert.assertTrue("True expected.", DomainDAO.find(entityManager, scopeId, null) instanceof Domain);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, DomainDAO.find(entityManager, scopeId, null).getScopeId());
     }
 
     @Test
@@ -230,7 +231,7 @@ public class DomainDAOTest extends Assert {
         Mockito.when(kapuaQuery.getFetchAttributes()).thenReturn(list);
         Mockito.when(entityManager.createQuery(criteriaQuery1)).thenReturn(query);
 
-        assertTrue("True expected.", DomainDAO.query(entityManager, kapuaQuery) instanceof DomainListResult);
+        Assert.assertTrue("True expected.", DomainDAO.query(entityManager, kapuaQuery) instanceof DomainListResult);
     }
 
     @Test(expected = NullPointerException.class)
@@ -279,8 +280,8 @@ public class DomainDAOTest extends Assert {
         for (long number : longNumberList) {
             Mockito.doReturn(number).when(query).getSingleResult();
 
-            assertEquals("Expected and actual values should be the same.", number, DomainDAO.count(entityManager, kapuaQuery));
-            assertNull("Null expected.", kapuaQuery.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", number, DomainDAO.count(entityManager, kapuaQuery));
+            Assert.assertNull("Null expected.", kapuaQuery.getScopeId());
         }
     }
 
@@ -298,7 +299,7 @@ public class DomainDAOTest extends Assert {
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(DomainImpl.class, domainId)).thenReturn(entityToFindOrDelete);
 
-        assertTrue("True expected.", DomainDAO.delete(entityManager, scopeId, domainId) instanceof Domain);
+        Assert.assertTrue("True expected.", DomainDAO.delete(entityManager, scopeId, domainId) instanceof Domain);
     }
 
     @Test(expected = NullPointerException.class)
@@ -310,7 +311,7 @@ public class DomainDAOTest extends Assert {
     public void deleteNullScopeIdTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(DomainImpl.class, domainId)).thenReturn(entityToFindOrDelete);
 
-        assertTrue("True expected.", DomainDAO.delete(entityManager, null, domainId) instanceof Domain);
+        Assert.assertTrue("True expected.", DomainDAO.delete(entityManager, null, domainId) instanceof Domain);
     }
 
     @Test(expected = NullPointerException.class)
@@ -347,7 +348,7 @@ public class DomainDAOTest extends Assert {
         Mockito.when(query1.setParameter(parameterExpressionName.getName(), "name")).thenReturn(query2);
         Mockito.when(query1.getResultList()).thenReturn(list);
 
-        assertNull("Null expected.", DomainDAO.findByName(entityManager, "name"));
+        Assert.assertNull("Null expected.", DomainDAO.findByName(entityManager, "name"));
     }
 
     @Test
@@ -373,8 +374,8 @@ public class DomainDAOTest extends Assert {
         Mockito.when(query1.setParameter(parameterExpressionName.getName(), "name")).thenReturn(query2);
         Mockito.when(query1.getResultList()).thenReturn(list);
 
-        assertTrue("True expected.", DomainDAO.findByName(entityManager, "name") instanceof Domain);
-        assertNotNull("NotNull expected.", DomainDAO.findByName(entityManager, "name"));
+        Assert.assertTrue("True expected.", DomainDAO.findByName(entityManager, "name") instanceof Domain);
+        Assert.assertNotNull("NotNull expected.", DomainDAO.findByName(entityManager, "name"));
     }
 
     @Test(expected = NonUniqueResultException.class)
@@ -432,7 +433,7 @@ public class DomainDAOTest extends Assert {
         Mockito.when(query1.setParameter(parameterExpressionName.getName(), null)).thenReturn(query2);
         Mockito.when(query1.getResultList()).thenReturn(list);
 
-        assertTrue("True expected.", DomainDAO.findByName(entityManager, null) instanceof Domain);
-        assertNotNull("NotNull expected.", DomainDAO.findByName(entityManager, null));
+        Assert.assertTrue("True expected.", DomainDAO.findByName(entityManager, null) instanceof Domain);
+        Assert.assertNotNull("NotNull expected.", DomainDAO.findByName(entityManager, null));
     }
 }

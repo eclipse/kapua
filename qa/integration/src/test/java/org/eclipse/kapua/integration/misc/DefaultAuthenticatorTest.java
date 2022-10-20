@@ -31,8 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class DefaultAuthenticatorTest extends Assert {
+public class DefaultAuthenticatorTest {
 
     KapuaSecurityContext kapuaSecurityContext;
     Map<String, Object> options;
@@ -56,7 +57,7 @@ public class DefaultAuthenticatorTest extends Assert {
         try {
             new DefaultAuthenticator(options);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -69,7 +70,7 @@ public class DefaultAuthenticatorTest extends Assert {
         try {
             new DefaultAuthenticator(options);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -77,9 +78,9 @@ public class DefaultAuthenticatorTest extends Assert {
     public void defaultAuthenticatorNullOptionsTest() {
         try {
             new DefaultAuthenticator(null);
-            fail("KapuaException expected.");
+            Assert.fail("KapuaException expected.");
         } catch (Exception e) {
-            assertEquals("KapuaException expected.", "org.eclipse.kapua.KapuaException: An internal error occurred: Cannot load instance null for class org.eclipse.kapua.broker.core.plugin.authentication.AdminAuthenticationLogic. Please check the configuration file!.", e.toString());
+            Assert.assertEquals("KapuaException expected.", "org.eclipse.kapua.KapuaException: An internal error occurred: Cannot load instance null for class org.eclipse.kapua.broker.core.plugin.authentication.AdminAuthenticationLogic. Please check the configuration file!.", e.toString());
         }
     }
 
@@ -89,23 +90,23 @@ public class DefaultAuthenticatorTest extends Assert {
 
         Mockito.when(kapuaSecurityContext.getUserName()).thenReturn("kapua-sys");
 
-        assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
 
         List<AuthorizationEntry> authorizationEntryList = defaultAuthenticator.connect(kapuaSecurityContext);
 
-        assertEquals("Expected and actual values should be the same.", 2, authorizationEntryList.size());
-        assertEquals("Expected and actual values should be the same.", "null>", authorizationEntryList.get(0).getAddress());
-        assertEquals("Expected and actual values should be the same.", Acl.ALL, authorizationEntryList.get(0).getAcl());
-        assertEquals("Expected and actual values should be the same.", "nullnull", authorizationEntryList.get(1).getAddress());
-        assertEquals("Expected and actual values should be the same.", Acl.WRITE_ADMIN, authorizationEntryList.get(1).getAcl());
+        Assert.assertEquals("Expected and actual values should be the same.", 2, authorizationEntryList.size());
+        Assert.assertEquals("Expected and actual values should be the same.", "null>", authorizationEntryList.get(0).getAddress());
+        Assert.assertEquals("Expected and actual values should be the same.", Acl.ALL, authorizationEntryList.get(0).getAcl());
+        Assert.assertEquals("Expected and actual values should be the same.", "nullnull", authorizationEntryList.get(1).getAddress());
+        Assert.assertEquals("Expected and actual values should be the same.", Acl.WRITE_ADMIN, authorizationEntryList.get(1).getAcl());
 
-        assertEquals("Expected and actual values should be the same.", 1, kapuasysTokenAttemptCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 1, connectedKapuasysCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 1, kapuasysTokenAttemptCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 1, connectedKapuasysCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
 
         kapuasysTokenAttemptCount.dec();
         connectedKapuasysCount.dec();
@@ -119,23 +120,23 @@ public class DefaultAuthenticatorTest extends Assert {
 
         Mockito.when(kapuaSecurityContext.getUserName()).thenReturn("kapua-sys");
 
-        assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
 
         List<AuthorizationEntry> authorizationEntryList = defaultAuthenticator.connect(kapuaSecurityContext);
 
-        assertEquals("Expected and actual values should be the same.", 2, authorizationEntryList.size());
-        assertEquals("Expected and actual values should be the same.", "prefix>", authorizationEntryList.get(0).getAddress());
-        assertEquals("Expected and actual values should be the same.", Acl.ALL, authorizationEntryList.get(0).getAcl());
-        assertEquals("Expected and actual values should be the same.", "prefixadvisory_prefix", authorizationEntryList.get(1).getAddress());
-        assertEquals("Expected and actual values should be the same.", Acl.WRITE_ADMIN, authorizationEntryList.get(1).getAcl());
+        Assert.assertEquals("Expected and actual values should be the same.", 2, authorizationEntryList.size());
+        Assert.assertEquals("Expected and actual values should be the same.", "prefix>", authorizationEntryList.get(0).getAddress());
+        Assert.assertEquals("Expected and actual values should be the same.", Acl.ALL, authorizationEntryList.get(0).getAcl());
+        Assert.assertEquals("Expected and actual values should be the same.", "prefixadvisory_prefix", authorizationEntryList.get(1).getAddress());
+        Assert.assertEquals("Expected and actual values should be the same.", Acl.WRITE_ADMIN, authorizationEntryList.get(1).getAcl());
 
-        assertEquals("Expected and actual values should be the same.", 1, kapuasysTokenAttemptCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 1, connectedKapuasysCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
-        assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 1, kapuasysTokenAttemptCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 1, connectedKapuasysCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
 
         kapuasysTokenAttemptCount.dec();
         connectedKapuasysCount.dec();
@@ -147,15 +148,15 @@ public class DefaultAuthenticatorTest extends Assert {
         Mockito.when(kapuaSecurityContext.getUserName()).thenReturn("kapua-sys");
 
         for (Throwable throwable : throwables) {
-            assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
             defaultAuthenticator.disconnect(kapuaSecurityContext, throwable);
-            assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 1, disconnectedKapuasysCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 1, disconnectedKapuasysCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
 
             disconnectedKapuasysCount.dec();
         }
@@ -170,15 +171,15 @@ public class DefaultAuthenticatorTest extends Assert {
 
         Mockito.when(kapuaSecurityContext.getUserName()).thenReturn("user");
         for (Throwable throwable : throwables) {
-            assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedClient.getCount());
             defaultAuthenticator.disconnect(kapuaSecurityContext, throwable);
-            assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
-            assertEquals("Expected and actual values should be the same.", 1, disconnectedClient.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, kapuasysTokenAttemptCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, connectedKapuasysCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 0, disconnectedKapuasysCount.getCount());
+            Assert.assertEquals("Expected and actual values should be the same.", 1, disconnectedClient.getCount());
 
             disconnectedClient.dec();
         }

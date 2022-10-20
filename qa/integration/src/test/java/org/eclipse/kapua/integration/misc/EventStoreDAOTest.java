@@ -46,8 +46,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class EventStoreDAOTest extends Assert {
+public class EventStoreDAOTest {
 
     @Test
     public void createTest() throws Exception {
@@ -61,17 +62,17 @@ public class EventStoreDAOTest extends Assert {
         PersistenceException persistenceException = new PersistenceException("Error", new Throwable());
         PersistenceException persistenceException2 = new PersistenceException("Error", new SQLException("Exception", "23505"));
 
-        assertEquals("Expected and actual values should be the same.", eventStoreRecord, EventStoreDAO.create(entityManager, eventStoreRecord));
-        assertNull("Null expected.", EventStoreDAO.create(entityManager, null));
+        Assert.assertEquals("Expected and actual values should be the same.", eventStoreRecord, EventStoreDAO.create(entityManager, eventStoreRecord));
+        Assert.assertNull("Null expected.", EventStoreDAO.create(entityManager, null));
         try {
             EventStoreDAO.create(null, null);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
         }
         try {
             EventStoreDAO.create(null, eventStoreRecord);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
         }
 
         //EntityExistsException
@@ -79,7 +80,7 @@ public class EventStoreDAOTest extends Assert {
         try {
             EventStoreDAO.create(entityManager, eventStoreRecord);
         } catch (KapuaEntityExistsException e) {
-            assertEquals("KapuaEntityExistsException expected.", kapuaEntityExistsException.toString(), e.toString());
+            Assert.assertEquals("KapuaEntityExistsException expected.", kapuaEntityExistsException.toString(), e.toString());
         }
 
         //PersistenceException
@@ -88,21 +89,21 @@ public class EventStoreDAOTest extends Assert {
             Mockito.doReturn(kapuaEntity).when(entityManager).find(eventStoreRecord.getClass(), eventStoreRecord.getId());
             EventStoreDAO.create(entityManager, eventStoreRecord);
         } catch (PersistenceException e) {
-            assertEquals("PersistenceException expected.", persistenceException.toString(), e.toString());
+            Assert.assertEquals("PersistenceException expected.", persistenceException.toString(), e.toString());
         }
         try {
             Mockito.doThrow(persistenceException2).when(entityManager).persist(eventStoreRecord);
             Mockito.doReturn(kapuaEntity).when(entityManager).find(eventStoreRecord.getClass(), eventStoreRecord.getId());
             EventStoreDAO.create(entityManager, eventStoreRecord);
         } catch (KapuaEntityExistsException e) {
-            assertEquals("KapuaEntityExistsException expected.", kapuaEntityExistsException.toString(), e.toString());
+            Assert.assertEquals("KapuaEntityExistsException expected.", kapuaEntityExistsException.toString(), e.toString());
         }
         try {
             Mockito.doThrow(persistenceException2).when(entityManager).persist(eventStoreRecord);
             Mockito.doReturn(null).when(entityManager).find(eventStoreRecord.getClass(), eventStoreRecord.getId());
             EventStoreDAO.create(entityManager, eventStoreRecord);
         } catch (PersistenceException e) {
-            assertEquals("PersistenceException expected.", persistenceException2.toString(), e.toString());
+            Assert.assertEquals("PersistenceException expected.", persistenceException2.toString(), e.toString());
         }
     }
 
@@ -121,31 +122,31 @@ public class EventStoreDAOTest extends Assert {
         try {
             EventStoreDAO.update(entityManager, eventStoreRecord);
         } catch (Exception e) {
-            assertEquals("KapuaEntityNotFoundException expected.", kapuaEntityNotFoundException.toString(), e.toString());
+            Assert.assertEquals("KapuaEntityNotFoundException expected.", kapuaEntityNotFoundException.toString(), e.toString());
         }
         try {
             EventStoreDAO.update(null, null);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
         }
         try {
             EventStoreDAO.update(null, eventStoreRecord);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
         }
 
         //entityToUpdate not null
         Mockito.when(entityManager.find(EventStoreRecordImpl.class, id)).thenReturn(eventStoreRecordImpl);
-        assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.update(entityManager, eventStoreRecord));
+        Assert.assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.update(entityManager, eventStoreRecord));
         try {
             EventStoreDAO.update(null, null);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
         }
         try {
             EventStoreDAO.update(null, eventStoreRecord);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
         }
     }
 
@@ -161,17 +162,17 @@ public class EventStoreDAOTest extends Assert {
         //entityToFind null
         for (KapuaId event : eventIds) {
             Mockito.when(entityManager.find(EventStoreRecordImpl.class, event)).thenReturn(null);
-            assertNull("Null expected", EventStoreDAO.find(entityManager, scopeIdOne, event));
-            assertNull("Null expected.", EventStoreDAO.find(entityManager, null, event));
+            Assert.assertNull("Null expected", EventStoreDAO.find(entityManager, scopeIdOne, event));
+            Assert.assertNull("Null expected.", EventStoreDAO.find(entityManager, null, event));
             try {
                 EventStoreDAO.find(null, scopeIdOne, event);
             } catch (Exception e) {
-                assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+                Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
             }
             try {
                 EventStoreDAO.find(null, null, event);
             } catch (Exception e) {
-                assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+                Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
             }
         }
 
@@ -179,21 +180,21 @@ public class EventStoreDAOTest extends Assert {
         for (KapuaId event : eventIds) {
             eventStoreRecordImpl.setScopeId(null);
             Mockito.when(entityManager.find(EventStoreRecordImpl.class, event)).thenReturn(eventStoreRecordImpl);
-            assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.find(entityManager, null, event));
-            assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.find(entityManager, scopeIdOne, event));
+            Assert.assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.find(entityManager, null, event));
+            Assert.assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.find(entityManager, scopeIdOne, event));
             eventStoreRecordImpl.setScopeId(scopeIdOne);
-            assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.find(entityManager, scopeIdOne, event));
+            Assert.assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.find(entityManager, scopeIdOne, event));
             eventStoreRecordImpl.setScopeId(scopeIdTen);
-            assertNull("Null expected", EventStoreDAO.find(entityManager, scopeIdOne, event));
+            Assert.assertNull("Null expected", EventStoreDAO.find(entityManager, scopeIdOne, event));
             try {
                 EventStoreDAO.find(null, scopeIdOne, event);
             } catch (Exception e) {
-                assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+                Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
             }
             try {
                 EventStoreDAO.find(null, null, event);
             } catch (Exception e) {
-                assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+                Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
             }
         }
     }
@@ -221,7 +222,7 @@ public class EventStoreDAOTest extends Assert {
         Mockito.when(kapuaQuery.getFetchAttributes()).thenReturn(list);
         Mockito.when(entityManager.createQuery(criteriaQuery1)).thenReturn(query);
 
-        assertThat("EventStoreRecordListResult object expected.", EventStoreDAO.query(entityManager, kapuaQuery), IsInstanceOf.instanceOf(EventStoreRecordListResult.class));
+        Assert.assertThat("EventStoreRecordListResult object expected.", EventStoreDAO.query(entityManager, kapuaQuery), IsInstanceOf.instanceOf(EventStoreRecordListResult.class));
     }
 
     @Test
@@ -245,7 +246,7 @@ public class EventStoreDAOTest extends Assert {
         Mockito.when(entityManager.createQuery(criteriaQuery1)).thenReturn(query);
         for (long number : longNumberList) {
             Mockito.doReturn(number).when(query).getSingleResult();
-            assertThat("Long object expected.", EventStoreDAO.count(entityManager, kapuaQuery), IsInstanceOf.instanceOf(Long.class));
+        Assert.assertThat("Long object expected.", EventStoreDAO.count(entityManager, kapuaQuery), IsInstanceOf.instanceOf(Long.class));
         }
     }
 
@@ -264,12 +265,12 @@ public class EventStoreDAOTest extends Assert {
             try {
                 EventStoreDAO.delete(entityManager, scopeId, eventIds[1]);
             } catch (Exception e) {
-                assertEquals("KapuaEntityNotFoundException expected", kapuaEntityNotFoundException.toString(), e.toString());
+                Assert.assertEquals("KapuaEntityNotFoundException expected", kapuaEntityNotFoundException.toString(), e.toString());
             }
             try {
                 EventStoreDAO.delete(null, scopeId, eventIds[1]);
             } catch (Exception e) {
-                assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
+                Assert.assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
             }
         }
 
@@ -277,11 +278,11 @@ public class EventStoreDAOTest extends Assert {
         for (KapuaId eventId : eventIds) {
             for (KapuaId scopeId : scopeIds) {
                 Mockito.when(entityManager.find(EventStoreRecordImpl.class, eventId)).thenReturn(eventStoreRecordImpl);
-                assertEquals(eventStoreRecordImpl, EventStoreDAO.delete(entityManager, scopeId, eventId));
+                Assert.assertEquals(eventStoreRecordImpl, EventStoreDAO.delete(entityManager, scopeId, eventId));
                 try {
                     EventStoreDAO.delete(null, scopeId, eventId);
                 } catch (Exception e) {
-                    assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
+                    Assert.assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
                 }
             }
         }

@@ -23,24 +23,25 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class AuthenticationEntityManagerFactoryTest extends Assert {
+public class AuthenticationEntityManagerFactoryTest {
 
     @Test
     public void authenticationEntityManagerFactoryTest() throws Exception {
         Constructor<AuthenticationEntityManagerFactory> authenticationEntityManagerFactory = AuthenticationEntityManagerFactory.class.getDeclaredConstructor();
         authenticationEntityManagerFactory.setAccessible(true);
         authenticationEntityManagerFactory.newInstance();
-        assertTrue("True expected.", Modifier.isPrivate(authenticationEntityManagerFactory.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isPrivate(authenticationEntityManagerFactory.getModifiers()));
     }
 
     @Test
     public void getEntityManagerTest() throws KapuaException {
-        assertTrue("True expected.", AuthenticationEntityManagerFactory.getEntityManager() instanceof EntityManager);
+        Assert.assertTrue("True expected.", AuthenticationEntityManagerFactory.getEntityManager() instanceof EntityManager);
     }
 
     @Test
     public void getInstanceTest() {
-        assertTrue("True expected.", AuthenticationEntityManagerFactory.getInstance() instanceof AuthenticationEntityManagerFactory);
+        Assert.assertTrue("True expected.", AuthenticationEntityManagerFactory.getInstance() instanceof AuthenticationEntityManagerFactory);
     }
 } 

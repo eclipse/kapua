@@ -20,8 +20,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaTscalarAdapterTest extends Assert {
+public class KapuaTscalarAdapterTest {
 
     KapuaTscalarAdapter kapuaTscalarAdapter;
     TscalarImpl[] kapuaTscalar;
@@ -41,7 +42,7 @@ public class KapuaTscalarAdapterTest extends Assert {
     public void marshalTest() throws Exception {
         String[] expectedStringValue = stringValue;
         for (int i = 0; i < kapuaTscalar.length; i++) {
-            assertEquals("Expected and actual values should be the same.", expectedStringValue[i], kapuaTscalarAdapter.marshal(kapuaTscalar[i]));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedStringValue[i], kapuaTscalarAdapter.marshal(kapuaTscalar[i]));
         }
     }
 
@@ -54,7 +55,7 @@ public class KapuaTscalarAdapterTest extends Assert {
     public void unmarshalTest() throws Exception {
         TscalarImpl[] expectedTscalars = kapuaTscalar;
         for (int i = 0; i < stringValue.length; i++) {
-            assertEquals("Expected and actual values should be the same.", expectedTscalars[i], kapuaTscalarAdapter.unmarshal(stringValue[i]));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedTscalars[i], kapuaTscalarAdapter.unmarshal(stringValue[i]));
         }
     }
 

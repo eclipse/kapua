@@ -23,8 +23,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class JwtAuthenticatingRealmTest extends Assert {
+public class JwtAuthenticatingRealmTest {
 
     JwtAuthenticatingRealm jwtAuthenticatingRealm;
 
@@ -35,7 +36,7 @@ public class JwtAuthenticatingRealmTest extends Assert {
 
     @Test
     public void jwtAuthenticatingRealmTest() {
-        assertEquals("Expected and actual values should be the same.", "jwtAuthenticatingRealm", jwtAuthenticatingRealm.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", "jwtAuthenticatingRealm", jwtAuthenticatingRealm.getName());
     }
 
     @Test
@@ -43,19 +44,19 @@ public class JwtAuthenticatingRealmTest extends Assert {
         try {
             jwtAuthenticatingRealm.destroy();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
     @Test
     public void supportsTrueTest() {
         JwtCredentialsImpl authenticationToken = new JwtCredentialsImpl("jwt", "token id");
-        assertTrue("True expected.", jwtAuthenticatingRealm.supports(authenticationToken));
+        Assert.assertTrue("True expected.", jwtAuthenticatingRealm.supports(authenticationToken));
     }
 
     @Test
     public void supportsFalseTest() {
         AuthenticationToken authenticationToken = Mockito.mock(AuthenticationToken.class);
-        assertFalse("False expected.", jwtAuthenticatingRealm.supports(authenticationToken));
+        Assert.assertFalse("False expected.", jwtAuthenticatingRealm.supports(authenticationToken));
     }
 }

@@ -30,8 +30,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class AccessPermissionImplTest extends Assert {
+public class AccessPermissionImplTest {
 
     AccessPermissionImpl accessPermissionImpl1, accessPermissionImpl2, accessPermissionImpl;
     AccessPermission accessPermission;
@@ -68,45 +69,45 @@ public class AccessPermissionImplTest extends Assert {
         Constructor<AccessPermissionImpl> accessPermissionImplWithoutParameters = AccessPermissionImpl.class.getDeclaredConstructor();
         accessPermissionImplWithoutParameters.setAccessible(true);
         accessPermissionImplWithoutParameters.newInstance();
-        assertTrue("True expected.", Modifier.isProtected(accessPermissionImplWithoutParameters.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isProtected(accessPermissionImplWithoutParameters.getModifiers()));
     }
 
     @Test
     public void accessPermissionImplScopeIdParameterTest() {
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionImpl1.getScopeId());
-        assertNull("Null expected", accessPermissionImpl1.getAccessInfoId());
-        assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermissionImpl1.getPermission().toString());
-        assertNull("Null expected", accessPermissionImpl1.getPermission().getDomain());
-        assertNull("Null expected", accessPermissionImpl1.getPermission().getAction());
-        assertNull("Null expected", accessPermissionImpl1.getPermission().getTargetScopeId());
-        assertNull("Null expected", accessPermissionImpl1.getPermission().getGroupId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionImpl1.getScopeId());
+        Assert.assertNull("Null expected", accessPermissionImpl1.getAccessInfoId());
+        Assert.assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermissionImpl1.getPermission().toString());
+        Assert.assertNull("Null expected", accessPermissionImpl1.getPermission().getDomain());
+        Assert.assertNull("Null expected", accessPermissionImpl1.getPermission().getAction());
+        Assert.assertNull("Null expected", accessPermissionImpl1.getPermission().getTargetScopeId());
+        Assert.assertNull("Null expected", accessPermissionImpl1.getPermission().getGroupId());
     }
 
     @Test
     public void accessPermissionImplNullScopeIdParameterTest() {
         AccessPermissionImpl accessPermission = new AccessPermissionImpl((KapuaId) null);
 
-        assertNull("Null expected", accessPermission.getScopeId());
-        assertNull("Null expected", accessPermission.getAccessInfoId());
-        assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermission.getPermission().toString());
-        assertNull("Null expected", accessPermission.getPermission().getDomain());
-        assertNull("Null expected", accessPermission.getPermission().getAction());
-        assertNull("Null expected", accessPermission.getPermission().getTargetScopeId());
-        assertNull("Null expected", accessPermission.getPermission().getGroupId());
+        Assert.assertNull("Null expected", accessPermission.getScopeId());
+        Assert.assertNull("Null expected", accessPermission.getAccessInfoId());
+        Assert.assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermission.getPermission().toString());
+        Assert.assertNull("Null expected", accessPermission.getPermission().getDomain());
+        Assert.assertNull("Null expected", accessPermission.getPermission().getAction());
+        Assert.assertNull("Null expected", accessPermission.getPermission().getTargetScopeId());
+        Assert.assertNull("Null expected", accessPermission.getPermission().getGroupId());
     }
 
     @Test
     public void accessPermissionImplAccessPermissionParameterTest() {
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionImpl.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessPermissionImpl.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessPermissionImpl.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, accessPermissionImpl.getCreatedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionImpl.getAccessInfoId());
-        assertEquals("Expected and actual values should be the same.", permission1, accessPermissionImpl.getPermission());
-        assertEquals("Expected and actual values should be the same.", "domain", accessPermissionImpl.getPermission().getDomain());
-        assertEquals("Expected and actual values should be the same.", Actions.connect, accessPermissionImpl.getPermission().getAction());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionImpl.getPermission().getTargetScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessPermissionImpl.getPermission().getGroupId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionImpl.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessPermissionImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessPermissionImpl.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, accessPermissionImpl.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionImpl.getAccessInfoId());
+        Assert.assertEquals("Expected and actual values should be the same.", permission1, accessPermissionImpl.getPermission());
+        Assert.assertEquals("Expected and actual values should be the same.", "domain", accessPermissionImpl.getPermission().getDomain());
+        Assert.assertEquals("Expected and actual values should be the same.", Actions.connect, accessPermissionImpl.getPermission().getAction());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionImpl.getPermission().getTargetScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessPermissionImpl.getPermission().getGroupId());
     }
 
     @Test(expected = NullPointerException.class)
@@ -117,47 +118,47 @@ public class AccessPermissionImplTest extends Assert {
     @Test
     public void setAndGetAccessInfoIdTest() {
         accessPermissionImpl1.setAccessInfoId(KapuaId.ANY);
-        assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ANY), accessPermissionImpl1.getAccessInfoId());
+        Assert.assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ANY), accessPermissionImpl1.getAccessInfoId());
         accessPermissionImpl1.setAccessInfoId(new KapuaEid(KapuaId.ANY));
-        assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ANY), accessPermissionImpl1.getAccessInfoId());
+        Assert.assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ANY), accessPermissionImpl1.getAccessInfoId());
         accessPermissionImpl1.setAccessInfoId(null);
-        assertNull("Null expected.", accessPermissionImpl1.getAccessInfoId());
+        Assert.assertNull("Null expected.", accessPermissionImpl1.getAccessInfoId());
 
         accessPermissionImpl.setAccessInfoId(KapuaId.ANY);
-        assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ANY), accessPermissionImpl.getAccessInfoId());
+        Assert.assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ANY), accessPermissionImpl.getAccessInfoId());
         accessPermissionImpl.setAccessInfoId(new KapuaEid(KapuaId.ANY));
-        assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ANY), accessPermissionImpl.getAccessInfoId());
+        Assert.assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ANY), accessPermissionImpl.getAccessInfoId());
         accessPermissionImpl.setAccessInfoId(null);
-        assertNull("Null expected.", accessPermissionImpl.getAccessInfoId());
+        Assert.assertNull("Null expected.", accessPermissionImpl.getAccessInfoId());
 
     }
 
     @Test
     public void setAndGetPermissionTest() {
         accessPermissionImpl1.setPermission(permission1);
-        assertEquals("Expected and actual values should be the same.", permission1, accessPermissionImpl1.getPermission());
+        Assert.assertEquals("Expected and actual values should be the same.", permission1, accessPermissionImpl1.getPermission());
         accessPermissionImpl1.setPermission(null);
-        assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermissionImpl1.getPermission().toString());
+        Assert.assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermissionImpl1.getPermission().toString());
         accessPermissionImpl1.setPermission(newPermission);
-        assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermissionImpl1.getPermission().toString());
+        Assert.assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermissionImpl1.getPermission().toString());
 
         accessPermissionImpl.setPermission(permission2);
-        assertEquals("Expected and actual values should be the same.", permission2, accessPermissionImpl.getPermission());
+        Assert.assertEquals("Expected and actual values should be the same.", permission2, accessPermissionImpl.getPermission());
         accessPermissionImpl.setPermission(null);
-        assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermissionImpl.getPermission().toString());
+        Assert.assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermissionImpl.getPermission().toString());
         accessPermissionImpl.setPermission(newPermission);
-        assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermissionImpl.getPermission().toString());
+        Assert.assertEquals("Expected and actual values should be the same.", "*:*:*:*", accessPermissionImpl.getPermission().toString());
     }
 
     @Test
     public void hashCodeNullAccessInfoIdNullPermissionTest() {
-        assertEquals("Expected and actual values should be the same.", 961, accessPermissionImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 961, accessPermissionImpl1.hashCode());
     }
 
     @Test
     public void hashCodeNullPermissionTest() {
         accessPermissionImpl1.setAccessInfoId(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", 1953, accessPermissionImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 1953, accessPermissionImpl1.hashCode());
     }
 
     @Test
@@ -169,7 +170,7 @@ public class AccessPermissionImplTest extends Assert {
         Mockito.when(permission.getGroupId()).thenReturn(null);
         PermissionImpl permissionImpl = new PermissionImpl(permission);
         accessPermissionImpl1.setPermission(permissionImpl);
-        assertEquals("Expected and actual values should be the same.", 924482, accessPermissionImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 924482, accessPermissionImpl1.hashCode());
     }
 
     @Test
@@ -182,60 +183,60 @@ public class AccessPermissionImplTest extends Assert {
         Mockito.when(permission.getGroupId()).thenReturn(null);
         PermissionImpl permissionImpl = new PermissionImpl(permission);
         accessPermissionImpl1.setPermission(permissionImpl);
-        assertEquals("Expected and actual values should be the same.", 925474, accessPermissionImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 925474, accessPermissionImpl1.hashCode());
     }
 
     @Test
     public void equalsSameObjectTest() {
-        assertTrue("True expected.", accessPermissionImpl1.equals(accessPermissionImpl1));
+        Assert.assertTrue("True expected.", accessPermissionImpl1.equals(accessPermissionImpl1));
     }
 
     @Test
     public void equalsNullObjectTest() {
-        assertFalse("False expected.", accessPermissionImpl1.equals(null));
+        Assert.assertFalse("False expected.", accessPermissionImpl1.equals(null));
     }
 
     @Test
     public void equalsObjectTest() {
-        assertFalse("False expected.", accessPermissionImpl1.equals(new Object()));
+        Assert.assertFalse("False expected.", accessPermissionImpl1.equals(new Object()));
     }
 
     @Test
     public void equalsNullBothAccessInfoIdsNullPermissionsTest() {
-        assertTrue("True expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
+        Assert.assertTrue("True expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
     }
 
     @Test
     public void equalsNullBothAccessInfoIdsEqualPermissionsTest() {
         accessPermissionImpl1.setPermission(permission2);
         accessPermissionImpl2.setPermission(permission2);
-        assertTrue("True expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
+        Assert.assertTrue("True expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
     }
 
     @Test
     public void equalsNullBothAccessInfoIdsDifferentPermissionsTest() {
         accessPermissionImpl1.setPermission(permission2);
-        assertFalse("False expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
+        Assert.assertFalse("False expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
     }
 
     @Test
     public void equalsNullAccessInfoIdTest() {
         accessPermissionImpl2.setAccessInfoId(KapuaId.ANY);
-        assertFalse("False expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
+        Assert.assertFalse("False expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
     }
 
     @Test
     public void equalsDifferentAccessInfoIdsTest() {
         accessPermissionImpl1.setAccessInfoId(KapuaId.ONE);
         accessPermissionImpl2.setAccessInfoId(KapuaId.ANY);
-        assertFalse("False expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
+        Assert.assertFalse("False expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
     }
 
     @Test
     public void equalsEqualAccessInfoIdsNullPermissionsTest() {
         accessPermissionImpl1.setAccessInfoId(KapuaId.ONE);
         accessPermissionImpl2.setAccessInfoId(KapuaId.ONE);
-        assertTrue("True expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
+        Assert.assertTrue("True expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
     }
 
     @Test
@@ -244,7 +245,7 @@ public class AccessPermissionImplTest extends Assert {
         accessPermissionImpl2.setAccessInfoId(KapuaId.ONE);
         accessPermissionImpl1.setPermission(permission2);
         accessPermissionImpl2.setPermission(permission2);
-        assertTrue("True expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
+        Assert.assertTrue("True expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
     }
 
     @Test
@@ -252,6 +253,6 @@ public class AccessPermissionImplTest extends Assert {
         accessPermissionImpl1.setAccessInfoId(KapuaId.ONE);
         accessPermissionImpl2.setAccessInfoId(KapuaId.ONE);
         accessPermissionImpl1.setPermission(Mockito.mock(PermissionImpl.class));
-        assertFalse("False expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
+        Assert.assertFalse("False expected.", accessPermissionImpl1.equals(accessPermissionImpl2));
     }
 }

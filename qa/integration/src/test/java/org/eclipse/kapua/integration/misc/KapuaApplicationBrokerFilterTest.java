@@ -20,8 +20,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class KapuaApplicationBrokerFilterTest extends Assert {
+public class KapuaApplicationBrokerFilterTest {
 
     @Test
     public void kapuaApplicationBrokerFilterTest() {
@@ -30,7 +31,7 @@ public class KapuaApplicationBrokerFilterTest extends Assert {
         try {
             new KapuaApplicationBrokerFilter(broker);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -39,7 +40,7 @@ public class KapuaApplicationBrokerFilterTest extends Assert {
         try {
             new KapuaApplicationBrokerFilter(null);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -49,7 +50,7 @@ public class KapuaApplicationBrokerFilterTest extends Assert {
         try {
             kapuaApplicationBrokerFilter.stop();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 

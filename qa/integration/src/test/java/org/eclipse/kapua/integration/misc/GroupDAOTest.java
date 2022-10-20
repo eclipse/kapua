@@ -45,8 +45,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class GroupDAOTest extends Assert {
+public class GroupDAOTest {
 
     EntityManager entityManager;
     GroupCreator groupCreator;
@@ -74,10 +75,10 @@ public class GroupDAOTest extends Assert {
         Mockito.when(groupCreator.getName()).thenReturn("name");
         Mockito.when(groupCreator.getDescription()).thenReturn("description");
 
-        assertTrue("True expected.", GroupDAO.create(entityManager, groupCreator) instanceof Group);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, GroupDAO.create(entityManager, groupCreator).getScopeId());
-        assertEquals("Expected and actual values should be the same.", "name", GroupDAO.create(entityManager, groupCreator).getName());
-        assertEquals("Expected and actual values should be the same.", "description", GroupDAO.create(entityManager, groupCreator).getDescription());
+        Assert.assertTrue("True expected.", GroupDAO.create(entityManager, groupCreator) instanceof Group);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, GroupDAO.create(entityManager, groupCreator).getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", "name", GroupDAO.create(entityManager, groupCreator).getName());
+        Assert.assertEquals("Expected and actual values should be the same.", "description", GroupDAO.create(entityManager, groupCreator).getDescription());
     }
 
     @Test(expected = NullPointerException.class)
@@ -141,9 +142,9 @@ public class GroupDAOTest extends Assert {
         Mockito.when(entityToFindOrDelete.getCreatedOn()).thenReturn(createdOn);
         Mockito.when(entityToFindOrDelete.getCreatedBy()).thenReturn(createdBy);
 
-        assertTrue("True expected.", GroupDAO.update(entityManager, group) instanceof Group);
-        assertEquals("Expected and actual values should be the same.", createdBy, GroupDAO.update(entityManager, group).getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, GroupDAO.update(entityManager, group).getCreatedOn());
+        Assert.assertTrue("True expected.", GroupDAO.update(entityManager, group) instanceof Group);
+        Assert.assertEquals("Expected and actual values should be the same.", createdBy, GroupDAO.update(entityManager, group).getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, GroupDAO.update(entityManager, group).getCreatedOn());
     }
 
     @Test(expected = KapuaEntityNotFoundException.class)
@@ -175,8 +176,8 @@ public class GroupDAOTest extends Assert {
         Mockito.when(entityManager.find(GroupImpl.class, groupId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", GroupDAO.find(entityManager, scopeId, groupId) instanceof Group);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, GroupDAO.find(entityManager, scopeId, groupId).getScopeId());
+        Assert.assertTrue("True expected.", GroupDAO.find(entityManager, scopeId, groupId) instanceof Group);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, GroupDAO.find(entityManager, scopeId, groupId).getScopeId());
     }
 
     @Test
@@ -184,14 +185,14 @@ public class GroupDAOTest extends Assert {
         Mockito.when(entityManager.find(GroupImpl.class, groupId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ANY);
 
-        assertNull("Null expected.", GroupDAO.find(entityManager, scopeId, groupId));
+        Assert.assertNull("Null expected.", GroupDAO.find(entityManager, scopeId, groupId));
     }
 
     @Test
     public void findNullEntityToFindTest() {
         Mockito.when(entityManager.find(GroupImpl.class, groupId)).thenReturn(null);
 
-        assertNull("Null expected.", GroupDAO.find(entityManager, scopeId, groupId));
+        Assert.assertNull("Null expected.", GroupDAO.find(entityManager, scopeId, groupId));
     }
 
     @Test
@@ -199,8 +200,8 @@ public class GroupDAOTest extends Assert {
         Mockito.when(entityManager.find(GroupImpl.class, groupId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        assertTrue("True expected.", GroupDAO.find(entityManager, scopeId, groupId) instanceof Group);
-        assertNull("Null expected.", GroupDAO.find(entityManager, scopeId, groupId).getScopeId());
+        Assert.assertTrue("True expected.", GroupDAO.find(entityManager, scopeId, groupId) instanceof Group);
+        Assert.assertNull("Null expected.", GroupDAO.find(entityManager, scopeId, groupId).getScopeId());
     }
 
     @Test(expected = NullPointerException.class)
@@ -213,8 +214,8 @@ public class GroupDAOTest extends Assert {
         Mockito.when(entityManager.find(GroupImpl.class, groupId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", GroupDAO.find(entityManager, null, groupId) instanceof Group);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, GroupDAO.find(entityManager, scopeId, groupId).getScopeId());
+        Assert.assertTrue("True expected.", GroupDAO.find(entityManager, null, groupId) instanceof Group);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, GroupDAO.find(entityManager, scopeId, groupId).getScopeId());
     }
 
     @Test
@@ -222,8 +223,8 @@ public class GroupDAOTest extends Assert {
         Mockito.when(entityManager.find(GroupImpl.class, null)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", GroupDAO.find(entityManager, scopeId, null) instanceof Group);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, GroupDAO.find(entityManager, scopeId, null).getScopeId());
+        Assert.assertTrue("True expected.", GroupDAO.find(entityManager, scopeId, null) instanceof Group);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, GroupDAO.find(entityManager, scopeId, null).getScopeId());
     }
 
     @Test
@@ -246,7 +247,7 @@ public class GroupDAOTest extends Assert {
         Mockito.when(kapuaQuery.getFetchAttributes()).thenReturn(list);
         Mockito.when(entityManager.createQuery(criteriaQuery1)).thenReturn(query);
 
-        assertTrue("True expected.", GroupDAO.query(entityManager, kapuaQuery) instanceof GroupListResult);
+        Assert.assertTrue("True expected.", GroupDAO.query(entityManager, kapuaQuery) instanceof GroupListResult);
     }
 
     @Test(expected = NullPointerException.class)
@@ -293,7 +294,7 @@ public class GroupDAOTest extends Assert {
         for (long number : longNumberList) {
             Mockito.doReturn(number).when(query).getSingleResult();
 
-            assertEquals("Expected and actual values should be the same.", number, GroupDAO.count(entityManager, kapuaQuery));
+            Assert.assertEquals("Expected and actual values should be the same.", number, GroupDAO.count(entityManager, kapuaQuery));
         }
     }
 
@@ -310,7 +311,7 @@ public class GroupDAOTest extends Assert {
     @Test
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(GroupImpl.class, groupId)).thenReturn(entityToFindOrDelete);
-        assertTrue("True expected.", GroupDAO.delete(entityManager, scopeId, groupId) instanceof Group);
+        Assert.assertTrue("True expected.", GroupDAO.delete(entityManager, scopeId, groupId) instanceof Group);
     }
 
     @Test(expected = NullPointerException.class)
@@ -321,7 +322,7 @@ public class GroupDAOTest extends Assert {
     @Test
     public void deleteNullScopeIdTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(GroupImpl.class, groupId)).thenReturn(entityToFindOrDelete);
-        assertTrue("True expected.", GroupDAO.delete(entityManager, null, groupId) instanceof Group);
+        Assert.assertTrue("True expected.", GroupDAO.delete(entityManager, null, groupId) instanceof Group);
     }
 
     @Test(expected = NullPointerException.class)

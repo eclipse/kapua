@@ -28,8 +28,9 @@ import org.mockito.Mockito;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Category(JUnitTests.class)
-public class AccessInfoCreatorImplTest extends Assert {
+public class AccessInfoCreatorImplTest {
 
     AccessInfoFactory accessInfoFactory;
     AccessInfoCreator accessInfoCreator;
@@ -56,10 +57,10 @@ public class AccessInfoCreatorImplTest extends Assert {
 
     @Test
     public void accessInfoCreatorImplAccessInfoCreatorParameterTest() {
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoCreatorImpl1.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoCreatorImpl1.getUserId());
-        assertEquals("Expected and actual values should be the same.", roleId, accessInfoCreatorImpl1.getRoleIds());
-        assertEquals("Expected and actual values should be the same.", setPermission, accessInfoCreatorImpl1.getPermissions());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoCreatorImpl1.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoCreatorImpl1.getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", roleId, accessInfoCreatorImpl1.getRoleIds());
+        Assert.assertEquals("Expected and actual values should be the same.", setPermission, accessInfoCreatorImpl1.getPermissions());
     }
 
     @Test(expected = NullPointerException.class)
@@ -69,20 +70,20 @@ public class AccessInfoCreatorImplTest extends Assert {
 
     @Test
     public void accessInfoCreatorScopeIdParameterTest() {
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoCreatorImpl2.getScopeId());
-        assertNull("Null expected.", accessInfoCreatorImpl2.getUserId());
-        assertTrue("True expected.", accessInfoCreatorImpl2.getRoleIds().isEmpty());
-        assertTrue("True expected.", accessInfoCreatorImpl2.getPermissions().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoCreatorImpl2.getScopeId());
+        Assert.assertNull("Null expected.", accessInfoCreatorImpl2.getUserId());
+        Assert.assertTrue("True expected.", accessInfoCreatorImpl2.getRoleIds().isEmpty());
+        Assert.assertTrue("True expected.", accessInfoCreatorImpl2.getPermissions().isEmpty());
     }
 
     @Test
     public void accessInfoCreatorNullScopeIdParameterTest() {
         accessInfoCreatorImpl2 = new AccessInfoCreatorImpl((KapuaId) null);
 
-        assertNull("Null expected.", accessInfoCreatorImpl2.getScopeId());
-        assertNull("Null expected.", accessInfoCreatorImpl2.getUserId());
-        assertTrue("True expected.", accessInfoCreatorImpl2.getRoleIds().isEmpty());
-        assertTrue("True expected.", accessInfoCreatorImpl2.getPermissions().isEmpty());
+        Assert.assertNull("Null expected.", accessInfoCreatorImpl2.getScopeId());
+        Assert.assertNull("Null expected.", accessInfoCreatorImpl2.getUserId());
+        Assert.assertTrue("True expected.", accessInfoCreatorImpl2.getRoleIds().isEmpty());
+        Assert.assertTrue("True expected.", accessInfoCreatorImpl2.getPermissions().isEmpty());
     }
 
     @Test
@@ -90,13 +91,13 @@ public class AccessInfoCreatorImplTest extends Assert {
         accessInfoCreatorImpl1.setUserId(KapuaId.ANY);
         accessInfoCreatorImpl2.setUserId(KapuaId.ANY);
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessInfoCreatorImpl1.getUserId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessInfoCreatorImpl2.getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessInfoCreatorImpl1.getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessInfoCreatorImpl2.getUserId());
 
         accessInfoCreatorImpl1.setUserId(null);
         accessInfoCreatorImpl2.setUserId(null);
-        assertNull("Null expected.", accessInfoCreatorImpl1.getUserId());
-        assertNull("Null expected.", accessInfoCreatorImpl2.getUserId());
+        Assert.assertNull("Null expected.", accessInfoCreatorImpl1.getUserId());
+        Assert.assertNull("Null expected.", accessInfoCreatorImpl2.getUserId());
     }
 
     @Test
@@ -108,13 +109,13 @@ public class AccessInfoCreatorImplTest extends Assert {
         accessInfoCreatorImpl1.setRoleIds(newRoleIds);
         accessInfoCreatorImpl2.setRoleIds(newRoleIds);
 
-        assertEquals("Expected and actual values should be the same.", newRoleIds, accessInfoCreatorImpl1.getRoleIds());
-        assertEquals("Expected and actual values should be the same.", newRoleIds, accessInfoCreatorImpl2.getRoleIds());
+        Assert.assertEquals("Expected and actual values should be the same.", newRoleIds, accessInfoCreatorImpl1.getRoleIds());
+        Assert.assertEquals("Expected and actual values should be the same.", newRoleIds, accessInfoCreatorImpl2.getRoleIds());
 
         accessInfoCreatorImpl1.setRoleIds(null);
         accessInfoCreatorImpl2.setRoleIds(null);
-        assertTrue("True expected.", accessInfoCreatorImpl1.getRoleIds().isEmpty());
-        assertTrue("True expected.", accessInfoCreatorImpl2.getRoleIds().isEmpty());
+        Assert.assertTrue("True expected.", accessInfoCreatorImpl1.getRoleIds().isEmpty());
+        Assert.assertTrue("True expected.", accessInfoCreatorImpl2.getRoleIds().isEmpty());
     }
 
     @Test
@@ -126,14 +127,14 @@ public class AccessInfoCreatorImplTest extends Assert {
         accessInfoCreatorImpl1.setPermissions(newPermissions);
         accessInfoCreatorImpl2.setPermissions(newPermissions);
 
-        assertEquals("Expected and actual values should be the same.", newPermissions, accessInfoCreatorImpl1.getPermissions());
-        assertEquals("Expected and actual values should be the same.", newPermissions, accessInfoCreatorImpl2.getPermissions());
+        Assert.assertEquals("Expected and actual values should be the same.", newPermissions, accessInfoCreatorImpl1.getPermissions());
+        Assert.assertEquals("Expected and actual values should be the same.", newPermissions, accessInfoCreatorImpl2.getPermissions());
 
         accessInfoCreatorImpl1.setPermissions(null);
         accessInfoCreatorImpl2.setPermissions(null);
-        assertNotNull("NotNull expected.", accessInfoCreatorImpl1.getPermissions());
-        assertNotNull("NotNull expected.", accessInfoCreatorImpl2.getPermissions());
-        assertTrue("True expected.", accessInfoCreatorImpl1.getPermissions().isEmpty());
-        assertTrue("True expected.", accessInfoCreatorImpl2.getPermissions().isEmpty());
+        Assert.assertNotNull("NotNull expected.", accessInfoCreatorImpl1.getPermissions());
+        Assert.assertNotNull("NotNull expected.", accessInfoCreatorImpl2.getPermissions());
+        Assert.assertTrue("True expected.", accessInfoCreatorImpl1.getPermissions().isEmpty());
+        Assert.assertTrue("True expected.", accessInfoCreatorImpl2.getPermissions().isEmpty());
     }
 }

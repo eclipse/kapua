@@ -28,8 +28,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class RolePermissionImplTest extends Assert {
+public class RolePermissionImplTest {
 
     KapuaId[] scopeIds;
     Permission permission1, permission2;
@@ -60,16 +61,16 @@ public class RolePermissionImplTest extends Assert {
         Constructor<RolePermissionImpl> rolePermissionImpl = RolePermissionImpl.class.getDeclaredConstructor();
         rolePermissionImpl.setAccessible(true);
         rolePermissionImpl.newInstance();
-        assertTrue("True expected.", Modifier.isProtected(rolePermissionImpl.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isProtected(rolePermissionImpl.getModifiers()));
     }
 
     @Test
     public void rolePermissionImpScopeIdTest() {
         for (KapuaId scopeId : scopeIds) {
             RolePermissionImpl rolePermissionImpl = new RolePermissionImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionImpl.getScopeId());
-            assertEquals("Expected and actual values should be the same.", new PermissionImpl(null, null, null, null), rolePermissionImpl.getPermission());
-            assertNull("Null expected.", rolePermissionImpl.getRoleId());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionImpl.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", new PermissionImpl(null, null, null, null), rolePermissionImpl.getPermission());
+            Assert.assertNull("Null expected.", rolePermissionImpl.getRoleId());
         }
     }
 
@@ -77,9 +78,9 @@ public class RolePermissionImplTest extends Assert {
     public void rolePermissionImplScopeIdPermissionTest() {
         for (KapuaId scopeId : scopeIds) {
             RolePermissionImpl rolePermissionImpl = new RolePermissionImpl(scopeId, permission2);
-            assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionImpl.getScopeId());
-            assertEquals("Expected and actual values should be the same.", permission2, rolePermissionImpl.getPermission());
-            assertNull("Null expected.", rolePermissionImpl.getRoleId());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionImpl.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", permission2, rolePermissionImpl.getPermission());
+            Assert.assertNull("Null expected.", rolePermissionImpl.getRoleId());
         }
     }
 
@@ -87,8 +88,8 @@ public class RolePermissionImplTest extends Assert {
     public void rolePermissionImplScopeIdNullPermissionTest() {
         for (KapuaId scopeId : scopeIds) {
             RolePermissionImpl rolePermissionImpl = new RolePermissionImpl(scopeId, null);
-            assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionImpl.getScopeId());
-            assertEquals("Expected and actual values should be the same.", new PermissionImpl(null, null, null, null), rolePermissionImpl.getPermission());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionImpl.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", new PermissionImpl(null, null, null, null), rolePermissionImpl.getPermission());
         }
     }
 
@@ -96,12 +97,12 @@ public class RolePermissionImplTest extends Assert {
     public void rolePermissionImplRolePermissionTest() {
         RolePermissionImpl rolePermissionImpl = new RolePermissionImpl(rolePermission);
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, rolePermissionImpl.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, rolePermissionImpl.getRoleId());
-        assertEquals("Expected and actual values should be the same.", permission2, rolePermissionImpl.getPermission());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, rolePermissionImpl.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, rolePermissionImpl.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, rolePermissionImpl.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, rolePermissionImpl.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, rolePermissionImpl.getRoleId());
+        Assert.assertEquals("Expected and actual values should be the same.", permission2, rolePermissionImpl.getPermission());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, rolePermissionImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, rolePermissionImpl.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, rolePermissionImpl.getCreatedOn());
     }
 
     @Test(expected = NullPointerException.class)
@@ -119,13 +120,13 @@ public class RolePermissionImplTest extends Assert {
 
         for (KapuaId roleId : roleIds) {
             rolePermissionImpl1.setRoleId(roleId);
-            assertEquals("Expected and actual values should be the same.", roleId, rolePermissionImpl1.getRoleId());
+            Assert.assertEquals("Expected and actual values should be the same.", roleId, rolePermissionImpl1.getRoleId());
 
             rolePermissionImpl2.setRoleId(roleId);
-            assertEquals("Expected and actual values should be the same.", roleId, rolePermissionImpl2.getRoleId());
+            Assert.assertEquals("Expected and actual values should be the same.", roleId, rolePermissionImpl2.getRoleId());
 
             rolePermissionImpl3.setRoleId(roleId);
-            assertEquals("Expected and actual values should be the same.", roleId, rolePermissionImpl3.getRoleId());
+            Assert.assertEquals("Expected and actual values should be the same.", roleId, rolePermissionImpl3.getRoleId());
         }
     }
 
@@ -139,35 +140,35 @@ public class RolePermissionImplTest extends Assert {
 
         for (int i = 0; i < permissions.length; i++) {
             rolePermissionImpl1.setPermission(permissions[i]);
-            assertEquals("Expected and actual values should be the same.", expectedPermissions[i], rolePermissionImpl1.getPermission());
-            assertEquals("Expected and actual values should be the same.", expectedPermissions[i].toString(), rolePermissionImpl1.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedPermissions[i], rolePermissionImpl1.getPermission());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedPermissions[i].toString(), rolePermissionImpl1.toString());
 
             rolePermissionImpl2.setPermission(permissions[i]);
-            assertEquals("Expected and actual values should be the same.", expectedPermissions[i].toString(), rolePermissionImpl2.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedPermissions[i].toString(), rolePermissionImpl2.toString());
 
             rolePermissionImpl3.setPermission(permissions[i]);
-            assertEquals("Expected and actual values should be the same.", expectedPermissions[i].toString(), rolePermissionImpl3.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedPermissions[i].toString(), rolePermissionImpl3.toString());
         }
 
     }
 
     @Test
     public void hashCodeNullRoleIdNullPermissionTest() {
-        assertEquals("Expected and actual values should be the same.", 961, rolePermissionImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 961, rolePermissionImpl1.hashCode());
     }
 
     @Test
     public void hashCodeNullPermissionTest() {
         rolePermissionImpl1.setRoleId(KapuaId.ONE);
 
-        assertEquals("Expected and actual values should be the same.", 993, rolePermissionImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 993, rolePermissionImpl1.hashCode());
     }
 
     @Test
     public void hashCodeNullRoleIdTest() {
         rolePermissionImpl1.setPermission(permission1);
 
-        assertEquals("Expected and actual values should be the same.", 28630112, rolePermissionImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 28630112, rolePermissionImpl1.hashCode());
     }
 
     @Test
@@ -175,27 +176,27 @@ public class RolePermissionImplTest extends Assert {
         rolePermissionImpl1.setRoleId(KapuaId.ONE);
         rolePermissionImpl1.setPermission(Mockito.mock(Permission.class));
 
-        assertEquals("Expected and actual values should be the same.", 28630144, rolePermissionImpl1.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 28630144, rolePermissionImpl1.hashCode());
     }
 
     @Test
     public void equalsSameObjectTest() {
-        assertTrue("True expected.", rolePermissionImpl1.equals(rolePermissionImpl1));
+        Assert.assertTrue("True expected.", rolePermissionImpl1.equals(rolePermissionImpl1));
     }
 
     @Test
     public void equalsNullObjectTest() {
-        assertFalse("False expected.", rolePermissionImpl1.equals(null));
+        Assert.assertFalse("False expected.", rolePermissionImpl1.equals(null));
     }
 
     @Test
     public void equalsObjectTest() {
-        assertFalse("False expected.", rolePermissionImpl1.equals(new Object()));
+        Assert.assertFalse("False expected.", rolePermissionImpl1.equals(new Object()));
     }
 
     @Test
     public void equalsNullBothRoleIdsTest() {
-        assertTrue("True expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
+        Assert.assertTrue("True expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
     }
 
     @Test
@@ -203,14 +204,14 @@ public class RolePermissionImplTest extends Assert {
         rolePermissionImpl1.setPermission(permission1);
         rolePermissionImpl2.setPermission(permission2);
 
-        assertFalse("False expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
+        Assert.assertFalse("False expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
     }
 
     @Test
     public void equalsNullRoleIdTest() {
         rolePermissionImpl2.setRoleId(KapuaId.ONE);
 
-        assertFalse("False expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
+        Assert.assertFalse("False expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
     }
 
     @Test
@@ -218,7 +219,7 @@ public class RolePermissionImplTest extends Assert {
         rolePermissionImpl1.setRoleId(KapuaId.ONE);
         rolePermissionImpl2.setRoleId(KapuaId.ANY);
 
-        assertFalse("False expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
+        Assert.assertFalse("False expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
     }
 
     @Test
@@ -226,7 +227,7 @@ public class RolePermissionImplTest extends Assert {
         rolePermissionImpl1.setRoleId(KapuaId.ONE);
         rolePermissionImpl2.setRoleId(KapuaId.ONE);
 
-        assertTrue("True expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
+        Assert.assertTrue("True expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
     }
 
     @Test
@@ -236,6 +237,6 @@ public class RolePermissionImplTest extends Assert {
         rolePermissionImpl2.setRoleId(KapuaId.ONE);
         rolePermissionImpl2.setPermission(permission2);
 
-        assertFalse("False expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
+        Assert.assertFalse("False expected.", rolePermissionImpl1.equals(rolePermissionImpl2));
     }
 }
