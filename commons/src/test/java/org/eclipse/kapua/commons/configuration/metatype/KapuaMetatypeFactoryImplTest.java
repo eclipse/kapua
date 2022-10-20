@@ -17,8 +17,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaMetatypeFactoryImplTest extends Assert {
+public class KapuaMetatypeFactoryImplTest {
 
     @Test
     public void testKapuaTocd() {

@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 
 import java.util.Properties;
 
+
 @Category(JUnitTests.class)
-public class AbstractKapuaUpdatableEntityCreatorTest extends Assert {
+public class AbstractKapuaUpdatableEntityCreatorTest {
 
     private class ActualKapuaUpdatableEntityCreator<E extends KapuaEntity> extends AbstractKapuaUpdatableEntityCreator<E> {
 
@@ -36,7 +37,7 @@ public class AbstractKapuaUpdatableEntityCreatorTest extends Assert {
     public void abstractKapuaUpdatableEntityCreatorScopeId() {
         KapuaId scopeId = new KapuaEid();
         AbstractKapuaUpdatableEntityCreator<AbstractKapuaEntity> kapuaUpdatableEntityCreator = new ActualKapuaUpdatableEntityCreator<>(scopeId);
-        assertEquals("Actual and expected values are not the same!", scopeId, kapuaUpdatableEntityCreator.getScopeId());
+        Assert.assertEquals("Actual and expected values are not the same!", scopeId, kapuaUpdatableEntityCreator.getScopeId());
     }
 
     @Test
@@ -45,6 +46,6 @@ public class AbstractKapuaUpdatableEntityCreatorTest extends Assert {
         AbstractKapuaUpdatableEntityCreator<AbstractKapuaEntity> kapuaUpdatableEntityCreator = new ActualKapuaUpdatableEntityCreator<>(scopeId);
         Properties properties = new Properties();
         kapuaUpdatableEntityCreator.setEntityAttributes(properties);
-        assertEquals("Actual and expected values are not the same!", properties, kapuaUpdatableEntityCreator.getEntityAttributes());
+        Assert.assertEquals("Actual and expected values are not the same!", properties, kapuaUpdatableEntityCreator.getEntityAttributes());
     }
 }

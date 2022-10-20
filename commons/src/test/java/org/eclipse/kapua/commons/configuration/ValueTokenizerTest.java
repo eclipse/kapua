@@ -20,24 +20,25 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ValueTokenizerTest extends Assert {
+public class ValueTokenizerTest {
 
     @Test
     public void valueTokenizerNullStringTest() throws Exception {
         try {
-            assertNotNull(new ValueTokenizer(null));
+            Assert.assertNotNull(new ValueTokenizer(null));
         } catch (Exception ex) {
-            fail("Exception not expected for parameter");
+            Assert.fail("Exception not expected for parameter");
         }
     }
 
     @Test
     public void valueTokenizerNotNullTest() throws Exception {
         try {
-            assertNotNull(new ValueTokenizer("valueTokenizerConstructor"));
+            Assert.assertNotNull(new ValueTokenizer("valueTokenizerConstructor"));
         } catch (Exception ex){
-            fail("No exception expected");
+            Assert.fail("No exception expected");
         }
     }
 
@@ -46,9 +47,9 @@ public class ValueTokenizerTest extends Assert {
     public void valueTokenizerDelimeterTest() throws Exception {
         ValueTokenizer valueTokenizer = new ValueTokenizer("a123,aaa,rrr");
         try {
-            assertEquals("a123,aaa,rrr", valueTokenizer.getValuesAsString());
+            Assert.assertEquals("a123,aaa,rrr", valueTokenizer.getValuesAsString());
         } catch (Exception ex){
-            fail("Failed to delimit input string");
+            Assert.fail("Failed to delimit input string");
         }
     }
 
@@ -56,9 +57,9 @@ public class ValueTokenizerTest extends Assert {
     public void valueTokenizerEscapeTest() throws Exception {
         ValueTokenizer valueTokenizer = new ValueTokenizer("a123\\aaa\\rrr");
         try {
-            assertEquals("a123aaarrr", valueTokenizer.getValuesAsString());
+            Assert.assertEquals("a123aaarrr", valueTokenizer.getValuesAsString());
         } catch (Exception ex){
-            fail("Failed to load escape string");
+            Assert.fail("Failed to load escape string");
         }
     }
 
@@ -66,9 +67,9 @@ public class ValueTokenizerTest extends Assert {
     public void valueTokenizerEscapeAtEndTest() throws Exception {
         ValueTokenizer valueTokenizer = new ValueTokenizer("a123aaarrr\\");
         try {
-            assertEquals("a123aaarrr", valueTokenizer.getValuesAsString());
+            Assert.assertEquals("a123aaarrr", valueTokenizer.getValuesAsString());
         } catch (Exception ex){
-            fail("Failed to load escape string");
+            Assert.fail("Failed to load escape string");
         }
     }
 
@@ -77,9 +78,9 @@ public class ValueTokenizerTest extends Assert {
         ValueTokenizer valueTokenizer = new ValueTokenizer("\\a123aaarrr");
         try {
             valueTokenizer.getValuesAsString();
-            assertEquals("a123aaarrr", valueTokenizer.getValuesAsString());
+            Assert.assertEquals("a123aaarrr", valueTokenizer.getValuesAsString());
         } catch (Exception ex){
-            fail("Failed to load escape string");
+            Assert.fail("Failed to load escape string");
         }
     }
 
@@ -87,9 +88,9 @@ public class ValueTokenizerTest extends Assert {
     public void valueTokenizerSpaceAtBeginningTest() throws Exception {
         ValueTokenizer valueTokenizer = new ValueTokenizer(" a123aaarrr");
         try {
-            assertEquals("a123aaarrr", valueTokenizer.getValuesAsString());
+            Assert.assertEquals("a123aaarrr", valueTokenizer.getValuesAsString());
         } catch (Exception ex){
-            fail("Cannot load string whit white space at the beginning");
+            Assert.fail("Cannot load string whit white space at the beginning");
         }
     }
 
@@ -97,9 +98,9 @@ public class ValueTokenizerTest extends Assert {
     public void valueTokenizerSpaceAtTheEndTest() throws Exception {
         ValueTokenizer valueTokenizer = new ValueTokenizer("a123aaarrr ");
         try {
-            assertEquals("a123aaarrr", valueTokenizer.getValuesAsString());
+            Assert.assertEquals("a123aaarrr", valueTokenizer.getValuesAsString());
         } catch (Exception ex){
-            fail("Cannot load string whit white space at the end");
+            Assert.fail("Cannot load string whit white space at the end");
         }
     }
 
@@ -107,9 +108,9 @@ public class ValueTokenizerTest extends Assert {
     public void valueTokenizerValuesAsStringNullTest() throws Exception {
         ValueTokenizer valueTokenizer = new ValueTokenizer(null);
         try {
-            assertNull(valueTokenizer.getValuesAsString());
+            Assert.assertNull(valueTokenizer.getValuesAsString());
         } catch (Exception ex) {
-            fail("The value is not NULL");
+            Assert.fail("The value is not NULL");
         }
     }
 
@@ -117,9 +118,9 @@ public class ValueTokenizerTest extends Assert {
     public void valueTokenizerValueAStringSpaceMiddleTest() throws Exception {
         ValueTokenizer valueTokenizer = new ValueTokenizer("a 123");
         try {
-            assertEquals("a 123", valueTokenizer.getValuesAsString());
+            Assert.assertEquals("a 123", valueTokenizer.getValuesAsString());
         } catch (Exception ex) {
-            fail("Cannot convert value to string");
+            Assert.fail("Cannot convert value to string");
         }
     }
 
@@ -129,9 +130,9 @@ public class ValueTokenizerTest extends Assert {
         ValueTokenizer valueTokenizer = new ValueTokenizer("a,123,aaa,rrr");
         String [] expectedValues = new String[]{"a", "123", "aaa", "rrr"};
         try {
-            assertArrayEquals(expectedValues, valueTokenizer.getValuesAsArray());
+            Assert.assertArrayEquals(expectedValues, valueTokenizer.getValuesAsArray());
         } catch (Exception ex) {
-            fail("Arrays are not equal");
+            Assert.fail("Arrays are not equal");
         }
     }
 
@@ -140,9 +141,9 @@ public class ValueTokenizerTest extends Assert {
         ValueTokenizer valueTokenizer = new ValueTokenizer("a123\\aaarr\\r");
         String [] expectedValues = new String[]{"a123aaarrr"};
         try {
-            assertArrayEquals(expectedValues, valueTokenizer.getValuesAsArray());
+            Assert.assertArrayEquals(expectedValues, valueTokenizer.getValuesAsArray());
         } catch (Exception ex) {
-            fail("Arrays are not equal");
+            Assert.fail("Arrays are not equal");
         }
     }
 
@@ -150,9 +151,9 @@ public class ValueTokenizerTest extends Assert {
     public void valueTokenizerValuesAsArrayWithNullString() throws Exception {
         ValueTokenizer valueTokenizer = new ValueTokenizer(null);
         try {
-            assertNull(valueTokenizer.getValuesAsArray());
+            Assert.assertNull(valueTokenizer.getValuesAsArray());
         } catch (Exception ex) {
-            fail("Arrays are not equal");
+            Assert.fail("Arrays are not equal");
         }
     }
 
@@ -161,9 +162,9 @@ public class ValueTokenizerTest extends Assert {
         ValueTokenizer valueTokenizer = new ValueTokenizer("a12\\3,a\\,aa,r\\rr,");
         String [] expectedValues = new String[] {"a123", "a,aa", "rrr", ""};
         try {
-            assertArrayEquals(expectedValues,valueTokenizer.getValuesAsArray());
+            Assert.assertArrayEquals(expectedValues,valueTokenizer.getValuesAsArray());
         } catch (Exception ex) {
-            fail("Arrays are not equal");
+            Assert.fail("Arrays are not equal");
         }
     }
 
@@ -172,9 +173,9 @@ public class ValueTokenizerTest extends Assert {
         ValueTokenizer valueTokenizer = new ValueTokenizer(" a123, aaa, rrr");
         String [] expectedValues = new String[] {"a123", "aaa", "rrr"};
         try {
-            assertArrayEquals(expectedValues,valueTokenizer.getValuesAsArray());
+            Assert.assertArrayEquals(expectedValues,valueTokenizer.getValuesAsArray());
         } catch (Exception ex) {
-            fail("Arrays are not equal");
+            Assert.fail("Arrays are not equal");
         }
     }
 
@@ -184,9 +185,9 @@ public class ValueTokenizerTest extends Assert {
         ValueTokenizer valueTokenizer = new ValueTokenizer("a123,aaarrr");
         String [] expectedValues = new String[] {"a123", "aaarrr"};
         try {
-            assertArrayEquals(expectedValues, valueTokenizer.getValues().toArray());
+            Assert.assertArrayEquals(expectedValues, valueTokenizer.getValues().toArray());
         } catch (Exception ex) {
-            fail("Arrays are not equal");
+            Assert.fail("Arrays are not equal");
         }
     }
 
@@ -194,13 +195,13 @@ public class ValueTokenizerTest extends Assert {
     public void validateWithNullValueTest() {
         ValueTokenizer valueTokenizer = new ValueTokenizer("asdf");
         String message = valueTokenizer.validate(null);
-        assertEquals("Internal error: null", message);
+        Assert.assertEquals("Internal error: null", message);
     }
 
     @Test
     public void validateWithNullValueTokenizerTest() {
         ValueTokenizer valueTokenizer = new ValueTokenizer(null);
-        assertEquals("Null cannot be validated", valueTokenizer.validate(null));
+        Assert.assertEquals("Null cannot be validated", valueTokenizer.validate(null));
     }
 
     @Test
@@ -209,7 +210,7 @@ public class ValueTokenizerTest extends Assert {
         TadImpl tad = new TadImpl();
         tad.setCardinality(0);
         String message = valueTokenizer.validate(tad);
-        assertEquals("Cardinality violation: \"asdf,qwer\" has 2 value(s) but must have between 1 and 1 value(s).", message);
+        Assert.assertEquals("Cardinality violation: \"asdf,qwer\" has 2 value(s) but must have between 1 and 1 value(s).", message);
     }
 
     @Test
@@ -218,7 +219,7 @@ public class ValueTokenizerTest extends Assert {
         TadImpl tad = new TadImpl();
         tad.setCardinality(1);
         String message = valueTokenizer.validate(tad);
-        assertEquals("Cardinality violation: \"asdf,qwer\" has 2 value(s) but must have between 0 and 1 value(s).", message);
+        Assert.assertEquals("Cardinality violation: \"asdf,qwer\" has 2 value(s) but must have between 0 and 1 value(s).", message);
     }
 
     @Test
@@ -227,7 +228,7 @@ public class ValueTokenizerTest extends Assert {
         TadImpl tad = new TadImpl();
         tad.setCardinality(0);
         String message = valueTokenizer.validate(tad);
-        assertEquals("Internal error: null", message);
+        Assert.assertEquals("Internal error: null", message);
     }
 
     @Test
@@ -236,7 +237,7 @@ public class ValueTokenizerTest extends Assert {
         TadImpl tad = new TadImpl();
         tad.setCardinality(2);
         String message = valueTokenizer.validate(tad);
-        assertEquals("Internal error: null", message);
+        Assert.assertEquals("Internal error: null", message);
     }
 
     @Test
@@ -245,7 +246,7 @@ public class ValueTokenizerTest extends Assert {
         TadImpl tad = new TadImpl();
         tad.setCardinality(-1);
         String message = valueTokenizer.validate(tad);
-        assertEquals("Cardinality violation: \"asdf,qwer\" has 2 value(s) but must have between 0 and 1 value(s).", message);
+        Assert.assertEquals("Cardinality violation: \"asdf,qwer\" has 2 value(s) but must have between 0 and 1 value(s).", message);
     }
 
     @Test
@@ -254,7 +255,7 @@ public class ValueTokenizerTest extends Assert {
         TadImpl tad = new TadImpl();
         tad.setCardinality(10);
         String message = valueTokenizer.validate(tad);
-        assertEquals("Internal error: null", message);
+        Assert.assertEquals("Internal error: null", message);
     }
 
     @Test
@@ -264,7 +265,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setCardinality(10);
         tad.setType(TscalarImpl.BOOLEAN);
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -274,7 +275,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setCardinality(10);
         tad.setType(TscalarImpl.STRING);
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -285,7 +286,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.STRING);
         tad.setMax("2");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value asdf is out of range", message);
+        Assert.assertEquals("Value asdf is out of range", message);
     }
 
     // This test currently returns error.
@@ -297,7 +298,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.STRING);
         tad.setMin("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value asdf is out of range", message);
+        Assert.assertEquals("Value asdf is out of range", message);
     }*/
 
     @Test
@@ -307,7 +308,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setCardinality(10);
         tad.setType(TscalarImpl.INTEGER);
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -319,7 +320,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -331,7 +332,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -343,7 +344,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -355,7 +356,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("100");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 21 is out of range", message);
+        Assert.assertEquals("Value 21 is out of range", message);
     }
 
     @Test
@@ -366,7 +367,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.INTEGER);
         tad.setMax("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 99 is out of range", message);
+        Assert.assertEquals("Value 99 is out of range", message);
     }
 
     @Test
@@ -377,7 +378,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.INTEGER);
         tad.setMin("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 12 is out of range", message);
+        Assert.assertEquals("Value 12 is out of range", message);
     }
 
     @Test
@@ -387,7 +388,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setCardinality(10);
         tad.setType(TscalarImpl.LONG);
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -398,7 +399,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.LONG);
         tad.setMax("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 99 is out of range", message);
+        Assert.assertEquals("Value 99 is out of range", message);
     }
 
     @Test
@@ -409,7 +410,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.LONG);
         tad.setMin("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 12 is out of range", message);
+        Assert.assertEquals("Value 12 is out of range", message);
     }
 
     @Test
@@ -421,7 +422,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -433,7 +434,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -445,7 +446,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -457,7 +458,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("100");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 21 is out of range", message);
+        Assert.assertEquals("Value 21 is out of range", message);
     }
 
     @Test
@@ -467,7 +468,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setCardinality(10);
         tad.setType(TscalarImpl.DOUBLE);
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -478,7 +479,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.DOUBLE);
         tad.setMax("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 99 is out of range", message);
+        Assert.assertEquals("Value 99 is out of range", message);
     }
 
     @Test
@@ -489,7 +490,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.DOUBLE);
         tad.setMin("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 12 is out of range", message);
+        Assert.assertEquals("Value 12 is out of range", message);
     }
 
     @Test
@@ -501,7 +502,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -513,7 +514,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -525,7 +526,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -537,7 +538,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("100");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 21 is out of range", message);
+        Assert.assertEquals("Value 21 is out of range", message);
     }
 
     @Test
@@ -547,7 +548,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setCardinality(10);
         tad.setType(TscalarImpl.CHAR);
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -558,7 +559,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.CHAR);
         tad.setMax("b");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value z is out of range", message);
+        Assert.assertEquals("Value z is out of range", message);
     }
 
     @Test
@@ -569,7 +570,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.CHAR);
         tad.setMin("b");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value a is out of range", message);
+        Assert.assertEquals("Value a is out of range", message);
     }
 
     @Test
@@ -579,7 +580,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setCardinality(10);
         tad.setType(TscalarImpl.FLOAT);
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -590,7 +591,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.FLOAT);
         tad.setMax("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 99 is out of range", message);
+        Assert.assertEquals("Value 99 is out of range", message);
     }
 
     @Test
@@ -601,7 +602,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.FLOAT);
         tad.setMin("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 12 is out of range", message);
+        Assert.assertEquals("Value 12 is out of range", message);
     }
 
     @Test
@@ -613,7 +614,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -625,7 +626,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -637,7 +638,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -649,7 +650,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("100");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 21 is out of range", message);
+        Assert.assertEquals("Value 21 is out of range", message);
     }
 
     @Test
@@ -659,7 +660,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setCardinality(10);
         tad.setType(TscalarImpl.SHORT);
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -670,7 +671,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.SHORT);
         tad.setMax("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 99 is out of range", message);
+        Assert.assertEquals("Value 99 is out of range", message);
     }
 
     @Test
@@ -681,7 +682,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.SHORT);
         tad.setMin("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 12 is out of range", message);
+        Assert.assertEquals("Value 12 is out of range", message);
     }
 
     @Test
@@ -693,7 +694,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -705,7 +706,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -717,7 +718,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -729,7 +730,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("100");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 21 is out of range", message);
+        Assert.assertEquals("Value 21 is out of range", message);
     }
 
     @Test
@@ -739,7 +740,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setCardinality(10);
         tad.setType(TscalarImpl.BYTE);
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -750,7 +751,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.BYTE);
         tad.setMax("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 99 is out of range", message);
+        Assert.assertEquals("Value 99 is out of range", message);
     }
 
     @Test
@@ -761,7 +762,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setType(TscalarImpl.BYTE);
         tad.setMin("50");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 12 is out of range", message);
+        Assert.assertEquals("Value 12 is out of range", message);
     }
 
     @Test
@@ -773,7 +774,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -785,7 +786,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("100");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -797,7 +798,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("10");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("", message);
+        Assert.assertEquals("", message);
     }
 
     @Test
@@ -809,7 +810,7 @@ public class ValueTokenizerTest extends Assert {
         tad.setMin("100");
         tad.setMax("10");
         String message = valueTokenizer.validate(tad);
-        assertEquals("Value 21 is out of range", message);
+        Assert.assertEquals("Value 21 is out of range", message);
     }
 
     @Test
@@ -821,6 +822,6 @@ public class ValueTokenizerTest extends Assert {
         KapuaToption option = null;
         tad.addOption(option);
         String message = valueTokenizer.validate(tad);
-        assertEquals("Internal error: null", message);
+        Assert.assertEquals("Internal error: null", message);
     }
 }

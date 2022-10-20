@@ -17,8 +17,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class PasswordTest extends Assert {
+public class PasswordTest {
 
     @Test
     public void testGetPassword() throws Exception {

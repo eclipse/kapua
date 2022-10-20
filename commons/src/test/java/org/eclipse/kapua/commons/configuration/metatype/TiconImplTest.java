@@ -20,8 +20,9 @@ import org.junit.experimental.categories.Category;
 
 import java.math.BigInteger;
 
+
 @Category(JUnitTests.class)
-public class TiconImplTest extends Assert {
+public class TiconImplTest {
 
     @Before
     public void createInstanceOfClass() {
@@ -32,13 +33,13 @@ public class TiconImplTest extends Assert {
     TiconImpl ticonImpl;
     @Test
     public void getAnyTest() {
-        assertTrue(ticonImpl.getAny().isEmpty());
+        Assert.assertTrue(ticonImpl.getAny().isEmpty());
     }
 
     @Test
     public void setAndGetResourcesToNullTest() {
         ticonImpl.setResource(null);
-        assertNull(ticonImpl.getResource());
+        Assert.assertNull(ticonImpl.getResource());
     }
 
     @Test
@@ -46,14 +47,14 @@ public class TiconImplTest extends Assert {
         String[] permittedValues = {"", "regularResources", "49", "regular Resources", "regular esources with spaces", "!@#$%&*()_+/->,<", "RESOURCES", "resources123"};
         for (String value : permittedValues) {
             ticonImpl.setResource(value);
-            assertTrue(ticonImpl.getResource().contains(value));
+            Assert.assertTrue(ticonImpl.getResource().contains(value));
         }
     }
 
     @Test
     public void setAndGetSizeToNullTest() {
         ticonImpl.setSize(null);
-        assertNull(ticonImpl.getSize());
+        Assert.assertNull(ticonImpl.getSize());
     }
 
     @Test
@@ -61,11 +62,11 @@ public class TiconImplTest extends Assert {
         String numStr = "453453453456465765234923423094723472394723423482304823095734957320948305712324000123123";
         BigInteger num = new BigInteger(numStr);
         ticonImpl.setSize(num);
-        assertEquals("ticonImpl.size", num, ticonImpl.getSize());
+        Assert.assertEquals("ticonImpl.size", num, ticonImpl.getSize());
     }
 
     @Test
     public void getOtherAttributesTest() {
-        assertTrue(ticonImpl.getOtherAttributes().isEmpty());
+        Assert.assertTrue(ticonImpl.getOtherAttributes().isEmpty());
     }
 }
