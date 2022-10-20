@@ -27,8 +27,9 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class AccessRoleFactoryImplTest extends Assert {
+public class AccessRoleFactoryImplTest {
 
     AccessRoleFactoryImpl accessRoleFactoryImpl;
     AccessRole accessRole;
@@ -51,43 +52,43 @@ public class AccessRoleFactoryImplTest extends Assert {
     @Test
     public void newEntityTest() {
         AccessRole accessRole = accessRoleFactoryImpl.newEntity(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessRole.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessRole.getScopeId());
     }
 
     @Test
     public void newEntityNullTest() {
         AccessRole accessRole = accessRoleFactoryImpl.newEntity(null);
-        assertNull("Null expected.", accessRole.getScopeId());
+        Assert.assertNull("Null expected.", accessRole.getScopeId());
     }
 
     @Test
     public void newCreatorTest() {
         AccessRoleCreator accessRoleCreator = accessRoleFactoryImpl.newCreator(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessRoleCreator.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessRoleCreator.getScopeId());
     }
 
     @Test
     public void newCreatorNullTest() {
         AccessRoleCreator accessRoleCreator = accessRoleFactoryImpl.newCreator(null);
-        assertNull("Null expected.", accessRoleCreator.getScopeId());
+        Assert.assertNull("Null expected.", accessRoleCreator.getScopeId());
     }
 
     @Test
     public void newQueryTest() {
         AccessRoleQuery accessRoleQuery = accessRoleFactoryImpl.newQuery(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessRoleQuery.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessRoleQuery.getScopeId());
     }
 
     @Test
     public void newQueryNullTest() {
         AccessRoleQuery accessRoleQuery = accessRoleFactoryImpl.newQuery(null);
-        assertNull("Null expected.", accessRoleQuery.getScopeId());
+        Assert.assertNull("Null expected.", accessRoleQuery.getScopeId());
     }
 
     @Test
     public void newListResultTest() {
         AccessRoleListResult accessRoleListResult = accessRoleFactoryImpl.newListResult();
-        assertTrue("True expected.", accessRoleListResult.isEmpty());
+        Assert.assertTrue("True expected.", accessRoleListResult.isEmpty());
     }
 
     @Test
@@ -95,12 +96,12 @@ public class AccessRoleFactoryImplTest extends Assert {
         accessRoleFactoryImpl.clone(accessRole);
 
         AccessRole resultAccessRole = accessRoleFactoryImpl.clone(accessRole);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessRole.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultAccessRole.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessRole.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, resultAccessRole.getCreatedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultAccessRole.getAccessInfoId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessRole.getRoleId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessRole.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultAccessRole.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessRole.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, resultAccessRole.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultAccessRole.getAccessInfoId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultAccessRole.getRoleId());
     }
 
     @Test(expected = KapuaEntityCloneException.class)

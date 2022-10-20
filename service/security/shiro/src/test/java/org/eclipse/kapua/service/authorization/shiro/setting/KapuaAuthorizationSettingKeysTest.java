@@ -17,12 +17,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaAuthorizationSettingKeysTest extends Assert {
+public class KapuaAuthorizationSettingKeysTest {
 
     @Test
     public void keyTest() {
-        assertEquals("Expected and actual values should be the same.", "authorization.key", KapuaAuthorizationSettingKeys.AUTHORIZATION_KEY.key());
-        assertEquals("Expected and actual values should be the same.", "authorization.eventAddress", KapuaAuthorizationSettingKeys.AUTHORIZATION_EVENT_ADDRESS.key());
+        Assert.assertEquals("Expected and actual values should be the same.", "authorization.key", KapuaAuthorizationSettingKeys.AUTHORIZATION_KEY.key());
+        Assert.assertEquals("Expected and actual values should be the same.", "authorization.eventAddress", KapuaAuthorizationSettingKeys.AUTHORIZATION_EVENT_ADDRESS.key());
     }
 }

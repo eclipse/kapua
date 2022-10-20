@@ -17,15 +17,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class InternalUserOnlyExceptionTest extends Assert {
+public class InternalUserOnlyExceptionTest {
 
     @Test
     public void internalUserOnlyExceptionTest() {
         InternalUserOnlyException internalUserOnlyException = new InternalUserOnlyException();
-        assertEquals("Expected and actual values should be the same.", KapuaAuthorizationErrorCodes.INTERNAL_USER_ONLY, internalUserOnlyException.getCode());
-        assertNull("Null expected.", internalUserOnlyException.getCause());
-        assertEquals("Expected and actual values should be the same.", "This action can be performed only by internal users.", internalUserOnlyException.getMessage());
-        assertEquals("Expected and actual values should be the same.", "kapua-service-error-messages", internalUserOnlyException.getKapuaErrorMessagesBundle());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaAuthorizationErrorCodes.INTERNAL_USER_ONLY, internalUserOnlyException.getCode());
+        Assert.assertNull("Null expected.", internalUserOnlyException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", "This action can be performed only by internal users.", internalUserOnlyException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", "kapua-service-error-messages", internalUserOnlyException.getKapuaErrorMessagesBundle());
     }
 }
