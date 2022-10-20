@@ -27,8 +27,9 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class DefaultApplicationTest extends Assert {
+public class DefaultApplicationTest {
 
     private AbstractClient.Context context;
     private DefaultApplication defaultApplication;
@@ -41,12 +42,12 @@ public class DefaultApplicationTest extends Assert {
 
     @Test
     public void defaultApplicationContextIdTest() {
-        assertThat("Instance of DefaultApplication expected.", defaultApplication, IsInstanceOf.instanceOf(DefaultApplication.class));
+        Assert.assertThat("Instance of DefaultApplication expected.", defaultApplication, IsInstanceOf.instanceOf(DefaultApplication.class));
     }
 
     @Test
     public void transportTest() {
-        assertEquals("Expected and actual values should be the same.", context.transport(), defaultApplication.transport());
+        Assert.assertEquals("Expected and actual values should be the same.", context.transport(), defaultApplication.transport());
     }
 
     @Test
@@ -54,12 +55,12 @@ public class DefaultApplicationTest extends Assert {
         List<String> segments = new ArrayList<>();
         segments.add("string");
         Topic topic = Topic.of(segments);
-        assertThat("Instance of DefaultData expected.", defaultApplication.data(topic), IsInstanceOf.instanceOf(DefaultData.class));
+        Assert.assertThat("Instance of DefaultData expected.", defaultApplication.data(topic), IsInstanceOf.instanceOf(DefaultData.class));
     }
 
     @Test
     public void dataNullTest() {
-        assertThat("Instance of DefaultData expected.", defaultApplication.data(null), IsInstanceOf.instanceOf(DefaultData.class));
+        Assert.assertThat("Instance of DefaultData expected.", defaultApplication.data(null), IsInstanceOf.instanceOf(DefaultData.class));
     }
 
     @Test
@@ -74,13 +75,13 @@ public class DefaultApplicationTest extends Assert {
         segments.add("string");
         Topic topic = Topic.of(segments);
         Payload payload = Mockito.mock(Payload.class);
-        assertEquals("Expected and actual values should be the same.", context.publish(topic, payload), defaultApplication.publish(topic, payload));
+        Assert.assertEquals("Expected and actual values should be the same.", context.publish(topic, payload), defaultApplication.publish(topic, payload));
     }
 
     @Test
     public void publishTopicNullTest() {
         Payload payload = Mockito.mock(Payload.class);
-        assertEquals("Expected and actual values should be the same.", context.publish(null, payload), defaultApplication.publish(null, payload));
+        Assert.assertEquals("Expected and actual values should be the same.", context.publish(null, payload), defaultApplication.publish(null, payload));
     }
 
     @Test
@@ -88,12 +89,12 @@ public class DefaultApplicationTest extends Assert {
         List<String> segments = new ArrayList<>();
         segments.add("string");
         Topic topic = Topic.of(segments);
-        assertEquals("Expected and actual values should be the same.", context.publish(topic, null), defaultApplication.publish(topic, null));
+        Assert.assertEquals("Expected and actual values should be the same.", context.publish(topic, null), defaultApplication.publish(topic, null));
     }
 
     @Test
     public void publishTopicAndPayloadNullTest() {
-        assertEquals("Expected and actual values should be the same.", context.publish(null, null), defaultApplication.publish(null, null));
+        Assert.assertEquals("Expected and actual values should be the same.", context.publish(null, null), defaultApplication.publish(null, null));
     }
 
     @Test
@@ -103,14 +104,14 @@ public class DefaultApplicationTest extends Assert {
         final Topic topic = Topic.of(segments);
         final MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         final ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertEquals("Expected and actual values should be the same.", context.subscribe(topic, messageHandler, errorHandler), defaultApplication.subscribe(topic, messageHandler, errorHandler));
+        Assert.assertEquals("Expected and actual values should be the same.", context.subscribe(topic, messageHandler, errorHandler), defaultApplication.subscribe(topic, messageHandler, errorHandler));
     }
 
     @Test
     public void subscribeTopicNullTest() throws Exception {
         final MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         final ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertEquals("Expected and actual values should be the same.", context.subscribe(null, messageHandler, errorHandler), defaultApplication.subscribe(null, messageHandler, errorHandler));
+        Assert.assertEquals("Expected and actual values should be the same.", context.subscribe(null, messageHandler, errorHandler), defaultApplication.subscribe(null, messageHandler, errorHandler));
     }
 
     @Test
@@ -119,7 +120,7 @@ public class DefaultApplicationTest extends Assert {
         segments.add("string");
         final Topic topic = Topic.of(segments);
         final ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertEquals("Expected and actual values should be the same.", context.subscribe(topic, null, errorHandler), defaultApplication.subscribe(topic, null, errorHandler));
+        Assert.assertEquals("Expected and actual values should be the same.", context.subscribe(topic, null, errorHandler), defaultApplication.subscribe(topic, null, errorHandler));
     }
 
     @Test
@@ -128,11 +129,11 @@ public class DefaultApplicationTest extends Assert {
         segments.add("string");
         final Topic topic = Topic.of(segments);
         final MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
-        assertEquals("Expected and actual values should be the same.", context.subscribe(topic, messageHandler, null), defaultApplication.subscribe(topic, messageHandler, null));
+        Assert.assertEquals("Expected and actual values should be the same.", context.subscribe(topic, messageHandler, null), defaultApplication.subscribe(topic, messageHandler, null));
     }
 
     @Test
     public void subscribeNullTest() throws Exception {
-        assertEquals("Expected and actual values should be the same.", context.subscribe(null, null, null), defaultApplication.subscribe(null, null, null));
+        Assert.assertEquals("Expected and actual values should be the same.", context.subscribe(null, null, null), defaultApplication.subscribe(null, null, null));
     }
 }

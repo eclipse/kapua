@@ -34,8 +34,9 @@ import java.nio.ByteBuffer;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Category(JUnitTests.class)
-public class FuseChannelTest extends Assert {
+public class FuseChannelTest {
 
     private FuseChannel.Builder builder;
 
@@ -52,19 +53,19 @@ public class FuseChannelTest extends Assert {
     @Test
     public void builderBuilderTest() {
         FuseChannel.Builder builderExpected = new FuseChannel.Builder();
-        assertEquals("Actual and expected values should be the same.", builderExpected, builderExpected.builder());
+        Assert.assertEquals("Actual and expected values should be the same.", builderExpected, builderExpected.builder());
     }
 
     @Test(expected = NoClassDefFoundError.class)
     public void builderBuildTest() throws Exception {
         builder.credentials(Credentials.userAndPassword("kapua-sys", new char[]{'a', 'b', 'c'}));
-        assertThat("Instance of FuseChannel expected.", builder.build(), IsInstanceOf.instanceOf(FuseChannel.class));
+        Assert.assertThat("Instance of FuseChannel expected.", builder.build(), IsInstanceOf.instanceOf(FuseChannel.class));
     }
 
     @Test(expected = NoClassDefFoundError.class)
     public void builderBuildCredentialsNullTest() throws Exception {
         builder.credentials(null);
-        assertThat("Instance of FuseChannel expected.", builder.build(), IsInstanceOf.instanceOf(FuseChannel.class));
+        Assert.assertThat("Instance of FuseChannel expected.", builder.build(), IsInstanceOf.instanceOf(FuseChannel.class));
     }
 
     @Test

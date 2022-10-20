@@ -29,8 +29,9 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Optional;
 
+
 @Category(JUnitTests.class)
-public class KuraBirthCertificateModuleTest extends Assert {
+public class KuraBirthCertificateModuleTest {
 
     Map<String, String> values;
     Map<String, String> expectedValues;
@@ -55,7 +56,7 @@ public class KuraBirthCertificateModuleTest extends Assert {
 
         KuraBirthCertificateModule.Provider.JVM.provideData(values);
 
-        assertEquals("Expected and actual values should be the same.", expectedValues, values);
+        Assert.assertEquals("Expected and actual values should be the same.", expectedValues, values);
     }
 
     @Test(expected = NullPointerException.class)
@@ -70,7 +71,7 @@ public class KuraBirthCertificateModuleTest extends Assert {
 
         KuraBirthCertificateModule.Provider.RUNTIME.provideData(values);
 
-        assertEquals("Expected and actual values should be the same.", expectedValues, values);
+        Assert.assertEquals("Expected and actual values should be the same.", expectedValues, values);
     }
 
     @Test(expected = NullPointerException.class)
@@ -85,7 +86,7 @@ public class KuraBirthCertificateModuleTest extends Assert {
 
         builder.defaultProviders();
 
-        assertEquals("Expected and actual values should be the same.", expectedProviders, builder.providers());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedProviders, builder.providers());
     }
 
     @Test(expected = NullPointerException.class)
@@ -100,7 +101,7 @@ public class KuraBirthCertificateModuleTest extends Assert {
 
         builder.provider(provider);
 
-        assertEquals("Expected and actual values should be the same.", expectedProviders, builder.providers());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedProviders, builder.providers());
     }
 
     @Test(expected = NullPointerException.class)
@@ -124,17 +125,17 @@ public class KuraBirthCertificateModuleTest extends Assert {
 
         builder.providers(providers);
 
-        assertEquals("Expected and actual values should be the same.", expectedProviders, builder.providers());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedProviders, builder.providers());
     }
 
     @Test
     public void builderBuildTest() {
-        assertThat("Instance of KuraBirthCertificateModule expected.", builder.build(), IsInstanceOf.instanceOf(KuraBirthCertificateModule.class));
+        Assert.assertThat("Instance of KuraBirthCertificateModule expected.", builder.build(), IsInstanceOf.instanceOf(KuraBirthCertificateModule.class));
     }
 
     @Test
     public void newBuilderNullTest() {
-        assertThat("Instance of Builder expected.", KuraBirthCertificateModule.newBuilder(null), IsInstanceOf.instanceOf(KuraBirthCertificateModule.Builder.class));
+        Assert.assertThat("Instance of Builder expected.", KuraBirthCertificateModule.newBuilder(null), IsInstanceOf.instanceOf(KuraBirthCertificateModule.Builder.class));
     }
 
     @Test
@@ -146,7 +147,7 @@ public class KuraBirthCertificateModuleTest extends Assert {
         try {
             builder.build().initialize(moduleContext);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 

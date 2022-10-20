@@ -26,8 +26,9 @@ import org.mockito.Mockito;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+
 @Category(JUnitTests.class)
-public class KuraMqttProfileTest extends Assert {
+public class KuraMqttProfileTest {
 
     Supplier supplier;
     KuraMqttProfile kuraMqttProfile;
@@ -57,27 +58,27 @@ public class KuraMqttProfileTest extends Assert {
 
     @Test
     public void newProfileTest() {
-        assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile, IsInstanceOf.instanceOf(KuraMqttProfile.class));
+        Assert.assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile, IsInstanceOf.instanceOf(KuraMqttProfile.class));
     }
 
     @Test
     public void accountNameTest() {
-        assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.accountName(accountName), IsInstanceOf.instanceOf(KuraMqttProfile.class));
+        Assert.assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.accountName(accountName), IsInstanceOf.instanceOf(KuraMqttProfile.class));
     }
 
     @Test
     public void accountNameNullTest() {
-        assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.accountName(null), IsInstanceOf.instanceOf(KuraMqttProfile.class));
+        Assert.assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.accountName(null), IsInstanceOf.instanceOf(KuraMqttProfile.class));
     }
 
     @Test
     public void brokerUrlTest() {
-        assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.brokerUrl(brokerUrl), IsInstanceOf.instanceOf(KuraMqttProfile.class));
+        Assert.assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.brokerUrl(brokerUrl), IsInstanceOf.instanceOf(KuraMqttProfile.class));
     }
 
     @Test
     public void brokerUrlNullTest() {
-        assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.brokerUrl(null), IsInstanceOf.instanceOf(KuraMqttProfile.class));
+        Assert.assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.brokerUrl(null), IsInstanceOf.instanceOf(KuraMqttProfile.class));
     }
 
     @Test
@@ -92,29 +93,29 @@ public class KuraMqttProfileTest extends Assert {
 
     @Test
     public void clientIdTest() {
-        assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.clientId(clientId), IsInstanceOf.instanceOf(KuraMqttProfile.class));
+        Assert.assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.clientId(clientId), IsInstanceOf.instanceOf(KuraMqttProfile.class));
     }
 
     @Test
     public void clientIdNullTest() {
-        assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.clientId(null), IsInstanceOf.instanceOf(KuraMqttProfile.class));
+        Assert.assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.clientId(null), IsInstanceOf.instanceOf(KuraMqttProfile.class));
     }
 
     @Test
     public void credentialsTest() {
         Credentials.UserAndPassword userAndPassword = Credentials.userAndPassword(username, password);
-        assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.credentials(userAndPassword), IsInstanceOf.instanceOf(KuraMqttProfile.class));
+        Assert.assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.credentials(userAndPassword), IsInstanceOf.instanceOf(KuraMqttProfile.class));
     }
 
     @Test
     public void credentialsNullTest() {
-        assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.credentials(null), IsInstanceOf.instanceOf(KuraMqttProfile.class));
+        Assert.assertThat("Instance of KuraMqttProfile expected.", kuraMqttProfile.credentials(null), IsInstanceOf.instanceOf(KuraMqttProfile.class));
     }
 
 
     @Test
     public void buildNullCustomizerTest() throws Exception {
-        assertThat("Instance of Client expected.", kuraMqttProfile.accountName(accountName)
+        Assert.assertThat("Instance of Client expected.", kuraMqttProfile.accountName(accountName)
                 .brokerUrl(brokerUrl)
                 .clientId(clientId)
                 .credentials(Credentials.userAndPassword(username, password))
@@ -123,7 +124,7 @@ public class KuraMqttProfileTest extends Assert {
 
     @Test
     public void buildTest() throws Exception {
-        assertThat("Instance of Client expected.", kuraMqttProfile.accountName(accountName)
+        Assert.assertThat("Instance of Client expected.", kuraMqttProfile.accountName(accountName)
                 .brokerUrl(brokerUrl)
                 .clientId(clientId)
                 .credentials(Credentials.userAndPassword(username, password))

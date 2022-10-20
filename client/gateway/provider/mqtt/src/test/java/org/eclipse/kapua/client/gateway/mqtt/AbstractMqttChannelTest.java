@@ -36,8 +36,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
+
 @Category(JUnitTests.class)
-public class AbstractMqttChannelTest extends Assert {
+public class AbstractMqttChannelTest {
 
     private BinaryPayloadCodec codec;
     private MqttNamespace namespace;
@@ -101,68 +102,68 @@ public class AbstractMqttChannelTest extends Assert {
 
     @Test
     public void builderCodecTest() {
-        assertNull("Expected null value.", builder.codec());
+        Assert.assertNull("Expected null value.", builder.codec());
         builder.codec(codec);
-        assertEquals("Expected and actual values should be the same.", codec, builder.codec());
-        assertThat("Instance of BinaryPayloadCodec expected", builder.codec(), IsInstanceOf.instanceOf(BinaryPayloadCodec.class));
+        Assert.assertEquals("Expected and actual values should be the same.", codec, builder.codec());
+        Assert.assertThat("Instance of BinaryPayloadCodec expected", builder.codec(), IsInstanceOf.instanceOf(BinaryPayloadCodec.class));
     }
 
     @Test
     public void builderCodecNullTest() {
         builder.codec(null);
-        assertNull("Expected null value.", builder.codec());
+        Assert.assertNull("Expected null value.", builder.codec());
     }
 
     @Test
     public void builderNamespaceTest() {
-        assertNull("Expected null value.", builder.namespace());
+        Assert.assertNull("Expected null value.", builder.namespace());
         builder.namespace(namespace);
-        assertEquals("Expected and actual values should be the same.", namespace, builder.namespace());
-        assertThat("Instance of MqttNamespace expected", builder.namespace(), IsInstanceOf.instanceOf(MqttNamespace.class));
+        Assert.assertEquals("Expected and actual values should be the same.", namespace, builder.namespace());
+        Assert.assertThat("Instance of MqttNamespace expected", builder.namespace(), IsInstanceOf.instanceOf(MqttNamespace.class));
     }
 
     @Test
     public void builderNamespaceNullTest() {
         builder.namespace(null);
-        assertNull("Expected null value.", builder.namespace());
+        Assert.assertNull("Expected null value.", builder.namespace());
     }
 
     @Test
     public void builderClientIdTest() {
-        assertNull("Expected null value.", builder.clientId());
+        Assert.assertNull("Expected null value.", builder.clientId());
         builder.clientId(clientId);
-        assertEquals("Expected and actual values should be the same.", clientId, builder.clientId());
-        assertThat("Instance of String expected", builder.clientId(), IsInstanceOf.instanceOf(String.class));
+        Assert.assertEquals("Expected and actual values should be the same.", clientId, builder.clientId());
+        Assert.assertThat("Instance of String expected", builder.clientId(), IsInstanceOf.instanceOf(String.class));
     }
 
     @Test
     public void builderClientIdNullTest() {
         builder.clientId(null);
-        assertNull("Expected null value.", builder.clientId());
+        Assert.assertNull("Expected null value.", builder.clientId());
     }
 
     @Test
     public void builderCredentialsTest() {
-        assertNull("Expected null value.", builder.credentials());
+        Assert.assertNull("Expected null value.", builder.credentials());
         final Credentials.UserAndPassword userAndPassword = Credentials.userAndPassword("kapua-broker", "kapua-password");
         builder.credentials(userAndPassword);
-        assertEquals("Expected and actual values should be the same.", userAndPassword, builder.credentials());
-        assertThat("Instance of Credentials.UserAndPassword expected", builder.credentials(), IsInstanceOf.instanceOf(Credentials.UserAndPassword.class));
+        Assert.assertEquals("Expected and actual values should be the same.", userAndPassword, builder.credentials());
+        Assert.assertThat("Instance of Credentials.UserAndPassword expected", builder.credentials(), IsInstanceOf.instanceOf(Credentials.UserAndPassword.class));
     }
 
     @Test
     public void builderCredentialsNullTest() {
         builder.credentials(null);
-        assertNull("Expected null value.", builder.credentials());
+        Assert.assertNull("Expected null value.", builder.credentials());
     }
 
     @Test
     public void builderBrokerStringIdTest() throws URISyntaxException {
-        assertNull("Expected null value.", builder.broker());
+        Assert.assertNull("Expected null value.", builder.broker());
         final String broker = "broker";
         builder.broker(broker);
-        assertEquals("Expected and actual values should be the same.", new URI(broker), builder.broker());
-        assertThat("Instance of URI expected", builder.broker(), IsInstanceOf.instanceOf(URI.class));
+        Assert.assertEquals("Expected and actual values should be the same.", new URI(broker), builder.broker());
+        Assert.assertThat("Instance of URI expected", builder.broker(), IsInstanceOf.instanceOf(URI.class));
 
     }
 
@@ -174,11 +175,11 @@ public class AbstractMqttChannelTest extends Assert {
 
     @Test
     public void builderBrokerURIIdTest() throws URISyntaxException {
-        assertNull("Expected null value.", builder.broker());
+        Assert.assertNull("Expected null value.", builder.broker());
         final URI broker = new URI("string");
         builder.broker(broker);
-        assertEquals("Expected and actual values should be the same.", broker, builder.broker());
-        assertThat("Instance of URI expected", builder.broker(), IsInstanceOf.instanceOf(URI.class));
+        Assert.assertEquals("Expected and actual values should be the same.", broker, builder.broker());
+        Assert.assertThat("Instance of URI expected", builder.broker(), IsInstanceOf.instanceOf(URI.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -189,36 +190,36 @@ public class AbstractMqttChannelTest extends Assert {
 
     @Test
     public void abstractMqttChannelTest() {
-        assertEquals("Expected and actual values should be the same.", codec, mqttChannel.getCodec());
-        assertEquals("Expected and actual values should be the same.", clientId, mqttChannel.getMqttClientId());
+        Assert.assertEquals("Expected and actual values should be the same.", codec, mqttChannel.getCodec());
+        Assert.assertEquals("Expected and actual values should be the same.", clientId, mqttChannel.getMqttClientId());
     }
 
     @Test
     public void abstractMqttChannelCodecNullTest() {
         AbstractMqttChannel mqttChannel = new ActualMqttChannel(null, namespace, clientId);
-        assertNull("Expected null value.", mqttChannel.getCodec());
-        assertEquals("Expected and actual values should be the same.", clientId, mqttChannel.getMqttClientId());
+        Assert.assertNull("Expected null value.", mqttChannel.getCodec());
+        Assert.assertEquals("Expected and actual values should be the same.", clientId, mqttChannel.getMqttClientId());
     }
 
     @Test
     public void abstractMqttChannelNamespaceNullTest() {
         AbstractMqttChannel mqttChannel = new ActualMqttChannel(codec, null, clientId);
-        assertEquals("Expected and actual values should be the same.", codec, mqttChannel.getCodec());
-        assertEquals("Expected and actual values should be the same.", clientId, mqttChannel.getMqttClientId());
+        Assert.assertEquals("Expected and actual values should be the same.", codec, mqttChannel.getCodec());
+        Assert.assertEquals("Expected and actual values should be the same.", clientId, mqttChannel.getMqttClientId());
     }
 
     @Test
     public void abstractMqttChannelNullTest() {
         AbstractMqttChannel mqttChannel = new ActualMqttChannel(null, null, null);
-        assertNull("Expected null value.", mqttChannel.getCodec());
-        assertNull("Expected null value.", mqttChannel.getMqttClientId());
+        Assert.assertNull("Expected null value.", mqttChannel.getCodec());
+        Assert.assertNull("Expected null value.", mqttChannel.getMqttClientId());
     }
 
     @Test
     public void abstractMqttChannelClientIdNullTest() {
         AbstractMqttChannel mqttChannel = new ActualMqttChannel(codec, namespace, null);
-        assertEquals("Expected and actual values should be the same.", codec, mqttChannel.getCodec());
-        assertNull("Expected null.", mqttChannel.getMqttClientId());
+        Assert.assertEquals("Expected and actual values should be the same.", codec, mqttChannel.getCodec());
+        Assert.assertNull("Expected null.", mqttChannel.getMqttClientId());
     }
 
     @Test
@@ -241,7 +242,7 @@ public class AbstractMqttChannelTest extends Assert {
         segments.add("0123456789");
         final Topic topic = Topic.of(segments);
         final ByteBuffer buffer = Mockito.mock(ByteBuffer.class);
-        assertNull("Expected null value.", mqttChannel.publish(applicationId, topic, buffer));
+        Assert.assertNull("Expected null value.", mqttChannel.publish(applicationId, topic, buffer));
     }
 
     @Test
@@ -252,14 +253,14 @@ public class AbstractMqttChannelTest extends Assert {
         segments.add("0123456789");
         final Topic topic = Topic.of(segments);
         final ByteBuffer buffer = Mockito.mock(ByteBuffer.class);
-        assertNull("Expected null value.", mqttChannel.publish(null, topic, buffer));
+        Assert.assertNull("Expected null value.", mqttChannel.publish(null, topic, buffer));
     }
 
     @Test
     public void publishTopicNullTest() {
         final String applicationId = "appId";
         final ByteBuffer buffer = Mockito.mock(ByteBuffer.class);
-        assertNull("Expected null value.", mqttChannel.publish(applicationId, null, buffer));
+        Assert.assertNull("Expected null value.", mqttChannel.publish(applicationId, null, buffer));
     }
 
     @Test
@@ -270,7 +271,7 @@ public class AbstractMqttChannelTest extends Assert {
         segments.add("STRING");
         segments.add("0123456789");
         final Topic topic = Topic.of(segments);
-        assertNull("Expected null value.", mqttChannel.publish(applicationId, topic, null));
+        Assert.assertNull("Expected null value.", mqttChannel.publish(applicationId, topic, null));
     }
 
     @Test
@@ -290,14 +291,14 @@ public class AbstractMqttChannelTest extends Assert {
         segments.add("string");
         final Topic topic = Topic.of(segments);
         final Payload payload = Mockito.mock(Payload.class);
-        assertThat("Instance of CompletionStage expected", mqttChannel.handlePublish(null, topic, payload), IsInstanceOf.instanceOf(CompletionStage.class));
+        Assert.assertThat("Instance of CompletionStage expected", mqttChannel.handlePublish(null, topic, payload), IsInstanceOf.instanceOf(CompletionStage.class));
     }
 
     @Test
     public void handlePublishTopicNullTest() {
         final String applicationId = "appId";
         final Payload payload = Mockito.mock(Payload.class);
-        assertThat("Instance of CompletionStage expected", mqttChannel.handlePublish(applicationId, null, payload), IsInstanceOf.instanceOf(CompletionStage.class));
+        Assert.assertThat("Instance of CompletionStage expected", mqttChannel.handlePublish(applicationId, null, payload), IsInstanceOf.instanceOf(CompletionStage.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -317,7 +318,7 @@ public class AbstractMqttChannelTest extends Assert {
         final Topic topic = Topic.of(segments);
         final MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         final ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertNull("Expected null value.", mqttChannel.handleSubscribe(applicationId, topic, messageHandler, errorHandler));
+        Assert.assertNull("Expected null value.", mqttChannel.handleSubscribe(applicationId, topic, messageHandler, errorHandler));
     }
 
     @Test
@@ -327,7 +328,7 @@ public class AbstractMqttChannelTest extends Assert {
         final Topic topic = Topic.of(segments);
         final MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         final ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertNull("Expected null value.", mqttChannel.handleSubscribe(null, topic, messageHandler, errorHandler));
+        Assert.assertNull("Expected null value.", mqttChannel.handleSubscribe(null, topic, messageHandler, errorHandler));
     }
 
     @Test
@@ -335,7 +336,7 @@ public class AbstractMqttChannelTest extends Assert {
         final String applicationId = "appId";
         final MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         final ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertNull("Expected null value.", mqttChannel.handleSubscribe(applicationId, null, messageHandler, errorHandler));
+        Assert.assertNull("Expected null value.", mqttChannel.handleSubscribe(applicationId, null, messageHandler, errorHandler));
     }
 
     @Test
@@ -345,7 +346,7 @@ public class AbstractMqttChannelTest extends Assert {
         segments.add("string");
         final Topic topic = Topic.of(segments);
         final ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertNull("Expected null value.", mqttChannel.handleSubscribe(applicationId, topic, null, errorHandler));
+        Assert.assertNull("Expected null value.", mqttChannel.handleSubscribe(applicationId, topic, null, errorHandler));
     }
 
     @Test
@@ -355,7 +356,7 @@ public class AbstractMqttChannelTest extends Assert {
         segments.add("string");
         final Topic topic = Topic.of(segments);
         final MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
-        assertNull("Expected null value.", mqttChannel.handleSubscribe(applicationId, topic, messageHandler, null));
+        Assert.assertNull("Expected null value.", mqttChannel.handleSubscribe(applicationId, topic, messageHandler, null));
     }
 
     @Test
@@ -373,7 +374,7 @@ public class AbstractMqttChannelTest extends Assert {
         segments.add("string");
         final Topic topic = Topic.of(segments);
         final MqttMessageHandler messageHandler = Mockito.mock(MqttMessageHandler.class);
-        assertNull("Expected null value.", mqttChannel.subscribe(applicationId, topic, messageHandler));
+        Assert.assertNull("Expected null value.", mqttChannel.subscribe(applicationId, topic, messageHandler));
     }
 
     @Test
@@ -407,23 +408,23 @@ public class AbstractMqttChannelTest extends Assert {
 
     @Test
     public void getMqttClientIdTest() {
-        assertEquals("Expected and actual values should be the same.", clientId, mqttChannel.getMqttClientId());
+        Assert.assertEquals("Expected and actual values should be the same.", clientId, mqttChannel.getMqttClientId());
     }
 
     @Test
     public void getMqttClientIdNullTest() {
         AbstractMqttChannel mqttChannel = new ActualMqttChannel(codec, namespace, null);
-        assertNull("Expected null value.", mqttChannel.getMqttClientId());
+        Assert.assertNull("Expected null value.", mqttChannel.getMqttClientId());
     }
 
     @Test
     public void getCodecTest() {
-        assertEquals("Expected and actual values should be the same.", codec, mqttChannel.getCodec());
+        Assert.assertEquals("Expected and actual values should be the same.", codec, mqttChannel.getCodec());
     }
 
     @Test
     public void getCodecNullTest() {
         AbstractMqttChannel mqttChannel = new ActualMqttChannel(null, namespace, clientId);
-        assertNull("Expected null value.", mqttChannel.getCodec());
+        Assert.assertNull("Expected null value.", mqttChannel.getCodec());
     }
 }

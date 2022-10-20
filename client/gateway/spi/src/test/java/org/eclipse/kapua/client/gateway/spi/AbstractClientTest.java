@@ -41,7 +41,7 @@ import java.util.concurrent.ScheduledExecutorService;
 
 @Category(JUnitTests.class)
 @RunWith(value = Parameterized.class)
-public class AbstractClientTest extends Assert {
+public class AbstractClientTest {
 
     private ScheduledExecutorService executor;
     private Module module;
@@ -107,8 +107,8 @@ public class AbstractClientTest extends Assert {
 
     @Test
     public void abstractClientTest() {
-        assertEquals("Expected and actual values should be the same.", executor, abstractClient.executor);
-        assertThat("Instance of TransportAsync expected", abstractClient.transport(), IsInstanceOf.instanceOf(TransportAsync.class));
+        Assert.assertEquals("Expected and actual values should be the same.", executor, abstractClient.executor);
+        Assert.assertThat("Instance of TransportAsync expected", abstractClient.transport(), IsInstanceOf.instanceOf(TransportAsync.class));
     }
 
     @Test
@@ -116,8 +116,8 @@ public class AbstractClientTest extends Assert {
         final Set<Module> modules = new HashSet<>();
         modules.add(Mockito.mock(Module.class));
         AbstractClient abstractClient = new ActualClient(null, modules);
-        assertNull("Expected null value.", abstractClient.executor);
-        assertThat("Instance of TransportAsync expected", abstractClient.transport(), IsInstanceOf.instanceOf(TransportAsync.class));
+        Assert.assertNull("Expected null value.", abstractClient.executor);
+        Assert.assertThat("Instance of TransportAsync expected", abstractClient.transport(), IsInstanceOf.instanceOf(TransportAsync.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -128,25 +128,25 @@ public class AbstractClientTest extends Assert {
     @Test(expected = NullPointerException.class)
     public void abstractClientExecutorAndModulesNullTest() {
         AbstractClient abstractClient = new ActualClient(null, null);
-        assertNull("Expected null value.", abstractClient.executor);
-        assertThat("Instance of TransportAsync expected", abstractClient.transport(), IsInstanceOf.instanceOf(TransportAsync.class));
+        Assert.assertNull("Expected null value.", abstractClient.executor);
+        Assert.assertThat("Instance of TransportAsync expected", abstractClient.transport(), IsInstanceOf.instanceOf(TransportAsync.class));
     }
 
     @Test(expected = ClassNotFoundException.class)
     public void adaptModuleContextTest() throws ClassNotFoundException {
         Class<Integer> clazz = (Class<Integer>) Class.forName("className");
-        assertEquals("Expected and actual values should be the same.", Optional.empty(), abstractClient.adaptModuleContext(clazz));
+        Assert.assertEquals("Expected and actual values should be the same.", Optional.empty(), abstractClient.adaptModuleContext(clazz));
     }
 
     @Test
     public void adaptModuleContextClazzNullTest() {
-        assertEquals("Expected and actual values should be the same.", Optional.empty(), abstractClient.adaptModuleContext(null));
+        Assert.assertEquals("Expected and actual values should be the same.", Optional.empty(), abstractClient.adaptModuleContext(null));
     }
 
     @Test
     public void transportTest() {
-        assertNotNull("Expected not null value.", abstractClient.transport());
-        assertThat("Instance of TransportAsync expected", abstractClient.transport(), IsInstanceOf.instanceOf(TransportAsync.class));
+        Assert.assertNotNull("Expected not null value.", abstractClient.transport());
+        Assert.assertThat("Instance of TransportAsync expected", abstractClient.transport(), IsInstanceOf.instanceOf(TransportAsync.class));
     }
 
     @Test
@@ -163,30 +163,30 @@ public class AbstractClientTest extends Assert {
 
     @Test
     public void buildApplicationTest() {
-        assertThat("Instance of Application.Builder expected", abstractClient.buildApplication(applicationId), IsInstanceOf.instanceOf(Application.Builder.class));
+        Assert.assertThat("Instance of Application.Builder expected", abstractClient.buildApplication(applicationId), IsInstanceOf.instanceOf(Application.Builder.class));
     }
 
     @Test
     public void buildApplicationBuildTest() {
-        assertThat("Instance of Application expected", abstractClient.buildApplication(applicationId).build(), IsInstanceOf.instanceOf(Application.class));
+        Assert.assertThat("Instance of Application expected", abstractClient.buildApplication(applicationId).build(), IsInstanceOf.instanceOf(Application.class));
     }
 
     @Test
     public void internalBuildApplicationTest() {
         final Application.Builder builder = Mockito.mock(Application.Builder.class);
-        assertThat("Instance of DefaultApplication expected", abstractClient.internalBuildApplication(builder, applicationId), IsInstanceOf.instanceOf(DefaultApplication.class));
+        Assert.assertThat("Instance of DefaultApplication expected", abstractClient.internalBuildApplication(builder, applicationId), IsInstanceOf.instanceOf(DefaultApplication.class));
     }
 
     @Test(expected = IllegalStateException.class)
     public void internalBuildApplicationExceptionPartTest() {
         final Application.Builder builder = Mockito.mock(Application.Builder.class);
         abstractClient.buildApplication(applicationId).build();
-        assertThat("Instance of DefaultApplication expected", abstractClient.internalBuildApplication(builder, applicationId), IsInstanceOf.instanceOf(DefaultApplication.class));
+        Assert.assertThat("Instance of DefaultApplication expected", abstractClient.internalBuildApplication(builder, applicationId), IsInstanceOf.instanceOf(DefaultApplication.class));
     }
 
     @Test
     public void internalBuildApplicationBuilderNullTest() {
-        assertThat("Instance of DefaultApplication expected", abstractClient.internalBuildApplication(null, applicationId), IsInstanceOf.instanceOf(DefaultApplication.class));
+        Assert.assertThat("Instance of DefaultApplication expected", abstractClient.internalBuildApplication(null, applicationId), IsInstanceOf.instanceOf(DefaultApplication.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -196,14 +196,14 @@ public class AbstractClientTest extends Assert {
         final Topic topic = Topic.of(segments);
         final MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         final ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertThat("Instance of CompletionStage expected", abstractClient.internalSubscribe(null, applicationId, topic, messageHandler, errorHandler), IsInstanceOf.instanceOf(CompletionStage.class));
+        Assert.assertThat("Instance of CompletionStage expected", abstractClient.internalSubscribe(null, applicationId, topic, messageHandler, errorHandler), IsInstanceOf.instanceOf(CompletionStage.class));
     }
 
     @Test(expected = NullPointerException.class)
     public void internalSubscribeContextAndTopicNullTest() {
         final MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         final ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertThat("Instance of CompletionStage expected", abstractClient.internalSubscribe(null, applicationId, null, messageHandler, errorHandler), IsInstanceOf.instanceOf(CompletionStage.class));
+        Assert.assertThat("Instance of CompletionStage expected", abstractClient.internalSubscribe(null, applicationId, null, messageHandler, errorHandler), IsInstanceOf.instanceOf(CompletionStage.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -212,7 +212,7 @@ public class AbstractClientTest extends Assert {
         segments.add("string");
         final Topic topic = Topic.of(segments);
         final ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertThat("Instance of CompletionStage expected", abstractClient.internalSubscribe(null, applicationId, topic, null, errorHandler), IsInstanceOf.instanceOf(CompletionStage.class));
+        Assert.assertThat("Instance of CompletionStage expected", abstractClient.internalSubscribe(null, applicationId, topic, null, errorHandler), IsInstanceOf.instanceOf(CompletionStage.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -221,7 +221,7 @@ public class AbstractClientTest extends Assert {
         segments.add("string");
         final Topic topic = Topic.of(segments);
         final MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
-        assertThat("Instance of CompletionStage expected", abstractClient.internalSubscribe(null, applicationId, topic, messageHandler, null), IsInstanceOf.instanceOf(CompletionStage.class));
+        Assert.assertThat("Instance of CompletionStage expected", abstractClient.internalSubscribe(null, applicationId, topic, messageHandler, null), IsInstanceOf.instanceOf(CompletionStage.class));
     }
 
     @Test
@@ -231,7 +231,7 @@ public class AbstractClientTest extends Assert {
         segments.add("string");
         final Topic topic = Topic.of(segments);
         final Payload payload = Mockito.mock(Payload.class);
-        assertThat("Instance of CompletionStage expected", abstractClient.internalPublish(context, applicationId, topic, payload), IsInstanceOf.instanceOf(CompletionStage.class));
+        Assert.assertThat("Instance of CompletionStage expected", abstractClient.internalPublish(context, applicationId, topic, payload), IsInstanceOf.instanceOf(CompletionStage.class));
     }
 
     @Test
@@ -240,14 +240,14 @@ public class AbstractClientTest extends Assert {
         segments.add("string");
         final Topic topic = Topic.of(segments);
         final Payload payload = Mockito.mock(Payload.class);
-        assertNull(abstractClient.internalPublish(null, applicationId, topic, payload));
+        Assert.assertNull(abstractClient.internalPublish(null, applicationId, topic, payload));
     }
 
     @Test
     public void internalPublishTopicNullTest() {
         final AbstractClient.Context context = Mockito.mock(AbstractClient.Context.class);
         final Payload payload = Mockito.mock(Payload.class);
-        assertThat("Instance of CompletionStage expected", abstractClient.internalPublish(context, applicationId, null, payload), IsInstanceOf.instanceOf(CompletionStage.class));
+        Assert.assertThat("Instance of CompletionStage expected", abstractClient.internalPublish(context, applicationId, null, payload), IsInstanceOf.instanceOf(CompletionStage.class));
     }
 
     @Test
@@ -256,7 +256,7 @@ public class AbstractClientTest extends Assert {
         List<String> segments = new ArrayList<>();
         segments.add("string");
         final Topic topic = Topic.of(segments);
-        assertThat("Instance of CompletionStage expected", abstractClient.internalPublish(context, applicationId, topic,null), IsInstanceOf.instanceOf(CompletionStage.class));
+        Assert.assertThat("Instance of CompletionStage expected", abstractClient.internalPublish(context, applicationId, topic,null), IsInstanceOf.instanceOf(CompletionStage.class));
     }
 
     @Test
@@ -264,20 +264,20 @@ public class AbstractClientTest extends Assert {
         final Application.Builder builder = Mockito.mock(Application.Builder.class);
         final AbstractClient.Context context = Mockito.mock(AbstractClient.Context.class);
         DefaultApplication defaultApplicationExpected = new DefaultApplication(context);
-        assertEquals("Expected and actual values should be the same.", defaultApplicationExpected.transport(), abstractClient.createApplication(builder, context).transport());
+        Assert.assertEquals("Expected and actual values should be the same.", defaultApplicationExpected.transport(), abstractClient.createApplication(builder, context).transport());
     }
 
     @Test
     public void createApplicationBuilderNullTest() {
         final AbstractClient.Context context = Mockito.mock(AbstractClient.Context.class);
         DefaultApplication defaultApplicationExpected = new DefaultApplication(context);
-        assertEquals("Expected and actual values should be the same.", defaultApplicationExpected.transport(), abstractClient.createApplication(null, context).transport());
+        Assert.assertEquals("Expected and actual values should be the same.", defaultApplicationExpected.transport(), abstractClient.createApplication(null, context).transport());
     }
 
     @Test(expected = NullPointerException.class)
     public void createApplicationContextNullTest() {
         final Application.Builder builder = Mockito.mock(Application.Builder.class);
         DefaultApplication defaultApplicationExpected = new DefaultApplication(null);
-        assertEquals("Expected and actual values should be the same.", defaultApplicationExpected.transport(), abstractClient.createApplication(builder, null).transport());
+        Assert.assertEquals("Expected and actual values should be the same.", defaultApplicationExpected.transport(), abstractClient.createApplication(builder, null).transport());
     }
 }

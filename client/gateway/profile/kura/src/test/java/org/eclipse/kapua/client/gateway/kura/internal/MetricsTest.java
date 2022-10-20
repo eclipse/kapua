@@ -29,8 +29,9 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.TreeMap;
 
+
 @Category(JUnitTests.class)
-public class MetricsTest extends Assert {
+public class MetricsTest {
 
     KuraPayloadProto.KuraPayload.Builder builder;
 
@@ -61,14 +62,14 @@ public class MetricsTest extends Assert {
         expectedBuilder.setType(KuraPayloadProto.KuraPayload.KuraMetric.ValueType.STRING);
         expectedBuilder.setStringValue("value");
 
-        assertTrue("True expected.", builder.getMetricList().isEmpty());
-        assertEquals("Expected and actual values should be the same.", expectedList, builder.getMetricList());
+        Assert.assertTrue("True expected.", builder.getMetricList().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedList, builder.getMetricList());
 
         Metrics.buildMetrics(builder, metrics);
         expectedList.add(expectedBuilder);
 
-        assertFalse("False expected.", builder.getMetricList().isEmpty());
-        assertEquals("Expected and actual values should be the same.", expectedList.toString(), builder.getMetricList().toString());
+        Assert.assertFalse("False expected.", builder.getMetricList().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedList.toString(), builder.getMetricList().toString());
     }
 
     @Test
@@ -77,7 +78,7 @@ public class MetricsTest extends Assert {
 
         Metrics.buildBody(builder, null);
 
-        assertEquals("Expected and actual values should be the same.", expectedByteString.toString(), builder.getBody().toString());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedByteString.toString(), builder.getBody().toString());
     }
 
     @Test(expected = NullPointerException.class)
@@ -93,7 +94,7 @@ public class MetricsTest extends Assert {
 
         Metrics.buildBody(builder, body);
 
-        assertNotEquals("Expected and actual values should not be the same.", expectedByteString.toString(), builder.getBody().toString());
+        Assert.assertNotEquals("Expected and actual values should not be the same.", expectedByteString.toString(), builder.getBody().toString());
     }
 
     @Test(expected = NullPointerException.class)
@@ -118,7 +119,7 @@ public class MetricsTest extends Assert {
         String key = "Key";
 
         Metrics.addMetric(builder, key, null);
-        assertTrue("True expected.", builder.getMetricList().isEmpty());
+        Assert.assertTrue("True expected.", builder.getMetricList().isEmpty());
     }
 
     @Test
@@ -127,10 +128,10 @@ public class MetricsTest extends Assert {
         byte[] byteArray = {1, 2, 3};
         Object[] values = {true, 10, "String", 10L, 10.10d, 10f, byteArray};
 
-        assertTrue("True expected.", builder.getMetricList().isEmpty());
+        Assert.assertTrue("True expected.", builder.getMetricList().isEmpty());
         for (Object value : values) {
             Metrics.addMetric(builder, key, value);
-            assertFalse("False expected.", builder.getMetricList().isEmpty());
+            Assert.assertFalse("False expected.", builder.getMetricList().isEmpty());
         }
     }
 
@@ -143,7 +144,7 @@ public class MetricsTest extends Assert {
 
     @Test
     public void extractMetricsNullKuraPayloadTest() {
-        assertNull("Null expected.", Metrics.extractMetrics((KuraPayloadProto.KuraPayload) null));
+        Assert.assertNull("Null expected.", Metrics.extractMetrics((KuraPayloadProto.KuraPayload) null));
     }
 
     @Test
@@ -153,13 +154,13 @@ public class MetricsTest extends Assert {
         Map<String, Object> expectedResult = new TreeMap<>();
         expectedResult.put("name", kuraMetric.getBoolValue());
 
-        assertEquals("Expected and actual values should be the same.", expectedResult, Metrics.extractMetrics(payload));
-        assertThat("Instance of Map expected.", Metrics.extractMetrics(payload), IsInstanceOf.instanceOf(Map.class));
+        Assert.assertEquals("Expected and actual values should be the same.", expectedResult, Metrics.extractMetrics(payload));
+        Assert.assertThat("Instance of Map expected.", Metrics.extractMetrics(payload), IsInstanceOf.instanceOf(Map.class));
     }
 
     @Test
     public void extractMetricsNullKuraMetricListTest() {
-        assertNull("Null expected.", Metrics.extractMetrics((List<KuraPayloadProto.KuraPayload.KuraMetric>) null));
+        Assert.assertNull("Null expected.", Metrics.extractMetrics((List<KuraPayloadProto.KuraPayload.KuraMetric>) null));
     }
 
     @Test
@@ -180,14 +181,14 @@ public class MetricsTest extends Assert {
             kuraMetricList.add(kuraMetric);
             expectedResult.put(name, value[i]);
 
-            assertEquals("Expected and actual values should be the same.", expectedResult, Metrics.extractMetrics(kuraMetricList));
-            assertThat("Instance of Map expected.", Metrics.extractMetrics(kuraMetricList), IsInstanceOf.instanceOf(Map.class));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedResult, Metrics.extractMetrics(kuraMetricList));
+        Assert.assertThat("Instance of Map expected.", Metrics.extractMetrics(kuraMetricList), IsInstanceOf.instanceOf(Map.class));
             expectedResultWholeList.put(name, kuraMetric.getStringValue());
         }
 
         //whole list
-        assertEquals("Expected and actual values should be the same.", expectedResultWholeList, Metrics.extractMetrics(kuraMetricList));
-        assertThat("Instance of Map expected.", Metrics.extractMetrics(kuraMetricList), IsInstanceOf.instanceOf(Map.class));
+        Assert.assertEquals("Expected and actual values should be the same.", expectedResultWholeList, Metrics.extractMetrics(kuraMetricList));
+        Assert.assertThat("Instance of Map expected.", Metrics.extractMetrics(kuraMetricList), IsInstanceOf.instanceOf(Map.class));
     }
 
     @Test
@@ -199,19 +200,19 @@ public class MetricsTest extends Assert {
         String differentKey = "Second key";
         String[] expectedValue = {null, "value", null};
 
-        assertNull("Null expected.", Metrics.getAsString(metricsWithoutKey, key));
+        Assert.assertNull("Null expected.", Metrics.getAsString(metricsWithoutKey, key));
 
         for (int i = 0; i < value.length; i++) {
             metrics.put("Key", value[i]);
-            assertEquals("Expected and actual values should be the same.", expectedValue[i], Metrics.getAsString(metrics, key));
-            assertNull("Null expected.", Metrics.getAsString(metrics, differentKey));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedValue[i], Metrics.getAsString(metrics, key));
+            Assert.assertNull("Null expected.", Metrics.getAsString(metrics, differentKey));
         }
     }
 
     @Test(expected = NullPointerException.class)
     public void getAsStringNullMetricsKeyTest() {
         String key = "Key";
-        assertNull("Null expected.", Metrics.getAsString(null, key));
+        Assert.assertNull("Null expected.", Metrics.getAsString(null, key));
     }
 
     @Test
@@ -219,12 +220,12 @@ public class MetricsTest extends Assert {
         Map<String, Object> metrics = new HashMap<>();
         String key = "Key";
 
-        assertNull("Null expected.", Metrics.getAsString(metrics, null));
+        Assert.assertNull("Null expected.", Metrics.getAsString(metrics, null));
 
         metrics.put(null, "value");
-        assertEquals("Expected and actual values should be the same.", "value", Metrics.getAsString(metrics, null));
+        Assert.assertEquals("Expected and actual values should be the same.", "value", Metrics.getAsString(metrics, null));
         metrics.put(key, null);
-        assertEquals("Expected and actual values should be the same.", "value", Metrics.getAsString(metrics, null));
+        Assert.assertEquals("Expected and actual values should be the same.", "value", Metrics.getAsString(metrics, null));
     }
 
     @Test
@@ -237,12 +238,12 @@ public class MetricsTest extends Assert {
         String defaultValue = "Default Value";
         String[] expectedValue = {defaultValue, "value", defaultValue};
 
-        assertEquals("Expected and actual values should be the same.", defaultValue, Metrics.getAsString(metricsWithoutKey, key, defaultValue));
+        Assert.assertEquals("Expected and actual values should be the same.", defaultValue, Metrics.getAsString(metricsWithoutKey, key, defaultValue));
 
         for (int i = 0; i < value.length; i++) {
             metrics.put("Key", value[i]);
-            assertEquals("Expected and actual values should be the same.", expectedValue[i], Metrics.getAsString(metrics, key, defaultValue));
-            assertEquals("Expected and actual values should be the same.", defaultValue, Metrics.getAsString(metrics, differentKey, defaultValue));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedValue[i], Metrics.getAsString(metrics, key, defaultValue));
+            Assert.assertEquals("Expected and actual values should be the same.", defaultValue, Metrics.getAsString(metrics, differentKey, defaultValue));
         }
     }
 
@@ -250,7 +251,7 @@ public class MetricsTest extends Assert {
     public void getAsStringNullMetricsKeyDefaultValueTest() {
         String key = "Key";
         String defaultValue = "Default Value";
-        assertEquals("Expected and actual values should be the same.", defaultValue, Metrics.getAsString(null, key, defaultValue));
+        Assert.assertEquals("Expected and actual values should be the same.", defaultValue, Metrics.getAsString(null, key, defaultValue));
     }
 
     @Test
@@ -260,7 +261,7 @@ public class MetricsTest extends Assert {
         String defaultValue = "Default Value";
         for (int i = 0; i < value.length; i++) {
             metrics.put("Key", value[i]);
-            assertEquals("Expected and actual values should be the same.", defaultValue, Metrics.getAsString(metrics, null, defaultValue));
+            Assert.assertEquals("Expected and actual values should be the same.", defaultValue, Metrics.getAsString(metrics, null, defaultValue));
         }
     }
 
@@ -273,12 +274,12 @@ public class MetricsTest extends Assert {
         String differentKey = "Second key";
         String[] expectedValue = {null, "value", null};
 
-        assertNull("Null expected.", Metrics.getAsString(metricsWithoutKey, key, null));
+        Assert.assertNull("Null expected.", Metrics.getAsString(metricsWithoutKey, key, null));
 
         for (int i = 0; i < value.length; i++) {
             metrics.put("Key", value[i]);
-            assertEquals("Expected and actual values should be the same.", expectedValue[i], Metrics.getAsString(metrics, key, null));
-            assertNull("Null expected.", Metrics.getAsString(metrics, differentKey, null));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedValue[i], Metrics.getAsString(metrics, key, null));
+            Assert.assertNull("Null expected.", Metrics.getAsString(metrics, differentKey, null));
         }
     }
 }

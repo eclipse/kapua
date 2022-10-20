@@ -28,9 +28,9 @@ import java.lang.reflect.Modifier;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-@Category(JUnitTests.class)
-public class ListenersTest extends Assert {
 
+@Category(JUnitTests.class)
+public class ListenersTest {
     private Runnable success;
     private Consumer<Throwable> failure;
     private IMqttToken asyncActionToken;
@@ -49,7 +49,7 @@ public class ListenersTest extends Assert {
     @Test
     public void listenersTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<Listeners> constructor = Listeners.class.getDeclaredConstructor();
-        assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+        Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
     }
@@ -62,17 +62,17 @@ public class ListenersTest extends Assert {
 
     @Test
     public void toListenerRunnableIdAndConsumerIdTest() {
-        assertThat("Instance of IMqttActionListener expected", Listeners.toListener(success, failure), IsInstanceOf.instanceOf(IMqttActionListener.class));
+        Assert.assertThat("Instance of IMqttActionListener expected", Listeners.toListener(success, failure), IsInstanceOf.instanceOf(IMqttActionListener.class));
     }
 
     @Test
     public void toListenerRunnableIdNullAndConsumerIdTest() {
-        assertThat("Instance of IMqttActionListener expected", Listeners.toListener(null, failure), IsInstanceOf.instanceOf(IMqttActionListener.class));
+        Assert.assertThat("Instance of IMqttActionListener expected", Listeners.toListener(null, failure), IsInstanceOf.instanceOf(IMqttActionListener.class));
     }
 
     @Test
     public void toListenerRunnableIdAndConsumerIdNullTest() {
-        assertThat("Instance of IMqttActionListener expected", Listeners.toListener(success, null), IsInstanceOf.instanceOf(IMqttActionListener.class));
+        Assert.assertThat("Instance of IMqttActionListener expected", Listeners.toListener(success, null), IsInstanceOf.instanceOf(IMqttActionListener.class));
     }
 
     @Test
@@ -139,11 +139,11 @@ public class ListenersTest extends Assert {
 
     @Test
     public void toListenerCompletableFutureIdTest() {
-        assertThat("Instance of IMqttActionListener expected", Listeners.toListener(future), IsInstanceOf.instanceOf(IMqttActionListener.class));
+        Assert.assertThat("Instance of IMqttActionListener expected", Listeners.toListener(future), IsInstanceOf.instanceOf(IMqttActionListener.class));
     }
 
     @Test(expected = NullPointerException.class)
     public void toListenerCompletableFutureIdNullTest() {
-        assertThat("Instance of IMqttActionListener expected", Listeners.toListener(null), IsInstanceOf.instanceOf(IMqttActionListener.class));
+        Assert.assertThat("Instance of IMqttActionListener expected", Listeners.toListener(null), IsInstanceOf.instanceOf(IMqttActionListener.class));
     }
 }

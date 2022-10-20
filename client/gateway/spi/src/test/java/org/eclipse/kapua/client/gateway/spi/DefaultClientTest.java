@@ -30,27 +30,28 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+
 @Category(JUnitTests.class)
-public class DefaultClientTest extends Assert {
+public class DefaultClientTest {
 
     @Test
     public void builderChannelIdTest() {
         Channel channel = Mockito.mock(Channel.class);
         DefaultClient.Builder builder = new DefaultClient.Builder(channel);
-        assertEquals("Expected and actual values should be the same.", builder, builder.module(Mockito.mock(Module.class)));
+        Assert.assertEquals("Expected and actual values should be the same.", builder, builder.module(Mockito.mock(Module.class)));
     }
 
     @Test(expected = NullPointerException.class)
     public void builderChannelIdNullTest() {
         DefaultClient.Builder builder = new DefaultClient.Builder(null);
-        assertEquals("Expected and actual values should be the same.", builder, builder.module(Mockito.mock(Module.class)));
+        Assert.assertEquals("Expected and actual values should be the same.", builder, builder.module(Mockito.mock(Module.class)));
     }
 
     @Test
     public void builderTest() {
         Channel channel = Mockito.mock(Channel.class);
         DefaultClient.Builder builder = new DefaultClient.Builder(channel);
-        assertEquals("Expected and actual values should be the same.", builder, builder.builder());
+        Assert.assertEquals("Expected and actual values should be the same.", builder, builder.builder());
     }
 
     @Test
@@ -63,7 +64,7 @@ public class DefaultClientTest extends Assert {
         modules.add(Mockito.mock(Module.class));
         DefaultClient client = new DefaultClient(channel, executorService, modules);
         client.init();
-        assertEquals("Expected and actual values should be the same.", client.executor.isShutdown(), defaultClientActual.executor.isShutdown());
+        Assert.assertEquals("Expected and actual values should be the same.", client.executor.isShutdown(), defaultClientActual.executor.isShutdown());
     }
 
     @Test
@@ -73,7 +74,7 @@ public class DefaultClientTest extends Assert {
         final Set<Module> modules = new HashSet<>();
         modules.add(Mockito.mock(Module.class));
         DefaultClient client = new DefaultClient(channel, executorService, modules);
-        assertEquals("Expected and actual values should be the same.", executorService, client.executor);
+        Assert.assertEquals("Expected and actual values should be the same.", executorService, client.executor);
     }
 
     @Test(expected = NullPointerException.class)
@@ -90,7 +91,7 @@ public class DefaultClientTest extends Assert {
         final Set<Module> modules = new HashSet<>();
         modules.add(Mockito.mock(Module.class));
         DefaultClient client = new DefaultClient(channel, null, modules);
-        assertNull("Expected null.", client.executor);
+        Assert.assertNull("Expected null.", client.executor);
     }
 
     @Test(expected = NullPointerException.class)
@@ -98,7 +99,7 @@ public class DefaultClientTest extends Assert {
         final Channel channel = Mockito.mock(Channel.class);
         final ScheduledExecutorService executorService = Mockito.mock(ScheduledExecutorService.class);
         DefaultClient client = new DefaultClient(channel, executorService, null);
-        assertEquals("Expected and actual values should be the same.", executorService, client.executor);
+        Assert.assertEquals("Expected and actual values should be the same.", executorService, client.executor);
     }
 
     @Test
@@ -109,7 +110,7 @@ public class DefaultClientTest extends Assert {
         modules.add(Mockito.mock(Module.class));
         DefaultClient client = new DefaultClient(channel, executorService, modules);
         client.close();
-        assertNull("Expected null.", client.executor.submit(Mockito.mock(Runnable.class)));
+        Assert.assertNull("Expected null.", client.executor.submit(Mockito.mock(Runnable.class)));
     }
 
     @Test(expected = ClassNotFoundException.class)
@@ -136,7 +137,7 @@ public class DefaultClientTest extends Assert {
         Topic topic = Topic.of(segments);
         MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, topic, messageHandler, errorHandler), client.handleSubscribe(applicationId, topic, messageHandler, errorHandler));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, topic, messageHandler, errorHandler), client.handleSubscribe(applicationId, topic, messageHandler, errorHandler));
     }
 
     @Test
@@ -151,7 +152,7 @@ public class DefaultClientTest extends Assert {
         Topic topic = Topic.of(segments);
         MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(null, topic, messageHandler, errorHandler), client.handleSubscribe(null, topic, messageHandler, errorHandler));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(null, topic, messageHandler, errorHandler), client.handleSubscribe(null, topic, messageHandler, errorHandler));
     }
 
     @Test
@@ -164,7 +165,7 @@ public class DefaultClientTest extends Assert {
         String applicationId = "id";
         MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
         ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, null, messageHandler, errorHandler), client.handleSubscribe(applicationId, null, messageHandler, errorHandler));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, null, messageHandler, errorHandler), client.handleSubscribe(applicationId, null, messageHandler, errorHandler));
     }
 
     @Test
@@ -179,7 +180,7 @@ public class DefaultClientTest extends Assert {
         segments.add("string");
         Topic topic = Topic.of(segments);
         ErrorHandler<Exception> errorHandler = Mockito.mock(ErrorHandler.class);
-        assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, topic, null, errorHandler), client.handleSubscribe(applicationId, topic, null, errorHandler));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, topic, null, errorHandler), client.handleSubscribe(applicationId, topic, null, errorHandler));
     }
 
     @Test
@@ -194,7 +195,7 @@ public class DefaultClientTest extends Assert {
         segments.add("string");
         Topic topic = Topic.of(segments);
         MessageHandler messageHandler = Mockito.mock(MessageHandler.class);
-        assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, topic, messageHandler, null), client.handleSubscribe(applicationId, topic, messageHandler, null));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, topic, messageHandler, null), client.handleSubscribe(applicationId, topic, messageHandler, null));
     }
 
     @Test
@@ -209,7 +210,7 @@ public class DefaultClientTest extends Assert {
         segments.add("string");
         Topic topic = Topic.of(segments);
         Payload payload = Mockito.mock(Payload.class);
-        assertEquals("Expected and actual values should be the same.", channel.handlePublish(applicationId, topic, payload), client.handlePublish(applicationId, topic, payload));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handlePublish(applicationId, topic, payload), client.handlePublish(applicationId, topic, payload));
     }
 
     @Test
@@ -223,7 +224,7 @@ public class DefaultClientTest extends Assert {
         segments.add("string");
         Topic topic = Topic.of(segments);
         Payload payload = Mockito.mock(Payload.class);
-        assertEquals("Expected and actual values should be the same.", channel.handlePublish(null, topic, payload), client.handlePublish(null, topic, payload));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handlePublish(null, topic, payload), client.handlePublish(null, topic, payload));
     }
 
     @Test
@@ -235,7 +236,7 @@ public class DefaultClientTest extends Assert {
         DefaultClient client = new DefaultClient(channel, executorService, modules);
         String applicationId = "id";
         Payload payload = Mockito.mock(Payload.class);
-        assertEquals("Expected and actual values should be the same.", channel.handlePublish(applicationId, null, payload), client.handlePublish(applicationId, null, payload));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handlePublish(applicationId, null, payload), client.handlePublish(applicationId, null, payload));
     }
 
     @Test
@@ -249,7 +250,7 @@ public class DefaultClientTest extends Assert {
         List<String> segments = new ArrayList<>();
         segments.add("string");
         Topic topic = Topic.of(segments);
-        assertEquals("Expected and actual values should be the same.", channel.handlePublish(applicationId, topic, null), client.handlePublish(applicationId, topic, null));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handlePublish(applicationId, topic, null), client.handlePublish(applicationId, topic, null));
     }
 
     @Test
@@ -266,7 +267,7 @@ public class DefaultClientTest extends Assert {
         Collection<Topic> topics = new ArrayList<>();
         topics.add(topic);
         client.handleUnsubscribe(applicationId, topics);
-        assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, topic, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)), client.handleSubscribe(applicationId, topic, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, topic, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)), client.handleSubscribe(applicationId, topic, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)));
     }
 
     @Test
@@ -282,7 +283,7 @@ public class DefaultClientTest extends Assert {
         Collection<Topic> topics = new ArrayList<>();
         topics.add(topic);
         client.handleUnsubscribe(null, topics);
-        assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(null, topic, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)), client.handleSubscribe(null, topic, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(null, topic, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)), client.handleSubscribe(null, topic, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)));
     }
 
     @Test
@@ -294,6 +295,6 @@ public class DefaultClientTest extends Assert {
         DefaultClient client = new DefaultClient(channel, executorService, modules);
         String applicationId = "id";
         client.handleUnsubscribe(applicationId, null);
-        assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, null, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)), client.handleSubscribe(applicationId, null, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)));
+        Assert.assertEquals("Expected and actual values should be the same.", channel.handleSubscribe(applicationId, null, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)), client.handleSubscribe(applicationId, null, Mockito.mock(MessageHandler.class), Mockito.mock(ErrorHandler.class)));
     }
 }
