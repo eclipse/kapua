@@ -19,8 +19,9 @@ import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 
+
 @Category(JUnitTests.class)
-public class LocalCacheTest extends Assert {
+public class LocalCacheTest {
 
     @Test
     public void localCacheTest1() {
@@ -36,7 +37,7 @@ public class LocalCacheTest extends Assert {
             for (int expireAfter : expireAfterList) {
                 for (Object defaultValue : defaultValueList) {
                     LocalCache<Object, Object> localCache = new LocalCache<>(sizeMax, expireAfter, defaultValue);
-                    assertEquals("Expected and actual values should be the same.", defaultValue, localCache.get(defaultValueList));
+                    Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache.get(defaultValueList));
                 }
             }
         }
@@ -45,7 +46,7 @@ public class LocalCacheTest extends Assert {
                 try {
                     LocalCache<Object, Object> localCache = new LocalCache<>(invalidNegativeSizeMax, expireAfter, defaultValue);
                 } catch (Exception e) {
-                    assertEquals("Expected IllegalArgumentException: maximum size must not be negative.", illegalArgumentExceptionSizeMax.toString(), e.toString());
+                    Assert.assertEquals("Expected IllegalArgumentException: maximum size must not be negative.", illegalArgumentExceptionSizeMax.toString(), e.toString());
                 }
             }
         }
@@ -54,7 +55,7 @@ public class LocalCacheTest extends Assert {
                 try {
                     LocalCache<Object, Object> localCache = new LocalCache<>(sizeMax, invalidNegativeExpireAfter, defaultValue);
                 } catch (Exception e) {
-                    assertEquals("Expected java.lang.IllegalArgumentException: duration cannot be negative: " + invalidNegativeExpireAfter + " SECONDS", illegalArgumentExceptionExpireAfter.toString(), e.toString());
+                    Assert.assertEquals("Expected java.lang.IllegalArgumentException: duration cannot be negative: " + invalidNegativeExpireAfter + " SECONDS", illegalArgumentExceptionExpireAfter.toString(), e.toString());
                 }
             }
         }
@@ -70,14 +71,14 @@ public class LocalCacheTest extends Assert {
         for (int sizeMax : sizeMaxList) {
             for (Object defaultValue : defaultValueList) {
                 LocalCache<Object, Object> localCache = new LocalCache<>(sizeMax, defaultValue);
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache.get(defaultValueList));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache.get(defaultValueList));
             }
         }
         for (Object defaultValue : defaultValueList) {
             try {
                 LocalCache<Object, Object> localCache = new LocalCache<>(invalidNegativeSizeMax, defaultValue);
             } catch (Exception e) {
-                assertEquals("Expected java.lang.IllegalArgumentException: maximum size must not be negative", illegalArgumentExceptionSizeMax.toString(), e.toString());
+                Assert.assertEquals("Expected java.lang.IllegalArgumentException: maximum size must not be negative", illegalArgumentExceptionSizeMax.toString(), e.toString());
             }
         }
     }
@@ -93,22 +94,22 @@ public class LocalCacheTest extends Assert {
             for (int expireAfter : expireAfterList) {
                 for (Object defaultValue : defaultValueList) {
                     LocalCache<Object, Object> localCache1 = new LocalCache<>(sizeMax, expireAfter, defaultValue);
-                    assertNull("Null expected", localCache1.getNamespace());
+                    Assert.assertNull("Null expected", localCache1.getNamespace());
                     localCache1.setNamespace(namespace);
-                    assertEquals("Expected and actual values should be the same.", namespace, localCache1.getNamespace());
+                    Assert.assertEquals("Expected and actual values should be the same.", namespace, localCache1.getNamespace());
                     localCache1.setNamespace(null);
-                    assertNull("Null expected", localCache1.getNamespace());
+                    Assert.assertNull("Null expected", localCache1.getNamespace());
                 }
             }
         }
         for (int sizeMax : sizeMaxList) {
             for (Object defaultValue : defaultValueList) {
                 LocalCache<Object, Object> localCache2 = new LocalCache<>(sizeMax, defaultValue);
-                assertNull("Null expected", localCache2.getNamespace());
+                Assert.assertNull("Null expected", localCache2.getNamespace());
                 localCache2.setNamespace(namespace);
-                assertEquals("Expected and actual values should be the same.", namespace, localCache2.getNamespace());
+                Assert.assertEquals("Expected and actual values should be the same.", namespace, localCache2.getNamespace());
                 localCache2.setNamespace(null);
-                assertNull("Null expected", localCache2.getNamespace());
+                Assert.assertNull("Null expected", localCache2.getNamespace());
             }
         }
     }
@@ -128,76 +129,76 @@ public class LocalCacheTest extends Assert {
             for (int expireAfter : expireAfterList) {
                 for (Object defaultValue : defaultValueList) {
                     LocalCache<Object, Object> localCache1 = new LocalCache<>(sizeMax, expireAfter, defaultValue);
-                    assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
+                    Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
                     localCache1.put(key[0], keyValue[0]);
-                    assertEquals("Expected and actual values should be the same.", keyValue[0], localCache1.get("Key"));
+                    Assert.assertEquals("Expected and actual values should be the same.", keyValue[0], localCache1.get("Key"));
                     localCache1.put(key[1], keyValue[1]);
-                    assertEquals("Expected and actual values should be the same.", keyValue[1], localCache1.get("Second Key"));
-                    assertEquals("Expected and actual values should be the same.", keyValue[0], localCache1.get("Key"));
+                    Assert.assertEquals("Expected and actual values should be the same.", keyValue[1], localCache1.get("Second Key"));
+                    Assert.assertEquals("Expected and actual values should be the same.", keyValue[0], localCache1.get("Key"));
                 }
             }
         }
         for (int sizeMax : sizeMaxList) {
             for (Object defaultValue : defaultValueList) {
                 LocalCache<Object, Object> localCache1 = new LocalCache<>(sizeMax, zeroExpireAfter, defaultValue);
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
                 localCache1.put(key[0], keyValue[0]);
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
                 localCache1.put(key[1], keyValue[1]);
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Second Key"));
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Second Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
             }
         }
         for (int expireAfter : expireAfterList) {
             for (Object defaultValue : defaultValueList) {
                 LocalCache<Object, Object> localCache1 = new LocalCache<>(zeroSizeMax, expireAfter, defaultValue);
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
                 localCache1.put(key[0], keyValue[0]);
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
                 localCache1.put(key[1], keyValue[1]);
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Second Key"));
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Second Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
             }
         }
         for (int expireAfter : expireAfterList) {
             for (Object defaultValue : defaultValueList) {
                 LocalCache<Object, Object> localCache1 = new LocalCache<>(oneSizeMax, expireAfter, defaultValue);
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
                 localCache1.put(key[0], keyValue[0]);
-                assertEquals("Expected and actual values should be the same.", keyValue[0], localCache1.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", keyValue[0], localCache1.get("Key"));
                 localCache1.put(key[1], keyValue[1]);
-                assertEquals("Expected and actual values should be the same.", keyValue[1], localCache1.get("Second Key"));
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", keyValue[1], localCache1.get("Second Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get("Key"));
             }
         }
         for (int sizeMax : sizeMaxList) {
             for (Object defaultValue : defaultValueList) {
                 LocalCache<Object, Object> localCache2 = new LocalCache<>(sizeMax, defaultValue);
-                assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
                 localCache2.put(key[0], keyValue[0]);
-                assertEquals("Expected and actual values should be the same.", keyValue[0], localCache2.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", keyValue[0], localCache2.get("Key"));
                 localCache2.put(key[1], keyValue[1]);
-                assertEquals("Expected and actual values should be the same.", keyValue[1], localCache2.get("Second Key"));
-                assertEquals("Expected and actual values should be the same.", keyValue[0], localCache2.get("Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", keyValue[1], localCache2.get("Second Key"));
+                Assert.assertEquals("Expected and actual values should be the same.", keyValue[0], localCache2.get("Key"));
             }
         }
         for (Object defaultValue : defaultValueList) {
             LocalCache<Object, Object> localCache2 = new LocalCache<>(zeroSizeMax, defaultValue);
-            assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
+            Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
             localCache2.put(key[0], keyValue[0]);
-            assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
+            Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
             localCache2.put(key[1], keyValue[1]);
-            assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Second Key"));
-            assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
+            Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Second Key"));
+            Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
         }
         for (Object defaultValue : defaultValueList) {
             LocalCache<Object, Object> localCache2 = new LocalCache<>(oneSizeMax, defaultValue);
-            assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
+            Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
             localCache2.put(key[0], keyValue[0]);
-            assertEquals("Expected and actual values should be the same.", keyValue[0], localCache2.get("Key"));
+            Assert.assertEquals("Expected and actual values should be the same.", keyValue[0], localCache2.get("Key"));
             localCache2.put(key[1], keyValue[1]);
-            assertEquals("Expected and actual values should be the same.", keyValue[1], localCache2.get("Second Key"));
-            assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
+            Assert.assertEquals("Expected and actual values should be the same.", keyValue[1], localCache2.get("Second Key"));
+            Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get("Key"));
         }
     }
 
@@ -221,7 +222,7 @@ public class LocalCacheTest extends Assert {
                     localCache1.put(key[0], keyValue[0]);
                     localCache1.put(key[1], keyValue[1]);
                     localCache1.put(key[2], keyValue[2]);
-                    assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache1.getAllKeys());
+                    Assert.assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache1.getAllKeys());
                 }
             }
         }
@@ -231,7 +232,7 @@ public class LocalCacheTest extends Assert {
                 localCache1.put(key[0], keyValue[0]);
                 localCache1.put(key[1], keyValue[1]);
                 localCache1.put(key[2], keyValue[2]);
-                assertEquals("Empty list expected.", new ArrayList<>(), localCache1.getAllKeys());
+                Assert.assertEquals("Empty list expected.", new ArrayList<>(), localCache1.getAllKeys());
             }
         }
         for (int sizeMax : sizeMaxList) {
@@ -240,7 +241,7 @@ public class LocalCacheTest extends Assert {
                 localCache.put(key[0], keyValue[0]);
                 localCache.put(key[1], keyValue[1]);
                 localCache.put(key[2], keyValue[2]);
-                assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache.getAllKeys());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache.getAllKeys());
             }
         }
     }
@@ -260,7 +261,7 @@ public class LocalCacheTest extends Assert {
                     LocalCache<Object, Object> localCache1 = new LocalCache<>(sizeMax, expireAfter, defaultValue);
                     for (int k = 0; k < key.length; k++) {
                         localCache1.put(key[k], keyValue[k]);
-                        assertEquals("Expected and actual values should be the same.", keyValue[k], localCache1.get(key[k]));
+                        Assert.assertEquals("Expected and actual values should be the same.", keyValue[k], localCache1.get(key[k]));
                     }
                 }
             }
@@ -270,7 +271,7 @@ public class LocalCacheTest extends Assert {
                 LocalCache<Object, Object> localCache1 = new LocalCache<>(sizeMax, zeroExpireAfter, defaultValue);
                 for (int k = 0; k < key.length; k++) {
                     localCache1.put(key[k], keyValue[k]);
-                    assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get(key[k]));
+                    Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get(key[k]));
                 }
             }
         }
@@ -279,7 +280,7 @@ public class LocalCacheTest extends Assert {
                 LocalCache<Object, Object> localCache = new LocalCache<>(sizeMax, defaultValue);
                 for (int k = 0; k < key.length; k++) {
                     localCache.put(key[k], keyValue[k]);
-                    assertEquals("Expected and actual values should be the same.", keyValue[k], localCache.get(key[k]));
+                    Assert.assertEquals("Expected and actual values should be the same.", keyValue[k], localCache.get(key[k]));
                 }
             }
         }
@@ -309,13 +310,13 @@ public class LocalCacheTest extends Assert {
 
                     localCache1.remove("Key");
                     expectedKeyList.remove("Key");
-                    assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache1.getAllKeys());
+                    Assert.assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache1.getAllKeys());
                     localCache1.remove("Second Key");
                     expectedKeyList.remove("Second Key");
-                    assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache1.getAllKeys());
+                    Assert.assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache1.getAllKeys());
                     localCache1.remove("Third Key");
                     expectedKeyList.remove("Third Key");
-                    assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache1.getAllKeys());
+                    Assert.assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache1.getAllKeys());
                 }
             }
         }
@@ -333,13 +334,13 @@ public class LocalCacheTest extends Assert {
 
                 localCache1.remove("Key");
                 expectedKeyList.remove("Key");
-                assertEquals("Empty list expected.", new ArrayList<>(), localCache1.getAllKeys());
+                Assert.assertEquals("Empty list expected.", new ArrayList<>(), localCache1.getAllKeys());
                 localCache1.remove("Second Key");
                 expectedKeyList.remove("Second Key");
-                assertEquals("Empty list expected.", new ArrayList<>(), localCache1.getAllKeys());
+                Assert.assertEquals("Empty list expected.", new ArrayList<>(), localCache1.getAllKeys());
                 localCache1.remove("Third Key");
                 expectedKeyList.remove("Third Key");
-                assertEquals("Empty list expected.", new ArrayList<>(), localCache1.getAllKeys());
+                Assert.assertEquals("Empty list expected.", new ArrayList<>(), localCache1.getAllKeys());
             }
         }
         for (int sizeMax : sizeMaxList) {
@@ -356,13 +357,13 @@ public class LocalCacheTest extends Assert {
 
                 localCache.remove("Key");
                 expectedKeyList.remove("Key");
-                assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache.getAllKeys());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache.getAllKeys());
                 localCache.remove("Second Key");
                 expectedKeyList.remove("Second Key");
-                assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache.getAllKeys());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache.getAllKeys());
                 localCache.remove("Third Key");
                 expectedKeyList.remove("Third Key");
-                assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache.getAllKeys());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedKeyList, localCache.getAllKeys());
             }
         }
     }
@@ -381,9 +382,9 @@ public class LocalCacheTest extends Assert {
                     LocalCache<Object, Object> localCache1 = new LocalCache<>(sizeMax, expireAfter, defaultValue);
                     for (int k = 0; k < key.length; k++) {
                         localCache1.put(key[k], keyValue[k]);
-                        assertEquals("Expected and actual values should be the same.", keyValue[k], localCache1.get(key[k]));
+                        Assert.assertEquals("Expected and actual values should be the same.", keyValue[k], localCache1.get(key[k]));
                         localCache1.invalidateAll();
-                        assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get(key[k]));
+                        Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache1.get(key[k]));
                     }
                 }
             }
@@ -393,9 +394,9 @@ public class LocalCacheTest extends Assert {
                 LocalCache<Object, Object> localCache2 = new LocalCache<>(sizeMax, defaultValue);
                 for (int k = 0; k < key.length; k++) {
                     localCache2.put(key[k], keyValue[k]);
-                    assertEquals("Expected and actual values should be the same.", keyValue[k], localCache2.get(key[k]));
+                    Assert.assertEquals("Expected and actual values should be the same.", keyValue[k], localCache2.get(key[k]));
                     localCache2.invalidateAll();
-                    assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get(key[k]));
+                    Assert.assertEquals("Expected and actual values should be the same.", defaultValue, localCache2.get(key[k]));
                 }
             }
         }

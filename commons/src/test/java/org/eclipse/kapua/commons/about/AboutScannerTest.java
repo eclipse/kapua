@@ -22,13 +22,14 @@ import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class AboutScannerTest extends Assert {
+public class AboutScannerTest {
 
     @Test
     public void scanTest() {
         final AboutScanner scanner = AboutScanner.scan();
-        assertNotNull("Null not expected", scanner);
+        Assert.assertNotNull("Null not expected", scanner);
     }
 
     @Test
@@ -40,19 +41,19 @@ public class AboutScannerTest extends Assert {
         field.set(aboutScanner, aboutEntry);
         final List<AboutEntry> result = aboutScanner.getEntries();
 
-        assertEquals("Field wasn't retrieved properly", result, aboutEntry);
+        Assert.assertEquals("Field wasn't retrieved properly", result, aboutEntry);
     }
 
     @Test
     public void scanWithParameterTest() {
         AboutScanner scanner = AboutScanner.scan(ClasspathHelper.forClassLoader().stream());
-        assertNotNull("Null not expected", scanner);
+        Assert.assertNotNull("Null not expected", scanner);
 
         NullPointerException nullPointerException = new NullPointerException();
         try {
             AboutScanner invalidScanner = AboutScanner.scan(null);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
         }
     }
 } 

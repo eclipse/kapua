@@ -26,9 +26,10 @@ import org.junit.runners.Parameterized.Parameters;
 import java.util.Arrays;
 import java.util.Collection;
 
+
 @Category(JUnitTests.class)
 @RunWith(value = Parameterized.class)
-public class AbstractKapuaNamedEntityCreatorTest extends Assert {
+public class AbstractKapuaNamedEntityCreatorTest {
 
     private final String name;
 
@@ -70,12 +71,12 @@ public class AbstractKapuaNamedEntityCreatorTest extends Assert {
     public void abstractKapuaNamedEntityCreatorNameTest() {
         namedEntityCreator.setName(name);
         AbstractKapuaNamedEntityCreator namedCopyEntityCreator = new ActualKapuaNamedEntityCreator(scopeId, name);
-        assertEquals("Expected and actual values should be the same!", namedEntityCreator.getName(), namedCopyEntityCreator.getName());
+        Assert.assertEquals("Expected and actual values should be the same!", namedEntityCreator.getName(), namedCopyEntityCreator.getName());
     }
 
     @Test
     public void getDescriptionTest() {
         namedEntityCreator.setDescription(description);
-        assertEquals("Expected and actual values should be the same!", description, namedEntityCreator.getDescription());
+        Assert.assertEquals("Expected and actual values should be the same!", description, namedEntityCreator.getDescription());
     }
 }

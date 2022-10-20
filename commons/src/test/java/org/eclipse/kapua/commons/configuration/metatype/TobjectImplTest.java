@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class TobjectImplTest extends Assert {
+public class TobjectImplTest {
 
     @Before
     public void createInstanceOfClasses() {
@@ -30,18 +31,18 @@ public class TobjectImplTest extends Assert {
 
     @Test
     public void getAttributeTest() {
-        assertTrue(tobjectImpl.getAttribute().isEmpty());
+        Assert.assertTrue(tobjectImpl.getAttribute().isEmpty());
     }
 
     @Test
     public void getAnyTest() {
-        assertTrue(tobjectImpl.getAny().isEmpty());
+        Assert.assertTrue(tobjectImpl.getAny().isEmpty());
     }
 
     @Test
     public void setAndGetOcdrefToNullTest() {
         tobjectImpl.setOcdref(null);
-        assertNull(tobjectImpl.getOcdref());
+        Assert.assertNull(tobjectImpl.getOcdref());
     }
 
     @Test
@@ -49,12 +50,12 @@ public class TobjectImplTest extends Assert {
         String[] permittedValues = {"", "!@#$%^^&**(-()_)+/|", "regularOcdref", "regular Ocdref", "49", "regularOcdref49", "OCDREF", "246465494135646120009090049684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             tobjectImpl.setOcdref(value);
-            assertTrue(tobjectImpl.getOcdref().contains(value));
+            Assert.assertTrue(tobjectImpl.getOcdref().contains(value));
         }
     }
 
     @Test
     public void testGetOtherAttributes() {
-        assertTrue(tobjectImpl.getOtherAttributes().isEmpty());
+        Assert.assertTrue(tobjectImpl.getOtherAttributes().isEmpty());
     }
 }

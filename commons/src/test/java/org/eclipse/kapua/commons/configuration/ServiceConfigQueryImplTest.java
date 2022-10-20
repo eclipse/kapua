@@ -19,13 +19,14 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 
+
 @Category(JUnitTests.class)
-public class ServiceConfigQueryImplTest extends Assert {
+public class ServiceConfigQueryImplTest {
 
     @Test
     public void createInstanceTest() {
         ServiceConfigQueryImpl query = new ServiceConfigQueryImpl(KapuaId.ONE);
-        assertEquals(query.getScopeId(), KapuaId.ONE);
+        Assert.assertEquals(query.getScopeId(), KapuaId.ONE);
     }
 
 }

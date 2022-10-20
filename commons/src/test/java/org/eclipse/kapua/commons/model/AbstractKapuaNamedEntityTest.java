@@ -26,9 +26,10 @@ import org.junit.runners.Parameterized.Parameters;
 import java.util.Arrays;
 import java.util.Collection;
 
+
 @Category(JUnitTests.class)
 @RunWith(value = Parameterized.class)
-public class AbstractKapuaNamedEntityTest extends Assert {
+public class AbstractKapuaNamedEntityTest {
 
     private final String name;
 
@@ -81,7 +82,7 @@ public class AbstractKapuaNamedEntityTest extends Assert {
     public void abstractKapuaNamedEntityScopeIdTest() {
         AbstractKapuaNamedEntity namedEntity = new ActualKapuaNamedEntity();
         namedEntity.setScopeId(scopeId);
-        assertEquals("Expected and actual values should be the same!", scopeId, namedEntity.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same!", scopeId, namedEntity.getScopeId());
     }
 
     @Test
@@ -89,7 +90,7 @@ public class AbstractKapuaNamedEntityTest extends Assert {
         AbstractKapuaNamedEntity namedEntity = new ActualKapuaNamedEntity(scopeId);
         namedEntity.setName(name);
         AbstractKapuaNamedEntity namedCopyEntity = new ActualKapuaNamedEntity(scopeId, name);
-        assertEquals("Expected and actual values should be the same!", namedEntity.getName(), namedCopyEntity.getName());
+        Assert.assertEquals("Expected and actual values should be the same!", namedEntity.getName(), namedCopyEntity.getName());
     }
 
     @Test
@@ -98,7 +99,7 @@ public class AbstractKapuaNamedEntityTest extends Assert {
         namedEntity.setName(name);
         namedEntity.setDescription(description);
         AbstractKapuaNamedEntity namedCopyEntity = new ActualKapuaNamedEntity(namedEntity);
-        assertEquals("Expected and actual values should be the same!", namedEntity.getName(), namedCopyEntity.getName());
-        assertEquals("Expected and actual values should be the same!", namedEntity.getDescription(), namedCopyEntity.getDescription());
+        Assert.assertEquals("Expected and actual values should be the same!", namedEntity.getName(), namedCopyEntity.getName());
+        Assert.assertEquals("Expected and actual values should be the same!", namedEntity.getDescription(), namedCopyEntity.getDescription());
     }
 }

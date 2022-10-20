@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class MetricsServiceImplTest extends Assert {
+public class MetricsServiceImplTest {
 
     MetricRegistry metricRegistry;
     MetricsServiceImpl metricServiceImpl;
@@ -33,25 +34,25 @@ public class MetricsServiceImplTest extends Assert {
 
     @Test
     public void getMetricRegistry() {
-        assertNotNull(metricServiceImpl.getMetricRegistry());
+        Assert.assertNotNull(metricServiceImpl.getMetricRegistry());
     }
 
     @Test
     public void getCounterTest() {
-        assertNotNull("Counter object should be returned!", metricServiceImpl.getCounter("module", "component", "name1", "name2", "name3"));
-        assertTrue("The keys does not exist!", metricServiceImpl.getMetricRegistry().getMetrics().containsKey("module.component.name1.name2.name3"));
+        Assert.assertNotNull("Counter object should be returned!", metricServiceImpl.getCounter("module", "component", "name1", "name2", "name3"));
+        Assert.assertTrue("The keys does not exist!", metricServiceImpl.getMetricRegistry().getMetrics().containsKey("module.component.name1.name2.name3"));
     }
 
     @Test
     public void getHistogramTest() {
-        assertNotNull("Histogram object should be returned!", metricServiceImpl.getHistogram("module", "component", "name1", "name2", "name3"));
-        assertTrue("The keys does not exist!", metricServiceImpl.getMetricRegistry().getMetrics().containsKey("module.component.name1.name2.name3"));
+        Assert.assertNotNull("Histogram object should be returned!", metricServiceImpl.getHistogram("module", "component", "name1", "name2", "name3"));
+        Assert.assertTrue("The keys does not exist!", metricServiceImpl.getMetricRegistry().getMetrics().containsKey("module.component.name1.name2.name3"));
 
     }
 
     @Test
     public void getTimerTest() {
-        assertNotNull("Timer object should be returned!", metricServiceImpl.getTimer("module", "component", "name1", "name2", "name3"));
-        assertTrue("TThe keys does not exist!", metricServiceImpl.getMetricRegistry().getMetrics().containsKey("module.component.name1.name2.name3"));
+        Assert.assertNotNull("Timer object should be returned!", metricServiceImpl.getTimer("module", "component", "name1", "name2", "name3"));
+        Assert.assertTrue("TThe keys does not exist!", metricServiceImpl.getMetricRegistry().getMetrics().containsKey("module.component.name1.name2.name3"));
     }
 }
