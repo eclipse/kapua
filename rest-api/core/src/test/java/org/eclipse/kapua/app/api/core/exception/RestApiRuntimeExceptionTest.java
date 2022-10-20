@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class RestApiRuntimeExceptionTest extends Assert {
+public class RestApiRuntimeExceptionTest {
 
     RestApiErrorCodes errorCode;
     Object stringObject, intObject, charObject;
@@ -38,17 +39,17 @@ public class RestApiRuntimeExceptionTest extends Assert {
     public void restApiRuntimeExceptionCodeTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(errorCode);
 
-        assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
-        assertEquals("Expected and actual values should be the same.", "Error: ", restApiRuntimeException.getMessage());
-        assertNull("Null expected.", restApiRuntimeException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "Error: ", restApiRuntimeException.getMessage());
+        Assert.assertNull("Null expected.", restApiRuntimeException.getCause());
     }
 
     @Test(expected = NullPointerException.class)
     public void restApiRuntimeExceptionNullCodeTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(null);
 
-        assertNull("Null expected.", restApiRuntimeException.getCode());
-        assertNull("Null expected.", restApiRuntimeException.getCause());
+        Assert.assertNull("Null expected.", restApiRuntimeException.getCode());
+        Assert.assertNull("Null expected.", restApiRuntimeException.getCause());
         restApiRuntimeException.getMessage();
     }
 
@@ -56,17 +57,17 @@ public class RestApiRuntimeExceptionTest extends Assert {
     public void restApiRuntimeExceptionCodeArgumentsTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(errorCode, stringObject, intObject, charObject);
 
-        assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
-        assertEquals("Expected and actual values should be the same.", "Error: " + stringObject + ", " + intObject + ", " + charObject, restApiRuntimeException.getMessage());
-        assertNull("Null expected.", restApiRuntimeException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "Error: " + stringObject + ", " + intObject + ", " + charObject, restApiRuntimeException.getMessage());
+        Assert.assertNull("Null expected.", restApiRuntimeException.getCause());
     }
 
     @Test(expected = NullPointerException.class)
     public void restApiRuntimeExceptionNullCodeArgumentsTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(null, stringObject, intObject, charObject);
 
-        assertNull("Null expected.", restApiRuntimeException.getCode());
-        assertNull("Null expected.", restApiRuntimeException.getCause());
+        Assert.assertNull("Null expected.", restApiRuntimeException.getCode());
+        Assert.assertNull("Null expected.", restApiRuntimeException.getCause());
         restApiRuntimeException.getMessage();
     }
 
@@ -74,26 +75,26 @@ public class RestApiRuntimeExceptionTest extends Assert {
     public void restApiRuntimeExceptionCodeNullArgumentsTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(errorCode, null);
 
-        assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
-        assertEquals("Expected and actual values should be the same.", "Error: ", restApiRuntimeException.getMessage());
-        assertNull("Null expected.", restApiRuntimeException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "Error: ", restApiRuntimeException.getMessage());
+        Assert.assertNull("Null expected.", restApiRuntimeException.getCause());
     }
 
     @Test
     public void restApiRuntimeExceptionCodeCauseArgumentsTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(errorCode, cause, stringObject, intObject, charObject);
 
-        assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
-        assertEquals("Expected and actual values should be the same.", "Error: " + stringObject + ", " + intObject + ", " + charObject, restApiRuntimeException.getMessage());
-        assertEquals("Expected and actual values should be the same.", cause, restApiRuntimeException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "Error: " + stringObject + ", " + intObject + ", " + charObject, restApiRuntimeException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", cause, restApiRuntimeException.getCause());
     }
 
     @Test(expected = NullPointerException.class)
     public void restApiRuntimeExceptionNullCodeCauseArgumentsTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(null, cause, stringObject, intObject, charObject);
 
-        assertNull("Null expected.", restApiRuntimeException.getCode());
-        assertEquals("Expected and actual values should be the same.", cause, restApiRuntimeException.getCause());
+        Assert.assertNull("Null expected.", restApiRuntimeException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", cause, restApiRuntimeException.getCause());
 
         restApiRuntimeException.getMessage();
     }
@@ -102,17 +103,17 @@ public class RestApiRuntimeExceptionTest extends Assert {
     public void restApiRuntimeExceptionCodeNullCauseArgumentsTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(errorCode, null, stringObject, intObject, charObject);
 
-        assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
-        assertEquals("Expected and actual values should be the same.", "Error: " + stringObject + ", " + intObject + ", " + charObject, restApiRuntimeException.getMessage());
-        assertNull("Null expected.", restApiRuntimeException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "Error: " + stringObject + ", " + intObject + ", " + charObject, restApiRuntimeException.getMessage());
+        Assert.assertNull("Null expected.", restApiRuntimeException.getCause());
     }
 
     @Test
     public void restApiRuntimeExceptionCodeCauseNullArgumentsTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(errorCode, cause, null);
 
-        assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
-        assertEquals("Expected and actual values should be the same.", "Error: ", restApiRuntimeException.getMessage());
-        assertEquals("Expected and actual values should be the same.", cause, restApiRuntimeException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, restApiRuntimeException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "Error: ", restApiRuntimeException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", cause, restApiRuntimeException.getCause());
     }
 }  

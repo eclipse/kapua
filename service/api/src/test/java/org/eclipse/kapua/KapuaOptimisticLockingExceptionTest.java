@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaOptimisticLockingExceptionTest extends Assert {
+public class KapuaOptimisticLockingExceptionTest {
 
     Exception[] exceptions;
 
@@ -32,9 +33,9 @@ public class KapuaOptimisticLockingExceptionTest extends Assert {
     public void kapuaOptimisticLockingExceptionTest() {
         for (Exception exception : exceptions) {
             KapuaOptimisticLockingException kapuaOptimisticLockingException = new KapuaOptimisticLockingException(exception);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.OPTIMISTIC_LOCKING, kapuaOptimisticLockingException.getCode());
-            assertEquals("Expected and actual values should be the same.", exception, kapuaOptimisticLockingException.getCause());
-            assertEquals("Expected and actual values should be the same.", "The entity is out of state as it has been modified or deleted by another transaction.", kapuaOptimisticLockingException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.OPTIMISTIC_LOCKING, kapuaOptimisticLockingException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", exception, kapuaOptimisticLockingException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", "The entity is out of state as it has been modified or deleted by another transaction.", kapuaOptimisticLockingException.getMessage());
         }
     }
 

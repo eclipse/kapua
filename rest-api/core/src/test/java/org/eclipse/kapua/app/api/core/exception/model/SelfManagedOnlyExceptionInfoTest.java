@@ -21,8 +21,9 @@ import org.junit.experimental.categories.Category;
 
 import javax.ws.rs.core.Response;
 
+
 @Category(JUnitTests.class)
-public class SelfManagedOnlyExceptionInfoTest extends Assert {
+public class SelfManagedOnlyExceptionInfoTest {
 
     Response.Status[] statusList;
     int[] expectedStatusCodes;
@@ -47,18 +48,18 @@ public class SelfManagedOnlyExceptionInfoTest extends Assert {
     public void selfManagedOnlyExceptionInfoWithoutParametersTest() {
         SelfManagedOnlyExceptionInfo selfManagedOnlyExceptionInfo = new SelfManagedOnlyExceptionInfo();
 
-        assertNull("Null expected.", selfManagedOnlyExceptionInfo.getKapuaErrorCode());
-        assertEquals("Expected and actual values should be the same.", 0, selfManagedOnlyExceptionInfo.getHttpErrorCode());
-        assertNull("Null expected.", selfManagedOnlyExceptionInfo.getMessage());
+        Assert.assertNull("Null expected.", selfManagedOnlyExceptionInfo.getKapuaErrorCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, selfManagedOnlyExceptionInfo.getHttpErrorCode());
+        Assert.assertNull("Null expected.", selfManagedOnlyExceptionInfo.getMessage());
     }
 
     @Test
     public void selfManagedOnlyExceptionInfoStatusExceptionTest() {
         for (int i = 0; i < statusList.length; i++) {
             SelfManagedOnlyExceptionInfo selfManagedOnlyExceptionInfo = new SelfManagedOnlyExceptionInfo(statusList[i], selfManagedOnlyException);
-            assertEquals("Expected and actual values should be the same.", "SELF_MANAGED_ONLY", selfManagedOnlyExceptionInfo.getKapuaErrorCode());
-            assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], selfManagedOnlyExceptionInfo.getHttpErrorCode());
-            assertEquals("Expected and actual values should be the same.", "User cannot perform this action on behalf of another user. This action can be performed only in self-management.", selfManagedOnlyExceptionInfo.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", "SELF_MANAGED_ONLY", selfManagedOnlyExceptionInfo.getKapuaErrorCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], selfManagedOnlyExceptionInfo.getHttpErrorCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "User cannot perform this action on behalf of another user. This action can be performed only in self-management.", selfManagedOnlyExceptionInfo.getMessage());
         }
     }
 

@@ -21,8 +21,9 @@ import org.mockito.Mockito;
 
 import javax.servlet.ServletContextEvent;
 
+
 @Category(JUnitTests.class)
-public class RestApiListenerTest extends Assert {
+public class RestApiListenerTest {
 
     RestApiListener restApiListener;
     ServletContextEvent servletContextEvent;
@@ -38,7 +39,7 @@ public class RestApiListenerTest extends Assert {
         try {
             restApiListener.contextInitialized(servletContextEvent);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -47,7 +48,7 @@ public class RestApiListenerTest extends Assert {
         try {
             restApiListener.contextInitialized(null);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -56,7 +57,7 @@ public class RestApiListenerTest extends Assert {
         try {
             restApiListener.contextDestroyed(servletContextEvent);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -65,7 +66,7 @@ public class RestApiListenerTest extends Assert {
         try {
             restApiListener.contextDestroyed(null);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 }

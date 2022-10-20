@@ -17,15 +17,16 @@ package org.eclipse.kapua.app.api.core.exception;
         import org.junit.Test;
         import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class SessionNotPopulatedExceptionTest extends Assert {
+public class SessionNotPopulatedExceptionTest {
 
     @Test
     public void sessionNotPopulatedExceptionTest() {
         SessionNotPopulatedException sessionNotPopulatedException = new SessionNotPopulatedException();
 
-        assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, sessionNotPopulatedException.getCode());
-        assertNull("Null expected.", sessionNotPopulatedException.getCause());
-        assertEquals("Expected and actual values should be the same.", "Error: ", sessionNotPopulatedException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", RestApiErrorCodes.SESSION_NOT_POPULATED, sessionNotPopulatedException.getCode());
+        Assert.assertNull("Null expected.", sessionNotPopulatedException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", "Error: ", sessionNotPopulatedException.getMessage());
     }
 }  

@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaIllegalAccessExceptionTest extends Assert {
+public class KapuaIllegalAccessExceptionTest {
 
     String[] operationName;
 
@@ -32,9 +33,9 @@ public class KapuaIllegalAccessExceptionTest extends Assert {
     public void kapuaIllegalAccessExceptionTest() {
         for (String name : operationName) {
             KapuaIllegalAccessException kapuaIllegalAccessException = new KapuaIllegalAccessException(name);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ILLEGAL_ACCESS, kapuaIllegalAccessException.getCode());
-            assertEquals("Expected and actual values should be the same.", "The current subject is not authorized for " + name + ".", kapuaIllegalAccessException.getMessage());
-            assertNull("Null expected.", kapuaIllegalAccessException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ILLEGAL_ACCESS, kapuaIllegalAccessException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "The current subject is not authorized for " + name + ".", kapuaIllegalAccessException.getMessage());
+            Assert.assertNull("Null expected.", kapuaIllegalAccessException.getCause());
         }
     }
 

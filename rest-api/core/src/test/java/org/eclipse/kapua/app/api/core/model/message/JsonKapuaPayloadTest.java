@@ -26,8 +26,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class JsonKapuaPayloadTest extends Assert {
+public class JsonKapuaPayloadTest {
 
     KapuaPayload kapuaPayload;
     byte[] body;
@@ -44,8 +45,8 @@ public class JsonKapuaPayloadTest extends Assert {
     public void jsonKapuaPayloadWithoutParameterTest() {
         JsonKapuaPayload jsonKapuaPayload = new JsonKapuaPayload();
 
-        assertTrue("True expected.", jsonKapuaPayload.getMetrics().isEmpty());
-        assertNull("Null expected.", jsonKapuaPayload.getBody());
+        Assert.assertTrue("True expected.", jsonKapuaPayload.getMetrics().isEmpty());
+        Assert.assertNull("Null expected.", jsonKapuaPayload.getBody());
     }
 
     @Test
@@ -55,8 +56,8 @@ public class JsonKapuaPayloadTest extends Assert {
 
         JsonKapuaPayload jsonKapuaPayload = new JsonKapuaPayload(kapuaPayload);
 
-        assertTrue("True expected.", jsonKapuaPayload.getMetrics().isEmpty());
-        assertEquals("Expected and actual values should be the same.", body, jsonKapuaPayload.getBody());
+        Assert.assertTrue("True expected.", jsonKapuaPayload.getMetrics().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", body, jsonKapuaPayload.getBody());
     }
 
     @Test
@@ -67,8 +68,8 @@ public class JsonKapuaPayloadTest extends Assert {
         Mockito.when(kapuaPayload.getMetrics()).thenReturn(map);
 
         JsonKapuaPayload jsonKapuaPayload = new JsonKapuaPayload(kapuaPayload);
-        assertTrue("True expected.", jsonKapuaPayload.getMetrics().isEmpty());
-        assertEquals("Expected and actual values should be the same.", body, jsonKapuaPayload.getBody());
+        Assert.assertTrue("True expected.", jsonKapuaPayload.getMetrics().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", body, jsonKapuaPayload.getBody());
     }
 
     @Test
@@ -80,8 +81,8 @@ public class JsonKapuaPayloadTest extends Assert {
         Mockito.when(kapuaPayload.getMetrics()).thenReturn(map);
 
         JsonKapuaPayload jsonKapuaPayload = new JsonKapuaPayload(kapuaPayload);
-        assertFalse("False expected.", jsonKapuaPayload.getMetrics().isEmpty());
-        assertEquals("Expected and actual values should be the same.", body, jsonKapuaPayload.getBody());
+        Assert.assertFalse("False expected.", jsonKapuaPayload.getMetrics().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", body, jsonKapuaPayload.getBody());
     }
 
     @Test(expected = NullPointerException.class)
@@ -97,9 +98,9 @@ public class JsonKapuaPayloadTest extends Assert {
 
         metrics.add(jsonMetric);
 
-        assertTrue("True expected.", jsonKapuaPayload.getMetrics().isEmpty());
+        Assert.assertTrue("True expected.", jsonKapuaPayload.getMetrics().isEmpty());
         jsonKapuaPayload.setMetrics(metrics);
-        assertFalse("False expected.", jsonKapuaPayload.getMetrics().isEmpty());
+        Assert.assertFalse("False expected.", jsonKapuaPayload.getMetrics().isEmpty());
     }
 
     @Test
@@ -107,8 +108,8 @@ public class JsonKapuaPayloadTest extends Assert {
         JsonKapuaPayload jsonKapuaPayload = new JsonKapuaPayload(kapuaPayload);
         byte[] newBody = {1, 2, 3, 4, 5};
 
-        assertNull("Null expected.", jsonKapuaPayload.getBody());
+        Assert.assertNull("Null expected.", jsonKapuaPayload.getBody());
         jsonKapuaPayload.setBody(newBody);
-        assertEquals("Expected and actual values should be the same.", newBody, jsonKapuaPayload.getBody());
+        Assert.assertEquals("Expected and actual values should be the same.", newBody, jsonKapuaPayload.getBody());
     }
 }

@@ -19,13 +19,14 @@ import org.junit.experimental.categories.Category;
 
 import java.math.BigInteger;
 
+
 @Category(JUnitTests.class)
-public class KapuaIdImplTest extends Assert {
+public class KapuaIdImplTest {
 
     @Test
     public void kapuaIdImplTest() {
         KapuaIdImpl kapuaIdImpl = new KapuaIdImpl(BigInteger.ONE);
-        assertEquals("Expected and actual values should be the same.", BigInteger.ONE, kapuaIdImpl.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", BigInteger.ONE, kapuaIdImpl.getId());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -40,7 +41,7 @@ public class KapuaIdImplTest extends Assert {
 
         for (int i = 0; i < bigInteger.length; i++) {
             KapuaIdImpl kapuaIdImpl = new KapuaIdImpl(bigInteger[i]);
-            assertEquals("Expected and actual values should be the same.", expectedResult[i], kapuaIdImpl.hashCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedResult[i], kapuaIdImpl.hashCode());
         }
     }
 
@@ -51,12 +52,12 @@ public class KapuaIdImplTest extends Assert {
         KapuaIdImpl kapuaIdImpl3 = new KapuaIdImpl(BigInteger.ONE);
         Object[] objects = {0, 10, 100000, "String", 'c', -10, -1000000000, -100000000000L, 10L, 10.0f, null, 10.10d, true, false};
 
-        assertEquals("True expected.", kapuaIdImpl1, kapuaIdImpl1);
-        assertNotEquals("False expected", null, kapuaIdImpl1);
+        Assert.assertEquals("True expected.", kapuaIdImpl1, kapuaIdImpl1);
+        Assert.assertNotEquals("False expected", null, kapuaIdImpl1);
         for (Object object : objects) {
-            assertNotEquals("False expected", kapuaIdImpl1, object);
+            Assert.assertNotEquals("False expected", kapuaIdImpl1, object);
         }
-        assertNotEquals("False expected", kapuaIdImpl1, kapuaIdImpl2);
-        assertEquals("True expected", kapuaIdImpl1, kapuaIdImpl3);
+        Assert.assertNotEquals("False expected", kapuaIdImpl1, kapuaIdImpl2);
+        Assert.assertEquals("True expected", kapuaIdImpl1, kapuaIdImpl3);
     }
 }

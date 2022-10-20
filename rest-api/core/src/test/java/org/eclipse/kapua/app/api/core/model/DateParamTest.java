@@ -18,8 +18,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class DateParamTest extends Assert {
+public class DateParamTest {
 
     @Test
     public void dateParamTest() throws KapuaIllegalArgumentException {
@@ -27,7 +28,7 @@ public class DateParamTest extends Assert {
 
         for (int i = 0; i < dates.length; i++) {
             DateParam dateParam = new DateParam(dates[i]);
-            assertNotNull("Null not expected.", dateParam.getDate());
+            Assert.assertNotNull("Null not expected.", dateParam.getDate());
         }
     }
 

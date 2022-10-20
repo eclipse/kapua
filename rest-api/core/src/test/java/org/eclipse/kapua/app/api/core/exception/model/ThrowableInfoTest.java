@@ -20,8 +20,9 @@ import org.junit.experimental.categories.Category;
 
 import javax.ws.rs.core.Response;
 
+
 @Category(JUnitTests.class)
-public class ThrowableInfoTest extends Assert {
+public class ThrowableInfoTest {
 
     Response.Status[] statusList;
     int[] expectedStatusCodes;
@@ -48,9 +49,9 @@ public class ThrowableInfoTest extends Assert {
     public void throwableInfoWithoutParametersTest() {
         ThrowableInfo throwableInfo = new ThrowableInfo();
 
-        assertEquals("Expected and actual values should be the same.", 0, throwableInfo.getHttpErrorCode());
-        assertNull("Null expected.", throwableInfo.getMessage());
-        assertNull("Null expected.", throwableInfo.getStackTrace());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, throwableInfo.getHttpErrorCode());
+        Assert.assertNull("Null expected.", throwableInfo.getMessage());
+        Assert.assertNull("Null expected.", throwableInfo.getStackTrace());
     }
 
     @Test
@@ -59,9 +60,9 @@ public class ThrowableInfoTest extends Assert {
             for (int j = 0; j < throwables.length; j++) {
                 ThrowableInfo throwableInfo = new ThrowableInfo(statusList[i], throwables[j]);
 
-                assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], throwableInfo.getHttpErrorCode());
-                assertEquals("Expected and actual values should be the same.", expectedMessage[j], throwableInfo.getMessage());
-                assertNull("Null expected.", throwableInfo.getStackTrace());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], throwableInfo.getHttpErrorCode());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedMessage[j], throwableInfo.getMessage());
+                Assert.assertNull("Null expected.", throwableInfo.getStackTrace());
             }
         }
     }
@@ -75,9 +76,9 @@ public class ThrowableInfoTest extends Assert {
     public void throwableInfoNullThrowableTest() {
         for (int i = 0; i < statusList.length; i++) {
             ThrowableInfo throwableInfo = new ThrowableInfo(statusList[i], null);
-            assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], throwableInfo.getHttpErrorCode());
-            assertNull("Null expected.", throwableInfo.getMessage());
-            assertNull("Null expected.", throwableInfo.getStackTrace());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], throwableInfo.getHttpErrorCode());
+            Assert.assertNull("Null expected.", throwableInfo.getMessage());
+            Assert.assertNull("Null expected.", throwableInfo.getStackTrace());
         }
     }
 
@@ -88,26 +89,26 @@ public class ThrowableInfoTest extends Assert {
 
         for (int i = 0; i < statusList.length; i++) {
             throwableInfo1.setHttpErrorCode(statusList[i]);
-            assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], throwableInfo1.getHttpErrorCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], throwableInfo1.getHttpErrorCode());
         }
 
         try {
             throwableInfo1.setHttpErrorCode(null);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
 
         for (int i = 0; i < statusList.length; i++) {
             throwableInfo2.setHttpErrorCode(statusList[i]);
-            assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], throwableInfo2.getHttpErrorCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], throwableInfo2.getHttpErrorCode());
         }
 
         try {
             throwableInfo2.setHttpErrorCode(null);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -119,12 +120,12 @@ public class ThrowableInfoTest extends Assert {
 
         for (int i = 0; i < messages.length; i++) {
             throwableInfo1.setMessage(messages[i]);
-            assertEquals("Expected and actual values should be the same.", messages[i], throwableInfo1.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", messages[i], throwableInfo1.getMessage());
         }
 
         for (int i = 0; i < messages.length; i++) {
             throwableInfo2.setMessage(messages[i]);
-            assertEquals("Expected and actual values should be the same.", messages[i], throwableInfo2.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", messages[i], throwableInfo2.getMessage());
         }
     }
 } 

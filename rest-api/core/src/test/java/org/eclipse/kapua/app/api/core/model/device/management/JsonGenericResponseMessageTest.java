@@ -30,8 +30,9 @@ import org.mockito.Mockito;
 import java.util.Date;
 import java.util.UUID;
 
+
 @Category(JUnitTests.class)
-public class JsonGenericResponseMessageTest extends Assert {
+public class JsonGenericResponseMessageTest {
 
     GenericResponseMessage genericResponseMessage;
     UUID id;
@@ -83,32 +84,32 @@ public class JsonGenericResponseMessageTest extends Assert {
     public void jsonGenericResponseMessageWithoutParameterTest() {
         JsonGenericResponseMessage jsonGenericResponseMessage = new JsonGenericResponseMessage();
 
-        assertNull("Null expected.", jsonGenericResponseMessage.getId());
-        assertNull("Null expected.", jsonGenericResponseMessage.getScopeId());
-        assertNull("Null expected.", jsonGenericResponseMessage.getDeviceId());
-        assertNull("Null expected.", jsonGenericResponseMessage.getClientId());
-        assertNull("Null expected.", jsonGenericResponseMessage.getReceivedOn());
-        assertNull("Null expected.", jsonGenericResponseMessage.getSentOn());
-        assertNull("Null expected.", jsonGenericResponseMessage.getCapturedOn());
-        assertNull("Null expected.", jsonGenericResponseMessage.getPosition());
-        assertNull("Null expected.", jsonGenericResponseMessage.getChannel());
-        assertNull("Null expected.", jsonGenericResponseMessage.getPayload());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage.getId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage.getScopeId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage.getDeviceId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage.getClientId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage.getReceivedOn());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage.getSentOn());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage.getCapturedOn());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage.getPosition());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage.getChannel());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage.getPayload());
     }
 
     @Test
     public void jsonGenericResponseMessageWithParameterTest() {
         JsonGenericResponseMessage jsonGenericResponseMessage = new JsonGenericResponseMessage(genericResponseMessage);
 
-        assertEquals("Expected and actual values should be the same.", id, jsonGenericResponseMessage.getId());
-        assertEquals("Expected and actual values should be the same.", scopeId, jsonGenericResponseMessage.getScopeId());
-        assertEquals("Expected and actual values should be the same.", deviceId, jsonGenericResponseMessage.getDeviceId());
-        assertEquals("Expected and actual values should be the same.", clientId, jsonGenericResponseMessage.getClientId());
-        assertEquals("Expected and actual values should be the same.", receivedOn, jsonGenericResponseMessage.getReceivedOn());
-        assertEquals("Expected and actual values should be the same.", sentOn, jsonGenericResponseMessage.getSentOn());
-        assertEquals("Expected and actual values should be the same.", capturedOn, jsonGenericResponseMessage.getCapturedOn());
-        assertEquals("Expected and actual values should be the same.", kapuaPosition, jsonGenericResponseMessage.getPosition());
-        assertEquals("Expected and actual values should be the same.", genericResponseChannel, jsonGenericResponseMessage.getChannel());
-        assertNotNull("NotNull expected.", jsonGenericResponseMessage.getPayload());
+        Assert.assertEquals("Expected and actual values should be the same.", id, jsonGenericResponseMessage.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, jsonGenericResponseMessage.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", deviceId, jsonGenericResponseMessage.getDeviceId());
+        Assert.assertEquals("Expected and actual values should be the same.", clientId, jsonGenericResponseMessage.getClientId());
+        Assert.assertEquals("Expected and actual values should be the same.", receivedOn, jsonGenericResponseMessage.getReceivedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", sentOn, jsonGenericResponseMessage.getSentOn());
+        Assert.assertEquals("Expected and actual values should be the same.", capturedOn, jsonGenericResponseMessage.getCapturedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", kapuaPosition, jsonGenericResponseMessage.getPosition());
+        Assert.assertEquals("Expected and actual values should be the same.", genericResponseChannel, jsonGenericResponseMessage.getChannel());
+        Assert.assertNotNull("NotNull expected.", jsonGenericResponseMessage.getPayload());
     }
 
     @Test(expected = NullPointerException.class)
@@ -123,14 +124,14 @@ public class JsonGenericResponseMessageTest extends Assert {
         jsonGenericResponseMessage1.setId(newId);
         jsonGenericResponseMessage2.setId(newId);
 
-        assertEquals("Expected and actual values should be the same.", newId, jsonGenericResponseMessage1.getId());
-        assertEquals("Expected and actual values should be the same.", newId, jsonGenericResponseMessage2.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", newId, jsonGenericResponseMessage1.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", newId, jsonGenericResponseMessage2.getId());
 
         jsonGenericResponseMessage1.setId(null);
         jsonGenericResponseMessage2.setId(null);
 
-        assertNull("Null expected.", jsonGenericResponseMessage1.getId());
-        assertNull("Null expected.", jsonGenericResponseMessage2.getId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage1.getId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage2.getId());
     }
 
     @Test
@@ -140,14 +141,14 @@ public class JsonGenericResponseMessageTest extends Assert {
         jsonGenericResponseMessage1.setScopeId(newScopeId);
         jsonGenericResponseMessage2.setScopeId(newScopeId);
 
-        assertEquals("Expected and actual values should be the same.", newScopeId, jsonGenericResponseMessage1.getScopeId());
-        assertEquals("Expected and actual values should be the same.", newScopeId, jsonGenericResponseMessage2.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", newScopeId, jsonGenericResponseMessage1.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", newScopeId, jsonGenericResponseMessage2.getScopeId());
 
         jsonGenericResponseMessage1.setScopeId(null);
         jsonGenericResponseMessage2.setScopeId(null);
 
-        assertNull("Null expected.", jsonGenericResponseMessage1.getScopeId());
-        assertNull("Null expected.", jsonGenericResponseMessage2.getScopeId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage1.getScopeId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage2.getScopeId());
     }
 
     @Test
@@ -157,14 +158,14 @@ public class JsonGenericResponseMessageTest extends Assert {
         jsonGenericResponseMessage1.setDeviceId(newDeviceId);
         jsonGenericResponseMessage2.setDeviceId(newDeviceId);
 
-        assertEquals("Expected and actual values should be the same.", newDeviceId, jsonGenericResponseMessage1.getDeviceId());
-        assertEquals("Expected and actual values should be the same.", newDeviceId, jsonGenericResponseMessage2.getDeviceId());
+        Assert.assertEquals("Expected and actual values should be the same.", newDeviceId, jsonGenericResponseMessage1.getDeviceId());
+        Assert.assertEquals("Expected and actual values should be the same.", newDeviceId, jsonGenericResponseMessage2.getDeviceId());
 
         jsonGenericResponseMessage1.setDeviceId(null);
         jsonGenericResponseMessage2.setDeviceId(null);
 
-        assertNull("Null expected.", jsonGenericResponseMessage1.getDeviceId());
-        assertNull("Null expected.", jsonGenericResponseMessage2.getDeviceId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage1.getDeviceId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage2.getDeviceId());
     }
 
     @Test
@@ -175,15 +176,15 @@ public class JsonGenericResponseMessageTest extends Assert {
             jsonGenericResponseMessage1.setClientId(newClientID);
             jsonGenericResponseMessage2.setClientId(newClientID);
 
-            assertEquals("Expected and actual values should be the same.", newClientID, jsonGenericResponseMessage1.getClientId());
-            assertEquals("Expected and actual values should be the same.", newClientID, jsonGenericResponseMessage2.getClientId());
+            Assert.assertEquals("Expected and actual values should be the same.", newClientID, jsonGenericResponseMessage1.getClientId());
+            Assert.assertEquals("Expected and actual values should be the same.", newClientID, jsonGenericResponseMessage2.getClientId());
         }
 
         jsonGenericResponseMessage1.setClientId(null);
         jsonGenericResponseMessage2.setClientId(null);
 
-        assertNull("Null expected.", jsonGenericResponseMessage1.getClientId());
-        assertNull("Null expected.", jsonGenericResponseMessage2.getClientId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage1.getClientId());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage2.getClientId());
     }
 
     @Test
@@ -192,15 +193,15 @@ public class JsonGenericResponseMessageTest extends Assert {
             jsonGenericResponseMessage1.setReceivedOn(newReceivedOn);
             jsonGenericResponseMessage2.setReceivedOn(newReceivedOn);
 
-            assertEquals("Expected and actual values should be the same.", newReceivedOn, jsonGenericResponseMessage1.getReceivedOn());
-            assertEquals("Expected and actual values should be the same.", newReceivedOn, jsonGenericResponseMessage2.getReceivedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newReceivedOn, jsonGenericResponseMessage1.getReceivedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newReceivedOn, jsonGenericResponseMessage2.getReceivedOn());
         }
 
         jsonGenericResponseMessage1.setReceivedOn(null);
         jsonGenericResponseMessage2.setReceivedOn(null);
 
-        assertNull("Null expected.", jsonGenericResponseMessage1.getReceivedOn());
-        assertNull("Null expected.", jsonGenericResponseMessage2.getReceivedOn());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage1.getReceivedOn());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage2.getReceivedOn());
     }
 
     @Test
@@ -209,15 +210,15 @@ public class JsonGenericResponseMessageTest extends Assert {
             jsonGenericResponseMessage1.setSentOn(newSentOn);
             jsonGenericResponseMessage2.setSentOn(newSentOn);
 
-            assertEquals("Expected and actual values should be the same.", newSentOn, jsonGenericResponseMessage1.getSentOn());
-            assertEquals("Expected and actual values should be the same.", newSentOn, jsonGenericResponseMessage2.getSentOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newSentOn, jsonGenericResponseMessage1.getSentOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newSentOn, jsonGenericResponseMessage2.getSentOn());
         }
 
         jsonGenericResponseMessage1.setSentOn(null);
         jsonGenericResponseMessage2.setSentOn(null);
 
-        assertNull("Null expected.", jsonGenericResponseMessage1.getSentOn());
-        assertNull("Null expected.", jsonGenericResponseMessage2.getSentOn());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage1.getSentOn());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage2.getSentOn());
     }
 
     @Test
@@ -226,15 +227,15 @@ public class JsonGenericResponseMessageTest extends Assert {
             jsonGenericResponseMessage1.setCapturedOn(newCapturedOn);
             jsonGenericResponseMessage2.setCapturedOn(newCapturedOn);
 
-            assertEquals("Expected and actual values should be the same.", newCapturedOn, jsonGenericResponseMessage1.getCapturedOn());
-            assertEquals("Expected and actual values should be the same.", newCapturedOn, jsonGenericResponseMessage2.getCapturedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newCapturedOn, jsonGenericResponseMessage1.getCapturedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newCapturedOn, jsonGenericResponseMessage2.getCapturedOn());
         }
 
         jsonGenericResponseMessage1.setCapturedOn(null);
         jsonGenericResponseMessage2.setCapturedOn(null);
 
-        assertNull("Null expected.", jsonGenericResponseMessage1.getCapturedOn());
-        assertNull("Null expected.", jsonGenericResponseMessage2.getCapturedOn());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage1.getCapturedOn());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage2.getCapturedOn());
     }
 
     @Test
@@ -244,14 +245,14 @@ public class JsonGenericResponseMessageTest extends Assert {
         jsonGenericResponseMessage1.setPosition(newPosition);
         jsonGenericResponseMessage2.setPosition(newPosition);
 
-        assertEquals("Expected and actual values should be the same.", newPosition, jsonGenericResponseMessage1.getPosition());
-        assertEquals("Expected and actual values should be the same.", newPosition, jsonGenericResponseMessage2.getPosition());
+        Assert.assertEquals("Expected and actual values should be the same.", newPosition, jsonGenericResponseMessage1.getPosition());
+        Assert.assertEquals("Expected and actual values should be the same.", newPosition, jsonGenericResponseMessage2.getPosition());
 
         jsonGenericResponseMessage1.setPosition(null);
         jsonGenericResponseMessage2.setPosition(null);
 
-        assertNull("Null expected.", jsonGenericResponseMessage1.getPosition());
-        assertNull("Null expected.", jsonGenericResponseMessage2.getPosition());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage1.getPosition());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage2.getPosition());
     }
 
     @Test
@@ -261,14 +262,14 @@ public class JsonGenericResponseMessageTest extends Assert {
         jsonGenericResponseMessage1.setChannel(newGenericResponseChannel);
         jsonGenericResponseMessage2.setChannel(newGenericResponseChannel);
 
-        assertEquals("Expected and actual values should be the same.", newGenericResponseChannel, jsonGenericResponseMessage1.getChannel());
-        assertEquals("Expected and actual values should be the same.", newGenericResponseChannel, jsonGenericResponseMessage2.getChannel());
+        Assert.assertEquals("Expected and actual values should be the same.", newGenericResponseChannel, jsonGenericResponseMessage1.getChannel());
+        Assert.assertEquals("Expected and actual values should be the same.", newGenericResponseChannel, jsonGenericResponseMessage2.getChannel());
 
         jsonGenericResponseMessage1.setChannel(null);
         jsonGenericResponseMessage2.setChannel(null);
 
-        assertNull("Null expected.", jsonGenericResponseMessage1.getChannel());
-        assertNull("Null expected.", jsonGenericResponseMessage2.getChannel());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage1.getChannel());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage2.getChannel());
     }
 
     @Test
@@ -278,21 +279,21 @@ public class JsonGenericResponseMessageTest extends Assert {
         jsonGenericResponseMessage1.setPayload(newJsonKapuaPayload);
         jsonGenericResponseMessage2.setPayload(newJsonKapuaPayload);
 
-        assertEquals("Expected and actual values should be the same.", newJsonKapuaPayload, jsonGenericResponseMessage1.getPayload());
-        assertEquals("Expected and actual values should be the same.", newJsonKapuaPayload, jsonGenericResponseMessage2.getPayload());
+        Assert.assertEquals("Expected and actual values should be the same.", newJsonKapuaPayload, jsonGenericResponseMessage1.getPayload());
+        Assert.assertEquals("Expected and actual values should be the same.", newJsonKapuaPayload, jsonGenericResponseMessage2.getPayload());
 
         jsonGenericResponseMessage1.setPayload((JsonKapuaPayload) null);
         jsonGenericResponseMessage2.setPayload((JsonKapuaPayload) null);
 
-        assertNull("Null expected.", jsonGenericResponseMessage1.getPayload());
-        assertNull("Null expected.", jsonGenericResponseMessage2.getPayload());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage1.getPayload());
+        Assert.assertNull("Null expected.", jsonGenericResponseMessage2.getPayload());
     }
 
     @Test(expected = NullPointerException.class)
     public void setAndGetKapuaPayloadMessageWithoutParametersTest() {
         jsonGenericResponseMessage1.setPayload(newKapuaPayload);
 
-        assertNotNull("NotNull expected.", jsonGenericResponseMessage1.getPayload());
+        Assert.assertNotNull("NotNull expected.", jsonGenericResponseMessage1.getPayload());
 
         jsonGenericResponseMessage1.setPayload((KapuaPayload) null);
     }
@@ -301,7 +302,7 @@ public class JsonGenericResponseMessageTest extends Assert {
     public void setAndGetKapuaPayloadMessageWithParameterTest() {
         jsonGenericResponseMessage2.setPayload(newKapuaPayload);
 
-        assertNotNull("NotNull expected.", jsonGenericResponseMessage2.getPayload());
+        Assert.assertNotNull("NotNull expected.", jsonGenericResponseMessage2.getPayload());
 
         jsonGenericResponseMessage2.setPayload((KapuaPayload) null);
     }

@@ -23,8 +23,9 @@ import org.junit.experimental.categories.Category;
 import java.math.BigInteger;
 
 
+
 @Category(JUnitTests.class)
-public class KapuaEntityNotFoundExceptionTest extends Assert {
+public class KapuaEntityNotFoundExceptionTest {
     String[] entityType;
     String[] entityName;
     KapuaId entityId;
@@ -41,12 +42,12 @@ public class KapuaEntityNotFoundExceptionTest extends Assert {
         for (String type : entityType) {
             for (String name : entityName) {
                 KapuaEntityNotFoundException kapuaEntityNotFoundException = new KapuaEntityNotFoundException(type, name);
-                assertEquals("Expected and actual values should be the same.", type, kapuaEntityNotFoundException.getEntityType());
-                assertEquals("Expected and actual values should be the same.", name, kapuaEntityNotFoundException.getEntityName());
-                assertNull("Null expected.", kapuaEntityNotFoundException.getEntityId());
-                assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaEntityNotFoundException.getCode());
-                assertEquals("Expected and actual values should be the same.", "The entity of type " + type + " with id/name " + name + " was not found.", kapuaEntityNotFoundException.getMessage());
-                assertNull("Null expected.", kapuaEntityNotFoundException.getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", type, kapuaEntityNotFoundException.getEntityType());
+                Assert.assertEquals("Expected and actual values should be the same.", name, kapuaEntityNotFoundException.getEntityName());
+                Assert.assertNull("Null expected.", kapuaEntityNotFoundException.getEntityId());
+                Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaEntityNotFoundException.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", "The entity of type " + type + " with id/name " + name + " was not found.", kapuaEntityNotFoundException.getMessage());
+                Assert.assertNull("Null expected.", kapuaEntityNotFoundException.getCause());
             }
         }
     }
@@ -55,11 +56,11 @@ public class KapuaEntityNotFoundExceptionTest extends Assert {
     public void kapuaEntityNotFoundExceptionStringKapuaIdParametersTest() {
         for (String type : entityType) {
             KapuaEntityNotFoundException kapuaEntityNotFoundException = new KapuaEntityNotFoundException(type, entityId);
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaEntityNotFoundException.getCode());
-            assertEquals("Expected and actual values should be the same.", type, kapuaEntityNotFoundException.getEntityType());
-            assertEquals("Expected and actual values should be the same.", entityId, kapuaEntityNotFoundException.getEntityId());
-            assertEquals("Expected and actual values should be the same.", "The entity of type " + type + " with id/name " + entityId.getId() + " was not found.", kapuaEntityNotFoundException.getMessage());
-            assertNull("Null expected.", kapuaEntityNotFoundException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_NOT_FOUND, kapuaEntityNotFoundException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", type, kapuaEntityNotFoundException.getEntityType());
+            Assert.assertEquals("Expected and actual values should be the same.", entityId, kapuaEntityNotFoundException.getEntityId());
+            Assert.assertEquals("Expected and actual values should be the same.", "The entity of type " + type + " with id/name " + entityId.getId() + " was not found.", kapuaEntityNotFoundException.getMessage());
+            Assert.assertNull("Null expected.", kapuaEntityNotFoundException.getCause());
         }
     }
 

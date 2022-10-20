@@ -24,25 +24,26 @@ import org.junit.experimental.categories.Category;
 
 import javax.xml.bind.JAXBException;
 
+
 @Category(JUnitTests.class)
-public class RestApisApplicationTest extends Assert {
+public class RestApisApplicationTest {
 
     @Test
     public void restApisApplicationTest() throws JAXBException {
         RestApisApplication restApisApplication = new RestApisApplication();
 
-        assertEquals("{jersey.config.server.mediaTypeMappings={xml=application/xml, json=application/json}, jersey.config.server.wadl.disableWadl=true}", restApisApplication.getProperties().toString());
-        assertTrue("True expected.", restApisApplication.isRegistered(UriConnegFilter.class));
-        assertTrue("True expected.", restApisApplication.isRegistered(JaxbContextResolver.class));
-        assertTrue("True expected.", restApisApplication.isRegistered(RestApiJAXBContextProvider.class));
-        assertTrue("True expected.", restApisApplication.isRegistered(KapuaSerializableBodyWriter.class));
-        assertTrue("True expected.", restApisApplication.isRegistered(ListBodyWriter.class));
-        assertTrue("True expected.", restApisApplication.isRegistered(MoxyJsonConfigContextResolver.class));
+        Assert.assertEquals("{jersey.config.server.mediaTypeMappings={xml=application/xml, json=application/json}, jersey.config.server.wadl.disableWadl=true}", restApisApplication.getProperties().toString());
+        Assert.assertTrue("True expected.", restApisApplication.isRegistered(UriConnegFilter.class));
+        Assert.assertTrue("True expected.", restApisApplication.isRegistered(JaxbContextResolver.class));
+        Assert.assertTrue("True expected.", restApisApplication.isRegistered(RestApiJAXBContextProvider.class));
+        Assert.assertTrue("True expected.", restApisApplication.isRegistered(KapuaSerializableBodyWriter.class));
+        Assert.assertTrue("True expected.", restApisApplication.isRegistered(ListBodyWriter.class));
+        Assert.assertTrue("True expected.", restApisApplication.isRegistered(MoxyJsonConfigContextResolver.class));
 
-        assertFalse("False expected.", restApisApplication.isRegistered(ContainerLifecycleListener.class));
-        assertFalse("False expected.", restApisApplication.isRegistered(String.class));
+        Assert.assertFalse("False expected.", restApisApplication.isRegistered(ContainerLifecycleListener.class));
+        Assert.assertFalse("False expected.", restApisApplication.isRegistered(String.class));
 
         restApisApplication.register(ContainerLifecycleListener.class);
-        assertTrue("True expected.", restApisApplication.isRegistered(ContainerLifecycleListener.class));
+        Assert.assertTrue("True expected.", restApisApplication.isRegistered(ContainerLifecycleListener.class));
     }
 }
