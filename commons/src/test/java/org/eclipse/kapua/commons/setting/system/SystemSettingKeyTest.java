@@ -21,8 +21,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class SystemSettingKeyTest extends Assert {
+public class SystemSettingKeyTest {
 
     @Test
     public void keyTest() {
@@ -91,7 +92,7 @@ public class SystemSettingKeyTest extends Assert {
         systemSettings.put(SystemSettingKey.JCACHE_EXPIRY_POLICY, "commons.cache.config.expiryPolicy");
 
         for (Map.Entry<SystemSettingKey, String> entry : systemSettings.entrySet()) {
-            assertEquals("Expected and actual values should be the same.", entry.getKey().key(), entry.getValue());
+            Assert.assertEquals("Expected and actual values should be the same.", entry.getKey().key(), entry.getValue());
         }
     }
 }

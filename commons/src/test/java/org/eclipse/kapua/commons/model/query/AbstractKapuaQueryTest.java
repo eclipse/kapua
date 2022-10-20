@@ -37,9 +37,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
 @RunWith(value = Parameterized.class)
-public class AbstractKapuaQueryTest extends Assert {
+public class AbstractKapuaQueryTest {
 
     private final String attributeName;
 
@@ -85,7 +86,7 @@ public class AbstractKapuaQueryTest extends Assert {
     public void abstractKapuaQueryScopeIdTest() {
         KapuaId scopeId = new KapuaEid();
         AbstractKapuaQuery kapuaQuery = new ActualKapuaQuery(scopeId);
-        assertEquals("Actual and expected values are not the same!", scopeId, kapuaQuery.getScopeId());
+        Assert.assertEquals("Actual and expected values are not the same!", scopeId, kapuaQuery.getScopeId());
     }
 
     @Test
@@ -104,11 +105,11 @@ public class AbstractKapuaQueryTest extends Assert {
         kapuaQuery.setOffset(offset);
         kapuaQuery.setSortCriteria(sortCriteria);
         AbstractKapuaQuery kapuaCopyQuery = new ActualKapuaQuery(kapuaQuery);
-        assertEquals("Actual and expected values are not the same!", kapuaQuery.getFetchAttributes(), kapuaCopyQuery.getFetchAttributes());
-        assertEquals("Actual and expected values are not the same!", kapuaQuery.getPredicate(), kapuaCopyQuery.getPredicate());
-        assertEquals("Actual and expected values are not the same!", kapuaQuery.getLimit(), kapuaCopyQuery.getLimit());
-        assertEquals("Actual and expected values are not the same!", kapuaQuery.getOffset(), kapuaCopyQuery.getOffset());
-        assertEquals("Actual and expected values are not the same!", kapuaQuery.getSortCriteria(), kapuaCopyQuery.getSortCriteria());
+        Assert.assertEquals("Actual and expected values are not the same!", kapuaQuery.getFetchAttributes(), kapuaCopyQuery.getFetchAttributes());
+        Assert.assertEquals("Actual and expected values are not the same!", kapuaQuery.getPredicate(), kapuaCopyQuery.getPredicate());
+        Assert.assertEquals("Actual and expected values are not the same!", kapuaQuery.getLimit(), kapuaCopyQuery.getLimit());
+        Assert.assertEquals("Actual and expected values are not the same!", kapuaQuery.getOffset(), kapuaCopyQuery.getOffset());
+        Assert.assertEquals("Actual and expected values are not the same!", kapuaQuery.getSortCriteria(), kapuaCopyQuery.getSortCriteria());
     }
 
     @Test
@@ -117,11 +118,11 @@ public class AbstractKapuaQueryTest extends Assert {
         String emptyFetchAttribute = "";
         String fetchAttribute = "fetchAttribute";
         kapuaQuery.addFetchAttributes(null);
-        assertEquals("Actual and expected values are not the same!", null, kapuaQuery.getFetchAttributes().get(0));
+        Assert.assertEquals("Actual and expected values are not the same!", null, kapuaQuery.getFetchAttributes().get(0));
         kapuaQuery.addFetchAttributes(fetchAttribute);
-        assertEquals("Actual and expected values are not the same!", fetchAttribute, kapuaQuery.getFetchAttributes().get(1));
+        Assert.assertEquals("Actual and expected values are not the same!", fetchAttribute, kapuaQuery.getFetchAttributes().get(1));
         kapuaQuery.addFetchAttributes(emptyFetchAttribute);
-        assertEquals("Actual and expected values are not the same!", emptyFetchAttribute, kapuaQuery.getFetchAttributes().get(2));
+        Assert.assertEquals("Actual and expected values are not the same!", emptyFetchAttribute, kapuaQuery.getFetchAttributes().get(2));
     }
 
     @Test
@@ -129,8 +130,8 @@ public class AbstractKapuaQueryTest extends Assert {
         AbstractKapuaQuery kapuaQuery = new ActualKapuaQuery();
         Object attributeValue = new Object();
         AttributePredicate<Object> attributePredicate = kapuaQuery.attributePredicate(attributeName, attributeValue);
-        assertEquals("Actual and expected values are not the same!", attributeName, attributePredicate.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", attributeValue, attributePredicate.getAttributeValue());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, attributePredicate.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeValue, attributePredicate.getAttributeValue());
     }
 
     @Test
@@ -138,9 +139,9 @@ public class AbstractKapuaQueryTest extends Assert {
         AbstractKapuaQuery kapuaQuery = new ActualKapuaQuery();
         Object attributeValue = new Object();
         AttributePredicate<Object> attributePredicate = kapuaQuery.attributePredicate(attributeName, attributeValue, operator);
-        assertEquals("Actual and expected values are not the same!", attributeName, attributePredicate.getAttributeName());
-        assertEquals("Actual and expected values are not the same!", attributeValue, attributePredicate.getAttributeValue());
-        assertEquals("Actual and expected values are not the same!", operator, attributePredicate.getOperator());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeName, attributePredicate.getAttributeName());
+        Assert.assertEquals("Actual and expected values are not the same!", attributeValue, attributePredicate.getAttributeValue());
+        Assert.assertEquals("Actual and expected values are not the same!", operator, attributePredicate.getOperator());
     }
 
     @Test
@@ -148,7 +149,7 @@ public class AbstractKapuaQueryTest extends Assert {
         AbstractKapuaQuery kapuaQuery = new ActualKapuaQuery();
         AndPredicate andPredicate = kapuaQuery.andPredicate();
         ArrayList<QueryPredicate> queryPredicateArray = new ArrayList<>();
-        assertEquals("Actual and expected values are not the same!", queryPredicateArray, andPredicate.getPredicates());
+        Assert.assertEquals("Actual and expected values are not the same!", queryPredicateArray, andPredicate.getPredicates());
     }
 
     @Test
@@ -159,7 +160,7 @@ public class AbstractKapuaQueryTest extends Assert {
             queryPredicateArray[i] = Mockito.mock(AndPredicateImpl.class);
         }
         AndPredicate andPredicate = new AndPredicateImpl(queryPredicateArray);
-        assertEquals("Actual and expected values are not the same!", andPredicate.getPredicates(), kapuaQuery.andPredicate(queryPredicateArray).getPredicates());
+        Assert.assertEquals("Actual and expected values are not the same!", andPredicate.getPredicates(), kapuaQuery.andPredicate(queryPredicateArray).getPredicates());
     }
 
     @Test
@@ -167,7 +168,7 @@ public class AbstractKapuaQueryTest extends Assert {
         AbstractKapuaQuery kapuaQuery = new ActualKapuaQuery();
         OrPredicate orPredicate = kapuaQuery.orPredicate();
         ArrayList<QueryPredicate> queryPredicateArray = new ArrayList<>();
-        assertEquals("Actual and expected values are not the same!", queryPredicateArray, orPredicate.getPredicates());
+        Assert.assertEquals("Actual and expected values are not the same!", queryPredicateArray, orPredicate.getPredicates());
     }
 
     @Test
@@ -178,15 +179,15 @@ public class AbstractKapuaQueryTest extends Assert {
             queryPredicateArray[i] = Mockito.mock(AndPredicateImpl.class);
         }
         OrPredicate orPredicate = new OrPredicateImpl(queryPredicateArray);
-        assertEquals("Actual and expected values are not the same!", orPredicate.getPredicates(), kapuaQuery.orPredicate(queryPredicateArray).getPredicates());
+        Assert.assertEquals("Actual and expected values are not the same!", orPredicate.getPredicates(), kapuaQuery.orPredicate(queryPredicateArray).getPredicates());
     }
 
     @Test
     public void getAskTotalCountTest() {
         AbstractKapuaQuery kapuaQuery = new ActualKapuaQuery();
         kapuaQuery.setAskTotalCount(true);
-        assertEquals("Actual and expected values are not the same!", true, kapuaQuery.getAskTotalCount());
+        Assert.assertEquals("Actual and expected values are not the same!", true, kapuaQuery.getAskTotalCount());
         kapuaQuery.setAskTotalCount(false);
-        assertEquals("Actual and expected values are not the same!", false, kapuaQuery.getAskTotalCount());
+        Assert.assertEquals("Actual and expected values are not the same!", false, kapuaQuery.getAskTotalCount());
     }
 }

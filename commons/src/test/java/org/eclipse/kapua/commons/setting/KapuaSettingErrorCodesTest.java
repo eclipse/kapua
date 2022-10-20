@@ -15,20 +15,20 @@ package org.eclipse.kapua.commons.setting;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class KapuaSettingErrorCodesTest extends Assert {
+public class KapuaSettingErrorCodesTest {
 
     @Test
     public void invalidResourcesNameTest() {
-        assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", KapuaSettingErrorCodes.INVALID_RESOURCE_NAME.name());
+        Assert.assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_NAME", KapuaSettingErrorCodes.INVALID_RESOURCE_NAME.name());
     }
 
     @Test
     public void invalidResourcesFileTest() {
-        assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_FILE", KapuaSettingErrorCodes.INVALID_RESOURCE_FILE.name());
+        Assert.assertEquals("Expected and actual values should be the same!", "INVALID_RESOURCE_FILE", KapuaSettingErrorCodes.INVALID_RESOURCE_FILE.name());
     }
 
     @Test
     public void resourceNotFoundTest() {
-        assertEquals("Expected and actual values should be the same!", "RESOURCE_NOT_FOUND", KapuaSettingErrorCodes.RESOURCE_NOT_FOUND.name());
+        Assert.assertEquals("Expected and actual values should be the same!", "RESOURCE_NOT_FOUND", KapuaSettingErrorCodes.RESOURCE_NOT_FOUND.name());
     }
 }

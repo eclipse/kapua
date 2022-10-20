@@ -16,11 +16,11 @@ import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.experimental.categories.Category;
 import org.xml.sax.Attributes;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+
 @Category(JUnitTests.class)
-public class XmlNamespaceFilterTest extends Assert {
+public class XmlNamespaceFilterTest {
 
     @Test
     public void testConstructor() throws Exception {

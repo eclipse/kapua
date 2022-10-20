@@ -24,8 +24,9 @@ import javax.cache.Cache;
 import java.io.Serializable;
 import java.math.BigInteger;
 
+
 @Category(JUnitTests.class)
-public class NamedEntityCacheTest extends Assert {
+public class NamedEntityCacheTest {
 
     @Test
     public void namedEntityCacheTest() {
@@ -36,22 +37,22 @@ public class NamedEntityCacheTest extends Assert {
         NamedEntityCache namedEntityCache = new NamedEntityCache(idCacheName, nameCacheName);
         Cache<Serializable, Serializable> expectedNameCache = KapuaCacheManager.getCache(nameCacheName);
 
-        assertEquals("Expected and actual values should be the same.", expectedNameCache, namedEntityCache.nameCache);
+        Assert.assertEquals("Expected and actual values should be the same.", expectedNameCache, namedEntityCache.nameCache);
 
         try {
             NamedEntityCache invalidNamedEntityCache = new NamedEntityCache(idCacheName, null);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
         }
         try {
             NamedEntityCache invalidNamedEntityCache = new NamedEntityCache(null, nameCacheName);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
         }
         try {
             NamedEntityCache invalidNamedEntityCache = new NamedEntityCache(null, null);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
         }
     }
 
@@ -66,10 +67,10 @@ public class NamedEntityCacheTest extends Assert {
 
         //COMMENT: entityId is always null (see Cache.get() method)
         //Due to that reason this method always returns null
-        assertNull("Null expected.", namedEntityCache.get(scopeId, name));
-        assertNull("Null expected.", namedEntityCache.get(null, name));
-        assertNull("Null expected.", namedEntityCache.get(scopeId, nullName));
-        assertNull("Null expected.", namedEntityCache.get(null, nullName));
+        Assert.assertNull("Null expected.", namedEntityCache.get(scopeId, name));
+        Assert.assertNull("Null expected.", namedEntityCache.get(null, name));
+        Assert.assertNull("Null expected.", namedEntityCache.get(scopeId, nullName));
+        Assert.assertNull("Null expected.", namedEntityCache.get(null, nullName));
 
         // COMMENT: Once the get() method will be changed,
         // we will be able to test other results also.
@@ -111,10 +112,10 @@ public class NamedEntityCacheTest extends Assert {
         //            nameCache.remove(((KapuaNamedEntity) kapuaEntity).getName());
         //        }
         //and this method always returns null
-        assertNull("Null expected.", namedEntityCache.remove(scopeId, kapuaId));
-        assertNull("Null expected.", namedEntityCache.remove(nullScopeId, kapuaId));
-        assertNull("Null expected.", namedEntityCache.remove(scopeId, nullKapuaId));
-        assertNull("Null expected.", namedEntityCache.remove(nullScopeId, nullKapuaId));
+        Assert.assertNull("Null expected.", namedEntityCache.remove(scopeId, kapuaId));
+        Assert.assertNull("Null expected.", namedEntityCache.remove(nullScopeId, kapuaId));
+        Assert.assertNull("Null expected.", namedEntityCache.remove(scopeId, nullKapuaId));
+        Assert.assertNull("Null expected.", namedEntityCache.remove(nullScopeId, nullKapuaId));
 
         // COMMENT: Once the get() method will be changed,
         // we will be able to test other results also.

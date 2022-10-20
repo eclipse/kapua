@@ -26,8 +26,9 @@ import org.mockito.Mockito;
 
 import java.math.BigInteger;
 
+
 @Category(JUnitTests.class)
-public class EventStoreFactoryImplTest extends Assert {
+public class EventStoreFactoryImplTest {
 
     @Test
     public void newEntityTest() {
@@ -35,8 +36,8 @@ public class EventStoreFactoryImplTest extends Assert {
         KapuaId[] scopeIdList = {null, new KapuaEid(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
-            assertNotNull("Null not expected.", eventStoreFactoryImpl.newEntity(scopeId));
-            assertThat("EventStoreRecordImpl object expected.", eventStoreFactoryImpl.newEntity(scopeId), IsInstanceOf.instanceOf(EventStoreRecordImpl.class));
+            Assert.assertNotNull("Null not expected.", eventStoreFactoryImpl.newEntity(scopeId));
+        Assert.assertThat("EventStoreRecordImpl object expected.", eventStoreFactoryImpl.newEntity(scopeId), IsInstanceOf.instanceOf(EventStoreRecordImpl.class));
         }
     }
 
@@ -46,8 +47,8 @@ public class EventStoreFactoryImplTest extends Assert {
         KapuaId[] scopeIdList = {null, new KapuaEid(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
-            assertNotNull("Null not expected.", eventStoreFactoryImpl.newCreator(scopeId));
-            assertThat("EventStoreRecordImpl object expected.", eventStoreFactoryImpl.newCreator(scopeId), IsInstanceOf.instanceOf(EventStoreRecordCreatorImpl.class));
+            Assert.assertNotNull("Null not expected.", eventStoreFactoryImpl.newCreator(scopeId));
+        Assert.assertThat("EventStoreRecordImpl object expected.", eventStoreFactoryImpl.newCreator(scopeId), IsInstanceOf.instanceOf(EventStoreRecordCreatorImpl.class));
         }
     }
 
@@ -57,8 +58,8 @@ public class EventStoreFactoryImplTest extends Assert {
         KapuaId[] scopeIdList = {null, new KapuaEid(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
-            assertNotNull("Null not expected.", eventStoreFactoryImpl.newQuery(scopeId));
-            assertThat("EventStoreQueryImpl object expected.", eventStoreFactoryImpl.newQuery(scopeId), IsInstanceOf.instanceOf(EventStoreQueryImpl.class));
+            Assert.assertNotNull("Null not expected.", eventStoreFactoryImpl.newQuery(scopeId));
+        Assert.assertThat("EventStoreQueryImpl object expected.", eventStoreFactoryImpl.newQuery(scopeId), IsInstanceOf.instanceOf(EventStoreQueryImpl.class));
         }
     }
 
@@ -66,8 +67,8 @@ public class EventStoreFactoryImplTest extends Assert {
     public void newListResultTest() {
         EventStoreFactoryImpl eventStoreFactoryImpl = new EventStoreFactoryImpl();
 
-        assertNotNull("Null not expected.", eventStoreFactoryImpl.newListResult());
-        assertThat("EventStoreRecordListResultImpl object expected.", eventStoreFactoryImpl.newListResult(), IsInstanceOf.instanceOf(EventStoreRecordListResultImpl.class));
+        Assert.assertNotNull("Null not expected.", eventStoreFactoryImpl.newListResult());
+        Assert.assertThat("EventStoreRecordListResultImpl object expected.", eventStoreFactoryImpl.newListResult(), IsInstanceOf.instanceOf(EventStoreRecordListResultImpl.class));
     }
 
     @Test
@@ -77,13 +78,13 @@ public class EventStoreFactoryImplTest extends Assert {
         EventStoreRecord nullEventStoreRecord = null;
         KapuaEntityCloneException kapuaEntityCloneException = new KapuaEntityCloneException(new Exception(), EventStoreRecord.TYPE, nullEventStoreRecord);
 
-        assertNotNull("Null not expected.", eventStoreFactoryImpl.clone(eventStoreRecord));
-        assertThat("EventStoreRecordImpl object expected.", eventStoreFactoryImpl.clone(eventStoreRecord), IsInstanceOf.instanceOf(EventStoreRecordImpl.class));
+        Assert.assertNotNull("Null not expected.", eventStoreFactoryImpl.clone(eventStoreRecord));
+        Assert.assertThat("EventStoreRecordImpl object expected.", eventStoreFactoryImpl.clone(eventStoreRecord), IsInstanceOf.instanceOf(EventStoreRecordImpl.class));
 
         try {
             eventStoreFactoryImpl.clone(nullEventStoreRecord);
         } catch (Exception e) {
-            assertEquals("KapuaEntityCloneException expected.", kapuaEntityCloneException.toString(), e.toString());
+            Assert.assertEquals("KapuaEntityCloneException expected.", kapuaEntityCloneException.toString(), e.toString());
         }
     }
 } 

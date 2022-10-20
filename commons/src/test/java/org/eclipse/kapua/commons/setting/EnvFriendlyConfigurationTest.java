@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class EnvFriendlyConfigurationTest extends Assert {
+public class EnvFriendlyConfigurationTest {
 
     CompositeConfiguration compositeConfiguration;
     EnvFriendlyConfiguration envFriendlyConfiguration;
@@ -33,25 +34,25 @@ public class EnvFriendlyConfigurationTest extends Assert {
 
     @Test
     public void getKeysTest() {
-        assertFalse("The next item exists!", envFriendlyConfiguration.getKeys().hasNext());
+        Assert.assertFalse("The next item exists!", envFriendlyConfiguration.getKeys().hasNext());
         envFriendlyConfiguration.setProperty("Key1", "value1");
-        assertTrue("The next item does not exist!", envFriendlyConfiguration.getKeys().hasNext());
+        Assert.assertTrue("The next item does not exist!", envFriendlyConfiguration.getKeys().hasNext());
     }
 
     @Test
     public void getPropertyTest() {
-        assertNull("Null expected!", envFriendlyConfiguration.getProperty("property"));
+        Assert.assertNull("Null expected!", envFriendlyConfiguration.getProperty("property"));
         envFriendlyConfiguration.setProperty("key", "value");
         envFriendlyConfiguration.setProperty("KEY_PROPERTY", 10);
-        assertEquals("Expected and actual values should be the same!", "value", envFriendlyConfiguration.getProperty("key"));
-        assertEquals("Expected and actual values should be the same!", 10, envFriendlyConfiguration.getProperty("key.property"));
+        Assert.assertEquals("Expected and actual values should be the same!", "value", envFriendlyConfiguration.getProperty("key"));
+        Assert.assertEquals("Expected and actual values should be the same!", 10, envFriendlyConfiguration.getProperty("key.property"));
     }
 
     @Test
     public void getPropertyEmptyTest() {
-        assertNull("Null expected!", envFriendlyConfiguration.getProperty(""));
+        Assert.assertNull("Null expected!", envFriendlyConfiguration.getProperty(""));
         envFriendlyConfiguration.setProperty("", "value");
-        assertEquals("Expected and actual values should be the same!", "value", envFriendlyConfiguration.getProperty(""));
+        Assert.assertEquals("Expected and actual values should be the same!", "value", envFriendlyConfiguration.getProperty(""));
     }
 
     @Test(expected = NullPointerException.class)
@@ -61,12 +62,12 @@ public class EnvFriendlyConfigurationTest extends Assert {
 
     @Test
     public void containsKeyTest() {
-        assertFalse("The key is contained!", envFriendlyConfiguration.containsKey("Key"));
+        Assert.assertFalse("The key is contained!", envFriendlyConfiguration.containsKey("Key"));
         envFriendlyConfiguration.setProperty("Key", "value");
-        assertTrue("There is no key!", envFriendlyConfiguration.containsKey("Key"));
+        Assert.assertTrue("There is no key!", envFriendlyConfiguration.containsKey("Key"));
         envFriendlyConfiguration.clearProperty("Key");
-        assertFalse("The key is contained!", envFriendlyConfiguration.containsKey("Key"));
+        Assert.assertFalse("The key is contained!", envFriendlyConfiguration.containsKey("Key"));
         envFriendlyConfiguration.setProperty("KEY_PROPERTY", 10);
-        assertTrue("There is no key!", envFriendlyConfiguration.containsKey("key.property"));
+        Assert.assertTrue("There is no key!", envFriendlyConfiguration.containsKey("key.property"));
     }
 }

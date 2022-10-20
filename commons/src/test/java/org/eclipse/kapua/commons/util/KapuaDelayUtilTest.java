@@ -19,8 +19,9 @@ import org.junit.experimental.categories.Category;
 
 import java.lang.reflect.Constructor;
 
+
 @Category(JUnitTests.class)
-public class KapuaDelayUtilTest extends Assert {
+public class KapuaDelayUtilTest {
 
     @Test
     public void testConstructor() throws Exception {
@@ -34,7 +35,7 @@ public class KapuaDelayUtilTest extends Assert {
         try {
             KapuaDelayUtil.executeDelay();
         } catch (Exception ex){
-            fail("Delay execution not successfull");
+            Assert.fail("Delay execution not successfull");
         }
     }
 }

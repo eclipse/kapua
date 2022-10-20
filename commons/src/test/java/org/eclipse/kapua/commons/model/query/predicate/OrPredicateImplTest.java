@@ -20,30 +20,31 @@ import org.junit.experimental.categories.Category;
 
 import java.util.ArrayList;
 
+
 @Category(JUnitTests.class)
-public class OrPredicateImplTest extends Assert {
+public class OrPredicateImplTest {
 
     @Test
     public void orPredicateImplGetPredicateTest() {
         OrPredicateImpl orPredicate = new OrPredicateImpl();
         ArrayList<Object> array = new ArrayList<>();
-        assertEquals("Actual and expected values are not the same!", array, orPredicate.getPredicates());
+        Assert.assertEquals("Actual and expected values are not the same!", array, orPredicate.getPredicates());
     }
 
     @Test(expected = NullPointerException.class)
     public void orPredicateImplQueryPredicateId() {
         OrPredicateImpl orPredicateNull = new OrPredicateImpl(null);
-        assertNull(orPredicateNull.getPredicates().get(0));
+        Assert.assertNull(orPredicateNull.getPredicates().get(0));
         QueryPredicate queryPredicate = new OrPredicateImpl();
         OrPredicateImpl orPredicate = new OrPredicateImpl(queryPredicate);
-        assertEquals("Actual and expected values are not the same!", queryPredicate, orPredicate.getPredicates().get(0));
+        Assert.assertEquals("Actual and expected values are not the same!", queryPredicate, orPredicate.getPredicates().get(0));
         QueryPredicate queryPredicate1 = new OrPredicateImpl();
         QueryPredicate queryPredicate2 = new OrPredicateImpl();
         QueryPredicate queryPredicate3 = new OrPredicateImpl();
         QueryPredicate[] array = {queryPredicate1, queryPredicate2, queryPredicate3};
         OrPredicateImpl orPredicateWithMultiplePredicates = new OrPredicateImpl(queryPredicate1, queryPredicate2, queryPredicate3);
         for (int i = 0; i < array.length; i++) {
-            assertEquals("Actual and expected values are not the same!", array[i], orPredicateWithMultiplePredicates.getPredicates().get(i));
+            Assert.assertEquals("Actual and expected values are not the same!", array[i], orPredicateWithMultiplePredicates.getPredicates().get(i));
         }
     }
 
@@ -52,13 +53,13 @@ public class OrPredicateImplTest extends Assert {
         OrPredicateImpl orPredicate = new OrPredicateImpl();
         QueryPredicate queryPredicate = new OrPredicateImpl();
         orPredicate.or(queryPredicate);
-        assertEquals("Actual and expected values are not the same!", queryPredicate, orPredicate.getPredicates().get(0));
+        Assert.assertEquals("Actual and expected values are not the same!", queryPredicate, orPredicate.getPredicates().get(0));
     }
 
     @Test
     public void orWithNullPredicateTest() {
         OrPredicateImpl orPredicate = new OrPredicateImpl();
         orPredicate.or(null);
-        assertNull(orPredicate.getPredicates().get(0));
+        Assert.assertNull(orPredicate.getPredicates().get(0));
     }
 }
