@@ -18,8 +18,9 @@ import org.junit.Test;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaNotifyMessageTest extends Assert {
+public class KapuaNotifyMessageTest {
 
     private static final String NOTIFY_MSG_STR = "Client id 'clientId-1' - semantic topic 'part1/part2/part3'";
 

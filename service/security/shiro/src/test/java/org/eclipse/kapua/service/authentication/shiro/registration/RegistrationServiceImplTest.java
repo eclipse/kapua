@@ -20,15 +20,16 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class RegistrationServiceImplTest extends Assert {
+public class RegistrationServiceImplTest {
 
     @Test
     public void registrationServiceImplTest() {
         try {
             new RegistrationServiceImpl();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -38,7 +39,7 @@ public class RegistrationServiceImplTest extends Assert {
         try {
             registrationServiceImpl.close();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -46,24 +47,24 @@ public class RegistrationServiceImplTest extends Assert {
     public void isAccountCreationEnabledTrueEmptyProcessorsTest() throws KapuaException {
         System.setProperty("authentication.registration.service.enabled", "true");
         RegistrationServiceImpl registrationService = new RegistrationServiceImpl();
-        assertFalse("False expected.", registrationService.isAccountCreationEnabled());
+        Assert.assertFalse("False expected.", registrationService.isAccountCreationEnabled());
     }
 
     @Test
     public void isAccountCreationEnabledFalseTest() throws KapuaException {
         System.setProperty("authentication.registration.service.enabled", "false");
         RegistrationServiceImpl registrationService = new RegistrationServiceImpl();
-        assertFalse("False expected.", registrationService.isAccountCreationEnabled());
+        Assert.assertFalse("False expected.", registrationService.isAccountCreationEnabled());
     }
 
     @Test
     public void createAccountCreationNotEnabledTest() throws KapuaException {
         JwtCredentials jwtCredentials = Mockito.mock(JwtCredentials.class);
-        assertFalse("False expected.", new RegistrationServiceImpl().createAccount(jwtCredentials));
+        Assert.assertFalse("False expected.", new RegistrationServiceImpl().createAccount(jwtCredentials));
     }
 
     @Test
     public void createAccountNullTest() throws KapuaException {
-        assertFalse("False expected.", new RegistrationServiceImpl().createAccount(null));
+        Assert.assertFalse("False expected.", new RegistrationServiceImpl().createAccount(null));
     }
 }

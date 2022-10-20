@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class JwtCredentialsTest extends Assert {
+public class JwtCredentialsTest {
 
     JwtCredentialsImpl jwtCredentialsImpl;
     String[] accessTokens, idsToken, newAccessTokens, newIdsToken;
@@ -45,9 +46,9 @@ public class JwtCredentialsTest extends Assert {
 
         JwtCredentialsImpl second = new JwtCredentialsImpl(first);
 
-        assertNotEquals("JwtCredentialImpl", first, second);
-        assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
-        assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
+        Assert.assertNotEquals("JwtCredentialImpl", first, second);
+        Assert.assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
+        Assert.assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
     }
 
     @Test
@@ -56,9 +57,9 @@ public class JwtCredentialsTest extends Assert {
 
         JwtCredentialsImpl second = new JwtCredentialsImpl(first);
 
-        assertNotEquals("JwtCredentialImpl", first, second);
-        assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
-        assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
+        Assert.assertNotEquals("JwtCredentialImpl", first, second);
+        Assert.assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
+        Assert.assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
     }
 
     @Test
@@ -67,8 +68,8 @@ public class JwtCredentialsTest extends Assert {
 
         JwtCredentialsImpl second = JwtCredentialsImpl.parse(null);
 
-        assertNull("Parsed JwtCredentialsImpl", second);
-        assertEquals("JwtCredentialImpl", first, second);
+        Assert.assertNull("Parsed JwtCredentialsImpl", second);
+        Assert.assertEquals("JwtCredentialImpl", first, second);
     }
 
     @Test
@@ -77,9 +78,9 @@ public class JwtCredentialsTest extends Assert {
 
         JwtCredentialsImpl second = JwtCredentialsImpl.parse(first);
 
-        assertEquals("JwtCredentialImpl", first, second);
-        assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
-        assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
+        Assert.assertEquals("JwtCredentialImpl", first, second);
+        Assert.assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
+        Assert.assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
     }
 
     @Test
@@ -88,9 +89,9 @@ public class JwtCredentialsTest extends Assert {
 
         JwtCredentialsImpl second = JwtCredentialsImpl.parse(first);
 
-        assertNotEquals("JwtCredentialImpl", first, second);
-        assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
-        assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
+        Assert.assertNotEquals("JwtCredentialImpl", first, second);
+        Assert.assertEquals("JwtCredential.accessToken", first.getAccessToken(), second.getAccessToken());
+        Assert.assertEquals("JwtCredential.idToken", first.getIdToken(), second.getIdToken());
     }
 
 
@@ -99,10 +100,10 @@ public class JwtCredentialsTest extends Assert {
         for (String accessToken : accessTokens) {
             for (String idToken : idsToken) {
                 JwtCredentialsImpl jwtCredentialsImpl = new JwtCredentialsImpl(accessToken, idToken);
-                assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentialsImpl.getAccessToken());
-                assertEquals("Expected and actual values should be the same.", idToken, jwtCredentialsImpl.getIdToken());
-                assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentialsImpl.getPrincipal());
-                assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentialsImpl.getCredentials());
+                Assert.assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentialsImpl.getAccessToken());
+                Assert.assertEquals("Expected and actual values should be the same.", idToken, jwtCredentialsImpl.getIdToken());
+                Assert.assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentialsImpl.getPrincipal());
+                Assert.assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentialsImpl.getCredentials());
             }
         }
     }
@@ -111,9 +112,9 @@ public class JwtCredentialsTest extends Assert {
     public void setAndGetJwtPrincipalAndCredentialTest() {
         for (String newAccessToken : newAccessTokens) {
             jwtCredentialsImpl.setAccessToken(newAccessToken);
-            assertEquals("Expected and actual values should be the same.", newAccessToken, jwtCredentialsImpl.getAccessToken());
-            assertEquals("Expected and actual values should be the same.", newAccessToken, jwtCredentialsImpl.getPrincipal());
-            assertEquals("Expected and actual values should be the same.", newAccessToken, jwtCredentialsImpl.getCredentials());
+            Assert.assertEquals("Expected and actual values should be the same.", newAccessToken, jwtCredentialsImpl.getAccessToken());
+            Assert.assertEquals("Expected and actual values should be the same.", newAccessToken, jwtCredentialsImpl.getPrincipal());
+            Assert.assertEquals("Expected and actual values should be the same.", newAccessToken, jwtCredentialsImpl.getCredentials());
         }
     }
 
@@ -121,7 +122,7 @@ public class JwtCredentialsTest extends Assert {
     public void setAndGetIdTokenTest() {
         for (String newIdToken : newIdsToken) {
             jwtCredentialsImpl.setIdToken(newIdToken);
-            assertEquals("Expected and actual values should be the same.", newIdToken, jwtCredentialsImpl.getIdToken());
+            Assert.assertEquals("Expected and actual values should be the same.", newIdToken, jwtCredentialsImpl.getIdToken());
         }
     }
 }

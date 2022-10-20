@@ -28,8 +28,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class MfaOptionImplTest extends Assert {
+public class MfaOptionImplTest {
 
     KapuaId[] scopeIds;
     KapuaEid[] userIds;
@@ -50,22 +51,22 @@ public class MfaOptionImplTest extends Assert {
     @Test
     public void mfaOptionImplWithoutParametersTest() {
         MfaOptionImpl mfaOptionImpl = new MfaOptionImpl();
-        assertNull("Null expected.", mfaOptionImpl.getScopeId());
-        assertNull("Null expected.", mfaOptionImpl.getUserId());
-        assertNull("Null expected.", mfaOptionImpl.getMfaSecretKey());
-        assertNull("Null expected.", mfaOptionImpl.getTrustKey());
-        assertNull("Null expected.", mfaOptionImpl.getTrustExpirationDate());
+        Assert.assertNull("Null expected.", mfaOptionImpl.getScopeId());
+        Assert.assertNull("Null expected.", mfaOptionImpl.getUserId());
+        Assert.assertNull("Null expected.", mfaOptionImpl.getMfaSecretKey());
+        Assert.assertNull("Null expected.", mfaOptionImpl.getTrustKey());
+        Assert.assertNull("Null expected.", mfaOptionImpl.getTrustExpirationDate());
     }
 
     @Test
     public void mfaOptionImplScopeIdParameterTest() {
         for (KapuaId scopeId : scopeIds) {
             MfaOptionImpl mfaOptionImpl = new MfaOptionImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionImpl.getScopeId());
-            assertNull("Null expected.", mfaOptionImpl.getUserId());
-            assertNull("Null expected.", mfaOptionImpl.getMfaSecretKey());
-            assertNull("Null expected.", mfaOptionImpl.getTrustKey());
-            assertNull("Null expected.", mfaOptionImpl.getTrustExpirationDate());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionImpl.getScopeId());
+            Assert.assertNull("Null expected.", mfaOptionImpl.getUserId());
+            Assert.assertNull("Null expected.", mfaOptionImpl.getMfaSecretKey());
+            Assert.assertNull("Null expected.", mfaOptionImpl.getTrustKey());
+            Assert.assertNull("Null expected.", mfaOptionImpl.getTrustExpirationDate());
         }
     }
 
@@ -75,11 +76,11 @@ public class MfaOptionImplTest extends Assert {
             for (KapuaId userId : userIds) {
                 for (String mfaSecretKey : mfaSecretKeys) {
                     MfaOptionImpl mfaOptionImpl = new MfaOptionImpl(scopeId, userId, mfaSecretKey);
-                    assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionImpl.getScopeId());
-                    assertEquals("Expected and actual values should be the same.", userId, mfaOptionImpl.getUserId());
-                    assertEquals("Expected and actual values should be the same.", mfaSecretKey, mfaOptionImpl.getMfaSecretKey());
-                    assertNull("Null expected.", mfaOptionImpl.getTrustKey());
-                    assertNull("Null expected.", mfaOptionImpl.getTrustExpirationDate());
+                    Assert.assertEquals("Expected and actual values should be the same.", scopeId, mfaOptionImpl.getScopeId());
+                    Assert.assertEquals("Expected and actual values should be the same.", userId, mfaOptionImpl.getUserId());
+                    Assert.assertEquals("Expected and actual values should be the same.", mfaSecretKey, mfaOptionImpl.getMfaSecretKey());
+                    Assert.assertNull("Null expected.", mfaOptionImpl.getTrustKey());
+                    Assert.assertNull("Null expected.", mfaOptionImpl.getTrustExpirationDate());
                 }
             }
         }
@@ -98,14 +99,14 @@ public class MfaOptionImplTest extends Assert {
 
         MfaOptionImpl mfaOptionImpl = new MfaOptionImpl(mfaOption);
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionImpl.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionImpl.getUserId());
-        assertEquals("Expected and actual values should be the same.", "mfa secret key", mfaOptionImpl.getMfaSecretKey());
-        assertEquals("Expected and actual values should be the same.", "trust key", mfaOptionImpl.getTrustKey());
-        assertEquals("Expected and actual values should be the same.", trustExpirationDate, mfaOptionImpl.getTrustExpirationDate());
-        assertEquals("Expected and actual values should be the same.", modifiedOn, mfaOptionImpl.getModifiedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionImpl.getModifiedBy());
-        assertEquals("Expected and actual values should be the same.", 10, mfaOptionImpl.getOptlock());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionImpl.getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", "mfa secret key", mfaOptionImpl.getMfaSecretKey());
+        Assert.assertEquals("Expected and actual values should be the same.", "trust key", mfaOptionImpl.getTrustKey());
+        Assert.assertEquals("Expected and actual values should be the same.", trustExpirationDate, mfaOptionImpl.getTrustExpirationDate());
+        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, mfaOptionImpl.getModifiedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, mfaOptionImpl.getModifiedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", 10, mfaOptionImpl.getOptlock());
     }
 
     @Test(expected = NullPointerException.class)
@@ -120,25 +121,25 @@ public class MfaOptionImplTest extends Assert {
         MfaOptionImpl mfaOptionImpl1 = new MfaOptionImpl();
         for (KapuaId newUserId : newUserIds) {
             mfaOptionImpl1.setUserId(newUserId);
-            assertEquals("Expected and actual values should be the same.", newUserId, mfaOptionImpl1.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, mfaOptionImpl1.getUserId());
         }
 
         MfaOptionImpl mfaOptionImpl2 = new MfaOptionImpl(KapuaId.ONE);
         for (KapuaId newUserId : newUserIds) {
             mfaOptionImpl2.setUserId(newUserId);
-            assertEquals("Expected and actual values should be the same.", newUserId, mfaOptionImpl2.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, mfaOptionImpl2.getUserId());
         }
 
         MfaOptionImpl mfaOptionImpl3 = new MfaOptionImpl(KapuaId.ONE, new KapuaEid(), "mfa secret key");
         for (KapuaId newUserId : newUserIds) {
             mfaOptionImpl3.setUserId(newUserId);
-            assertEquals("Expected and actual values should be the same.", newUserId, mfaOptionImpl3.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, mfaOptionImpl3.getUserId());
         }
 
         MfaOptionImpl mfaOptionImpl4 = new MfaOptionImpl(mfaOption);
         for (KapuaId newUserId : newUserIds) {
             mfaOptionImpl4.setUserId(newUserId);
-            assertEquals("Expected and actual values should be the same.", newUserId, mfaOptionImpl4.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, mfaOptionImpl4.getUserId());
         }
     }
 
@@ -149,25 +150,25 @@ public class MfaOptionImplTest extends Assert {
         MfaOptionImpl mfaOptionImpl1 = new MfaOptionImpl();
         for (String newSecretKey : newSecretKeys) {
             mfaOptionImpl1.setMfaSecretKey(newSecretKey);
-            assertEquals("Expected and actual values should be the same.", newSecretKey, mfaOptionImpl1.getMfaSecretKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newSecretKey, mfaOptionImpl1.getMfaSecretKey());
         }
 
         MfaOptionImpl mfaOptionImpl2 = new MfaOptionImpl(KapuaId.ONE);
         for (String newSecretKey : newSecretKeys) {
             mfaOptionImpl2.setMfaSecretKey(newSecretKey);
-            assertEquals("Expected and actual values should be the same.", newSecretKey, mfaOptionImpl2.getMfaSecretKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newSecretKey, mfaOptionImpl2.getMfaSecretKey());
         }
 
         MfaOptionImpl mfaOptionImpl3 = new MfaOptionImpl(KapuaId.ONE, new KapuaEid(), "mfa secret key");
         for (String newSecretKey : newSecretKeys) {
             mfaOptionImpl3.setMfaSecretKey(newSecretKey);
-            assertEquals("Expected and actual values should be the same.", newSecretKey, mfaOptionImpl3.getMfaSecretKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newSecretKey, mfaOptionImpl3.getMfaSecretKey());
         }
 
         MfaOptionImpl mfaOptionImpl4 = new MfaOptionImpl(mfaOption);
         for (String newSecretKey : newSecretKeys) {
             mfaOptionImpl4.setMfaSecretKey(newSecretKey);
-            assertEquals("Expected and actual values should be the same.", newSecretKey, mfaOptionImpl4.getMfaSecretKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newSecretKey, mfaOptionImpl4.getMfaSecretKey());
         }
     }
 
@@ -178,25 +179,25 @@ public class MfaOptionImplTest extends Assert {
         MfaOptionImpl mfaOptionImpl1 = new MfaOptionImpl();
         for (String newTrustKey : newTrustKeys) {
             mfaOptionImpl1.setTrustKey(newTrustKey);
-            assertEquals("Expected and actual values should be the same.", newTrustKey, mfaOptionImpl1.getTrustKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustKey, mfaOptionImpl1.getTrustKey());
         }
 
         MfaOptionImpl mfaOptionImpl2 = new MfaOptionImpl(KapuaId.ONE);
         for (String newTrustKey : newTrustKeys) {
             mfaOptionImpl2.setTrustKey(newTrustKey);
-            assertEquals("Expected and actual values should be the same.", newTrustKey, mfaOptionImpl2.getTrustKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustKey, mfaOptionImpl2.getTrustKey());
         }
 
         MfaOptionImpl mfaOptionImpl3 = new MfaOptionImpl(KapuaId.ONE, new KapuaEid(), "mfa secret key");
         for (String newTrustKey : newTrustKeys) {
             mfaOptionImpl3.setTrustKey(newTrustKey);
-            assertEquals("Expected and actual values should be the same.", newTrustKey, mfaOptionImpl3.getTrustKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustKey, mfaOptionImpl3.getTrustKey());
         }
 
         MfaOptionImpl mfaOptionImpl4 = new MfaOptionImpl(mfaOption);
         for (String newTrustKey : newTrustKeys) {
             mfaOptionImpl4.setTrustKey(newTrustKey);
-            assertEquals("Expected and actual values should be the same.", newTrustKey, mfaOptionImpl4.getTrustKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustKey, mfaOptionImpl4.getTrustKey());
         }
     }
 
@@ -207,25 +208,25 @@ public class MfaOptionImplTest extends Assert {
         MfaOptionImpl mfaOptionImpl1 = new MfaOptionImpl();
         for (Date newTrustExpirationDate : newTrustExpirationDates) {
             mfaOptionImpl1.setTrustExpirationDate(newTrustExpirationDate);
-            assertEquals("Expected and actual values should be the same.", newTrustExpirationDate, mfaOptionImpl1.getTrustExpirationDate());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustExpirationDate, mfaOptionImpl1.getTrustExpirationDate());
         }
 
         MfaOptionImpl mfaOptionImpl2 = new MfaOptionImpl(KapuaId.ONE);
         for (Date newTrustExpirationDate : newTrustExpirationDates) {
             mfaOptionImpl2.setTrustExpirationDate(newTrustExpirationDate);
-            assertEquals("Expected and actual values should be the same.", newTrustExpirationDate, mfaOptionImpl2.getTrustExpirationDate());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustExpirationDate, mfaOptionImpl2.getTrustExpirationDate());
         }
 
         MfaOptionImpl mfaOptionImpl3 = new MfaOptionImpl(KapuaId.ONE, new KapuaEid(), "mfa secret key");
         for (Date newTrustExpirationDate : newTrustExpirationDates) {
             mfaOptionImpl3.setTrustExpirationDate(newTrustExpirationDate);
-            assertEquals("Expected and actual values should be the same.", newTrustExpirationDate, mfaOptionImpl3.getTrustExpirationDate());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustExpirationDate, mfaOptionImpl3.getTrustExpirationDate());
         }
 
         MfaOptionImpl mfaOptionImpl4 = new MfaOptionImpl(mfaOption);
         for (Date newTrustExpirationDate : newTrustExpirationDates) {
             mfaOptionImpl4.setTrustExpirationDate(newTrustExpirationDate);
-            assertEquals("Expected and actual values should be the same.", newTrustExpirationDate, mfaOptionImpl4.getTrustExpirationDate());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustExpirationDate, mfaOptionImpl4.getTrustExpirationDate());
         }
     }
 
@@ -236,25 +237,25 @@ public class MfaOptionImplTest extends Assert {
         MfaOptionImpl mfaOptionImpl1 = new MfaOptionImpl();
         for (String newQrCodeImage : newQrCodeImages) {
             mfaOptionImpl1.setQRCodeImage(newQrCodeImage);
-            assertEquals("Expected and actual values should be the same.", newQrCodeImage, mfaOptionImpl1.getQRCodeImage());
+            Assert.assertEquals("Expected and actual values should be the same.", newQrCodeImage, mfaOptionImpl1.getQRCodeImage());
         }
 
         MfaOptionImpl mfaOptionImpl2 = new MfaOptionImpl(KapuaId.ONE);
         for (String newQrCodeImage : newQrCodeImages) {
             mfaOptionImpl2.setQRCodeImage(newQrCodeImage);
-            assertEquals("Expected and actual values should be the same.", newQrCodeImage, mfaOptionImpl2.getQRCodeImage());
+            Assert.assertEquals("Expected and actual values should be the same.", newQrCodeImage, mfaOptionImpl2.getQRCodeImage());
         }
 
         MfaOptionImpl mfaOptionImpl3 = new MfaOptionImpl(KapuaId.ONE, new KapuaEid(), "mfa secret key");
         for (String newQrCodeImage : newQrCodeImages) {
             mfaOptionImpl3.setQRCodeImage(newQrCodeImage);
-            assertEquals("Expected and actual values should be the same.", newQrCodeImage, mfaOptionImpl3.getQRCodeImage());
+            Assert.assertEquals("Expected and actual values should be the same.", newQrCodeImage, mfaOptionImpl3.getQRCodeImage());
         }
 
         MfaOptionImpl mfaOptionImpl4 = new MfaOptionImpl(mfaOption);
         for (String newQrCodeImage : newQrCodeImages) {
             mfaOptionImpl4.setQRCodeImage(newQrCodeImage);
-            assertEquals("Expected and actual values should be the same.", newQrCodeImage, mfaOptionImpl4.getQRCodeImage());
+            Assert.assertEquals("Expected and actual values should be the same.", newQrCodeImage, mfaOptionImpl4.getQRCodeImage());
         }
     }
 
@@ -264,23 +265,23 @@ public class MfaOptionImplTest extends Assert {
 
         MfaOptionImpl mfaOptionImpl1 = new MfaOptionImpl();
         mfaOptionImpl1.setScratchCodes(scratchCodeList);
-        assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl1.getScratchCodes());
-        assertTrue("True expected.", mfaOptionImpl1.getScratchCodes().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl1.getScratchCodes());
+        Assert.assertTrue("True expected.", mfaOptionImpl1.getScratchCodes().isEmpty());
 
         MfaOptionImpl mfaOptionImpl2 = new MfaOptionImpl(KapuaId.ONE);
         mfaOptionImpl2.setScratchCodes(scratchCodeList);
-        assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl2.getScratchCodes());
-        assertTrue("True expected.", mfaOptionImpl2.getScratchCodes().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl2.getScratchCodes());
+        Assert.assertTrue("True expected.", mfaOptionImpl2.getScratchCodes().isEmpty());
 
         MfaOptionImpl mfaOptionImpl3 = new MfaOptionImpl(KapuaId.ONE, new KapuaEid(), "mfa secret key");
         mfaOptionImpl3.setScratchCodes(scratchCodeList);
-        assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl3.getScratchCodes());
-        assertTrue("True expected.", mfaOptionImpl3.getScratchCodes().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl3.getScratchCodes());
+        Assert.assertTrue("True expected.", mfaOptionImpl3.getScratchCodes().isEmpty());
 
         MfaOptionImpl mfaOptionImpl4 = new MfaOptionImpl(mfaOption);
         mfaOptionImpl4.setScratchCodes(scratchCodeList);
-        assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl4.getScratchCodes());
-        assertTrue("True expected.", mfaOptionImpl4.getScratchCodes().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl4.getScratchCodes());
+        Assert.assertTrue("True expected.", mfaOptionImpl4.getScratchCodes().isEmpty());
     }
 
     @Test
@@ -294,22 +295,22 @@ public class MfaOptionImplTest extends Assert {
 
         MfaOptionImpl mfaOptionImpl1 = new MfaOptionImpl();
         mfaOptionImpl1.setScratchCodes(scratchCodeList);
-        assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl1.getScratchCodes());
-        assertFalse("False expected.", mfaOptionImpl1.getScratchCodes().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl1.getScratchCodes());
+        Assert.assertFalse("False expected.", mfaOptionImpl1.getScratchCodes().isEmpty());
 
         MfaOptionImpl mfaOptionImpl2 = new MfaOptionImpl(KapuaId.ONE);
         mfaOptionImpl2.setScratchCodes(scratchCodeList);
-        assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl2.getScratchCodes());
-        assertFalse("False expected.", mfaOptionImpl2.getScratchCodes().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl2.getScratchCodes());
+        Assert.assertFalse("False expected.", mfaOptionImpl2.getScratchCodes().isEmpty());
 
         MfaOptionImpl mfaOptionImpl3 = new MfaOptionImpl(KapuaId.ONE, new KapuaEid(), "mfa secret key");
         mfaOptionImpl3.setScratchCodes(scratchCodeList);
-        assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl3.getScratchCodes());
-        assertFalse("False expected.", mfaOptionImpl3.getScratchCodes().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl3.getScratchCodes());
+        Assert.assertFalse("False expected.", mfaOptionImpl3.getScratchCodes().isEmpty());
 
         MfaOptionImpl mfaOptionImpl4 = new MfaOptionImpl(mfaOption);
         mfaOptionImpl4.setScratchCodes(scratchCodeList);
-        assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl4.getScratchCodes());
-        assertFalse("False expected.", mfaOptionImpl4.getScratchCodes().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", scratchCodeList, mfaOptionImpl4.getScratchCodes());
+        Assert.assertFalse("False expected.", mfaOptionImpl4.getScratchCodes().isEmpty());
     }
 }

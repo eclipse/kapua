@@ -29,8 +29,9 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
+
 @Category(JUnitTests.class)
-public class DatastoreUtilsIndexNameTest extends Assert {
+public class DatastoreUtilsIndexNameTest {
 
     private static final KapuaId ONE = new KapuaEid(BigInteger.ONE);
 

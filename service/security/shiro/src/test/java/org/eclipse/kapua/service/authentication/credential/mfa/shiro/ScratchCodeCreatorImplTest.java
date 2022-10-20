@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ScratchCodeCreatorImplTest extends Assert {
+public class ScratchCodeCreatorImplTest {
 
     KapuaId[] scopeIds, mfaOptionIds;
     String[] codes;
@@ -38,9 +39,9 @@ public class ScratchCodeCreatorImplTest extends Assert {
             for (KapuaId mfaOptionId : mfaOptionIds) {
                 for (String code : codes) {
                     ScratchCodeCreatorImpl scratchCodeCreatorImpl = new ScratchCodeCreatorImpl(scopeId, mfaOptionId, code);
-                    assertEquals("Expected and actual values should be the same.", scopeId, scratchCodeCreatorImpl.getScopeId());
-                    assertEquals("Expected and actual values should be the same.", mfaOptionId, scratchCodeCreatorImpl.getMfaOptionId());
-                    assertEquals("Expected and actual values should be the same.", code, scratchCodeCreatorImpl.getCode());
+                    Assert.assertEquals("Expected and actual values should be the same.", scopeId, scratchCodeCreatorImpl.getScopeId());
+                    Assert.assertEquals("Expected and actual values should be the same.", mfaOptionId, scratchCodeCreatorImpl.getMfaOptionId());
+                    Assert.assertEquals("Expected and actual values should be the same.", code, scratchCodeCreatorImpl.getCode());
                 }
             }
         }
@@ -50,9 +51,9 @@ public class ScratchCodeCreatorImplTest extends Assert {
     public void scratchCodeCreatorImplScopeIdParameterTest() {
         for (KapuaId scopeId : scopeIds) {
             ScratchCodeCreatorImpl scratchCodeCreatorImpl = new ScratchCodeCreatorImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, scratchCodeCreatorImpl.getScopeId());
-            assertNull("Null expected.", scratchCodeCreatorImpl.getMfaOptionId());
-            assertNull("Null expected.", scratchCodeCreatorImpl.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, scratchCodeCreatorImpl.getScopeId());
+            Assert.assertNull("Null expected.", scratchCodeCreatorImpl.getMfaOptionId());
+            Assert.assertNull("Null expected.", scratchCodeCreatorImpl.getCode());
         }
     }
 
@@ -63,13 +64,13 @@ public class ScratchCodeCreatorImplTest extends Assert {
         ScratchCodeCreatorImpl scratchCodeCreatorImpl1 = new ScratchCodeCreatorImpl(KapuaId.ONE);
         for (KapuaId newMfaOptionId : newMfaOptionIds) {
             scratchCodeCreatorImpl1.setMfaOptionId(newMfaOptionId);
-            assertEquals("Expected and actual values should be the same.", newMfaOptionId, scratchCodeCreatorImpl1.getMfaOptionId());
+            Assert.assertEquals("Expected and actual values should be the same.", newMfaOptionId, scratchCodeCreatorImpl1.getMfaOptionId());
         }
 
         ScratchCodeCreatorImpl scratchCodeCreatorImpl2 = new ScratchCodeCreatorImpl(KapuaId.ONE, KapuaId.ANY, "code");
         for (KapuaId newMfaOptionId : newMfaOptionIds) {
             scratchCodeCreatorImpl2.setMfaOptionId(newMfaOptionId);
-            assertEquals("Expected and actual values should be the same.", newMfaOptionId, scratchCodeCreatorImpl2.getMfaOptionId());
+            Assert.assertEquals("Expected and actual values should be the same.", newMfaOptionId, scratchCodeCreatorImpl2.getMfaOptionId());
         }
     }
 
@@ -80,13 +81,13 @@ public class ScratchCodeCreatorImplTest extends Assert {
         ScratchCodeCreatorImpl scratchCodeCreatorImpl1 = new ScratchCodeCreatorImpl(KapuaId.ONE);
         for (String newCode : newCodes) {
             scratchCodeCreatorImpl1.setCode(newCode);
-            assertEquals("Expected and actual values should be the same.", newCode, scratchCodeCreatorImpl1.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", newCode, scratchCodeCreatorImpl1.getCode());
         }
 
         ScratchCodeCreatorImpl scratchCodeCreatorImpl2 = new ScratchCodeCreatorImpl(KapuaId.ONE, KapuaId.ANY, "code");
         for (String newCode : newCodes) {
             scratchCodeCreatorImpl2.setCode(newCode);
-            assertEquals("Expected and actual values should be the same.", newCode, scratchCodeCreatorImpl2.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", newCode, scratchCodeCreatorImpl2.getCode());
         }
     }
 }

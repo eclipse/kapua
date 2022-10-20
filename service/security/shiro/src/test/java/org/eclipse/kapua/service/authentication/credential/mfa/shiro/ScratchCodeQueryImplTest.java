@@ -18,15 +18,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ScratchCodeQueryImplTest extends Assert {
+public class ScratchCodeQueryImplTest {
 
     @Test
     public void scratchCodeQueryImplWithoutParameterTest() {
         ScratchCodeQueryImpl scratchCodeQueryImpl = new ScratchCodeQueryImpl();
-        assertNull("Null expected.", scratchCodeQueryImpl.getScopeId());
-        assertNull("scratchCodeQueryImpl.sortCriteria", scratchCodeQueryImpl.getSortCriteria());
-        assertNotNull("scratchCodeQueryImpl.defaultSortCriteria", scratchCodeQueryImpl.getDefaultSortCriteria());
+        Assert.assertNull("Null expected.", scratchCodeQueryImpl.getScopeId());
+        Assert.assertNull("scratchCodeQueryImpl.sortCriteria", scratchCodeQueryImpl.getSortCriteria());
+        Assert.assertNotNull("scratchCodeQueryImpl.defaultSortCriteria", scratchCodeQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
@@ -34,9 +35,9 @@ public class ScratchCodeQueryImplTest extends Assert {
         KapuaId[] scopeIds = {null, KapuaId.ONE};
         for (KapuaId scopeId : scopeIds) {
             ScratchCodeQueryImpl scratchCodeQueryImpl = new ScratchCodeQueryImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, scratchCodeQueryImpl.getScopeId());
-            assertNull("scratchCodeQueryImpl.sortCriteria", scratchCodeQueryImpl.getSortCriteria());
-            assertNotNull("scratchCodeQueryImpl.defaultSortCriteria", scratchCodeQueryImpl.getDefaultSortCriteria());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, scratchCodeQueryImpl.getScopeId());
+            Assert.assertNull("scratchCodeQueryImpl.sortCriteria", scratchCodeQueryImpl.getSortCriteria());
+            Assert.assertNotNull("scratchCodeQueryImpl.defaultSortCriteria", scratchCodeQueryImpl.getDefaultSortCriteria());
         }
     }
 }

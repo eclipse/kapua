@@ -24,8 +24,9 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class AccessInfoImplTest extends Assert {
+public class AccessInfoImplTest {
 
     AccessInfo accessInfo;
     Date modifiedOn, createdOn;
@@ -50,38 +51,38 @@ public class AccessInfoImplTest extends Assert {
     public void accessInfoImplWithoutParametersTest() {
         AccessInfoImpl accessInfoImpl = new AccessInfoImpl();
 
-        assertNull("Null expected.", accessInfoImpl.getScopeId());
-        assertNull("Null expected.", accessInfoImpl.getUserId());
+        Assert.assertNull("Null expected.", accessInfoImpl.getScopeId());
+        Assert.assertNull("Null expected.", accessInfoImpl.getUserId());
     }
 
     @Test
     public void accessInfoImplScopeIdParameterTest() {
         AccessInfoImpl accessInfoImpl = new AccessInfoImpl(KapuaId.ONE);
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoImpl.getScopeId());
-        assertNull("Null expected.", accessInfoImpl.getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoImpl.getScopeId());
+        Assert.assertNull("Null expected.", accessInfoImpl.getUserId());
     }
 
     @Test
     public void accessInfoImplNullScopeIdParameterTest() {
         AccessInfoImpl accessInfoImpl = new AccessInfoImpl((KapuaId) null);
 
-        assertNull("Null expected.", accessInfoImpl.getScopeId());
-        assertNull("Null expected.", accessInfoImpl.getUserId());
+        Assert.assertNull("Null expected.", accessInfoImpl.getScopeId());
+        Assert.assertNull("Null expected.", accessInfoImpl.getUserId());
     }
 
     @Test
     public void accessInfoImplAccessInfoParameterTest() throws KapuaException {
         AccessInfoImpl accessInfoImpl = new AccessInfoImpl(accessInfo);
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoImpl.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessInfoImpl.getUserId());
-        assertEquals("Expected and actual values should be the same.", modifiedOn, accessInfoImpl.getModifiedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoImpl.getModifiedBy());
-        assertEquals("Expected and actual values should be the same.", 10, accessInfoImpl.getOptlock());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessInfoImpl.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessInfoImpl.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, accessInfoImpl.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessInfoImpl.getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, accessInfoImpl.getModifiedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessInfoImpl.getModifiedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", 10, accessInfoImpl.getOptlock());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessInfoImpl.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessInfoImpl.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, accessInfoImpl.getCreatedOn());
     }
 
     @Test(expected = NullPointerException.class)
@@ -101,9 +102,9 @@ public class AccessInfoImplTest extends Assert {
             accessInfoImpl2.setUserId(newUserId);
             accessInfoImpl3.setUserId(newUserId);
 
-            assertEquals("Expected and actual values should be the same.", newUserId, accessInfoImpl1.getUserId());
-            assertEquals("Expected and actual values should be the same.", newUserId, accessInfoImpl2.getUserId());
-            assertEquals("Expected and actual values should be the same.", newUserId, accessInfoImpl3.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, accessInfoImpl1.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, accessInfoImpl2.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, accessInfoImpl3.getUserId());
         }
     }
 }

@@ -17,12 +17,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ScratchCodeServiceImplTest extends Assert {
+public class ScratchCodeServiceImplTest {
 
     @Test
     public void scratchCodeServiceImplTest() {
         ScratchCodeServiceImpl scratchCodeServiceImpl = new ScratchCodeServiceImpl();
-        assertNotNull("Null not expected.", scratchCodeServiceImpl.getEntityManagerSession());
+        Assert.assertNotNull("Null not expected.", scratchCodeServiceImpl.getEntityManagerSession());
     }
 }

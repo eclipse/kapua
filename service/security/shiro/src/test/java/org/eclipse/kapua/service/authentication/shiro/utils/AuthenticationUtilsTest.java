@@ -26,8 +26,9 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class AuthenticationUtilsTest extends Assert {
+public class AuthenticationUtilsTest {
 
     String[] plainValues, encryptedValues;
     private String cypherKeyPropKey = KapuaCryptoSettingKeys.CIPHER_KEY.key();
@@ -51,14 +52,14 @@ public class AuthenticationUtilsTest extends Assert {
         Constructor<AuthenticationUtils> authenticationUtils = AuthenticationUtils.class.getDeclaredConstructor();
         authenticationUtils.setAccessible(true);
         authenticationUtils.newInstance();
-        assertTrue("True expected.", Modifier.isPrivate(authenticationUtils.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isPrivate(authenticationUtils.getModifiers()));
     }
 
     @Test
     public void cryptCredentialBCRYPTAlgorithmTest() throws KapuaException {
         for (String plainValue : plainValues) {
-            assertTrue("True expected.", AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, plainValue).startsWith("$2a$12$"));
-            assertEquals("Expected and actual values should be the same.", 60, AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, "plain value").length());
+            Assert.assertTrue("True expected.", AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, plainValue).startsWith("$2a$12$"));
+            Assert.assertEquals("Expected and actual values should be the same.", 60, AuthenticationUtils.cryptCredential(CryptAlgorithm.BCRYPT, "plain value").length());
         }
     }
 
@@ -70,8 +71,8 @@ public class AuthenticationUtilsTest extends Assert {
         for (int i = 0; i < shaAlgorithm.length; i++) {
             System.setProperty(cryptoShaAlgorithmPropKey, shaAlgorithm[i]);
             for (String plainValue : plainValues) {
-                assertTrue("True expected.", AuthenticationUtils.cryptCredential(CryptAlgorithm.SHA, plainValue).contains("=:"));
-                assertEquals("Expected and actual values should be the same.", expectedLength[i], AuthenticationUtils.cryptCredential(CryptAlgorithm.SHA, plainValue).length());
+                Assert.assertTrue("True expected.", AuthenticationUtils.cryptCredential(CryptAlgorithm.SHA, plainValue).contains("=:"));
+                Assert.assertEquals("Expected and actual values should be the same.", expectedLength[i], AuthenticationUtils.cryptCredential(CryptAlgorithm.SHA, plainValue).length());
             }
         }
     }
@@ -98,7 +99,7 @@ public class AuthenticationUtilsTest extends Assert {
             try {
                 AuthenticationUtils.encryptAes(plainValue);
             } catch (Exception e) {
-                fail("Exception not expected.");
+                Assert.fail("Exception not expected.");
             }
         }
     }
@@ -123,7 +124,7 @@ public class AuthenticationUtilsTest extends Assert {
         try {
             AuthenticationUtils.encryptAes("");
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -140,7 +141,7 @@ public class AuthenticationUtilsTest extends Assert {
             try {
                 AuthenticationUtils.decryptAes(encryptedValue);
             } catch (Exception e) {
-                fail("Exception not expected.");
+                Assert.fail("Exception not expected.");
             }
         }
     }
@@ -171,7 +172,7 @@ public class AuthenticationUtilsTest extends Assert {
         try {
             AuthenticationUtils.decryptAes("");
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 

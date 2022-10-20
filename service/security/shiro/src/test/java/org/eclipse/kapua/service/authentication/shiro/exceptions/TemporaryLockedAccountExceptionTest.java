@@ -20,8 +20,9 @@ import org.junit.experimental.categories.Category;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class TemporaryLockedAccountExceptionTest extends Assert {
+public class TemporaryLockedAccountExceptionTest {
 
     @Test
     public void temporaryLockedAccountExceptionTest() {
@@ -30,13 +31,13 @@ public class TemporaryLockedAccountExceptionTest extends Assert {
 
         for (int i = 0; i < dates.length; i++) {
             TemporaryLockedAccountException temporaryLockedAccountException = new TemporaryLockedAccountException(dates[i]);
-            assertEquals("Expected and actual values should be the same.", expectedMessages[i], temporaryLockedAccountException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedMessages[i], temporaryLockedAccountException.getMessage());
         }
     }
 
     @Test
     public void temporaryLockedAccountExceptionNullTest() {
         TemporaryLockedAccountException temporaryLockedAccountException = new TemporaryLockedAccountException(null);
-        assertEquals("Expected and actual values should be the same.", "This credential has been locked out until <null>", temporaryLockedAccountException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", "This credential has been locked out until <null>", temporaryLockedAccountException.getMessage());
     }
 }

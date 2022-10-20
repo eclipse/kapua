@@ -20,19 +20,20 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
+
 @Category(JUnitTests.class)
-public class AccessPermissionCacheFactoryTest extends Assert {
+public class AccessPermissionCacheFactoryTest {
 
     @Test
     public void accessPermissionCacheFactoryTest() throws Exception {
         Constructor<AccessPermissionCacheFactory> accessPermissionCacheFactory = AccessPermissionCacheFactory.class.getDeclaredConstructor();
         accessPermissionCacheFactory.setAccessible(true);
         accessPermissionCacheFactory.newInstance();
-        assertTrue("True expected.", Modifier.isPrivate(accessPermissionCacheFactory.getModifiers()));
+        Assert.assertTrue("True expected.", Modifier.isPrivate(accessPermissionCacheFactory.getModifiers()));
     }
 
     @Test
     public void getInstanceTest() {
-        assertTrue("True expected.", AccessPermissionCacheFactory.getInstance() instanceof AccessPermissionCacheFactory);
+        Assert.assertTrue("True expected.", AccessPermissionCacheFactory.getInstance() instanceof AccessPermissionCacheFactory);
     }
 }
