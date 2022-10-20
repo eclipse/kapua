@@ -15,7 +15,7 @@ package org.eclipse.kapua.commons.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SemanticVersionTest extends Assert {
+public class SemanticVersionTest {
 
     @Test(expected = NullPointerException.class)
     public void semanticVersionNullTest() {
@@ -26,10 +26,10 @@ public class SemanticVersionTest extends Assert {
     public void semanticVersionEmptyTest() {
         SemanticVersion semanticVersion = new SemanticVersion("");
 
-        assertEquals("Expected and actual values should be the same.", "", semanticVersion.getVersionString());
-        assertEquals("Expected and actual values should be the same.", "", semanticVersion.getMajorVersion().toString());
-        assertNull("Null expected.", semanticVersion.getMinorVersion());
-        assertNull("Null expected.", semanticVersion.getPatchVersion());
+        Assert.assertEquals("Expected and actual values should be the same.", "", semanticVersion.getVersionString());
+        Assert.assertEquals("Expected and actual values should be the same.", "", semanticVersion.getMajorVersion().toString());
+        Assert.assertNull("Null expected.", semanticVersion.getMinorVersion());
+        Assert.assertNull("Null expected.", semanticVersion.getPatchVersion());
     }
 
     @Test
@@ -37,10 +37,10 @@ public class SemanticVersionTest extends Assert {
         SemanticVersion semanticVersion = new SemanticVersion("1");
         SemanticVersion.VersionToken expectedMajorVersionToken = new SemanticVersion.VersionToken("1");
 
-        assertEquals("Expected and actual values should be the same.", "1", semanticVersion.getVersionString());
-        assertEquals("Expected and actual values should be the same.", expectedMajorVersionToken.versionInteger, semanticVersion.getMajorVersion().versionInteger);
-        assertNull("Null expected.", semanticVersion.getMinorVersion());
-        assertNull("Null expected.", semanticVersion.getPatchVersion());
+        Assert.assertEquals("Expected and actual values should be the same.", "1", semanticVersion.getVersionString());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedMajorVersionToken.versionInteger, semanticVersion.getMajorVersion().versionInteger);
+        Assert.assertNull("Null expected.", semanticVersion.getMinorVersion());
+        Assert.assertNull("Null expected.", semanticVersion.getPatchVersion());
     }
 
     @Test
@@ -49,10 +49,10 @@ public class SemanticVersionTest extends Assert {
         SemanticVersion.VersionToken expectedMajorVersionToken = new SemanticVersion.VersionToken("1");
         SemanticVersion.VersionToken expectedMinorVersionToken = new SemanticVersion.VersionToken("0");
 
-        assertEquals("Expected and actual values should be the same.", "1.0", semanticVersion.getVersionString());
-        assertEquals("Expected and actual values should be the same.", expectedMajorVersionToken.versionInteger, semanticVersion.getMajorVersion().versionInteger);
-        assertEquals("Expected and actual values should be the same.", expectedMinorVersionToken.versionInteger, semanticVersion.getMinorVersion().versionInteger);
-        assertNull("Null expected.", semanticVersion.getPatchVersion());
+        Assert.assertEquals("Expected and actual values should be the same.", "1.0", semanticVersion.getVersionString());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedMajorVersionToken.versionInteger, semanticVersion.getMajorVersion().versionInteger);
+        Assert.assertEquals("Expected and actual values should be the same.", expectedMinorVersionToken.versionInteger, semanticVersion.getMinorVersion().versionInteger);
+        Assert.assertNull("Null expected.", semanticVersion.getPatchVersion());
     }
 
     @Test
@@ -62,10 +62,10 @@ public class SemanticVersionTest extends Assert {
         SemanticVersion.VersionToken expectedMinorVersionToken = new SemanticVersion.VersionToken("1");
         SemanticVersion.VersionToken expectedPatchVersionToken = new SemanticVersion.VersionToken("0");
 
-        assertEquals("Expected and actual values should be the same.", "1.1.0", semanticVersion.getVersionString());
-        assertEquals("Expected and actual values should be the same.", expectedMajorVersionToken.versionInteger, semanticVersion.getMajorVersion().versionInteger);
-        assertEquals("Expected and actual values should be the same.", expectedMinorVersionToken.versionInteger, semanticVersion.getMinorVersion().versionInteger);
-        assertEquals("Expected and actual values should be the same.", expectedPatchVersionToken.versionInteger, semanticVersion.getPatchVersion().versionInteger);
+        Assert.assertEquals("Expected and actual values should be the same.", "1.1.0", semanticVersion.getVersionString());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedMajorVersionToken.versionInteger, semanticVersion.getMajorVersion().versionInteger);
+        Assert.assertEquals("Expected and actual values should be the same.", expectedMinorVersionToken.versionInteger, semanticVersion.getMinorVersion().versionInteger);
+        Assert.assertEquals("Expected and actual values should be the same.", expectedPatchVersionToken.versionInteger, semanticVersion.getPatchVersion().versionInteger);
     }
 
     @Test
@@ -88,25 +88,25 @@ public class SemanticVersionTest extends Assert {
         //Positive tests
         for (int i = 0; i < semanticVersionAfterTrue.length; i++) {
             try {
-                assertTrue("True expected.", new SemanticVersion(semanticVersionAfterTrue[i]).after(new SemanticVersion(semanticVersionToCompareTrue[i])));
+                Assert.assertTrue("True expected.", new SemanticVersion(semanticVersionAfterTrue[i]).after(new SemanticVersion(semanticVersionToCompareTrue[i])));
             } catch (AssertionError e) {
-                fail("AssertionError not expected for " + semanticVersionAfterTrue[i]);
+                Assert.fail("AssertionError not expected for " + semanticVersionAfterTrue[i]);
             }
         }
 
         for (int i = 0; i < semanticVersionLettersAfterTrue.length; i++) {
             try {
-                assertTrue("True expected.", new SemanticVersion(semanticVersionLettersAfterTrue[i]).after(new SemanticVersion(semanticVersionLettersToCompareTrue[i])));
+                Assert.assertTrue("True expected.", new SemanticVersion(semanticVersionLettersAfterTrue[i]).after(new SemanticVersion(semanticVersionLettersToCompareTrue[i])));
             } catch (AssertionError e) {
-                fail("AssertionError not expected for " + semanticVersionLettersAfterTrue[i]);
+                Assert.fail("AssertionError not expected for " + semanticVersionLettersAfterTrue[i]);
             }
         }
 
         //Negative tests
         for (int i = 0; i < semanticVersionAfterFalse.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionAfterFalse[i]).after(new SemanticVersion(semanticVersionToCompareFalse[i])));
-                fail("AssertionError expected");
+                Assert.assertTrue(new SemanticVersion(semanticVersionAfterFalse[i]).after(new SemanticVersion(semanticVersionToCompareFalse[i])));
+                Assert.fail("AssertionError expected");
             } catch (AssertionError e) {
                 //Expected
             }
@@ -114,16 +114,16 @@ public class SemanticVersionTest extends Assert {
 
         for (int i = 0; i < semanticVersionLettersAfterFalse.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionLettersAfterFalse[i]).after(new SemanticVersion(semanticVersionLettersToCompareFalse[i])));
-                fail("AssertionError expected");
+                Assert.assertTrue(new SemanticVersion(semanticVersionLettersAfterFalse[i]).after(new SemanticVersion(semanticVersionLettersToCompareFalse[i])));
+                Assert.fail("AssertionError expected");
             } catch (AssertionError e) {
                 //Expected
             }
         }
 
         try {
-            assertTrue(new SemanticVersion(semanticMajorVersionToCompare).after(new SemanticVersion(semanticMajorVersion)));
-            fail("NullPointerException expected");
+            Assert.assertTrue(new SemanticVersion(semanticMajorVersionToCompare).after(new SemanticVersion(semanticMajorVersion)));
+            Assert.fail("NullPointerException expected");
         } catch (Exception e) {
             //Expected
         }
@@ -146,25 +146,25 @@ public class SemanticVersionTest extends Assert {
         //Positive tests
         for (int i = 0; i < semanticVersionAfterOrMatchesTrue.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionAfterOrMatchesTrue[i]).afterOrMatches(new SemanticVersion(semanticVersionToCompareTrue[i])));
+                Assert.assertTrue(new SemanticVersion(semanticVersionAfterOrMatchesTrue[i]).afterOrMatches(new SemanticVersion(semanticVersionToCompareTrue[i])));
             } catch (AssertionError e) {
-                fail("AssertionError not expected for " + semanticVersionAfterOrMatchesTrue[i]);
+                Assert.fail("AssertionError not expected for " + semanticVersionAfterOrMatchesTrue[i]);
             }
         }
 
         for (int i = 0; i < semanticVersionLettersAfterOrMatchesTrue.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionLettersAfterOrMatchesTrue[i]).afterOrMatches(new SemanticVersion(semanticVersionLettersToCompareTrue[i])));
+                Assert.assertTrue(new SemanticVersion(semanticVersionLettersAfterOrMatchesTrue[i]).afterOrMatches(new SemanticVersion(semanticVersionLettersToCompareTrue[i])));
             } catch (AssertionError e) {
-                fail("AssertionError not expected for " + semanticVersionLettersAfterOrMatchesTrue[i]);
+                Assert.fail("AssertionError not expected for " + semanticVersionLettersAfterOrMatchesTrue[i]);
             }
         }
 
         //Negative tests
         for (int i = 0; i < semanticVersionAfterOrMatchesFalse.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionAfterOrMatchesFalse[i]).afterOrMatches(new SemanticVersion(semanticVersionToCompareFalse[i])));
-                fail("AssertionError expected");
+                Assert.assertTrue(new SemanticVersion(semanticVersionAfterOrMatchesFalse[i]).afterOrMatches(new SemanticVersion(semanticVersionToCompareFalse[i])));
+                Assert.fail("AssertionError expected");
             } catch (AssertionError e) {
                 //Expected
             }
@@ -172,8 +172,8 @@ public class SemanticVersionTest extends Assert {
 
         for (int i = 0; i < semanticVersionLettersAfterOrMatchesFalse.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionLettersAfterOrMatchesFalse[i]).afterOrMatches(new SemanticVersion(semanticVersionLettersToCompareFalse[i])));
-                fail("AssertionError expected");
+                Assert.assertTrue(new SemanticVersion(semanticVersionLettersAfterOrMatchesFalse[i]).afterOrMatches(new SemanticVersion(semanticVersionLettersToCompareFalse[i])));
+                Assert.fail("AssertionError expected");
             } catch (AssertionError e) {
                 //Expected
             }
@@ -197,25 +197,25 @@ public class SemanticVersionTest extends Assert {
         //Positive tests
         for (int i = 0; i < semanticVersionMatchesTrue.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionMatchesTrue[i]).matches(new SemanticVersion(semanticVersionToCompareTrue[i])));
+                Assert.assertTrue(new SemanticVersion(semanticVersionMatchesTrue[i]).matches(new SemanticVersion(semanticVersionToCompareTrue[i])));
             } catch (AssertionError e) {
-                fail("AssertionError not expected for " + semanticVersionMatchesTrue[i]);
+                Assert.fail("AssertionError not expected for " + semanticVersionMatchesTrue[i]);
             }
         }
 
         for (int i = 0; i < semanticVersionLettersMatchesTrue.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionLettersMatchesTrue[i]).matches(new SemanticVersion(semanticVersionLettersToCompareTrue[i])));
+                Assert.assertTrue(new SemanticVersion(semanticVersionLettersMatchesTrue[i]).matches(new SemanticVersion(semanticVersionLettersToCompareTrue[i])));
             } catch (AssertionError e) {
-                fail("AssertionError not expected for " + semanticVersionLettersMatchesTrue[i]);
+                Assert.fail("AssertionError not expected for " + semanticVersionLettersMatchesTrue[i]);
             }
         }
 
         //Negative tests
         for (int i = 0; i < semanticVersionMatchesFalse.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionMatchesFalse[i]).matches(new SemanticVersion(semanticVersionToCompareFalse[i])));
-                fail("AssertionError expected");
+                Assert.assertTrue(new SemanticVersion(semanticVersionMatchesFalse[i]).matches(new SemanticVersion(semanticVersionToCompareFalse[i])));
+                Assert.fail("AssertionError expected");
             } catch (AssertionError e) {
                 //Expected
             }
@@ -223,8 +223,8 @@ public class SemanticVersionTest extends Assert {
 
         for (int i = 0; i < semanticVersionLettersMatchesFalse.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionLettersMatchesFalse[i]).matches(new SemanticVersion(semanticVersionLettersToCompareFalse[i])));
-                fail("NullPointerException expected");
+                Assert.assertTrue(new SemanticVersion(semanticVersionLettersMatchesFalse[i]).matches(new SemanticVersion(semanticVersionLettersToCompareFalse[i])));
+                Assert.fail("NullPointerException expected");
             } catch (AssertionError e) {
                 //Expected
             }
@@ -248,25 +248,25 @@ public class SemanticVersionTest extends Assert {
         //Positive tests
         for (int i = 0; i < semanticVersionBeforeOrMatchesTrue.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionBeforeOrMatchesTrue[i]).beforeOrMatches(new SemanticVersion(semanticVersionToCompareTrue[i])));
+                Assert.assertTrue(new SemanticVersion(semanticVersionBeforeOrMatchesTrue[i]).beforeOrMatches(new SemanticVersion(semanticVersionToCompareTrue[i])));
             } catch (AssertionError e) {
-                fail("AssertionError not expected for " + semanticVersionBeforeOrMatchesTrue[i]);
+                Assert.fail("AssertionError not expected for " + semanticVersionBeforeOrMatchesTrue[i]);
             }
         }
 
         for (int i = 0; i < semanticVersionLettersBeforeOrMatchesTrue.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionLettersBeforeOrMatchesTrue[i]).beforeOrMatches(new SemanticVersion(semanticVersionLettersToCompareTrue[i])));
+                Assert.assertTrue(new SemanticVersion(semanticVersionLettersBeforeOrMatchesTrue[i]).beforeOrMatches(new SemanticVersion(semanticVersionLettersToCompareTrue[i])));
             } catch (AssertionError e) {
-                fail("AssertionError not expected for " + semanticVersionLettersBeforeOrMatchesTrue[i]);
+                Assert.fail("AssertionError not expected for " + semanticVersionLettersBeforeOrMatchesTrue[i]);
             }
         }
 
         //Negative tests
         for (int i = 0; i < semanticVersionBeforeOrMatchesFalse.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionBeforeOrMatchesFalse[i]).beforeOrMatches(new SemanticVersion(semanticVersionToCompareFalse[i])));
-                fail("AssertionError expected");
+                Assert.assertTrue(new SemanticVersion(semanticVersionBeforeOrMatchesFalse[i]).beforeOrMatches(new SemanticVersion(semanticVersionToCompareFalse[i])));
+                Assert.fail("AssertionError expected");
             } catch (AssertionError e) {
                 //Expected
             }
@@ -274,8 +274,8 @@ public class SemanticVersionTest extends Assert {
 
         for (int i = 0; i < semanticVersionLettersBeforeOrMatchesFalse.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionLettersBeforeOrMatchesFalse[i]).beforeOrMatches(new SemanticVersion(semanticVersionLettersToCompareFalse[i])));
-                fail("AssertionError expected");
+                Assert.assertTrue(new SemanticVersion(semanticVersionLettersBeforeOrMatchesFalse[i]).beforeOrMatches(new SemanticVersion(semanticVersionLettersToCompareFalse[i])));
+                Assert.fail("AssertionError expected");
             } catch (AssertionError e) {
                 //Expected
             }
@@ -302,25 +302,25 @@ public class SemanticVersionTest extends Assert {
         //Positive tests
         for (int i = 0; i < semanticVersionBeforeTrue.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionBeforeTrue[i]).before(new SemanticVersion(semanticVersionToCompareTrue[i])));
+                Assert.assertTrue(new SemanticVersion(semanticVersionBeforeTrue[i]).before(new SemanticVersion(semanticVersionToCompareTrue[i])));
             } catch (AssertionError e) {
-                fail("AssertionError not expected for " + semanticVersionBeforeTrue[i]);
+                Assert.fail("AssertionError not expected for " + semanticVersionBeforeTrue[i]);
             }
         }
 
         for (int i = 0; i < semanticVersionLettersBeforeTrue.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionLettersBeforeTrue[i]).before(new SemanticVersion(semanticVersionLettersToCompareTrue[i])));
+                Assert.assertTrue(new SemanticVersion(semanticVersionLettersBeforeTrue[i]).before(new SemanticVersion(semanticVersionLettersToCompareTrue[i])));
             } catch (AssertionError e) {
-                fail("AssertionError not expected for " + semanticVersionLettersBeforeTrue[i]);
+                Assert.fail("AssertionError not expected for " + semanticVersionLettersBeforeTrue[i]);
             }
         }
 
         //Negative tests
         for (int i = 0; i < semanticVersionBeforeFalse.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionBeforeFalse[i]).before(new SemanticVersion(semanticVersionToCompareFalse[i])));
-                fail("AssertionError expected");
+                Assert.assertTrue(new SemanticVersion(semanticVersionBeforeFalse[i]).before(new SemanticVersion(semanticVersionToCompareFalse[i])));
+                Assert.fail("AssertionError expected");
             } catch (AssertionError e) {
                 //Expected
             }
@@ -328,16 +328,16 @@ public class SemanticVersionTest extends Assert {
 
         for (int i = 0; i < semanticVersionLettersBeforeFalse.length; i++) {
             try {
-                assertTrue(new SemanticVersion(semanticVersionLettersBeforeFalse[i]).before(new SemanticVersion(semanticVersionLettersToCompareFalse[i])));
-                fail("AssertionError expected");
+                Assert.assertTrue(new SemanticVersion(semanticVersionLettersBeforeFalse[i]).before(new SemanticVersion(semanticVersionLettersToCompareFalse[i])));
+                Assert.fail("AssertionError expected");
             } catch (AssertionError e) {
                 //Expected
             }
         }
 
         try {
-            assertTrue(new SemanticVersion(semanticMajorVersionToCompare).before(new SemanticVersion(semanticMajorVersion)));
-            fail("NullPointerException expected");
+            Assert.assertTrue(new SemanticVersion(semanticMajorVersionToCompare).before(new SemanticVersion(semanticMajorVersion)));
+            Assert.fail("NullPointerException expected");
         } catch (Exception e) {
             //Expected
         }
@@ -345,34 +345,34 @@ public class SemanticVersionTest extends Assert {
 
     @Test
     public void semanticVersionToStringTest() {
-        assertEquals("1.2.3", new SemanticVersion("1.2.3").toString());
-        assertEquals("1.2.3", new SemanticVersion.VersionToken("1.2.3").toString());
+        Assert.assertEquals("1.2.3", new SemanticVersion("1.2.3").toString());
+        Assert.assertEquals("1.2.3", new SemanticVersion.VersionToken("1.2.3").toString());
     }
 
     @Test
     public void versionTokenNullTest() {
         SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(null);
-        assertNull("Null expected.", versionToken.getVersionInteger());
-        assertFalse("False expected.", versionToken.isIntegerComparison());
-        assertNull("Null expected.", versionToken.getVersionString());
+        Assert.assertNull("Null expected.", versionToken.getVersionInteger());
+        Assert.assertFalse("False expected.", versionToken.isIntegerComparison());
+        Assert.assertNull("Null expected.", versionToken.getVersionString());
     }
 
     @Test
     public void versionTokenTest() {
         SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken("11");
 
-        assertEquals("Expected and actual values should be the same.", (Integer) 11, versionToken.getVersionInteger());
-        assertTrue("True expected.", versionToken.isIntegerComparison());
-        assertEquals("Expected and actual values should be the same.", "11", versionToken.getVersionString());
+        Assert.assertEquals("Expected and actual values should be the same.", (Integer) 11, versionToken.getVersionInteger());
+        Assert.assertTrue("True expected.", versionToken.isIntegerComparison());
+        Assert.assertEquals("Expected and actual values should be the same.", "11", versionToken.getVersionString());
     }
 
     @Test
     public void versionTokenNumberFormatExceptionTest() {
         SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken("1.1");
 
-        assertNull("Null expected.", versionToken.getVersionInteger());
-        assertFalse("False expected.", versionToken.isIntegerComparison());
-        assertEquals("Expected and actual values should be the same.", "1.1", versionToken.getVersionString());
+        Assert.assertNull("Null expected.", versionToken.getVersionInteger());
+        Assert.assertFalse("False expected.", versionToken.isIntegerComparison());
+        Assert.assertEquals("Expected and actual values should be the same.", "1.1", versionToken.getVersionString());
     }
 
     @Test
@@ -393,27 +393,27 @@ public class SemanticVersionTest extends Assert {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringTrue[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareTrue[i]);
 
-            assertTrue("True expected.", versionToken.after(versionTokenToCompare));
+            Assert.assertTrue("True expected.", versionToken.after(versionTokenToCompare));
         }
         for (int i = 0; i < versionTokenStringTrue.length; i++) {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringLettersTrue[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareLettersTrue[i]);
 
-            assertTrue("True expected.", versionToken.after(versionTokenToCompare));
+            Assert.assertTrue("True expected.", versionToken.after(versionTokenToCompare));
         }
 
         for (int i = 0; i < versionTokenStringTrue.length; i++) {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringFalse[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareFalse[i]);
 
-            assertFalse("False expected.", versionToken.after(versionTokenToCompare));
+            Assert.assertFalse("False expected.", versionToken.after(versionTokenToCompare));
         }
 
         for (int i = 0; i < versionTokenStringTrue.length; i++) {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringLettersFalse[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareLettersFalse[i]);
 
-            assertFalse("False expected.", versionToken.after(versionTokenToCompare));
+            Assert.assertFalse("False expected.", versionToken.after(versionTokenToCompare));
         }
     }
 
@@ -435,28 +435,28 @@ public class SemanticVersionTest extends Assert {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringTrue[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareTrue[i]);
 
-            assertTrue("True expected.", versionToken.matches(versionTokenToCompare));
+            Assert.assertTrue("True expected.", versionToken.matches(versionTokenToCompare));
         }
 
         for (int i = 0; i < versionTokenStringTrue.length; i++) {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringLettersTrue[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareLettersTrue[i]);
 
-            assertTrue("True expected.", versionToken.matches(versionTokenToCompare));
+            Assert.assertTrue("True expected.", versionToken.matches(versionTokenToCompare));
         }
 
         for (int i = 0; i < versionTokenStringTrue.length; i++) {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringFalse[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareFalse[i]);
 
-            assertFalse("False expected.", versionToken.matches(versionTokenToCompare));
+            Assert.assertFalse("False expected.", versionToken.matches(versionTokenToCompare));
         }
 
         for (int i = 0; i < versionTokenStringTrue.length; i++) {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringLettersFalse[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareLettersFalse[i]);
 
-            assertFalse("False expected.", versionToken.matches(versionTokenToCompare));
+            Assert.assertFalse("False expected.", versionToken.matches(versionTokenToCompare));
         }
     }
 
@@ -478,28 +478,28 @@ public class SemanticVersionTest extends Assert {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringTrue[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareTrue[i]);
 
-            assertTrue("True expected.", versionToken.before(versionTokenToCompare));
+            Assert.assertTrue("True expected.", versionToken.before(versionTokenToCompare));
         }
 
         for (int i = 0; i < versionTokenStringTrue.length; i++) {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringLettersTrue[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareLettersTrue[i]);
 
-            assertTrue("True expected.", versionToken.before(versionTokenToCompare));
+            Assert.assertTrue("True expected.", versionToken.before(versionTokenToCompare));
         }
 
         for (int i = 0; i < versionTokenStringTrue.length; i++) {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringFalse[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareFalse[i]);
 
-            assertFalse("False expected.", versionToken.before(versionTokenToCompare));
+            Assert.assertFalse("False expected.", versionToken.before(versionTokenToCompare));
         }
 
         for (int i = 0; i < versionTokenStringTrue.length; i++) {
             SemanticVersion.VersionToken versionToken = new SemanticVersion.VersionToken(versionTokenStringLettersFalse[i]);
             SemanticVersion.VersionToken versionTokenToCompare = new SemanticVersion.VersionToken(versionTokenStringToCompareLettersFalse[i]);
 
-            assertFalse("False expected.", versionToken.before(versionTokenToCompare));
+            Assert.assertFalse("False expected.", versionToken.before(versionTokenToCompare));
         }
     }
 }

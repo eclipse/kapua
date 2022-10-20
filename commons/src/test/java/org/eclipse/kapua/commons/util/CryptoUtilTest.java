@@ -21,8 +21,9 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Constructor;
 import java.util.Random;
 
+
 @Category(JUnitTests.class)
-public class CryptoUtilTest extends Assert {
+public class CryptoUtilTest {
 
     private static final Random RANDOM = RandomUtils.getInstance();
 
@@ -49,7 +50,7 @@ public class CryptoUtilTest extends Assert {
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
                 CryptoUtil.sha1Hash(falseStrings[i]);
-                fail("Exception expected for: " + falseStrings[i]);
+                Assert.fail("Exception expected for: " + falseStrings[i]);
             } catch (Exception ex) {
                 // Expected
             }
@@ -59,7 +60,7 @@ public class CryptoUtilTest extends Assert {
             try {
                 CryptoUtil.sha1Hash(permittedStrings[i]);
             } catch (Exception ex) {
-                fail("No exception expected for 'test string'");
+                Assert.fail("No exception expected for 'test string'");
             }
         }
     }
@@ -80,7 +81,7 @@ public class CryptoUtilTest extends Assert {
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
                 CryptoUtil.encodeBase64(falseStrings[i]);
-                fail("Exception expected for: " + falseStrings[i]);
+                Assert.fail("Exception expected for: " + falseStrings[i]);
             } catch (Exception ex) {
                 // Expected
             }
@@ -91,7 +92,7 @@ public class CryptoUtilTest extends Assert {
             try {
                 CryptoUtil.encodeBase64(permittedStrings[i]);
             } catch (Exception ex) {
-                fail("No exception expected for 'test string'");
+                Assert.fail("No exception expected for 'test string'");
             }
         }
     }
@@ -112,7 +113,7 @@ public class CryptoUtilTest extends Assert {
         for (int i = 0; i < sizeOfFalseStrings; i++) {
             try {
                 CryptoUtil.decodeBase64(falseStrings[i]);
-                fail("Exception expected for: " + falseStrings[i]);
+                Assert.fail("Exception expected for: " + falseStrings[i]);
             } catch (Exception ex) {
                 // Expected
             }
@@ -123,7 +124,7 @@ public class CryptoUtilTest extends Assert {
             try {
                 CryptoUtil.decodeBase64(permittedStrings[i]);
             } catch (Exception ex) {
-                fail("No exception expected for 'test string'");
+                Assert.fail("No exception expected for 'test string'");
             }
         }
     }

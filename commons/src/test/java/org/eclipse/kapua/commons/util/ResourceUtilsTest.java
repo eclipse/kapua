@@ -26,8 +26,9 @@ import org.junit.Test;
 import com.google.common.io.CharStreams;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class ResourceUtilsTest extends Assert {
+public class ResourceUtilsTest {
 
     @Test
     public void testConstructor() throws Exception {
@@ -45,10 +46,10 @@ public class ResourceUtilsTest extends Assert {
         URL url = classloaderTest.getResource(resource);
 
         //Positive test
-        assertEquals("AssertionError not expected", url, ResourceUtils.getResource(resource));
+        Assert.assertEquals("AssertionError not expected", url, ResourceUtils.getResource(resource));
 
         //Negative test
-        assertNotEquals(url, ResourceUtils.getResource(noResource));
+        Assert.assertNotEquals(url, ResourceUtils.getResource(noResource));
     }
 
     @Test
@@ -73,40 +74,40 @@ public class ResourceUtilsTest extends Assert {
         for (int i = 0; i < validCharsetList.length; i++) {
             final Reader reader = ResourceUtils.openAsReader(urlWithResource, validCharsetList[i]);
             final String string = CharStreams.toString(reader);
-            assertEquals("ComparisonFailure not expected", expectedString, string);
+            Assert.assertEquals("ComparisonFailure not expected", expectedString, string);
         }
 
         //Negative tests
         for (int i = 0; i < invalidCharsetList.length; i++) {
             final Reader reader = ResourceUtils.openAsReader(urlWithResource, invalidCharsetList[i]);
             final String string = CharStreams.toString(reader);
-            assertNotEquals(expectedString, string);
+            Assert.assertNotEquals(expectedString, string);
         }
 
         for (int i = 0; i < validCharsetList.length; i++) {
             try (final Reader reader = ResourceUtils.openAsReader(urlNoResource, validCharsetList[i])) {
                 final String string = CharStreams.toString(reader);
-                assertNotNull(string);
-                assertFalse(string.isEmpty());
+                Assert.assertNotNull(string);
+                Assert.assertFalse(string.isEmpty());
             } catch (Exception e) {
-                assertEquals(expectedException.toString(), e.toString());
+                Assert.assertEquals(expectedException.toString(), e.toString());
             }
         }
 
         try (final Reader reader = ResourceUtils.openAsReader(urlWithResource, null)) {
             final String string = CharStreams.toString(reader);
-            assertNotNull(string);
-            assertFalse(string.isEmpty());
+            Assert.assertNotNull(string);
+            Assert.assertFalse(string.isEmpty());
         } catch (Exception e) {
-            assertEquals(expectedException.toString(), e.toString());
+            Assert.assertEquals(expectedException.toString(), e.toString());
         }
 
         try (final Reader reader = ResourceUtils.openAsReader(urlNoResource, null)) {
             final String string = CharStreams.toString(reader);
-            assertNotNull(string);
-            assertFalse(string.isEmpty());
+            Assert.assertNotNull(string);
+            Assert.assertFalse(string.isEmpty());
         } catch (Exception e) {
-            assertEquals(expectedException.toString(), e.toString());
+            Assert.assertEquals(expectedException.toString(), e.toString());
         }
     }
 }

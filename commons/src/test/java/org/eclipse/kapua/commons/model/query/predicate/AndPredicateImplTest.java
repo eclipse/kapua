@@ -21,28 +21,29 @@ import org.junit.experimental.categories.Category;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class AndPredicateImplTest extends Assert {
+public class AndPredicateImplTest {
 
     @Test
     public void andPredicateImpl() {
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         ArrayList<Object> array = new ArrayList<>();
-        assertEquals("Actual and expected values are not the same!", array, andPredicate.getPredicates());
+        Assert.assertEquals("Actual and expected values are not the same!", array, andPredicate.getPredicates());
     }
 
     @Test
     public void andPredicateImplQueryPredicateId() {
         QueryPredicate queryPredicate = new AndPredicateImpl();
         AndPredicateImpl andPredicate = new AndPredicateImpl(queryPredicate);
-        assertEquals("Actual and expected values are not the same!", queryPredicate, andPredicate.getPredicates().get(0));
+        Assert.assertEquals("Actual and expected values are not the same!", queryPredicate, andPredicate.getPredicates().get(0));
         QueryPredicate queryPredicate1 = new AndPredicateImpl();
         QueryPredicate queryPredicate2 = new AndPredicateImpl();
         QueryPredicate queryPredicate3 = new AndPredicateImpl();
         QueryPredicate[] queryPredicateArray = {queryPredicate1, queryPredicate2, queryPredicate3};
         AndPredicateImpl andPredicateWithMultiplePredicates = new AndPredicateImpl(queryPredicate1, queryPredicate2, queryPredicate3);
         for (int i = 0; i < queryPredicateArray.length; i++) {
-            assertEquals("Actual and expected values are not the same!", queryPredicateArray[i], andPredicateWithMultiplePredicates.getPredicates().get(i));
+            Assert.assertEquals("Actual and expected values are not the same!", queryPredicateArray[i], andPredicateWithMultiplePredicates.getPredicates().get(i));
         }
     }
 
@@ -51,14 +52,14 @@ public class AndPredicateImplTest extends Assert {
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         QueryPredicate queryPredicate = new AndPredicateImpl();
         andPredicate.and(queryPredicate);
-        assertEquals("Actual and expected values are not the same!", queryPredicate, andPredicate.getPredicates().get(0));
+        Assert.assertEquals("Actual and expected values are not the same!", queryPredicate, andPredicate.getPredicates().get(0));
     }
 
     @Test
     public void andWithNullPredicateTest() {
         AndPredicateImpl andPredicate = new AndPredicateImpl();
         andPredicate.and(null);
-        assertNull(andPredicate.getPredicates().get(0));
+        Assert.assertNull(andPredicate.getPredicates().get(0));
     }
 
     @Test
@@ -70,7 +71,7 @@ public class AndPredicateImplTest extends Assert {
         predicates.add(new AndPredicateImpl());
         andPredicate.setPredicates(predicates);
         for (int i = 0; i < predicates.size(); i++) {
-            assertEquals("Actual and expected values are not the same!", predicates.get(i), andPredicate.getPredicates().get(i));
+            Assert.assertEquals("Actual and expected values are not the same!", predicates.get(i), andPredicate.getPredicates().get(i));
         }
     }
 }

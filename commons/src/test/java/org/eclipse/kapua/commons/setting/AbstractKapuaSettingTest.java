@@ -19,7 +19,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 @Category(JUnitTests.class)
-public class AbstractKapuaSettingTest extends Assertions {
+public class AbstractKapuaSettingTest {
 
     private class IncorrectConfigResourceName extends AbstractKapuaSetting<TestSettingKey> {
         protected IncorrectConfigResourceName() {
@@ -50,7 +50,7 @@ public class AbstractKapuaSettingTest extends Assertions {
     public void shouldReadPathFromEnvTest() {
         String path = new TestSetting().property("PATH");
 
-        assertThat(path).isNotEmpty();
+        Assertions.assertThat(path).isNotEmpty();
     }
 
     @Test
@@ -58,7 +58,7 @@ public class AbstractKapuaSettingTest extends Assertions {
         System.setProperty("FOO_BAR_BAZ", "qux");
         String path = new TestSetting().property("foo.bar.baz");
 
-        assertThat(path).isEqualTo("qux");
+        Assertions.assertThat(path).isEqualTo("qux");
     }
 
     static class TestSetting extends AbstractKapuaSetting<TestSettingKey> {
