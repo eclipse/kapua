@@ -30,8 +30,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Category(JUnitTests.class)
-public class DomainFactoryImplTest extends Assert {
+public class DomainFactoryImplTest {
 
     DomainFactoryImpl domainFactoryImpl;
 
@@ -46,50 +47,50 @@ public class DomainFactoryImplTest extends Assert {
 
         for (String name : names) {
             DomainCreator domainCreator = domainFactoryImpl.newCreator(name);
-            assertEquals("Expected and actual values should be the same.", name, domainCreator.getName());
-            assertNull("Null expected.", domainCreator.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", name, domainCreator.getName());
+            Assert.assertNull("Null expected.", domainCreator.getScopeId());
         }
     }
 
     @Test
     public void newCreatorNullNameParameterTest() {
         DomainCreator domainCreator = domainFactoryImpl.newCreator((String) null);
-        assertNull("Null expected.", domainCreator.getName());
-        assertNull("Null expected.", domainCreator.getScopeId());
+        Assert.assertNull("Null expected.", domainCreator.getName());
+        Assert.assertNull("Null expected.", domainCreator.getScopeId());
     }
 
     @Test
     public void newListResultTest() {
         DomainListResult domainListResult = domainFactoryImpl.newListResult();
-        assertTrue("True expected.", domainListResult.isEmpty());
+        Assert.assertTrue("True expected.", domainListResult.isEmpty());
     }
 
     @Test
     public void newQueryTest() {
         DomainQuery domainQuery = domainFactoryImpl.newQuery(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domainQuery.getScopeId());
-        assertNull("domainQuery.sortCriteria", domainQuery.getSortCriteria());
-        assertNotNull("domainQuery.defaultSortCriteria", domainQuery.getDefaultSortCriteria());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domainQuery.getScopeId());
+        Assert.assertNull("domainQuery.sortCriteria", domainQuery.getSortCriteria());
+        Assert.assertNotNull("domainQuery.defaultSortCriteria", domainQuery.getDefaultSortCriteria());
     }
 
     @Test
     public void newQueryNullTest() {
         DomainQuery domainQuery = domainFactoryImpl.newQuery(null);
-        assertNull("Null expected.", domainQuery.getScopeId());
-        assertNull("domainQuery.sortCriteria", domainQuery.getSortCriteria());
-        assertNotNull("domainQuery.defaultSortCriteria", domainQuery.getDefaultSortCriteria());
+        Assert.assertNull("Null expected.", domainQuery.getScopeId());
+        Assert.assertNull("domainQuery.sortCriteria", domainQuery.getSortCriteria());
+        Assert.assertNotNull("domainQuery.defaultSortCriteria", domainQuery.getDefaultSortCriteria());
     }
 
     @Test
     public void newEntityTest() {
         Domain domain = domainFactoryImpl.newEntity(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domain.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, domain.getScopeId());
     }
 
     @Test
     public void newEntityNullTest() {
         Domain domain = domainFactoryImpl.newEntity(null);
-        assertNull("Null expected.", domain.getScopeId());
+        Assert.assertNull("Null expected.", domain.getScopeId());
     }
 
     @Test(expected = NotImplementedException.class)
@@ -117,13 +118,13 @@ public class DomainFactoryImplTest extends Assert {
         Mockito.when(domain.getGroupable()).thenReturn(true);
 
         Domain resultDomain = domainFactoryImpl.clone(domain);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultDomain.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultDomain.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultDomain.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, resultDomain.getCreatedOn());
-        assertEquals("Expected and actual values should be the same.", "name", resultDomain.getName());
-        assertEquals("Expected and actual values should be the same.", actions, resultDomain.getActions());
-        assertEquals("Expected and actual values should be the same.", true, resultDomain.getGroupable());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultDomain.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, resultDomain.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, resultDomain.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, resultDomain.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", "name", resultDomain.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", actions, resultDomain.getActions());
+        Assert.assertEquals("Expected and actual values should be the same.", true, resultDomain.getGroupable());
     }
 
     @Test(expected = NullPointerException.class)

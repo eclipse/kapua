@@ -18,15 +18,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class RoleQueryImplTest extends Assert {
+public class RoleQueryImplTest {
 
     @Test
     public void rolePermissionQueryImplWithoutParametersTest() {
         RoleQueryImpl roleQueryImpl = new RoleQueryImpl();
-        assertNull("Null expected.", roleQueryImpl.getScopeId());
-        assertNull("roleQueryImpl.sortCriteria", roleQueryImpl.getSortCriteria());
-        assertNotNull("roleQueryImpl.defaultSortCriteria", roleQueryImpl.getDefaultSortCriteria());
+        Assert.assertNull("Null expected.", roleQueryImpl.getScopeId());
+        Assert.assertNull("roleQueryImpl.sortCriteria", roleQueryImpl.getSortCriteria());
+        Assert.assertNotNull("roleQueryImpl.defaultSortCriteria", roleQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
@@ -35,9 +36,9 @@ public class RoleQueryImplTest extends Assert {
 
         for (KapuaId scopeId : scopeIds) {
             RoleQueryImpl roleQueryImpl = new RoleQueryImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, roleQueryImpl.getScopeId());
-            assertNull("roleQueryImpl.sortCriteria", roleQueryImpl.getSortCriteria());
-            assertNotNull("roleQueryImpl.defaultSortCriteria", roleQueryImpl.getDefaultSortCriteria());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, roleQueryImpl.getScopeId());
+            Assert.assertNull("roleQueryImpl.sortCriteria", roleQueryImpl.getSortCriteria());
+            Assert.assertNotNull("roleQueryImpl.defaultSortCriteria", roleQueryImpl.getDefaultSortCriteria());
         }
     }
 }

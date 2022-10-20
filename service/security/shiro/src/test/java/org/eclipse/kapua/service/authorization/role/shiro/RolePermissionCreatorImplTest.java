@@ -20,17 +20,18 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class RolePermissionCreatorImplTest extends Assert {
+public class RolePermissionCreatorImplTest {
 
     @Test
     public void rolePermissionCreatorImplTest() {
         KapuaId[] scopeIds = {null, KapuaId.ANY};
         for (KapuaId scopeId : scopeIds) {
             RolePermissionCreatorImpl rolePermissionCreatorImpl = new RolePermissionCreatorImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionCreatorImpl.getScopeId());
-            assertNull("Null expected.", rolePermissionCreatorImpl.getRoleId());
-            assertNull("Null expected.", rolePermissionCreatorImpl.getPermission());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionCreatorImpl.getScopeId());
+            Assert.assertNull("Null expected.", rolePermissionCreatorImpl.getRoleId());
+            Assert.assertNull("Null expected.", rolePermissionCreatorImpl.getPermission());
         }
     }
 
@@ -41,7 +42,7 @@ public class RolePermissionCreatorImplTest extends Assert {
 
         for (KapuaId roleId : roleIds) {
             rolePermissionCreatorImpl.setRoleId(roleId);
-            assertEquals("Expected and actual values should be the same.", roleId, rolePermissionCreatorImpl.getRoleId());
+            Assert.assertEquals("Expected and actual values should be the same.", roleId, rolePermissionCreatorImpl.getRoleId());
         }
     }
 
@@ -52,7 +53,7 @@ public class RolePermissionCreatorImplTest extends Assert {
 
         for (Permission permission : permissions) {
             rolePermissionCreatorImpl.setPermission(permission);
-            assertEquals("Expected and actual values should be the same.", permission, rolePermissionCreatorImpl.getPermission());
+            Assert.assertEquals("Expected and actual values should be the same.", permission, rolePermissionCreatorImpl.getPermission());
         }
     }
 }

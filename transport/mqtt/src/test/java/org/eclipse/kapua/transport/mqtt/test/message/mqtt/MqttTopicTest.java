@@ -18,13 +18,14 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class MqttTopicTest extends Assert {
+public class MqttTopicTest {
 
     @Test
     public void mqttTopicConstructorValidTest() {
         MqttTopic mqttTopic = new MqttTopic("mqttTopicConstructor");
-        assertEquals("Expected and actual values are not equal!", "mqttTopicConstructor", mqttTopic.getTopic());
+        Assert.assertEquals("Expected and actual values are not equal!", "mqttTopicConstructor", mqttTopic.getTopic());
     }
 
     @Test
@@ -32,7 +33,7 @@ public class MqttTopicTest extends Assert {
         String[] permittedValues = {"", "!#$%&'()=?⁄@‹›€°·‚,.-;:_Èˇ¿<>«‘”’ÉØ∏{}|ÆæÒuF8FFÔÓÌÏÎÅ«»Ç◊Ñˆ¯Èˇ", "regularNaming", "regular Naming", "49", "regularNaming49", "NAMING", "246465494135646120009090049684646496468456468496846464968496844"};
         for (String value : permittedValues) {
             MqttTopic mqttTopic = new MqttTopic(value);
-            assertEquals("Expected and actual values are not equal!", value, mqttTopic.getTopic());
+            Assert.assertEquals("Expected and actual values are not equal!", value, mqttTopic.getTopic());
         }
     }
 
@@ -40,26 +41,26 @@ public class MqttTopicTest extends Assert {
     public void mqttTopicSecondConstructorValidTest() {
         String[] mqttFromParts = new String[]{"mqtt0123456789", "from", "parts!#$%&'()=?⁄@‹›€°·‚,.-;:_Èˇ¿<>«‘”’ÉØ∏{}|ÆæÒuF8FFÔÓÌÏÎÅ«»Ç◊Ñˆ¯Èˇ"};
         MqttTopic mqttTopic = new MqttTopic(mqttFromParts);
-        assertEquals("Expected and actual values are not equal!", "mqtt0123456789/from/parts!#$%&'()=?⁄@‹›€°·‚,.-;:_Èˇ¿<>«‘”’ÉØ∏{}|ÆæÒuF8FFÔÓÌÏÎÅ«»Ç◊Ñˆ¯Èˇ", mqttTopic.getTopic());
+        Assert.assertEquals("Expected and actual values are not equal!", "mqtt0123456789/from/parts!#$%&'()=?⁄@‹›€°·‚,.-;:_Èˇ¿<>«‘”’ÉØ∏{}|ÆæÒuF8FFÔÓÌÏÎÅ«»Ç◊Ñˆ¯Èˇ", mqttTopic.getTopic());
     }
 
     @Test
     public void getSplittedTopicValidTest() {
         String[] mqttValue = new String[]{"mqttFromParts"};
         MqttTopic mqttTopic = new MqttTopic(mqttValue);
-        assertArrayEquals("Expected and actual values are not equal!", mqttValue, mqttTopic.getSplittedTopic());
+        Assert.assertArrayEquals("Expected and actual values are not equal!", mqttValue, mqttTopic.getSplittedTopic());
     }
 
     @Test
     public void getSplittedEmptyTopicTest() {
         String[] mqttValue = new String[]{};
         MqttTopic mqttTopic = new MqttTopic(mqttValue);
-        assertArrayEquals("Expected and actual values are not equal!", mqttValue, mqttTopic.getSplittedTopic());
+        Assert.assertArrayEquals("Expected and actual values are not equal!", mqttValue, mqttTopic.getSplittedTopic());
     }
 
     @Test
     public void toStringTest() {
         MqttTopic mqttTopic = new MqttTopic("mqttFromParts");
-        assertEquals("Expected and actual values are not equal!", "mqttFromParts", mqttTopic.toString());
+        Assert.assertEquals("Expected and actual values are not equal!", "mqttFromParts", mqttTopic.toString());
     }
 }

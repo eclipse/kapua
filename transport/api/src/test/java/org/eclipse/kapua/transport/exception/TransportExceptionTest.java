@@ -20,8 +20,9 @@ import org.junit.experimental.categories.Category;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+
 @Category(JUnitTests.class)
-public class TransportExceptionTest extends Assert {
+public class TransportExceptionTest {
 
     TransportErrorCodes[] transportErrorCodes;
     String kapuaErrorMessage;
@@ -61,23 +62,23 @@ public class TransportExceptionTest extends Assert {
     public void transportExceptionCodeTest() {
         for (int i = 0; i < transportErrorCodes.length; i++) {
             TransportException transportException = new TransportExceptionImpl(transportErrorCodes[i]);
-            assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
-            assertEquals("Expected and actual values should be the same.", expectedMessageWithoutObject[i], transportException.getMessage());
-            assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-            assertNull("Null expected.", transportException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutObject[i], transportException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
+            Assert.assertNull("Null expected.", transportException.getCause());
         }
     }
 
     @Test
     public void transportExceptionNullCodeTest() {
         TransportException transportException = new TransportExceptionImpl(null);
-        assertNull("Null expected.", transportException.getCode());
-        assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-        assertNull("Null expected.", transportException.getCause());
+        Assert.assertNull("Null expected.", transportException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
+        Assert.assertNull("Null expected.", transportException.getCause());
         try {
             transportException.getMessage();
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -85,10 +86,10 @@ public class TransportExceptionTest extends Assert {
     public void transportExceptionCodeArgumentsTest() {
         for (int i = 0; i < transportErrorCodes.length; i++) {
             TransportException transportException = new TransportExceptionImpl(transportErrorCodes[i], object, stringObject, intObject);
-            assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
-            assertEquals("Expected and actual values should be the same.", expectedMessageWithObject[i], transportException.getMessage());
-            assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-            assertNull("Null expected.", transportException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithObject[i], transportException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
+            Assert.assertNull("Null expected.", transportException.getCause());
         }
     }
 
@@ -96,10 +97,10 @@ public class TransportExceptionTest extends Assert {
     public void transportExceptionCodeNullArgumentsTest() {
         for (int i = 0; i < transportErrorCodes.length; i++) {
             TransportException transportException = new TransportExceptionImpl(transportErrorCodes[i], null);
-            assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
-            assertEquals("Expected and actual values should be the same.", expectedMessageWithoutObject[i], transportException.getMessage());
-            assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-            assertNull("Null expected.", transportException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutObject[i], transportException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
+            Assert.assertNull("Null expected.", transportException.getCause());
         }
     }
 
@@ -107,13 +108,13 @@ public class TransportExceptionTest extends Assert {
     public void transportExceptionNullCodeArgumentsTest() {
         for (int i = 0; i < transportErrorCodes.length; i++) {
             TransportException transportException = new TransportExceptionImpl(null, object, stringObject, intObject);
-            assertNull("Null expected.", transportException.getCode());
-            assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-            assertNull("Null expected.", transportException.getCause());
+            Assert.assertNull("Null expected.", transportException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
+            Assert.assertNull("Null expected.", transportException.getCause());
             try {
                 transportException.getMessage();
             } catch (Exception e) {
-                assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
             }
         }
     }
@@ -123,10 +124,10 @@ public class TransportExceptionTest extends Assert {
         for (int i = 0; i < transportErrorCodes.length; i++) {
             for (Throwable cause : throwable) {
                 TransportException transportException = new TransportExceptionImpl(transportErrorCodes[i], cause, object, stringObject, intObject);
-                assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
-                assertEquals("Expected and actual values should be the same.", expectedMessageWithObject[i], transportException.getMessage());
-                assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-                assertEquals("Expected and actual values should be the same.", cause, transportException.getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithObject[i], transportException.getMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
+                Assert.assertEquals("Expected and actual values should be the same.", cause, transportException.getCause());
             }
         }
     }
@@ -136,10 +137,10 @@ public class TransportExceptionTest extends Assert {
         for (int i = 0; i < transportErrorCodes.length; i++) {
             for (Throwable cause : throwable) {
                 TransportException transportException = new TransportExceptionImpl(transportErrorCodes[i], cause, null);
-                assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
-                assertEquals("Expected and actual values should be the same.", expectedMessageWithoutObject[i], transportException.getMessage());
-                assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-                assertEquals("Expected and actual values should be the same.", cause, transportException.getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", transportErrorCodes[i], transportException.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutObject[i], transportException.getMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
+                Assert.assertEquals("Expected and actual values should be the same.", cause, transportException.getCause());
             }
         }
     }
@@ -149,13 +150,13 @@ public class TransportExceptionTest extends Assert {
         for (int i = 0; i < transportErrorCodes.length; i++) {
             for (Throwable cause : throwable) {
                 TransportException transportException = new TransportExceptionImpl(null, cause, object, stringObject, intObject);
-                assertNull("Null expected.", transportException.getCode());
-                assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
-                assertEquals("Expected and actual values should be the same.", cause, transportException.getCause());
+                Assert.assertNull("Null expected.", transportException.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, transportException.getKapuaErrorMessagesBundle());
+                Assert.assertEquals("Expected and actual values should be the same.", cause, transportException.getCause());
                 try {
                     transportException.getMessage();
                 } catch (Exception e) {
-                    assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+                    Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
                 }
             }
         }

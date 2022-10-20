@@ -24,8 +24,9 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class RoleImplTest extends Assert {
+public class RoleImplTest {
 
     RoleImpl role1, role2;
 
@@ -38,9 +39,9 @@ public class RoleImplTest extends Assert {
     @Test
     public void roleImplWithoutParametersTest() {
         RoleImpl roleImpl = new RoleImpl();
-        assertNull("Null expected.", roleImpl.getScopeId());
-        assertNull("Null expected.", roleImpl.getName());
-        assertNull("Null expected.", roleImpl.getDescription());
+        Assert.assertNull("Null expected.", roleImpl.getScopeId());
+        Assert.assertNull("Null expected.", roleImpl.getName());
+        Assert.assertNull("Null expected.", roleImpl.getDescription());
     }
 
     @Test
@@ -49,9 +50,9 @@ public class RoleImplTest extends Assert {
 
         for (KapuaId scopeId : scopeIds) {
             RoleImpl roleImpl = new RoleImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, roleImpl.getScopeId());
-            assertNull("Null expected.", roleImpl.getName());
-            assertNull("Null expected.", roleImpl.getDescription());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, roleImpl.getScopeId());
+            Assert.assertNull("Null expected.", roleImpl.getName());
+            Assert.assertNull("Null expected.", roleImpl.getDescription());
         }
     }
 
@@ -72,15 +73,15 @@ public class RoleImplTest extends Assert {
         Mockito.when(role.getOptlock()).thenReturn(11);
 
         RoleImpl roleImpl = new RoleImpl(role);
-        assertEquals("Expected and actual values should be the same.", "role name", roleImpl.getName());
-        assertEquals("Expected and actual values should be the same.", "role description", roleImpl.getDescription());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, roleImpl.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, roleImpl.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, roleImpl.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, roleImpl.getCreatedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, roleImpl.getModifiedBy());
-        assertEquals("Expected and actual values should be the same.", modifiedOn, roleImpl.getModifiedOn());
-        assertEquals("Expected and actual values should be the same.", 11, roleImpl.getOptlock());
+        Assert.assertEquals("Expected and actual values should be the same.", "role name", roleImpl.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", "role description", roleImpl.getDescription());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, roleImpl.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, roleImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, roleImpl.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, roleImpl.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, roleImpl.getModifiedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, roleImpl.getModifiedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", 11, roleImpl.getOptlock());
     }
 
     @Test(expected = NullPointerException.class)
@@ -91,7 +92,7 @@ public class RoleImplTest extends Assert {
     @Test
     public void hashCodeNullNameTest() {
         RoleImpl role = new RoleImpl();
-        assertEquals("Expected and actual values should be the same.", 31, role.hashCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 31, role.hashCode());
     }
 
     @Test
@@ -101,47 +102,47 @@ public class RoleImplTest extends Assert {
         int[] expectedResult = {31, 467704822, -586547515, -576050570, 589188417, -894904038, -1874261591, 12362811};
         for (int i = 0; i < names.length; i++) {
             role.setName(names[i]);
-            assertEquals("Expected and actual values should be the same.", expectedResult[i], role.hashCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedResult[i], role.hashCode());
         }
     }
 
     @Test
     public void equalsSameObjectTest() {
-        assertTrue("True expected.", role1.equals(role1));
+        Assert.assertTrue("True expected.", role1.equals(role1));
     }
 
     @Test
     public void equalsNullObjectTest() {
-        assertFalse("False expected.", role1.equals(null));
+        Assert.assertFalse("False expected.", role1.equals(null));
     }
 
     @Test
     public void equalsObjectTest() {
-        assertFalse("False expected.", role1.equals(new Object()));
+        Assert.assertFalse("False expected.", role1.equals(new Object()));
     }
 
     @Test
     public void equalsNullBothNamesTest() {
-        assertTrue("True expected.", role1.equals(role2));
+        Assert.assertTrue("True expected.", role1.equals(role2));
     }
 
     @Test
     public void equalsNullNameTest() {
         role2.setName("name2");
-        assertFalse("False expected.", role1.equals(role2));
+        Assert.assertFalse("False expected.", role1.equals(role2));
     }
 
     @Test
     public void equalsDifferentNamesTest() {
         role1.setName("name1");
         role2.setName("name2");
-        assertFalse("False expected.", role1.equals(role2));
+        Assert.assertFalse("False expected.", role1.equals(role2));
     }
 
     @Test
     public void equalsSameNamesTest() {
         role1.setName("name");
         role2.setName("name");
-        assertTrue("True expected.", role1.equals(role2));
+        Assert.assertTrue("True expected.", role1.equals(role2));
     }
 }

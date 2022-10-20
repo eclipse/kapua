@@ -17,15 +17,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class SelfManagedOnlyExceptionTest extends Assert {
+public class SelfManagedOnlyExceptionTest {
 
     @Test
     public void selfManagedOnlyExceptionTest() {
         SelfManagedOnlyException selfManagedOnlyException = new SelfManagedOnlyException();
-        assertEquals("Expected and actual values should be the same.", KapuaAuthorizationErrorCodes.SELF_MANAGED_ONLY, selfManagedOnlyException.getCode());
-        assertNull("Null expected.", selfManagedOnlyException.getCause());
-        assertEquals("Expected and actual values should be the same.", "User cannot perform this action on behalf of another user. This action can be performed only in self-management.", selfManagedOnlyException.getMessage());
-        assertEquals("Expected and actual values should be the same.", "kapua-service-error-messages", selfManagedOnlyException.getKapuaErrorMessagesBundle());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaAuthorizationErrorCodes.SELF_MANAGED_ONLY, selfManagedOnlyException.getCode());
+        Assert.assertNull("Null expected.", selfManagedOnlyException.getCause());
+        Assert.assertEquals("Expected and actual values should be the same.", "User cannot perform this action on behalf of another user. This action can be performed only in self-management.", selfManagedOnlyException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", "kapua-service-error-messages", selfManagedOnlyException.getKapuaErrorMessagesBundle());
     }
 }

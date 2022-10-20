@@ -17,16 +17,17 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class TransportClientGetExceptionTest extends Assert {
+public class TransportClientGetExceptionTest {
 
     @Test
     public void transportClientGetExceptionNullServerIpTest() {
         TransportClientGetException transportClientGetException = new TransportClientGetException(null);
-        assertNull("Null expected.", transportClientGetException.getRequestMessage());
-        assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
-        assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: null", transportClientGetException.getMessage());
-        assertNull("Null expected.", transportClientGetException.getCause());
+        Assert.assertNull("Null expected.", transportClientGetException.getRequestMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: null", transportClientGetException.getMessage());
+        Assert.assertNull("Null expected.", transportClientGetException.getCause());
     }
 
     @Test
@@ -34,20 +35,20 @@ public class TransportClientGetExceptionTest extends Assert {
         String[] randomStrings = {"a", "0.0.0.0", "asdfasfasfaf", "{@}]~ˇ^°˘˘˛˘`", "test", "127.0.0.0"};
         for (String randomString : randomStrings) {
             TransportClientGetException transportClientGetException = new TransportClientGetException(randomString);
-            assertEquals("Expected and actual values should be the same.", randomString, transportClientGetException.getRequestMessage());
-            assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
-            assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: " + randomString, transportClientGetException.getMessage());
-            assertNull("Null expected.", transportClientGetException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", randomString, transportClientGetException.getRequestMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: " + randomString, transportClientGetException.getMessage());
+            Assert.assertNull("Null expected.", transportClientGetException.getCause());
         }
     }
 
     @Test
     public void transportClientGetExceptionCauseServerIpNullTest() {
         TransportClientGetException transportClientGetException = new TransportClientGetException(null, null);
-        assertNull("Null expected.", transportClientGetException.getRequestMessage());
-        assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
-        assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: null", transportClientGetException.getMessage());
-        assertNull("Null expected.", transportClientGetException.getCause());
+        Assert.assertNull("Null expected.", transportClientGetException.getRequestMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: null", transportClientGetException.getMessage());
+        Assert.assertNull("Null expected.", transportClientGetException.getCause());
     }
 
     @Test
@@ -56,10 +57,10 @@ public class TransportClientGetExceptionTest extends Assert {
         String[] randomStrings = {"a", "0.0.0.0", "asdfasfasfaf", "{@}]~ˇ^°˘˘˛˘`", "test", "127.0.0.0"};
         for (String randomString : randomStrings) {
             TransportClientGetException transportClientGetException = new TransportClientGetException(throwable, randomString);
-            assertEquals("Expected and actual values should be the same.", randomString, transportClientGetException.getRequestMessage());
-            assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
-            assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: " + randomString, transportClientGetException.getMessage());
-            assertEquals("Expected and actual values should be the same.", throwable, transportClientGetException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", randomString, transportClientGetException.getRequestMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: " + randomString, transportClientGetException.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", throwable, transportClientGetException.getCause());
         }
     }
 
@@ -68,10 +69,10 @@ public class TransportClientGetExceptionTest extends Assert {
         String[] randomStrings = {"a", "0.0.0.0", "asdfasfasfaf", "{@}]~ˇ^°˘˘˛˘`", "test", "127.0.0.0"};
         for (String randomString : randomStrings) {
             TransportClientGetException transportClientGetException = new TransportClientGetException(null, randomString);
-            assertEquals("Expected and actual values should be the same.", randomString, transportClientGetException.getRequestMessage());
-            assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
-            assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: " + randomString, transportClientGetException.getMessage());
-            assertNull("Null expected.", transportClientGetException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", randomString, transportClientGetException.getRequestMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: " + randomString, transportClientGetException.getMessage());
+            Assert.assertNull("Null expected.", transportClientGetException.getCause());
         }
     }
 
@@ -79,10 +80,10 @@ public class TransportClientGetExceptionTest extends Assert {
     public void transportClientGetExceptionCauseNullServerIpTest() {
         Throwable throwable = new Throwable();
         TransportClientGetException transportClientGetException = new TransportClientGetException(throwable, null);
-        assertNull("Null expected.", transportClientGetException.getRequestMessage());
-        assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
-        assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: null", transportClientGetException.getMessage());
-        assertEquals("Expected and actual values should be the same.", throwable, transportClientGetException.getCause());
+        Assert.assertNull("Null expected.", transportClientGetException.getRequestMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", TransportErrorCodes.CLIENT_GET, transportClientGetException.getCode());
+        Assert.assertEquals("Expected and actual values should be the same.", "Cannot get an instance of the transport client to connect to host: null", transportClientGetException.getMessage());
+        Assert.assertEquals("Expected and actual values should be the same.", throwable, transportClientGetException.getCause());
     }
 
     @Test(expected = TransportClientGetException.class)
