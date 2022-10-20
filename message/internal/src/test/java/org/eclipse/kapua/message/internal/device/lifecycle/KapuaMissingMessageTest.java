@@ -20,21 +20,22 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaMissingMessageTest extends Assert {
+public class KapuaMissingMessageTest {
 
     @Test
     public void kapuaMissingPayloadConstructor() {
         KapuaMissingPayload kapuaMissingPayload = new KapuaMissingPayloadImpl();
 
-        assertNotNull(kapuaMissingPayload);
+        Assert.assertNotNull(kapuaMissingPayload);
     }
 
     @Test
     public void kapuaMissingMessageConstructor() throws Exception {
         KapuaMissingMessage kapuaMissingMessage = new KapuaMissingMessageImpl();
 
-        assertNotNull(kapuaMissingMessage);
+        Assert.assertNotNull(kapuaMissingMessage);
     }
 
     @Test
@@ -42,7 +43,7 @@ public class KapuaMissingMessageTest extends Assert {
         KapuaMissingChannel kapuaMissingChannel = new KapuaMissingChannelImpl();
 
         kapuaMissingChannel.setClientId("clientId-1");
-        assertEquals("clientId-1", kapuaMissingChannel.getClientId());
+        Assert.assertEquals("clientId-1", kapuaMissingChannel.getClientId());
     }
 
 }

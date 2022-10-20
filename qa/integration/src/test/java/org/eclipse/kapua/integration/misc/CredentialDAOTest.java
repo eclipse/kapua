@@ -47,8 +47,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class CredentialDAOTest extends Assert {
+public class CredentialDAOTest {
 
     EntityManager entityManager;
     CredentialCreator credentialCreator;
@@ -80,13 +81,13 @@ public class CredentialDAOTest extends Assert {
         Mockito.when(credentialCreator.getCredentialStatus()).thenReturn(CredentialStatus.ENABLED);
         Mockito.when(credentialCreator.getExpirationDate()).thenReturn(expirationDate);
 
-        assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator) instanceof Credential);
-        assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator).getCredentialKey().startsWith("credenti"));
-        assertEquals("Expected and actual values should be the same.", CredentialType.API_KEY, CredentialDAO.create(entityManager, credentialCreator).getCredentialType());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.create(entityManager, credentialCreator).getScopeId());
-        assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ONE), CredentialDAO.create(entityManager, credentialCreator).getUserId());
-        assertEquals("Expected and actual values should be the same.", CredentialStatus.ENABLED, CredentialDAO.create(entityManager, credentialCreator).getStatus());
-        assertEquals("Expected and actual values should be the same.", expirationDate, CredentialDAO.create(entityManager, credentialCreator).getExpirationDate());
+        Assert.assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator) instanceof Credential);
+        Assert.assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator).getCredentialKey().startsWith("credenti"));
+        Assert.assertEquals("Expected and actual values should be the same.", CredentialType.API_KEY, CredentialDAO.create(entityManager, credentialCreator).getCredentialType());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.create(entityManager, credentialCreator).getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ONE), CredentialDAO.create(entityManager, credentialCreator).getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", CredentialStatus.ENABLED, CredentialDAO.create(entityManager, credentialCreator).getStatus());
+        Assert.assertEquals("Expected and actual values should be the same.", expirationDate, CredentialDAO.create(entityManager, credentialCreator).getExpirationDate());
     }
 
     @Test
@@ -98,13 +99,13 @@ public class CredentialDAOTest extends Assert {
         Mockito.when(credentialCreator.getCredentialStatus()).thenReturn(CredentialStatus.ENABLED);
         Mockito.when(credentialCreator.getExpirationDate()).thenReturn(expirationDate);
 
-        assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator) instanceof Credential);
-        assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator).getCredentialKey().startsWith("$2a$12$"));
-        assertEquals("Expected and actual values should be the same.", CredentialType.PASSWORD, CredentialDAO.create(entityManager, credentialCreator).getCredentialType());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.create(entityManager, credentialCreator).getScopeId());
-        assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ONE), CredentialDAO.create(entityManager, credentialCreator).getUserId());
-        assertEquals("Expected and actual values should be the same.", CredentialStatus.ENABLED, CredentialDAO.create(entityManager, credentialCreator).getStatus());
-        assertEquals("Expected and actual values should be the same.", expirationDate, CredentialDAO.create(entityManager, credentialCreator).getExpirationDate());
+        Assert.assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator) instanceof Credential);
+        Assert.assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator).getCredentialKey().startsWith("$2a$12$"));
+        Assert.assertEquals("Expected and actual values should be the same.", CredentialType.PASSWORD, CredentialDAO.create(entityManager, credentialCreator).getCredentialType());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.create(entityManager, credentialCreator).getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ONE), CredentialDAO.create(entityManager, credentialCreator).getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", CredentialStatus.ENABLED, CredentialDAO.create(entityManager, credentialCreator).getStatus());
+        Assert.assertEquals("Expected and actual values should be the same.", expirationDate, CredentialDAO.create(entityManager, credentialCreator).getExpirationDate());
     }
 
     @Test
@@ -116,13 +117,13 @@ public class CredentialDAOTest extends Assert {
         Mockito.when(credentialCreator.getCredentialStatus()).thenReturn(CredentialStatus.ENABLED);
         Mockito.when(credentialCreator.getExpirationDate()).thenReturn(expirationDate);
 
-        assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator) instanceof Credential);
-        assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator).getCredentialKey().startsWith("$2a$12$"));
-        assertEquals("Expected and actual values should be the same.", CredentialType.JWT, CredentialDAO.create(entityManager, credentialCreator).getCredentialType());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.create(entityManager, credentialCreator).getScopeId());
-        assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ONE), CredentialDAO.create(entityManager, credentialCreator).getUserId());
-        assertEquals("Expected and actual values should be the same.", CredentialStatus.ENABLED, CredentialDAO.create(entityManager, credentialCreator).getStatus());
-        assertEquals("Expected and actual values should be the same.", expirationDate, CredentialDAO.create(entityManager, credentialCreator).getExpirationDate());
+        Assert.assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator) instanceof Credential);
+        Assert.assertTrue("True expected.", CredentialDAO.create(entityManager, credentialCreator).getCredentialKey().startsWith("$2a$12$"));
+        Assert.assertEquals("Expected and actual values should be the same.", CredentialType.JWT, CredentialDAO.create(entityManager, credentialCreator).getCredentialType());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.create(entityManager, credentialCreator).getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ONE), CredentialDAO.create(entityManager, credentialCreator).getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", CredentialStatus.ENABLED, CredentialDAO.create(entityManager, credentialCreator).getStatus());
+        Assert.assertEquals("Expected and actual values should be the same.", expirationDate, CredentialDAO.create(entityManager, credentialCreator).getExpirationDate());
     }
 
     @Test(expected = KapuaEntityExistsException.class)
@@ -201,9 +202,9 @@ public class CredentialDAOTest extends Assert {
         Mockito.when(entityToFindOrDelete.getCreatedOn()).thenReturn(createdOn);
         Mockito.when(entityToFindOrDelete.getCreatedBy()).thenReturn(createdBy);
 
-        assertTrue("True expected.", CredentialDAO.update(entityManager, credential) instanceof Credential);
-        assertEquals("Expected and actual values should be the same.", createdBy, CredentialDAO.update(entityManager, credential).getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, CredentialDAO.update(entityManager, credential).getCreatedOn());
+        Assert.assertTrue("True expected.", CredentialDAO.update(entityManager, credential) instanceof Credential);
+        Assert.assertEquals("Expected and actual values should be the same.", createdBy, CredentialDAO.update(entityManager, credential).getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, CredentialDAO.update(entityManager, credential).getCreatedOn());
     }
 
     @Test(expected = NullPointerException.class)
@@ -225,8 +226,8 @@ public class CredentialDAOTest extends Assert {
         Mockito.when(entityManager.find(CredentialImpl.class, credentialId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", CredentialDAO.find(entityManager, scopeId, credentialId) instanceof Credential);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.find(entityManager, scopeId, credentialId).getScopeId());
+        Assert.assertTrue("True expected.", CredentialDAO.find(entityManager, scopeId, credentialId) instanceof Credential);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.find(entityManager, scopeId, credentialId).getScopeId());
     }
 
     @Test
@@ -234,14 +235,14 @@ public class CredentialDAOTest extends Assert {
         Mockito.when(entityManager.find(CredentialImpl.class, credentialId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ANY);
 
-        assertNull("Null expected.", CredentialDAO.find(entityManager, scopeId, credentialId));
+        Assert.assertNull("Null expected.", CredentialDAO.find(entityManager, scopeId, credentialId));
     }
 
     @Test
     public void findNullEntityToFindTest() {
         Mockito.when(entityManager.find(CredentialImpl.class, credentialId)).thenReturn(null);
 
-        assertNull("Null expected.", CredentialDAO.find(entityManager, scopeId, credentialId));
+        Assert.assertNull("Null expected.", CredentialDAO.find(entityManager, scopeId, credentialId));
     }
 
     @Test
@@ -249,7 +250,7 @@ public class CredentialDAOTest extends Assert {
         Mockito.when(entityManager.find(CredentialImpl.class, credentialId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        assertTrue("True expected.", CredentialDAO.find(entityManager, scopeId, credentialId) instanceof Credential);
+        Assert.assertTrue("True expected.", CredentialDAO.find(entityManager, scopeId, credentialId) instanceof Credential);
     }
 
     @Test(expected = NullPointerException.class)
@@ -262,8 +263,8 @@ public class CredentialDAOTest extends Assert {
         Mockito.when(entityManager.find(CredentialImpl.class, credentialId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", CredentialDAO.find(entityManager, null, credentialId) instanceof Credential);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.find(entityManager, null, credentialId).getScopeId());
+        Assert.assertTrue("True expected.", CredentialDAO.find(entityManager, null, credentialId) instanceof Credential);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.find(entityManager, null, credentialId).getScopeId());
     }
 
     @Test
@@ -271,8 +272,8 @@ public class CredentialDAOTest extends Assert {
         Mockito.when(entityManager.find(CredentialImpl.class, null)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", CredentialDAO.find(entityManager, scopeId, null) instanceof Credential);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.find(entityManager, scopeId, null).getScopeId());
+        Assert.assertTrue("True expected.", CredentialDAO.find(entityManager, scopeId, null) instanceof Credential);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, CredentialDAO.find(entityManager, scopeId, null).getScopeId());
     }
 
     @Test
@@ -295,7 +296,7 @@ public class CredentialDAOTest extends Assert {
         Mockito.when(kapuaQuery.getFetchAttributes()).thenReturn(list);
         Mockito.when(entityManager.createQuery(criteriaQuery1)).thenReturn(query);
 
-        assertTrue("True expected.", CredentialDAO.query(entityManager, kapuaQuery) instanceof CredentialListResult);
+        Assert.assertTrue("True expected.", CredentialDAO.query(entityManager, kapuaQuery) instanceof CredentialListResult);
     }
 
     @Test(expected = NullPointerException.class)
@@ -344,7 +345,7 @@ public class CredentialDAOTest extends Assert {
         for (long number : longNumberList) {
             Mockito.doReturn(number).when(query).getSingleResult();
 
-            assertEquals("Expected and actual values should be the same.", number, CredentialDAO.count(entityManager, kapuaQuery));
+            Assert.assertEquals("Expected and actual values should be the same.", number, CredentialDAO.count(entityManager, kapuaQuery));
         }
     }
 
@@ -362,7 +363,7 @@ public class CredentialDAOTest extends Assert {
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(CredentialImpl.class, credentialId)).thenReturn(entityToFindOrDelete);
 
-        assertTrue("True expected.", CredentialDAO.delete(entityManager, scopeId, credentialId) instanceof Credential);
+        Assert.assertTrue("True expected.", CredentialDAO.delete(entityManager, scopeId, credentialId) instanceof Credential);
     }
 
     @Test(expected = NullPointerException.class)
@@ -374,7 +375,7 @@ public class CredentialDAOTest extends Assert {
     public void deleteNullScopeIdTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(CredentialImpl.class, credentialId)).thenReturn(entityToFindOrDelete);
 
-        assertTrue("True expected.", CredentialDAO.delete(entityManager, null, credentialId) instanceof Credential);
+        Assert.assertTrue("True expected.", CredentialDAO.delete(entityManager, null, credentialId) instanceof Credential);
     }
 
     @Test(expected = NullPointerException.class)

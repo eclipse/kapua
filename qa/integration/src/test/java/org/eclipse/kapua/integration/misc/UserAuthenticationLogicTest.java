@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class UserAuthenticationLogicTest extends Assert {
+public class UserAuthenticationLogicTest {
 
     @Test
     public void userAuthenticationLogicTest() {
@@ -34,7 +35,7 @@ public class UserAuthenticationLogicTest extends Assert {
         try {
             new UserAuthenticationLogic(options);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -44,7 +45,7 @@ public class UserAuthenticationLogicTest extends Assert {
         try {
             new UserAuthenticationLogic(options);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -52,9 +53,9 @@ public class UserAuthenticationLogicTest extends Assert {
     public void userAuthenticationLogicNullTest() {
         try {
             new UserAuthenticationLogic(null);
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), e.toString());
         }
     }
 }

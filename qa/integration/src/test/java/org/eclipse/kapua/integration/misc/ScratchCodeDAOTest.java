@@ -46,8 +46,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class ScratchCodeDAOTest extends Assert {
+public class ScratchCodeDAOTest {
 
     EntityManager entityManager;
     ScratchCodeCreator scratchCodeCreator;
@@ -77,10 +78,10 @@ public class ScratchCodeDAOTest extends Assert {
         Mockito.when(scratchCodeCreator.getScopeId()).thenReturn(scopeId);
         Mockito.when(scratchCodeCreator.getMfaOptionId()).thenReturn(mfaOptionId);
 
-        assertTrue("True expected.", ScratchCodeDAO.create(entityManager, scratchCodeCreator) instanceof ScratchCode);
-        assertTrue("True expected.", ScratchCodeDAO.create(entityManager, scratchCodeCreator).getCode().startsWith("$2a$12$"));
-        assertEquals("Expected and actual values should be the same.", scopeId, ScratchCodeDAO.create(entityManager, scratchCodeCreator).getScopeId());
-        assertEquals("Expected and actual values should be the same.", mfaOptionId, ScratchCodeDAO.create(entityManager, scratchCodeCreator).getMfaOptionId());
+        Assert.assertTrue("True expected.", ScratchCodeDAO.create(entityManager, scratchCodeCreator) instanceof ScratchCode);
+        Assert.assertTrue("True expected.", ScratchCodeDAO.create(entityManager, scratchCodeCreator).getCode().startsWith("$2a$12$"));
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, ScratchCodeDAO.create(entityManager, scratchCodeCreator).getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", mfaOptionId, ScratchCodeDAO.create(entityManager, scratchCodeCreator).getMfaOptionId());
     }
 
     @Test(expected = KapuaEntityExistsException.class)
@@ -144,9 +145,9 @@ public class ScratchCodeDAOTest extends Assert {
         Mockito.when(entityToFindOrDelete.getCreatedOn()).thenReturn(createdOn);
         Mockito.when(entityToFindOrDelete.getCreatedBy()).thenReturn(createdBy);
 
-        assertTrue("True expected.", ScratchCodeDAO.update(entityManager, code) instanceof ScratchCode);
-        assertEquals("Expected and actual values should be the same.", createdBy, ScratchCodeDAO.update(entityManager, code).getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, ScratchCodeDAO.update(entityManager, code).getCreatedOn());
+        Assert.assertTrue("True expected.", ScratchCodeDAO.update(entityManager, code) instanceof ScratchCode);
+        Assert.assertEquals("Expected and actual values should be the same.", createdBy, ScratchCodeDAO.update(entityManager, code).getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, ScratchCodeDAO.update(entityManager, code).getCreatedOn());
     }
 
     @Test(expected = NullPointerException.class)
@@ -169,8 +170,8 @@ public class ScratchCodeDAOTest extends Assert {
         Mockito.when(entityManager.find(ScratchCodeImpl.class, scratchCodeId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", ScratchCodeDAO.find(entityManager, scopeId, scratchCodeId) instanceof ScratchCode);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, ScratchCodeDAO.find(entityManager, scopeId, scratchCodeId).getScopeId());
+        Assert.assertTrue("True expected.", ScratchCodeDAO.find(entityManager, scopeId, scratchCodeId) instanceof ScratchCode);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, ScratchCodeDAO.find(entityManager, scopeId, scratchCodeId).getScopeId());
     }
 
     @Test
@@ -178,14 +179,14 @@ public class ScratchCodeDAOTest extends Assert {
         Mockito.when(entityManager.find(ScratchCodeImpl.class, scratchCodeId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ANY);
 
-        assertNull("Null expected.", ScratchCodeDAO.find(entityManager, scopeId, scratchCodeId));
+        Assert.assertNull("Null expected.", ScratchCodeDAO.find(entityManager, scopeId, scratchCodeId));
     }
 
     @Test
     public void findNullEntityToFindTest() {
         Mockito.when(entityManager.find(ScratchCodeImpl.class, scratchCodeId)).thenReturn(null);
 
-        assertNull("Null expected.", ScratchCodeDAO.find(entityManager, scopeId, scratchCodeId));
+        Assert.assertNull("Null expected.", ScratchCodeDAO.find(entityManager, scopeId, scratchCodeId));
     }
 
     @Test
@@ -193,7 +194,7 @@ public class ScratchCodeDAOTest extends Assert {
         Mockito.when(entityManager.find(ScratchCodeImpl.class, scratchCodeId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        assertTrue("True expected.", ScratchCodeDAO.find(entityManager, scopeId, scratchCodeId) instanceof ScratchCode);
+        Assert.assertTrue("True expected.", ScratchCodeDAO.find(entityManager, scopeId, scratchCodeId) instanceof ScratchCode);
     }
 
     @Test(expected = NullPointerException.class)
@@ -206,8 +207,8 @@ public class ScratchCodeDAOTest extends Assert {
         Mockito.when(entityManager.find(ScratchCodeImpl.class, scratchCodeId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", ScratchCodeDAO.find(entityManager, null, scratchCodeId) instanceof ScratchCode);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, ScratchCodeDAO.find(entityManager, null, scratchCodeId).getScopeId());
+        Assert.assertTrue("True expected.", ScratchCodeDAO.find(entityManager, null, scratchCodeId) instanceof ScratchCode);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, ScratchCodeDAO.find(entityManager, null, scratchCodeId).getScopeId());
     }
 
     @Test
@@ -215,8 +216,8 @@ public class ScratchCodeDAOTest extends Assert {
         Mockito.when(entityManager.find(ScratchCodeImpl.class, null)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", ScratchCodeDAO.find(entityManager, scopeId, null) instanceof ScratchCode);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, ScratchCodeDAO.find(entityManager, scopeId, null).getScopeId());
+        Assert.assertTrue("True expected.", ScratchCodeDAO.find(entityManager, scopeId, null) instanceof ScratchCode);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, ScratchCodeDAO.find(entityManager, scopeId, null).getScopeId());
     }
 
     @Test
@@ -239,7 +240,7 @@ public class ScratchCodeDAOTest extends Assert {
         Mockito.when(kapuaQuery.getFetchAttributes()).thenReturn(list);
         Mockito.when(entityManager.createQuery(criteriaQuery1)).thenReturn(query);
 
-        assertTrue("True expected.", ScratchCodeDAO.query(entityManager, kapuaQuery) instanceof ScratchCodeListResult);
+        Assert.assertTrue("True expected.", ScratchCodeDAO.query(entityManager, kapuaQuery) instanceof ScratchCodeListResult);
     }
 
     @Test(expected = NullPointerException.class)
@@ -288,7 +289,7 @@ public class ScratchCodeDAOTest extends Assert {
         for (long number : longNumberList) {
             Mockito.doReturn(number).when(query).getSingleResult();
 
-            assertEquals("Expected and actual values should be the same.", number, ScratchCodeDAO.count(entityManager, kapuaQuery));
+            Assert.assertEquals("Expected and actual values should be the same.", number, ScratchCodeDAO.count(entityManager, kapuaQuery));
         }
     }
 
@@ -306,7 +307,7 @@ public class ScratchCodeDAOTest extends Assert {
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(ScratchCodeImpl.class, scratchCodeId)).thenReturn(entityToFindOrDelete);
 
-        assertTrue("True expected.", ScratchCodeDAO.delete(entityManager, scopeId, scratchCodeId) instanceof ScratchCode);
+        Assert.assertTrue("True expected.", ScratchCodeDAO.delete(entityManager, scopeId, scratchCodeId) instanceof ScratchCode);
     }
 
     @Test(expected = NullPointerException.class)
@@ -318,7 +319,7 @@ public class ScratchCodeDAOTest extends Assert {
     public void deleteNullScopeIdTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(ScratchCodeImpl.class, scratchCodeId)).thenReturn(entityToFindOrDelete);
 
-        assertTrue("True expected.", ScratchCodeDAO.delete(entityManager, null, scratchCodeId) instanceof ScratchCode);
+        Assert.assertTrue("True expected.", ScratchCodeDAO.delete(entityManager, null, scratchCodeId) instanceof ScratchCode);
     }
 
     @Test(expected = NullPointerException.class)

@@ -20,8 +20,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaBirthMessageTest extends Assert {
+public class KapuaBirthMessageTest {
 
     private static final String PAYLOAD_DISPLAY_STR = "" +
             "acceptEncoding=UTF-8" +
@@ -58,36 +59,36 @@ public class KapuaBirthMessageTest extends Assert {
     public void kapuaBirthPayloadInitConstructor() {
         KapuaBirthPayload kapuaBirthPayload = populateKapuaBirthPayload();
 
-        assertEquals("12", kapuaBirthPayload.getUptime());
-        assertEquals("Display Name", kapuaBirthPayload.getDisplayName());
-        assertEquals("Model Name", kapuaBirthPayload.getModelName());
-        assertEquals("Model Id-1", kapuaBirthPayload.getModelId());
-        assertEquals("part-1", kapuaBirthPayload.getPartNumber());
-        assertEquals("SN-123", kapuaBirthPayload.getSerialNumber());
-        assertEquals("firmware-1", kapuaBirthPayload.getFirmware());
-        assertEquals("firmwareV-1", kapuaBirthPayload.getFirmwareVersion());
-        assertEquals("bios", kapuaBirthPayload.getBios());
-        assertEquals("biosV-1", kapuaBirthPayload.getBiosVersion());
-        assertEquals("Linux", kapuaBirthPayload.getOs());
-        assertEquals("osV-1", kapuaBirthPayload.getOsVersion());
-        assertEquals("Oracle HotSpot", kapuaBirthPayload.getJvm());
-        assertEquals("8", kapuaBirthPayload.getJvmVersion());
-        assertEquals("desktop", kapuaBirthPayload.getJvmProfile());
-        assertEquals("containerFramework", kapuaBirthPayload.getContainerFramework());
-        assertEquals("containerFrameworkV-1", kapuaBirthPayload.getContainerFrameworkVersion());
-        assertEquals("applicationFramework", kapuaBirthPayload.getApplicationFramework());
-        assertEquals("applicationFrameworkV-1", kapuaBirthPayload.getApplicationFrameworkVersion());
-        assertEquals("connectionInterface", kapuaBirthPayload.getConnectionInterface());
-        assertEquals("192.168.1.1", kapuaBirthPayload.getConnectionIp());
-        assertEquals("UTF-8", kapuaBirthPayload.getAcceptEncoding());
-        assertEquals("applicationIdentifiers", kapuaBirthPayload.getApplicationIdentifiers());
-        assertEquals("1", kapuaBirthPayload.getAvailableProcessors());
-        assertEquals("4", kapuaBirthPayload.getTotalMemory());
-        assertEquals("Linux x86", kapuaBirthPayload.getOsArch());
-        assertEquals("49-015420-323751", kapuaBirthPayload.getModemImei());
-        assertEquals("359881234567890", kapuaBirthPayload.getModemImsi());
-        assertEquals("8991101200003204510", kapuaBirthPayload.getModemIccid());
-        assertEquals("{\n  \"version\": \"1.0\",\n  \"properties\": {\n    \"GroupName\": {\n      \"propertyName\": \"propertyValue\"\n    }\n  }\n}", kapuaBirthPayload.getExtendedProperties());
+        Assert.assertEquals("12", kapuaBirthPayload.getUptime());
+        Assert.assertEquals("Display Name", kapuaBirthPayload.getDisplayName());
+        Assert.assertEquals("Model Name", kapuaBirthPayload.getModelName());
+        Assert.assertEquals("Model Id-1", kapuaBirthPayload.getModelId());
+        Assert.assertEquals("part-1", kapuaBirthPayload.getPartNumber());
+        Assert.assertEquals("SN-123", kapuaBirthPayload.getSerialNumber());
+        Assert.assertEquals("firmware-1", kapuaBirthPayload.getFirmware());
+        Assert.assertEquals("firmwareV-1", kapuaBirthPayload.getFirmwareVersion());
+        Assert.assertEquals("bios", kapuaBirthPayload.getBios());
+        Assert.assertEquals("biosV-1", kapuaBirthPayload.getBiosVersion());
+        Assert.assertEquals("Linux", kapuaBirthPayload.getOs());
+        Assert.assertEquals("osV-1", kapuaBirthPayload.getOsVersion());
+        Assert.assertEquals("Oracle HotSpot", kapuaBirthPayload.getJvm());
+        Assert.assertEquals("8", kapuaBirthPayload.getJvmVersion());
+        Assert.assertEquals("desktop", kapuaBirthPayload.getJvmProfile());
+        Assert.assertEquals("containerFramework", kapuaBirthPayload.getContainerFramework());
+        Assert.assertEquals("containerFrameworkV-1", kapuaBirthPayload.getContainerFrameworkVersion());
+        Assert.assertEquals("applicationFramework", kapuaBirthPayload.getApplicationFramework());
+        Assert.assertEquals("applicationFrameworkV-1", kapuaBirthPayload.getApplicationFrameworkVersion());
+        Assert.assertEquals("connectionInterface", kapuaBirthPayload.getConnectionInterface());
+        Assert.assertEquals("192.168.1.1", kapuaBirthPayload.getConnectionIp());
+        Assert.assertEquals("UTF-8", kapuaBirthPayload.getAcceptEncoding());
+        Assert.assertEquals("applicationIdentifiers", kapuaBirthPayload.getApplicationIdentifiers());
+        Assert.assertEquals("1", kapuaBirthPayload.getAvailableProcessors());
+        Assert.assertEquals("4", kapuaBirthPayload.getTotalMemory());
+        Assert.assertEquals("Linux x86", kapuaBirthPayload.getOsArch());
+        Assert.assertEquals("49-015420-323751", kapuaBirthPayload.getModemImei());
+        Assert.assertEquals("359881234567890", kapuaBirthPayload.getModemImsi());
+        Assert.assertEquals("8991101200003204510", kapuaBirthPayload.getModemIccid());
+        Assert.assertEquals("{\n  \"version\": \"1.0\",\n  \"properties\": {\n    \"GroupName\": {\n      \"propertyName\": \"propertyValue\"\n    }\n  }\n}", kapuaBirthPayload.getExtendedProperties());
     }
 
     @Test
@@ -95,14 +96,14 @@ public class KapuaBirthMessageTest extends Assert {
         KapuaBirthPayload kapuaBirthPayload = populateKapuaBirthPayload();
 
         String displayStr = kapuaBirthPayload.toDisplayString();
-        assertEquals(PAYLOAD_DISPLAY_STR, displayStr);
+        Assert.assertEquals(PAYLOAD_DISPLAY_STR, displayStr);
     }
 
     @Test
     public void kapuaBirthMessageConstructor() throws Exception {
         KapuaBirthMessageImpl kapuaBirthMessage = new KapuaBirthMessageImpl();
 
-        assertNotNull(kapuaBirthMessage);
+        Assert.assertNotNull(kapuaBirthMessage);
     }
 
     @Test
@@ -110,7 +111,7 @@ public class KapuaBirthMessageTest extends Assert {
         KapuaBirthMessage kapuaBirthMessage = new KapuaBirthMessageImpl();
 
         kapuaBirthMessage.setClientId("clientId-1");
-        assertEquals("clientId-1", kapuaBirthMessage.getClientId());
+        Assert.assertEquals("clientId-1", kapuaBirthMessage.getClientId());
     }
 
     @Test
@@ -118,7 +119,7 @@ public class KapuaBirthMessageTest extends Assert {
         KapuaBirthChannel kapuaBirthChannel = new KapuaBirthChannelImpl();
 
         kapuaBirthChannel.setClientId("clientId-1");
-        assertEquals("clientId-1", kapuaBirthChannel.getClientId());
+        Assert.assertEquals("clientId-1", kapuaBirthChannel.getClientId());
     }
 
     /**
