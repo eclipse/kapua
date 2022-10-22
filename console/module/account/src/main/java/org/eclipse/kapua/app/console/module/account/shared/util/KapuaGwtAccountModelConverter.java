@@ -55,6 +55,7 @@ public class KapuaGwtAccountModelConverter {
         gwtAccount.setPhoneNumber(account.getOrganization().getPhoneNumber());
         gwtAccount.setAddress1(account.getOrganization().getAddressLine1());
         gwtAccount.setAddress2(account.getOrganization().getAddressLine2());
+        gwtAccount.setAddress3(account.getOrganization().getAddressLine3());
         gwtAccount.setZipPostCode(account.getOrganization().getZipPostCode());
         gwtAccount.setCity(account.getOrganization().getCity());
         gwtAccount.setStateProvince(account.getOrganization().getStateProvinceCounty());
@@ -88,6 +89,7 @@ public class KapuaGwtAccountModelConverter {
         gwtOrganization.setPhoneNumber(organization.getPhoneNumber());
         gwtOrganization.setAddressLine1(organization.getAddressLine1());
         gwtOrganization.setAddressLine2(organization.getAddressLine2());
+        gwtOrganization.setAddressLine3(organization.getAddressLine3());
         gwtOrganization.setZipPostCode(organization.getZipPostCode());
         gwtOrganization.setCity(organization.getCity());
         gwtOrganization.setStateProvinceCounty(organization.getStateProvinceCounty());
