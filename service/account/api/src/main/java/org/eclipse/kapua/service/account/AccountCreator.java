@@ -40,6 +40,7 @@ import java.util.Date;
                 "organizationPhoneNumber",
                 "organizationAddressLine1",
                 "organizationAddressLine2",
+                "organizationAddressLine3",
                 "organizationCity",
                 "organizationZipPostCode",
                 "organizationStateProvinceCounty",
@@ -150,6 +151,23 @@ public interface AccountCreator extends KapuaNamedEntityCreator<Account> {
      * @since 1.0.0
      */
     void setOrganizationAddressLine2(String organizationAddressLine2);
+
+    /*3
+     * Gets the {@link Organization#getAddressLine3()}.
+     *
+     * @return The {@link Organization#getAddressLine3()}.
+     * @since 1.0.0
+     */
+    @XmlElement(name = "organizationAddressLine3")
+    String getOrganizationAddressLine3();
+
+    /**
+     * Sets the {@link Organization#getAddressLine3()}.
+     *
+     * @param organizationAddressLine3 The {@link Organization#getAddressLine3()}.
+     * @since 1.0.0
+     */
+    void setOrganizationAddressLine3(String organizationAddressLine3);
 
     /**
      * Gets the {@link Organization#getCity()}.

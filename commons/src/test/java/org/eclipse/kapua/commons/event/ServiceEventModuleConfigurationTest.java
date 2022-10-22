@@ -25,7 +25,8 @@ public class ServiceEventModuleConfigurationTest extends Assert {
 
     ServiceEventClientConfiguration[] serviceEventClientConfiguration = new ServiceEventClientConfiguration[]
             { new ServiceEventClientConfiguration("address", "subscriberName", null),
-                    new ServiceEventClientConfiguration("address2", "subscriberName2", null) };
+                    new ServiceEventClientConfiguration("address2", "subscriberName2", null),
+                        new ServiceEventClientConfiguration("address3", "subscriberName3", null)};
 
     @Test
     public void serviceEventModuleConfigurationRegularTest() {

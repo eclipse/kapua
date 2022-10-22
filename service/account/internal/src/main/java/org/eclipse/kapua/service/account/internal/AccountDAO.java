@@ -58,6 +58,7 @@ public class AccountDAO {
         organizationImpl.setPhoneNumber(accountCreator.getOrganizationPhoneNumber());
         organizationImpl.setAddressLine1(accountCreator.getOrganizationAddressLine1());
         organizationImpl.setAddressLine2(accountCreator.getOrganizationAddressLine2());
+        organizationImpl.setAddressLine3(accountCreator.getOrganizationAddressLine3());
         organizationImpl.setCity(accountCreator.getOrganizationCity());
         organizationImpl.setZipPostCode(accountCreator.getOrganizationZipPostCode());
         organizationImpl.setStateProvinceCounty(accountCreator.getOrganizationStateProvinceCounty());

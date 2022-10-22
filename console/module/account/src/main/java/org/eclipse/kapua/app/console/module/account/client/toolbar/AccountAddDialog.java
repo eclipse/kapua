@@ -74,6 +74,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
     protected final KapuaTextField<String> organizationPhoneNumber = new KapuaTextField<String>();
     protected final KapuaTextField<String> organizationAddressLine1 = new KapuaTextField<String>();
     protected final KapuaTextField<String> organizationAddressLine2 = new KapuaTextField<String>();
+    protected final KapuaTextField<String> organizationAddressLine3 = new KapuaTextField<String>();
     protected final KapuaTextField<String> organizationZipPostCode = new KapuaTextField<String>();
     protected final KapuaTextField<String> organizationCity = new KapuaTextField<String>();
     protected final KapuaTextField<String> organizationStateProvinceCounty = new KapuaTextField<String>();
@@ -249,12 +250,19 @@ public class AccountAddDialog extends EntityAddEditDialog {
         organizationAddressLine1.setToolTip(MSGS.accountFormOrgAddress1Tooltip());
         organizationSubFieldSet.add(organizationAddressLine1, subFieldsetFormData);
 
-        organizationAddressLine1.setName("organizationAddressLine2");
-        organizationAddressLine1.setMaxLength(255);
+        organizationAddressLine2.setName("organizationAddressLine2");
+        organizationAddressLine2.setMaxLength(255);
         organizationAddressLine2.setFieldLabel(MSGS.accountFormOrgAddress2());
         organizationAddressLine2.setToolTip(MSGS.accountFormOrgAddress2Tooltip());
         organizationAddressLine2.setMaxLength(255);
         organizationSubFieldSet.add(organizationAddressLine2, subFieldsetFormData);
+
+        organizationAddressLine3.setName("organizationAddressLine3");
+        organizationAddressLine3.setMaxLength(255);
+        organizationAddressLine3.setFieldLabel(MSGS.accountFormOrgAddress3());
+        organizationAddressLine3.setToolTip(MSGS.accountFormOrgAddress3Tooltip());
+        organizationAddressLine3.setMaxLength(255);
+        organizationSubFieldSet.add(organizationAddressLine3, subFieldsetFormData);
 
         organizationZipPostCode.setName("organizationZipPostCode");
         organizationZipPostCode.setMaxLength(255);
@@ -320,6 +328,7 @@ public class AccountAddDialog extends EntityAddEditDialog {
         gwtAccountCreator.setOrganizationPhoneNumber(organizationPhoneNumber.getValue());
         gwtAccountCreator.setOrganizationAddressLine1(organizationAddressLine1.getValue());
         gwtAccountCreator.setOrganizationAddressLine2(organizationAddressLine2.getValue());
+        gwtAccountCreator.setOrganizationAddressLine3(organizationAddressLine3.getValue());
         gwtAccountCreator.setOrganizationCity(organizationCity.getValue());
         gwtAccountCreator.setOrganizationZipPostCode(organizationZipPostCode.getValue());
         gwtAccountCreator.setOrganizationStateProvinceCounty(organizationStateProvinceCounty.getValue());

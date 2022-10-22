@@ -70,6 +70,9 @@ public class AccountEditDialog extends AccountAddDialog {
         organizationAddressLine2.setValue(selectedAccount.getGwtOrganization().getAddressLine2());
         organizationAddressLine2.setOriginalValue(selectedAccount.getGwtOrganization().getAddressLine2());
 
+        organizationAddressLine3.setValue(selectedAccount.getGwtOrganization().getAddressLine3());
+        organizationAddressLine3.setOriginalValue(selectedAccount.getGwtOrganization().getAddressLine3());
+
         organizationZipPostCode.setValue(selectedAccount.getGwtOrganization().getZipPostCode());
         organizationZipPostCode.setOriginalValue(selectedAccount.getGwtOrganization().getZipPostCode());
 
@@ -96,6 +99,7 @@ public class AccountEditDialog extends AccountAddDialog {
         gwtOrganization.setPhoneNumber(organizationPhoneNumber.getValue());
         gwtOrganization.setAddressLine1(organizationAddressLine1.getValue());
         gwtOrganization.setAddressLine2(organizationAddressLine2.getValue());
+        gwtOrganization.setAddressLine3(organizationAddressLine3.getValue());
         gwtOrganization.setZipPostCode(organizationZipPostCode.getValue());
         gwtOrganization.setCity(organizationCity.getValue());
         gwtOrganization.setStateProvinceCounty(organizationStateProvinceCounty.getValue());
