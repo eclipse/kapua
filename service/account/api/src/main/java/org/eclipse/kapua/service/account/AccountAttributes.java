@@ -76,6 +76,11 @@ public class AccountAttributes extends KapuaNamedEntityAttributes {
     /**
      * @since 1.0.0
      */
+    public static final String ADDRESS_3 = ORGANIZATION + ".addressLine3";
+
+    /**
+     * @since 1.0.0
+     */
     public static final String ZIP_POST_CODE = ORGANIZATION + ".zipPostCode";
 
     /**
