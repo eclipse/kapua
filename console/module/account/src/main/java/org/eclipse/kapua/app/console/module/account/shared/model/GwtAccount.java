@@ -176,6 +176,14 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
         set("address2", address2);
     }
 
+    public String getAddress3() {
+        return (String) getUnescaped("address3");
+    }
+
+    public void setAddress3(String address3) {
+        set("address3", address3);
+    }
+
     public String getZipPostCode() {
         return (String) getUnescaped("zipPostCode");
     }

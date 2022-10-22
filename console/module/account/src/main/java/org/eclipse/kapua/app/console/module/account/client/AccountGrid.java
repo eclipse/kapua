@@ -178,6 +178,13 @@ public class AccountGrid extends EntityGrid<GwtAccount> {
         column.setSortable(false);
         configs.add(column);
 
+        column = new ColumnConfig("address3", 120);
+        column.setHidden(true);
+        column.setHeader(ACCOUNT_MSGS.accountTableAddress3());
+        column.setWidth(150);
+        column.setSortable(false);
+        configs.add(column);
+
         column = new ColumnConfig("zipPostCode", 120);
         column.setHidden(true);
         column.setHeader(ACCOUNT_MSGS.accountTableZipPostCode());
