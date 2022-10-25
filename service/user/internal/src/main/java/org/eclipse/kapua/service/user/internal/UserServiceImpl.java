@@ -59,23 +59,31 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    @Inject
-    private AuthorizationService authorizationService;
-    @Inject
-    private PermissionFactory permissionFactory;
+    private final AuthorizationService authorizationService;
+    private final PermissionFactory permissionFactory;
+    private final SystemSetting systemSettings;
 
     /**
      * Constructor.
      *
      * @since 1.0.0
      */
-    public UserServiceImpl() {
+    @Inject
+    public UserServiceImpl(
+            AuthorizationService authorizationService,
+            PermissionFactory permissionFactory,
+            UserEntityManagerFactory userEntityManagerFactory,
+            UserCacheFactory userCacheFactory,
+            SystemSetting systemSettings) {
         super(UserService.class.getName(),
                 UserDomains.USER_DOMAIN,
-                UserEntityManagerFactory.getInstance(),
-                UserCacheFactory.getInstance(),
+                userEntityManagerFactory,
+                userCacheFactory,
                 UserService.class,
                 UserFactory.class);
+        this.authorizationService = authorizationService;
+        this.permissionFactory = permissionFactory;
+        this.systemSettings = systemSettings;
     }
 
     @Override
@@ -381,7 +389,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     private void validateSystemUser(String name) throws KapuaException {
-        String adminUsername = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
+        String adminUsername = systemSettings.getString(SystemSettingKey.SYS_ADMIN_USERNAME);
 
         if (adminUsername.equals(name)) {
             throw new KapuaIllegalArgumentException("name", adminUsername);

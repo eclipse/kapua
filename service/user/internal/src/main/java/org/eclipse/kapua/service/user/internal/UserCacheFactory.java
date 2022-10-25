@@ -23,7 +23,7 @@ public class UserCacheFactory extends AbstractNamedEntityCacheFactory {
         super("UserId", "UserName");
     }
 
-    protected static UserCacheFactory getInstance() {
+    public static UserCacheFactory getInstance() {
         return new UserCacheFactory();
     }
 

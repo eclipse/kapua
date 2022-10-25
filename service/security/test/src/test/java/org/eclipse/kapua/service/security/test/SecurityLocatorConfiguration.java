@@ -20,6 +20,7 @@ import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
@@ -44,6 +45,8 @@ import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserService;
+import org.eclipse.kapua.service.user.internal.UserCacheFactory;
+import org.eclipse.kapua.service.user.internal.UserEntityManagerFactory;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
 import org.eclipse.kapua.service.user.internal.UserServiceImpl;
 import org.mockito.Matchers;
@@ -73,7 +76,8 @@ public class SecurityLocatorConfiguration {
 
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
+                PermissionFactory mockPermissionFactory = Mockito.mock(PermissionFactory.class);
+                bind(PermissionFactory.class).toInstance(mockPermissionFactory);
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
@@ -87,7 +91,7 @@ public class SecurityLocatorConfiguration {
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialService.class).toInstance(new CredentialServiceImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
-                bind(UserService.class).toInstance(new UserServiceImpl());
+                bind(UserService.class).toInstance(new UserServiceImpl(mockedAuthorization, mockPermissionFactory, UserEntityManagerFactory.getInstance(), UserCacheFactory.getInstance(), SystemSetting.getInstance()));
                 bind(UserFactory.class).toInstance(new UserFactoryImpl());
             }
         };

@@ -10,18 +10,13 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.user.internal;
+package org.eclipse.kapua.commons.setting.system;
 
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
-import org.eclipse.kapua.service.user.UserFactory;
-import org.eclipse.kapua.service.user.UserService;
 
-public class UserModule extends AbstractKapuaModule {
+public class SystemSettingModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(UserService.class).to(UserServiceImpl.class);
-        bind(UserFactory.class).to(UserFactoryImpl.class);
-        bind(UserEntityManagerFactory.class).toInstance(UserEntityManagerFactory.getInstance());
-        bind(UserCacheFactory.class).toInstance(UserCacheFactory.getInstance());
+        bind(SystemSetting.class).toInstance(SystemSetting.getInstance());
     }
 }
