@@ -15,14 +15,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.eclipse.kapua</groupId>
         <artifactId>kapua</artifactId>
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <packaging>pom</packaging>
     <artifactId>kapua-qa</artifactId>
+    <packaging>pom</packaging>
 
     <modules>
         <module>common</module>
@@ -31,44 +32,8 @@
         <module>markers</module>
     </modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- Activemq -->
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-broker</artifactId>
-                <version>${activemq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-camel</artifactId>
-                <version>${activemq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-kahadb-store</artifactId>
-                <version>${activemq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-mqtt</artifactId>
-                <version>${activemq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-spring</artifactId>
-                <version>${activemq.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-jms-server</artifactId>
-                <version>${artemis.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
     <profiles>
-        <!-- Profile for running integration tests with Kapua infrastructure started
-             inside dockerized environment. -->
+        <!-- Profile for running integration tests with Kapua infrastructure started inside dockerized environment. -->
         <profile>
             <id>I9nTests</id>
             <build>
