@@ -53,7 +53,9 @@ public class KapuaFileUtilsTest extends Assert {
     //this test is adjusted to method implementation getAsFile().
     //therefore, the method was tested in this way without any assertion only with specific output.
     public void getAsFilePositiveAndNegativeTest() throws IOException, KapuaSettingException {
-        String[] permittedFormats = new String[]{"https://www.w3.org/TR/PNG/iso_8859-1.txt", "http://txt2html.sourceforge.net/sample.txt",
+        String[] permittedFormats = new String[]{
+                "https://opensource.apple.com/source/cups/cups-218/cups/data/iso-8859-1.txt",
+                "http://txt2html.sourceforge.net/sample.txt",
                 "https://www.lipsum.com/"};
         String[] invalidFormats = new String[]{"file:/hostname/path/the%20file.txt", "file://", "http://www.example.com:10800000000000/docs/resource1.html",
                 "/c:/WINDOWS/clock.example", "https://www.w3.org/TR/PNG/iso_88591.txt", "p://txt2html.sourceforge.net/invalidName.txt"};
