@@ -23,7 +23,6 @@ public class UserCacheFactory extends AbstractNamedEntityCacheFactory {
         super("UserId", "UserName");
     }
 
-
     /**
      * @return The constructed instance
      * @deprecated since 2.0.0. Please use {@link UserCacheFactory#UserCacheFactory()} instead. This static constructor may be replaced in future releases.
