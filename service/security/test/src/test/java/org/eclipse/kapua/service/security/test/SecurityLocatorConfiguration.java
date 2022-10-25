@@ -91,7 +91,7 @@ public class SecurityLocatorConfiguration {
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialService.class).toInstance(new CredentialServiceImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
-                bind(UserService.class).toInstance(new UserServiceImpl(mockedAuthorization, mockPermissionFactory, UserEntityManagerFactory.getInstance(), UserCacheFactory.getInstance(), SystemSetting.getInstance()));
+                bind(UserService.class).toInstance(new UserServiceImpl(mockedAuthorization, mockPermissionFactory, new UserEntityManagerFactory(), new UserCacheFactory(), SystemSetting.getInstance()));
                 bind(UserFactory.class).toInstance(new UserFactoryImpl());
             }
         };

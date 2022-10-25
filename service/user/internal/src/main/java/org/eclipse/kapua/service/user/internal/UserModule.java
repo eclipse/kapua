@@ -21,7 +21,7 @@ public class UserModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(UserService.class).to(UserServiceImpl.class);
         bind(UserFactory.class).to(UserFactoryImpl.class);
-        bind(UserEntityManagerFactory.class).toInstance(UserEntityManagerFactory.getInstance());
-        bind(UserCacheFactory.class).toInstance(UserCacheFactory.getInstance());
+        bind(UserEntityManagerFactory.class).toInstance(new UserEntityManagerFactory());
+        bind(UserCacheFactory.class).toInstance(new UserCacheFactory());
     }
 }

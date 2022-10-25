@@ -79,9 +79,9 @@ public class UserLocatorConfiguration {
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
 
                 // Inject actual User service related services
-                UserEntityManagerFactory userEntityManagerFactory = UserEntityManagerFactory.getInstance();
+                UserEntityManagerFactory userEntityManagerFactory = new UserEntityManagerFactory();
                 bind(UserEntityManagerFactory.class).toInstance(userEntityManagerFactory);
-                bind(UserService.class).toInstance(new UserServiceImpl(mockedAuthorization, mockPermissionFactory, UserEntityManagerFactory.getInstance(), UserCacheFactory.getInstance(), SystemSetting.getInstance()));
+                bind(UserService.class).toInstance(new UserServiceImpl(mockedAuthorization, mockPermissionFactory, userEntityManagerFactory, new UserCacheFactory(), SystemSetting.getInstance()));
                 bind(UserFactory.class).toInstance(new UserFactoryImpl());
             }
         };

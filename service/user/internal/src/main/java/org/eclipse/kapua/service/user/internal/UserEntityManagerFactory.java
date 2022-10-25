@@ -24,24 +24,14 @@ public class UserEntityManagerFactory extends AbstractEntityManagerFactory imple
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-user";
 
-    private static final UserEntityManagerFactory INSTANCE = new UserEntityManagerFactory();
-
     /**
      * Constructor.
      *
      * @since 1.0.0
      */
-    private UserEntityManagerFactory() {
+    public UserEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
 
-    /**
-     * Returns the {@link EntityManagerFactory} instance.
-     *
-     * @return The {@link EntityManagerFactory} instance.
-     * @since 1.0.0
-     */
-    public static UserEntityManagerFactory getInstance() {
-        return INSTANCE;
-    }
+
 }

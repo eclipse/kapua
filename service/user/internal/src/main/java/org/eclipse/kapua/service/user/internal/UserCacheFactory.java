@@ -19,12 +19,8 @@ import org.eclipse.kapua.commons.jpa.AbstractNamedEntityCacheFactory;
  */
 public class UserCacheFactory extends AbstractNamedEntityCacheFactory {
 
-    private UserCacheFactory() {
+    public UserCacheFactory() {
         super("UserId", "UserName");
-    }
-
-    public static UserCacheFactory getInstance() {
-        return new UserCacheFactory();
     }
 
 }
