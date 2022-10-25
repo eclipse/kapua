@@ -25,6 +25,7 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
@@ -127,7 +128,8 @@ public class SecurityLocatorConfiguration {
                         new UserEntityManagerFactory(),
                         new UserCacheFactory(),
                         Mockito.mock(UserNamedEntityService.class),
-                        Mockito.mock(ServiceConfigurationManager.class)
+                        Mockito.mock(ServiceConfigurationManager.class),
+                        SystemSetting.getInstance()
                 ));
             }
         };
