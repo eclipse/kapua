@@ -105,7 +105,6 @@ public class SecurityLocatorConfiguration {
                 bind(GroupService.class).to(GroupServiceImpl.class);
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
-
                 bind(CredentialServiceConfigurationManager.class)
                         .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
                         .toInstance(

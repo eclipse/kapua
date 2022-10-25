@@ -72,6 +72,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
     private PermissionFactory permissionFactory;
     private UserNamedEntityService userNamedEntityService;
 
+    private final SystemSetting systemSettings;
 
     /**
      * Constructor.
@@ -84,6 +85,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
         super(new UserEntityManagerFactory(), new UserCacheFactory(), null);
         this.authorizationService = null;
         this.permissionFactory = null;
+        this.systemSettings = null;
     }
 
 
@@ -104,11 +106,13 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
             UserEntityManagerFactory userEntityManagerFactory,
             UserCacheFactory userCacheFactory,
             UserNamedEntityService userNamedEntityService,
-            @Named("UserServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+            @Named("UserServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager,
+            SystemSetting systemSettings) {
         super(userEntityManagerFactory, userCacheFactory, serviceConfigurationManager);
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.userNamedEntityService = userNamedEntityService;
+        this.systemSettings = systemSettings;
     }
 
     @Override
@@ -406,7 +410,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
     }
 
     private void validateSystemUser(String name) throws KapuaException {
-        String adminUsername = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
+        String adminUsername = systemSettings.getString(SystemSettingKey.SYS_ADMIN_USERNAME);
 
         if (adminUsername.equals(name)) {
             throw new KapuaIllegalArgumentException("name", adminUsername);
