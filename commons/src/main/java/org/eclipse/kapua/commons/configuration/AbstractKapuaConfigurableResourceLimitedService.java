@@ -30,6 +30,7 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
+import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -84,6 +85,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @param pid                  The {@link KapuaConfigurableService} id.
      * @param domain               The {@link Domain} on which check access.
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
+     * @param serviceClass         The {@link KapuaService} type.
      * @param factoryClass         The {@link KapuaEntityFactory} type.
      * @deprecated Since 1.2.0. This constructor will be removed in a next release (may be)
      */
@@ -92,6 +94,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
             String pid,
             Domain domain,
             EntityManagerFactory entityManagerFactory,
+            Class<S> serviceClass,
             Class<F> factoryClass) {
         this(pid,
                 domain,

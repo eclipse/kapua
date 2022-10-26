@@ -59,29 +59,6 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
     /**
      * Constructor.
      *
-     * @since 1.0.0
-     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, ServiceConfigurationManager)} )}
-     */
-    @Deprecated
-    public DeviceConnectionServiceImpl() {
-        this(DeviceEntityManagerFactory.getInstance());
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
-     * @since 1.0.0
-     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, ServiceConfigurationManager)}
-     */
-    @Deprecated
-    public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
-        super(deviceEntityManagerFactory, new DeviceRegistryCacheFactory(), null);
-    }
-
-    /**
-     * Constructor.
-     *
      * @param deviceEntityManagerFactory  The {@link DeviceEntityManagerFactory} instance.
      * @param deviceRegistryCacheFactory  The {@link DeviceRegistryCacheFactory} instance.
      * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance.

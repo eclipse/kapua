@@ -82,7 +82,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private AuthorizationService authorizationService;
     private RootUserTester rootUserTester;
 
-
     /**
      * This cache is to hold the {@link KapuaTocd}s that are read from the metatype files.
      * <p>
@@ -114,7 +113,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param domain               The {@link Domain} on which check access.
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @since 1.0.0
-     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableService#AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
@@ -139,7 +138,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
      * @since 1.2.0
-     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableService#AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory, AbstractEntityCacheFactory abstractCacheFactory) {
@@ -424,7 +423,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         // Check access
         getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, Actions.read, scopeId));
 
-        //
         // Get the Tocd
         // Keep distinct values for service PID, Scope ID and disabled properties included/excluded from AD
         Triple<String, KapuaId, Boolean> cacheKey = Triple.of(pid, scopeId, excludeDisabled);
@@ -524,7 +522,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
         KapuaTocd ocd = getConfigMetadata(scopeId, false);
-
         Map<String, Object> originalValues = getConfigValues(scopeId);
 
         for (KapuaTad ad : ocd.getAD()) {
