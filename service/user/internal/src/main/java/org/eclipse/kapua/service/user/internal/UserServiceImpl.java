@@ -28,6 +28,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -59,14 +60,36 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private final AuthorizationService authorizationService;
-    private final PermissionFactory permissionFactory;
     private final SystemSetting systemSettings;
 
     /**
      * Constructor.
      *
      * @since 1.0.0
+     * @deprecated since 2.0.0 - Please use {@link UserServiceImpl#UserServiceImpl(AuthorizationService, PermissionFactory, UserEntityManagerFactory, UserCacheFactory, SystemSetting, UserFactory)} instead. This constructor may be removed in a next release
+     */
+    @Deprecated
+    public UserServiceImpl() {
+        super(UserService.class.getName(),
+                UserDomains.USER_DOMAIN,
+                new UserEntityManagerFactory(),
+                new UserCacheFactory(),
+                KapuaLocator.getInstance().getFactory(UserFactory.class),
+                KapuaLocator.getInstance().getFactory(PermissionFactory.class),
+                KapuaLocator.getInstance().getService(AuthorizationService.class));
+        this.systemSettings = SystemSetting.getInstance();
+    }
+
+    /**
+     * Constructor
+     *
+     * @param authorizationService     The {@link AuthorizationService} instance
+     * @param permissionFactory        The {@link PermissionFactory} instance
+     * @param userEntityManagerFactory The {@link UserEntityManagerFactory} instance
+     * @param userCacheFactory         The {@link UserCacheFactory} instance
+     * @param systemSettings           The {@link SystemSetting} instance
+     * @param userFactory              The {@link UserFactory} instance
+     * @since 2.0.0
      */
     @Inject
     public UserServiceImpl(
@@ -80,9 +103,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
                 UserDomains.USER_DOMAIN,
                 userEntityManagerFactory,
                 userCacheFactory,
-                userFactory);
-        this.authorizationService = authorizationService;
-        this.permissionFactory = permissionFactory;
+                userFactory, permissionFactory, authorizationService);
         this.systemSettings = systemSettings;
     }
 

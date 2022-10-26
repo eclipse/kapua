@@ -39,6 +39,7 @@ import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFacto
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
+import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -65,18 +66,22 @@ public class DeviceRegistryLocatorConfiguration {
                 }
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
+                final PermissionFactory permissionFactory = Mockito.mock(PermissionFactory.class);
+                bind(PermissionFactory.class).toInstance(permissionFactory);
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // Inject actual Device registry service related services
-                DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
+                final DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
                 bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
+
+                final DeviceRegistryCacheFactory deviceRegistryCacheFactory = new DeviceRegistryCacheFactory();
+                bind(DeviceRegistryCacheFactory.class).toInstance(deviceRegistryCacheFactory);
 
                 bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl());
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
 
-                bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl());
+                bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());

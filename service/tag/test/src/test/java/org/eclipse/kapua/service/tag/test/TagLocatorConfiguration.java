@@ -104,7 +104,7 @@ public class TagLocatorConfiguration {
                 bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl());
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
 
-                bind(DeviceConnectionService.class).toInstance(new DeviceConnectionServiceImpl());
+                bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
 
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());

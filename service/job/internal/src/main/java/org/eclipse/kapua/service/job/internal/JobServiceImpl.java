@@ -74,6 +74,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         super(JobService.class.getName(),
                 JobDomains.JOB_DOMAIN,
                 JobEntityManagerFactory.getInstance(),
+                JobService.class,
                 JobFactory.class);
     }
 

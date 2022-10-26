@@ -58,6 +58,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
                 DeviceDomains.DEVICE_DOMAIN,
                 deviceEntityManagerFactory,
                 DeviceRegistryCacheFactory.getInstance(),
+                DeviceRegistryService.class,
                 DeviceFactory.class);
     }
 

@@ -41,6 +41,7 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFac
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -57,9 +58,32 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
      * Constructor.
      *
      * @since 1.0.0
+     * @deprecated Since 2.0.0 - Please use {@link DeviceConnectionServiceImpl#DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService)}
      */
+    @Deprecated
     public DeviceConnectionServiceImpl() {
-        this(DeviceEntityManagerFactory.getInstance());
+        this(DeviceEntityManagerFactory.getInstance(),
+                new DeviceRegistryCacheFactory(),
+                KapuaLocator.getInstance().getFactory(PermissionFactory.class),
+                KapuaLocator.getInstance().getService(AuthorizationService.class));
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
+     * @since 1.0.0
+     * @deprecated Since 2.0.0 - Please use {@link DeviceConnectionServiceImpl#DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService)}
+     */
+    @Deprecated
+    public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
+        super(DeviceConnectionService.class.getName(),
+                DeviceDomains.DEVICE_CONNECTION_DOMAIN,
+                deviceEntityManagerFactory,
+                new DeviceRegistryCacheFactory(),
+                KapuaLocator.getInstance().getFactory(PermissionFactory.class),
+                KapuaLocator.getInstance().getService(AuthorizationService.class)
+        );
     }
 
     /**
@@ -68,11 +92,20 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
      * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
      * @since 1.0.0
      */
-    public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
+    @Inject
+    public DeviceConnectionServiceImpl(
+            DeviceEntityManagerFactory deviceEntityManagerFactory,
+            DeviceRegistryCacheFactory deviceRegistryCacheFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService
+    ) {
         super(DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
                 deviceEntityManagerFactory,
-                DeviceRegistryCacheFactory.getInstance());
+                deviceRegistryCacheFactory,
+                permissionFactory,
+                authorizationService
+        );
     }
 
     @Override

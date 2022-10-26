@@ -77,6 +77,10 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private final Domain domain;
     private final String pid;
 
+    protected final AuthorizationService authorizationService;
+    protected final PermissionFactory permissionFactory;
+
+
     /**
      * This cache is to hold the {@link KapuaTocd}s that are read from the metatype files.
      * <p>
@@ -108,7 +112,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param domain               The {@link Domain} on which check access.
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @since 1.0.0
+     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableService#AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService)} This constructor may be removed in a next release
      */
+    @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
         this(pid, domain, entityManagerFactory, null);
     }
@@ -121,12 +127,40 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
      * @since 1.2.0
+     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableService#AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService)} This constructor may be removed in a next release
      */
+    @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory, AbstractEntityCacheFactory abstractCacheFactory) {
         super(entityManagerFactory, abstractCacheFactory);
 
         this.pid = pid;
         this.domain = domain;
+        final KapuaLocator locator = KapuaLocator.getInstance();
+        this.permissionFactory = locator.getFactory(PermissionFactory.class);
+        this.authorizationService = locator.getService(AuthorizationService.class);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param pid                  The {@link KapuaConfigurableService} id.
+     * @param domain               The {@link Domain} on which check access.
+     * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
+     * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
+     * @since 1.2.0
+     */
+    protected AbstractKapuaConfigurableService(String pid,
+                                               Domain domain,
+                                               EntityManagerFactory entityManagerFactory,
+                                               AbstractEntityCacheFactory abstractCacheFactory,
+                                               PermissionFactory permissionFactory,
+                                               AuthorizationService authorizationService) {
+        super(entityManagerFactory, abstractCacheFactory);
+
+        this.pid = pid;
+        this.domain = domain;
+        this.permissionFactory = permissionFactory;
+        this.authorizationService = authorizationService;
     }
 
     /**
@@ -368,10 +402,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         //
         // Check access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
-
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         //
@@ -442,9 +472,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         //
         // Check access
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         //
@@ -475,11 +502,11 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AuthorizationService authorizationService = locator.getService(AuthorizationService.class);
-        PermissionFactory permissionFactory = locator.getFactory(PermissionFactory.class);
+        //todo: remove me
+        final KapuaLocator locator = KapuaLocator.getInstance();
         KapuaTocd ocd = getConfigMetadata(scopeId, false);
 
+        //todo: remove me
         UserService userService = locator.getService(UserService.class);
         String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
         User rootUser = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(rootUserName));
