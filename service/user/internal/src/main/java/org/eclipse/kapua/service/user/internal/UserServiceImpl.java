@@ -71,23 +71,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
     private AuthorizationService authorizationService;
     private PermissionFactory permissionFactory;
     private UserNamedEntityService userNamedEntityService;
-
     private final SystemSetting systemSettings;
-
-    /**
-     * Constructor.
-     *
-     * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link #UserServiceImpl(AuthorizationService, PermissionFactory, UserEntityManagerFactory, UserCacheFactory, UserNamedEntityService, ServiceConfigurationManager)} instead. This constructor may be removed in a next release
-     */
-    @Deprecated
-    public UserServiceImpl() {
-        super(new UserEntityManagerFactory(), new UserCacheFactory(), null);
-        this.authorizationService = null;
-        this.permissionFactory = null;
-        this.systemSettings = null;
-    }
-
 
     /**
      * Injectable Constructor
