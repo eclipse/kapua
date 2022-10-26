@@ -93,8 +93,13 @@ public class SecurityPlugin implements ActiveMQSecurityManager5 {
             username, remotingConnection.getClientID(), remotingConnection.getTransportConnection().getRemoteAddress(), connectionId, securityDomain);
         String clientIp = remotingConnection.getTransportConnection().getRemoteAddress();
         String clientId = remotingConnection.getClientID();
-        if (clientId==null) {
-            clientId = clientIp.replaceAll("\\/", "");
+        //leave the clientId validation to the DeviceCreator. Here just check for / or ::
+        //ArgumentValidator.match(clientId, DeviceValidationRegex.CLIENT_ID, "deviceCreator.clientId");
+        if (clientId!=null && (
+                clientId.contains("/") || clientId.contains("::")
+                )) {
+            //TODO look for the right exception mapped to MQTT invalid client id error code
+            throw new SecurityException("Invalid Client Id!");
         }
         SessionContext sessionContext = serverContext.getSecurityContext().getSessionContextWithCacheFallback(connectionId);
         if (sessionContext!=null && sessionContext.getPrincipal()!=null) {
