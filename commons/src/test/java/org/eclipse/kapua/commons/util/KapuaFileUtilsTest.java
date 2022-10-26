@@ -12,20 +12,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
+import org.eclipse.kapua.commons.setting.KapuaSettingErrorCodes;
 import org.eclipse.kapua.commons.setting.KapuaSettingException;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * {@link KapuaFileUtils} {@link JUnitTests}
+ *
+ * @since 1.3.0
+ */
 @Category(JUnitTests.class)
-public class KapuaFileUtilsTest extends Assert {
+public class KapuaFileUtilsTest {
 
     @Test
     public void kapuaFileUtilsTest() throws Exception {
@@ -34,60 +40,110 @@ public class KapuaFileUtilsTest extends Assert {
         fileUtilsConstructor.newInstance();
     }
 
-    @Test(expected = Exception.class)
-    public void getAsUrlPositiveAndNegativeTest() throws KapuaSettingException, MalformedURLException {
-        String[] permittedFormats = new String[]{"https://www.example3345.com/", "http://www.example.com:1080/docs/resource1.html",
-                "https://www.example.com:1080/docs/resource2.html", "file:///c:/EXAMPLE/clock.example"};
-        String[] invalidFormats = new String[]{"www.example.com:1080/docs/resource1.html", "/c:/WINDOWS/clock.example",
-                "http://www.example.com:10800000000000/docs/resource1.html", "htp://www.example.com:1080/docs/resource1.html"};
+    @Test
+    public void getAsUrlTest() throws KapuaSettingException, MalformedURLException {
+        String[] stringUrls = new String[]{
+                "https://www.google.com/",
+                "http://www.google.com:1080/docs/resource1.html",
+                "https://www.google.com:1080/docs/resource2.html",
+                "file:///c:/EXAMPLE/clock.example"
+        };
 
-        URL[] expectedUrl = new URL[]{new URL("https://www.example3345.com/"), new URL("http://www.example.com:1080/docs/resource1.html"),
-                new URL("https://www.example.com:1080/docs/resource2.html"), new URL("file:///c:/EXAMPLE/clock.example")};
-        for (int i = 0; i < permittedFormats.length; i++) {
-            assertEquals("No exception expected", expectedUrl[i], KapuaFileUtils.getAsURL(permittedFormats[i]));
-            assertNotEquals("Inappropriate http scheme.", invalidFormats[i], KapuaFileUtils.getAsURL(invalidFormats[i]));
+        URL[] expectedUrls = new URL[]{
+                new URL("https://www.google.com/"),
+                new URL("http://www.google.com:1080/docs/resource1.html"),
+                new URL("https://www.google.com:1080/docs/resource2.html"),
+                new URL("file:///c:/EXAMPLE/clock.example")
+        };
+
+        for (int i = 0; i < stringUrls.length; i++) {
+            Assert.assertEquals(stringUrls[i], expectedUrls[i], KapuaFileUtils.getAsURL(stringUrls[i]));
         }
     }
 
     @Test
-    //this test is adjusted to method implementation getAsFile().
-    //therefore, the method was tested in this way without any assertion only with specific output.
-    public void getAsFilePositiveAndNegativeTest() throws IOException, KapuaSettingException {
-        String[] permittedFormats = new String[]{
+    public void getAsUrlInvalidTest() {
+        String[] invalidUrls = new String[]{
+                "www.google.com:1080/docs/resource1.html",
+                "/c:/WINDOWS/clock.example",
+                "http://www.example.com:10800000000000/docs/resource1.html",
+                "htp://www.example.com:1080/docs/resource1.html"
+        };
+
+        for (String invalidUrl : invalidUrls) {
+            try {
+                KapuaFileUtils.getAsURL(invalidUrl);
+
+                Assert.fail("Exception should be thrown with this test. URL: " + invalidUrl);
+            } catch (KapuaSettingException kse) {
+                Assert.assertThat(kse.getCode(),
+                        Matchers.anyOf(
+                                Matchers.is(KapuaSettingErrorCodes.INVALID_RESOURCE_NAME),
+                                Matchers.is(KapuaSettingErrorCodes.RESOURCE_NOT_FOUND)
+                        ));
+
+                if (kse.getCause() != null) {
+                    Assert.assertEquals("invalidUrl", MalformedURLException.class, kse.getCause().getClass());
+                }
+            }
+        }
+    }
+
+    @Test
+    public void getAsFileTest() {
+        String[] stringUrls = new String[]{
                 "https://opensource.apple.com/source/cups/cups-218/cups/data/iso-8859-1.txt",
                 "http://txt2html.sourceforge.net/sample.txt",
                 "https://www.lipsum.com/"};
-        String[] invalidFormats = new String[]{"file:/hostname/path/the%20file.txt", "file://", "http://www.example.com:10800000000000/docs/resource1.html",
-                "/c:/WINDOWS/clock.example", "https://www.w3.org/TR/PNG/iso_88591.txt", "p://txt2html.sourceforge.net/invalidName.txt"};
-        String invalidHttpScheme = "file:///c:/EXAMPLE/clock.example";
 
-        for (String value : permittedFormats) {
+        for (String stringURL : stringUrls) {
             try {
-                File file = KapuaFileUtils.getAsFile(value);
-                if (file.exists()) {
-                    System.out.println("File is successfully created at " + file.getPath() + " location.");
-                } else {
-                    System.out.println("File has not been created.");
-                }
+                File file = KapuaFileUtils.getAsFile(stringURL);
+
+                Assert.assertNotNull(file);
+                Assert.assertTrue(file.exists());
+            } catch (KapuaSettingException kse) {
+                Assert.fail("Failed to get the file or the URL is no longer valid. Please check ULRs used in the test. Failed URL:" + stringURL);
             } catch (Exception ex) {
-                fail("Inappropriate http scheme.");
+                Assert.fail("Failed but not for the URL being wrong, likely. Good luck to find the cause! Failed URL:" + stringURL);
             }
         }
+    }
 
-        File fileInvalidHttpScheme = KapuaFileUtils.getAsFile(invalidHttpScheme);
-        assertFalse("File should not exist.", fileInvalidHttpScheme.exists());
+    @Test
+    public void getAsFileInvalidUrlTest() {
+        String[] invalidURLs = new String[]{
+                "file://",
+                "http://www.example.com:10800000000000/docs/resource1.html"
+        };
 
-        for (String value : invalidFormats) {
+        for (String invalidURL : invalidURLs) {
             try {
-                File file = KapuaFileUtils.getAsFile(value);
-                if (file.exists()) {
-                    System.out.println("File is successfully created at " + file.getPath() + " location.");
-                } else {
-                    System.out.println("File has not been created.");
-                }
-                fail("Inappropriate http scheme.");
-            } catch (Exception ex) {
-                //expected
+                KapuaFileUtils.getAsFile(invalidURL);
+
+                Assert.fail("Exception should be thrown with this test. URL: " + invalidURL);
+            } catch (KapuaSettingException kse) {
+                Assert.assertEquals(invalidURL, KapuaSettingErrorCodes.INVALID_RESOURCE_NAME, kse.getCode());
+                Assert.assertNotNull(kse.getCause());
+            }
+        }
+    }
+
+    @Test
+    public void getAsFileInvalidResourceTest() {
+        String[] invalidURLs = new String[]{
+                "file:/hostname/path/the%20file.txt",
+                "/c:/WINDOWS/clock.example",
+                "https://www.w3.org/TR/PNG/iso_88591.txt",
+                "p://txt2html.sourceforge.net/invalidName.txt",
+        };
+
+        for (String invalidURL : invalidURLs) {
+            try {
+                KapuaFileUtils.getAsFile(invalidURL);
+                Assert.fail("Exception should be thrown with this test. URL: " + invalidURL);
+            } catch (KapuaSettingException kse) {
+                Assert.assertEquals(invalidURL, KapuaSettingErrorCodes.RESOURCE_NOT_FOUND, kse.getCode());
             }
         }
     }
