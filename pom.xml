@@ -105,7 +105,7 @@
         <snakeyaml.version>1.28</snakeyaml.version>
         <spotify.version>8.15.1</spotify.version>
         <spring.version>5.3.23</spring.version>
-        <spring-security.version>5.5.1</spring-security.version>
+        <spring-security.version>5.5.7</spring-security.version>
         <spring-boot.version>2.5.2</spring-boot.version> <!-- 2.3.x is not fully supported by camel (will be on camel 3.4) -->
         <swagger-ui.version>3.23.0</swagger-ui.version>
         <zxing.version>3.4.1</zxing.version>
