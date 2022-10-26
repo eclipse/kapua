@@ -22,19 +22,24 @@ There are 3 build options you can use, based on the need to perform the various 
     mvn clean install -Dcommons.settings.hotswap=true -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true
 ```
 
-For the next build option, considering that some integration tests require access to services deployed in a docker container, first of all, you have to launch these 2 commands in order to build and create the docker containers (NB: now make sure the docker daemon is running!)
+For the next build option, considering that some integration tests require access to services deployed in a docker container, first of all, you have to launch these 2 commands in order to build and create the kapua docker images (NB: now make sure the docker daemon is running!)
 ```
     mvn clean install -DskipTests=true  -Pconsole
     mvn clean install -f ./assembly -DskipTests  -Pconsole,docker
 ```
 Attention: if the kapua containers are already running in your environment, for example in the case of a previous building that terminated abnormally, please stop their execution before proceeding with the next build commands
 
-3. Build executing both unit tests and integration tests. The first 2 commands execute the integration tests, the last execute a complete build with unit tests:
-```
-    mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@env_none"
-    mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags="@env_docker_base"
-    mvn clean install -Dcommons.settings.hotswap=true -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true
-```
+3. Build executing both unit tests and integration tests.
+
+We created a bash script for the combined launch of integration tests and unit tests.
+Some integration tests communicate with the broker using an alias and, therefore,
+it is necessary to create the association in the unix hosts file. The script verifies the existence of this association and eventually creates the association, asking for sudo permissions.
+If you want to manually enter this association, execute this command:
+
+`echo "127.0.0.1 message-broker" | sudo tee -a /etc/hosts`
+
+The aforementioned script is located under 'qa' folder and it's called 'RunKapuaTests.sh'.
+Launch it in order to build Kapua executing all the tests.
 
 Note: there are 2 maven profiles than can be used in the building options above
 1. The "console" profile allows building the web console if needed.
