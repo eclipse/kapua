@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.steps;
 
+import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.qa.common.Suppressed;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -56,6 +57,7 @@ public class MqttDevice {
     private static final int DEFAULT_QOS = 0;
     private static final boolean DEFAULT_RETAIN = false;
     private static final String NO_TOPIC_FILTER = "#";
+    private static final String CTRL_NO_TOPIC_FILTER = SystemSetting.getInstance().getMessageClassifier() + "/#";
 
     /**
      * Map of Mqtt client for sending messages.
@@ -130,6 +132,8 @@ public class MqttDevice {
             });
             subscribedClient.connect(subscriberOpts);
             subscribedClient.subscribe(NO_TOPIC_FILTER, DEFAULT_QOS);
+            //Artemis is compliant with MQTT protocol so $ topics are not subscribed with #
+            subscribedClient.subscribe(CTRL_NO_TOPIC_FILTER, DEFAULT_QOS);
             logger.info("Subscribed topic for client {}", NO_TOPIC_FILTER, clientId);
         } catch (MqttException e) {
             logger.warn("Error", e);

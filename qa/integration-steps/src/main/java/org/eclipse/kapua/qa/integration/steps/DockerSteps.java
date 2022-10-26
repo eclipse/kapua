@@ -714,7 +714,7 @@ public class DockerSteps {
 
         if (debug) {
 //            envVars.add(String.format("ACTIVEMQ_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=%s", debugPort));
-            envVars.add(String.format("DEBUG_ARGS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=%s", debugPort));
+            envVars.add(String.format("DEBUG_ARGS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:%s", debugPort));
         }
 
         String[] ports = {
@@ -809,14 +809,18 @@ public class DockerSteps {
                 String.valueOf(debugPort)
         };
 
+        List<String> envVars = new ArrayList<>();
+        envVars.add("commons.db.schema.update=true");
+        envVars.add("BROKER_HOST=message-broker");
+        envVars.add("CRYPTO_SECRET_KEY=kapuaTestsKey!!!");
+        if (debug) {
+            envVars.add(String.format("DEBUG_OPTIONS=-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=*:%s", debugPort));
+        }
+
         return ContainerConfig.builder()
                 .hostConfig(hostConfig)
                 .exposedPorts(ports)
-                .env(
-                        "commons.db.schema.update=true",
-                        "BROKER_HOST=message-broker",
-                        "CRYPTO_SECRET_KEY=kapuaTestsKey!!!"
-                )
+                .env(envVars)
                 .image("kapua/" + imageName + ":" + KAPUA_VERSION)
                 .build();
     }
