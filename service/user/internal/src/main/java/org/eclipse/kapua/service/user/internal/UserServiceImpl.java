@@ -74,13 +74,13 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             PermissionFactory permissionFactory,
             UserEntityManagerFactory userEntityManagerFactory,
             UserCacheFactory userCacheFactory,
-            SystemSetting systemSettings) {
+            SystemSetting systemSettings,
+            UserFactory userFactory) {
         super(UserService.class.getName(),
                 UserDomains.USER_DOMAIN,
                 userEntityManagerFactory,
                 userCacheFactory,
-                UserService.class,
-                UserFactory.class);
+                userFactory);
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.systemSettings = systemSettings;

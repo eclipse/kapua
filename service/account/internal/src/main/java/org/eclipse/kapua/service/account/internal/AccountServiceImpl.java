@@ -77,7 +77,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 AccountDomains.ACCOUNT_DOMAIN,
                 AccountEntityManagerFactory.getInstance(),
                 AccountCacheFactory.getInstance(),
-                AccountService.class,
                 AccountFactory.class);
     }
 

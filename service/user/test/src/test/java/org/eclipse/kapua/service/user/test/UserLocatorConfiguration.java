@@ -81,8 +81,14 @@ public class UserLocatorConfiguration {
                 // Inject actual User service related services
                 UserEntityManagerFactory userEntityManagerFactory = new UserEntityManagerFactory();
                 bind(UserEntityManagerFactory.class).toInstance(userEntityManagerFactory);
-                bind(UserService.class).toInstance(new UserServiceImpl(mockedAuthorization, mockPermissionFactory, userEntityManagerFactory, new UserCacheFactory(), SystemSetting.getInstance()));
-                bind(UserFactory.class).toInstance(new UserFactoryImpl());
+                final UserFactoryImpl userFactory = new UserFactoryImpl();
+                bind(UserFactory.class).toInstance(userFactory);
+                bind(UserService.class).toInstance(new UserServiceImpl(mockedAuthorization,
+                        mockPermissionFactory,
+                        userEntityManagerFactory,
+                        new UserCacheFactory(),
+                        SystemSetting.getInstance(),
+                        userFactory));
             }
         };
 

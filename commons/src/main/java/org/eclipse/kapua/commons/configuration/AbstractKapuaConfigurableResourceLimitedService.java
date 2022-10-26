@@ -32,7 +32,6 @@ import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.KapuaEntityService;
-import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
@@ -59,11 +58,18 @@ import java.util.Map;
  * @param <F> The {@link KapuaEntityFactory} type.
  * @since 1.0.0
  */
-public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends KapuaEntity, C extends KapuaEntityCreator<E>, S extends KapuaEntityService<E, C>, L extends KapuaListResult<E>, Q extends KapuaQuery, F extends KapuaEntityFactory<E, C, Q, L>>
-        extends AbstractKapuaConfigurableService {
+public abstract class AbstractKapuaConfigurableResourceLimitedService<
+        E extends KapuaEntity,
+        C extends KapuaEntityCreator<E>,
+        S extends KapuaEntityService<E, C>,
+        L extends KapuaListResult<E>,
+        Q extends KapuaQuery,
+        F extends KapuaEntityFactory<E, C, Q, L>
+        >
+        extends AbstractKapuaConfigurableService
+        implements KapuaEntityService<E, C> {
 
-    private final Class<S> serviceClass;
-    private final Class<F> factoryClass;
+    private final F factory;
 
     /**
      * Constructor.
@@ -71,7 +77,6 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
      * @param pid                  The {@link KapuaConfigurableService} id.
      * @param domain               The {@link Domain} on which check access.
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
-     * @param serviceClass         The {@link KapuaService} type.
      * @param factoryClass         The {@link KapuaEntityFactory} type.
      * @deprecated Since 1.2.0. This constructor will be removed in a next release (may be)
      */
@@ -80,9 +85,32 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
             String pid,
             Domain domain,
             EntityManagerFactory entityManagerFactory,
-            Class<S> serviceClass,
             Class<F> factoryClass) {
-        this(pid, domain, entityManagerFactory, null, serviceClass, factoryClass);
+        this(pid, domain, entityManagerFactory, null, factoryClass);
+    }
+
+    /**
+     * Constructor. Use {@link AbstractKapuaConfigurableResourceLimitedService#AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, KapuaEntityFactory)}
+     *
+     * @param pid                  The {@link KapuaConfigurableService} id.
+     * @param domain               The {@link Domain} on which check access.
+     * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
+     * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
+     * @param factoryClass         The {@link KapuaEntityFactory} type.
+     * @since 1.2.0
+     * @deprecated Since 2.0.0. This constructor will be removed in a next release (may be)
+     */
+    @Deprecated
+    protected AbstractKapuaConfigurableResourceLimitedService(
+            String pid,
+            Domain domain,
+            EntityManagerFactory entityManagerFactory,
+            AbstractEntityCacheFactory abstractCacheFactory,
+            Class<F> factoryClass) {
+        super(pid, domain, entityManagerFactory, abstractCacheFactory);
+
+        KapuaLocator locator = KapuaLocator.getInstance();
+        this.factory = locator.getFactory(factoryClass);
     }
 
     /**
@@ -92,8 +120,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
      * @param domain               The {@link Domain} on which check access.
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
-     * @param serviceClass         The {@link KapuaService} type.
-     * @param factoryClass         The {@link KapuaEntityFactory} type.
+     * @param factory              The {@link KapuaEntityFactory} instance.
      * @since 1.2.0
      */
     protected AbstractKapuaConfigurableResourceLimitedService(
@@ -101,12 +128,9 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
             Domain domain,
             EntityManagerFactory entityManagerFactory,
             AbstractEntityCacheFactory abstractCacheFactory,
-            Class<S> serviceClass,
-            Class<F> factoryClass) {
+            F factory) {
         super(pid, domain, entityManagerFactory, abstractCacheFactory);
-
-        this.serviceClass = serviceClass;
-        this.factoryClass = factoryClass;
+        this.factory = factory;
     }
 
     @Override
@@ -187,8 +211,6 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
      */
     protected long allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId, Map<String, Object> configuration) throws KapuaException {
         KapuaLocator locator = KapuaLocator.getInstance();
-        S service = locator.getService(serviceClass);
-        F factory = locator.getFactory(factoryClass);
         AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
         AccountService accountService = locator.getService(AccountService.class);
 
@@ -199,7 +221,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<E extends 
                 Q countQuery = factory.newQuery(scopeId);
 
                 // Current used entities
-                long currentUsedEntities = service.count(countQuery);
+                long currentUsedEntities = this.count(countQuery);
 
                 AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
                 // Exclude the scope that is under config update

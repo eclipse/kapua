@@ -56,7 +56,6 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
         super(GroupService.class.getName(),
                 AuthorizationDomains.GROUP_DOMAIN,
                 AuthorizationEntityManagerFactory.getInstance(),
-                GroupService.class,
                 GroupFactory.class);
     }
 

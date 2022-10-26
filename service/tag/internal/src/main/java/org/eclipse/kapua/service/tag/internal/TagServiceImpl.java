@@ -51,7 +51,6 @@ public class TagServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
         super(TagService.class.getName(),
                 TagDomains.TAG_DOMAIN,
                 TagEntityManagerFactory.getInstance(),
-                TagService.class,
                 TagFactory.class);
     }
 

@@ -66,7 +66,6 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
                 AuthorizationDomains.ROLE_DOMAIN,
                 AuthorizationEntityManagerFactory.getInstance(),
                 RoleCacheFactory.getInstance(),
-                RoleService.class,
                 RoleFactory.class);
     }
 
