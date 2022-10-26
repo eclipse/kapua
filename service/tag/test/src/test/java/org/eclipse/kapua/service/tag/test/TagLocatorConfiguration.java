@@ -103,7 +103,6 @@ public class TagLocatorConfiguration {
 
                 // Inject actual Tag service related services
                 bind(TagEntityManagerFactory.class).toInstance(new TagEntityManagerFactory());
-
                 // Inject actual Device service related services
                 DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
                 bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);

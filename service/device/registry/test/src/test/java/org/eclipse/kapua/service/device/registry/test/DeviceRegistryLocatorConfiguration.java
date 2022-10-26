@@ -74,7 +74,6 @@ public class DeviceRegistryLocatorConfiguration {
                     // skip
                 }
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
-
                 bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
                 bind(AccountFactory.class).toInstance(Mockito.mock(AccountFactory.class));
                 bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
