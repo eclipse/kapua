@@ -12,7 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.device.client.device.keystore;
 
-
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;

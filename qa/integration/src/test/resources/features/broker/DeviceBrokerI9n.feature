@@ -52,15 +52,15 @@ Feature: Device Broker Integration
 
 #TODO
 #disable for now. Wait for further investigation.
-#  Scenario: Test the stealing link handling with 2 clients with same client id but different account (they should be able to connect both)
-#    Given I login as user with name "kapua-sys" and password "kapua-password"
-#    Given broker account "acme-1" with organization "acme-org-1" and email "acme-1@acme.com" and user "acme-1" are created
-#    Given broker account "acme-2" with organization "acme-org-2" and email "acme-2@acme.com" and user "acme-2" are created
-#    And Connect client with clientId "clientId" and user "acme-1" and password "KeepCalm123." and keep into device group "stealing-link-group"
-#    And I wait 3 seconds
-#    And Connect client with clientId "clientId" and user "acme-2" and password "KeepCalm123." and keep into device group "stealing-link-group"
-#    And I wait 3 seconds
-#    Then Clients from group "stealing-link-group" are connected
+  Scenario: Test the stealing link handling with 2 clients with same client id but different account (they should be able to connect both)
+    Given I login as user with name "kapua-sys" and password "kapua-password"
+    Given broker account "acme-1" with organization "acme-org-1" and email "acme-1@acme.com" and user "acme-1" are created
+    Given broker account "acme-2" with organization "acme-org-2" and email "acme-2@acme.com" and user "acme-2" are created
+    And Connect client with clientId "clientId" and user "acme-1" and password "KeepCalm123." and keep into device group "stealing-link-group"
+    And I wait 3 seconds
+    And Connect client with clientId "clientId" and user "acme-2" and password "KeepCalm123." and keep into device group "stealing-link-group"
+    And I wait 3 seconds
+    Then Clients from group "stealing-link-group" are connected
 
 @teardown
   Scenario: Stop full docker environment

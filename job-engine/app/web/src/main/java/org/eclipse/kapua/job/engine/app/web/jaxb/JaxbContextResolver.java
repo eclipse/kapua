@@ -30,6 +30,7 @@ import org.eclipse.kapua.commons.rest.model.errors.JobStartingExceptionInfo;
 import org.eclipse.kapua.commons.rest.model.errors.JobStoppingExceptionInfo;
 import org.eclipse.kapua.commons.rest.model.errors.SubjectUnauthorizedExceptionInfo;
 import org.eclipse.kapua.commons.rest.model.errors.ThrowableInfo;
+import org.eclipse.kapua.job.engine.JobStartOptions;
 import org.eclipse.kapua.job.engine.commons.model.JobTargetSublist;
 import org.eclipse.kapua.service.authentication.AuthenticationXmlRegistry;
 import org.eclipse.kapua.service.authentication.token.AccessToken;

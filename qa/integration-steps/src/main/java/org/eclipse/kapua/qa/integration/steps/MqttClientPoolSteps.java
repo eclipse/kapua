@@ -165,12 +165,12 @@ class MqttClientWrapper {
         try {
             if (waitBeforeDisconnect>0) { 
                 synchronized (client) {
-                    client.wait(waitBeforeDisconnect);
+                    client.wait(waitBeforeDisconnect*1000);
                 }
                 if (client.isConnected()) {
                     stillConnected = true;
+                    client.disconnect();
                 }
-                client.disconnect();
             }
         }
         catch (Exception e) {
@@ -204,6 +204,11 @@ class MqttClientWrapper {
     public boolean isStillConnected() {
         return stillConnected;
     }
+
+    public boolean isConnected() {
+        return client.isConnected();
+    }
+
 }
 
 class MqttClientCallBack implements MqttCallback {

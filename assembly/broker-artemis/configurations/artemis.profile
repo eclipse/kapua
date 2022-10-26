@@ -53,7 +53,7 @@ fi
 # JAVA_ARGS="$JAVA_ARGS -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=${ARTEMIS_OOME_DUMP}"
 
 # Debug args: Uncomment to enable debug
-DEBUG_ARGS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
+DEBUG_ARGS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
 
 # Debug args: Uncomment for async profiler
 #DEBUG_ARGS="-XX:+UnlockDiagnosticVMOptions -XX:+DebugNonSafepoints"
