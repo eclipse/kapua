@@ -89,8 +89,8 @@ public class SecurityLocatorConfiguration {
                 bind(RolePermissionFactory.class).toInstance(new RolePermissionFactoryImpl());
                 bind(GroupService.class).toInstance(new GroupServiceImpl());
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
-                bind(CredentialService.class).toInstance(new CredentialServiceImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
+                bind(CredentialService.class).to(CredentialServiceImpl.class);
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
                 bind(UserFactory.class).toInstance(userFactory);
                 bind(UserService.class).toInstance(new UserServiceImpl(

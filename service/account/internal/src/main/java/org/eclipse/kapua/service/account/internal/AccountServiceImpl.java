@@ -61,17 +61,13 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
     private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
 
-    @Inject
-    private AuthorizationService authorizationService;
-
-    @Inject
-    private PermissionFactory permissionFactory;
-
     /**
      * Constructor.
      *
      * @since 1.0.0
+     * @deprecated since 2.0.0 - Please use {@link AccountServiceImpl#AccountServiceImpl(AccountEntityManagerFactory, AccountCacheFactory, AccountFactory, PermissionFactory, AuthorizationService)} instead. This may be removed in future releases.
      */
+    @Deprecated
     public AccountServiceImpl() {
         super(AccountService.class.getName(),
                 AccountDomains.ACCOUNT_DOMAIN,
@@ -79,6 +75,22 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 AccountCacheFactory.getInstance(),
                 AccountService.class,
                 AccountFactory.class);
+    }
+
+    @Inject
+    public AccountServiceImpl(
+            AccountEntityManagerFactory accountEntityManagerFactory,
+            AccountCacheFactory accountCacheFactory,
+            AccountFactory factory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService) {
+        super(AccountService.class.getName(),
+                AccountDomains.ACCOUNT_DOMAIN,
+                accountEntityManagerFactory,
+                accountCacheFactory,
+                factory,
+                permissionFactory,
+                authorizationService);
     }
 
     @Override

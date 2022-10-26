@@ -15,11 +15,14 @@ package org.eclipse.kapua.service.job.internal;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 
+import javax.inject.Singleton;
+
 /**
  * {@link JobServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
  */
+@Singleton
 public class JobEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-job";
@@ -31,7 +34,7 @@ public class JobEntityManagerFactory extends AbstractEntityManagerFactory implem
      *
      * @since 1.0.0
      */
-    private JobEntityManagerFactory() {
+    public JobEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
 
@@ -40,7 +43,9 @@ public class JobEntityManagerFactory extends AbstractEntityManagerFactory implem
      *
      * @return The {@link EntityManagerFactory} instance.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - Please use {@link JobEntityManagerFactory#JobEntityManagerFactory()} instead. This may be removed in future releases
      */
+    @Deprecated
     public static JobEntityManagerFactory getInstance() {
         return INSTANCE;
     }

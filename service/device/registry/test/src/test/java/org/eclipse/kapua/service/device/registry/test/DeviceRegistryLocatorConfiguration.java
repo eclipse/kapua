@@ -59,15 +59,15 @@ public class DeviceRegistryLocatorConfiguration {
 
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
+                // Inject mocked Permission Factory
+                final PermissionFactory permissionFactory = Mockito.mock(PermissionFactory.class);
+                bind(PermissionFactory.class).toInstance(permissionFactory);
                 try {
                     Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
                 } catch (KapuaException e) {
                     // skip
                 }
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
-                // Inject mocked Permission Factory
-                final PermissionFactory permissionFactory = Mockito.mock(PermissionFactory.class);
-                bind(PermissionFactory.class).toInstance(permissionFactory);
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
@@ -78,8 +78,8 @@ public class DeviceRegistryLocatorConfiguration {
                 final DeviceRegistryCacheFactory deviceRegistryCacheFactory = new DeviceRegistryCacheFactory();
                 bind(DeviceRegistryCacheFactory.class).toInstance(deviceRegistryCacheFactory);
 
-                bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl());
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
+                bind(DeviceRegistryService.class).to(DeviceRegistryServiceImpl.class);
 
                 bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());

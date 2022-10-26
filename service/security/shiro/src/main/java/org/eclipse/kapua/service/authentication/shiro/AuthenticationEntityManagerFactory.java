@@ -17,11 +17,14 @@ import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 
+import javax.inject.Singleton;
+
 /**
  * {@link AuthenticationServiceShiroImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
  */
+@Singleton
 public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-authentication";
@@ -33,7 +36,7 @@ public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFac
      *
      * @since 1.0.0
      */
-    private AuthenticationEntityManagerFactory() {
+    public AuthenticationEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
 
@@ -52,7 +55,9 @@ public class AuthenticationEntityManagerFactory extends AbstractEntityManagerFac
      *
      * @return The {@link EntityManagerFactory} instance.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - Please use {@link AuthenticationEntityManagerFactory#AuthenticationEntityManagerFactory()} instead. This might be removed in future releases.
      */
+    @Deprecated
     public static AuthenticationEntityManagerFactory getInstance() {
         return INSTANCE;
     }

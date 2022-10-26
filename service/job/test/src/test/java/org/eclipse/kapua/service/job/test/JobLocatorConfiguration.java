@@ -101,8 +101,8 @@ public class JobLocatorConfiguration {
                 JobEntityManagerFactory jobEntityManagerFactory = JobEntityManagerFactory.getInstance();
                 bind(JobEntityManagerFactory.class).toInstance(jobEntityManagerFactory);
 
-                bind(JobService.class).toInstance(new JobServiceImpl());
                 bind(JobFactory.class).toInstance(new JobFactoryImpl());
+                bind(JobService.class).to(JobServiceImpl.class);
                 bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl());
                 bind(JobStepDefinitionFactory.class).toInstance(new JobStepDefinitionFactoryImpl());
                 bind(JobStepService.class).toInstance(new JobStepServiceImpl());

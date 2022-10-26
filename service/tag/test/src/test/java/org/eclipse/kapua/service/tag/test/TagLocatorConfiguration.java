@@ -73,17 +73,16 @@ public class TagLocatorConfiguration {
 
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
+                bind(AuthorizationService.class).toInstance(mockedAuthorization);
+                // Inject mocked Permission Factory
+                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
                 try {
                     Mockito.doNothing().when(mockedAuthorization).checkPermission(Matchers.any(Permission.class));
                 } catch (KapuaException e) {
                     // skip
                 }
-
                 bind(QueryFactory.class).toInstance(new QueryFactoryImpl());
 
-                bind(AuthorizationService.class).toInstance(mockedAuthorization);
-                // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
@@ -94,14 +93,12 @@ public class TagLocatorConfiguration {
                 // Inject actual Tag service related services
                 TagEntityManagerFactory tagEntityManagerFactory = TagEntityManagerFactory.getInstance();
                 bind(TagEntityManagerFactory.class).toInstance(tagEntityManagerFactory);
-                bind(TagService.class).toInstance(new TagServiceImpl());
-                bind(TagFactory.class).toInstance(new TagFactoryImpl());
 
                 // Inject actual Device service related services
                 DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
                 bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
 
-                bind(DeviceRegistryService.class).toInstance(new DeviceRegistryServiceImpl());
+                bind(DeviceRegistryService.class).to(DeviceRegistryServiceImpl.class);
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
 
                 bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
@@ -110,6 +107,8 @@ public class TagLocatorConfiguration {
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
+                bind(TagFactory.class).to(TagFactoryImpl.class);
+                bind(TagService.class).to(TagServiceImpl.class);
             }
         };
 

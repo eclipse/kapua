@@ -60,22 +60,52 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
     private final JobEngineService jobEngineService = LOCATOR.getService(JobEngineService.class);
 
-    @Inject
-    private AuthorizationService authorizationService;
-    @Inject
-    private PermissionFactory permissionFactory;
-
-    @Inject
+    //TODO: make final
     private TriggerService triggerService;
-    @Inject
+    //TODO: make final
     private TriggerFactory triggerFactory;
 
+    /**
+     * Constructor
+     *
+     * @deprecated since 2.0.0 - Please use
+     */
+    @Deprecated
     public JobServiceImpl() {
         super(JobService.class.getName(),
                 JobDomains.JOB_DOMAIN,
                 JobEntityManagerFactory.getInstance(),
                 JobService.class,
                 JobFactory.class);
+    }
+
+    /**
+     * Default constructor for injection
+     *
+     * @param jobEntityManagerFactory The {@link JobEntityManagerFactory} instance
+     * @param factory                 The {@link JobFactory} instance
+     * @param permissionFactory       The {@link PermissionFactory} instance
+     * @param authorizationService    The {@link AuthorizationService} instance
+     * @param triggerService          The {@link TriggerService} instance
+     * @param triggerFactory          The {@link TriggerFactory} instance
+     * @since 2.0.0
+     */
+    @Inject
+    public JobServiceImpl(JobEntityManagerFactory jobEntityManagerFactory,
+                          JobFactory factory,
+                          PermissionFactory permissionFactory,
+                          AuthorizationService authorizationService,
+                          TriggerService triggerService,
+                          TriggerFactory triggerFactory) {
+        super(JobService.class.getName(),
+                JobDomains.JOB_DOMAIN,
+                jobEntityManagerFactory,
+                null,
+                factory,
+                permissionFactory,
+                authorizationService);
+        this.triggerService = triggerService;
+        this.triggerFactory = triggerFactory;
     }
 
     @Override

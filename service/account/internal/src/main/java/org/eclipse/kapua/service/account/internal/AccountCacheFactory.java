@@ -15,11 +15,14 @@ package org.eclipse.kapua.service.account.internal;
 import org.eclipse.kapua.commons.jpa.AbstractNamedEntityCacheFactory;
 import org.eclipse.kapua.commons.jpa.CacheFactory;
 
+import javax.inject.Singleton;
+
 /**
  * {@link AccountServiceImpl} {@link CacheFactory} implementation.
  *
  * @since 1.2.0
  */
+@Singleton
 public class AccountCacheFactory extends AbstractNamedEntityCacheFactory implements CacheFactory {
 
     /**
@@ -27,7 +30,7 @@ public class AccountCacheFactory extends AbstractNamedEntityCacheFactory impleme
      *
      * @since 1.2.0
      */
-    private AccountCacheFactory() {
+    public AccountCacheFactory() {
         super("AccountId", "AccountName");
     }
 
@@ -36,7 +39,9 @@ public class AccountCacheFactory extends AbstractNamedEntityCacheFactory impleme
      *
      * @return The {@link AccountCacheFactory} instance.
      * @since 1.2.0
+     * @deprecated Since 2.0.0 - Please use {@link AccountCacheFactory#AccountCacheFactory()} instead. This may be removed in future releases
      */
+    @Deprecated
     protected static AccountCacheFactory getInstance() {
         return new AccountCacheFactory();
     }

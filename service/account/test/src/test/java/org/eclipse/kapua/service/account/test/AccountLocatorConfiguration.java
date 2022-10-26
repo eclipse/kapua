@@ -70,8 +70,8 @@ public class AccountLocatorConfiguration {
 
                 // Inject actual account related services
                 bind(AccountEntityManagerFactory.class).toInstance(AccountEntityManagerFactory.getInstance());
-                bind(AccountService.class).toInstance(new AccountServiceImpl());
                 bind(AccountFactory.class).toInstance(new AccountFactoryImpl());
+                bind(AccountService.class).to(AccountServiceImpl.class);
             }
         };
 

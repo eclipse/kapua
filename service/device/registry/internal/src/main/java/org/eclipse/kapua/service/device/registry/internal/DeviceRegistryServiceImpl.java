@@ -22,6 +22,8 @@ import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
@@ -34,6 +36,7 @@ import org.eclipse.kapua.service.device.registry.common.DeviceValidation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
@@ -69,6 +72,31 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
      */
     public DeviceRegistryServiceImpl() {
         this(DeviceEntityManagerFactory.getInstance());
+    }
+
+    /**
+     * Constructor
+     *
+     * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory} instance
+     * @param deviceRegistryCacheFactory The {@link DeviceRegistryCacheFactory} instance
+     * @param factory                    The {@link DeviceFactory} instance
+     * @param permissionFactory          The {@link PermissionFactory} instance
+     * @param authorizationService       The {@link AuthorizationService} instance
+     * @since 2.0.0
+     */
+    @Inject
+    public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory,
+                                     DeviceRegistryCacheFactory deviceRegistryCacheFactory,
+                                     DeviceFactory factory,
+                                     PermissionFactory permissionFactory,
+                                     AuthorizationService authorizationService) {
+        super(DeviceRegistryService.class.getName(),
+                DeviceDomains.DEVICE_DOMAIN,
+                deviceEntityManagerFactory,
+                deviceRegistryCacheFactory,
+                factory,
+                permissionFactory,
+                authorizationService);
     }
 
     @Override

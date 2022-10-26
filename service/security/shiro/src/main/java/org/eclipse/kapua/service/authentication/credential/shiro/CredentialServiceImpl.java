@@ -52,6 +52,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import java.security.NoSuchAlgorithmException;
@@ -87,6 +88,28 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         } catch (NoSuchAlgorithmException e) {
             throw KapuaRuntimeException.internalError(e, "Cannot instantiate SecureRandom (SHA1PRNG)");
         }
+        int minPasswordLengthConfigValue;
+        try {
+            minPasswordLengthConfigValue = KapuaAuthenticationSetting.getInstance().getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_PASSWORD_MINLENGTH);
+        } catch (NoSuchElementException ex) {
+            LOGGER.warn("Minimum password length not set, 12 characters minimum will be enforced");
+            minPasswordLengthConfigValue = 12;
+        }
+        if (minPasswordLengthConfigValue < 12) {
+            LOGGER.warn("Minimum password length too short, 12 characters minimum will be enforced");
+            minPasswordLengthConfigValue = 12;
+        }
+        systemMinimumPasswordLength = minPasswordLengthConfigValue;
+    }
+
+    @Inject
+    public CredentialServiceImpl(AuthenticationEntityManagerFactory authenticationEntityManagerFactory, PermissionFactory permissionFactory, AuthorizationService authorizationService) {
+        super(CredentialService.class.getName(),
+                AuthenticationDomains.CREDENTIAL_DOMAIN,
+                authenticationEntityManagerFactory,
+                null,
+                permissionFactory,
+                authorizationService);
         int minPasswordLengthConfigValue;
         try {
             minPasswordLengthConfigValue = KapuaAuthenticationSetting.getInstance().getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_PASSWORD_MINLENGTH);
