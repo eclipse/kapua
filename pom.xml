@@ -2126,7 +2126,46 @@
             </dependency>
 
             <!-- -->
-            <!-- Active MQ Artemis-->
+            <!-- Apache Active MQ Artemis-->
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>apache-artemis</artifactId>
+                <version>${artemis.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <!-- FIXME: This exclusion can be rmeoved after https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/issues/4106 gets approved -->
+                        <groupId>jakarta.security.auth.message</groupId>
+                        <artifactId>jakarta.security.auth.message-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>apache-artemis</artifactId>
+                <version>${artemis.version}</version>
+                <classifier>bin</classifier>
+                <type>tar.gz</type>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <!-- FIXME: This exclusion can be rmeoved after https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/issues/4106 gets approved -->
+                        <groupId>jakarta.security.auth.message</groupId>
+                        <artifactId>jakarta.security.auth.message-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-amqp-protocol</artifactId>
+                <version>${artemis.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>artemis-junit</artifactId>
@@ -2138,21 +2177,54 @@
                     </exclusion>
                 </exclusions>
             </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>artemis-amqp-protocol</artifactId>
-                <version>${artemis.version}</version>
-            </dependency>
 
-            <!-- Activemq -->
+            <!-- -->
+            <!-- Apache ActiveMQ -->
             <dependency>
                 <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-client</artifactId>
+                <artifactId>activemq-broker</artifactId>
                 <version>${activemq.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-jms_1.1_spec</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.activemq</groupId>
                 <artifactId>activemq-camel</artifactId>
+                <version>${activemq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-client</artifactId>
+                <version>${activemq.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.geronimo.specs</groupId>
+                        <artifactId>geronimo-jms_1.1_spec</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>artemis-jms-server</artifactId>
+                <version>${artemis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-kahadb-store</artifactId>
+                <version>${activemq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-mqtt</artifactId>
+                <version>${activemq.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-spring</artifactId>
                 <version>${activemq.version}</version>
             </dependency>
 
