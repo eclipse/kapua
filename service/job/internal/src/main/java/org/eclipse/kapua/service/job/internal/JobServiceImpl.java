@@ -63,19 +63,10 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
     //TODO: make final
+
     private TriggerService triggerService;
     //TODO: make final
     private TriggerFactory triggerFactory;
-
-    /**
-     * Deprecated Constructor
-     *
-     * @deprecated since 2.0.0 - Please use {@link #JobServiceImpl(JobEntityManagerFactory, PermissionFactory, AuthorizationService, TriggerService, TriggerFactory, ServiceConfigurationManager)} instead. This constructor may be removed in future releases
-     */
-    @Deprecated
-    public JobServiceImpl() {
-        super(JobEntityManagerFactory.getInstance(), null, null);
-    }
 
     /**
      * Default constructor for injection
