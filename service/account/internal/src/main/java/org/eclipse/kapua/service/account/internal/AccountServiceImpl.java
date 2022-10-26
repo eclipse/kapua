@@ -66,17 +66,6 @@ public class AccountServiceImpl
     private AuthorizationService authorizationService;
 
     /**
-     * Constructor.
-     *
-     * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link #AccountServiceImpl(AccountEntityManagerFactory, AccountCacheFactory, PermissionFactory, AuthorizationService, ServiceConfigurationManager)} instead. This may be removed in future releases.
-     */
-    @Deprecated
-    public AccountServiceImpl() {
-        super(AccountEntityManagerFactory.getInstance(), AccountCacheFactory.getInstance(), null);
-    }
-
-    /**
      * Injectable constructor
      *
      * @param accountEntityManagerFactory The {@link AccountEntityManagerFactory} instance
@@ -97,7 +86,7 @@ public class AccountServiceImpl
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
     }
-
+    
     @Override
     public Account create(AccountCreator accountCreator) throws KapuaException {
         //
