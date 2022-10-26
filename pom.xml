@@ -103,7 +103,7 @@
         <slf4j.version>1.7.33</slf4j.version>
         <snakeyaml.version>1.33</snakeyaml.version>
         <spotify.version>8.15.1</spotify.version>
-        <spring-security.version>4.1.3.RELEASE</spring-security.version>
+        <spring-security.version>4.2.20.RELEASE</spring-security.version>
         <swagger-ui.version>3.23.0</swagger-ui.version>
         <zxing.version>3.4.1</zxing.version>
 
