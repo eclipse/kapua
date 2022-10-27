@@ -394,7 +394,7 @@ public class UserServiceImpl extends KapuaConfigurableServiceBase implements Use
     }
 
     private void validateSystemUser(String name) throws KapuaException {
-        String adminUsername = systemSettings.getString(SystemSettingKey.SYS_ADMIN_USERNAME);
+        String adminUsername = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
 
         if (adminUsername.equals(name)) {
             throw new KapuaIllegalArgumentException("name", adminUsername);
