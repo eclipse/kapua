@@ -31,8 +31,9 @@ import org.junit.experimental.categories.Category;
 
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class KapuaExceptionUtilsTest extends Assert {
+public class KapuaExceptionUtilsTest {
 
     @Test
     public void testConstructor() throws Exception {
@@ -64,7 +65,7 @@ public class KapuaExceptionUtilsTest extends Assert {
         Exception[] listOfExpectedExceptions = new Exception[]{kapExc0, kapExc1, kapExc2, kapExc3, KapuaException.internalError(kapExc4, "Error during Persistence Operation"), KapuaException.internalError(persistExc0, "Error during Persistence Operation"), KapuaException.internalError(persistExc1, "Error during Persistence Operation"), new KapuaOptimisticLockingException(optimisticLock)};
 
         for (int i = 0; i < listOfExceptions.length; i++) {
-            assertEquals("ComparisonFailure not expected for: " + listOfExceptions[i],listOfExpectedExceptions[i].toString(), KapuaExceptionUtils.convertPersistenceException(listOfExceptions[i]).toString());
+            Assert.assertEquals("ComparisonFailure not expected for: " + listOfExceptions[i],listOfExpectedExceptions[i].toString(), KapuaExceptionUtils.convertPersistenceException(listOfExceptions[i]).toString());
         }
     }
 
@@ -86,7 +87,7 @@ public class KapuaExceptionUtilsTest extends Assert {
             Mockito.when(mockedDatabaseException.getErrorCode()).thenReturn(1062);
             Mockito.when(mockedDatabaseException.getMessage()).thenReturn(listOfSQLMessages1062[i]);
             Mockito.when(mockedDatabaseException.getInternalException()).thenReturn(mockedDatabaseException);
-            assertEquals("ComparisonFailure not expected for: " + exception, expectedExceptions1062[i].toString(), KapuaExceptionUtils.convertPersistenceException(exception).toString());
+            Assert.assertEquals("ComparisonFailure not expected for: " + exception, expectedExceptions1062[i].toString(), KapuaExceptionUtils.convertPersistenceException(exception).toString());
         }
 
         //SQL Error: 1048
@@ -94,21 +95,21 @@ public class KapuaExceptionUtilsTest extends Assert {
             Mockito.when(mockedDatabaseException.getErrorCode()).thenReturn(1048);
             Mockito.when(mockedDatabaseException.getMessage()).thenReturn(listOfValidSQLMessages1048[i]);
             Mockito.when(mockedDatabaseException.getInternalException()).thenReturn(mockedDatabaseException);
-            assertEquals("ComparisonFailure not expected for: " + exception,expectedExceptions1048[i].toString(), KapuaExceptionUtils.convertPersistenceException(exception).toString());
+            Assert.assertEquals("ComparisonFailure not expected for: " + exception,expectedExceptions1048[i].toString(), KapuaExceptionUtils.convertPersistenceException(exception).toString());
         }
 
         for (int i = 0; i < listOfInvalidSQLMessages1048.length; i++) {
             Mockito.when(mockedDatabaseException.getErrorCode()).thenReturn(1048);
             Mockito.when(mockedDatabaseException.getMessage()).thenReturn(listOfInvalidSQLMessages1048[i]);
             Mockito.when(mockedDatabaseException.getInternalException()).thenReturn(mockedDatabaseException);
-            assertEquals("ComparisonFailure not expected for: " + exception,kapuaException.toString(), KapuaExceptionUtils.convertPersistenceException(exception).toString());
+            Assert.assertEquals("ComparisonFailure not expected for: " + exception,kapuaException.toString(), KapuaExceptionUtils.convertPersistenceException(exception).toString());
         }
 
         //SQL Error: 2999
         Mockito.when(mockedDatabaseException.getErrorCode()).thenReturn(2999);
         Mockito.when(mockedDatabaseException.getMessage()).thenReturn("SQL Message: Column '%s' cannot be null");
         Mockito.when(mockedDatabaseException.getInternalException()).thenReturn(mockedDatabaseException);
-        assertEquals("ComparisonFailure not expected for: " + exception,kapuaException.toString(), KapuaExceptionUtils.convertPersistenceException(exception).toString());
+        Assert.assertEquals("ComparisonFailure not expected for: " + exception,kapuaException.toString(), KapuaExceptionUtils.convertPersistenceException(exception).toString());
 
         Mockito.verify(mockedDatabaseException, Mockito.times(12)).getInternalException();
         Mockito.verify(mockedDatabaseException, Mockito.times(12)).getMessage();
@@ -136,11 +137,11 @@ public class KapuaExceptionUtilsTest extends Assert {
         Exception[] listOfExpectedReturnsOfNonKapuaExceptions = new Exception[]{KapuaExceptionUtils.extractKapuaException(exception1.getCause()), KapuaExceptionUtils.extractKapuaException(exception2.getCause())};
 
         for (int i = 0; i < listOfExceptions.length; i++) {
-            assertSame("Exception not expected for " + listOfExceptions[i], listOfExpectedExceptions[i], KapuaExceptionUtils.extractKapuaException(listOfExceptions[i]));
+            Assert.assertSame("Exception not expected for " + listOfExceptions[i], listOfExpectedExceptions[i], KapuaExceptionUtils.extractKapuaException(listOfExceptions[i]));
         }
 
         for (int i = 0; i < listOfNonKapuaExceptions.length; i++) {
-            assertSame("Exception not expected for " + listOfNonKapuaExceptions[i], listOfExpectedReturnsOfNonKapuaExceptions[i], KapuaExceptionUtils.extractKapuaException(listOfNonKapuaExceptions[i]));
+            Assert.assertSame("Exception not expected for " + listOfNonKapuaExceptions[i], listOfExpectedReturnsOfNonKapuaExceptions[i], KapuaExceptionUtils.extractKapuaException(listOfNonKapuaExceptions[i]));
         }
     }
 }

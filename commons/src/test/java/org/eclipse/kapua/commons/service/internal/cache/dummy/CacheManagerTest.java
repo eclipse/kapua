@@ -19,8 +19,9 @@ import org.junit.experimental.categories.Category;
 
 import java.lang.reflect.Constructor;
 
+
 @Category(JUnitTests.class)
-public class CacheManagerTest extends Assert {
+public class CacheManagerTest {
 
     @Test
     public void constructorTest() throws Exception {
@@ -31,33 +32,33 @@ public class CacheManagerTest extends Assert {
 
     @Test
     public void getInstanceTest() {
-        assertNotNull("Null not expected", CacheManager.getInstance());
+        Assert.assertNotNull("Null not expected", CacheManager.getInstance());
     }
 
     @Test
     public void getCachingProviderTest() {
-        assertNull("Expected null", CacheManager.getInstance().getCachingProvider());
+        Assert.assertNull("Expected null", CacheManager.getInstance().getCachingProvider());
     }
 
     @Test
     public void getURITest() {
-        assertNull("Expected null", CacheManager.getInstance().getURI());
+        Assert.assertNull("Expected null", CacheManager.getInstance().getURI());
     }
 
     @Test
     public void getClassLoaderTest() {
-        assertNull("Expected null", CacheManager.getInstance().getClassLoader());
+        Assert.assertNull("Expected null", CacheManager.getInstance().getClassLoader());
     }
 
     @Test
     public void getPropertiesTest() {
-        assertNull("Expected null", CacheManager.getInstance().getProperties());
+        Assert.assertNull("Expected null", CacheManager.getInstance().getProperties());
     }
 
     @Test
     public void createCacheTest() {
         String cacheName = "Cache Name";
-        assertNotNull("New Cache object expected", CacheManager.getInstance().createCache(cacheName, null));
+        Assert.assertNotNull("New Cache object expected", CacheManager.getInstance().createCache(cacheName, null));
     }
 
     @Test
@@ -68,7 +69,7 @@ public class CacheManagerTest extends Assert {
 
         for (int i = 0; i < keyType.length; i++) {
             for (int j = 0; j < valueType.length; j++) {
-                assertNull("Expected null", CacheManager.getInstance().getCache(cacheName, keyType[i], valueType[j]));
+                Assert.assertNull("Expected null", CacheManager.getInstance().getCache(cacheName, keyType[i], valueType[j]));
             }
         }
     }
@@ -76,12 +77,12 @@ public class CacheManagerTest extends Assert {
     @Test
     public void getCacheOnlyNameTest() {
         String cacheName = "Cache Name";
-        assertNull("Expected null", CacheManager.getInstance().getCache(cacheName));
+        Assert.assertNull("Expected null", CacheManager.getInstance().getCache(cacheName));
     }
 
     @Test
     public void getCacheNameTest() {
-        assertNull("Expected null", CacheManager.getInstance().getCacheNames());
+        Assert.assertNull("Expected null", CacheManager.getInstance().getCacheNames());
     }
 
     @Test
@@ -115,14 +116,14 @@ public class CacheManagerTest extends Assert {
 
     @Test
     public void isClosedTest() {
-        assertFalse("False expected", CacheManager.getInstance().isClosed());
+        Assert.assertFalse("False expected", CacheManager.getInstance().isClosed());
     }
 
     @Test
     public void unwrapTest() {
         Class[] clazz = new Class[]{Integer.class, Character.class, String.class, Long.class, Double.class, Byte.class, Boolean.class};
         for (int i = 0; i < clazz.length; i++) {
-            assertNull("Null expected", CacheManager.getInstance().unwrap(clazz[i]));
+            Assert.assertNull("Null expected", CacheManager.getInstance().unwrap(clazz[i]));
         }
     }
 }

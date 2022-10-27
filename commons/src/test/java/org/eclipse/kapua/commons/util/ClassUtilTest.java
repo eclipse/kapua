@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 
 import java.lang.reflect.Constructor;
 
+
 @Category(JUnitTests.class)
-public class ClassUtilTest extends Assert {
+public class ClassUtilTest {
 
     String serviceName, address;
 
@@ -36,7 +37,7 @@ public class ClassUtilTest extends Assert {
 
     @Test(expected = KapuaException.class)
     public void newInstanceNullTest() throws KapuaException {
-        assertNull("The class does not exist.", ClassUtil.newInstance(null, null));
+        Assert.assertNull("The class does not exist.", ClassUtil.newInstance(null, null));
     }
 
     @Test(expected = KapuaException.class)
@@ -56,23 +57,23 @@ public class ClassUtilTest extends Assert {
 
     @Test
     public void newInstanceStringTest() throws KapuaException {
-        assertNotNull("Null not expected.", ClassUtil.newInstance("java.lang.String", String.class));
-        assertThat("Instance of String expected.", ClassUtil.newInstance("java.lang.String", String.class), IsInstanceOf.instanceOf(String.class));
+        Assert.assertNotNull("Null not expected.", ClassUtil.newInstance("java.lang.String", String.class));
+        Assert.assertThat("Instance of String expected.", ClassUtil.newInstance("java.lang.String", String.class), IsInstanceOf.instanceOf(String.class));
     }
 
     @Test
     public void extendedNewInstanceTest() throws KapuaException {
-        assertNotNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, new Class<?>[]{String.class, String.class}, new Object[]{serviceName, address}));
+        Assert.assertNotNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, new Class<?>[]{String.class, String.class}, new Object[]{serviceName, address}));
     }
 
     @Test
     public void extendedNewInstanceEmptyClazzTest() throws KapuaException {
-        assertNotNull("The class does not exist.", ClassUtil.newInstance("", ServiceEntry.class, new Class<?>[]{String.class, String.class}, new Object[]{serviceName, address}));
+        Assert.assertNotNull("The class does not exist.", ClassUtil.newInstance("", ServiceEntry.class, new Class<?>[]{String.class, String.class}, new Object[]{serviceName, address}));
     }
 
     @Test(expected = KapuaException.class)
     public void extendedNewInstanceParameterTypeNullTest() throws KapuaException {
-        assertNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, null, new Object[]{serviceName, address}));
+        Assert.assertNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, null, new Object[]{serviceName, address}));
     }
 
     @Test(expected = KapuaException.class)
@@ -82,31 +83,31 @@ public class ClassUtilTest extends Assert {
 
     @Test(expected = KapuaException.class)
     public void extendedNewInstanceParameterNullTest() throws KapuaException {
-        assertNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, new Class<?>[]{String.class, String.class}, null));
+        Assert.assertNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, new Class<?>[]{String.class, String.class}, null));
     }
 
     @Test(expected = KapuaException.class)
     public void extendedNewInstanceParametersNullTest() throws KapuaException {
-        assertNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, null, null));
+        Assert.assertNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, null, null));
     }
 
     @Test(expected = KapuaException.class)
     public void extendedNewInstanceWrongPackageNameTest() throws KapuaException {
-        assertNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.ServiceEntry", ServiceEntry.class, null, null));
+        Assert.assertNull("The class does not exist.", ClassUtil.newInstance("org.eclipse.kapua.commons.ServiceEntry", ServiceEntry.class, null, null));
     }
 
     @Test(expected = KapuaException.class)
     public void extendedNewInstanceWrongParametersTypeTest() throws KapuaException {
-        assertNull("PARAMETER_ERROR_MSG", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, new Class<?>[]{String.class, Object.class}, new Object[]{serviceName, address}));
+        Assert.assertNull("PARAMETER_ERROR_MSG", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, new Class<?>[]{String.class, Object.class}, new Object[]{serviceName, address}));
     }
 
     @Test(expected = KapuaException.class)
     public void extendedNewInstanceWrongParametersTypeNumberTest() throws KapuaException {
-        assertNull("PARAMETER_ERROR_MSG", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, new Class<?>[]{String.class, String.class, String.class}, new Object[]{serviceName, address}));
+        Assert.assertNull("PARAMETER_ERROR_MSG", ClassUtil.newInstance("org.eclipse.kapua.commons.event.ServiceEntry", ServiceEntry.class, new Class<?>[]{String.class, String.class, String.class}, new Object[]{serviceName, address}));
     }
 
     @Test(expected = KapuaException.class)
     public void extendedNewInstanceAllNullTest() throws KapuaException {
-        assertNull("The class does not exist.", ClassUtil.newInstance(null, null, null, null));
+        Assert.assertNull("The class does not exist.", ClassUtil.newInstance(null, null, null, null));
     }
 }

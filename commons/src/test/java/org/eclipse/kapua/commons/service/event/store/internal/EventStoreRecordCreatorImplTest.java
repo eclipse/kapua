@@ -21,15 +21,16 @@ import org.junit.experimental.categories.Category;
 
 import java.math.BigInteger;
 
+
 @Category(JUnitTests.class)
-public class EventStoreRecordCreatorImplTest extends Assert {
+public class EventStoreRecordCreatorImplTest {
     @Test
     public void eventStoreRecordCreatorImplTest() {
         KapuaId[] scopeIdList = {null, new KapuaIdImpl(BigInteger.ONE)};
 
         for (KapuaId scopeId : scopeIdList) {
             EventStoreRecordCreatorImpl eventStoreRecordCreatorImpl = new EventStoreRecordCreatorImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, eventStoreRecordCreatorImpl.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, eventStoreRecordCreatorImpl.getScopeId());
         }
     }
 }  

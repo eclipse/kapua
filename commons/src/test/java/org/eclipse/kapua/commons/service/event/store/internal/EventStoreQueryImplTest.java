@@ -21,14 +21,15 @@ import org.junit.experimental.categories.Category;
 
 import java.math.BigInteger;
 
+
 @Category(JUnitTests.class)
-public class EventStoreQueryImplTest extends Assert {
+public class EventStoreQueryImplTest {
 
     @Test
     public void eventStoreQueryImplTest1() {
         EventStoreQueryImpl eventStoreQueryImpl = new EventStoreQueryImpl();
-        assertNull("query.sortCriteria", eventStoreQueryImpl.getSortCriteria());
-        assertNotNull("query.defaultSortCriteria", eventStoreQueryImpl.getDefaultSortCriteria());
+        Assert.assertNull("query.sortCriteria", eventStoreQueryImpl.getSortCriteria());
+        Assert.assertNotNull("query.defaultSortCriteria", eventStoreQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
@@ -36,13 +37,13 @@ public class EventStoreQueryImplTest extends Assert {
         KapuaId scopeId = new KapuaIdImpl(BigInteger.ONE);
 
         EventStoreQueryImpl eventStoreQueryImpl1 = new EventStoreQueryImpl(null);
-        assertNull("query.sortCriteria", eventStoreQueryImpl1.getSortCriteria());
-        assertNotNull("query.defaultSortCriteria", eventStoreQueryImpl1.getDefaultSortCriteria());
-        assertNull("Null expected.", eventStoreQueryImpl1.getScopeId());
+        Assert.assertNull("query.sortCriteria", eventStoreQueryImpl1.getSortCriteria());
+        Assert.assertNotNull("query.defaultSortCriteria", eventStoreQueryImpl1.getDefaultSortCriteria());
+        Assert.assertNull("Null expected.", eventStoreQueryImpl1.getScopeId());
 
         EventStoreQueryImpl eventStoreQueryImpl2 = new EventStoreQueryImpl(scopeId);
-        assertNull("query.sortCriteria", eventStoreQueryImpl2.getSortCriteria());
-        assertNotNull("query.defaultSortCriteria", eventStoreQueryImpl2.getDefaultSortCriteria());
-        assertEquals("Expected and actual values should be the same.", scopeId, eventStoreQueryImpl2.getScopeId());
+        Assert.assertNull("query.sortCriteria", eventStoreQueryImpl2.getSortCriteria());
+        Assert.assertNotNull("query.defaultSortCriteria", eventStoreQueryImpl2.getDefaultSortCriteria());
+        Assert.assertEquals("Expected and actual values should be the same.", scopeId, eventStoreQueryImpl2.getScopeId());
     }
 }

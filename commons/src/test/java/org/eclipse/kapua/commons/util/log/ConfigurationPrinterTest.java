@@ -24,8 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
+
 @Category(JUnitTests.class)
-public class ConfigurationPrinterTest extends Assert {
+public class ConfigurationPrinterTest {
 
     ConfigurationPrinter configurationPrinter;
     Logger mockedLogger;
@@ -41,11 +42,11 @@ public class ConfigurationPrinterTest extends Assert {
     @Test
     public void withParentLoggerTest() {
 
-        assertNull("Null expected!", configurationPrinter.getParentLogger());
+        Assert.assertNull("Null expected!", configurationPrinter.getParentLogger());
         configurationPrinter.withLogger(logger);
-        assertEquals("Expected and actual values should be the same.", logger, configurationPrinter.getParentLogger());
+        Assert.assertEquals("Expected and actual values should be the same.", logger, configurationPrinter.getParentLogger());
         configurationPrinter.withLogger(null);
-        assertNull("Null expected!", configurationPrinter.getParentLogger());
+        Assert.assertNull("Null expected!", configurationPrinter.getParentLogger());
     }
 
     @Test
@@ -59,7 +60,7 @@ public class ConfigurationPrinterTest extends Assert {
         };
         for (ConfigurationPrinter.LogLevel logLevel : logLevels) {
             configurationPrinter.withLogLevel(logLevel);
-            assertEquals("Expected and actual values should be the same.", logLevel,
+            Assert.assertEquals("Expected and actual values should be the same.", logLevel,
                     configurationPrinter.getLogLevel());
         }
     }
@@ -93,7 +94,7 @@ public class ConfigurationPrinterTest extends Assert {
 
         for (ConfigurationPrinter.TitleAlignment titleAlignment : titleAlignments) {
             configurationPrinter.withTitleAlignment(titleAlignment);
-            assertEquals("Expected and actual values should be the same.", titleAlignment, configurationPrinter.getTitleAlignment());
+            Assert.assertEquals("Expected and actual values should be the same.", titleAlignment, configurationPrinter.getTitleAlignment());
         }
     }
 
@@ -146,12 +147,12 @@ public class ConfigurationPrinterTest extends Assert {
 
     @Test
     public void getConfigurationsNullTest() {
-        assertEquals("Expected and actual values are not the same!", new ArrayList<>(), configurationPrinter.getConfigurations());
+        Assert.assertEquals("Expected and actual values are not the same!", new ArrayList<>(), configurationPrinter.getConfigurations());
     }
 
     @Test
     public void addHeaderNullTests() {
-        assertNotNull("Not null expected!", configurationPrinter.addHeader(null));
+        Assert.assertNotNull("Not null expected!", configurationPrinter.addHeader(null));
     }
 
     @Test
@@ -162,7 +163,7 @@ public class ConfigurationPrinterTest extends Assert {
         String[] title = new String[]{"", "a", "qwertyuiiopasdfghjklšđčćžzxcvbnm!", "1234567890", "QWERTYUIOPŠĐASDFGHJKLČĆŽZXCVBNM"};
         for (String titleVal : title) {
             for (String specSymVal : specialSymbols) {
-                assertNotNull("Not null expected!", configurationPrinter.addHeader(titleVal + specSymVal));
+                Assert.assertNotNull("Not null expected!", configurationPrinter.addHeader(titleVal + specSymVal));
             }
         }
     }
@@ -170,9 +171,9 @@ public class ConfigurationPrinterTest extends Assert {
     @Test
     public void addParameterNullTest() {
         Object object = new Object();
-        assertNotNull("Not null expected!", configurationPrinter.addParameter(null, null));
-        assertNotNull("Not null expected!", configurationPrinter.addParameter("string", null));
-        assertNotNull("Not null expected!", configurationPrinter.addParameter(null, object));
+        Assert.assertNotNull("Not null expected!", configurationPrinter.addParameter(null, null));
+        Assert.assertNotNull("Not null expected!", configurationPrinter.addParameter("string", null));
+        Assert.assertNotNull("Not null expected!", configurationPrinter.addParameter(null, object));
     }
 
     @Test
@@ -182,7 +183,7 @@ public class ConfigurationPrinterTest extends Assert {
                 "qwertyuiopšđasdfghjklčćžzxcvbnmQWERTYUIOPŠĐASDFGHJKLČĆŽZXCVBNM123457890"};
         for (String stringArrayVal : stringArray) {
             for (Object object : objects) {
-                assertNotNull("Not null expected!", configurationPrinter.addParameter(stringArrayVal, object));
+                Assert.assertNotNull("Not null expected!", configurationPrinter.addParameter(stringArrayVal, object));
             }
         }
     }
@@ -190,7 +191,7 @@ public class ConfigurationPrinterTest extends Assert {
     @Test
     public void increaseIndentationTest() {
         for (int i = 0; i < 10; i++) {
-            assertNotNull("Not null expected!", configurationPrinter.increaseIndentation());
+            Assert.assertNotNull("Not null expected!", configurationPrinter.increaseIndentation());
         }
     }
 
@@ -200,15 +201,15 @@ public class ConfigurationPrinterTest extends Assert {
             configurationPrinter.increaseIndentation();
         }
         for (int i = 10; i >= 0; i--) {
-            assertNotNull("Not null expected!", configurationPrinter.decreaseIndentation());
+            Assert.assertNotNull("Not null expected!", configurationPrinter.decreaseIndentation());
         }
     }
 
     @Test
     public void printLogParentLoggerNullTest() {
         configurationPrinter.printLog();
-        assertNotNull("Not null expected!", configurationPrinter.getParentLogger());
-        assertNotNull("Not null expected!", configurationPrinter.getParentLogger());
+        Assert.assertNotNull("Not null expected!", configurationPrinter.getParentLogger());
+        Assert.assertNotNull("Not null expected!", configurationPrinter.getParentLogger());
     }
 
     @Test
@@ -327,22 +328,22 @@ public class ConfigurationPrinterTest extends Assert {
 
     @Test
     public void createTest() {
-        assertThat("Instance of ConfigurationPrinter expected.", ConfigurationPrinter.create(), IsInstanceOf.instanceOf(ConfigurationPrinter.class));
+        Assert.assertThat("Instance of ConfigurationPrinter expected.", ConfigurationPrinter.create(), IsInstanceOf.instanceOf(ConfigurationPrinter.class));
     }
 
     @Test
     public void logLevelEnumTest() {
-        assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.LogLevel.DEBUG, ConfigurationPrinter.LogLevel.valueOf("DEBUG"));
-        assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.LogLevel.ERROR, ConfigurationPrinter.LogLevel.valueOf("ERROR"));
-        assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.LogLevel.INFO, ConfigurationPrinter.LogLevel.valueOf("INFO"));
-        assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.LogLevel.TRACE, ConfigurationPrinter.LogLevel.valueOf("TRACE"));
-        assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.LogLevel.WARN, ConfigurationPrinter.LogLevel.valueOf("WARN"));
+        Assert.assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.LogLevel.DEBUG, ConfigurationPrinter.LogLevel.valueOf("DEBUG"));
+        Assert.assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.LogLevel.ERROR, ConfigurationPrinter.LogLevel.valueOf("ERROR"));
+        Assert.assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.LogLevel.INFO, ConfigurationPrinter.LogLevel.valueOf("INFO"));
+        Assert.assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.LogLevel.TRACE, ConfigurationPrinter.LogLevel.valueOf("TRACE"));
+        Assert.assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.LogLevel.WARN, ConfigurationPrinter.LogLevel.valueOf("WARN"));
     }
 
     @Test
     public void titleAlignmentEnumTest() {
-        assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.TitleAlignment.LEFT, ConfigurationPrinter.TitleAlignment.valueOf("LEFT"));
-        assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.TitleAlignment.RIGHT, ConfigurationPrinter.TitleAlignment.valueOf("RIGHT"));
-        assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.TitleAlignment.CENTER, ConfigurationPrinter.TitleAlignment.valueOf("CENTER"));
+        Assert.assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.TitleAlignment.LEFT, ConfigurationPrinter.TitleAlignment.valueOf("LEFT"));
+        Assert.assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.TitleAlignment.RIGHT, ConfigurationPrinter.TitleAlignment.valueOf("RIGHT"));
+        Assert.assertEquals("Expected and actual values should be the same!", ConfigurationPrinter.TitleAlignment.CENTER, ConfigurationPrinter.TitleAlignment.valueOf("CENTER"));
     }
 }

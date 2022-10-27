@@ -28,8 +28,9 @@ import javax.cache.Cache;
 import java.io.Serializable;
 import java.math.BigInteger;
 
+
 @Category(JUnitTests.class)
-public class EntityCacheTest extends Assert {
+public class EntityCacheTest {
 
     @Test
     public void entityCacheTest() {
@@ -42,16 +43,16 @@ public class EntityCacheTest extends Assert {
         NullPointerException nullPointerException = new NullPointerException();
 
         EntityCache entityCache = new EntityCache(idCacheName);
-        assertEquals(expectedIdCache, entityCache.idCache);
-        assertEquals(expectedListsCache, entityCache.listsCache);
-        assertEquals(expectedCacheMiss, entityCache.cacheMiss);
-        assertEquals(expectedCacheHit, entityCache.cacheHit);
-        assertEquals(expectedCacheRemoval, entityCache.cacheRemoval);
+        Assert.assertEquals(expectedIdCache, entityCache.idCache);
+        Assert.assertEquals(expectedListsCache, entityCache.listsCache);
+        Assert.assertEquals(expectedCacheMiss, entityCache.cacheMiss);
+        Assert.assertEquals(expectedCacheHit, entityCache.cacheHit);
+        Assert.assertEquals(expectedCacheRemoval, entityCache.cacheRemoval);
 
         try {
             EntityCache invalidEntityCache = new EntityCache(null);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
         }
     }
 
@@ -68,10 +69,10 @@ public class EntityCacheTest extends Assert {
         // cacheHit.inc();
         // }
         //and this method always returns null
-        assertNull("Null expected", entityCache.get(scopeId, kapuaId));
-        assertNull("Null expected", entityCache.get(null, kapuaId));
-        assertNull("Null expected", entityCache.get(scopeId, null));
-        assertNull("Null expected", entityCache.get(null, null));
+        Assert.assertNull("Null expected", entityCache.get(scopeId, kapuaId));
+        Assert.assertNull("Null expected", entityCache.get(null, kapuaId));
+        Assert.assertNull("Null expected", entityCache.get(scopeId, null));
+        Assert.assertNull("Null expected", entityCache.get(null, null));
 
         // COMMENT: Once the get() method will be changed,
         // we will be able to test other results also.
@@ -87,10 +88,10 @@ public class EntityCacheTest extends Assert {
         Serializable id = new ComposedKey(scopeId1, key);
 
         //COMMENT: This method always returns null, because entity is always null (see Cache.get() method)
-        assertNull("Null expected", entityCache.getList(scopeId, id));
-        assertNull("Null expected", entityCache.getList(null, id));
-        assertNull("Null expected", entityCache.getList(null, null));
-        assertNull("Null expected", entityCache.getList(scopeId, null));
+        Assert.assertNull("Null expected", entityCache.getList(scopeId, id));
+        Assert.assertNull("Null expected", entityCache.getList(null, id));
+        Assert.assertNull("Null expected", entityCache.getList(null, null));
+        Assert.assertNull("Null expected", entityCache.getList(scopeId, null));
 
         // COMMENT: Once the get() method will be changed,
         // we will be able to test other results also.
@@ -155,13 +156,13 @@ public class EntityCacheTest extends Assert {
         try {
             entityCache.remove(scopeId, kapuaEntity);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
         }
 
         try {
             entityCache.remove(null, kapuaEntity);
         } catch (Exception e) {
-            assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
         }
     }
 
@@ -180,10 +181,10 @@ public class EntityCacheTest extends Assert {
         //return entity;
         //}
         // and this method always returns null
-        assertNull("Null expected", entityCache.remove(scopeId, kapuaId));
-        assertNull("Null expected", entityCache.remove(null, kapuaId));
-        assertNull("Null expected", entityCache.remove(scopeId, nullKapuaId));
-        assertNull("Null expected", entityCache.remove(null, nullKapuaId));
+        Assert.assertNull("Null expected", entityCache.remove(scopeId, kapuaId));
+        Assert.assertNull("Null expected", entityCache.remove(null, kapuaId));
+        Assert.assertNull("Null expected", entityCache.remove(scopeId, nullKapuaId));
+        Assert.assertNull("Null expected", entityCache.remove(null, nullKapuaId));
 
         // COMMENT: Once the get() method will be changed,
         // we will be able to test other results also.
@@ -204,10 +205,10 @@ public class EntityCacheTest extends Assert {
         //return entity;
         //}
         // and this method always returns null
-        assertNull("Null expected", entityCache.removeList(scopeId, id));
-        assertNull("Null expected", entityCache.removeList(null, id));
-        assertNull("Null expected", entityCache.removeList(scopeId, null));
-        assertNull("Null expected", entityCache.removeList(null, null));
+        Assert.assertNull("Null expected", entityCache.removeList(scopeId, id));
+        Assert.assertNull("Null expected", entityCache.removeList(null, id));
+        Assert.assertNull("Null expected", entityCache.removeList(scopeId, null));
+        Assert.assertNull("Null expected", entityCache.removeList(null, null));
 
         // COMMENT: Once the get() method will be changed,
         // we will be able to test other results also.
@@ -235,10 +236,10 @@ public class EntityCacheTest extends Assert {
         //       return null;
         //  }
         //and this method always returns null
-        assertNull("Null expected", entityCache1.checkResult(scopeId, kapuaEntity));
-        assertNull("Null expected", entityCache1.checkResult(null, kapuaEntity));
-        assertNull("Null expected", entityCache1.checkResult(scopeId, kapuaNullEntity));
-        assertNull("Null expected", entityCache1.checkResult(null, kapuaNullEntity));
+        Assert.assertNull("Null expected", entityCache1.checkResult(scopeId, kapuaEntity));
+        Assert.assertNull("Null expected", entityCache1.checkResult(null, kapuaEntity));
+        Assert.assertNull("Null expected", entityCache1.checkResult(scopeId, kapuaNullEntity));
+        Assert.assertNull("Null expected", entityCache1.checkResult(null, kapuaNullEntity));
 
         // COMMENT: Once the get() method will be changed,
         // we will be able to test other results also.
@@ -266,15 +267,15 @@ public class EntityCacheTest extends Assert {
         //return null;
         //}
 
-        assertNull("Null expected", entityCache.checkResult(scopeId, kapuaNullListResult));
-        assertEquals(kapuaListResult, entityCache.checkResult(scopeId, kapuaListResult));
+        Assert.assertNull("Null expected", entityCache.checkResult(scopeId, kapuaNullListResult));
+        Assert.assertEquals(kapuaListResult, entityCache.checkResult(scopeId, kapuaListResult));
         kapuaListResult.addItem(kapuaEntity);
-        assertEquals(kapuaListResult, entityCache.checkResult(null, kapuaListResult));
+        Assert.assertEquals(kapuaListResult, entityCache.checkResult(null, kapuaListResult));
 
         try {
-            assertEquals(kapuaListResult, entityCache.checkResult(scopeId, kapuaListResult));
+            Assert.assertEquals(kapuaListResult, entityCache.checkResult(scopeId, kapuaListResult));
         } catch (Exception e) {
-            assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
         }
 
         // COMMENT: Once the get() method will be changed,
