@@ -134,7 +134,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.write, userCreator.getScopeId()));
 
         //
         // Check entity limit
@@ -199,7 +199,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.write, user.getScopeId()));
 
         //
         // Check existence
@@ -286,7 +286,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.delete, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.delete, scopeId));
 
         //
         // Check existence
@@ -318,7 +318,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, scopeId));
 
         // Do the find
         return entityManagerSession.doAction(EntityManagerContainer.<User>create().onResultHandler(em -> UserDAO.find(em, scopeId, userId))
@@ -373,7 +373,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -389,7 +389,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -404,7 +404,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private User checkReadAccess(User user) throws KapuaException {
         if (user != null) {
-            authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, user.getScopeId()));
+            getAuthorizationService().checkPermission(getPermissionFactory().newPermission(UserDomains.USER_DOMAIN, Actions.read, user.getScopeId()));
         }
         return user;
     }

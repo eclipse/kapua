@@ -107,7 +107,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, accountCreator.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, accountCreator.getScopeId()));
 
         //
         // Check entity limit
@@ -175,10 +175,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         // Check Access
         if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
             // Editing self
-            authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getId()));
+            getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getId()));
         } else {
             // Editing child
-            authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getScopeId()));
+            getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getScopeId()));
         }
 
         if (account.getExpirationDate() != null) {
@@ -268,7 +268,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         //
         // Check Access
         Actions action = Actions.delete;
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, action, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, action, scopeId));
 
         //
         // Check if it has children
@@ -426,7 +426,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -444,7 +444,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do count
@@ -482,10 +482,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
     private void checkAccountPermission(KapuaId scopeId, KapuaId accountId, Domain domain, Actions action, boolean forwardable) throws KapuaException {
         if (KapuaSecurityUtils.getSession().getScopeId().equals(accountId)) {
             // I'm looking for myself, so let's check if I have the correct permission
-            authorizationService.checkPermission(permissionFactory.newPermission(domain, action, accountId, null, forwardable));
+            getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, action, accountId, null, forwardable));
         } else {
             // I'm looking for another account, so I need to check the permission on the account scope
-            authorizationService.checkPermission(permissionFactory.newPermission(domain, action, scopeId, null, forwardable));
+            getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, action, scopeId, null, forwardable));
         }
     }
 }

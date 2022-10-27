@@ -77,9 +77,39 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private final Domain domain;
     private final String pid;
 
-    protected final AuthorizationService authorizationService;
-    protected final PermissionFactory permissionFactory;
+    //TODO: make final as soon as deprecated constructors are removed
+    private AuthorizationService authorizationService;
+    //TODO: make final as soon as deprecated constructors are removed
+    private PermissionFactory permissionFactory;
 
+
+    /**
+     * AuthorizationService should be fetched by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AuthorizationService} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected AuthorizationService getAuthorizationService() {
+        if (authorizationService == null) {
+            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+        }
+        return authorizationService;
+    }
+
+    /**
+     * PermissionFactory should be fetched by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link PermissionFactory} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected PermissionFactory getPermissionFactory() {
+        if (permissionFactory == null) {
+            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        }
+        return permissionFactory;
+    }
 
     /**
      * This cache is to hold the {@link KapuaTocd}s that are read from the metatype files.
@@ -135,9 +165,12 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         this.pid = pid;
         this.domain = domain;
-        final KapuaLocator locator = KapuaLocator.getInstance();
-        this.permissionFactory = locator.getFactory(PermissionFactory.class);
-        this.authorizationService = locator.getService(AuthorizationService.class);
+        /*
+        PermissionFactory and Authorization service should be fetched by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+        therefore fetching of these two instances is demanded to the artificial getters introduced.
+        */
+        this.permissionFactory = null;
+        this.authorizationService = null;
     }
 
     /**
@@ -402,7 +435,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, Actions.read, scopeId));
 
         //
         // Get the Tocd
@@ -472,7 +505,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, Actions.read, scopeId));
 
         //
         // Get configuration values
@@ -532,7 +565,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
             }
         }
 
-        authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.write, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, Actions.write, scopeId));
 
         validateConfigurations(ocd, values, scopeId, parentId);
 
@@ -588,4 +621,5 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     public String getServicePid() {
         return pid;
     }
+
 }

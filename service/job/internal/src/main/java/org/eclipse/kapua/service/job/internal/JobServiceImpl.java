@@ -118,7 +118,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.write, creator.getScopeId()));
 
         //
         // Check entity limit
@@ -143,7 +143,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.write, job.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.write, job.getScopeId()));
 
         //
         // Check existence
@@ -169,7 +169,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.read, scopeId));
 
         //
         // Do find
@@ -184,7 +184,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -199,7 +199,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.read, query.getScopeId()));
 
         //
         // Do query
@@ -241,7 +241,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
+        getAuthorizationService().checkPermission(getPermissionFactory().newPermission(JobDomains.JOB_DOMAIN, Actions.delete, forced ? null : scopeId));
 
         //
         // Check existence

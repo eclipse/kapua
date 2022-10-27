@@ -88,6 +88,7 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
         } catch (NoSuchAlgorithmException e) {
             throw KapuaRuntimeException.internalError(e, "Cannot instantiate SecureRandom (SHA1PRNG)");
         }
+        //TODO: Why is this logic in a constructor?
         int minPasswordLengthConfigValue;
         try {
             minPasswordLengthConfigValue = KapuaAuthenticationSetting.getInstance().getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_PASSWORD_MINLENGTH);
