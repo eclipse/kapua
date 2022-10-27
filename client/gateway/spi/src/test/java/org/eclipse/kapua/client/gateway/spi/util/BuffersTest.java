@@ -24,20 +24,21 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.nio.ByteBuffer;
 
+
 @Category(JUnitTests.class)
-public class BuffersTest extends Assert {
+public class BuffersTest {
 
     @Test
     public void buffersTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<Buffers> constructor = Buffers.class.getDeclaredConstructor();
-        assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+        Assert.assertTrue(Modifier.isPrivate(constructor.getModifiers()));
         constructor.setAccessible(true);
         constructor.newInstance();
     }
 
     @Test
     public void wrapByteArrayDataNullTest() {
-        assertEquals("Expected and actual value should be the same", null, Buffers.wrap(null));
+        Assert.assertEquals("Expected and actual value should be the same", null, Buffers.wrap(null));
     }
 
     @Test
@@ -45,17 +46,17 @@ public class BuffersTest extends Assert {
         final byte[] byteArray = new byte[]{1, 3, 5, 7, 9};
         final ByteBuffer byteBuffer = ByteBuffer.wrap(byteArray);
         byteBuffer.position(byteBuffer.limit());
-        assertEquals("Expected and actual value should be the same", byteBuffer, Buffers.wrap(byteArray));
+        Assert.assertEquals("Expected and actual value should be the same", byteBuffer, Buffers.wrap(byteArray));
     }
 
     @Test
     public void toByteArrayBufferNullTest() {
-        assertEquals("Expected and actual value should be the same", null, Buffers.toByteArray(null));
+        Assert.assertEquals("Expected and actual value should be the same", null, Buffers.toByteArray(null));
     }
 
     @Test
     public void toByteArrayTest() {
         ByteBuffer byteBuffer = Mockito.mock(ByteBuffer.class);
-        assertThat("Instance of Buffers expected.", Buffers.toByteArray(byteBuffer), IsInstanceOf.instanceOf(byte[].class));
+        Assert.assertThat("Instance of Buffers expected.", Buffers.toByteArray(byteBuffer), IsInstanceOf.instanceOf(byte[].class));
     }
 }

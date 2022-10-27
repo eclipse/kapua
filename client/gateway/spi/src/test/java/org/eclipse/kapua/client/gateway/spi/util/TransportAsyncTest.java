@@ -23,35 +23,36 @@ import org.mockito.Mockito;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+
 @Category(JUnitTests.class)
-public class TransportAsyncTest extends Assert {
+public class TransportAsyncTest {
 
     final ExecutorService executorService = Mockito.mock(ExecutorService.class);
     TransportAsync transportAsync = new TransportAsync(executorService);
 
     @Test
     public void transportAsyncExecutorIdTest() {
-        assertThat("Instance of TransportAsync expected.", transportAsync, IsInstanceOf.instanceOf(TransportAsync.class));
+        Assert.assertThat("Instance of TransportAsync expected.", transportAsync, IsInstanceOf.instanceOf(TransportAsync.class));
     }
 
     @Test
     public void handleConnectedTest() {
-        assertThat("Instance of Future expected", transportAsync.handleConnected(), IsInstanceOf.instanceOf(Future.class));
+        Assert.assertThat("Instance of Future expected", transportAsync.handleConnected(), IsInstanceOf.instanceOf(Future.class));
     }
 
     @Test
     public void handleDisconnectedTest() {
-        assertThat("Instance of Future expected", transportAsync.handleDisconnected(), IsInstanceOf.instanceOf(Future.class));
+        Assert.assertThat("Instance of Future expected", transportAsync.handleDisconnected(), IsInstanceOf.instanceOf(Future.class));
     }
 
     @Test
     public void listenTest() {
         final Transport.Listener listener = Mockito.mock(Transport.Listener.class);
-        assertThat("Instance of ListenerHandle expected.", transportAsync.listen(listener), IsInstanceOf.instanceOf(Transport.ListenerHandle.class));
+        Assert.assertThat("Instance of ListenerHandle expected.", transportAsync.listen(listener), IsInstanceOf.instanceOf(Transport.ListenerHandle.class));
     }
 
     @Test
     public void listenListenerNullTest() {
-        assertThat("Instance of ListenerHandle expected.", transportAsync.listen(null), IsInstanceOf.instanceOf(Transport.ListenerHandle.class));
+        Assert.assertThat("Instance of ListenerHandle expected.", transportAsync.listen(null), IsInstanceOf.instanceOf(Transport.ListenerHandle.class));
     }
 }
