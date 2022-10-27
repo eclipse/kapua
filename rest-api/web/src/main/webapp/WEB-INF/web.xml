@@ -44,6 +44,15 @@
     </filter-mapping>
 
     <filter>
+        <filter-name>SwaggerUIFilter</filter-name>
+        <filter-class>org.eclipse.kapua.app.api.core.filter.SwaggerUIFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>SwaggerUIFilter</filter-name>
+        <url-pattern>/doc/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
         <filter-name>CORSResponseFilter</filter-name>
         <filter-class>org.eclipse.kapua.app.api.core.filter.CORSResponseFilter</filter-class>
     </filter>

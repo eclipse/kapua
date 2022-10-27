@@ -49,8 +49,13 @@ docker_compose() {
 
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/sso/docker-compose.console-sso.yml")
       COMPOSE_FILES+=(-f "${SCRIPT_DIR}/../compose/sso/docker-compose.keycloak.yml")
-
     fi
+
+    # Swagger UI
+    if [[ "$4" == false ]]; then
+      echo "Swagger disabled!"
+    fi
+    export KAPUA_SWAGGER_ENABLE=$4
 
     docker-compose -f "${SCRIPT_DIR}/../compose/docker-compose.yml" "${COMPOSE_FILES[@]}" up -d
 }
@@ -63,6 +68,7 @@ OPEN_LOGS=false
 DEV_MODE=false
 DEBUG_MODE=false
 SSO_MODE=false
+SWAGGER=true
 for option in "$@"; do
   case $option in
     --logs)
@@ -77,6 +83,9 @@ for option in "$@"; do
     --sso)
       SSO_MODE=true
       ;;
+    --no-swagger)
+      SWAGGER=false
+      ;;
     -*)
       echo "ERROR: Unrecognised option $option"
       exit 1
@@ -89,7 +98,7 @@ done
 docker_common
 
 echo "Deploying Eclipse Kapua..."
-docker_compose ${DEBUG_MODE} ${DEV_MODE} ${SSO_MODE} || {
+docker_compose ${DEBUG_MODE} ${DEV_MODE} ${SSO_MODE} ${SWAGGER} || {
     echo "Deploying Eclipse Kapua... ERROR!"
     exit 1
 }
