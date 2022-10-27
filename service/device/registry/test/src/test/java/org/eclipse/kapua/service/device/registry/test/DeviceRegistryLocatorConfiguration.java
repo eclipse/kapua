@@ -24,6 +24,8 @@ import org.eclipse.kapua.message.KapuaMessageFactory;
 import org.eclipse.kapua.message.internal.KapuaMessageFactoryImpl;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -68,6 +70,10 @@ public class DeviceRegistryLocatorConfiguration {
                     // skip
                 }
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
+
+                bind(AccountFactory.class).toInstance(Mockito.mock(AccountFactory.class));
+                bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
+
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
@@ -79,7 +85,6 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(DeviceRegistryCacheFactory.class).toInstance(deviceRegistryCacheFactory);
 
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
-                bind(DeviceRegistryService.class).to(DeviceRegistryServiceImpl.class);
 
                 bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
                 bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
@@ -87,6 +92,7 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
+                bind(DeviceRegistryService.class).to(DeviceRegistryServiceImpl.class);
             }
         };
 

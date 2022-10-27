@@ -25,6 +25,8 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.job.Job;
@@ -68,7 +70,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     /**
      * Constructor
      *
-     * @deprecated since 2.0.0 - Please use
+     * @deprecated since 2.0.0 - Please use {@link JobServiceImpl#JobServiceImpl(JobEntityManagerFactory, JobFactory, PermissionFactory, AuthorizationService, TriggerService, TriggerFactory, AccountFactory, AccountService)} instead. This constructor may be removed in future releases
      */
     @Deprecated
     public JobServiceImpl() {
@@ -96,14 +98,18 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
                           PermissionFactory permissionFactory,
                           AuthorizationService authorizationService,
                           TriggerService triggerService,
-                          TriggerFactory triggerFactory) {
+                          TriggerFactory triggerFactory,
+                          AccountFactory accountFactory,
+                          AccountService accountService) {
         super(JobService.class.getName(),
                 JobDomains.JOB_DOMAIN,
                 jobEntityManagerFactory,
                 null,
                 factory,
                 permissionFactory,
-                authorizationService);
+                authorizationService,
+                accountFactory,
+                accountService);
         this.triggerService = triggerService;
         this.triggerFactory = triggerFactory;
     }

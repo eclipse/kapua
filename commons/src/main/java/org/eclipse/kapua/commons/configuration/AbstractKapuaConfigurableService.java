@@ -180,7 +180,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param domain               The {@link Domain} on which check access.
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
-     * @since 1.2.0
+     * @since 2.0.0
      */
     protected AbstractKapuaConfigurableService(String pid,
                                                Domain domain,
@@ -535,14 +535,13 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        //todo: remove me
-        final KapuaLocator locator = KapuaLocator.getInstance();
         KapuaTocd ocd = getConfigMetadata(scopeId, false);
-
-        //todo: remove me
-        UserService userService = locator.getService(UserService.class);
-        String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        User rootUser = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(rootUserName));
+        //todo: remove me. This just converts root username to id - needs to be done elsewhere, preferrably in a once-at-startup way.
+        final KapuaLocator locator = KapuaLocator.getInstance();
+        final UserService userService = locator.getService(UserService.class);
+        final String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
+        final User rootUser = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(rootUserName));
+        final KapuaId rootUserId = rootUser.getId();
 
         Map<String, Object> originalValues = getConfigValues(scopeId);
 
@@ -551,7 +550,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
             boolean preventChange =
                     // if current user is not root user...
-                    !KapuaSecurityUtils.getSession().getUserId().equals(rootUser.getId()) &&
+                    !KapuaSecurityUtils.getSession().getUserId().equals(rootUserId) &&
                             // current configuration does not allow self edit...
                             !allowSelfEdit &&
                             // a configuration for the current logged account is about to be changed...

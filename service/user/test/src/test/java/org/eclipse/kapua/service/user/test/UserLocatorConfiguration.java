@@ -75,8 +75,10 @@ public class UserLocatorConfiguration {
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // binding Account related services
-                bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));
-                bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
+                final AccountFactoryImpl accountFactory = Mockito.spy(new AccountFactoryImpl());
+                bind(AccountFactory.class).toInstance(accountFactory);
+                final AccountServiceImpl accountService = Mockito.spy(new AccountServiceImpl());
+                bind(AccountService.class).toInstance(accountService);
 
                 // Inject actual User service related services
                 UserEntityManagerFactory userEntityManagerFactory = new UserEntityManagerFactory();
@@ -88,7 +90,9 @@ public class UserLocatorConfiguration {
                         userEntityManagerFactory,
                         new UserCacheFactory(),
                         SystemSetting.getInstance(),
-                        userFactory));
+                        userFactory,
+                        accountFactory,
+                        accountService));
             }
         };
 

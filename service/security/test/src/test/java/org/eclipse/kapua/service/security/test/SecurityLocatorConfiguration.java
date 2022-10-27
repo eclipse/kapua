@@ -25,6 +25,8 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
@@ -99,7 +101,9 @@ public class SecurityLocatorConfiguration {
                         new UserEntityManagerFactory(),
                         new UserCacheFactory(),
                         SystemSetting.getInstance(),
-                        userFactory
+                        userFactory,
+                        Mockito.mock(AccountFactory.class),
+                        Mockito.mock(AccountService.class)
                 ));
             }
         };

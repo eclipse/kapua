@@ -90,7 +90,9 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 accountCacheFactory,
                 factory,
                 permissionFactory,
-                authorizationService);
+                authorizationService,
+                factory,
+                null); //TODO: should be _this_, really. For now injecting null will work, falling back to the locator invocation at runtime, but this needs to be solved.
     }
 
     @Override

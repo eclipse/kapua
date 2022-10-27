@@ -31,6 +31,8 @@ import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
@@ -65,7 +67,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
      * Constructor.
      *
      * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link UserServiceImpl#UserServiceImpl(AuthorizationService, PermissionFactory, UserEntityManagerFactory, UserCacheFactory, SystemSetting, UserFactory)} instead. This constructor may be removed in a next release
+     * @deprecated since 2.0.0 - Please use {@link UserServiceImpl#UserServiceImpl(AuthorizationService, PermissionFactory, UserEntityManagerFactory, UserCacheFactory, SystemSetting, UserFactory, AccountFactory, AccountService)} instead. This constructor may be removed in a next release
      */
     @Deprecated
     public UserServiceImpl() {
@@ -96,12 +98,18 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             UserEntityManagerFactory userEntityManagerFactory,
             UserCacheFactory userCacheFactory,
             SystemSetting systemSettings,
-            UserFactory userFactory) {
+            UserFactory userFactory,
+            AccountFactory accountFactory,
+            AccountService accountService) {
         super(UserService.class.getName(),
                 UserDomains.USER_DOMAIN,
                 userEntityManagerFactory,
                 userCacheFactory,
-                userFactory, permissionFactory, authorizationService);
+                userFactory,
+                permissionFactory,
+                authorizationService,
+                accountFactory,
+                accountService);
         this.systemSettings = systemSettings;
     }
 

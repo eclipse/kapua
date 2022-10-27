@@ -44,6 +44,8 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 import java.util.Map;
 
+//TODO: this should be a collaborator, not a base class
+
 /**
  * Base {@code abstract} {@link KapuaConfigurableService} implementation for services that have a max number of entities allowed.
  * <p>
@@ -83,6 +85,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      *
      * @return The instantiated (hopefully) {@link KapuaEntityFactory} instance
      */
+    //TODO: remove as soon as deprecated constructors are removed
     protected F getFactory() {
 
         if (factory == null) {
@@ -91,6 +94,45 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
         }
 
         return factory;
+    }
+
+
+    //TODO: make final as soon as deprecated constructors are removed
+    private AccountFactory accountFactory;
+
+    /**
+     * This instance should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AccountFactory} instance
+     */
+    //TODO: remove as soon as deprecated constructors are removed
+    private AccountFactory getAccountFactory() {
+        if (accountFactory == null) {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            this.accountFactory = locator.getFactory(AccountFactory.class);
+        }
+
+        return accountFactory;
+    }
+
+    //TODO: make final as soon as deprecated constructors are removed
+    private AccountService accountService;
+
+    /**
+     * This instance should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AccountService} instance
+     */
+    //TODO: remove as soon as deprecated constructors are removed
+    private AccountService getAccountService() {
+        if (accountService == null) {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            this.accountService = locator.getService(AccountService.class);
+        }
+
+        return accountService;
     }
 
     /**
@@ -114,7 +156,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
     }
 
     /**
-     * Constructor. Use {@link AbstractKapuaConfigurableResourceLimitedService#AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, KapuaEntityFactory, PermissionFactory, AuthorizationService)}
+     * Constructor.
      *
      * @param pid                  The {@link KapuaConfigurableService} id.
      * @param domain               The {@link Domain} on which check access.
@@ -123,7 +165,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @param serviceClass         The {@link KapuaService} type.
      * @param factoryClass         The {@link KapuaEntityFactory} type.
      * @since 1.2.0
-     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableResourceLimitedService#AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, KapuaEntityFactory, PermissionFactory, AuthorizationService)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableResourceLimitedService#AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, KapuaEntityFactory, PermissionFactory, AuthorizationService, AccountFactory, AccountService)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableResourceLimitedService(
@@ -136,12 +178,13 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
         super(pid, domain, entityManagerFactory, abstractCacheFactory);
 
         /*
-        Factory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+        These should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
         therefore fetching of this instance is demanded to the artificial getter introduced.
         */
-
-        this.factory = null;
         this.factoryClass = factoryClass;
+        this.factory = null;
+        this.accountFactory = null;
+        this.accountService = null;
     }
 
     /**
@@ -161,10 +204,16 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
             Domain domain,
             EntityManagerFactory entityManagerFactory,
             AbstractEntityCacheFactory abstractCacheFactory,
-            F factory, final PermissionFactory permissionFactory, final AuthorizationService authorizationService) {
+            F factory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            AccountFactory accountFactory,
+            AccountService accountService) {
         super(pid, domain, entityManagerFactory, abstractCacheFactory, permissionFactory, authorizationService);
         this.factory = factory;
         this.factoryClass = null; //TODO: not needed for this construction path, remove as soon as the deprecated constructor is removed
+        this.accountFactory = accountFactory;
+        this.accountService = accountService;
     }
 
     @Override
@@ -244,43 +293,39 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @since 1.0.0
      */
     protected long allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId, Map<String, Object> configuration) throws KapuaException {
-        KapuaLocator locator = KapuaLocator.getInstance();
-        AccountFactory accountFactory = locator.getFactory(AccountFactory.class);
-        AccountService accountService = locator.getService(AccountService.class);
-
-        Map<String, Object> finalConfig = configuration == null ? getConfigValues(scopeId, false) : configuration;
+        final Map<String, Object> finalConfig = configuration == null ? getConfigValues(scopeId, false) : configuration;
         boolean allowInfiniteChildEntities = (boolean) finalConfig.get("infiniteChildEntities");
-        if (!allowInfiniteChildEntities) {
-            return KapuaSecurityUtils.doPrivileged(() -> {
-                Q countQuery = getFactory().newQuery(scopeId);
-
-                // Current used entities
-                long currentUsedEntities = this.count(countQuery);
-
-                AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
-                // Exclude the scope that is under config update
-                if (targetScopeId != null) {
-                    childAccountsQuery.setPredicate(childAccountsQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
-                }
-
-                AccountListResult childAccounts = accountService.query(childAccountsQuery);
-                // Resources assigned to children
-                long childCount = 0;
-                for (Account childAccount : childAccounts.getItems()) {
-                    Map<String, Object> childConfigValues = getConfigValues(childAccount.getId());
-                    // maxNumberChildEntities can be null if such property is disabled via the
-                    // isPropertyEnabled() method in the service implementation. In such case,
-                    // it makes sense to treat the service as it had 0 available entities
-                    boolean childAllowInfiniteChildEntities = (boolean) childConfigValues.getOrDefault("infiniteChildEntities", false);
-                    Integer childMaxNumberChildEntities = (Integer) childConfigValues.getOrDefault("maxNumberChildEntities", 0);
-                    childCount += childAllowInfiniteChildEntities ? Integer.MAX_VALUE : childMaxNumberChildEntities;
-                }
-
-                // Max allowed for this account
-                int maxChildAccounts = (int) finalConfig.get("maxNumberChildEntities");
-                return maxChildAccounts - currentUsedEntities - childCount;
-            });
+        if (allowInfiniteChildEntities) {
+            return Integer.MAX_VALUE;
         }
-        return Integer.MAX_VALUE;
+        return KapuaSecurityUtils.doPrivileged(() -> {
+            Q countQuery = getFactory().newQuery(scopeId);
+
+            // Current used entities
+            long currentUsedEntities = this.count(countQuery);
+
+            AccountQuery childAccountsQuery = getAccountFactory().newQuery(scopeId);
+            // Exclude the scope that is under config update
+            if (targetScopeId != null) {
+                childAccountsQuery.setPredicate(childAccountsQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
+            }
+
+            AccountListResult childAccounts = getAccountService().query(childAccountsQuery);
+            // Resources assigned to children
+            long childCount = 0;
+            for (Account childAccount : childAccounts.getItems()) {
+                Map<String, Object> childConfigValues = getConfigValues(childAccount.getId());
+                // maxNumberChildEntities can be null if such property is disabled via the
+                // isPropertyEnabled() method in the service implementation. In such case,
+                // it makes sense to treat the service as it had 0 available entities
+                boolean childAllowInfiniteChildEntities = (boolean) childConfigValues.getOrDefault("infiniteChildEntities", false);
+                Integer childMaxNumberChildEntities = (Integer) childConfigValues.getOrDefault("maxNumberChildEntities", 0);
+                childCount += childAllowInfiniteChildEntities ? Integer.MAX_VALUE : childMaxNumberChildEntities;
+            }
+
+            // Max allowed for this account
+            int maxChildAccounts = (int) finalConfig.get("maxNumberChildEntities");
+            return maxChildAccounts - currentUsedEntities - childCount;
+        });
     }
 }

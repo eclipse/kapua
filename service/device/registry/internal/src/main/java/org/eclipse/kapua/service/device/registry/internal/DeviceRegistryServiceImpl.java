@@ -22,6 +22,8 @@ import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -55,7 +57,9 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
      *
      * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, DeviceFactory, PermissionFactory, AuthorizationService, AccountFactory, AccountService)} instead. This constructor may be removed in future releases
      */
+    @Deprecated
     public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
         super(DeviceRegistryService.class.getName(),
                 DeviceDomains.DEVICE_DOMAIN,
@@ -69,7 +73,9 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
      * Constructor.
      *
      * @since 1.0.0
+     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, DeviceFactory, PermissionFactory, AuthorizationService, AccountFactory, AccountService)} instead. This constructor may be removed in future releases
      */
+    @Deprecated
     public DeviceRegistryServiceImpl() {
         this(DeviceEntityManagerFactory.getInstance());
     }
@@ -89,14 +95,18 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
                                      DeviceRegistryCacheFactory deviceRegistryCacheFactory,
                                      DeviceFactory factory,
                                      PermissionFactory permissionFactory,
-                                     AuthorizationService authorizationService) {
+                                     AuthorizationService authorizationService,
+                                     AccountFactory accountFactory,
+                                     AccountService accountService) {
         super(DeviceRegistryService.class.getName(),
                 DeviceDomains.DEVICE_DOMAIN,
                 deviceEntityManagerFactory,
                 deviceRegistryCacheFactory,
                 factory,
                 permissionFactory,
-                authorizationService);
+                authorizationService,
+                accountFactory,
+                accountService);
     }
 
     @Override
