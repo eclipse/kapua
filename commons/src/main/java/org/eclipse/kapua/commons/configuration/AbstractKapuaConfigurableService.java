@@ -601,7 +601,6 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         return pid;
     }
 
-
     /**
      * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
      * therefore fetching of the required instance is demanded to this artificial getter.
@@ -645,5 +644,4 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         }
         return rootUserTester;
     }
-
 }
