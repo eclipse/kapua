@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
+import org.eclipse.kapua.broker.core.setting.BrokerSetting;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
@@ -31,6 +32,7 @@ public class DefaultConnectorDescriptionProviderTest extends Assert {
 
     @Before
     public void initialize() {
+        BrokerSetting.resetInstance();
         connectorName = new String[]{null, "", "connector name", "name1234567890", "connector!@#$%^&*()_<>/"};
     }
 
