@@ -61,8 +61,6 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private final SystemSetting systemSettings;
-
     /**
      * Constructor.
      *
@@ -77,7 +75,6 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
                 new UserCacheFactory(),
                 UserService.class,
                 UserFactory.class);
-        this.systemSettings = SystemSetting.getInstance();
     }
 
     /**
@@ -97,7 +94,6 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             PermissionFactory permissionFactory,
             UserEntityManagerFactory userEntityManagerFactory,
             UserCacheFactory userCacheFactory,
-            SystemSetting systemSettings,
             UserFactory userFactory,
             AccountFactory accountFactory,
             AccountService accountService) {
@@ -109,8 +105,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
                 permissionFactory,
                 authorizationService,
                 accountFactory,
-                accountService);
-        this.systemSettings = systemSettings;
+                accountService,
+                null); //TODO: should be _this_, really. For now injecting null will work, falling back to the locator invocation at runtime, but this needs to be solved.
     }
 
     @Override
@@ -416,7 +412,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
     }
 
     private void validateSystemUser(String name) throws KapuaException {
-        String adminUsername = systemSettings.getString(SystemSettingKey.SYS_ADMIN_USERNAME);
+        String adminUsername = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
 
         if (adminUsername.equals(name)) {
             throw new KapuaIllegalArgumentException("name", adminUsername);

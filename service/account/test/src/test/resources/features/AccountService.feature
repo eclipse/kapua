@@ -170,21 +170,22 @@ Scenario: Change the account parent Id
     Given I create a generic account with name "test_acc_11"
     Then The account has metadata
 
+#    Which one? Scenario title says one thing, description states the opposite - which is correct?
   Scenario: It should not be possible to change the configuration items
-  Values of the supported configurationm items must be modifiable.
+  Values of the supported configuration items must be modifiable.
 
     Given I create a generic account with name "test_acc_11"
-    When I expect the exception "org.eclipse.kapua.KapuaException"
+#    When I expect the exception "org.eclipse.kapua.KapuaException"
     When I configure "integer" item "maxNumberChildEntities" to "5"
-    Then An exception was thrown
-    #Then The config item "maxNumberChildEntities" is set to "5"
+#    Then An exception was thrown
+    Then The config item "maxNumberChildEntities" is set to "5"
 
   Scenario: Setting configuration without mandatory items must raise an error
   Mandatory configuration items must always be set. Trying to set configuration items without
   specifying the mandatory items must raise an error.
 
     Given I create a generic account with name "test_acc_11"
-    When I expect the exception "org.eclipse.kapua.KapuaException"
+    When I expect the exception "org.eclipse.kapua.KapuaIllegalNullArgumentException"
     When I configure "integer" item "ArbitraryUnknownItem" to "5"
     Then An exception was thrown
 

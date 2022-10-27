@@ -114,7 +114,9 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
                 authenticationEntityManagerFactory,
                 null,
                 permissionFactory,
-                authorizationService);
+                authorizationService,
+                null //TODO: userService is not available when instantiating this object, let it be retrieved by the Locator later on - FOR NOW
+        );
         //TODO: this logic validates the settings retrieved by KapuaAuthenticationSetting - shouldn't it be moved there?
         int minPasswordLengthConfigValue;
         try {

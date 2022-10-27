@@ -59,6 +59,7 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefi
 import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefinitionServiceImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerFactoryImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerServiceImpl;
+import org.eclipse.kapua.service.user.UserService;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -85,6 +86,8 @@ public class JobLocatorConfiguration {
                 // Account
                 bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
+
+                bind(UserService.class).toInstance(Mockito.mock(UserService.class));
 
                 // Auth
                 // Inject mocked Authorization Service method checkPermission

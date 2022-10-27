@@ -44,6 +44,7 @@ import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefi
 import org.eclipse.kapua.service.scheduler.trigger.definition.quartz.TriggerDefinitionServiceImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerFactoryImpl;
 import org.eclipse.kapua.service.scheduler.trigger.quartz.TriggerServiceImpl;
+import org.eclipse.kapua.service.user.UserService;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -75,6 +76,7 @@ public class SchedulerLocatorConfiguration {
                 // binding Account related services
                 bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
+                bind(UserService.class).toInstance(Mockito.mock(UserService.class));
 
                 // Inject actual Tag service related services
                 SchedulerEntityManagerFactory schedulerEntityManagerFactory = SchedulerEntityManagerFactory.getInstance();

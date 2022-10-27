@@ -20,7 +20,6 @@ import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
@@ -100,7 +99,6 @@ public class SecurityLocatorConfiguration {
                         mockPermissionFactory,
                         new UserEntityManagerFactory(),
                         new UserCacheFactory(),
-                        SystemSetting.getInstance(),
                         userFactory,
                         Mockito.mock(AccountFactory.class),
                         Mockito.mock(AccountService.class)

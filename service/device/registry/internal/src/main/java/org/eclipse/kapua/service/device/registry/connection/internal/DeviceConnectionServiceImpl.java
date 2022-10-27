@@ -38,6 +38,7 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCache;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
+import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,14 +59,11 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
      * Constructor.
      *
      * @since 1.0.0
-     * @deprecated Since 2.0.0 - Please use {@link DeviceConnectionServiceImpl#DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService)}
+     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService, UserService)}
      */
     @Deprecated
     public DeviceConnectionServiceImpl() {
-        this(DeviceEntityManagerFactory.getInstance(),
-                new DeviceRegistryCacheFactory(),
-                KapuaLocator.getInstance().getFactory(PermissionFactory.class),
-                KapuaLocator.getInstance().getService(AuthorizationService.class));
+        this(DeviceEntityManagerFactory.getInstance());
     }
 
     /**
@@ -73,17 +71,14 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
      *
      * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
      * @since 1.0.0
-     * @deprecated Since 2.0.0 - Please use {@link DeviceConnectionServiceImpl#DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService)}
+     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService, UserService)}
      */
     @Deprecated
     public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
         super(DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
                 deviceEntityManagerFactory,
-                new DeviceRegistryCacheFactory(),
-                KapuaLocator.getInstance().getFactory(PermissionFactory.class),
-                KapuaLocator.getInstance().getService(AuthorizationService.class)
-        );
+                new DeviceRegistryCacheFactory());
     }
 
     /**
@@ -97,14 +92,16 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
             DeviceEntityManagerFactory deviceEntityManagerFactory,
             DeviceRegistryCacheFactory deviceRegistryCacheFactory,
             PermissionFactory permissionFactory,
-            AuthorizationService authorizationService
+            AuthorizationService authorizationService,
+            UserService userService
     ) {
         super(DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
                 deviceEntityManagerFactory,
                 deviceRegistryCacheFactory,
                 permissionFactory,
-                authorizationService
+                authorizationService,
+                userService
         );
     }
 

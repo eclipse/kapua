@@ -32,6 +32,7 @@ import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.user.UserService;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -51,7 +52,7 @@ public class AccountLocatorConfiguration {
 
             @Override
             protected void configure() {
-
+                bind(UserService.class).toInstance(Mockito.mock(UserService.class));
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
                 try {
@@ -67,7 +68,6 @@ public class AccountLocatorConfiguration {
                 bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
-
                 // Inject actual account related services
                 bind(AccountEntityManagerFactory.class).toInstance(AccountEntityManagerFactory.getInstance());
                 bind(AccountFactory.class).toInstance(new AccountFactoryImpl());

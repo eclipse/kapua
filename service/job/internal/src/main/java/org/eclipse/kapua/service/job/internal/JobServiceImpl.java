@@ -42,6 +42,7 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
+import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +71,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     /**
      * Constructor
      *
-     * @deprecated since 2.0.0 - Please use {@link JobServiceImpl#JobServiceImpl(JobEntityManagerFactory, JobFactory, PermissionFactory, AuthorizationService, TriggerService, TriggerFactory, AccountFactory, AccountService)} instead. This constructor may be removed in future releases
+     * @deprecated since 2.0.0 - Please use {@link #JobServiceImpl(JobEntityManagerFactory, JobFactory, PermissionFactory, AuthorizationService, TriggerService, TriggerFactory, AccountFactory, AccountService, UserService)} instead. This constructor may be removed in future releases
      */
     @Deprecated
     public JobServiceImpl() {
@@ -100,7 +101,8 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
                           TriggerService triggerService,
                           TriggerFactory triggerFactory,
                           AccountFactory accountFactory,
-                          AccountService accountService) {
+                          AccountService accountService,
+                          UserService userService) {
         super(JobService.class.getName(),
                 JobDomains.JOB_DOMAIN,
                 jobEntityManagerFactory,
@@ -109,7 +111,9 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
                 permissionFactory,
                 authorizationService,
                 accountFactory,
-                accountService);
+                accountService,
+                userService
+        );
         this.triggerService = triggerService;
         this.triggerFactory = triggerFactory;
     }

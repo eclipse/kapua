@@ -35,6 +35,7 @@ import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.StringUtil;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
@@ -61,6 +62,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -78,10 +80,25 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     private final String pid;
 
     //TODO: make final as soon as deprecated constructors are removed
-    private AuthorizationService authorizationService;
-    //TODO: make final as soon as deprecated constructors are removed
     private PermissionFactory permissionFactory;
 
+    /**
+     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link PermissionFactory} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected PermissionFactory getPermissionFactory() {
+        if (permissionFactory == null) {
+            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        }
+        return permissionFactory;
+    }
+
+
+    //TODO: make final as soon as deprecated constructors are removed
+    private AuthorizationService authorizationService;
 
     /**
      * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
@@ -97,18 +114,29 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         return authorizationService;
     }
 
+    //TODO: make final as soon as deprecated constructors are removed
+    private UserService userService;
+
     /**
-     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
      * therefore fetching of the required instance is demanded to this artificial getter.
      *
-     * @return The instantiated (hopefully) {@link PermissionFactory} instance
+     * @return The instantiated (hopefully) {@link AuthorizationService} instance
      */
     //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected PermissionFactory getPermissionFactory() {
-        if (permissionFactory == null) {
-            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+    protected UserService getUserService() {
+        if (userService == null) {
+            userService = KapuaLocator.getInstance().getService(UserService.class);
         }
-        return permissionFactory;
+        return userService;
+    }
+
+    private KapuaId fetchRootUserId() throws KapuaException {
+        //todo: remove me. This just converts root username to id - needs to be done elsewhere, preferrably in a once-at-startup way.
+        final String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
+        final User rootUser = KapuaSecurityUtils.doPrivileged(() -> getUserService().findByName(rootUserName));
+        final KapuaId rootUserId = Optional.ofNullable(rootUser).map(KapuaEntity::getId).orElse(null);
+        return rootUserId;
     }
 
     /**
@@ -142,7 +170,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param domain               The {@link Domain} on which check access.
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @since 1.0.0
-     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableService#AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, UserService)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
@@ -157,7 +185,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
      * @since 1.2.0
-     * @deprecated Since 2.0.0. Please use {@link AbstractKapuaConfigurableService#AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, UserService)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory, AbstractEntityCacheFactory abstractCacheFactory) {
@@ -166,11 +194,12 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         this.pid = pid;
         this.domain = domain;
         /*
-        PermissionFactory and Authorization service should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
-        therefore fetching of these two instances is demanded to the artificial getters introduced.
+        Following service should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+        therefore fetching of these instances is demanded to the artificial getters introduced.
         */
         this.permissionFactory = null;
         this.authorizationService = null;
+        this.userService = null;
     }
 
     /**
@@ -180,6 +209,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param domain               The {@link Domain} on which check access.
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
+     * @param userService
      * @since 2.0.0
      */
     protected AbstractKapuaConfigurableService(String pid,
@@ -187,13 +217,15 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                                                EntityManagerFactory entityManagerFactory,
                                                AbstractEntityCacheFactory abstractCacheFactory,
                                                PermissionFactory permissionFactory,
-                                               AuthorizationService authorizationService) {
+                                               AuthorizationService authorizationService,
+                                               UserService userService) {
         super(entityManagerFactory, abstractCacheFactory);
 
         this.pid = pid;
         this.domain = domain;
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
+        this.userService = userService;
     }
 
     /**
@@ -226,56 +258,57 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      */
     private void validateConfigurations(KapuaTocd ocd, Map<String, Object> updatedProps, KapuaId scopeId, KapuaId parentId)
             throws KapuaException {
-        if (ocd != null) {
-
-            // Get Disabled Properties
-            List<KapuaTad> disabledProperties = ocd.getAD().stream().filter(ad -> !isPropertyEnabled(ad, scopeId)).collect(Collectors.toList());
-
-            if (!disabledProperties.isEmpty()) {
-                // If there's any disabled property, read current values to overwrite the proposed ones
-                Map<String, Object> originalValues = getConfigValues(scopeId, false);
-                if (originalValues != null) {
-                    disabledProperties.forEach(disabledProp -> updatedProps.put(disabledProp.getId(), originalValues.get(disabledProp.getId())));
-                }
-            }
-
-            // build a map of all the attribute definitions
-            Map<String, KapuaTad> attrDefs = ocd.getAD().stream().collect(Collectors.toMap(KapuaTad::getId, ad -> ad));
-
-            // loop over the proposed property values
-            // and validate them against the definition
-            for (Entry<String, Object> property : updatedProps.entrySet()) {
-
-                String key = property.getKey();
-                KapuaTad attrDef = attrDefs.get(key);
-
-                // is attribute undefined?
-                if (attrDef == null) {
-                    // we do not have an attribute descriptor to the validation
-                    // against
-                    // As OSGI insert attributes at runtime like service.pid,
-                    // component.name,
-                    // for the attribute for which we do not have a definition,
-                    // just accept them.
-                    continue;
-                }
-
-                // validate the attribute value
-                Object objectValue = property.getValue();
-                String stringValue = StringUtil.valueToString(objectValue);
-                if (stringValue != null) {
-                    ValueTokenizer tokenizer = new ValueTokenizer(stringValue);
-                    String result = tokenizer.validate(attrDef);
-                    if (result != null && !result.isEmpty()) {
-                        throw new KapuaIllegalArgumentException(attrDef.getId(), result);
-                    }
-                }
-            }
-
-            checkRequiredProperties(ocd, updatedProps);
-
-            validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
+        if (ocd == null) {
+            return;
         }
+
+        // Get Disabled Properties
+        List<KapuaTad> disabledProperties = ocd.getAD().stream().filter(ad -> !isPropertyEnabled(ad, scopeId)).collect(Collectors.toList());
+
+        if (!disabledProperties.isEmpty()) {
+            // If there's any disabled property, read current values to overwrite the proposed ones
+            Map<String, Object> originalValues = getConfigValues(scopeId, false);
+            if (originalValues != null) {
+                disabledProperties.forEach(disabledProp -> updatedProps.put(disabledProp.getId(), originalValues.get(disabledProp.getId())));
+            }
+        }
+
+        // build a map of all the attribute definitions
+        Map<String, KapuaTad> attrDefs = ocd.getAD().stream().collect(Collectors.toMap(KapuaTad::getId, ad -> ad));
+
+        // loop over the proposed property values
+        // and validate them against the definition
+        for (Entry<String, Object> property : updatedProps.entrySet()) {
+
+            String key = property.getKey();
+            KapuaTad attrDef = attrDefs.get(key);
+
+            // is attribute undefined?
+            if (attrDef == null) {
+                // we do not have an attribute descriptor to the validation
+                // against
+                // As OSGI insert attributes at runtime like service.pid,
+                // component.name,
+                // for the attribute for which we do not have a definition,
+                // just accept them.
+                continue;
+            }
+
+            // validate the attribute value
+            Object objectValue = property.getValue();
+            String stringValue = StringUtil.valueToString(objectValue);
+            if (stringValue != null) {
+                ValueTokenizer tokenizer = new ValueTokenizer(stringValue);
+                String result = tokenizer.validate(attrDef);
+                if (result != null && !result.isEmpty()) {
+                    throw new KapuaIllegalArgumentException(attrDef.getId(), result);
+                }
+            }
+        }
+
+        checkRequiredProperties(ocd, updatedProps);
+
+        validateNewConfigValuesCoherence(ocd, updatedProps, scopeId, parentId);
     }
 
     /**
@@ -536,12 +569,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
         KapuaTocd ocd = getConfigMetadata(scopeId, false);
-        //todo: remove me. This just converts root username to id - needs to be done elsewhere, preferrably in a once-at-startup way.
-        final KapuaLocator locator = KapuaLocator.getInstance();
-        final UserService userService = locator.getService(UserService.class);
-        final String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        final User rootUser = KapuaSecurityUtils.doPrivileged(() -> userService.findByName(rootUserName));
-        final KapuaId rootUserId = rootUser.getId();
+        final KapuaId rootUserId = fetchRootUserId();
 
         Map<String, Object> originalValues = getConfigValues(scopeId);
 
