@@ -146,7 +146,6 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @param permissionFactory    The {@link PermissionFactory} instance.
      * @param authorizationService The {@link AuthorizationService} instance.
      * @param rootUserTester       The {@link RootUserTester} instance.
-     * @since 2.0.0
      */
     protected AbstractKapuaConfigurableResourceLimitedService(String pid,
                                                               Domain domain,
