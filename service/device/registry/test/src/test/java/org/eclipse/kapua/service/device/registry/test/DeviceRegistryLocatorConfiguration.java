@@ -80,7 +80,6 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
 
                 bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
-
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
