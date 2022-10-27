@@ -104,16 +104,21 @@ public class CredentialServiceImpl extends AbstractKapuaConfigurableService impl
     }
 
     @Inject
-    public CredentialServiceImpl(AuthenticationEntityManagerFactory authenticationEntityManagerFactory, PermissionFactory permissionFactory, AuthorizationService authorizationService) {
+    public CredentialServiceImpl(
+            AuthenticationEntityManagerFactory authenticationEntityManagerFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            KapuaAuthenticationSetting kapuaAuthenticationSetting) {
         super(CredentialService.class.getName(),
                 AuthenticationDomains.CREDENTIAL_DOMAIN,
                 authenticationEntityManagerFactory,
                 null,
                 permissionFactory,
                 authorizationService);
+        //TODO: this logic validates the settings retrieved by KapuaAuthenticationSetting - shouldn't it be moved there?
         int minPasswordLengthConfigValue;
         try {
-            minPasswordLengthConfigValue = KapuaAuthenticationSetting.getInstance().getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_PASSWORD_MINLENGTH);
+            minPasswordLengthConfigValue = kapuaAuthenticationSetting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_CREDENTIAL_USERPASS_PASSWORD_MINLENGTH);
         } catch (NoSuchElementException ex) {
             LOGGER.warn("Minimum password length not set, 12 characters minimum will be enforced");
             minPasswordLengthConfigValue = 12;
