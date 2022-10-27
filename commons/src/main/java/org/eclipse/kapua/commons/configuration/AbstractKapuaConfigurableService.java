@@ -84,7 +84,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
 
     /**
-     * AuthorizationService should be fetched by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
      * therefore fetching of the required instance is demanded to this artificial getter.
      *
      * @return The instantiated (hopefully) {@link AuthorizationService} instance
@@ -98,7 +98,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     }
 
     /**
-     * PermissionFactory should be fetched by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
      * therefore fetching of the required instance is demanded to this artificial getter.
      *
      * @return The instantiated (hopefully) {@link PermissionFactory} instance
@@ -166,7 +166,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         this.pid = pid;
         this.domain = domain;
         /*
-        PermissionFactory and Authorization service should be fetched by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+        PermissionFactory and Authorization service should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
         therefore fetching of these two instances is demanded to the artificial getters introduced.
         */
         this.permissionFactory = null;

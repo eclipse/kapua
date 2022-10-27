@@ -72,7 +72,26 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
         extends AbstractKapuaConfigurableService
         implements KapuaEntityService<E, C> {
 
-    private final F factory;
+    //TODO: make final as soon as deprecated constructors are removed
+    private F factory;
+    //TODO: remove as soon as deprecated constructors are removed
+    private final Class<F> factoryClass;
+
+    /**
+     * KapuaEntityFactory instance should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link KapuaEntityFactory} instance
+     */
+    protected F getFactory() {
+
+        if (factory == null) {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            this.factory = locator.getFactory(factoryClass);
+        }
+
+        return factory;
+    }
 
     /**
      * Constructor.
@@ -116,8 +135,13 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
             Class<F> factoryClass) {
         super(pid, domain, entityManagerFactory, abstractCacheFactory);
 
-        KapuaLocator locator = KapuaLocator.getInstance();
-        this.factory = locator.getFactory(factoryClass);
+        /*
+        Factory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+        therefore fetching of this instance is demanded to the artificial getter introduced.
+        */
+
+        this.factory = null;
+        this.factoryClass = factoryClass;
     }
 
     /**
@@ -140,6 +164,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
             F factory, final PermissionFactory permissionFactory, final AuthorizationService authorizationService) {
         super(pid, domain, entityManagerFactory, abstractCacheFactory, permissionFactory, authorizationService);
         this.factory = factory;
+        this.factoryClass = null; //TODO: not needed for this construction path, remove as soon as the deprecated constructor is removed
     }
 
     @Override
@@ -227,7 +252,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
         boolean allowInfiniteChildEntities = (boolean) finalConfig.get("infiniteChildEntities");
         if (!allowInfiniteChildEntities) {
             return KapuaSecurityUtils.doPrivileged(() -> {
-                Q countQuery = factory.newQuery(scopeId);
+                Q countQuery = getFactory().newQuery(scopeId);
 
                 // Current used entities
                 long currentUsedEntities = this.count(countQuery);
