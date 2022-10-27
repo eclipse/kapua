@@ -31,7 +31,6 @@ import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
-import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -78,7 +77,7 @@ public class SchedulerLocatorConfiguration {
 
                 // binding Account related services
                 bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
-                bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));
+                bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
                 bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
