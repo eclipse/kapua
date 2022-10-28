@@ -58,6 +58,7 @@
         <h2.version>1.4.199</h2.version>
         <hk2-api.version>2.5.0-b05</hk2-api.version>
         <httpcomponents-client.version>4.5.13</httpcomponents-client.version>
+        <httpcomponents-asyncclient.version>4.1.5</httpcomponents-asyncclient.version>
         <jackson.version>2.13.4</jackson.version>
         <javassist.version>3.26.0-GA</javassist.version>
         <javax-annotation-api.version>1.2</javax-annotation-api.version>
@@ -1213,6 +1214,12 @@
                 <artifactId>httpclient</artifactId>
                 <version>${httpcomponents-client.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpasyncclient</artifactId>
+                <version>${httpcomponents-asyncclient.version}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>com.google.code.gson</groupId>
