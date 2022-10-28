@@ -27,7 +27,6 @@ import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
@@ -39,7 +38,7 @@ import java.sql.SQLException;
 import java.util.Random;
 
 @Category(JUnitTests.class)
-public abstract class AbstractMessageStoreServiceTest extends Assert {
+public abstract class AbstractMessageStoreServiceTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageStoreServiceTest.class);
 

@@ -31,8 +31,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class KapuaSecurityBrokerFilterTest extends Assert {
+public class KapuaSecurityBrokerFilterTest {
 
     Broker broker;
     BrokerId brokerId;
@@ -75,7 +76,7 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         try {
             kapuaSecurityBrokerFilter.stop();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -94,13 +95,13 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         try {
             kapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
         try {
             nullKapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
         }
     }
 
@@ -114,14 +115,14 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         try {
             kapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
 
         try {
             nullKapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
         }
     }
 
@@ -136,13 +137,13 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         try {
             kapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
         try {
             nullKapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
         }
     }
 
@@ -159,13 +160,13 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         try {
             kapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
         try {
             nullKapuaSecurityBrokerFilter.addConnection(connectionContext, connectionInfo);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
         }
     }
 
@@ -179,13 +180,13 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         try {
             kapuaSecurityBrokerFilter.addConnection(connectionContext, null);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
         try {
             nullKapuaSecurityBrokerFilter.addConnection(connectionContext, null);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
         }
     }
 
@@ -216,14 +217,14 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         try {
             kapuaSecurityBrokerFilter.removeConnection(connectionContext, connectionInfo, new Throwable());
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
 
         try {
             nullKapuaSecurityBrokerFilter.removeConnection(connectionContext, connectionInfo, new Throwable());
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
         }
     }
 
@@ -241,13 +242,13 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         try {
             kapuaSecurityBrokerFilter.removeConnection(connectionContext, connectionInfo, new Throwable());
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
         try {
             nullKapuaSecurityBrokerFilter.removeConnection(connectionContext, connectionInfo, new Throwable());
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
         }
     }
 
@@ -264,13 +265,13 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         try {
             kapuaSecurityBrokerFilter.removeConnection(connectionContext, connectionInfo, new Throwable());
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
         try {
             nullKapuaSecurityBrokerFilter.removeConnection(connectionContext, connectionInfo, new Throwable());
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
         }
     }
 
@@ -287,13 +288,13 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         try {
             kapuaSecurityBrokerFilter.removeConnection(connectionContext, connectionInfo, new Throwable());
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
         try {
             nullKapuaSecurityBrokerFilter.removeConnection(connectionContext, connectionInfo, new Throwable());
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
         }
     }
 
@@ -328,13 +329,13 @@ public class KapuaSecurityBrokerFilterTest extends Assert {
         try {
             kapuaSecurityBrokerFilter.addConsumer(connectionContext, consumerInfo);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
         try {
             nullKapuaSecurityBrokerFilter.addConsumer(connectionContext, consumerInfo);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception ex) {
-            assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", new NullPointerException().toString(), ex.toString());
         }
     }
 }

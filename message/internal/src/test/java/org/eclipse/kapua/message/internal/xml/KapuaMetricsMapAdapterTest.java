@@ -26,8 +26,9 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class KapuaMetricsMapAdapterTest extends Assert {
+public class KapuaMetricsMapAdapterTest {
 
     private static final String NEWLINE = System.lineSeparator();
 
@@ -58,7 +59,7 @@ public class KapuaMetricsMapAdapterTest extends Assert {
 
         StringWriter strWriter = new StringWriter();
         XmlUtil.marshal(metricsMap, strWriter);
-        assertEquals(METRICS_XML_STR, strWriter.toString());
+        Assert.assertEquals(METRICS_XML_STR, strWriter.toString());
     }
 
     @Test
@@ -69,7 +70,7 @@ public class KapuaMetricsMapAdapterTest extends Assert {
         metricsMap.setMetrics(metrics);
 
         KapuaPayload metricsMapResp = XmlUtil.unmarshal(METRICS_XML_STR, KapuaPayload.class);
-        assertEquals(metricsMap.getMetrics().get("key1"), metricsMapResp.getMetrics().get("key1"));
+        Assert.assertEquals(metricsMap.getMetrics().get("key1"), metricsMapResp.getMetrics().get("key1"));
     }
 
 }

@@ -31,8 +31,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletRequest;
 import java.io.IOException;
 
+
 @Category(JUnitTests.class)
-public class KapuaSessionCleanupFilterTest extends Assert {
+public class KapuaSessionCleanupFilterTest {
 
     KapuaSessionCleanupFilter kapuaSessionCleanupFilter;
     SecurityManager securityManager;
@@ -59,7 +60,7 @@ public class KapuaSessionCleanupFilterTest extends Assert {
         try {
             kapuaSessionCleanupFilter.init(Mockito.mock(FilterConfig.class));
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -68,7 +69,7 @@ public class KapuaSessionCleanupFilterTest extends Assert {
         try {
             kapuaSessionCleanupFilter.init(null);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -78,7 +79,7 @@ public class KapuaSessionCleanupFilterTest extends Assert {
         try {
             kapuaSessionCleanupFilter.destroy();
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -90,7 +91,7 @@ public class KapuaSessionCleanupFilterTest extends Assert {
         try {
             kapuaSessionCleanupFilter.doFilter(request, response, chain);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -102,7 +103,7 @@ public class KapuaSessionCleanupFilterTest extends Assert {
         try {
             kapuaSessionCleanupFilter.doFilter(null, response, chain);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -114,7 +115,7 @@ public class KapuaSessionCleanupFilterTest extends Assert {
         try {
             kapuaSessionCleanupFilter.doFilter(request, null, chain);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 
@@ -125,9 +126,9 @@ public class KapuaSessionCleanupFilterTest extends Assert {
 
         try {
             kapuaSessionCleanupFilter.doFilter(request, response, null);
-            fail("Exception expected.");
+            Assert.fail("Exception expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
     }
 
@@ -137,7 +138,7 @@ public class KapuaSessionCleanupFilterTest extends Assert {
         try {
             kapuaSessionCleanupFilter.doFilter(request, response, chain);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 }

@@ -22,8 +22,9 @@ import org.junit.experimental.categories.Category;
 
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class AuthenticationLogicTest extends Assert {
+public class AuthenticationLogicTest {
 
     private class AuthenticationLogicImpl extends AuthenticationLogic {
         /**
@@ -65,7 +66,7 @@ public class AuthenticationLogicTest extends Assert {
                     try {
                         new AuthenticationLogicImpl(addressPrefix, addressClassifier, advisoryPrefix);
                     } catch (Exception e) {
-                        fail("Exception not expected.");
+                        Assert.fail("Exception not expected.");
                     }
                 }
             }

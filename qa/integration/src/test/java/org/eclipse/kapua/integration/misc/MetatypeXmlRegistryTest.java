@@ -28,8 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class MetatypeXmlRegistryTest extends Assert {
+public class MetatypeXmlRegistryTest {
 
     MetatypeXmlRegistry metatypeXmlRegistry;
 
@@ -40,36 +41,36 @@ public class MetatypeXmlRegistryTest extends Assert {
 
     @Test
     public void newKapuaTocdTest() {
-        assertThat("Instance of KapuaTocd expected.", metatypeXmlRegistry.newKapuaTocd(), IsInstanceOf.instanceOf(KapuaTocd.class));
+        Assert.assertThat("Instance of KapuaTocd expected.", metatypeXmlRegistry.newKapuaTocd(), IsInstanceOf.instanceOf(KapuaTocd.class));
     }
 
     @Test
     public void newKapuaTadTest() {
-        assertThat("Instance of KapuaTad expected.", metatypeXmlRegistry.newKapuaTad(), IsInstanceOf.instanceOf(KapuaTad.class));
+        Assert.assertThat("Instance of KapuaTad expected.", metatypeXmlRegistry.newKapuaTad(), IsInstanceOf.instanceOf(KapuaTad.class));
     }
 
     @Test
     public void newKapuaTiconTest() {
-        assertThat("Instance of KapuaTicon expected.", metatypeXmlRegistry.newKapuaTicon(), IsInstanceOf.instanceOf(KapuaTicon.class));
+        Assert.assertThat("Instance of KapuaTicon expected.", metatypeXmlRegistry.newKapuaTicon(), IsInstanceOf.instanceOf(KapuaTicon.class));
     }
 
     @Test
     public void newKapuaToptionTest() {
-        assertThat("Instance of KapuaToption expected.", metatypeXmlRegistry.newKapuaToption(), IsInstanceOf.instanceOf(KapuaToption.class));
+        Assert.assertThat("Instance of KapuaToption expected.", metatypeXmlRegistry.newKapuaToption(), IsInstanceOf.instanceOf(KapuaToption.class));
     }
 
     @Test
     public void newKapuaTmetadataTest() {
-        assertThat("Instance of KapuaTmetadata expected.", metatypeXmlRegistry.newKapuaTmetadata(), IsInstanceOf.instanceOf(KapuaTmetadata.class));
+        Assert.assertThat("Instance of KapuaTmetadata expected.", metatypeXmlRegistry.newKapuaTmetadata(), IsInstanceOf.instanceOf(KapuaTmetadata.class));
     }
 
     @Test
     public void newKapuaTdesignateTest() {
-        assertThat("Instance of KapuaTdesignate expected.", metatypeXmlRegistry.newKapuaTdesignate(), IsInstanceOf.instanceOf(KapuaTdesignate.class));
+        Assert.assertThat("Instance of KapuaTdesignate expected.", metatypeXmlRegistry.newKapuaTdesignate(), IsInstanceOf.instanceOf(KapuaTdesignate.class));
     }
 
     @Test
     public void newKapuaTobjectTest() {
-        assertThat("Instance of KapuaTobject expected.", metatypeXmlRegistry.newKapuaTobject(), IsInstanceOf.instanceOf(KapuaTobject.class));
+        Assert.assertThat("Instance of KapuaTobject expected.", metatypeXmlRegistry.newKapuaTobject(), IsInstanceOf.instanceOf(KapuaTobject.class));
     }
 }

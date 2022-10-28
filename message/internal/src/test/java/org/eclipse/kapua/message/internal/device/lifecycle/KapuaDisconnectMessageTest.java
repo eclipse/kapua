@@ -20,8 +20,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaDisconnectMessageTest extends Assert {
+public class KapuaDisconnectMessageTest {
 
     private static final String PAYLOAD_DISPLAY_STR = "" +
             "displayName=A display name" +
@@ -31,8 +32,8 @@ public class KapuaDisconnectMessageTest extends Assert {
     public void kapuaDisconnectPayloadInitConstructor() {
         KapuaDisconnectPayload kapuaDisconnectPayload = populateKapuaDisconnectPayload();
 
-        assertEquals("12", kapuaDisconnectPayload.getUptime());
-        assertEquals("A display name", kapuaDisconnectPayload.getDisplayName());
+        Assert.assertEquals("12", kapuaDisconnectPayload.getUptime());
+        Assert.assertEquals("A display name", kapuaDisconnectPayload.getDisplayName());
     }
 
     @Test
@@ -40,14 +41,14 @@ public class KapuaDisconnectMessageTest extends Assert {
         KapuaDisconnectPayload kapuaDisconnectPayload = populateKapuaDisconnectPayload();
 
         String displayStr = kapuaDisconnectPayload.toDisplayString();
-        assertEquals(PAYLOAD_DISPLAY_STR, displayStr);
+        Assert.assertEquals(PAYLOAD_DISPLAY_STR, displayStr);
     }
 
     @Test
     public void kapuaDisconnectMessageConstructor() throws Exception {
         KapuaDisconnectMessageImpl kapuaDisconnectMessage = new KapuaDisconnectMessageImpl();
 
-        assertNotNull(kapuaDisconnectMessage);
+        Assert.assertNotNull(kapuaDisconnectMessage);
     }
 
     @Test
@@ -55,7 +56,7 @@ public class KapuaDisconnectMessageTest extends Assert {
         KapuaDisconnectMessage kapuaDisconnectMessage = new KapuaDisconnectMessageImpl();
 
         kapuaDisconnectMessage.setClientId("clientId-1");
-        assertEquals("clientId-1", kapuaDisconnectMessage.getClientId());
+        Assert.assertEquals("clientId-1", kapuaDisconnectMessage.getClientId());
     }
 
     @Test
@@ -63,7 +64,7 @@ public class KapuaDisconnectMessageTest extends Assert {
         KapuaDisconnectChannel kapuaDisconnectChannel = new KapuaDisconnectChannelImpl();
 
         kapuaDisconnectChannel.setClientId("clientId-1");
-        assertEquals("clientId-1", kapuaDisconnectChannel.getClientId());
+        Assert.assertEquals("clientId-1", kapuaDisconnectChannel.getClientId());
     }
 
     /**

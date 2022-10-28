@@ -23,8 +23,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class ApiKeyAuthenticatingRealmTest extends Assert {
+public class ApiKeyAuthenticatingRealmTest {
 
     ApiKeyAuthenticatingRealm apiKeyAuthenticatingRealm;
 
@@ -35,19 +36,19 @@ public class ApiKeyAuthenticatingRealmTest extends Assert {
 
     @Test
     public void apiKeyAuthenticatingRealmTest() {
-        assertEquals("Expected and actual values should be the same.", "apiKeyAuthenticatingRealm", apiKeyAuthenticatingRealm.getName());
-        assertNotNull("Null not expected", apiKeyAuthenticatingRealm.getCredentialsMatcher());
+        Assert.assertEquals("Expected and actual values should be the same.", "apiKeyAuthenticatingRealm", apiKeyAuthenticatingRealm.getName());
+        Assert.assertNotNull("Null not expected", apiKeyAuthenticatingRealm.getCredentialsMatcher());
     }
 
     @Test
     public void supportsTrueTest() {
         ApiKeyCredentialsImpl authenticationToken = new ApiKeyCredentialsImpl("api key");
-        assertTrue("True expected.", apiKeyAuthenticatingRealm.supports(authenticationToken));
+        Assert.assertTrue("True expected.", apiKeyAuthenticatingRealm.supports(authenticationToken));
     }
 
     @Test
     public void supportsFalseTest() {
         AuthenticationToken authenticationToken = Mockito.mock(AuthenticationToken.class);
-        assertFalse("False expected.", apiKeyAuthenticatingRealm.supports(authenticationToken));
+        Assert.assertFalse("False expected.", apiKeyAuthenticatingRealm.supports(authenticationToken));
     }
 }

@@ -23,8 +23,9 @@ import org.junit.experimental.categories.Category;
 
 import java.math.BigInteger;
 
+
 @Category(JUnitTests.class)
-public class KapuaIdAdapterTest extends Assert {
+public class KapuaIdAdapterTest {
 
     KapuaIdAdapter kapuaIdAdapter;
     KapuaId[] kapuaId;
@@ -41,7 +42,7 @@ public class KapuaIdAdapterTest extends Assert {
     public void marshalTest() throws Exception {
         String[] expectedString = stringValue;
         for (int i = 0; i < kapuaId.length; i++) {
-            assertEquals("Expected and actual values should be the same.", expectedString[i], kapuaIdAdapter.marshal(kapuaId[i]));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedString[i], kapuaIdAdapter.marshal(kapuaId[i]));
         }
     }
 
@@ -49,7 +50,7 @@ public class KapuaIdAdapterTest extends Assert {
     public void unmarshalTest() throws Exception {
         KapuaId[] expectedKapuaId = kapuaId;
         for (int i = 0; i < stringValue.length; i++) {
-            assertEquals("Expected and actual values should be the same.", expectedKapuaId[i], kapuaIdAdapter.unmarshal(stringValue[i]));
+            Assert.assertEquals("Expected and actual values should be the same.", expectedKapuaId[i], kapuaIdAdapter.unmarshal(stringValue[i]));
         }
     }
 }

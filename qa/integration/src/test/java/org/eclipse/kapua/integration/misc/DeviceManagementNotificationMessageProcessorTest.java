@@ -29,8 +29,9 @@ import org.mockito.Mockito;
 
 import java.util.UUID;
 
+
 @Category(JUnitTests.class)
-public class DeviceManagementNotificationMessageProcessorTest extends Assert {
+public class DeviceManagementNotificationMessageProcessorTest {
 
     DeviceManagementNotificationMessageProcessor deviceManagementNotificationMessageProcessor;
     CamelKapuaMessage camelKapuaMessage;
@@ -54,85 +55,85 @@ public class DeviceManagementNotificationMessageProcessorTest extends Assert {
 
     @Test
     public void processConfigurationErrorMessageTest() throws KapuaException {
-        assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
         deviceManagementNotificationMessageProcessor.processConfigurationErrorMessage(exchange, camelKapuaMessage);
-        assertEquals("Expected and actual values should be the same.", -1L, queueConfigurationErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", -1L, queueConfigurationErrorCount.getCount());
 
         queueConfigurationErrorCount.inc();
     }
 
     @Test
     public void processConfigurationErrorMessageNullExchangeTest() throws KapuaException {
-        assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
         deviceManagementNotificationMessageProcessor.processConfigurationErrorMessage(null, camelKapuaMessage);
-        assertEquals("Expected and actual values should be the same.", -1L, queueConfigurationErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", -1L, queueConfigurationErrorCount.getCount());
 
         queueConfigurationErrorCount.inc();
     }
 
     @Test
     public void processConfigurationErrorNullMessageTest() {
-        assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
         try {
             deviceManagementNotificationMessageProcessor.processConfigurationErrorMessage(exchange, null);
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
-        assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
     }
 
     @Test
     public void processConfigurationErrorNullTest() {
-        assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
         try {
             deviceManagementNotificationMessageProcessor.processConfigurationErrorMessage(null, null);
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
-        assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueConfigurationErrorCount.getCount());
     }
 
     @Test
     public void processGenericErrorMessageTest() throws KapuaException {
-        assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
         deviceManagementNotificationMessageProcessor.processGenericErrorMessage(exchange, camelKapuaMessage);
-        assertEquals("Expected and actual values should be the same.", -1L, queueGenericErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", -1L, queueGenericErrorCount.getCount());
 
         queueGenericErrorCount.inc();
     }
 
     @Test
     public void processGenericErrorMessageNullExchangeTest() throws KapuaException {
-        assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
         deviceManagementNotificationMessageProcessor.processGenericErrorMessage(null, camelKapuaMessage);
-        assertEquals("Expected and actual values should be the same.", -1L, queueGenericErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", -1L, queueGenericErrorCount.getCount());
 
         queueGenericErrorCount.inc();
     }
 
     @Test
     public void processGenericErrorNullMessageTest() {
-        assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
         try {
             deviceManagementNotificationMessageProcessor.processGenericErrorMessage(exchange, null);
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
-        assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
     }
 
     @Test
     public void processGenericErrorNullTest() {
-        assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
         try {
             deviceManagementNotificationMessageProcessor.processGenericErrorMessage(null, null);
-            fail("NullPointerException expected.");
+            Assert.fail("NullPointerException expected.");
         } catch (Exception e) {
-            assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
+            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
         }
-        assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
+        Assert.assertEquals("Expected and actual values should be the same.", 0L, queueGenericErrorCount.getCount());
     }
 }

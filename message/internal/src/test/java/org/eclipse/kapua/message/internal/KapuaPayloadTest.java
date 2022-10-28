@@ -24,8 +24,9 @@ import org.junit.experimental.categories.Category;
 import java.io.StringWriter;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class KapuaPayloadTest extends Assert {
+public class KapuaPayloadTest {
 
     private static final String PAYLOAD_DISPLAY_STR = "Boolean=true~~Double=42.42~~Float=42.42~~Integer=42~~Long=43~~String=Big brown fox~~byte=Ym9keQA~~unknown=";
 
@@ -38,7 +39,7 @@ public class KapuaPayloadTest extends Assert {
 
     @Test
     public void neverGetNull() {
-        assertNotNull(new KapuaPayloadImpl().getMetrics());
+        Assert.assertNotNull(new KapuaPayloadImpl().getMetrics());
     }
 
     @Test
@@ -48,15 +49,15 @@ public class KapuaPayloadTest extends Assert {
 
         Map<String, Object> properties = kapuaPayload.getMetrics();
         byte[] body = kapuaPayload.getBody();
-        assertEquals("value1", properties.get("key1"));
-        assertEquals("value2", properties.get("key2"));
-        assertArrayEquals(new byte[]{'b', 'o', 'd', 'y'}, body);
+        Assert.assertEquals("value1", properties.get("key1"));
+        Assert.assertEquals("value2", properties.get("key2"));
+        Assert.assertArrayEquals(new byte[]{'b', 'o', 'd', 'y'}, body);
     }
 
     @Test
     public void displayStringEmpty() throws Exception {
         final KapuaPayload kapuaPayload = new KapuaPayloadImpl();
-        assertEquals("", kapuaPayload.toDisplayString());
+        Assert.assertEquals("", kapuaPayload.toDisplayString());
     }
 
     @Test
@@ -67,7 +68,7 @@ public class KapuaPayloadTest extends Assert {
         kapuaPayload.getMetrics().put("null", null);
 
         String displayStr = kapuaPayload.toDisplayString();
-        assertEquals(PAYLOAD_DISPLAY_STR, displayStr);
+        Assert.assertEquals(PAYLOAD_DISPLAY_STR, displayStr);
     }
 
     @Test
@@ -78,6 +79,6 @@ public class KapuaPayloadTest extends Assert {
 
         StringWriter strWriter = new StringWriter();
         XmlUtil.marshal(kapuaPayload, strWriter);
-        assertEquals(KAPUA_PAYLOAD_XML_STR, strWriter.toString());
+        Assert.assertEquals(KAPUA_PAYLOAD_XML_STR, strWriter.toString());
     }
 }

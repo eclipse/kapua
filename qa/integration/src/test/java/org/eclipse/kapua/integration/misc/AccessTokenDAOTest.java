@@ -49,8 +49,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class AccessTokenDAOTest extends Assert {
+public class AccessTokenDAOTest {
 
     EntityManager entityManager;
     AccessTokenCreator accessTokenCreator;
@@ -83,13 +84,13 @@ public class AccessTokenDAOTest extends Assert {
         Mockito.when(accessTokenCreator.getRefreshToken()).thenReturn("refresh token");
         Mockito.when(accessTokenCreator.getRefreshExpiresOn()).thenReturn(refreshExpirationDate);
 
-        assertTrue("True expected.", AccessTokenDAO.create(entityManager, accessTokenCreator) instanceof AccessToken);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessTokenDAO.create(entityManager, accessTokenCreator).getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessTokenDAO.create(entityManager, accessTokenCreator).getUserId());
-        assertEquals("Expected and actual values should be the same.", "token id", AccessTokenDAO.create(entityManager, accessTokenCreator).getTokenId());
-        assertEquals("Expected and actual values should be the same.", expirationDate, AccessTokenDAO.create(entityManager, accessTokenCreator).getExpiresOn());
-        assertEquals("Expected and actual values should be the same.", "refresh token", AccessTokenDAO.create(entityManager, accessTokenCreator).getRefreshToken());
-        assertEquals("Expected and actual values should be the same.", refreshExpirationDate, AccessTokenDAO.create(entityManager, accessTokenCreator).getRefreshExpiresOn());
+        Assert.assertTrue("True expected.", AccessTokenDAO.create(entityManager, accessTokenCreator) instanceof AccessToken);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessTokenDAO.create(entityManager, accessTokenCreator).getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessTokenDAO.create(entityManager, accessTokenCreator).getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", "token id", AccessTokenDAO.create(entityManager, accessTokenCreator).getTokenId());
+        Assert.assertEquals("Expected and actual values should be the same.", expirationDate, AccessTokenDAO.create(entityManager, accessTokenCreator).getExpiresOn());
+        Assert.assertEquals("Expected and actual values should be the same.", "refresh token", AccessTokenDAO.create(entityManager, accessTokenCreator).getRefreshToken());
+        Assert.assertEquals("Expected and actual values should be the same.", refreshExpirationDate, AccessTokenDAO.create(entityManager, accessTokenCreator).getRefreshExpiresOn());
     }
 
     @Test(expected = KapuaEntityExistsException.class)
@@ -168,9 +169,9 @@ public class AccessTokenDAOTest extends Assert {
         Mockito.when(entityToFindOrDelete.getCreatedOn()).thenReturn(createdOn);
         Mockito.when(entityToFindOrDelete.getCreatedBy()).thenReturn(createdBy);
 
-        assertTrue("True expected.", AccessTokenDAO.update(entityManager, accessToken) instanceof AccessToken);
-        assertEquals("Expected and actual values should be the same.", createdBy, AccessTokenDAO.update(entityManager, accessToken).getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, AccessTokenDAO.update(entityManager, accessToken).getCreatedOn());
+        Assert.assertTrue("True expected.", AccessTokenDAO.update(entityManager, accessToken) instanceof AccessToken);
+        Assert.assertEquals("Expected and actual values should be the same.", createdBy, AccessTokenDAO.update(entityManager, accessToken).getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, AccessTokenDAO.update(entityManager, accessToken).getCreatedOn());
     }
 
     @Test(expected = NullPointerException.class)
@@ -192,8 +193,8 @@ public class AccessTokenDAOTest extends Assert {
         Mockito.when(entityManager.find(AccessTokenImpl.class, accessTokenId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", AccessTokenDAO.find(entityManager, scopeId, accessTokenId) instanceof AccessToken);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessTokenDAO.find(entityManager, scopeId, accessTokenId).getScopeId());
+        Assert.assertTrue("True expected.", AccessTokenDAO.find(entityManager, scopeId, accessTokenId) instanceof AccessToken);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessTokenDAO.find(entityManager, scopeId, accessTokenId).getScopeId());
     }
 
     @Test
@@ -201,14 +202,14 @@ public class AccessTokenDAOTest extends Assert {
         Mockito.when(entityManager.find(AccessTokenImpl.class, accessTokenId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ANY);
 
-        assertNull("Null expected.", AccessTokenDAO.find(entityManager, scopeId, accessTokenId));
+        Assert.assertNull("Null expected.", AccessTokenDAO.find(entityManager, scopeId, accessTokenId));
     }
 
     @Test
     public void findNullEntityToFindTest() {
         Mockito.when(entityManager.find(AccessTokenImpl.class, accessTokenId)).thenReturn(null);
 
-        assertNull("Null expected.", AccessTokenDAO.find(entityManager, scopeId, accessTokenId));
+        Assert.assertNull("Null expected.", AccessTokenDAO.find(entityManager, scopeId, accessTokenId));
     }
 
     @Test
@@ -216,7 +217,7 @@ public class AccessTokenDAOTest extends Assert {
         Mockito.when(entityManager.find(AccessTokenImpl.class, accessTokenId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        assertTrue("True expected.", AccessTokenDAO.find(entityManager, scopeId, accessTokenId) instanceof AccessToken);
+        Assert.assertTrue("True expected.", AccessTokenDAO.find(entityManager, scopeId, accessTokenId) instanceof AccessToken);
     }
 
     @Test(expected = NullPointerException.class)
@@ -229,8 +230,8 @@ public class AccessTokenDAOTest extends Assert {
         Mockito.when(entityManager.find(AccessTokenImpl.class, accessTokenId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", AccessTokenDAO.find(entityManager, null, accessTokenId) instanceof AccessToken);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessTokenDAO.find(entityManager, null, accessTokenId).getScopeId());
+        Assert.assertTrue("True expected.", AccessTokenDAO.find(entityManager, null, accessTokenId) instanceof AccessToken);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessTokenDAO.find(entityManager, null, accessTokenId).getScopeId());
     }
 
     @Test
@@ -238,8 +239,8 @@ public class AccessTokenDAOTest extends Assert {
         Mockito.when(entityManager.find(AccessTokenImpl.class, null)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
-        assertTrue("True expected.", AccessTokenDAO.find(entityManager, scopeId, null) instanceof AccessToken);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessTokenDAO.find(entityManager, scopeId, null).getScopeId());
+        Assert.assertTrue("True expected.", AccessTokenDAO.find(entityManager, scopeId, null) instanceof AccessToken);
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, AccessTokenDAO.find(entityManager, scopeId, null).getScopeId());
     }
 
     @Test
@@ -264,7 +265,7 @@ public class AccessTokenDAOTest extends Assert {
         Mockito.when(query.setParameter(parameterExpressionName.getName(), "token id")).thenReturn(query1);
         Mockito.when(query.getResultList()).thenReturn(list);
 
-        assertNull("Null expected.", AccessTokenDAO.findByTokenId(entityManager, "token id"));
+        Assert.assertNull("Null expected.", AccessTokenDAO.findByTokenId(entityManager, "token id"));
     }
 
     @Test
@@ -290,8 +291,8 @@ public class AccessTokenDAOTest extends Assert {
         Mockito.when(query1.setParameter(parameterExpressionName.getName(), "token id")).thenReturn(query2);
         Mockito.when(query1.getResultList()).thenReturn(list);
 
-        assertTrue("True expected.", AccessTokenDAO.findByTokenId(entityManager, "token id") instanceof AccessToken);
-        assertNotNull("NotNull expected.", AccessTokenDAO.findByTokenId(entityManager, "token id"));
+        Assert.assertTrue("True expected.", AccessTokenDAO.findByTokenId(entityManager, "token id") instanceof AccessToken);
+        Assert.assertNotNull("NotNull expected.", AccessTokenDAO.findByTokenId(entityManager, "token id"));
     }
 
     @Test(expected = NonUniqueResultException.class)
@@ -348,8 +349,8 @@ public class AccessTokenDAOTest extends Assert {
         Mockito.when(query1.setParameter(parameterExpressionName.getName(), null)).thenReturn(query2);
         Mockito.when(query1.getResultList()).thenReturn(list);
 
-        assertTrue("True expected.", AccessTokenDAO.findByTokenId(entityManager, null) instanceof AccessToken);
-        assertNotNull("NotNull expected.", AccessTokenDAO.findByTokenId(entityManager, null));
+        Assert.assertTrue("True expected.", AccessTokenDAO.findByTokenId(entityManager, null) instanceof AccessToken);
+        Assert.assertNotNull("NotNull expected.", AccessTokenDAO.findByTokenId(entityManager, null));
     }
 
     @Test
@@ -372,7 +373,7 @@ public class AccessTokenDAOTest extends Assert {
         Mockito.when(kapuaQuery.getFetchAttributes()).thenReturn(list);
         Mockito.when(entityManager.createQuery(criteriaQuery1)).thenReturn(query);
 
-        assertTrue("True expected.", AccessTokenDAO.query(entityManager, kapuaQuery) instanceof AccessTokenListResult);
+        Assert.assertTrue("True expected.", AccessTokenDAO.query(entityManager, kapuaQuery) instanceof AccessTokenListResult);
     }
 
     @Test(expected = NullPointerException.class)
@@ -421,7 +422,7 @@ public class AccessTokenDAOTest extends Assert {
         for (long number : longNumberList) {
             Mockito.doReturn(number).when(query).getSingleResult();
 
-            assertEquals("Expected and actual values should be the same.", number, AccessTokenDAO.count(entityManager, kapuaQuery));
+            Assert.assertEquals("Expected and actual values should be the same.", number, AccessTokenDAO.count(entityManager, kapuaQuery));
         }
     }
 
@@ -439,7 +440,7 @@ public class AccessTokenDAOTest extends Assert {
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(AccessTokenImpl.class, accessTokenId)).thenReturn(entityToFindOrDelete);
 
-        assertTrue("True expected.", AccessTokenDAO.delete(entityManager, scopeId, accessTokenId) instanceof AccessToken);
+        Assert.assertTrue("True expected.", AccessTokenDAO.delete(entityManager, scopeId, accessTokenId) instanceof AccessToken);
     }
 
     @Test(expected = NullPointerException.class)
@@ -451,7 +452,7 @@ public class AccessTokenDAOTest extends Assert {
     public void deleteNullScopeIdTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(AccessTokenImpl.class, accessTokenId)).thenReturn(entityToFindOrDelete);
 
-        assertTrue("True expected.", AccessTokenDAO.delete(entityManager, null, accessTokenId) instanceof AccessToken);
+        Assert.assertTrue("True expected.", AccessTokenDAO.delete(entityManager, null, accessTokenId) instanceof AccessToken);
     }
 
     @Test(expected = NullPointerException.class)

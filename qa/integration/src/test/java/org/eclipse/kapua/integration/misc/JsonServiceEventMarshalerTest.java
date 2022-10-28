@@ -26,8 +26,9 @@ import org.junit.experimental.categories.Category;
 
 import java.io.StringWriter;
 
+
 @Category(JUnitTests.class)
-public class JsonServiceEventMarshalerTest extends Assert {
+public class JsonServiceEventMarshalerTest {
 
     ServiceEvent serviceEvent;
     JsonServiceEventMarshaler jsonServiceEventMarshaler;
@@ -50,7 +51,7 @@ public class JsonServiceEventMarshalerTest extends Assert {
         stringWriter.write("{\n}");
         String expectedValues = stringWriter.toString();
         XmlUtil.setContextProvider(new TestJAXBContextProvider());
-        assertEquals("Expected and actual values should be the same!", expectedValues, jsonServiceEventMarshaler.marshal(serviceEvent));
+        Assert.assertEquals("Expected and actual values should be the same!", expectedValues, jsonServiceEventMarshaler.marshal(serviceEvent));
     }
 
     @Test
@@ -71,7 +72,7 @@ public class JsonServiceEventMarshalerTest extends Assert {
         serviceEvent.setNote("note");
 
         XmlUtil.setContextProvider(new TestJAXBContextProvider());
-        assertEquals("Expected and actual values should be the same!", expectedValues, jsonServiceEventMarshaler.marshal(serviceEvent));
+        Assert.assertEquals("Expected and actual values should be the same!", expectedValues, jsonServiceEventMarshaler.marshal(serviceEvent));
     }
 
     @Test(expected = NullPointerException.class)
@@ -90,14 +91,14 @@ public class JsonServiceEventMarshalerTest extends Assert {
                 "   \"note\" : \"note\"\n" +
                 "}");
 
-        assertEquals("Expected and actual values should be the same!", "id", elements.getId());
-        assertEquals("Expected and actual values should be the same!", "contextId", elements.getContextId());
-        assertEquals("Expected and actual values should be the same!", "entityType", elements.getEntityType());
-        assertEquals("Expected and actual values should be the same!", ServiceEvent.EventStatus.SENT, elements.getStatus());
+        Assert.assertEquals("Expected and actual values should be the same!", "id", elements.getId());
+        Assert.assertEquals("Expected and actual values should be the same!", "contextId", elements.getContextId());
+        Assert.assertEquals("Expected and actual values should be the same!", "entityType", elements.getEntityType());
+        Assert.assertEquals("Expected and actual values should be the same!", ServiceEvent.EventStatus.SENT, elements.getStatus());
     }
 
     @Test
     public void getContentTypeTest() {
-        assertEquals("Expected and actual values should be the same!", "application/json", jsonServiceEventMarshaler.getContentType());
+        Assert.assertEquals("Expected and actual values should be the same!", "application/json", jsonServiceEventMarshaler.getContentType());
     }
 }

@@ -25,8 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaMessageFactoryTest extends Assert {
+public class KapuaMessageFactoryTest {
 
     private KapuaMessageFactory kapuaMessageFactory;
 
@@ -39,28 +40,28 @@ public class KapuaMessageFactoryTest extends Assert {
     public void newMessage() throws Exception {
         KapuaMessage<?, ?> message = kapuaMessageFactory.newMessage();
 
-        assertNotNull(message);
+        Assert.assertNotNull(message);
     }
 
     @Test
     public void newChannel() throws Exception {
         KapuaChannel channel = kapuaMessageFactory.newChannel();
 
-        assertNotNull(channel);
+        Assert.assertNotNull(channel);
     }
 
     @Test
     public void newPayload() throws Exception {
         KapuaPayload payload = kapuaMessageFactory.newPayload();
 
-        assertNotNull(payload);
+        Assert.assertNotNull(payload);
     }
 
     @Test
     public void newPosition() throws Exception {
         KapuaPosition position = kapuaMessageFactory.newPosition();
 
-        assertNotNull(position);
+        Assert.assertNotNull(position);
     }
 
 }
