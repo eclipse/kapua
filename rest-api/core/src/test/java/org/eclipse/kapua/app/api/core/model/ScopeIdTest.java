@@ -25,8 +25,9 @@ import org.mockito.Mockito;
 import java.math.BigInteger;
 import java.util.Base64;
 
+
 @Category(JUnitTests.class)
-public class ScopeIdTest extends Assert {
+public class ScopeIdTest {
 
     @Test(expected = NullPointerException.class)
     public void scopeIdNullTest() {
@@ -41,14 +42,14 @@ public class ScopeIdTest extends Assert {
         Mockito.when(kapuaSession.getScopeId()).thenReturn(KapuaId.ONE);
         ScopeId scopeId = new ScopeId("_");
 
-        assertEquals("Expected and actual values should be the same.", BigInteger.ONE, scopeId.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", BigInteger.ONE, scopeId.getId());
     }
 
     @Test
     public void scopeIdDifferentIdsTest() {
         ScopeId scopeId = new ScopeId("scopeID");
 
-        assertEquals("Expected and actual values should be the same.", new BigInteger(Base64.getUrlDecoder().decode("scopeID")), scopeId.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", new BigInteger(Base64.getUrlDecoder().decode("scopeID")), scopeId.getId());
     }
 
     @Test(expected = SessionNotPopulatedException.class)
@@ -62,11 +63,11 @@ public class ScopeIdTest extends Assert {
         ScopeId scopeId = new ScopeId("scopeID");
 
         scopeId.setId(BigInteger.TEN);
-        assertEquals("Expected and actual values should be the same.", BigInteger.TEN, scopeId.getId());
-        assertEquals("Expected and actual values should be the same.", "10", scopeId.toString());
+        Assert.assertEquals("Expected and actual values should be the same.", BigInteger.TEN, scopeId.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", "10", scopeId.toString());
 
         scopeId.setId(null);
-        assertNull("Null expected.", scopeId.getId());
+        Assert.assertNull("Null expected.", scopeId.getId());
     }
 
     @Test(expected = NullPointerException.class)

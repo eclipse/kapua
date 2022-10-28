@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaExceptionWithoutBundleTest extends Assert {
+public class KapuaExceptionWithoutBundleTest {
 
     String expectedKapuaErrorMessagesBundle;
     Object argument1, argument2, argument3;
@@ -41,11 +42,11 @@ public class KapuaExceptionWithoutBundleTest extends Assert {
     public void kapuaExceptionWithoutBundleKapuaErrorCodeParameterTest() {
         for (KapuaErrorCode kapuaErrorCode : kapuaErrorCodes) {
             KapuaExceptionWithoutBundle kapuaExceptionWithoutBundle = new KapuaExceptionWithoutBundle(kapuaErrorCode);
-            assertEquals("Expected and actual values should be the same.", kapuaErrorCode, kapuaExceptionWithoutBundle.getCode());
-            assertNull("Null expected.", kapuaExceptionWithoutBundle.getCause());
-            assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getMessage());
-            assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getLocalizedMessage());
-            assertEquals("Expected and actual values should be the same.", expectedKapuaErrorMessagesBundle, kapuaExceptionWithoutBundle.getKapuaErrorMessagesBundle());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorCode, kapuaExceptionWithoutBundle.getCode());
+            Assert.assertNull("Null expected.", kapuaExceptionWithoutBundle.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getLocalizedMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedKapuaErrorMessagesBundle, kapuaExceptionWithoutBundle.getKapuaErrorMessagesBundle());
         }
     }
 
@@ -53,11 +54,11 @@ public class KapuaExceptionWithoutBundleTest extends Assert {
     public void kapuaExceptionWithoutBundleKapuaErrorCodeObjectParameterTest() {
         for (KapuaErrorCode kapuaErrorCode : kapuaErrorCodes) {
             KapuaExceptionWithoutBundle kapuaExceptionWithoutBundle = new KapuaExceptionWithoutBundle(kapuaErrorCode, argument1, argument2, argument3);
-            assertEquals("Expected and actual values should be the same.", kapuaErrorCode, kapuaExceptionWithoutBundle.getCode());
-            assertNull("Null expected.", kapuaExceptionWithoutBundle.getCause());
-            assertEquals("Expected and actual values should be the same.", "Error: " + argument1 + ", " + argument2 + ", " + argument3, kapuaExceptionWithoutBundle.getMessage());
-            assertEquals("Expected and actual values should be the same.", "Error: " + argument1 + ", " + argument2 + ", " + argument3, kapuaExceptionWithoutBundle.getLocalizedMessage());
-            assertEquals("Expected and actual values should be the same.", expectedKapuaErrorMessagesBundle, kapuaExceptionWithoutBundle.getKapuaErrorMessagesBundle());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorCode, kapuaExceptionWithoutBundle.getCode());
+            Assert.assertNull("Null expected.", kapuaExceptionWithoutBundle.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", "Error: " + argument1 + ", " + argument2 + ", " + argument3, kapuaExceptionWithoutBundle.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", "Error: " + argument1 + ", " + argument2 + ", " + argument3, kapuaExceptionWithoutBundle.getLocalizedMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedKapuaErrorMessagesBundle, kapuaExceptionWithoutBundle.getKapuaErrorMessagesBundle());
         }
     }
 
@@ -65,11 +66,11 @@ public class KapuaExceptionWithoutBundleTest extends Assert {
     public void kapuaExceptionWithoutBundleKapuaErrorCodeNullObjectParameterTest() {
         for (KapuaErrorCode kapuaErrorCode : kapuaErrorCodes) {
             KapuaExceptionWithoutBundle kapuaExceptionWithoutBundle = new KapuaExceptionWithoutBundle(kapuaErrorCode, null);
-            assertEquals("Expected and actual values should be the same.", kapuaErrorCode, kapuaExceptionWithoutBundle.getCode());
-            assertNull("Null expected.", kapuaExceptionWithoutBundle.getCause());
-            assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getMessage());
-            assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getLocalizedMessage());
-            assertEquals("Expected and actual values should be the same.", expectedKapuaErrorMessagesBundle, kapuaExceptionWithoutBundle.getKapuaErrorMessagesBundle());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorCode, kapuaExceptionWithoutBundle.getCode());
+            Assert.assertNull("Null expected.", kapuaExceptionWithoutBundle.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getLocalizedMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedKapuaErrorMessagesBundle, kapuaExceptionWithoutBundle.getKapuaErrorMessagesBundle());
         }
     }
 
@@ -78,11 +79,11 @@ public class KapuaExceptionWithoutBundleTest extends Assert {
         for (KapuaErrorCode kapuaErrorCode : kapuaErrorCodes) {
             for (Throwable throwable : throwables) {
                 KapuaExceptionWithoutBundle kapuaExceptionWithoutBundle = new KapuaExceptionWithoutBundle(kapuaErrorCode, throwable, argument1, argument2, argument3);
-                assertEquals("Expected and actual values should be the same.", kapuaErrorCode, kapuaExceptionWithoutBundle.getCode());
-                assertEquals("Expected and actual values should be the same.", throwable, kapuaExceptionWithoutBundle.getCause());
-                assertEquals("Expected and actual values should be the same.", "Error: " + argument1 + ", " + argument2 + ", " + argument3, kapuaExceptionWithoutBundle.getMessage());
-                assertEquals("Expected and actual values should be the same.", "Error: " + argument1 + ", " + argument2 + ", " + argument3, kapuaExceptionWithoutBundle.getLocalizedMessage());
-                assertEquals("Expected and actual values should be the same.", expectedKapuaErrorMessagesBundle, kapuaExceptionWithoutBundle.getKapuaErrorMessagesBundle());
+                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorCode, kapuaExceptionWithoutBundle.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaExceptionWithoutBundle.getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", "Error: " + argument1 + ", " + argument2 + ", " + argument3, kapuaExceptionWithoutBundle.getMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", "Error: " + argument1 + ", " + argument2 + ", " + argument3, kapuaExceptionWithoutBundle.getLocalizedMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedKapuaErrorMessagesBundle, kapuaExceptionWithoutBundle.getKapuaErrorMessagesBundle());
             }
         }
     }
@@ -92,11 +93,11 @@ public class KapuaExceptionWithoutBundleTest extends Assert {
         for (KapuaErrorCode kapuaErrorCode : kapuaErrorCodes) {
             for (Throwable throwable : throwables) {
                 KapuaExceptionWithoutBundle kapuaExceptionWithoutBundle = new KapuaExceptionWithoutBundle(kapuaErrorCode, throwable, null);
-                assertEquals("Expected and actual values should be the same.", kapuaErrorCode, kapuaExceptionWithoutBundle.getCode());
-                assertEquals("Expected and actual values should be the same.", throwable, kapuaExceptionWithoutBundle.getCause());
-                assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getMessage());
-                assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getLocalizedMessage());
-                assertEquals("Expected and actual values should be the same.", expectedKapuaErrorMessagesBundle, kapuaExceptionWithoutBundle.getKapuaErrorMessagesBundle());
+                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorCode, kapuaExceptionWithoutBundle.getCode());
+                Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaExceptionWithoutBundle.getCause());
+                Assert.assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", "Error: ", kapuaExceptionWithoutBundle.getLocalizedMessage());
+                Assert.assertEquals("Expected and actual values should be the same.", expectedKapuaErrorMessagesBundle, kapuaExceptionWithoutBundle.getKapuaErrorMessagesBundle());
             }
         }
     }

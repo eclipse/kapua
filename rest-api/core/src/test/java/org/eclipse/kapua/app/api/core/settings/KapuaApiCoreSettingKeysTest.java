@@ -17,12 +17,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class KapuaApiCoreSettingKeysTest extends Assert {
+public class KapuaApiCoreSettingKeysTest {
 
     @Test
     public void kapuaApiCoreSettingKeysTest(){
-        assertEquals("Expected and actual values should be the same.","api.path.param.scopeId.wildcard",KapuaApiCoreSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD.key());
-        assertEquals("Expected and actual values should be the same.","api.exception.stacktrace.show",KapuaApiCoreSettingKeys.API_EXCEPTION_STACKTRACE_SHOW.key());
+        Assert.assertEquals("Expected and actual values should be the same.","api.path.param.scopeId.wildcard",KapuaApiCoreSettingKeys.API_PATH_PARAM_SCOPEID_WILDCARD.key());
+        Assert.assertEquals("Expected and actual values should be the same.","api.exception.stacktrace.show",KapuaApiCoreSettingKeys.API_EXCEPTION_STACKTRACE_SHOW.key());
     }
 }

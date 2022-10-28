@@ -34,8 +34,9 @@ import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 
+
 @Category(JUnitTests.class)
-public class ListBodyWriterTest extends Assert {
+public class ListBodyWriterTest {
 
     ListBodyWriter listBodyWriter;
     Type genericType;
@@ -66,57 +67,57 @@ public class ListBodyWriterTest extends Assert {
 
     @Test
     public void isWriteableTest() {
-        assertTrue("True expected.", listBodyWriter.isWriteable(String.class, genericType, annotations, mediaType));
+        Assert.assertTrue("True expected.", listBodyWriter.isWriteable(String.class, genericType, annotations, mediaType));
     }
 
     @Test
     public void isWriteableNullTypeTest() {
-        assertTrue("True expected.", listBodyWriter.isWriteable(null, genericType, annotations, mediaType));
+        Assert.assertTrue("True expected.", listBodyWriter.isWriteable(null, genericType, annotations, mediaType));
     }
 
     @Test
     public void isWriteableNullGenericTypeTest() {
-        assertTrue("True expected.", listBodyWriter.isWriteable(String.class, null, annotations, mediaType));
+        Assert.assertTrue("True expected.", listBodyWriter.isWriteable(String.class, null, annotations, mediaType));
     }
 
     @Test
     public void isWriteableNullAnnotationsTest() {
-        assertTrue("True expected.", listBodyWriter.isWriteable(String.class, genericType, null, mediaType));
+        Assert.assertTrue("True expected.", listBodyWriter.isWriteable(String.class, genericType, null, mediaType));
     }
 
     @Test
     public void isWriteableNullMediaTypeTest() {
-        assertTrue("True expected.", listBodyWriter.isWriteable(String.class, genericType, annotations, null));
+        Assert.assertTrue("True expected.", listBodyWriter.isWriteable(String.class, genericType, annotations, null));
     }
 
     @Test
     public void getSizeTest() {
-        assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(list, String.class, genericType, annotations, mediaType));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(list, String.class, genericType, annotations, mediaType));
     }
 
     @Test
     public void getSizeNullListTest() {
-        assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(null, String.class, genericType, annotations, mediaType));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(null, String.class, genericType, annotations, mediaType));
     }
 
     @Test
     public void getSizeNullTypeTest() {
-        assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(list, null, genericType, annotations, mediaType));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(list, null, genericType, annotations, mediaType));
     }
 
     @Test
     public void getSizeNullGenericTypeTest() {
-        assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(list, String.class, null, annotations, mediaType));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(list, String.class, null, annotations, mediaType));
     }
 
     @Test
     public void getSizeNullAnnotationsTest() {
-        assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(list, String.class, genericType, null, mediaType));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(list, String.class, genericType, null, mediaType));
     }
 
     @Test
     public void getSizeNullMediaTypeTest() {
-        assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(list, String.class, genericType, annotations, null));
+        Assert.assertEquals("Expected and actual values should be the same.", 0, listBodyWriter.getSize(list, String.class, genericType, annotations, null));
     }
 
     @Test(expected = WebApplicationException.class)
@@ -147,7 +148,7 @@ public class ListBodyWriterTest extends Assert {
         try {
             listBodyWriter.writeTo(list, String.class, Mockito.mock(Type.class), annotations, mediaType, httpHeaders, outputStream);
         } catch (Exception e) {
-            fail("Exception not expected.");
+            Assert.fail("Exception not expected.");
         }
     }
 

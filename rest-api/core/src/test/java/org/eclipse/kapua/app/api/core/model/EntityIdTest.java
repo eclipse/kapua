@@ -19,8 +19,9 @@ import org.junit.experimental.categories.Category;
 
 import java.math.BigInteger;
 
+
 @Category(JUnitTests.class)
-public class EntityIdTest extends Assert {
+public class EntityIdTest {
 
     @Test
     public void entityIdTest() {
@@ -30,8 +31,8 @@ public class EntityIdTest extends Assert {
         for (int i = 0; i < compactEntityId.length; i++) {
             EntityId entityId = new EntityId(compactEntityId[i]);
 
-            assertEquals("Expected and actual values should be the same.", expectedValues[i], entityId.getId().toString());
-            assertEquals("Expected and actual values should be the same.", expectedValues[i], entityId.toString());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedValues[i], entityId.getId().toString());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedValues[i], entityId.toString());
         }
     }
 
@@ -49,15 +50,15 @@ public class EntityIdTest extends Assert {
     public void setAndGetIdToStringTest() {
         EntityId entityId = new EntityId("111");
 
-        assertEquals("Expected and actual values should be the same.", "-10403", entityId.getId().toString());
-        assertEquals("Expected and actual values should be the same.", "-10403", entityId.toString());
+        Assert.assertEquals("Expected and actual values should be the same.", "-10403", entityId.getId().toString());
+        Assert.assertEquals("Expected and actual values should be the same.", "-10403", entityId.toString());
 
         entityId.setId(BigInteger.ONE);
-        assertEquals("Expected and actual values should be the same.", "1", entityId.getId().toString());
-        assertEquals("Expected and actual values should be the same.", "1", entityId.toString());
+        Assert.assertEquals("Expected and actual values should be the same.", "1", entityId.getId().toString());
+        Assert.assertEquals("Expected and actual values should be the same.", "1", entityId.toString());
 
         entityId.setId(null);
-        assertNull("Null expected.", entityId.getId());
+        Assert.assertNull("Null expected.", entityId.getId());
     }
 
     @Test(expected = NullPointerException.class)

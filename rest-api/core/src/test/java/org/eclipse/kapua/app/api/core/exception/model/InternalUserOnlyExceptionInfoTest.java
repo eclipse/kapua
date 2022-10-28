@@ -21,8 +21,9 @@ import org.junit.experimental.categories.Category;
 
 import javax.ws.rs.core.Response;
 
+
 @Category(JUnitTests.class)
-public class InternalUserOnlyExceptionInfoTest extends Assert {
+public class InternalUserOnlyExceptionInfoTest {
 
     Response.Status[] statusList;
     int[] expectedStatusCodes;
@@ -47,18 +48,18 @@ public class InternalUserOnlyExceptionInfoTest extends Assert {
     public void internalUserOnlyExceptionInfoWithoutParametersTest() {
         InternalUserOnlyExceptionInfo internalUserOnlyExceptionInfo = new InternalUserOnlyExceptionInfo();
 
-        assertNull("Null expected.", internalUserOnlyExceptionInfo.getKapuaErrorCode());
-        assertEquals("Expected and actual values should be the same.", 0, internalUserOnlyExceptionInfo.getHttpErrorCode());
-        assertNull("Null expected.", internalUserOnlyExceptionInfo.getMessage());
+        Assert.assertNull("Null expected.", internalUserOnlyExceptionInfo.getKapuaErrorCode());
+        Assert.assertEquals("Expected and actual values should be the same.", 0, internalUserOnlyExceptionInfo.getHttpErrorCode());
+        Assert.assertNull("Null expected.", internalUserOnlyExceptionInfo.getMessage());
     }
 
     @Test
     public void internalUserOnlyExceptionInfoStatusExceptionTest() {
         for (int i = 0; i < statusList.length; i++) {
             InternalUserOnlyExceptionInfo internalUserOnlyExceptionInfo = new InternalUserOnlyExceptionInfo(statusList[i], internalUserOnlyException);
-            assertEquals("Expected and actual values should be the same.", "INTERNAL_USER_ONLY", internalUserOnlyExceptionInfo.getKapuaErrorCode());
-            assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], internalUserOnlyExceptionInfo.getHttpErrorCode());
-            assertEquals("Expected and actual values should be the same.", "This action can be performed only by internal users.", internalUserOnlyExceptionInfo.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", "INTERNAL_USER_ONLY", internalUserOnlyExceptionInfo.getKapuaErrorCode());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], internalUserOnlyExceptionInfo.getHttpErrorCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "This action can be performed only by internal users.", internalUserOnlyExceptionInfo.getMessage());
         }
     }
 

@@ -18,8 +18,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class MoxyJsonConfigContextResolverTest extends Assert {
+public class MoxyJsonConfigContextResolverTest {
 
     @Test
     public void moxyJsonConfigContextResolverTest() {
@@ -27,9 +28,9 @@ public class MoxyJsonConfigContextResolverTest extends Assert {
         MoxyJsonConfigContextResolver moxyJsonConfigContextResolver = new MoxyJsonConfigContextResolver();
 
         for (Class clazz : classes) {
-            assertTrue("True expected.", moxyJsonConfigContextResolver.getContext(clazz) instanceof MoxyJsonConfig);
-            assertEquals("Expected and actual values should be the same.", moxyJsonConfigContextResolver.config, moxyJsonConfigContextResolver.getContext(clazz));
-            assertEquals("Expected and actual values should be the same.", "{jaxb.formatted.output=false, eclipselink.json.namespace-separator=., eclipselink.json.include-root=false, eclipselink.json.wrapper-as-array-name=true, eclipselink.json.marshal-empty-collections=true}", moxyJsonConfigContextResolver.config.getMarshallerProperties().toString());
+            Assert.assertTrue("True expected.", moxyJsonConfigContextResolver.getContext(clazz) instanceof MoxyJsonConfig);
+            Assert.assertEquals("Expected and actual values should be the same.", moxyJsonConfigContextResolver.config, moxyJsonConfigContextResolver.getContext(clazz));
+            Assert.assertEquals("Expected and actual values should be the same.", "{jaxb.formatted.output=false, eclipselink.json.namespace-separator=., eclipselink.json.include-root=false, eclipselink.json.wrapper-as-array-name=true, eclipselink.json.marshal-empty-collections=true}", moxyJsonConfigContextResolver.config.getMarshallerProperties().toString());
         }
     }
 }

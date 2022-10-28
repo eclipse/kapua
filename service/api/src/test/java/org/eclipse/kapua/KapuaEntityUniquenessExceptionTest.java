@@ -24,8 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 
+
 @Category(JUnitTests.class)
-public class KapuaEntityUniquenessExceptionTest extends Assert {
+public class KapuaEntityUniquenessExceptionTest {
 
     String[] entityType;
     List<Map.Entry<String, Object>> uniquesFieldValues;
@@ -45,11 +46,11 @@ public class KapuaEntityUniquenessExceptionTest extends Assert {
     public void kapuaEntityUniquenessExceptionTest() {
         for (String type : entityType) {
             KapuaEntityUniquenessException kapuaEntityUniquenessException1 = new KapuaEntityUniquenessException(type, uniquesFieldValues);
-            assertEquals("Expected and actual values should be the same.", type, kapuaEntityUniquenessException1.getEntityType());
-            assertEquals("Expected and actual values should be the same.", uniquesFieldValues, kapuaEntityUniquenessException1.getUniquesFieldValues());
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_UNIQUENESS, kapuaEntityUniquenessException1.getCode());
-            assertEquals("Expected and actual values should be the same.", "Error: " + uniquesFieldValues, kapuaEntityUniquenessException1.getMessage());
-            assertNull("Null expected.", kapuaEntityUniquenessException1.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", type, kapuaEntityUniquenessException1.getEntityType());
+            Assert.assertEquals("Expected and actual values should be the same.", uniquesFieldValues, kapuaEntityUniquenessException1.getUniquesFieldValues());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_UNIQUENESS, kapuaEntityUniquenessException1.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "Error: " + uniquesFieldValues, kapuaEntityUniquenessException1.getMessage());
+            Assert.assertNull("Null expected.", kapuaEntityUniquenessException1.getCause());
         }
     }
 
@@ -57,11 +58,11 @@ public class KapuaEntityUniquenessExceptionTest extends Assert {
     public void kapuaEntityUniquenessExceptionNullFieldValuesTest() {
         for (String type : entityType) {
             KapuaEntityUniquenessException kapuaEntityUniquenessException2 = new KapuaEntityUniquenessException(type, null);
-            assertEquals("Expected and actual values should be the same.", type, kapuaEntityUniquenessException2.getEntityType());
-            assertNull("Null expected.", kapuaEntityUniquenessException2.getUniquesFieldValues());
-            assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_UNIQUENESS, kapuaEntityUniquenessException2.getCode());
-            assertEquals("Expected and actual values should be the same.", "Error: null", kapuaEntityUniquenessException2.getMessage());
-            assertNull("Null expected.", kapuaEntityUniquenessException2.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", type, kapuaEntityUniquenessException2.getEntityType());
+            Assert.assertNull("Null expected.", kapuaEntityUniquenessException2.getUniquesFieldValues());
+            Assert.assertEquals("Expected and actual values should be the same.", KapuaErrorCodes.ENTITY_UNIQUENESS, kapuaEntityUniquenessException2.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", "Error: null", kapuaEntityUniquenessException2.getMessage());
+            Assert.assertNull("Null expected.", kapuaEntityUniquenessException2.getCause());
         }
     }
 

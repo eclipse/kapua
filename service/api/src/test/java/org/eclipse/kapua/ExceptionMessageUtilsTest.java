@@ -25,8 +25,9 @@ import java.lang.reflect.Modifier;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
+
 @Category(JUnitTests.class)
-public class ExceptionMessageUtilsTest extends Assert {
+public class ExceptionMessageUtilsTest {
 
     String[] resourceBundleName;
     Locale locale;
@@ -52,7 +53,7 @@ public class ExceptionMessageUtilsTest extends Assert {
     @Test
     public void exceptionMessageUtilsTest() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<ExceptionMessageUtils> exceptionMessageUtils = ExceptionMessageUtils.class.getDeclaredConstructor();
-        assertTrue(Modifier.isPrivate(exceptionMessageUtils.getModifiers()));
+        Assert.assertTrue(Modifier.isPrivate(exceptionMessageUtils.getModifiers()));
         exceptionMessageUtils.setAccessible(true);
         exceptionMessageUtils.newInstance();
     }
@@ -60,14 +61,14 @@ public class ExceptionMessageUtilsTest extends Assert {
     @Test
     public void getLocalizedMessageTest() {
         for (int i = 0; i < resourceBundleName.length; i++) {
-            assertEquals("Expected and actual values should be the same.", kapuaGenericMessageWithObject[i], ExceptionMessageUtils.getLocalizedMessage(resourceBundleName[i], locale, kapuaErrorCode, objectList));
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaGenericMessageWithObject[i], ExceptionMessageUtils.getLocalizedMessage(resourceBundleName[i], locale, kapuaErrorCode, objectList));
         }
     }
 
     @Test
     public void getLocalizedMessageEmptyObjectListTest() {
         for (int i = 0; i < resourceBundleName.length; i++) {
-            assertEquals("Expected and actual values should be the same.", kapuaGenericMessage[i], ExceptionMessageUtils.getLocalizedMessage(resourceBundleName[i], locale, kapuaErrorCode, emptyObjectList));
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaGenericMessage[i], ExceptionMessageUtils.getLocalizedMessage(resourceBundleName[i], locale, kapuaErrorCode, emptyObjectList));
         }
     }
 
@@ -97,12 +98,12 @@ public class ExceptionMessageUtilsTest extends Assert {
     @Test
     public void getLocalizedMessageNullObjectTest() {
         for (int i = 0; i < resourceBundleName.length; i++) {
-            assertEquals("Expected and actual values should be the same.", kapuaGenericMessage[i], ExceptionMessageUtils.getLocalizedMessage(resourceBundleName[i], locale, kapuaErrorCode, null));
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaGenericMessage[i], ExceptionMessageUtils.getLocalizedMessage(resourceBundleName[i], locale, kapuaErrorCode, null));
         }
     }
 
     @Test
     public void getLocalizedMessageNullKapuaErrorCodeSecondTest() {
-        assertEquals("Expected and actual values should be the same.", kapuaGenericMessageWithObject[1], ExceptionMessageUtils.getLocalizedMessage(resourceBundleName[1], locale, null, objectList));
+        Assert.assertEquals("Expected and actual values should be the same.", kapuaGenericMessageWithObject[1], ExceptionMessageUtils.getLocalizedMessage(resourceBundleName[1], locale, null, objectList));
     }
 }
