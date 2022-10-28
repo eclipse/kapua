@@ -23,8 +23,9 @@ import org.junit.experimental.categories.Category;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @Category(JUnitTests.class)
-public class ServiceComponentConfigurationImplTest extends Assert {
+public class ServiceComponentConfigurationImplTest {
 
     ServiceComponentConfigurationImpl serviceComponentConfiguration;
 
@@ -36,90 +37,90 @@ public class ServiceComponentConfigurationImplTest extends Assert {
     @Test
     public void createInstanceWithSecondConstructorTest() {
         ServiceComponentConfigurationImpl componentConfiguration = new ServiceComponentConfigurationImpl("12");
-        assertEquals(componentConfiguration.getId(), "12");
+        Assert.assertEquals(componentConfiguration.getId(), "12");
     }
 
     @Test
     public void getIdIfNullTest() {
-        assertNull(serviceComponentConfiguration.getId());
+        Assert.assertNull(serviceComponentConfiguration.getId());
     }
 
     @Test
     public void getIdIfIsSetTest() {
         serviceComponentConfiguration.setId("1");
-        assertEquals(serviceComponentConfiguration.getId(), "1");
+        Assert.assertEquals(serviceComponentConfiguration.getId(), "1");
     }
 
     @Test
     public void setIdToNullValueTest() {
         serviceComponentConfiguration.setId(null);
-        assertNull(serviceComponentConfiguration.getId());
+        Assert.assertNull(serviceComponentConfiguration.getId());
     }
 
     @Test
     public void setIdToLargeValueTest() {
         serviceComponentConfiguration.setId("12312312312312331232313123123123");
-        assertEquals(serviceComponentConfiguration.getId(), "12312312312312331232313123123123");
+        Assert.assertEquals(serviceComponentConfiguration.getId(), "12312312312312331232313123123123");
     }
 
     @Test
     public void setIdToSymbolsTest() {
         serviceComponentConfiguration.setId("@!#");
-        assertEquals(serviceComponentConfiguration.getId(), "@!#");
+        Assert.assertEquals(serviceComponentConfiguration.getId(), "@!#");
     }
 
     @Test
     public void setIdToEmptyStringTest() {
         serviceComponentConfiguration.setId("");
-        assertEquals(serviceComponentConfiguration.getId(), "");
+        Assert.assertEquals(serviceComponentConfiguration.getId(), "");
     }
 
     @Test
     public void getNameIfNullTest() {
-        assertNull(serviceComponentConfiguration.getName());
+        Assert.assertNull(serviceComponentConfiguration.getName());
     }
 
     @Test
     public void setNameIfNotNullTest() {
         serviceComponentConfiguration.setName("name");
-        assertEquals(serviceComponentConfiguration.getName(), "name");
+        Assert.assertEquals(serviceComponentConfiguration.getName(), "name");
     }
 
     @Test
     public void setNameToNullTest() {
         serviceComponentConfiguration.setName(null);
-        assertNull(serviceComponentConfiguration.getName());
+        Assert.assertNull(serviceComponentConfiguration.getName());
     }
 
     @Test
     public void setNameToNameThatContainsSpacesTest() {
         serviceComponentConfiguration.setName("regular Name");
-        assertEquals(serviceComponentConfiguration.getName(), "regular Name");
+        Assert.assertEquals(serviceComponentConfiguration.getName(), "regular Name");
     }
 
     @Test
     public void setNameToNameThatContainsSymbolsTest() {
         serviceComponentConfiguration.setName("regular Name !$%&/&@");
-        assertEquals(serviceComponentConfiguration.getName(), "regular Name !$%&/&@");
+        Assert.assertEquals(serviceComponentConfiguration.getName(), "regular Name !$%&/&@");
     }
 
     @Test
     public void setDefinitionToNullTest() {
         serviceComponentConfiguration.setDefinition(null);
-        assertNull(serviceComponentConfiguration.getDefinition());
+        Assert.assertNull(serviceComponentConfiguration.getDefinition());
     }
 
     @Test
     public void setDefinitionToRegularValueTest() {
         KapuaTocd tocd = new TocdImpl();
         serviceComponentConfiguration.setDefinition(tocd);
-        assertEquals(serviceComponentConfiguration.getDefinition(), tocd);
+        Assert.assertEquals(serviceComponentConfiguration.getDefinition(), tocd);
     }
 
     @Test
     public void setPropertiesToNullTest() {
         serviceComponentConfiguration.setProperties(null);
-        assertNull(serviceComponentConfiguration.getProperties());
+        Assert.assertNull(serviceComponentConfiguration.getProperties());
     }
 
     @Test
@@ -130,6 +131,6 @@ public class ServiceComponentConfigurationImplTest extends Assert {
         properties.put("property3", 'c');
         properties.put("property4", (double)10);
         serviceComponentConfiguration.setProperties(properties);
-        assertEquals(properties, serviceComponentConfiguration.getProperties());
+        Assert.assertEquals(properties, serviceComponentConfiguration.getProperties());
     }
 }

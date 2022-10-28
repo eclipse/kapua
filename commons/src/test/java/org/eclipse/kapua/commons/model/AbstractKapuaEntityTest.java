@@ -28,8 +28,9 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.Random;
 
+
 @Category(JUnitTests.class)
-public class AbstractKapuaEntityTest extends Assert {
+public class AbstractKapuaEntityTest {
 
     private final static Random RANDOM = RandomUtils.getInstance();
 
@@ -60,9 +61,9 @@ public class AbstractKapuaEntityTest extends Assert {
         KapuaId scopeIdNull = new KapuaEid();
         KapuaId scopeId = new KapuaEid(eid);
         kapuaEntity.setScopeId(scopeIdNull);
-        assertEquals("Expected and actual values should be the same!", scopeIdNull, kapuaEntity.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same!", scopeIdNull, kapuaEntity.getScopeId());
         kapuaEntity.setScopeId(scopeId);
-        assertEquals("Expected and actual values should be the same!", scopeId, kapuaEntity.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same!", scopeId, kapuaEntity.getScopeId());
 
     }
 
@@ -74,10 +75,10 @@ public class AbstractKapuaEntityTest extends Assert {
         kapuaEntity.setCreatedBy(new KapuaEid());
         kapuaEntity.setCreatedOn(new Date());
         AbstractKapuaEntity kapuaCopyEntity = new ActualKapuaEntity(kapuaEntity);
-        assertEquals("Expected and actual values should be the same!", kapuaEntity.getId(), kapuaCopyEntity.getId());
-        assertEquals("Expected and actual values should be the same!", kapuaEntity.getScopeId(), kapuaCopyEntity.getScopeId());
-        assertEquals("Expected and actual values should be the same!", kapuaEntity.getCreatedBy(), kapuaCopyEntity.getCreatedBy());
-        assertEquals("Expected and actual values should be the same!", kapuaEntity.getCreatedOn(), kapuaCopyEntity.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same!", kapuaEntity.getId(), kapuaCopyEntity.getId());
+        Assert.assertEquals("Expected and actual values should be the same!", kapuaEntity.getScopeId(), kapuaCopyEntity.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same!", kapuaEntity.getCreatedBy(), kapuaCopyEntity.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same!", kapuaEntity.getCreatedOn(), kapuaCopyEntity.getCreatedOn());
     }
 
     @Test
@@ -89,8 +90,8 @@ public class AbstractKapuaEntityTest extends Assert {
         Mockito.when(kapuaSession.getUserId()).thenReturn(new KapuaEid(eid));
         KapuaSecurityUtils.setSession(kapuaSession);
         kapuaEntity.prePersistsAction();
-        assertNotNull("Not Null expected!", kapuaEntity.getId());
-        assertNotNull("Not Null expected!", kapuaEntity.getCreatedBy());
-        assertNotNull("Not Null expected!", kapuaEntity.getCreatedOn());
+        Assert.assertNotNull("Not Null expected!", kapuaEntity.getId());
+        Assert.assertNotNull("Not Null expected!", kapuaEntity.getCreatedBy());
+        Assert.assertNotNull("Not Null expected!", kapuaEntity.getCreatedOn());
     }
 }

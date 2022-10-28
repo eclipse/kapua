@@ -23,8 +23,9 @@ import org.junit.experimental.categories.Category;
 import java.lang.reflect.Field;
 import java.util.Stack;
 
+
 @Category(JUnitTests.class)
-public class ServiceEventScopeTest extends Assert {
+public class ServiceEventScopeTest {
 
     ServiceEvent serviceEvent;
 
@@ -39,7 +40,7 @@ public class ServiceEventScopeTest extends Assert {
         Field privateEventContextThdLocal = ServiceEventScope.class.getDeclaredField("eventContextThdLocal");
         privateEventContextThdLocal.setAccessible(true);
         ThreadLocal<Stack<ServiceEvent>> fieldValue = (ThreadLocal<Stack<ServiceEvent>>) privateEventContextThdLocal.get(null);
-        assertNotNull(fieldValue.get().peek().getContextId());
+        Assert.assertNotNull(fieldValue.get().peek().getContextId());
     }
 
     @Test(expected = KapuaRuntimeException.class)
@@ -58,12 +59,12 @@ public class ServiceEventScopeTest extends Assert {
         privateEventContextThdLocal.setAccessible(true);
         ThreadLocal<Stack<ServiceEvent>> fieldValue = (ThreadLocal<Stack<ServiceEvent>>) privateEventContextThdLocal.get(null);
         ServiceEventScope.end();
-        assertNull("not_null", fieldValue.get());
+        Assert.assertNull("not_null", fieldValue.get());
     }
 
     @Test
     public void serviceEventSetAndGetRegularTest() {
         ServiceEventScope.set(serviceEvent);
-        assertEquals("not_equals", serviceEvent, ServiceEventScope.get());
+        Assert.assertEquals("not_equals", serviceEvent, ServiceEventScope.get());
     }
 }

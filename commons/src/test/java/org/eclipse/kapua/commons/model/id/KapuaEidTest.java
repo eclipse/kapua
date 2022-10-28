@@ -26,9 +26,10 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 
+
 @Category(JUnitTests.class)
 @RunWith(value = Parameterized.class)
-public class KapuaEidTest extends Assert {
+public class KapuaEidTest {
 
     private final static Random RANDOM = RandomUtils.getInstance();
 
@@ -49,7 +50,7 @@ public class KapuaEidTest extends Assert {
     public void kapuaEidConstructorTest() {
         KapuaId id = new KapuaEid();
         KapuaEid kapuaEid = new KapuaEid(id);
-        assertEquals("Expected and actual values should be the same!", id.getId(), kapuaEid.getId());
+        Assert.assertEquals("Expected and actual values should be the same!", id.getId(), kapuaEid.getId());
     }
 
     @Test
@@ -57,16 +58,16 @@ public class KapuaEidTest extends Assert {
         KapuaEid kapuaEid = new KapuaEid(eid);
         KapuaEid parsedKapuaEid = KapuaEid.parseKapuaId(kapuaEid);
 
-        assertTrue(kapuaEid == parsedKapuaEid);
-        assertEquals(kapuaEid, parsedKapuaEid);
-        assertEquals(eid, kapuaEid.getId());
-        assertEquals(eid.toString(), kapuaEid.toString());
+        Assert.assertTrue(kapuaEid == parsedKapuaEid);
+        Assert.assertEquals(kapuaEid, parsedKapuaEid);
+        Assert.assertEquals(eid, kapuaEid.getId());
+        Assert.assertEquals(eid.toString(), kapuaEid.toString());
 
         KapuaId kapuaIdAny = KapuaId.ANY;
         KapuaEid parsedKapuaIdAny = KapuaEid.parseKapuaId(kapuaIdAny);
 
-        assertTrue(parsedKapuaIdAny != kapuaIdAny);
-        assertEquals(parsedKapuaIdAny.getId(), kapuaIdAny.getId());
+        Assert.assertTrue(parsedKapuaIdAny != kapuaIdAny);
+        Assert.assertEquals(parsedKapuaIdAny.getId(), kapuaIdAny.getId());
     }
 
     @Test
@@ -74,25 +75,25 @@ public class KapuaEidTest extends Assert {
         KapuaEid kid = new KapuaEid(eid);
         String sid = kid.toCompactId();
 
-        assertEquals(eid, kid.getId());
-        assertEquals(eid.toString(), kid.toString());
+        Assert.assertEquals(eid, kid.getId());
+        Assert.assertEquals(eid.toString(), kid.toString());
 
         KapuaEid kid1 = KapuaEid.parseCompactId(sid);
-        assertEquals(eid, kid1.getId());
-        assertEquals(kid.toString(), kid1.toString());
-        assertEquals(kid.toCompactId(), kid1.toCompactId());
+        Assert.assertEquals(eid, kid1.getId());
+        Assert.assertEquals(kid.toString(), kid1.toString());
+        Assert.assertEquals(kid.toCompactId(), kid1.toCompactId());
     }
 
     @Test
     public void getIdTest() {
         KapuaEid kapuaEid = new KapuaEid(eid);
-        assertEquals(eid, kapuaEid.getId());
+        Assert.assertEquals(eid, kapuaEid.getId());
     }
 
     @Test
     public void toStringTest() {
         KapuaEid kapuaEid = new KapuaEid(eid);
-        assertEquals(eid.toString(), kapuaEid.toString());
+        Assert.assertEquals(eid.toString(), kapuaEid.toString());
     }
 
     @Test
@@ -105,8 +106,8 @@ public class KapuaEidTest extends Assert {
         int actualHashNull = kapuaEidNull.hashCode();
         int expectedHashNull = 31;
 
-        assertEquals("eid != null", expectedHash, actualHash);
-        assertEquals("eid == null", expectedHashNull, actualHashNull);
+        Assert.assertEquals("eid != null", expectedHash, actualHash);
+        Assert.assertEquals("eid == null", expectedHashNull, actualHashNull);
     }
 
     @Test
@@ -118,16 +119,16 @@ public class KapuaEidTest extends Assert {
         KapuaEid kapuaEidOtherId = new KapuaEid(otherId);
         KapuaEid kapuaEidSameId = new KapuaEid(eid);
 
-        assertTrue("Expected true", kapuaEid.equals(kapuaEid));
-        assertFalse("Expected false", kapuaEid.equals(null));
+        Assert.assertTrue("Expected true", kapuaEid.equals(kapuaEid));
+        Assert.assertFalse("Expected false", kapuaEid.equals(null));
 
         Object[] values = new Object[]{"name", 1, 's', 1.25f, 1.50d, 3L, shortNum, false};
         for (Object object : values) {
-            assertFalse("Expected false", kapuaEid.equals(object));
+            Assert.assertFalse("Expected false", kapuaEid.equals(object));
         }
 
-        assertFalse("Expected false", kapuaEidNull.equals(kapuaEid));
-        assertFalse("Expected false", kapuaEid.equals(kapuaEidOtherId));
-        assertTrue("Expected true", kapuaEid.equals(kapuaEidSameId));
+        Assert.assertFalse("Expected false", kapuaEidNull.equals(kapuaEid));
+        Assert.assertFalse("Expected false", kapuaEid.equals(kapuaEidOtherId));
+        Assert.assertTrue("Expected true", kapuaEid.equals(kapuaEidSameId));
     }
 }
