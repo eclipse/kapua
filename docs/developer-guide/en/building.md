@@ -39,7 +39,7 @@ If you want to manually enter this association, execute this command:
 `echo "127.0.0.1 message-broker" | sudo tee -a /etc/hosts`
 
 The aforementioned script is located under 'qa' folder and it's called 'RunKapuaTests.sh'.
-Launch it in order to build Kapua executing all the tests.
+Launch it in order to build Kapua executing all the tests. Integration tests are divided by category to offer maximum error-check-granularity. 
 
 Note: there are 2 maven profiles than can be used in the building options above
 1. The "console" profile allows building the web console if needed.
