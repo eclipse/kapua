@@ -70,8 +70,8 @@
 
         <!-- External Dependencies -->
         <dependency>
-            <groupId>org.apache.sanselan</groupId>
-            <artifactId>sanselan</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-imaging</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
