@@ -19,8 +19,9 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.common.collect.Sets;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.sanselan.ImageFormat;
-import org.apache.sanselan.Sanselan;
+import org.apache.commons.imaging.ImageFormat;
+import org.apache.commons.imaging.ImageFormats;
+import org.apache.commons.imaging.Imaging;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
 import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
@@ -633,14 +634,14 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
                     LOG.info("Downloaded file: {}", tmpFile);
 
                     // Image metadata content checks
-                    ImageFormat imgFormat = Sanselan.guessFormat(tmpFile);
+                    ImageFormat imgFormat = Imaging.guessFormat(tmpFile);
 
-                    if (imgFormat.equals(ImageFormat.IMAGE_FORMAT_BMP) ||
-                            imgFormat.equals(ImageFormat.IMAGE_FORMAT_GIF) ||
-                            imgFormat.equals(ImageFormat.IMAGE_FORMAT_JPEG) ||
-                            imgFormat.equals(ImageFormat.IMAGE_FORMAT_PNG)) {
-                        LOG.info("Detected image format: {}", imgFormat.name);
-                    } else if (imgFormat.equals(ImageFormat.IMAGE_FORMAT_UNKNOWN)) {
+                    if (imgFormat.equals(ImageFormats.BMP) ||
+                            imgFormat.equals(ImageFormats.GIF) ||
+                            imgFormat.equals(ImageFormats.JPEG) ||
+                            imgFormat.equals(ImageFormats.PNG)) {
+                        LOG.info("Detected image format: {}", imgFormat.getName());
+                    } else if (imgFormat.equals(ImageFormats.UNKNOWN)) {
                         LOG.error("Unknown file format for URL: {}", iconResource);
                         throw new IOException("Unknown file format for URL: " + iconResource);
                     } else {
