@@ -41,6 +41,7 @@
         <commons-configuration.version>1.9</commons-configuration.version>
         <commons-collections.version>3.2.2</commons-collections.version>
         <commons-fileupload.versison>1.4</commons-fileupload.versison>
+        <commons-imaging.version>1.0-alpha3</commons-imaging.version>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang.version>3.4</commons-lang.version>
         <commons-logging.version>1.2</commons-logging.version>
@@ -1217,6 +1218,11 @@
                 <version>${commons-collections.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-imaging</artifactId>
+                <version>${commons-imaging.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
@@ -1237,6 +1243,7 @@
                 <version>${commons-pool.version}</version>
             </dependency>
 
+            <!-- Apache Httpcomponents -->
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
