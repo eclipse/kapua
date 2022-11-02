@@ -17,6 +17,7 @@ import com.warrenstrange.googleauth.GoogleAuthenticatorConfig;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
+import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
@@ -30,23 +31,24 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An {@link MfaAuthenticator} implementation that wraps secret code generation and authentication methods.
+ * {@link MfaAuthenticator} implementation.
  *
+ * @since 1.3.0
  */
 public class MfaAuthenticatorImpl implements MfaAuthenticator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MfaAuthenticatorImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MfaAuthenticatorImpl.class);
 
+    private static final KapuaAuthenticationSetting AUTHENTICATION_SETTING = KapuaAuthenticationSetting.getInstance();
     private static final GoogleAuthenticatorConfig GOOGLE_AUTHENTICATOR_CONFIG;
 
     static {
-        // settings
-        KapuaAuthenticationSetting setting = KapuaAuthenticationSetting.getInstance();
-        int timeStepSize = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TIME_STEP_SIZE);
+        // Setup of Google Authenticator Configs
+        int timeStepSize = AUTHENTICATION_SETTING.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_TIME_STEP_SIZE);
         long timeStepSizeInMillis = TimeUnit.SECONDS.toMillis(timeStepSize);
-        int windowSize = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_WINDOW_SIZE);
-        int scratchCodeNumber = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_SCRATCH_CODES_NUMBER);
-        int codeDigitsNumber = setting.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_CODE_DIGITS_NUMBER);
+        int windowSize = AUTHENTICATION_SETTING.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_WINDOW_SIZE);
+        int scratchCodeNumber = AUTHENTICATION_SETTING.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_SCRATCH_CODES_NUMBER);
+        int codeDigitsNumber = AUTHENTICATION_SETTING.getInt(KapuaAuthenticationSettingKeys.AUTHENTICATION_MFA_CODE_DIGITS_NUMBER);
 
         try {
             ArgumentValidator.notNegative(timeStepSizeInMillis, "timeStepSizeInMillis");
@@ -55,16 +57,30 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
             ArgumentValidator.numRange(codeDigitsNumber, 6, 8, "codeDigitsNumber");
 
             GOOGLE_AUTHENTICATOR_CONFIG = new GoogleAuthenticatorConfig.GoogleAuthenticatorConfigBuilder()
-                    .setTimeStepSizeInMillis(timeStepSizeInMillis) // the time step size, in milliseconds
-                    .setWindowSize(windowSize)  // the number of windows of size timeStepSizeInMillis checked during the validation
-                    .setNumberOfScratchCodes(scratchCodeNumber)  // number of scratch codes
-                    .setCodeDigits(codeDigitsNumber)  // the number of digits in the generated code
+                    .setTimeStepSizeInMillis(timeStepSizeInMillis) // The time step size, in milliseconds
+                    .setWindowSize(windowSize)  // The number of windows of size timeStepSizeInMillis checked during the validation
+                    .setNumberOfScratchCodes(scratchCodeNumber)  // Number of scratch codes
+                    .setCodeDigits(codeDigitsNumber)  // The number of digits in the generated code
                     .build();
 
         } catch (KapuaException e) {
-            LOGGER.error("Error while initializing the Google Authenticator configuration", e);
+            LOG.error("Error while initializing the Google Authenticator configuration", e);
             throw new ExceptionInInitializerError(e);
         }
+
+        // Print Configuration
+        ConfigurationPrinter configurationPrinter =
+                ConfigurationPrinter
+                        .create()
+                        .withLogger(LOG)
+                        .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
+                        .withTitle("Google Authenticator Configuration")
+                        .addParameter("Time step", timeStepSizeInMillis)
+                        .addParameter("Window size", windowSize)
+                        .addParameter("Scratch code number", scratchCodeNumber)
+                        .addParameter("Scratch code digits", codeDigitsNumber);
+
+        configurationPrinter.printLog();
     }
 
     @Override
@@ -73,18 +89,31 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
     }
 
     @Override
-    public boolean authorize(String encryptedSecret, int verificationCode) {
-        boolean isCodeValid;
+    public boolean authorize(String encryptedSecret, int verificationCode) throws KapuaException {
+        //
+        // Argument validation
+        ArgumentValidator.notNull(encryptedSecret, "encryptedSecret");
+        ArgumentValidator.notNegative(verificationCode, "verificationCode");
+
+        //
+        // Do check
         String secret = AuthenticationUtils.decryptAes(encryptedSecret);
 
         GoogleAuthenticator ga = new GoogleAuthenticator(GOOGLE_AUTHENTICATOR_CONFIG);
-        isCodeValid = ga.authorize(secret, verificationCode);
-        return isCodeValid;
+
+        return ga.authorize(secret, verificationCode);
     }
 
     @Override
-    public boolean authorize(String hasedScratchCode, String verificationCode) {
-        return BCrypt.checkpw(verificationCode, hasedScratchCode);
+    public boolean authorize(String hashedScratchCode, String verificationCode) throws KapuaException {
+        //
+        // Argument validation
+        ArgumentValidator.notEmptyOrNull(hashedScratchCode, "hashedScratchCode");
+        ArgumentValidator.notEmptyOrNull(verificationCode, "verificationCode");
+
+        //
+        // Do check
+        return BCrypt.checkpw(verificationCode, hashedScratchCode);
     }
 
     @Override
@@ -94,12 +123,15 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
         return key.getKey();
     }
 
+
+    /**
+     * We're not using the same secret as the secret key for the scratch code generation
+     * this allows re-generating scratch codes independently of the secret.
+     *
+     * @see MfaAuthenticator#generateCodes()
+     */
     @Override
     public List<String> generateCodes() {
-
-        // we're not using the same secret as the secret key for the scratch code generation
-        // this allows re-generating scratch codes independently from the secret
-
         GoogleAuthenticator gAuth = new GoogleAuthenticator(GOOGLE_AUTHENTICATOR_CONFIG);
         GoogleAuthenticatorKey key = gAuth.createCredentials();
 
