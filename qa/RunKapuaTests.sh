@@ -3,7 +3,7 @@
 #RUNS BOTH UNIT AND INTEGRATION TESTS AND FINALLY BUILDS THE PROJECT
 #FIRT, UNIT TESTS ARE LAUNCHED, IF THEY PASS INTEGRATION TESTS ARE THEN EXECUTED
 
-cucumberTags=('@jobsIntegration' '@jobEngineRestartOnlineDevice' '@brokerAcl' '@tag' '@broker' '@device' '@deviceManagement' '@connection' '@datastore' '@user' '@userIntegrationBase' '@userIntegration' '@security' '@jobs' '@scheduler' '@jobsIntegrationBase' '@triggerService' '@triggerServiceIntegrationBase' '@triggerServiceIntegration' '@account' '@translator' '@jobEngineStepDefinitions' '@jobEngineStartOfflineDevice' '@jobEngineStartOnlineDevice' '@jobEngineRestartOfflineDevice' '@jobEngineRestartOnlineDeviceSecondPart' '@jobEngineServiceStop' '@env_docker_base' '@env_none')
+cucumberTags=('@brokerAcl' '@tag' '@broker' '@device' '@deviceManagement' '@connection' '@datastore' '@user' '@userIntegrationBase' '@userIntegration' '@security' '@jobs' '@scheduler' '@jobsIntegrationBase' '@triggerService' '@triggerServiceIntegrationBase' '@triggerServiceIntegration' '@account' '@translator' '@jobEngineStepDefinitions' '@jobEngineStartOfflineDevice' '@jobEngineRestartOnlineDevice' '@jobEngineStartOnlineDevice' '@jobEngineRestartOfflineDevice' '@jobEngineRestartOnlineDeviceSecondPart' '@jobsIntegration' '@jobEngineServiceStop')
 exitCodesTests=() #will contain exit code for each batch of tests
 
 #checks if the last build command exited normally and exits if necessary
@@ -35,7 +35,7 @@ printTestResults() {
 grep -q "127.0.0.1 message-broker" /etc/hosts || { echo "password required to change hosts file" && { echo "127.0.0.1 message-broker" | sudo tee -a /etc/hosts;} }
 
 echo "Started junit tests";
-mvn verify -Dcommons.settings.hotswap=true -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true;
+mvn clean verify -Dcommons.settings.hotswap=true -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true;
 checkErrorLastBuild "error on junit tests. Execution terminated because it's pointless to proceed with integration tests";
 for tag in "${cucumberTags[@]}"
 do
@@ -43,5 +43,5 @@ do
 	bash -c 'mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups="!org.eclipse.kapua.qa.markers.junit.JUnitTests" -Dcrypto.secret.key=kapuaTestsKey!!! -Dcucumber.filter.tags=$0' $tag;
 	exitCodesTests+=($?);
 done
-mvn clean install -DskipTests=true #finally, build completely the project
+mvn install -DskipTests=true #finally, build completely the project
 printTestResults;
