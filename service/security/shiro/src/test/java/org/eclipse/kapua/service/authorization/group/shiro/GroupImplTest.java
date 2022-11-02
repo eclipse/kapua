@@ -23,25 +23,26 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class GroupImplTest extends Assert {
+public class GroupImplTest {
 
     @Test
     public void groupImplWithoutParametersTest() {
         GroupImpl groupImpl = new GroupImpl();
-        assertNull("Null expected.", groupImpl.getScopeId());
+        Assert.assertNull("Null expected.", groupImpl.getScopeId());
     }
 
     @Test
     public void groupImplScopeIdParameterTest() {
         GroupImpl groupImpl = new GroupImpl(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, groupImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, groupImpl.getScopeId());
     }
 
     @Test
     public void groupImplNullScopeIdParameterTest() {
         GroupImpl groupImpl = new GroupImpl((KapuaId) null);
-        assertNull("Null expected.", groupImpl.getScopeId());
+        Assert.assertNull("Null expected.", groupImpl.getScopeId());
     }
 
     @Test
@@ -61,15 +62,15 @@ public class GroupImplTest extends Assert {
         Mockito.when(group.getOptlock()).thenReturn(11);
 
         GroupImpl groupImpl = new GroupImpl(group);
-        assertEquals("Expected and actual values should be the same.", "group name", groupImpl.getName());
-        assertEquals("Expected and actual values should be the same.", "description", groupImpl.getDescription());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, groupImpl.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, groupImpl.getScopeId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, groupImpl.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, groupImpl.getCreatedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, groupImpl.getModifiedBy());
-        assertEquals("Expected and actual values should be the same.", modifiedOn, groupImpl.getModifiedOn());
-        assertEquals("Expected and actual values should be the same.", 11, groupImpl.getOptlock());
+        Assert.assertEquals("Expected and actual values should be the same.", "group name", groupImpl.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", "description", groupImpl.getDescription());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, groupImpl.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, groupImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, groupImpl.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, groupImpl.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, groupImpl.getModifiedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, groupImpl.getModifiedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", 11, groupImpl.getOptlock());
     }
 
     @Test(expected = NullPointerException.class)

@@ -21,8 +21,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
+
 @Category(JUnitTests.class)
-public class KapuaAuthorizingRealmTest extends Assert {
+public class KapuaAuthorizingRealmTest {
 
     KapuaAuthorizingRealm kapuaAuthorizingRealm;
     AuthenticationToken authenticationToken;
@@ -35,26 +36,26 @@ public class KapuaAuthorizingRealmTest extends Assert {
 
     @Test
     public void kapuaAuthorizingRealmTest() {
-        assertEquals("Expected and actual values should be the same.", "kapuaAuthorizingRealm", kapuaAuthorizingRealm.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", "kapuaAuthorizingRealm", kapuaAuthorizingRealm.getName());
     }
 
     @Test
     public void supportsTest() {
-        assertFalse("False expected.", kapuaAuthorizingRealm.supports(authenticationToken));
+        Assert.assertFalse("False expected.", kapuaAuthorizingRealm.supports(authenticationToken));
     }
 
     @Test
     public void supportsNullTest() {
-        assertFalse("False expected.", kapuaAuthorizingRealm.supports(null));
+        Assert.assertFalse("False expected.", kapuaAuthorizingRealm.supports(null));
     }
 
     @Test
     public void doGetAuthenticationInfoTest() {
-        assertNull("Null expected.", kapuaAuthorizingRealm.doGetAuthenticationInfo(authenticationToken));
+        Assert.assertNull("Null expected.", kapuaAuthorizingRealm.doGetAuthenticationInfo(authenticationToken));
     }
 
     @Test
     public void doGetAuthenticationInfoNullTest() {
-        assertNull("Null expected.", kapuaAuthorizingRealm.doGetAuthenticationInfo(authenticationToken));
+        Assert.assertNull("Null expected.", kapuaAuthorizingRealm.doGetAuthenticationInfo(authenticationToken));
     }
 }

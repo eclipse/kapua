@@ -18,15 +18,16 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class RolePermissionQueryImplTest extends Assert {
+public class RolePermissionQueryImplTest {
 
     @Test
     public void rolePermissionQueryImplWithoutParametersTest() {
         RolePermissionQueryImpl rolePermissionQueryImpl = new RolePermissionQueryImpl();
-        assertNull("Null expected.", rolePermissionQueryImpl.getScopeId());
-        assertNull("rolePermissionQueryImpl.sortCriteria", rolePermissionQueryImpl.getSortCriteria());
-        assertNotNull("rolePermissionQueryImpl.defaultSortCriteria", rolePermissionQueryImpl.getDefaultSortCriteria());
+        Assert.assertNull("Null expected.", rolePermissionQueryImpl.getScopeId());
+        Assert.assertNull("rolePermissionQueryImpl.sortCriteria", rolePermissionQueryImpl.getSortCriteria());
+        Assert.assertNotNull("rolePermissionQueryImpl.defaultSortCriteria", rolePermissionQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
@@ -35,9 +36,9 @@ public class RolePermissionQueryImplTest extends Assert {
 
         for (KapuaId scopeId : scopeIds) {
             RolePermissionQueryImpl rolePermissionQueryImpl = new RolePermissionQueryImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionQueryImpl.getScopeId());
-            assertNull("rolePermissionQueryImpl.sortCriteria", rolePermissionQueryImpl.getSortCriteria());
-            assertNotNull("rolePermissionQueryImpl.defaultSortCriteria", rolePermissionQueryImpl.getDefaultSortCriteria());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, rolePermissionQueryImpl.getScopeId());
+            Assert.assertNull("rolePermissionQueryImpl.sortCriteria", rolePermissionQueryImpl.getSortCriteria());
+            Assert.assertNotNull("rolePermissionQueryImpl.defaultSortCriteria", rolePermissionQueryImpl.getDefaultSortCriteria());
         }
     }
 }

@@ -19,8 +19,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class MqttClientDisconnectExceptionTest extends Assert {
+public class MqttClientDisconnectExceptionTest {
 
     MqttClientDisconnectException exception;
     String clientId = "clientName";
@@ -35,20 +36,20 @@ public class MqttClientDisconnectExceptionTest extends Assert {
     @Test
     public void constructorValidTest() {
         MqttClientDisconnectException exception = new MqttClientDisconnectException(cause, clientId);
-        assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
-        assertEquals("Expected and actual values should be the same!", clientId, exception.getClientId());
-        assertEquals("Expected and actual values should be the same!", "DISCONNECT_ERROR", exception.getCode().toString());
+        Assert.assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
+        Assert.assertEquals("Expected and actual values should be the same!", clientId, exception.getClientId());
+        Assert.assertEquals("Expected and actual values should be the same!", "DISCONNECT_ERROR", exception.getCode().toString());
     }
 
     @Test
     public void constructorCauseNullTest() {
         try {
             MqttClientDisconnectException exception = new MqttClientDisconnectException(null, clientId);
-            assertNull("Null expected!", exception.getCause());
-            assertEquals("Expected and actual values should be the same!", clientId, exception.getClientId());
-            assertEquals("Expected and actual values should be the same!", "DISCONNECT_ERROR", exception.getCode().toString());
+            Assert.assertNull("Null expected!", exception.getCause());
+            Assert.assertEquals("Expected and actual values should be the same!", clientId, exception.getClientId());
+            Assert.assertEquals("Expected and actual values should be the same!", "DISCONNECT_ERROR", exception.getCode().toString());
         } catch (Exception ex) {
-            fail("No exception expected!");
+            Assert.fail("No exception expected!");
         }
     }
 
@@ -56,20 +57,20 @@ public class MqttClientDisconnectExceptionTest extends Assert {
     public void constructorClientIdNullTest() {
         try {
             MqttClientDisconnectException exception = new MqttClientDisconnectException(cause, null);
-            assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
-            assertNull("Null expected!", exception.getClientId());
-            assertEquals("Expected and actual values should be the same!", "DISCONNECT_ERROR", exception.getCode().toString());
+            Assert.assertEquals("Expected and actual values should be the same!", cause, exception.getCause());
+            Assert.assertNull("Null expected!", exception.getClientId());
+            Assert.assertEquals("Expected and actual values should be the same!", "DISCONNECT_ERROR", exception.getCode().toString());
         } catch (Exception ex) {
-            fail("No exception expected!");
+            Assert.fail("No exception expected!");
         }
     }
 
     @Test
     public void constructorAllNullTest() {
         MqttClientDisconnectException exception = new MqttClientDisconnectException(null, null);
-        assertNull("Null expected!", exception.getCause());
-        assertNull("Null expected!", exception.getClientId());
-        assertEquals("Expected and actual values should be the same!", "DISCONNECT_ERROR", exception.getCode().toString());
+        Assert.assertNull("Null expected!", exception.getCause());
+        Assert.assertNull("Null expected!", exception.getClientId());
+        Assert.assertEquals("Expected and actual values should be the same!", "DISCONNECT_ERROR", exception.getCode().toString());
     }
 
     @Test (expected = MqttClientDisconnectException.class)

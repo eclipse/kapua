@@ -21,8 +21,9 @@ import org.junit.experimental.categories.Category;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Category(JUnitTests.class)
-public class DomainCreatorImplTest extends Assert {
+public class DomainCreatorImplTest {
 
     @Test
     public void domainCreatorImplTest() {
@@ -30,20 +31,20 @@ public class DomainCreatorImplTest extends Assert {
 
         for (String name : names) {
             DomainCreatorImpl domainCreatorImpl = new DomainCreatorImpl(name);
-            assertNull("Null expected.", domainCreatorImpl.getScopeId());
-            assertEquals("Expected and actual values should be the same.", name, domainCreatorImpl.getName());
-            assertNull("Null expected.", domainCreatorImpl.getActions());
-            assertFalse("False expected.", domainCreatorImpl.getGroupable());
+            Assert.assertNull("Null expected.", domainCreatorImpl.getScopeId());
+            Assert.assertEquals("Expected and actual values should be the same.", name, domainCreatorImpl.getName());
+            Assert.assertNull("Null expected.", domainCreatorImpl.getActions());
+            Assert.assertFalse("False expected.", domainCreatorImpl.getGroupable());
         }
     }
 
     @Test
     public void domainCreatorImplNullTest() {
         DomainCreatorImpl domainCreatorImpl = new DomainCreatorImpl(null);
-        assertNull("Null expected.", domainCreatorImpl.getScopeId());
-        assertNull("Null expected.", domainCreatorImpl.getName());
-        assertNull("Null expected.", domainCreatorImpl.getActions());
-        assertFalse("False expected.", domainCreatorImpl.getGroupable());
+        Assert.assertNull("Null expected.", domainCreatorImpl.getScopeId());
+        Assert.assertNull("Null expected.", domainCreatorImpl.getName());
+        Assert.assertNull("Null expected.", domainCreatorImpl.getActions());
+        Assert.assertFalse("False expected.", domainCreatorImpl.getGroupable());
     }
 
     @Test
@@ -53,10 +54,10 @@ public class DomainCreatorImplTest extends Assert {
         DomainCreatorImpl domainCreatorImpl = new DomainCreatorImpl("name");
         for (String newName : newNames) {
             domainCreatorImpl.setName(newName);
-            assertEquals("Expected and actual values should be the same.", newName, domainCreatorImpl.getName());
+            Assert.assertEquals("Expected and actual values should be the same.", newName, domainCreatorImpl.getName());
         }
         domainCreatorImpl.setName(null);
-        assertNull("Null expected.", domainCreatorImpl.getName());
+        Assert.assertNull("Null expected.", domainCreatorImpl.getName());
     }
 
     @Test
@@ -65,7 +66,7 @@ public class DomainCreatorImplTest extends Assert {
         DomainCreatorImpl domainCreatorImpl = new DomainCreatorImpl("name");
 
         domainCreatorImpl.setActions(actions);
-        assertTrue("True expected", domainCreatorImpl.getActions().isEmpty());
+        Assert.assertTrue("True expected", domainCreatorImpl.getActions().isEmpty());
 
         actions.add(Actions.read);
         actions.add(Actions.delete);
@@ -73,10 +74,10 @@ public class DomainCreatorImplTest extends Assert {
         actions.add(Actions.execute);
         actions.add(Actions.write);
         domainCreatorImpl.setActions(actions);
-        assertEquals("Expected and actual values should be the same.", 5, domainCreatorImpl.getActions().size());
+        Assert.assertEquals("Expected and actual values should be the same.", 5, domainCreatorImpl.getActions().size());
 
         domainCreatorImpl.setActions(null);
-        assertNull("Null expected.", domainCreatorImpl.getActions());
+        Assert.assertNull("Null expected.", domainCreatorImpl.getActions());
     }
 
     @Test
@@ -86,7 +87,7 @@ public class DomainCreatorImplTest extends Assert {
 
         for (boolean groupable : groupables) {
             domainCreatorImpl.setGroupable(groupable);
-            assertEquals("Expected and actual values should be the same.", groupable, domainCreatorImpl.getGroupable());
+            Assert.assertEquals("Expected and actual values should be the same.", groupable, domainCreatorImpl.getGroupable());
         }
     }
 }

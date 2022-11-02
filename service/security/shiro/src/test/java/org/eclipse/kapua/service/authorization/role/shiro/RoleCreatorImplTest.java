@@ -24,8 +24,9 @@ import org.mockito.Mockito;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Category(JUnitTests.class)
-public class RoleCreatorImplTest extends Assert {
+public class RoleCreatorImplTest {
 
     RoleCreatorImpl roleCreatorImpl;
     Set<Permission> permissions;
@@ -44,15 +45,15 @@ public class RoleCreatorImplTest extends Assert {
         KapuaId[] scopeIds = {KapuaId.ONE, null};
         for (KapuaId scopeId : scopeIds) {
             RoleCreatorImpl roleCreatorImpl = new RoleCreatorImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, roleCreatorImpl.getScopeId());
-            assertTrue("True expected.", roleCreatorImpl.getPermissions().isEmpty());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, roleCreatorImpl.getScopeId());
+            Assert.assertTrue("True expected.", roleCreatorImpl.getPermissions().isEmpty());
         }
     }
 
     @Test
     public void setAndGetEmptyPermissionsTest() {
         roleCreatorImpl.setPermissions(permissions);
-        assertTrue("True expected.", roleCreatorImpl.getPermissions().isEmpty());
+        Assert.assertTrue("True expected.", roleCreatorImpl.getPermissions().isEmpty());
     }
 
     @Test
@@ -62,14 +63,14 @@ public class RoleCreatorImplTest extends Assert {
         permissions.add(null);
 
         roleCreatorImpl.setPermissions(permissions);
-        assertFalse("False expected.", roleCreatorImpl.getPermissions().isEmpty());
-        assertEquals("Expected and actual values should be the same.", permissions, roleCreatorImpl.getPermissions());
-        assertEquals("Expected and actual values should be the same.", 3, roleCreatorImpl.getPermissions().size());
+        Assert.assertFalse("False expected.", roleCreatorImpl.getPermissions().isEmpty());
+        Assert.assertEquals("Expected and actual values should be the same.", permissions, roleCreatorImpl.getPermissions());
+        Assert.assertEquals("Expected and actual values should be the same.", 3, roleCreatorImpl.getPermissions().size());
     }
 
     @Test
     public void setAndGetNullPermissionsTest() {
         roleCreatorImpl.setPermissions(null);
-        assertTrue("True expected.", roleCreatorImpl.getPermissions().isEmpty());
+        Assert.assertTrue("True expected.", roleCreatorImpl.getPermissions().isEmpty());
     }
 }

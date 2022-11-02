@@ -18,8 +18,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class TransportTimeoutExceptionTest extends Assert {
+public class TransportTimeoutExceptionTest {
 
     Long[] values;
     String[] expectedMessage;
@@ -37,10 +38,10 @@ public class TransportTimeoutExceptionTest extends Assert {
     public void transportTimeoutExceptionTest() {
         for (int i = 0; i < values.length; i++) {
             TransportTimeoutException transportTimeoutException = new TransportTimeoutException(values[i]);
-            assertEquals("Expected and actual values should be the same.", TransportErrorCodes.TIMEOUT, transportTimeoutException.getCode());
-            assertEquals("Expected and actual values should be the same.", values[i], transportTimeoutException.getTimeout());
-            assertEquals("Expected and actual values should be the same.", expectedMessage[i], transportTimeoutException.getMessage());
-            assertNull("Null expected.", transportTimeoutException.getCause());
+            Assert.assertEquals("Expected and actual values should be the same.", TransportErrorCodes.TIMEOUT, transportTimeoutException.getCode());
+            Assert.assertEquals("Expected and actual values should be the same.", values[i], transportTimeoutException.getTimeout());
+            Assert.assertEquals("Expected and actual values should be the same.", expectedMessage[i], transportTimeoutException.getMessage());
+            Assert.assertNull("Null expected.", transportTimeoutException.getCause());
         }
     }
 

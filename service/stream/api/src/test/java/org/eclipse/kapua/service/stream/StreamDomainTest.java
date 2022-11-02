@@ -23,8 +23,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+
 @Category(JUnitTests.class)
-public class StreamDomainTest extends Assert {
+public class StreamDomainTest {
 
     StreamDomain streamDomain;
 
@@ -36,17 +37,17 @@ public class StreamDomainTest extends Assert {
     @Test
     public void getNameTest() {
         String expectedName = "stream";
-        assertEquals("Expected and actual values should be the same.", expectedName, streamDomain.getName());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedName, streamDomain.getName());
     }
 
     @Test
     public void getActionsTest() {
         Set expectedValue = new HashSet(Arrays.asList(Actions.write));
-        assertEquals("Expected and actual values should be the same.", expectedValue, streamDomain.getActions());
+        Assert.assertEquals("Expected and actual values should be the same.", expectedValue, streamDomain.getActions());
     }
 
     @Test
     public void getGroupableTest() {
-        assertFalse("False expected.", streamDomain.getGroupable());
+        Assert.assertFalse("False expected.", streamDomain.getGroupable());
     }
 }

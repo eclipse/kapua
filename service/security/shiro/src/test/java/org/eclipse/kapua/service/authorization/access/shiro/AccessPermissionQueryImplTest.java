@@ -18,30 +18,31 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class AccessPermissionQueryImplTest extends Assert {
+public class AccessPermissionQueryImplTest {
 
     @Test
     public void accessPermissionQueryImplWithoutParametersTest() {
         AccessPermissionQueryImpl accessPermissionQueryImpl = new AccessPermissionQueryImpl();
-        assertNull("Null expected.", accessPermissionQueryImpl.getScopeId());
-        assertNull("accessPermissionQueryImpl.sortCriteria", accessPermissionQueryImpl.getSortCriteria());
-        assertNotNull("accessPermissionQueryImpl.defaultSortCriteria", accessPermissionQueryImpl.getDefaultSortCriteria());
+        Assert.assertNull("Null expected.", accessPermissionQueryImpl.getScopeId());
+        Assert.assertNull("accessPermissionQueryImpl.sortCriteria", accessPermissionQueryImpl.getSortCriteria());
+        Assert.assertNotNull("accessPermissionQueryImpl.defaultSortCriteria", accessPermissionQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
     public void accessPermissionQueryImplScopeIdParameterTest() {
         AccessPermissionQueryImpl accessPermissionQueryImpl = new AccessPermissionQueryImpl(KapuaId.ONE);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionQueryImpl.getScopeId());
-        assertNull("accessPermissionQueryImpl.sortCriteria", accessPermissionQueryImpl.getSortCriteria());
-        assertNotNull("accessPermissionQueryImpl.defaultSortCriteria", accessPermissionQueryImpl.getDefaultSortCriteria());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessPermissionQueryImpl.getScopeId());
+        Assert.assertNull("accessPermissionQueryImpl.sortCriteria", accessPermissionQueryImpl.getSortCriteria());
+        Assert.assertNotNull("accessPermissionQueryImpl.defaultSortCriteria", accessPermissionQueryImpl.getDefaultSortCriteria());
     }
 
     @Test
     public void accessPermissionQueryImplNullScopeIdParameterTest() {
         AccessPermissionQueryImpl accessPermissionQueryImpl = new AccessPermissionQueryImpl(null);
-        assertNull("Null expected.", accessPermissionQueryImpl.getScopeId());
-        assertNull("accessPermissionQueryImpl.sortCriteria", accessPermissionQueryImpl.getSortCriteria());
-        assertNotNull("accessPermissionQueryImpl.defaultSortCriteria", accessPermissionQueryImpl.getDefaultSortCriteria());
+        Assert.assertNull("Null expected.", accessPermissionQueryImpl.getScopeId());
+        Assert.assertNull("accessPermissionQueryImpl.sortCriteria", accessPermissionQueryImpl.getSortCriteria());
+        Assert.assertNotNull("accessPermissionQueryImpl.defaultSortCriteria", accessPermissionQueryImpl.getDefaultSortCriteria());
     }
 }
