@@ -24,8 +24,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
+
 @Category(JUnitTests.class)
-public class CredentialsFactoryImplTest extends Assert {
+public class CredentialsFactoryImplTest {
 
     CredentialsFactoryImpl credentialsFactoryImpl;
     String[] usernames, passwords, apiKeys, idTokens, accessTokens, refreshTokens;
@@ -46,8 +47,8 @@ public class CredentialsFactoryImplTest extends Assert {
         for (String username : usernames) {
             for (String password : passwords) {
                 UsernamePasswordCredentials usernamePasswordCredentials = credentialsFactoryImpl.newUsernamePasswordCredentials(username, password);
-                assertEquals("Expected and actual values should be the same.", username, usernamePasswordCredentials.getUsername());
-                assertEquals("Expected and actual values should be the same.", password, usernamePasswordCredentials.getPassword());
+                Assert.assertEquals("Expected and actual values should be the same.", username, usernamePasswordCredentials.getUsername());
+                Assert.assertEquals("Expected and actual values should be the same.", password, usernamePasswordCredentials.getPassword());
             }
         }
     }
@@ -56,7 +57,7 @@ public class CredentialsFactoryImplTest extends Assert {
     public void newApiKeyCredentialsTest() {
         for (String apiKey : apiKeys) {
             ApiKeyCredentials apiKeyCredentials = credentialsFactoryImpl.newApiKeyCredentials(apiKey);
-            assertEquals("Expected and actual values should be the same.", apiKey, apiKeyCredentials.getApiKey());
+            Assert.assertEquals("Expected and actual values should be the same.", apiKey, apiKeyCredentials.getApiKey());
         }
     }
 
@@ -65,8 +66,8 @@ public class CredentialsFactoryImplTest extends Assert {
         for (String accessToken : accessTokens) {
             for (String idToken : idTokens) {
                 JwtCredentials jwtCredentials = credentialsFactoryImpl.newJwtCredentials(accessToken, idToken);
-                assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentials.getAccessToken());
-                assertEquals("Expected and actual values should be the same.", idToken, jwtCredentials.getIdToken());
+                Assert.assertEquals("Expected and actual values should be the same.", accessToken, jwtCredentials.getAccessToken());
+                Assert.assertEquals("Expected and actual values should be the same.", idToken, jwtCredentials.getIdToken());
             }
         }
     }
@@ -75,7 +76,7 @@ public class CredentialsFactoryImplTest extends Assert {
     public void newAccessTokenCredentialsTest() {
         for (String idToken : idTokens) {
             AccessTokenCredentials accessTokenCredentials = credentialsFactoryImpl.newAccessTokenCredentials(idToken);
-            assertEquals("Expected and actual values should be the same.", idToken, accessTokenCredentials.getTokenId());
+            Assert.assertEquals("Expected and actual values should be the same.", idToken, accessTokenCredentials.getTokenId());
         }
     }
 
@@ -84,8 +85,8 @@ public class CredentialsFactoryImplTest extends Assert {
         for (String idToken : idTokens) {
             for (String refreshToken : refreshTokens) {
                 RefreshTokenCredentials refreshTokenCredentials = credentialsFactoryImpl.newRefreshTokenCredentials(idToken, refreshToken);
-                assertEquals("Expected and actual values should be the same.", idToken, refreshTokenCredentials.getTokenId());
-                assertEquals("Expected and actual values should be the same.", refreshToken, refreshTokenCredentials.getRefreshToken());
+                Assert.assertEquals("Expected and actual values should be the same.", idToken, refreshTokenCredentials.getTokenId());
+                Assert.assertEquals("Expected and actual values should be the same.", refreshToken, refreshTokenCredentials.getRefreshToken());
             }
         }
     }

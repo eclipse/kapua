@@ -25,8 +25,9 @@ import org.mockito.Mockito;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class AccessTokenImplTest extends Assert {
+public class AccessTokenImplTest {
 
     KapuaId[] scopeIds;
     KapuaEid[] userIds;
@@ -74,12 +75,12 @@ public class AccessTokenImplTest extends Assert {
     @Test
     public void accessTokenImplWithoutParametersTest() {
         AccessTokenImpl accessTokenImpl = new AccessTokenImpl();
-        assertNull("Null expected.", accessTokenImpl.getScopeId());
-        assertNull("Null expected.", accessTokenImpl.getUserId());
-        assertNull("Null expected.", accessTokenImpl.getTokenId());
-        assertNull("Null expected.", accessTokenImpl.getExpiresOn());
-        assertNull("Null expected.", accessTokenImpl.getRefreshToken());
-        assertNull("Null expected.", accessTokenImpl.getRefreshExpiresOn());
+        Assert.assertNull("Null expected.", accessTokenImpl.getScopeId());
+        Assert.assertNull("Null expected.", accessTokenImpl.getUserId());
+        Assert.assertNull("Null expected.", accessTokenImpl.getTokenId());
+        Assert.assertNull("Null expected.", accessTokenImpl.getExpiresOn());
+        Assert.assertNull("Null expected.", accessTokenImpl.getRefreshToken());
+        Assert.assertNull("Null expected.", accessTokenImpl.getRefreshExpiresOn());
     }
 
     @Test
@@ -91,12 +92,12 @@ public class AccessTokenImplTest extends Assert {
                         for (String refreshToken : refreshTokens) {
                             for (Date refreshExpiresOnDate : refreshExpiresOnDates) {
                                 AccessTokenImpl accessTokenImpl = new AccessTokenImpl(scopeId, userId, tokenId, expiresOnDate, refreshToken, refreshExpiresOnDate);
-                                assertEquals("Expected and actual values should be the same.", scopeId, accessTokenImpl.getScopeId());
-                                assertEquals("Expected and actual values should be the same.", userId, accessTokenImpl.getUserId());
-                                assertEquals("Expected and actual values should be the same.", tokenId, accessTokenImpl.getTokenId());
-                                assertEquals("Expected and actual values should be the same.", expiresOnDate, accessTokenImpl.getExpiresOn());
-                                assertEquals("Expected and actual values should be the same.", refreshToken, accessTokenImpl.getRefreshToken());
-                                assertEquals("Expected and actual values should be the same.", refreshExpiresOnDate, accessTokenImpl.getRefreshExpiresOn());
+                                Assert.assertEquals("Expected and actual values should be the same.", scopeId, accessTokenImpl.getScopeId());
+                                Assert.assertEquals("Expected and actual values should be the same.", userId, accessTokenImpl.getUserId());
+                                Assert.assertEquals("Expected and actual values should be the same.", tokenId, accessTokenImpl.getTokenId());
+                                Assert.assertEquals("Expected and actual values should be the same.", expiresOnDate, accessTokenImpl.getExpiresOn());
+                                Assert.assertEquals("Expected and actual values should be the same.", refreshToken, accessTokenImpl.getRefreshToken());
+                                Assert.assertEquals("Expected and actual values should be the same.", refreshExpiresOnDate, accessTokenImpl.getRefreshExpiresOn());
                             }
                         }
                     }
@@ -109,28 +110,28 @@ public class AccessTokenImplTest extends Assert {
     public void accessTokenImplScopeIdParameterTest() {
         for (KapuaId scopeId : scopeIds) {
             AccessTokenImpl accessTokenImpl = new AccessTokenImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, accessTokenImpl.getScopeId());
-            assertNull("Null expected.", accessTokenImpl.getUserId());
-            assertNull("Null expected.", accessTokenImpl.getTokenId());
-            assertNull("Null expected.", accessTokenImpl.getExpiresOn());
-            assertNull("Null expected.", accessTokenImpl.getRefreshToken());
-            assertNull("Null expected.", accessTokenImpl.getRefreshExpiresOn());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, accessTokenImpl.getScopeId());
+            Assert.assertNull("Null expected.", accessTokenImpl.getUserId());
+            Assert.assertNull("Null expected.", accessTokenImpl.getTokenId());
+            Assert.assertNull("Null expected.", accessTokenImpl.getExpiresOn());
+            Assert.assertNull("Null expected.", accessTokenImpl.getRefreshToken());
+            Assert.assertNull("Null expected.", accessTokenImpl.getRefreshExpiresOn());
         }
     }
 
     @Test
     public void accessTokenImplAccessTokenParameterTest() throws KapuaException {
         AccessTokenImpl accessTokenImpl = new AccessTokenImpl(accessToken);
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl.getScopeId());
-        assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ONE), accessTokenImpl.getUserId());
-        assertEquals("Expected and actual values should be the same.", "token id", accessTokenImpl.getTokenId());
-        assertEquals("Expected and actual values should be the same.", expiresOn, accessTokenImpl.getExpiresOn());
-        assertEquals("Expected and actual values should be the same.", "refresh token", accessTokenImpl.getRefreshToken());
-        assertEquals("Expected and actual values should be the same.", refreshExpiresOn, accessTokenImpl.getRefreshExpiresOn());
-        assertEquals("Expected and actual values should be the same.", invalidatedOn, accessTokenImpl.getInvalidatedOn());
-        assertEquals("Expected and actual values should be the same.", modifiedOn, accessTokenImpl.getModifiedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", 10, accessTokenImpl.getOptlock());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl.getScopeId());
+        Assert.assertEquals("Expected and actual values should be the same.", new KapuaEid(KapuaId.ONE), accessTokenImpl.getUserId());
+        Assert.assertEquals("Expected and actual values should be the same.", "token id", accessTokenImpl.getTokenId());
+        Assert.assertEquals("Expected and actual values should be the same.", expiresOn, accessTokenImpl.getExpiresOn());
+        Assert.assertEquals("Expected and actual values should be the same.", "refresh token", accessTokenImpl.getRefreshToken());
+        Assert.assertEquals("Expected and actual values should be the same.", refreshExpiresOn, accessTokenImpl.getRefreshExpiresOn());
+        Assert.assertEquals("Expected and actual values should be the same.", invalidatedOn, accessTokenImpl.getInvalidatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, accessTokenImpl.getModifiedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", 10, accessTokenImpl.getOptlock());
     }
 
     @Test
@@ -142,10 +143,10 @@ public class AccessTokenImplTest extends Assert {
             accessTokenImpl3.setUserId(newUserId);
             accessTokenImpl4.setUserId(newUserId);
 
-            assertEquals("Expected and actual values should be the same.", newUserId, accessTokenImpl1.getUserId());
-            assertEquals("Expected and actual values should be the same.", newUserId, accessTokenImpl2.getUserId());
-            assertEquals("Expected and actual values should be the same.", newUserId, accessTokenImpl3.getUserId());
-            assertEquals("Expected and actual values should be the same.", newUserId, accessTokenImpl4.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, accessTokenImpl1.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, accessTokenImpl2.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, accessTokenImpl3.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, accessTokenImpl4.getUserId());
         }
     }
 
@@ -158,10 +159,10 @@ public class AccessTokenImplTest extends Assert {
             accessTokenImpl3.setTokenId(newTokenId);
             accessTokenImpl4.setTokenId(newTokenId);
 
-            assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenImpl1.getTokenId());
-            assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenImpl2.getTokenId());
-            assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenImpl3.getTokenId());
-            assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenImpl4.getTokenId());
+            Assert.assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenImpl1.getTokenId());
+            Assert.assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenImpl2.getTokenId());
+            Assert.assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenImpl3.getTokenId());
+            Assert.assertEquals("Expected and actual values should be the same.", newTokenId, accessTokenImpl4.getTokenId());
         }
     }
 
@@ -174,69 +175,69 @@ public class AccessTokenImplTest extends Assert {
             accessTokenImpl3.setExpiresOn(newExpiresOnDate);
             accessTokenImpl4.setExpiresOn(newExpiresOnDate);
 
-            assertEquals("Expected and actual values should be the same.", newExpiresOnDate, accessTokenImpl1.getExpiresOn());
-            assertEquals("Expected and actual values should be the same.", newExpiresOnDate, accessTokenImpl2.getExpiresOn());
-            assertEquals("Expected and actual values should be the same.", newExpiresOnDate, accessTokenImpl3.getExpiresOn());
-            assertEquals("Expected and actual values should be the same.", newExpiresOnDate, accessTokenImpl4.getExpiresOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newExpiresOnDate, accessTokenImpl1.getExpiresOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newExpiresOnDate, accessTokenImpl2.getExpiresOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newExpiresOnDate, accessTokenImpl3.getExpiresOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newExpiresOnDate, accessTokenImpl4.getExpiresOn());
         }
     }
 
     @Test
     public void prePersistsActionTest() {
         accessTokenImpl1.setUserId(KapuaId.ANY);
-        assertNull("Null expected.", accessTokenImpl1.getId());
-        assertNull("Null expected.", accessTokenImpl1.getCreatedBy());
-        assertNull("Null expected.", accessTokenImpl1.getCreatedOn());
-        assertNull("Null expected.", accessTokenImpl1.getModifiedBy());
-        assertNull("Null expected.", accessTokenImpl1.getModifiedOn());
+        Assert.assertNull("Null expected.", accessTokenImpl1.getId());
+        Assert.assertNull("Null expected.", accessTokenImpl1.getCreatedBy());
+        Assert.assertNull("Null expected.", accessTokenImpl1.getCreatedOn());
+        Assert.assertNull("Null expected.", accessTokenImpl1.getModifiedBy());
+        Assert.assertNull("Null expected.", accessTokenImpl1.getModifiedOn());
 
         accessTokenImpl1.prePersistsAction();
-        assertNotNull("NotNull expected.", accessTokenImpl1.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessTokenImpl1.getCreatedBy());
-        assertNotNull("NotNullExpected", accessTokenImpl1.getCreatedOn());
-        assertNotNull("NotNullExpected", accessTokenImpl1.getModifiedBy());
-        assertNotNull("NotNullExpected", accessTokenImpl1.getModifiedOn());
+        Assert.assertNotNull("NotNull expected.", accessTokenImpl1.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessTokenImpl1.getCreatedBy());
+        Assert.assertNotNull("NotNullExpected", accessTokenImpl1.getCreatedOn());
+        Assert.assertNotNull("NotNullExpected", accessTokenImpl1.getModifiedBy());
+        Assert.assertNotNull("NotNullExpected", accessTokenImpl1.getModifiedOn());
 
         accessTokenImpl2.setUserId(KapuaId.ANY);
-        assertNull("Null expected.", accessTokenImpl2.getId());
-        assertNull("Null expected.", accessTokenImpl2.getCreatedBy());
-        assertNull("Null expected.", accessTokenImpl2.getCreatedOn());
-        assertNull("Null expected.", accessTokenImpl2.getModifiedBy());
-        assertNull("Null expected.", accessTokenImpl2.getModifiedOn());
+        Assert.assertNull("Null expected.", accessTokenImpl2.getId());
+        Assert.assertNull("Null expected.", accessTokenImpl2.getCreatedBy());
+        Assert.assertNull("Null expected.", accessTokenImpl2.getCreatedOn());
+        Assert.assertNull("Null expected.", accessTokenImpl2.getModifiedBy());
+        Assert.assertNull("Null expected.", accessTokenImpl2.getModifiedOn());
 
         accessTokenImpl2.prePersistsAction();
-        assertNotNull("NotNull expected.", accessTokenImpl2.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessTokenImpl2.getCreatedBy());
-        assertNotNull("NotNullExpected", accessTokenImpl2.getCreatedOn());
-        assertNotNull("NotNullExpected", accessTokenImpl2.getModifiedBy());
-        assertNotNull("NotNullExpected", accessTokenImpl2.getModifiedOn());
+        Assert.assertNotNull("NotNull expected.", accessTokenImpl2.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessTokenImpl2.getCreatedBy());
+        Assert.assertNotNull("NotNullExpected", accessTokenImpl2.getCreatedOn());
+        Assert.assertNotNull("NotNullExpected", accessTokenImpl2.getModifiedBy());
+        Assert.assertNotNull("NotNullExpected", accessTokenImpl2.getModifiedOn());
 
         accessTokenImpl3.setUserId(KapuaId.ANY);
-        assertNull("Null expected.", accessTokenImpl3.getId());
-        assertNull("Null expected.", accessTokenImpl3.getCreatedBy());
-        assertNull("Null expected.", accessTokenImpl3.getCreatedOn());
-        assertNull("Null expected.", accessTokenImpl3.getModifiedBy());
-        assertNull("Null expected.", accessTokenImpl3.getModifiedOn());
+        Assert.assertNull("Null expected.", accessTokenImpl3.getId());
+        Assert.assertNull("Null expected.", accessTokenImpl3.getCreatedBy());
+        Assert.assertNull("Null expected.", accessTokenImpl3.getCreatedOn());
+        Assert.assertNull("Null expected.", accessTokenImpl3.getModifiedBy());
+        Assert.assertNull("Null expected.", accessTokenImpl3.getModifiedOn());
 
         accessTokenImpl3.prePersistsAction();
-        assertNotNull("NotNull expected.", accessTokenImpl3.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessTokenImpl3.getCreatedBy());
-        assertNotNull("NotNullExpected", accessTokenImpl3.getCreatedOn());
-        assertNotNull("NotNullExpected", accessTokenImpl3.getModifiedBy());
-        assertNotNull("NotNullExpected", accessTokenImpl3.getModifiedOn());
+        Assert.assertNotNull("NotNull expected.", accessTokenImpl3.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessTokenImpl3.getCreatedBy());
+        Assert.assertNotNull("NotNullExpected", accessTokenImpl3.getCreatedOn());
+        Assert.assertNotNull("NotNullExpected", accessTokenImpl3.getModifiedBy());
+        Assert.assertNotNull("NotNullExpected", accessTokenImpl3.getModifiedOn());
 
-        assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessTokenImpl4.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl4.getCreatedBy());
-        assertEquals("Expected and actual values should be the same.", createdOn, accessTokenImpl4.getCreatedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl4.getModifiedBy());
-        assertEquals("Expected and actual values should be the same.", modifiedOn, accessTokenImpl4.getModifiedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ANY, accessTokenImpl4.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl4.getCreatedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", createdOn, accessTokenImpl4.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl4.getModifiedBy());
+        Assert.assertEquals("Expected and actual values should be the same.", modifiedOn, accessTokenImpl4.getModifiedOn());
 
         accessTokenImpl4.prePersistsAction();
-        assertNotEquals("Expected and actual values should not be the same.", KapuaId.ANY, accessTokenImpl4.getId());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl4.getCreatedBy());
-        assertNotEquals("Expected and actual values should not be the same.", createdOn, accessTokenImpl4.getCreatedOn());
-        assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl4.getModifiedBy());
-        assertNotEquals("Expected and actual values should not be the same.", modifiedOn, accessTokenImpl4.getModifiedOn());
+        Assert.assertNotEquals("Expected and actual values should not be the same.", KapuaId.ANY, accessTokenImpl4.getId());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl4.getCreatedBy());
+        Assert.assertNotEquals("Expected and actual values should not be the same.", createdOn, accessTokenImpl4.getCreatedOn());
+        Assert.assertEquals("Expected and actual values should be the same.", KapuaId.ONE, accessTokenImpl4.getModifiedBy());
+        Assert.assertNotEquals("Expected and actual values should not be the same.", modifiedOn, accessTokenImpl4.getModifiedOn());
     }
 
     @Test
@@ -248,10 +249,10 @@ public class AccessTokenImplTest extends Assert {
             accessTokenImpl3.setRefreshToken(newRefreshToken);
             accessTokenImpl4.setRefreshToken(newRefreshToken);
 
-            assertEquals("Expected and actual values should be the same.", newRefreshToken, accessTokenImpl1.getRefreshToken());
-            assertEquals("Expected and actual values should be the same.", newRefreshToken, accessTokenImpl2.getRefreshToken());
-            assertEquals("Expected and actual values should be the same.", newRefreshToken, accessTokenImpl3.getRefreshToken());
-            assertEquals("Expected and actual values should be the same.", newRefreshToken, accessTokenImpl4.getRefreshToken());
+            Assert.assertEquals("Expected and actual values should be the same.", newRefreshToken, accessTokenImpl1.getRefreshToken());
+            Assert.assertEquals("Expected and actual values should be the same.", newRefreshToken, accessTokenImpl2.getRefreshToken());
+            Assert.assertEquals("Expected and actual values should be the same.", newRefreshToken, accessTokenImpl3.getRefreshToken());
+            Assert.assertEquals("Expected and actual values should be the same.", newRefreshToken, accessTokenImpl4.getRefreshToken());
         }
     }
 
@@ -264,10 +265,10 @@ public class AccessTokenImplTest extends Assert {
             accessTokenImpl3.setRefreshExpiresOn(newRefreshExpiresOnDate);
             accessTokenImpl4.setRefreshExpiresOn(newRefreshExpiresOnDate);
 
-            assertEquals("Expected and actual values should be the same.", newRefreshExpiresOnDate, accessTokenImpl1.getRefreshExpiresOn());
-            assertEquals("Expected and actual values should be the same.", newRefreshExpiresOnDate, accessTokenImpl2.getRefreshExpiresOn());
-            assertEquals("Expected and actual values should be the same.", newRefreshExpiresOnDate, accessTokenImpl3.getRefreshExpiresOn());
-            assertEquals("Expected and actual values should be the same.", newRefreshExpiresOnDate, accessTokenImpl4.getRefreshExpiresOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newRefreshExpiresOnDate, accessTokenImpl1.getRefreshExpiresOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newRefreshExpiresOnDate, accessTokenImpl2.getRefreshExpiresOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newRefreshExpiresOnDate, accessTokenImpl3.getRefreshExpiresOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newRefreshExpiresOnDate, accessTokenImpl4.getRefreshExpiresOn());
         }
     }
 
@@ -280,10 +281,10 @@ public class AccessTokenImplTest extends Assert {
             accessTokenImpl3.setInvalidatedOn(newInvalidatedOnDate);
             accessTokenImpl4.setInvalidatedOn(newInvalidatedOnDate);
 
-            assertEquals("Expected and actual values should be the same.", newInvalidatedOnDate, accessTokenImpl1.getInvalidatedOn());
-            assertEquals("Expected and actual values should be the same.", newInvalidatedOnDate, accessTokenImpl2.getInvalidatedOn());
-            assertEquals("Expected and actual values should be the same.", newInvalidatedOnDate, accessTokenImpl3.getInvalidatedOn());
-            assertEquals("Expected and actual values should be the same.", newInvalidatedOnDate, accessTokenImpl4.getInvalidatedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newInvalidatedOnDate, accessTokenImpl1.getInvalidatedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newInvalidatedOnDate, accessTokenImpl2.getInvalidatedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newInvalidatedOnDate, accessTokenImpl3.getInvalidatedOn());
+            Assert.assertEquals("Expected and actual values should be the same.", newInvalidatedOnDate, accessTokenImpl4.getInvalidatedOn());
         }
     }
 
@@ -296,10 +297,10 @@ public class AccessTokenImplTest extends Assert {
             accessTokenImpl3.setTrustKey(newTrustKey);
             accessTokenImpl4.setTrustKey(newTrustKey);
 
-            assertEquals("Expected and actual values should be the same.", newTrustKey, accessTokenImpl1.getTrustKey());
-            assertEquals("Expected and actual values should be the same.", newTrustKey, accessTokenImpl2.getTrustKey());
-            assertEquals("Expected and actual values should be the same.", newTrustKey, accessTokenImpl3.getTrustKey());
-            assertEquals("Expected and actual values should be the same.", newTrustKey, accessTokenImpl4.getTrustKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustKey, accessTokenImpl1.getTrustKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustKey, accessTokenImpl2.getTrustKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustKey, accessTokenImpl3.getTrustKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newTrustKey, accessTokenImpl4.getTrustKey());
         }
     }
 }

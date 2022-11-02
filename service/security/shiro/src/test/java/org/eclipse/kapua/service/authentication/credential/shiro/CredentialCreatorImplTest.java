@@ -23,8 +23,9 @@ import org.junit.experimental.categories.Category;
 
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class CredentialCreatorImplTest extends Assert {
+public class CredentialCreatorImplTest {
 
     CredentialCreatorImpl credentialCreatorImpl1, credentialCreatorImpl2;
 
@@ -50,12 +51,12 @@ public class CredentialCreatorImplTest extends Assert {
                         for (CredentialStatus credentialStatus : credentialStatuses) {
                             for (Date date : dates) {
                                 CredentialCreatorImpl credentialCreatorImpl = new CredentialCreatorImpl(scopeId, userId, credentialType, credentialKey, credentialStatus, date);
-                                assertEquals("Expected and actual values should be the same.", scopeId, credentialCreatorImpl.getScopeId());
-                                assertEquals("Expected and actual values should be the same.", userId, credentialCreatorImpl.getUserId());
-                                assertEquals("Expected and actual values should be the same.", credentialType, credentialCreatorImpl.getCredentialType());
-                                assertEquals("Expected and actual values should be the same.", credentialKey, credentialCreatorImpl.getCredentialPlainKey());
-                                assertEquals("Expected and actual values should be the same.", credentialStatus, credentialCreatorImpl.getCredentialStatus());
-                                assertEquals("Expected and actual values should be the same.", date, credentialCreatorImpl.getExpirationDate());
+                                Assert.assertEquals("Expected and actual values should be the same.", scopeId, credentialCreatorImpl.getScopeId());
+                                Assert.assertEquals("Expected and actual values should be the same.", userId, credentialCreatorImpl.getUserId());
+                                Assert.assertEquals("Expected and actual values should be the same.", credentialType, credentialCreatorImpl.getCredentialType());
+                                Assert.assertEquals("Expected and actual values should be the same.", credentialKey, credentialCreatorImpl.getCredentialPlainKey());
+                                Assert.assertEquals("Expected and actual values should be the same.", credentialStatus, credentialCreatorImpl.getCredentialStatus());
+                                Assert.assertEquals("Expected and actual values should be the same.", date, credentialCreatorImpl.getExpirationDate());
                             }
                         }
                     }
@@ -69,12 +70,12 @@ public class CredentialCreatorImplTest extends Assert {
         KapuaId[] scopeIds = {null, KapuaId.ONE};
         for (KapuaId scopeId : scopeIds) {
             CredentialCreatorImpl credentialCreatorImpl = new CredentialCreatorImpl(scopeId);
-            assertEquals("Expected and actual values should be the same.", scopeId, credentialCreatorImpl.getScopeId());
-            assertNull("Null expected.", credentialCreatorImpl.getUserId());
-            assertNull("Null expected.", credentialCreatorImpl.getCredentialType());
-            assertNull("Null expected.", credentialCreatorImpl.getCredentialPlainKey());
-            assertNull("Null expected.", credentialCreatorImpl.getCredentialStatus());
-            assertNull("Null expected.", credentialCreatorImpl.getExpirationDate());
+            Assert.assertEquals("Expected and actual values should be the same.", scopeId, credentialCreatorImpl.getScopeId());
+            Assert.assertNull("Null expected.", credentialCreatorImpl.getUserId());
+            Assert.assertNull("Null expected.", credentialCreatorImpl.getCredentialType());
+            Assert.assertNull("Null expected.", credentialCreatorImpl.getCredentialPlainKey());
+            Assert.assertNull("Null expected.", credentialCreatorImpl.getCredentialStatus());
+            Assert.assertNull("Null expected.", credentialCreatorImpl.getExpirationDate());
         }
     }
 
@@ -84,8 +85,8 @@ public class CredentialCreatorImplTest extends Assert {
         for (KapuaId newUserId : newUserIds) {
             credentialCreatorImpl1.setUserId(newUserId);
             credentialCreatorImpl2.setUserId(newUserId);
-            assertEquals("Expected and actual values should be the same.", newUserId, credentialCreatorImpl1.getUserId());
-            assertEquals("Expected and actual values should be the same.", newUserId, credentialCreatorImpl2.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, credentialCreatorImpl1.getUserId());
+            Assert.assertEquals("Expected and actual values should be the same.", newUserId, credentialCreatorImpl2.getUserId());
         }
     }
 
@@ -95,8 +96,8 @@ public class CredentialCreatorImplTest extends Assert {
         for (CredentialType newCredentialType : newCredentialTypes) {
             credentialCreatorImpl1.setCredentialType(newCredentialType);
             credentialCreatorImpl2.setCredentialType(newCredentialType);
-            assertEquals("Expected and actual values should be the same.", newCredentialType, credentialCreatorImpl1.getCredentialType());
-            assertEquals("Expected and actual values should be the same.", newCredentialType, credentialCreatorImpl2.getCredentialType());
+            Assert.assertEquals("Expected and actual values should be the same.", newCredentialType, credentialCreatorImpl1.getCredentialType());
+            Assert.assertEquals("Expected and actual values should be the same.", newCredentialType, credentialCreatorImpl2.getCredentialType());
         }
     }
 
@@ -106,8 +107,8 @@ public class CredentialCreatorImplTest extends Assert {
         for (String newCredentialKey : newCredentialKeys) {
             credentialCreatorImpl1.setCredentialPlainKey(newCredentialKey);
             credentialCreatorImpl2.setCredentialPlainKey(newCredentialKey);
-            assertEquals("Expected and actual values should be the same.", newCredentialKey, credentialCreatorImpl1.getCredentialPlainKey());
-            assertEquals("Expected and actual values should be the same.", newCredentialKey, credentialCreatorImpl2.getCredentialPlainKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newCredentialKey, credentialCreatorImpl1.getCredentialPlainKey());
+            Assert.assertEquals("Expected and actual values should be the same.", newCredentialKey, credentialCreatorImpl2.getCredentialPlainKey());
         }
     }
 
@@ -117,8 +118,8 @@ public class CredentialCreatorImplTest extends Assert {
         for (Date newDate : newDates) {
             credentialCreatorImpl1.setExpirationDate(newDate);
             credentialCreatorImpl2.setExpirationDate(newDate);
-            assertEquals("Expected and actual values should be the same.", newDate, credentialCreatorImpl1.getExpirationDate());
-            assertEquals("Expected and actual values should be the same.", newDate, credentialCreatorImpl2.getExpirationDate());
+            Assert.assertEquals("Expected and actual values should be the same.", newDate, credentialCreatorImpl1.getExpirationDate());
+            Assert.assertEquals("Expected and actual values should be the same.", newDate, credentialCreatorImpl2.getExpirationDate());
         }
     }
 
@@ -128,8 +129,8 @@ public class CredentialCreatorImplTest extends Assert {
         for (CredentialStatus newCredentialStatus : newCredentialStatuses) {
             credentialCreatorImpl1.setCredentialStatus(newCredentialStatus);
             credentialCreatorImpl2.setCredentialStatus(newCredentialStatus);
-            assertEquals("Expected and actual values should be the same.", newCredentialStatus, credentialCreatorImpl1.getCredentialStatus());
-            assertEquals("Expected and actual values should be the same.", newCredentialStatus, credentialCreatorImpl2.getCredentialStatus());
+            Assert.assertEquals("Expected and actual values should be the same.", newCredentialStatus, credentialCreatorImpl1.getCredentialStatus());
+            Assert.assertEquals("Expected and actual values should be the same.", newCredentialStatus, credentialCreatorImpl2.getCredentialStatus());
         }
     }
 }

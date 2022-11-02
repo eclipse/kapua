@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.datastore.test.junit.utils;
 import org.assertj.core.api.Assertions;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -23,8 +22,9 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;
 
+
 @Category(JUnitTests.class)
-public class DatastoreUtilsConvertDateTest extends Assert {
+public class DatastoreUtilsConvertDateTest {
 
     @Test(expected = java.lang.IllegalArgumentException.class)
     public void convertNullString() {
