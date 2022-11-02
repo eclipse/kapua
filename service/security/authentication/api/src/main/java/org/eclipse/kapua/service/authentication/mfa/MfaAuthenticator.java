@@ -27,7 +27,6 @@ public interface MfaAuthenticator {
      * Whether the {@link MfaAuthenticator} service is enabled or not.
      *
      * @return {@code true} if the {@link MfaAuthenticator} is enabled, {@code false} otherwise.
-     * @throws KapuaException
      * @since 1.3.0
      */
     boolean isEnabled();
