@@ -17,6 +17,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.credential.CredentialsMatcher;
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.ApiKeyCredentials;
@@ -78,20 +79,20 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                 // FIXME: if true cache token password for authentication performance improvement
             } else {
 
-                // first check if 2FA is enabled for the current user
+                // Check if MFA is enabled for the current user
                 MfaOption mfaOption;
                 try {
-                    mfaOption = KapuaSecurityUtils.doPrivileged(() -> MFA_OPTION_SERVICE.findByUserId(infoUser.getScopeId(),
-                            infoUser.getId()));
+                    mfaOption = KapuaSecurityUtils.doPrivileged(() -> MFA_OPTION_SERVICE.findByUserId(infoUser.getScopeId(), infoUser.getId()));
                 } catch (AuthenticationException ae) {
                     throw ae;
                 } catch (Exception e) {
                     throw new ShiroException("Error while finding Mfa Option!", e);
                 }
+
                 if (mfaOption != null) {
                     if (tokenAuthenticationCode != null) {
 
-                        // do 2fa match
+                        // Do MFA match
                         boolean isCodeValid;
                         try {
                             isCodeValid = MFA_AUTHENTICATOR.authorize(mfaOption.getMfaSecretKey(), Integer.parseInt(tokenAuthenticationCode));
@@ -101,12 +102,11 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                             throw new ShiroException("Error while authenticating Mfa Option!", e);
                         }
 
-                        //  code is not valid, try scratch code login
                         if (!isCodeValid) {
+                            //  Code is not valid, try scratch codes login
                             ScratchCodeListResult scratchCodeListResult;
                             try {
-                                scratchCodeListResult = KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.findByMfaOptionId(
-                                        mfaOption.getScopeId(), mfaOption.getId()));
+                                scratchCodeListResult = KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.findByMfaOptionId(mfaOption.getScopeId(), mfaOption.getId()));
                             } catch (AuthenticationException ae) {
                                 throw ae;
                             } catch (Exception e) {
@@ -114,16 +114,21 @@ public class UserPassCredentialsMatcher implements CredentialsMatcher {
                             }
 
                             for (ScratchCode code : scratchCodeListResult.getItems()) {
-                                if (MFA_AUTHENTICATOR.authorize(code.getCode(), tokenAuthenticationCode)) {
-                                    isCodeValid = true;
-                                    try {
-                                        KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.delete(code.getScopeId(), code.getId()));
-                                    } catch (AuthenticationException ae) {
-                                        throw ae;
-                                    } catch (Exception e) {
-                                        throw new ShiroException("Error while removing used scratch code!", e);
+                                try {
+                                    if (MFA_AUTHENTICATOR.authorize(code.getCode(), tokenAuthenticationCode)) {
+                                        isCodeValid = true;
+                                        try {
+                                            // Delete the used scratch code
+                                            KapuaSecurityUtils.doPrivileged(() -> SCRATCH_CODE_SERVICE.delete(code.getScopeId(), code.getId()));
+                                        } catch (AuthenticationException ae) {
+                                            throw ae;
+                                        } catch (Exception e) {
+                                            throw new ShiroException("Error while removing used scratch code!", e);
+                                        }
+                                        break;
                                     }
-                                    break;
+                                } catch (KapuaException e) {
+                                    throw new ShiroException("Error while validating scratch codes!", e);
                                 }
                             }
                         }
