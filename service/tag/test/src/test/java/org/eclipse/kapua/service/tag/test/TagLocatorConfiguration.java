@@ -54,7 +54,6 @@ import org.eclipse.kapua.service.tag.TagService;
 import org.eclipse.kapua.service.tag.internal.TagEntityManagerFactory;
 import org.eclipse.kapua.service.tag.internal.TagFactoryImpl;
 import org.eclipse.kapua.service.tag.internal.TagServiceImpl;
-import org.eclipse.kapua.service.user.UserService;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -96,7 +95,7 @@ public class TagLocatorConfiguration {
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
                 bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
-                bind(UserService.class).toInstance(Mockito.mock(UserService.class));
+                bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
                 // Inject actual Tag service related services
                 bind(TagEntityManagerFactory.class).toInstance(new TagEntityManagerFactory());
