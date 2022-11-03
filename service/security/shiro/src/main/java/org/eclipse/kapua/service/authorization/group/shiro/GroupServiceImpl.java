@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -23,6 +24,8 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
+import org.eclipse.kapua.service.account.AccountFactory;
+import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
@@ -80,6 +83,26 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
         super(authorizationEntityManagerFactory, null, serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
+    }
+
+    @Inject
+    public GroupServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
+                            GroupFactory factory,
+                            PermissionFactory permissionFactory,
+                            AuthorizationService authorizationService,
+                            AccountFactory accountFactory,
+                            AccountService accountService,
+                            RootUserTester rootUserTester) {
+        super(GroupService.class.getName(),
+                AuthorizationDomains.GROUP_DOMAIN,
+                authorizationEntityManagerFactory,
+                null,
+                factory,
+                permissionFactory,
+                authorizationService,
+                accountFactory,
+                accountService,
+                rootUserTester);
     }
 
     @Override
