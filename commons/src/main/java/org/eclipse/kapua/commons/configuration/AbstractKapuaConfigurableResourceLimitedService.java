@@ -41,7 +41,6 @@ import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-import org.eclipse.kapua.service.user.UserService;
 
 import java.util.Map;
 
@@ -166,7 +165,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @param serviceClass         The {@link KapuaService} type.
      * @param factoryClass         The {@link KapuaEntityFactory} type.
      * @since 1.2.0
-     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, KapuaEntityFactory, PermissionFactory, AuthorizationService, AccountFactory, AccountService, UserService)}This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, KapuaEntityFactory, PermissionFactory, AuthorizationService, AccountFactory, AccountService, RootUserTester)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableResourceLimitedService(
@@ -198,7 +197,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @param factory              The {@link KapuaEntityFactory} instance.
      * @param permissionFactory    The {@link PermissionFactory} instance.
      * @param authorizationService The {@link AuthorizationService} instance.
-     * @param userService          The {@link UserService} instance.
+     * @param rootUserTester       The {@link RootUserTester} instance.
      * @since 2.0.0
      */
     protected AbstractKapuaConfigurableResourceLimitedService(String pid,
@@ -210,8 +209,8 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
                                                               AuthorizationService authorizationService,
                                                               AccountFactory accountFactory,
                                                               AccountService accountService,
-                                                              UserService userService) {
-        super(pid, domain, entityManagerFactory, abstractCacheFactory, permissionFactory, authorizationService, userService);
+                                                              RootUserTester rootUserTester) {
+        super(pid, domain, entityManagerFactory, abstractCacheFactory, permissionFactory, authorizationService, rootUserTester);
         this.factory = factory;
         this.factoryClass = null; //TODO: not needed for this construction path, remove as soon as the deprecated constructor is removed
         this.accountFactory = accountFactory;

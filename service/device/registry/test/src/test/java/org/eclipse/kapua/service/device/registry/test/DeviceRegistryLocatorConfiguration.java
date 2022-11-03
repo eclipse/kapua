@@ -18,6 +18,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessageFactory;
@@ -43,7 +44,6 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFac
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
-import org.eclipse.kapua.service.user.UserService;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -75,7 +75,7 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(AccountFactory.class).toInstance(Mockito.mock(AccountFactory.class));
                 bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
 
-                bind(UserService.class).toInstance(Mockito.mock(UserService.class));
+                bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());

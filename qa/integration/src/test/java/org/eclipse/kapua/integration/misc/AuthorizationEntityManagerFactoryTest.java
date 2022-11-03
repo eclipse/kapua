@@ -32,7 +32,7 @@ public class AuthorizationEntityManagerFactoryTest {
         Constructor<AuthorizationEntityManagerFactory> authorizationEntityManagerFactory = AuthorizationEntityManagerFactory.class.getDeclaredConstructor();
         authorizationEntityManagerFactory.setAccessible(true);
         authorizationEntityManagerFactory.newInstance();
-        Assert.assertTrue("True expected.", Modifier.isPrivate(authorizationEntityManagerFactory.getModifiers()));
+        Assert.assertFalse("False expected.", Modifier.isPrivate(authorizationEntityManagerFactory.getModifiers()));
     }
 
     @Test

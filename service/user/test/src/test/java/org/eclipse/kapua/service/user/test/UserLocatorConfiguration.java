@@ -18,6 +18,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -32,10 +33,12 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserNamedEntityService;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserCacheFactory;
 import org.eclipse.kapua.service.user.internal.UserEntityManagerFactory;
 import org.eclipse.kapua.service.user.internal.UserFactoryImpl;
+import org.eclipse.kapua.service.user.internal.UserNamedEntityServiceImpl;
 import org.eclipse.kapua.service.user.internal.UserServiceImpl;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
@@ -84,13 +87,21 @@ public class UserLocatorConfiguration {
                 bind(UserEntityManagerFactory.class).toInstance(userEntityManagerFactory);
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
                 bind(UserFactory.class).toInstance(userFactory);
-                bind(UserService.class).toInstance(new UserServiceImpl(mockedAuthorization,
-                        mockPermissionFactory,
-                        userEntityManagerFactory,
-                        new UserCacheFactory(),
-                        userFactory,
-                        accountFactory,
-                        accountService));
+                final RootUserTester mockRootUserTester = Mockito.mock(RootUserTester.class);
+                bind(RootUserTester.class).toInstance(mockRootUserTester);
+                final UserNamedEntityService namedEntityService = new UserNamedEntityServiceImpl(userEntityManagerFactory, new UserCacheFactory(), mockPermissionFactory, mockedAuthorization);
+                bind(UserNamedEntityService.class).toInstance(namedEntityService);
+                bind(UserService.class).toInstance(
+                        new UserServiceImpl(mockedAuthorization,
+                                mockPermissionFactory,
+                                userEntityManagerFactory,
+                                new UserCacheFactory(),
+                                userFactory,
+                                accountFactory,
+                                accountService,
+                                namedEntityService,
+                                mockRootUserTester)
+                );
             }
         };
 

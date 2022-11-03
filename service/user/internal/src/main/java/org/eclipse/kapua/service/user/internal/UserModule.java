@@ -12,15 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
+import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.RootUserTesterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserNamedEntityService;
 import org.eclipse.kapua.service.user.UserService;
 
 public class UserModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
-        bind(UserService.class).to(UserServiceImpl.class);
+        bind(RootUserTester.class).to(RootUserTesterImpl.class);
+        bind(UserNamedEntityService.class).to(UserNamedEntityServiceImpl.class);
         bind(UserFactory.class).to(UserFactoryImpl.class);
+        bind(UserService.class).to(UserServiceImpl.class);
         bind(UserEntityManagerFactory.class).toInstance(new UserEntityManagerFactory());
         bind(UserCacheFactory.class).toInstance(new UserCacheFactory());
     }

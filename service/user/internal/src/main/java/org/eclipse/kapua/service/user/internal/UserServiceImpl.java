@@ -19,15 +19,16 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
-import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.event.ServiceEvent;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -40,6 +41,7 @@ import org.eclipse.kapua.service.user.UserCreator;
 import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserListResult;
+import org.eclipse.kapua.service.user.UserNamedEntityService;
 import org.eclipse.kapua.service.user.UserQuery;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.UserStatus;
@@ -61,11 +63,21 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
+    public UserNamedEntityService getUserNamedEntityService() {
+        if (userNamedEntityService == null) {
+            userNamedEntityService = KapuaLocator.getInstance().getService(UserNamedEntityService.class);
+        }
+        return userNamedEntityService;
+    }
+
+    private UserNamedEntityService userNamedEntityService;
+
+
     /**
      * Constructor.
      *
      * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link UserServiceImpl#UserServiceImpl(AuthorizationService, PermissionFactory, UserEntityManagerFactory, UserCacheFactory, SystemSetting, UserFactory, AccountFactory, AccountService)} instead. This constructor may be removed in a next release
+     * @deprecated since 2.0.0 - Please use {@link #UserServiceImpl(AuthorizationService, PermissionFactory, UserEntityManagerFactory, UserCacheFactory, UserFactory, AccountFactory, AccountService, UserNamedEntityService, RootUserTester)} instead. This constructor may be removed in a next release
      */
     @Deprecated
     public UserServiceImpl() {
@@ -77,15 +89,18 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
                 UserFactory.class);
     }
 
+
     /**
-     * Constructor
+     * Injectable Constructor
      *
      * @param authorizationService     The {@link AuthorizationService} instance
      * @param permissionFactory        The {@link PermissionFactory} instance
      * @param userEntityManagerFactory The {@link UserEntityManagerFactory} instance
      * @param userCacheFactory         The {@link UserCacheFactory} instance
-     * @param systemSettings           The {@link SystemSetting} instance
      * @param userFactory              The {@link UserFactory} instance
+     * @param accountFactory           The {@link AccountFactory} instance
+     * @param accountService           The {@link AccountService} instance
+     * @param rootUserTester           The {@link RootUserTester} instance
      * @since 2.0.0
      */
     @Inject
@@ -96,7 +111,9 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             UserCacheFactory userCacheFactory,
             UserFactory userFactory,
             AccountFactory accountFactory,
-            AccountService accountService) {
+            AccountService accountService,
+            UserNamedEntityService userNamedEntityService,
+            RootUserTester rootUserTester) {
         super(UserService.class.getName(),
                 UserDomains.USER_DOMAIN,
                 userEntityManagerFactory,
@@ -106,7 +123,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
                 authorizationService,
                 accountFactory,
                 accountService,
-                null); //TODO: should be _this_, really. For now injecting null will work, falling back to the locator invocation at runtime, but this needs to be solved.
+                rootUserTester); //TODO: should be _this_, really. For now injecting null will work, falling back to the locator invocation at runtime, but this needs to be solved.
+        this.userNamedEntityService = userNamedEntityService;
     }
 
     @Override
@@ -331,15 +349,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     @Override
     public User findByName(String name) throws KapuaException {
-        //
-        // Validation of the fields
-        ArgumentValidator.notEmptyOrNull(name, "name");
-
-        //
-        // Do the find
-        return entityManagerSession.doAction(EntityManagerContainer.<User>create().onResultHandler(em -> checkReadAccess(UserDAO.findByName(em, name)))
-                .onBeforeHandler(() -> checkReadAccess((User) ((NamedEntityCache) entityCache).get(null, name)))
-                .onAfterHandler((entity) -> entityCache.put(entity)));
+        return getUserNamedEntityService().findByName(name);
     }
 
     @Override

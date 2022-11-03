@@ -17,6 +17,7 @@ import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
@@ -38,7 +39,6 @@ import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionServ
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCache;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
-import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
      * Constructor.
      *
      * @since 1.0.0
-     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService, UserService)}
+     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} )}
      */
     @Deprecated
     public DeviceConnectionServiceImpl() {
@@ -71,7 +71,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
      *
      * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
      * @since 1.0.0
-     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService, UserService)}
+     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)}
      */
     @Deprecated
     public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
@@ -93,7 +93,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
             DeviceRegistryCacheFactory deviceRegistryCacheFactory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
-            UserService userService
+            RootUserTester rootUserTester
     ) {
         super(DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
@@ -101,7 +101,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
                 deviceRegistryCacheFactory,
                 permissionFactory,
                 authorizationService,
-                userService
+                rootUserTester
         );
     }
 

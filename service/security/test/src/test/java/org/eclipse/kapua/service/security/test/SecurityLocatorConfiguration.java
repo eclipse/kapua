@@ -18,6 +18,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -45,6 +46,7 @@ import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryI
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
 import org.eclipse.kapua.service.user.UserFactory;
+import org.eclipse.kapua.service.user.UserNamedEntityService;
 import org.eclipse.kapua.service.user.UserService;
 import org.eclipse.kapua.service.user.internal.UserCacheFactory;
 import org.eclipse.kapua.service.user.internal.UserEntityManagerFactory;
@@ -94,6 +96,8 @@ public class SecurityLocatorConfiguration {
                 bind(CredentialService.class).to(CredentialServiceImpl.class);
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
                 bind(UserFactory.class).toInstance(userFactory);
+                final RootUserTester rootUserTester = Mockito.mock(RootUserTester.class);
+                bind(RootUserTester.class).toInstance(rootUserTester);
                 bind(UserService.class).toInstance(new UserServiceImpl(
                         mockedAuthorization,
                         mockPermissionFactory,
@@ -101,7 +105,9 @@ public class SecurityLocatorConfiguration {
                         new UserCacheFactory(),
                         userFactory,
                         Mockito.mock(AccountFactory.class),
-                        Mockito.mock(AccountService.class)
+                        Mockito.mock(AccountService.class),
+                        Mockito.mock(UserNamedEntityService.class),
+                        rootUserTester
                 ));
             }
         };

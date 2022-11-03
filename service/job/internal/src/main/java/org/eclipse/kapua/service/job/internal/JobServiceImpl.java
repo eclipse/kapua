@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.job.internal;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -42,7 +43,6 @@ import org.eclipse.kapua.service.scheduler.trigger.TriggerFactory;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerListResult;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerQuery;
 import org.eclipse.kapua.service.scheduler.trigger.TriggerService;
-import org.eclipse.kapua.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +71,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     /**
      * Constructor
      *
-     * @deprecated since 2.0.0 - Please use {@link #JobServiceImpl(JobEntityManagerFactory, JobFactory, PermissionFactory, AuthorizationService, TriggerService, TriggerFactory, AccountFactory, AccountService, UserService)} instead. This constructor may be removed in future releases
+     * @deprecated since 2.0.0 - Please use {@link #JobServiceImpl(JobEntityManagerFactory, JobFactory, PermissionFactory, AuthorizationService, TriggerService, TriggerFactory, AccountFactory, AccountService, RootUserTester)} instead. This constructor may be removed in future releases
      */
     @Deprecated
     public JobServiceImpl() {
@@ -102,7 +102,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
                           TriggerFactory triggerFactory,
                           AccountFactory accountFactory,
                           AccountService accountService,
-                          UserService userService) {
+                          RootUserTester rootUserTester) {
         super(JobService.class.getName(),
                 JobDomains.JOB_DOMAIN,
                 jobEntityManagerFactory,
@@ -112,7 +112,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
                 authorizationService,
                 accountFactory,
                 accountService,
-                userService
+                rootUserTester
         );
         this.triggerService = triggerService;
         this.triggerFactory = triggerFactory;

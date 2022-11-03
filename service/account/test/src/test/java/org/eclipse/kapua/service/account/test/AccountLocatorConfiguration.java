@@ -18,6 +18,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -32,7 +33,6 @@ import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.user.UserService;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -52,7 +52,7 @@ public class AccountLocatorConfiguration {
 
             @Override
             protected void configure() {
-                bind(UserService.class).toInstance(Mockito.mock(UserService.class));
+                bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
                 // Inject mocked Authorization Service method checkPermission
                 AuthorizationService mockedAuthorization = Mockito.mock(AuthorizationService.class);
                 try {

@@ -35,7 +35,6 @@ import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.StringUtil;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.config.metatype.KapuaTad;
 import org.eclipse.kapua.model.config.metatype.KapuaTmetadata;
@@ -47,8 +46,6 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
-import org.eclipse.kapua.service.user.User;
-import org.eclipse.kapua.service.user.UserService;
 import org.xml.sax.SAXException;
 
 import javax.validation.constraints.NotNull;
@@ -62,7 +59,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -115,7 +111,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     }
 
     //TODO: make final as soon as deprecated constructors are removed
-    private UserService userService;
+    private RootUserTester rootUserTester;
 
     /**
      * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
@@ -124,19 +120,11 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @return The instantiated (hopefully) {@link AuthorizationService} instance
      */
     //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected UserService getUserService() {
-        if (userService == null) {
-            userService = KapuaLocator.getInstance().getService(UserService.class);
+    protected RootUserTester getRootUserTester() {
+        if (rootUserTester == null) {
+            rootUserTester = KapuaLocator.getInstance().getService(RootUserTester.class);
         }
-        return userService;
-    }
-
-    private KapuaId fetchRootUserId() throws KapuaException {
-        //todo: remove me. This just converts root username to id - needs to be done elsewhere, preferrably in a once-at-startup way.
-        final String rootUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        final User rootUser = KapuaSecurityUtils.doPrivileged(() -> getUserService().findByName(rootUserName));
-        final KapuaId rootUserId = Optional.ofNullable(rootUser).map(KapuaEntity::getId).orElse(null);
-        return rootUserId;
+        return rootUserTester;
     }
 
     /**
@@ -170,7 +158,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param domain               The {@link Domain} on which check access.
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @since 1.0.0
-     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, UserService)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
@@ -185,7 +173,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
      * @since 1.2.0
-     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, UserService)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory, AbstractEntityCacheFactory abstractCacheFactory) {
@@ -199,7 +187,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
         */
         this.permissionFactory = null;
         this.authorizationService = null;
-        this.userService = null;
+        this.rootUserTester = null;
     }
 
     /**
@@ -209,7 +197,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @param domain               The {@link Domain} on which check access.
      * @param entityManagerFactory The {@link EntityManagerFactory} that handles persistence unit
      * @param abstractCacheFactory The {@link CacheFactory} that handles caching of the entities
-     * @param userService
+     * @param rootUserTester
      * @since 2.0.0
      */
     protected AbstractKapuaConfigurableService(String pid,
@@ -218,14 +206,14 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
                                                AbstractEntityCacheFactory abstractCacheFactory,
                                                PermissionFactory permissionFactory,
                                                AuthorizationService authorizationService,
-                                               UserService userService) {
+                                               RootUserTester rootUserTester) {
         super(entityManagerFactory, abstractCacheFactory);
 
         this.pid = pid;
         this.domain = domain;
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
-        this.userService = userService;
+        this.rootUserTester = rootUserTester;
     }
 
     /**
@@ -569,16 +557,16 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
     @Override
     public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
         KapuaTocd ocd = getConfigMetadata(scopeId, false);
-        final KapuaId rootUserId = fetchRootUserId();
 
         Map<String, Object> originalValues = getConfigValues(scopeId);
 
         for (KapuaTad ad : ocd.getAD()) {
             boolean allowSelfEdit = Boolean.parseBoolean(ad.getOtherAttributes().getOrDefault(new QName("allowSelfEdit"), "false"));
 
+            final KapuaId currentUserId = KapuaSecurityUtils.getSession().getUserId();
             boolean preventChange =
                     // if current user is not root user...
-                    !KapuaSecurityUtils.getSession().getUserId().equals(rootUserId) &&
+                    !getRootUserTester().isRoot(currentUserId) &&
                             // current configuration does not allow self edit...
                             !allowSelfEdit &&
                             // a configuration for the current logged account is about to be changed...
