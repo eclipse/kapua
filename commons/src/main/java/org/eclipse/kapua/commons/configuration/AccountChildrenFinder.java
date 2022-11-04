@@ -18,6 +18,18 @@ import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.AccountListResult;
 
 
+/**
+ * Service to retrieve all child accounts for a given scope
+ *
+ * @since 2.0.0
+ */
 public interface AccountChildrenFinder extends KapuaService {
+
+    /**
+     * @param scopeId       The scope id - must be provided
+     * @param targetScopeId - nullable target scope id
+     * @return the list of child accounts
+     * @throws KapuaException
+     */
     AccountListResult findChildren(KapuaId scopeId, KapuaId targetScopeId) throws KapuaException;
 }
