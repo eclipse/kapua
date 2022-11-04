@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
+#THIS SCRIPT IS SIMILAR TO "RUNKAPUATESTS.SH' BUT EXECUTES TESTS IN THE SAME WAY AS THE GIT ACTION CI PROCESS DOES, AKA USING THE CATEGORY TAGS
+
 #RUNS BOTH UNIT AND INTEGRATION TESTS AND FINALLY BUILDS THE PROJECT
 #FIRT, UNIT TESTS ARE LAUNCHED, IF THEY PASS INTEGRATION TESTS ARE THEN EXECUTED
 
-cucumberTags=('@env_none' '@env_docker_base' '@env_docker')
-testDescriptions=('minimal integration tests with embedded services and no containers' 'integration tests with a minimal set of containers' 'integration tests with a full deployment of containers')
+cucumberTags=('@brokerAcl' '@tag' '@broker' '@device' '@deviceManagement' '@connection' '@datastore' '@user' '@userIntegrationBase' '@userIntegration' '@security' '@jobs' '@scheduler' '@jobsIntegrationBase' '@triggerService' '@triggerServiceIntegrationBase' '@triggerServiceIntegration' '@account' '@translator' '@jobEngineStepDefinitions' '@jobEngineStartOfflineDevice' '@jobEngineRestartOnlineDevice' '@jobEngineStartOnlineDevice' '@jobEngineRestartOfflineDevice' '@jobEngineRestartOnlineDeviceSecondPart' '@jobsIntegration' '@jobEngineServiceStop')
 exitCodesTests=() #will contain exit code for each batch of tests
 
 #checks if the last build command exited normally and exits if necessary
@@ -18,13 +19,12 @@ checkErrorLastBuild() {
 #print in tabular form the building phases for each batch of tests
 printTestResults() {
   printf "Unit tests passed, build launched with integration tests results:\n";
-  printf "%s\t\t\t%s\t\t\t%s\n\n" "OUTCOME" "CUCUMBER_TAG" "BRIEF DESCRIPTION";
   for i in "${!cucumberTags[@]}"
   do
     if [ "${exitCodesTests[$i]}" -ne 0 ]; then #error on this test
-      printf "%s\t\t%s\t\t\t%s\n" "BUILD FAIL" "${cucumberTags[$i]}" "${testDescriptions[$i]}";
+      printf "%s\t\t%s\n" "BUILD FAIL" "${cucumberTags[$i]}";
     else
-      printf "%s\t\t%s\t\t\t%s\n" "BUILD SUCCESS" "${cucumberTags[$i]}" "${testDescriptions[$i]}";
+      printf "%s\t\t%s\n" "BUILD SUCCESS" "${cucumberTags[$i]}";
     fi
   done
   printf "Be aware that the build may have been failed for various reasons and not just test failures!\n";
@@ -37,13 +37,15 @@ printTestResults() {
 grep -q "127.0.0.1 message-broker" /etc/hosts || { echo "password required to change hosts file" && { echo "127.0.0.1 message-broker" | sudo tee -a /etc/hosts;} }
 
 echo "Started junit tests";
-mvn clean verify -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true;
+mvn clean verify -Dcommons.settings.hotswap=true -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true;
 checkErrorLastBuild "error on junit tests. Execution terminated because it's pointless to proceed with integration tests";
 for tag in "${cucumberTags[@]}"
 do
 	echo "Started integration tests tagged as $tag";
-	bash -c 'mvn verify -Dgroups="!org.eclipse.kapua.qa.markers.junit.JUnitTests" -Dcucumber.filter.tags=$0' $tag;
+	bash -c 'mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups="!org.eclipse.kapua.qa.markers.junit.JUnitTests" -Dcrypto.secret.key=kapuaTestsKey!!! -Duser.timezone=UTC -Dcucumber.filter.tags=$0' $tag;
 	exitCodesTests+=($?);
 done
 mvn install -DskipTests=true #finally, build completely the project
 printTestResults;
+
+#mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups='!org.eclipse.kapua.qa.markers.junit.JUnitTests' -Dcucumber.filter.tags=@env_docker -Duser.timezone=UTC

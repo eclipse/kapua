@@ -32,6 +32,27 @@
         <module>markers</module>
     </modules>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <groups>'!org.eclipse.kapua.test.junit.JUnitTests'</groups>
+                        <commons.settings.hotswap>true</commons.settings.hotswap>
+                        <commons.db.schema>kapuadb</commons.db.schema>
+                        <crypto.secret.key>kapuaTestsKey!!!</crypto.secret.key>
+                        <broker.host>localhost</broker.host>
+                        <user.timezone>UTC</user.timezone>
+                    </systemPropertyVariables>
+                </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
     <profiles>
         <!-- Profile for running integration tests with Kapua infrastructure started inside dockerized environment. -->
         <profile>
