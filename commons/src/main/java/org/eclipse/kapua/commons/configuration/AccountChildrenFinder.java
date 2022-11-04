@@ -19,7 +19,6 @@ import org.eclipse.kapua.service.account.AccountListResult;
 
 import java.util.Optional;
 
-
 /**
  * Service to retrieve all child accounts for a given scope
  *
