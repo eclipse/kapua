@@ -29,3 +29,4 @@ public interface RootUserTester extends KapuaService {
      * @throws KapuaException
      */
     boolean isRoot(KapuaId userId) throws KapuaException;
+}
