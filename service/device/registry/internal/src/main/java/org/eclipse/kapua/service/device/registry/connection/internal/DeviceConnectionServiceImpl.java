@@ -78,14 +78,21 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
         super(DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
                 deviceEntityManagerFactory,
-                new DeviceRegistryCacheFactory());
+                new DeviceRegistryCacheFactory(),
+                null,
+                null,
+                null);
     }
 
     /**
      * Constructor.
      *
-     * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
-     * @since 1.0.0
+     * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory} instance.
+     * @param deviceRegistryCacheFactory The {@link DeviceRegistryCacheFactory} instance.
+     * @param permissionFactory          The {@link PermissionFactory} instance.
+     * @param authorizationService       The {@link AuthorizationService} instance.
+     * @param rootUserTester             The {@link RootUserTester} instance.
+     * @since 2.0.0
      */
     @Inject
     public DeviceConnectionServiceImpl(

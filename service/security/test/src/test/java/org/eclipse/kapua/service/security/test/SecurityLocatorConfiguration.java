@@ -86,7 +86,7 @@ public class SecurityLocatorConfiguration {
                 // Inject actual Role service related services
                 AuthorizationEntityManagerFactory authorizationEntityManagerFactory = AuthorizationEntityManagerFactory.getInstance();
                 bind(AuthorizationEntityManagerFactory.class).toInstance(authorizationEntityManagerFactory);
-                bind(RoleService.class).toInstance(new RoleServiceImpl());
+                bind(RoleService.class).to(RoleServiceImpl.class);
                 bind(RoleFactory.class).toInstance(new RoleFactoryImpl());
                 bind(RolePermissionFactory.class).toInstance(new RolePermissionFactoryImpl());
                 bind(GroupService.class).toInstance(new GroupServiceImpl());
@@ -97,6 +97,8 @@ public class SecurityLocatorConfiguration {
                 bind(UserFactory.class).toInstance(userFactory);
                 final RootUserTester rootUserTester = Mockito.mock(RootUserTester.class);
                 bind(RootUserTester.class).toInstance(rootUserTester);
+                final AccountChildrenFinder accountChildrenFinder = Mockito.mock(AccountChildrenFinder.class);
+                bind(AccountChildrenFinder.class).toInstance(accountChildrenFinder);
                 bind(UserService.class).toInstance(new UserServiceImpl(
                         mockedAuthorization,
                         mockPermissionFactory,
@@ -104,7 +106,7 @@ public class SecurityLocatorConfiguration {
                         new UserCacheFactory(),
                         userFactory,
                         Mockito.mock(UserNamedEntityService.class),
-                        Mockito.mock(AccountChildrenFinder.class),
+                        accountChildrenFinder,
                         rootUserTester
                 ));
             }

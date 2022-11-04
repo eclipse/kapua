@@ -29,7 +29,7 @@ public class RoleCacheFactoryTest {
         Constructor<RoleCacheFactory> roleCacheFactory = RoleCacheFactory.class.getDeclaredConstructor();
         roleCacheFactory.setAccessible(true);
         roleCacheFactory.newInstance();
-        Assert.assertTrue("True expected.", Modifier.isPrivate(roleCacheFactory.getModifiers()));
+        Assert.assertFalse("False expected.", Modifier.isPrivate(roleCacheFactory.getModifiers()));
     }
 
     @Test

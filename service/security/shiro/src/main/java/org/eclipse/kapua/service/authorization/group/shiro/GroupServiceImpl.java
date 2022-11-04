@@ -61,6 +61,17 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
                 GroupFactory.class);
     }
 
+    /**
+     * Injectable constructor
+     *
+     * @param authorizationEntityManagerFactory The {@link AuthorizationEntityManagerFactory} instance.
+     * @param factory                           The {@link GroupFactory} instance.
+     * @param permissionFactory                 The {@link PermissionFactory} instance.
+     * @param authorizationService              The {@link AuthorizationService} instance.
+     * @param accountChildrenFinder             The {@link AccountChildrenFinder} instance.
+     * @param rootUserTester                    The {@link RootUserTester} instance.
+     * @since 2.0.0
+     */
     @Inject
     public GroupServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
                             GroupFactory factory,

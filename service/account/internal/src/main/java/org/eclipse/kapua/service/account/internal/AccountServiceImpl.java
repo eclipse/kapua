@@ -79,6 +79,18 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 AccountFactory.class);
     }
 
+    /**
+     * Injectable constructor
+     *
+     * @param accountEntityManagerFactory The {@link AccountEntityManagerFactory} instance
+     * @param accountCacheFactory         The {@link AccountCacheFactory} instance
+     * @param factory                     The {@link AccountFactory} instance
+     * @param permissionFactory           The {@link PermissionFactory} instance
+     * @param authorizationService        The {@link AuthorizationService} instance
+     * @param accountChildrenFinder       The {@link AccountChildrenFinder} instance
+     * @param rootUserTester              The {@link RootUserTester} instance
+     * @since 2.0.0
+     */
     @Inject
     public AccountServiceImpl(
             AccountEntityManagerFactory accountEntityManagerFactory,

@@ -77,7 +77,13 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
      * @since 1.0.0
      */
     public MessageStoreServiceImpl() {
-        super(MessageStoreService.class.getName(), DatastoreDomains.DATASTORE_DOMAIN, DatastoreEntityManagerFactory.getInstance());
+        super(MessageStoreService.class.getName(),
+                DatastoreDomains.DATASTORE_DOMAIN,
+                DatastoreEntityManagerFactory.getInstance(),
+                null,
+                null,
+                null,
+                null);
         metrics = MetricsDatastore.getInstance();
         ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());

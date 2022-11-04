@@ -81,7 +81,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     }
 
     /**
-     * Constructor
+     * Injectable Constructor
      *
      * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory} instance
      * @param deviceRegistryCacheFactory The {@link DeviceRegistryCacheFactory} instance

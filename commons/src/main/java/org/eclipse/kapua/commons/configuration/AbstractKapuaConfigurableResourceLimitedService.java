@@ -32,7 +32,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.Account;
-import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -71,45 +70,11 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
         implements KapuaEntityService<E, C> {
 
     //TODO: make final as soon as deprecated constructors are removed
+    private AccountChildrenFinder accountChildrenFinder;
     private F factory;
     //TODO: remove as soon as deprecated constructors are removed
     private final Class<F> factoryClass;
 
-    /**
-     * KapuaEntityFactory instance should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link KapuaEntityFactory} instance
-     */
-    //TODO: remove as soon as deprecated constructors are removed
-    protected F getFactory() {
-
-        if (factory == null) {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            this.factory = locator.getFactory(factoryClass);
-        }
-
-        return factory;
-    }
-
-    //TODO: make final as soon as deprecated constructors are removed
-    private AccountChildrenFinder accountChildrenFinder;
-
-    /**
-     * This instance should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link AccountFactory} instance
-     */
-    //TODO: remove as soon as deprecated constructors are removed
-    private AccountChildrenFinder getAccountChildrenFinder() {
-        if (accountChildrenFinder == null) {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            this.accountChildrenFinder = locator.getService(AccountChildrenFinder.class);
-        }
-
-        return accountChildrenFinder;
-    }
 
     /**
      * Constructor.
@@ -128,7 +93,12 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
             EntityManagerFactory entityManagerFactory,
             Class<S> serviceClass,
             Class<F> factoryClass) {
-        this(pid, domain, entityManagerFactory, null, serviceClass, factoryClass);
+        this(pid,
+                domain,
+                entityManagerFactory,
+                null,
+                serviceClass,
+                factoryClass);
     }
 
     /**
@@ -151,7 +121,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
             AbstractEntityCacheFactory abstractCacheFactory,
             Class<S> serviceClass,
             Class<F> factoryClass) {
-        super(pid, domain, entityManagerFactory, abstractCacheFactory);
+        super(pid, domain, entityManagerFactory, abstractCacheFactory, null, null, null);
 
         /*
         These should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
@@ -294,5 +264,38 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
             int maxChildAccounts = (int) finalConfig.get("maxNumberChildEntities");
             return maxChildAccounts - currentUsedEntities - childCount;
         });
+    }
+
+
+    /**
+     * KapuaEntityFactory instance should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link KapuaEntityFactory} instance
+     */
+    //TODO: remove as soon as deprecated constructors are removed
+    protected F getFactory() {
+
+        if (factory == null) {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            this.factory = locator.getFactory(factoryClass);
+        }
+
+        return factory;
+    }
+
+    /**
+     * This instance should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AccountChildrenFinder} instance
+     */
+    private AccountChildrenFinder getAccountChildrenFinder() {
+        if (accountChildrenFinder == null) {
+            KapuaLocator locator = KapuaLocator.getInstance();
+            this.accountChildrenFinder = locator.getService(AccountChildrenFinder.class);
+        }
+
+        return accountChildrenFinder;
     }
 }

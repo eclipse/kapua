@@ -16,6 +16,8 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -24,7 +26,9 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValidator;
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
@@ -51,9 +55,12 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
 
     private static final Logger LOG = LoggerFactory.getLogger(RoleServiceImpl.class);
 
-    @Inject
     private RolePermissionFactory rolePermissionFactory;
 
+    /**
+     * @deprecated since 2.0.0 - please use {@link #RoleServiceImpl(AuthorizationEntityManagerFactory, RoleCacheFactory, RoleFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester, RolePermissionFactory)} instead. This constructor might be removed in future releases.
+     */
+    @Deprecated
     public RoleServiceImpl() {
         super(RoleService.class.getName(),
                 AuthorizationDomains.ROLE_DOMAIN,
@@ -61,6 +68,41 @@ public class RoleServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
                 RoleCacheFactory.getInstance(),
                 RoleService.class,
                 RoleFactory.class);
+        this.rolePermissionFactory = null;
+    }
+
+    /**
+     * Injectable constructor
+     *
+     * @param authorizationEntityManagerFactory The {@link AuthorizationEntityManagerFactory} instance.
+     * @param roleCacheFactory                  The {@link RoleCacheFactory} instance.
+     * @param factory                           The {@link RoleFactory} instance.
+     * @param permissionFactory                 The {@link PermissionFactory} instance.
+     * @param authorizationService              The {@link AuthorizationService} instance.
+     * @param accountChildrenFinder             The {@link AccountChildrenFinder} instance.
+     * @param rootUserTester                    The {@link RootUserTester} instance.
+     * @param rolePermissionFactory             The {@link RolePermissionFactory} instance.
+     * @since 2.0.0
+     */
+    @Inject
+    public RoleServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
+                           RoleCacheFactory roleCacheFactory,
+                           RoleFactory factory,
+                           PermissionFactory permissionFactory,
+                           AuthorizationService authorizationService,
+                           AccountChildrenFinder accountChildrenFinder,
+                           RootUserTester rootUserTester,
+                           RolePermissionFactory rolePermissionFactory) {
+        super(RoleService.class.getName(),
+                AuthorizationDomains.ROLE_DOMAIN,
+                authorizationEntityManagerFactory,
+                roleCacheFactory,
+                factory,
+                permissionFactory,
+                authorizationService,
+                accountChildrenFinder,
+                rootUserTester);
+        this.rolePermissionFactory = rolePermissionFactory;
     }
 
     @Override

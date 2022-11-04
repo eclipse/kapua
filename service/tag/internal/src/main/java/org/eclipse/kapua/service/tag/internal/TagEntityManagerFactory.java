@@ -33,7 +33,7 @@ public class TagEntityManagerFactory extends AbstractEntityManagerFactory implem
      *
      * @since 1.0.0
      */
-    private TagEntityManagerFactory() {
+    public TagEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
 

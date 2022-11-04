@@ -96,8 +96,7 @@ public class TagLocatorConfiguration {
                 bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
                 // Inject actual Tag service related services
-                TagEntityManagerFactory tagEntityManagerFactory = TagEntityManagerFactory.getInstance();
-                bind(TagEntityManagerFactory.class).toInstance(tagEntityManagerFactory);
+                bind(TagEntityManagerFactory.class).toInstance(new TagEntityManagerFactory());
 
                 // Inject actual Device service related services
                 DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();

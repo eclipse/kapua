@@ -77,55 +77,9 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
 
     //TODO: make final as soon as deprecated constructors are removed
     private PermissionFactory permissionFactory;
-
-    /**
-     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link PermissionFactory} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected PermissionFactory getPermissionFactory() {
-        if (permissionFactory == null) {
-            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
-        }
-        return permissionFactory;
-    }
-
-
-    //TODO: make final as soon as deprecated constructors are removed
     private AuthorizationService authorizationService;
-
-    /**
-     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link AuthorizationService} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected AuthorizationService getAuthorizationService() {
-        if (authorizationService == null) {
-            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-        }
-        return authorizationService;
-    }
-
-    //TODO: make final as soon as deprecated constructors are removed
     private RootUserTester rootUserTester;
 
-    /**
-     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link AuthorizationService} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected RootUserTester getRootUserTester() {
-        if (rootUserTester == null) {
-            rootUserTester = KapuaLocator.getInstance().getService(RootUserTester.class);
-        }
-        return rootUserTester;
-    }
 
     /**
      * This cache is to hold the {@link KapuaTocd}s that are read from the metatype files.
@@ -162,7 +116,17 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      */
     @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory) {
-        this(pid, domain, entityManagerFactory, null);
+        this(pid,
+                domain,
+                entityManagerFactory,
+                /*
+                Following service should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+                therefore fetching of these instances is demanded to the artificial getters introduced.
+                */
+                null,
+                null,
+                null,
+                null);
     }
 
     /**
@@ -177,17 +141,17 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      */
     @Deprecated
     protected AbstractKapuaConfigurableService(String pid, Domain domain, EntityManagerFactory entityManagerFactory, AbstractEntityCacheFactory abstractCacheFactory) {
-        super(entityManagerFactory, abstractCacheFactory);
-
-        this.pid = pid;
-        this.domain = domain;
-        /*
-        Following service should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
-        therefore fetching of these instances is demanded to the artificial getters introduced.
-        */
-        this.permissionFactory = null;
-        this.authorizationService = null;
-        this.rootUserTester = null;
+        this(pid,
+                domain,
+                entityManagerFactory,
+                abstractCacheFactory,
+                /*
+                Following service should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+                therefore fetching of these instances is demanded to the artificial getters introduced.
+                */
+                null,
+                null,
+                null);
     }
 
     /**
@@ -635,6 +599,51 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      */
     public String getServicePid() {
         return pid;
+    }
+
+
+    /**
+     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link PermissionFactory} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected PermissionFactory getPermissionFactory() {
+        if (permissionFactory == null) {
+            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        }
+        return permissionFactory;
+    }
+
+
+    /**
+     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AuthorizationService} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected AuthorizationService getAuthorizationService() {
+        if (authorizationService == null) {
+            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+        }
+        return authorizationService;
+    }
+
+
+    /**
+     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AuthorizationService} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected RootUserTester getRootUserTester() {
+        if (rootUserTester == null) {
+            rootUserTester = KapuaLocator.getInstance().getService(RootUserTester.class);
+        }
+        return rootUserTester;
     }
 
 }

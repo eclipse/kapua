@@ -68,7 +68,7 @@ public class JobServiceImpl extends AbstractKapuaConfigurableResourceLimitedServ
     private TriggerFactory triggerFactory;
 
     /**
-     * Constructor
+     * Deprecated Constructor
      *
      * @deprecated since 2.0.0 - Please use {@link #JobServiceImpl(JobEntityManagerFactory, JobFactory, PermissionFactory, AuthorizationService, TriggerService, TriggerFactory, AccountChildrenFinder, RootUserTester)} instead. This constructor may be removed in future releases
      */
