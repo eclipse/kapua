@@ -18,6 +18,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -72,6 +73,7 @@ public class DeviceRegistryLocatorConfiguration {
                 }
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
 
+                bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
                 bind(AccountFactory.class).toInstance(Mockito.mock(AccountFactory.class));
                 bind(AccountService.class).toInstance(Mockito.mock(AccountService.class));
 

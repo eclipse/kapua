@@ -18,6 +18,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
@@ -27,6 +28,7 @@ import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.account.internal.AccountChildrenFinderImpl;
 import org.eclipse.kapua.service.account.internal.AccountEntityManagerFactory;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
@@ -71,6 +73,7 @@ public class AccountLocatorConfiguration {
                 // Inject actual account related services
                 bind(AccountEntityManagerFactory.class).toInstance(AccountEntityManagerFactory.getInstance());
                 bind(AccountFactory.class).toInstance(new AccountFactoryImpl());
+                bind(AccountChildrenFinder.class).to(AccountChildrenFinderImpl.class);
                 bind(AccountService.class).to(AccountServiceImpl.class);
             }
         };

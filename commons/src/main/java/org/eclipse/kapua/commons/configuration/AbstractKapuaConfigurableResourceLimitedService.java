@@ -22,7 +22,6 @@ import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
-import org.eclipse.kapua.model.KapuaEntityAttributes;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
@@ -30,14 +29,11 @@ import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.account.AccountQuery;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -96,9 +92,8 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
         return factory;
     }
 
-
     //TODO: make final as soon as deprecated constructors are removed
-    private AccountFactory accountFactory;
+    private AccountChildrenFinder accountChildrenFinder;
 
     /**
      * This instance should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
@@ -107,32 +102,13 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @return The instantiated (hopefully) {@link AccountFactory} instance
      */
     //TODO: remove as soon as deprecated constructors are removed
-    private AccountFactory getAccountFactory() {
-        if (accountFactory == null) {
+    private AccountChildrenFinder getAccountChildrenFinder() {
+        if (accountChildrenFinder == null) {
             KapuaLocator locator = KapuaLocator.getInstance();
-            this.accountFactory = locator.getFactory(AccountFactory.class);
+            this.accountChildrenFinder = locator.getService(AccountChildrenFinder.class);
         }
 
-        return accountFactory;
-    }
-
-    //TODO: make final as soon as deprecated constructors are removed
-    private AccountService accountService;
-
-    /**
-     * This instance should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link AccountService} instance
-     */
-    //TODO: remove as soon as deprecated constructors are removed
-    private AccountService getAccountService() {
-        if (accountService == null) {
-            KapuaLocator locator = KapuaLocator.getInstance();
-            this.accountService = locator.getService(AccountService.class);
-        }
-
-        return accountService;
+        return accountChildrenFinder;
     }
 
     /**
@@ -165,7 +141,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @param serviceClass         The {@link KapuaService} type.
      * @param factoryClass         The {@link KapuaEntityFactory} type.
      * @since 1.2.0
-     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, KapuaEntityFactory, PermissionFactory, AuthorizationService, AccountFactory, AccountService, RootUserTester)} This constructor may be removed in a next release
+     * @deprecated Since 2.0.0. Please use {@link #AbstractKapuaConfigurableResourceLimitedService(String, Domain, EntityManagerFactory, AbstractEntityCacheFactory, KapuaEntityFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} This constructor may be removed in a next release
      */
     @Deprecated
     protected AbstractKapuaConfigurableResourceLimitedService(
@@ -183,8 +159,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
         */
         this.factoryClass = factoryClass;
         this.factory = null;
-        this.accountFactory = null;
-        this.accountService = null;
+        this.accountChildrenFinder = null;
     }
 
     /**
@@ -207,14 +182,12 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
                                                               F factory,
                                                               PermissionFactory permissionFactory,
                                                               AuthorizationService authorizationService,
-                                                              AccountFactory accountFactory,
-                                                              AccountService accountService,
+                                                              AccountChildrenFinder accountChildrenFinder,
                                                               RootUserTester rootUserTester) {
         super(pid, domain, entityManagerFactory, abstractCacheFactory, permissionFactory, authorizationService, rootUserTester);
         this.factory = factory;
         this.factoryClass = null; //TODO: not needed for this construction path, remove as soon as the deprecated constructor is removed
-        this.accountFactory = accountFactory;
-        this.accountService = accountService;
+        this.accountChildrenFinder = accountChildrenFinder;
     }
 
     @Override
@@ -279,7 +252,6 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
         return allowedChildEntities(scopeId, targetScopeId, null);
     }
 
-
     /**
      * Gets the number of remaining allowed entity for the given scope, according to the given {@link KapuaConfigurableService}
      * excluding a specific scope when checking resources available.
@@ -305,13 +277,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
             // Current used entities
             long currentUsedEntities = this.count(countQuery);
 
-            AccountQuery childAccountsQuery = getAccountFactory().newQuery(scopeId);
-            // Exclude the scope that is under config update
-            if (targetScopeId != null) {
-                childAccountsQuery.setPredicate(childAccountsQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, targetScopeId, Operator.NOT_EQUAL));
-            }
-
-            AccountListResult childAccounts = getAccountService().query(childAccountsQuery);
+            AccountListResult childAccounts = getAccountChildrenFinder().findChildren(scopeId, targetScopeId);
             // Resources assigned to children
             long childCount = 0;
             for (Account childAccount : childAccounts.getItems()) {

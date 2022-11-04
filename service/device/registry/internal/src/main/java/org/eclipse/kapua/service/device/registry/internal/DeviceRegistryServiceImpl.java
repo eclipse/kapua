@@ -17,14 +17,13 @@ import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -58,7 +57,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
      *
      * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
      * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, DeviceFactory, PermissionFactory, AuthorizationService, AccountFactory, AccountService, RootUserTester)} instead. This constructor may be removed in future releases
+     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, DeviceFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} instead. This constructor may be removed in future releases
      */
     @Deprecated
     public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
@@ -74,7 +73,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
      * Constructor.
      *
      * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, DeviceFactory, PermissionFactory, AuthorizationService, AccountFactory, AccountService, RootUserTester)} instead. This constructor may be removed in future releases
+     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, DeviceFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} instead. This constructor may be removed in future releases
      */
     @Deprecated
     public DeviceRegistryServiceImpl() {
@@ -98,8 +97,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
                                      DeviceFactory factory,
                                      PermissionFactory permissionFactory,
                                      AuthorizationService authorizationService,
-                                     AccountFactory accountFactory,
-                                     AccountService accountService,
+                                     AccountChildrenFinder accountChildrenFinder,
                                      RootUserTester rootUserTester) {
         super(DeviceRegistryService.class.getName(),
                 DeviceDomains.DEVICE_DOMAIN,
@@ -108,8 +106,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
                 factory,
                 permissionFactory,
                 authorizationService,
-                accountFactory,
-                accountService,
+                accountChildrenFinder,
                 rootUserTester
         );
     }

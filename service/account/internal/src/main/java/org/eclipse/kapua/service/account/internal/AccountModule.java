@@ -13,6 +13,7 @@
 package org.eclipse.kapua.service.account.internal;
 
 import com.google.inject.Module;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
@@ -26,7 +27,8 @@ public class AccountModule extends AbstractKapuaModule implements Module {
 
     @Override
     protected void configureModule() {
-        bind(AccountService.class).to(AccountServiceImpl.class);
         bind(AccountFactory.class).to(AccountFactoryImpl.class);
+        bind(AccountChildrenFinder.class).to(AccountChildrenFinderImpl.class);
+        bind(AccountService.class).to(AccountServiceImpl.class);
     }
 }

@@ -19,6 +19,7 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -32,8 +33,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.user.User;
@@ -77,7 +76,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
      * Constructor.
      *
      * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link #UserServiceImpl(AuthorizationService, PermissionFactory, UserEntityManagerFactory, UserCacheFactory, UserFactory, AccountFactory, AccountService, UserNamedEntityService, RootUserTester)} instead. This constructor may be removed in a next release
+     * @deprecated since 2.0.0 - Please use {@link #UserServiceImpl(AuthorizationService, PermissionFactory, UserEntityManagerFactory, UserCacheFactory, UserFactory, UserNamedEntityService, AccountChildrenFinder, RootUserTester)} instead. This constructor may be removed in a next release
      */
     @Deprecated
     public UserServiceImpl() {
@@ -98,8 +97,7 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
      * @param userEntityManagerFactory The {@link UserEntityManagerFactory} instance
      * @param userCacheFactory         The {@link UserCacheFactory} instance
      * @param userFactory              The {@link UserFactory} instance
-     * @param accountFactory           The {@link AccountFactory} instance
-     * @param accountService           The {@link AccountService} instance
+     * @param accountChildrenFinder    The {@link AccountChildrenFinder} instance
      * @param rootUserTester           The {@link RootUserTester} instance
      * @since 2.0.0
      */
@@ -110,9 +108,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
             UserEntityManagerFactory userEntityManagerFactory,
             UserCacheFactory userCacheFactory,
             UserFactory userFactory,
-            AccountFactory accountFactory,
-            AccountService accountService,
             UserNamedEntityService userNamedEntityService,
+            AccountChildrenFinder accountChildrenFinder,
             RootUserTester rootUserTester) {
         super(UserService.class.getName(),
                 UserDomains.USER_DOMAIN,
@@ -121,9 +118,8 @@ public class UserServiceImpl extends AbstractKapuaConfigurableResourceLimitedSer
                 userFactory,
                 permissionFactory,
                 authorizationService,
-                accountFactory,
-                accountService,
-                rootUserTester); //TODO: should be _this_, really. For now injecting null will work, falling back to the locator invocation at runtime, but this needs to be solved.
+                accountChildrenFinder,
+                rootUserTester);
         this.userNamedEntityService = userNamedEntityService;
     }
 

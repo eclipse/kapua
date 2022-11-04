@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -22,8 +23,6 @@ import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
@@ -51,7 +50,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
     private static final Logger LOG = LoggerFactory.getLogger(GroupServiceImpl.class);
 
     /**
-     * @deprecated since 2.0.0 - please use {@link #GroupServiceImpl(AuthorizationEntityManagerFactory, GroupFactory, PermissionFactory, AuthorizationService, AccountFactory, AccountService, RootUserTester)} instead. This constructor might be removed in later releases.
+     * @deprecated since 2.0.0 - please use {@link #GroupServiceImpl(AuthorizationEntityManagerFactory, GroupFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} instead. This constructor might be removed in later releases.
      */
     @Deprecated
     public GroupServiceImpl() {
@@ -67,8 +66,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
                             GroupFactory factory,
                             PermissionFactory permissionFactory,
                             AuthorizationService authorizationService,
-                            AccountFactory accountFactory,
-                            AccountService accountService,
+                            AccountChildrenFinder accountChildrenFinder,
                             RootUserTester rootUserTester) {
         super(GroupService.class.getName(),
                 AuthorizationDomains.GROUP_DOMAIN,
@@ -77,8 +75,7 @@ public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedSe
                 factory,
                 permissionFactory,
                 authorizationService,
-                accountFactory,
-                accountService,
+                accountChildrenFinder,
                 rootUserTester);
     }
 

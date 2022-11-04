@@ -19,6 +19,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -66,7 +67,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
      * Constructor.
      *
      * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link #AccountServiceImpl(AccountEntityManagerFactory, AccountCacheFactory, AccountFactory, PermissionFactory, AuthorizationService, RootUserTester)} instead. This may be removed in future releases.
+     * @deprecated since 2.0.0 - Please use {@link #AccountServiceImpl(AccountEntityManagerFactory, AccountCacheFactory, AccountFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} instead. This may be removed in future releases.
      */
     @Deprecated
     public AccountServiceImpl() {
@@ -85,6 +86,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             AccountFactory factory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
+            AccountChildrenFinder accountChildrenFinder,
             RootUserTester rootUserTester) {
         super(AccountService.class.getName(),
                 AccountDomains.ACCOUNT_DOMAIN,
@@ -93,8 +95,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
                 factory,
                 permissionFactory,
                 authorizationService,
-                factory,
-                null,  //TODO: should be _this_, really. For now injecting null will work, falling back to the locator invocation at runtime, but this needs to be solved.
+                accountChildrenFinder,
                 rootUserTester
         );
     }

@@ -18,6 +18,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
@@ -25,10 +26,6 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
-import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountService;
-import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
-import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
@@ -77,10 +74,8 @@ public class UserLocatorConfiguration {
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
 
                 // binding Account related services
-                final AccountFactoryImpl accountFactory = Mockito.spy(new AccountFactoryImpl());
-                bind(AccountFactory.class).toInstance(accountFactory);
-                final AccountServiceImpl accountService = Mockito.spy(new AccountServiceImpl());
-                bind(AccountService.class).toInstance(accountService);
+                final AccountChildrenFinder accountChildrenFinder = Mockito.mock(AccountChildrenFinder.class);
+                bind(AccountChildrenFinder.class).toInstance(accountChildrenFinder);
 
                 // Inject actual User service related services
                 UserEntityManagerFactory userEntityManagerFactory = new UserEntityManagerFactory();
@@ -97,9 +92,8 @@ public class UserLocatorConfiguration {
                                 userEntityManagerFactory,
                                 new UserCacheFactory(),
                                 userFactory,
-                                accountFactory,
-                                accountService,
                                 namedEntityService,
+                                accountChildrenFinder,
                                 mockRootUserTester)
                 );
             }
