@@ -14,7 +14,9 @@ package org.eclipse.kapua.service.tag.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -27,6 +29,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagDomains;
+import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagService;
 
@@ -72,6 +75,36 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         super(entityManagerFactory, null, serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
+    }
+
+    /**
+     * Injectable Constructor
+     *
+     * @param entityManagerFactory  The {@link TagEntityManagerFactory} instance
+     * @param factory               The {@link TagFactory} instance
+     * @param permissionFactory     The {@link PermissionFactory} instance
+     * @param authorizationService  The {@link AuthorizationService} instance
+     * @param accountChildrenFinder The {@link AccountChildrenFinder} instance
+     * @param rootUserTester        The {@link RootUserTester} instance
+     * @since 2.0.0
+     */
+    @Inject
+    public TagServiceImpl(
+            TagEntityManagerFactory entityManagerFactory,
+            TagFactory factory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            AccountChildrenFinder accountChildrenFinder,
+            RootUserTester rootUserTester) {
+        super(TagService.class.getName(),
+                TagDomains.TAG_DOMAIN,
+                entityManagerFactory,
+                null,
+                factory,
+                permissionFactory,
+                authorizationService,
+                accountChildrenFinder,
+                rootUserTester);
     }
 
     @Override
