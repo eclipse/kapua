@@ -11,7 +11,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @deviceRegistry
-@env_docker
+@env_docker_missing
 
 Feature: Device Registry Integration
   Device Registy integration test scenarios. These scenarios test higher level device service functionality
