@@ -14,18 +14,15 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
-import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.account.AccountFactory;
-import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.Group;
@@ -40,7 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 /**
@@ -49,40 +45,20 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class GroupServiceImpl extends KapuaConfigurableServiceBase implements GroupService {
+public class GroupServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Group, GroupCreator, GroupService, GroupListResult, GroupQuery, GroupFactory> implements GroupService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GroupServiceImpl.class);
-    private PermissionFactory permissionFactory;
-    private AuthorizationService authorizationService;
 
     /**
-     * @deprecated since 2.0.0 - please use {@link #GroupServiceImpl(AuthorizationEntityManagerFactory, GroupFactory, PermissionFactory, AuthorizationService, ServiceConfigurationManager)} instead. This constructor might be removed in later releases.
+     * @deprecated since 2.0.0 - please use {@link #GroupServiceImpl(AuthorizationEntityManagerFactory, GroupFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} instead. This constructor might be removed in later releases.
      */
     @Deprecated
     public GroupServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance(), null, null);
-    }
-
-    /**
-     * Injectable constructor
-     *
-     * @param authorizationEntityManagerFactory The {@link AuthorizationEntityManagerFactory} instance.
-     * @param factory                           The {@link GroupFactory} instance.
-     * @param permissionFactory                 The {@link PermissionFactory} instance.
-     * @param authorizationService              The {@link AuthorizationService} instance.
-     * @param serviceConfigurationManager       The {@link ServiceConfigurationManager} instance.
-     * @since 2.0.0
-     */
-    @Inject
-    public GroupServiceImpl(AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
-                            GroupFactory factory,
-                            PermissionFactory permissionFactory,
-                            AuthorizationService authorizationService,
-                            @Named("GroupServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager
-    ) {
-        super(authorizationEntityManagerFactory, null, serviceConfigurationManager);
-        this.permissionFactory = permissionFactory;
-        this.authorizationService = authorizationService;
+        super(GroupService.class.getName(),
+                AuthorizationDomains.GROUP_DOMAIN,
+                AuthorizationEntityManagerFactory.getInstance(),
+                GroupService.class,
+                GroupFactory.class);
     }
 
     @Inject
@@ -90,8 +66,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
                             GroupFactory factory,
                             PermissionFactory permissionFactory,
                             AuthorizationService authorizationService,
-                            AccountFactory accountFactory,
-                            AccountService accountService,
+                            AccountChildrenFinder accountChildrenFinder,
                             RootUserTester rootUserTester) {
         super(GroupService.class.getName(),
                 AuthorizationDomains.GROUP_DOMAIN,
@@ -100,8 +75,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
                 factory,
                 permissionFactory,
                 authorizationService,
-                accountFactory,
-                accountService,
+                accountChildrenFinder,
                 rootUserTester);
     }
 
@@ -119,7 +93,7 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
 
         //
         // Check entity limit
-        serviceConfigurationManager.checkAllowedEntities(groupCreator.getScopeId(), "Groups");
+        checkAllowedEntities(groupCreator.getScopeId(), "Groups");
 
         //
         // Check duplicate name
@@ -246,34 +220,5 @@ public class GroupServiceImpl extends KapuaConfigurableServiceBase implements Gr
         for (Group g : groupsToDelete.getItems()) {
             delete(g.getScopeId(), g.getId());
         }
-    }
-
-
-    /**
-     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link AuthorizationService} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected AuthorizationService getAuthorizationService() {
-        if (authorizationService == null) {
-            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
-        }
-        return authorizationService;
-    }
-
-    /**
-     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
-     * therefore fetching of the required instance is demanded to this artificial getter.
-     *
-     * @return The instantiated (hopefully) {@link PermissionFactory} instance
-     */
-    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
-    protected PermissionFactory getPermissionFactory() {
-        if (permissionFactory == null) {
-            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
-        }
-        return permissionFactory;
     }
 }
