@@ -11,7 +11,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @endpoint
-@env_docker_missing
+@env_docker
 
 Feature: Endpoint Info Service Integration Tests
   Integration test scenarios for Endpoint Info service
