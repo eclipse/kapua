@@ -58,7 +58,6 @@ import java.util.Objects;
  */
 @Singleton
 public class UserServiceImpl extends KapuaConfigurableServiceBase implements UserService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     public UserNamedEntityService getUserNamedEntityService() {
