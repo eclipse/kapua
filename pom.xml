@@ -37,8 +37,9 @@
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-cli.version>1.4</commons-cli.version>
         <commons-codec.version>1.15</commons-codec.version>
-        <commons-configuration.version>1.9</commons-configuration.version>
         <commons-collections.version>3.2.2</commons-collections.version>
+        <commons-configuration.version>1.9</commons-configuration.version>
+        <commons-compress.version>1.22</commons-compress.version>
         <commons-fileupload.versison>1.4</commons-fileupload.versison>
         <commons-imaging.version>1.0-alpha3</commons-imaging.version>
         <commons-io.version>2.11.0</commons-io.version>
@@ -1173,6 +1174,16 @@
                 <version>${commons-codec.version}</version>
             </dependency>
             <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${commons-collections.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>${commons-compress.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-configuration</groupId>
                 <artifactId>commons-configuration</artifactId>
                 <version>${commons-configuration.version}</version>
@@ -1182,11 +1193,6 @@
                         <artifactId>commons-logging</artifactId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>${commons-collections.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
