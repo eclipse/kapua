@@ -12,12 +12,25 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.user.internal;
 
+import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.RootUserTesterImpl;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserNamedEntityService;
 import org.eclipse.kapua.service.user.UserService;
+
+import javax.inject.Named;
 
 public class UserModule extends AbstractKapuaModule {
     @Override
@@ -28,5 +41,29 @@ public class UserModule extends AbstractKapuaModule {
         bind(UserService.class).to(UserServiceImpl.class);
         bind(UserEntityManagerFactory.class).toInstance(new UserEntityManagerFactory());
         bind(UserCacheFactory.class).toInstance(new UserCacheFactory());
+    }
+
+
+    @Provides
+    @Named("UserServiceConfigurationManager")
+    ServiceConfigurationManager userServiceConfigurationManager(
+            UserEntityManagerFactory userEntityManagerFactory,
+            UserFactory userFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester,
+            AccountChildrenFinder accountChildrenFinder,
+            ServiceDAO serviceDAO
+    ) {
+        return new ResourceLimitedServiceConfigurationManagerBase(UserService.class.getName(),
+                UserDomains.USER_DOMAIN,
+                new EntityManagerSession(userEntityManagerFactory),
+                permissionFactory,
+                authorizationService,
+                rootUserTester,
+                accountChildrenFinder,
+                new UsedEntitiesCounterImpl(userFactory, authorizationService, permissionFactory, new EntityManagerSession(userEntityManagerFactory), serviceDAO, User.class, UserImpl.class)) {
+
+        };
     }
 }

@@ -16,10 +16,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -92,6 +94,9 @@ public class SecurityLocatorConfiguration {
                 bind(GroupService.class).toInstance(new GroupServiceImpl());
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
                 bind(CredentialService.class).to(CredentialServiceImpl.class);
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
                 bind(UserFactory.class).toInstance(userFactory);
@@ -104,10 +109,8 @@ public class SecurityLocatorConfiguration {
                         mockPermissionFactory,
                         new UserEntityManagerFactory(),
                         new UserCacheFactory(),
-                        userFactory,
                         Mockito.mock(UserNamedEntityService.class),
-                        accountChildrenFinder,
-                        rootUserTester
+                        Mockito.mock(ServiceConfigurationManager.class)
                 ));
             }
         };

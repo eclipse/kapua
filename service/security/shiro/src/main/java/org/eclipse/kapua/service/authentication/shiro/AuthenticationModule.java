@@ -12,9 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.shiro;
 
-import com.google.inject.name.Names;
+import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerBase;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
@@ -28,7 +32,6 @@ import org.eclipse.kapua.service.authentication.credential.mfa.shiro.MfaOptionSe
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeFactoryImpl;
 import org.eclipse.kapua.service.authentication.credential.mfa.shiro.ScratchCodeServiceImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
-import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceConfigurationManager;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
 import org.eclipse.kapua.service.authentication.registration.RegistrationService;
 import org.eclipse.kapua.service.authentication.shiro.registration.RegistrationServiceImpl;
@@ -36,15 +39,16 @@ import org.eclipse.kapua.service.authentication.token.AccessTokenFactory;
 import org.eclipse.kapua.service.authentication.token.AccessTokenService;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenFactoryImpl;
 import org.eclipse.kapua.service.authentication.token.shiro.AccessTokenServiceImpl;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+
+import javax.inject.Named;
 
 public class AuthenticationModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(AuthenticationService.class).to(AuthenticationServiceShiroImpl.class);
 
-        bind(ServiceConfigurationManager.class)
-                .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
-                .to(CredentialServiceConfigurationManager.class);
         bind(CredentialFactory.class).to(CredentialFactoryImpl.class);
         bind(CredentialService.class).to(CredentialServiceImpl.class);
         bind(CredentialsFactory.class).to(CredentialsFactoryImpl.class);
@@ -58,5 +62,21 @@ public class AuthenticationModule extends AbstractKapuaModule {
         bind(AccessTokenService.class).to(AccessTokenServiceImpl.class);
 
         bind(RegistrationService.class).to(RegistrationServiceImpl.class);
+    }
+
+    @Provides
+    @Named("CredentialServiceConfigurationManager")
+    public ServiceConfigurationManager deviceConnectionServiceConfigurationManager(
+            AuthenticationEntityManagerFactory authenticationEntityManagerFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester) {
+        return new ServiceConfigurationManagerBase(CredentialService.class.getName(),
+                AuthenticationDomains.CREDENTIAL_DOMAIN,
+                new EntityManagerSession(authenticationEntityManagerFactory),
+                permissionFactory,
+                authorizationService,
+                rootUserTester) {
+        };
     }
 }

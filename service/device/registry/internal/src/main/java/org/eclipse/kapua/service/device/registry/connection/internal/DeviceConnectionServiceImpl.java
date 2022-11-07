@@ -16,12 +16,13 @@ import org.apache.commons.lang.NotImplementedException;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
-import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -43,7 +44,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * {@link DeviceConnectionService} implementation.
@@ -51,15 +55,16 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableService implements DeviceConnectionService {
+public class DeviceConnectionServiceImpl extends AbstractKapuaService implements DeviceConnectionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConnectionServiceImpl.class);
+    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Constructor.
      *
      * @since 1.0.0
-     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)} )}
+     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, ServiceConfigurationManager)} )}
      */
     @Deprecated
     public DeviceConnectionServiceImpl() {
@@ -71,45 +76,29 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
      *
      * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
      * @since 1.0.0
-     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, PermissionFactory, AuthorizationService, RootUserTester)}
+     * @deprecated Since 2.0.0 - Please use {@link #DeviceConnectionServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, ServiceConfigurationManager)}
      */
     @Deprecated
     public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
-        super(DeviceConnectionService.class.getName(),
-                DeviceDomains.DEVICE_CONNECTION_DOMAIN,
-                deviceEntityManagerFactory,
-                new DeviceRegistryCacheFactory(),
-                null,
-                null,
-                null);
+        super(deviceEntityManagerFactory, new DeviceRegistryCacheFactory());
     }
 
     /**
      * Constructor.
      *
-     * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory} instance.
-     * @param deviceRegistryCacheFactory The {@link DeviceRegistryCacheFactory} instance.
-     * @param permissionFactory          The {@link PermissionFactory} instance.
-     * @param authorizationService       The {@link AuthorizationService} instance.
-     * @param rootUserTester             The {@link RootUserTester} instance.
+     * @param deviceEntityManagerFactory  The {@link DeviceEntityManagerFactory} instance.
+     * @param deviceRegistryCacheFactory  The {@link DeviceRegistryCacheFactory} instance.
+     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance.
      * @since 2.0.0
      */
     @Inject
     public DeviceConnectionServiceImpl(
             DeviceEntityManagerFactory deviceEntityManagerFactory,
             DeviceRegistryCacheFactory deviceRegistryCacheFactory,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
-            RootUserTester rootUserTester
+            @Named("DeviceConnectionServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager
     ) {
-        super(DeviceConnectionService.class.getName(),
-                DeviceDomains.DEVICE_CONNECTION_DOMAIN,
-                deviceEntityManagerFactory,
-                deviceRegistryCacheFactory,
-                permissionFactory,
-                authorizationService,
-                rootUserTester
-        );
+        super(deviceEntityManagerFactory, deviceRegistryCacheFactory);
+        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -332,5 +321,20 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaConfigurableServic
         for (DeviceConnection dc : deviceConnectionsToDelete.getItems()) {
             delete(dc.getScopeId(), dc.getId());
         }
+    }
+
+    @Override
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
+        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
+    }
+
+    @Override
+    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
+        return serviceConfigurationManager.getConfigValues(scopeId, true);
+    }
+
+    @Override
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
     }
 }

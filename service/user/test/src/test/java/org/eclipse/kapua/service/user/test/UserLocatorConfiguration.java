@@ -20,6 +20,7 @@ import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -87,14 +88,13 @@ public class UserLocatorConfiguration {
                 final UserNamedEntityService namedEntityService = new UserNamedEntityServiceImpl(userEntityManagerFactory, new UserCacheFactory(), mockPermissionFactory, mockedAuthorization);
                 bind(UserNamedEntityService.class).toInstance(namedEntityService);
                 bind(UserService.class).toInstance(
-                        new UserServiceImpl(mockedAuthorization,
+                        new UserServiceImpl(
+                                mockedAuthorization,
                                 mockPermissionFactory,
                                 userEntityManagerFactory,
                                 new UserCacheFactory(),
-                                userFactory,
                                 namedEntityService,
-                                accountChildrenFinder,
-                                mockRootUserTester)
+                                Mockito.mock(ServiceConfigurationManager.class))
                 );
             }
         };

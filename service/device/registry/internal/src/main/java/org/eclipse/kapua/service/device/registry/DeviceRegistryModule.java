@@ -12,7 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
+import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerBase;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.connection.internal.DeviceConnectionFactoryImpl;
@@ -32,6 +39,8 @@ import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceI
 import org.eclipse.kapua.service.device.registry.lifecycle.DeviceLifeCycleService;
 import org.eclipse.kapua.service.device.registry.lifecycle.internal.DeviceLifeCycleServiceImpl;
 
+import javax.inject.Named;
+
 public class DeviceRegistryModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
@@ -50,5 +59,22 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
         bind(DeviceEventService.class).to(DeviceEventServiceImpl.class);
 
         bind(DeviceLifeCycleService.class).to(DeviceLifeCycleServiceImpl.class);
+    }
+
+    @Provides
+    @Named("DeviceConnectionServiceConfigurationManager")
+    ServiceConfigurationManager deviceConnectionServiceConfigurationManager(
+            DeviceEntityManagerFactory deviceEntityManagerFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester) {
+        return new ServiceConfigurationManagerBase(DeviceConnectionService.class.getName(),
+                DeviceDomains.DEVICE_CONNECTION_DOMAIN,
+                new EntityManagerSession(deviceEntityManagerFactory),
+                permissionFactory,
+                authorizationService,
+                rootUserTester) {
+
+        };
     }
 }
