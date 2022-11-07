@@ -94,7 +94,11 @@ public class SecurityLocatorConfiguration {
                 bind(RoleService.class).to(RoleServiceImpl.class);
                 bind(RoleFactory.class).toInstance(new RoleFactoryImpl());
                 bind(RolePermissionFactory.class).toInstance(new RolePermissionFactoryImpl());
-                bind(GroupService.class).toInstance(new GroupServiceImpl());
+
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("GroupServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+                bind(GroupService.class).to(GroupServiceImpl.class);
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
                 bind(ServiceConfigurationManager.class)

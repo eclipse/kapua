@@ -16,9 +16,11 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -106,6 +108,9 @@ public class JobLocatorConfiguration {
                 JobEntityManagerFactory jobEntityManagerFactory = JobEntityManagerFactory.getInstance();
                 bind(JobEntityManagerFactory.class).toInstance(jobEntityManagerFactory);
 
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("JobServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
                 bind(JobFactory.class).toInstance(new JobFactoryImpl());
                 bind(JobService.class).to(JobServiceImpl.class);
                 bind(JobStepDefinitionService.class).toInstance(new JobStepDefinitionServiceImpl());

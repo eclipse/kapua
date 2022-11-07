@@ -21,6 +21,7 @@ import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
 import org.eclipse.kapua.service.authorization.access.AccessInfoService;
@@ -38,9 +39,11 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
+import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
@@ -106,6 +109,29 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 rootUserTester,
                 accountChildrenFinder,
                 new UsedEntitiesCounterImpl(roleFactory, authorizationService, permissionFactory, new EntityManagerSession(authorizationEntityManagerFactory), serviceDAO, Role.class, RoleImpl.class)) {
+        };
+    }
+
+    @Provides
+    @Named("GroupServiceConfigurationManager")
+    public ServiceConfigurationManager groupServiceConfigurationManager(
+            AuthorizationEntityManagerFactory authorizationEntityManagerFactory,
+            GroupFactory factory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester,
+            AccountChildrenFinder accountChildrenFinder,
+            ServiceDAO serviceDAO
+    ) {
+        return new ResourceLimitedServiceConfigurationManagerBase(
+                GroupService.class.getName(),
+                AuthorizationDomains.GROUP_DOMAIN,
+                new EntityManagerSession(authorizationEntityManagerFactory),
+                permissionFactory,
+                authorizationService,
+                rootUserTester,
+                accountChildrenFinder,
+                new UsedEntitiesCounterImpl(factory, authorizationService, permissionFactory, new EntityManagerSession(authorizationEntityManagerFactory), serviceDAO, Group.class, GroupImpl.class)) {
         };
     }
 }
