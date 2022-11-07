@@ -28,6 +28,7 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 import javax.inject.Inject;
+import java.util.Optional;
 
 public class AccountChildrenFinderImpl extends AbstractKapuaService implements AccountChildrenFinder {
 
@@ -49,11 +50,11 @@ public class AccountChildrenFinderImpl extends AbstractKapuaService implements A
     }
 
     @Override
-    public AccountListResult findChildren(KapuaId scopeId, KapuaId excludeTargetScopeId) throws KapuaException {
+    public AccountListResult findChildren(KapuaId scopeId, Optional<KapuaId> excludeTargetScopeId) throws KapuaException {
         final AccountQuery childAccountsQuery = accountFactory.newQuery(scopeId);
         // Exclude the scope that is under config update
-        if (excludeTargetScopeId != null) {
-            childAccountsQuery.setPredicate(childAccountsQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, excludeTargetScopeId, AttributePredicate.Operator.NOT_EQUAL));
+        if (excludeTargetScopeId.isPresent()) {
+            childAccountsQuery.setPredicate(childAccountsQuery.attributePredicate(KapuaEntityAttributes.ENTITY_ID, excludeTargetScopeId.get(), AttributePredicate.Operator.NOT_EQUAL));
         }
 
         //What follows is a duplication of AccountServiceImpl.query implementation

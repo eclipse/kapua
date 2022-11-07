@@ -9,29 +9,23 @@
  *
  * Contributors:
  *     Eurotech - initial API and implementation
+ *     Red Hat Inc
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.account.AccountListResult;
 
+import java.util.Map;
 import java.util.Optional;
 
+public interface ServiceConfigurationManager {
+    void checkAllowedEntities(KapuaId scopeId, String entityType) throws KapuaException;
 
-/**
- * Service to retrieve all child accounts for a given scope
- *
- * @since 2.0.0
- */
-public interface AccountChildrenFinder extends KapuaService {
+    void setConfigValues(KapuaId scopeId, Optional<KapuaId> parentId, Map<String, Object> values) throws KapuaException;
 
-    /**
-     * @param scopeId       The scope id - must be provided
-     * @param targetScopeId - nullable target scope id
-     * @return the list of child accounts
-     * @throws KapuaException
-     */
-    AccountListResult findChildren(KapuaId scopeId, Optional<KapuaId> targetScopeId) throws KapuaException;
+    Map<String, Object> getConfigValues(KapuaId scopeId, boolean excludeDisabled) throws KapuaException;
+
+    KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeDisabled) throws KapuaException;
 }

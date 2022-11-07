@@ -326,7 +326,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @throws KapuaException
      * @since 1.0.0
      */
-    protected static Map<String, Object> toValues(@NotNull KapuaTocd ocd, Properties props) throws KapuaException {
+    private static Map<String, Object> toValues(@NotNull KapuaTocd ocd, Properties props) throws KapuaException {
         Map<String, Object> values = new HashMap<>();
         for (KapuaTad ad : ocd.getAD()) {
             String valueStr = props == null ? ad.getDefault() : props.getProperty(ad.getId(), ad.getDefault());
@@ -407,7 +407,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @throws KapuaException
      * @since 1.3.0
      */
-    protected KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
+    private KapuaTocd getConfigMetadata(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
         //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");

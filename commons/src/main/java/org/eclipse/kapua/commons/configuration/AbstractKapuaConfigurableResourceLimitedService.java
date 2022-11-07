@@ -38,6 +38,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 
 import java.util.Map;
+import java.util.Optional;
 
 //TODO: this should be a collaborator, not a base class
 
@@ -202,12 +203,12 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @throws KapuaException
      * @since 1.0.0
      */
-    protected long allowedChildEntities(KapuaId scopeId) throws KapuaException {
+    private long allowedChildEntities(KapuaId scopeId) throws KapuaException {
         return allowedChildEntities(scopeId, null, null);
     }
 
     /**
-     * Gets the number of remaining allowed entity for the given scope, according to the {@link KapuaConfigurableService#getConfigValues(KapuaId)}
+     * Gets the number of remainisng allowed entity for the given scope, according to the {@link KapuaConfigurableService#getConfigValues(KapuaId)}
      * excluding a specific scope when checking resources available.
      * <p>
      * The exclusion of the scope is required when updating a limit for a target account.
@@ -218,7 +219,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @throws KapuaException
      * @since 1.0.0
      */
-    protected long allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId) throws KapuaException {
+    private long allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId) throws KapuaException {
         return allowedChildEntities(scopeId, targetScopeId, null);
     }
 
@@ -235,7 +236,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
      * @throws KapuaException
      * @since 1.0.0
      */
-    protected long allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId, Map<String, Object> configuration) throws KapuaException {
+    private long allowedChildEntities(KapuaId scopeId, KapuaId targetScopeId, Map<String, Object> configuration) throws KapuaException {
         final Map<String, Object> finalConfig = configuration == null ? getConfigValues(scopeId, false) : configuration;
         boolean allowInfiniteChildEntities = (boolean) finalConfig.get("infiniteChildEntities");
         if (allowInfiniteChildEntities) {
@@ -247,7 +248,7 @@ public abstract class AbstractKapuaConfigurableResourceLimitedService<
             // Current used entities
             long currentUsedEntities = this.count(countQuery);
 
-            AccountListResult childAccounts = getAccountChildrenFinder().findChildren(scopeId, targetScopeId);
+            AccountListResult childAccounts = getAccountChildrenFinder().findChildren(scopeId, Optional.ofNullable(targetScopeId));
             // Resources assigned to children
             long childCount = 0;
             for (Account childAccount : childAccounts.getItems()) {
