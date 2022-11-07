@@ -42,8 +42,6 @@ import java.util.Optional;
 
 //TODO: this should be a collaborator, not a base class
 
-//TODO: this should be a collaborator, not a base class
-
 /**
  * Base {@code abstract} {@link KapuaConfigurableService} implementation for services that have a max number of entities allowed.
  * <p>
