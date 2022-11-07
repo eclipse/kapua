@@ -11,7 +11,7 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @deviceRegistry
-@env_docker_missing
+@env_docker
 
 Feature: Device Registry Integration
   Device Registy integration test scenarios. These scenarios test higher level device service functionality
@@ -1117,11 +1117,11 @@ Feature: Device Registry Integration
       | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
       | test123  | test12323333 | SerialNum123    | 12341234ABC  | ENABLED  |
     And I filter devices by
-      | kStatus |
+      | status |
       | ENABLED |
     Then I find 1 device
     And I filter devices by
-      | kStatus   |
+      | status   |
       | DISABLED |
     Then I find 1 device
     And I logout
@@ -1147,11 +1147,11 @@ Feature: Device Registry Integration
       | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
       | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
     And I filter devices by
-      | kStatus  |
+      | status  |
       | ENABLED |
     Then I find 3 devices
     And I filter devices by
-      | kStatus  |
+      | status  |
       | DISABLED |
     Then I find 2 devices
     And I logout
@@ -1178,7 +1178,7 @@ Feature: Device Registry Integration
       | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED |
       | test126  | test12323337 | SerialNum124    | 12341234ABD  | ENABLED |
     And I filter devices by
-      | kStatus  |
+      | status  |
       | DISABLED |
     Then I find 0 devices
     And I logout
@@ -1272,15 +1272,15 @@ Feature: Device Registry Integration
       | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
       | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
     And I filter devices by
-      | clientId | kStatus  |
+      | clientId | status  |
       | dev      | DISABLED |
     Then I find 1 device
     And I filter devices by
-      | clientId | kStatus |
+      | clientId | status |
       | test     | ENABLED |
     Then I find 3 devices
     And I filter devices by
-      | clientId | kStatus |
+      | clientId | status |
       | test126  | ENABLED |
     Then I find 0 devices
     And I logout
@@ -1340,15 +1340,15 @@ Feature: Device Registry Integration
       | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
       | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
     And I filter devices by
-      | displayName | kStatus  |
+      | displayName | status  |
       | dis         | DISABLED |
     Then I find 1 device
     And I filter devices by
-      | displayName | kStatus |
+      | displayName | status |
       | test        | ENABLED |
     Then I find 3 devices
     And I filter devices by
-      | displayName | kStatus |
+      | displayName | status |
       | displayName | ENABLED |
     Then I find 0 devices
     And I logout
@@ -1374,15 +1374,15 @@ Feature: Device Registry Integration
       | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
       | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
     And I filter devices by
-      | serialNumber | kStatus  |
+      | serialNumber | status  |
       | 125          | DISABLED |
     Then I find 1 device
     And I filter devices by
-      | serialNumber | kStatus |
+      | serialNumber | status |
       | 123          | ENABLED |
     Then I find 3 devices
     And I filter devices by
-      | serialNumber | kStatus  |
+      | serialNumber | status  |
       | ABF          | DISABLED |
     Then I find 0 devices
     And I logout
@@ -1442,15 +1442,15 @@ Feature: Device Registry Integration
       | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
       | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
     And I filter devices by
-      | clientId | displayName | kStatus  |
+      | clientId | displayName | status  |
       | dev      | dis         | DISABLED |
     Then I find 1 device
     And I filter devices by
-      | clientId | displayName | kStatus |
+      | clientId | displayName | status |
       | test     | test        | ENABLED |
     Then I find 3 devices
     And I filter devices by
-      | clientId | displayName | kStatus |
+      | clientId | displayName | status |
       | dev-123  | test        | ENABLED |
     Then I find 0 devices
     And I logout
@@ -1476,15 +1476,15 @@ Feature: Device Registry Integration
       | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
       | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
     And I filter devices by
-      | serialNumber | displayName | kStatus  |
+      | serialNumber | displayName | status  |
       | 125          | dis         | DISABLED |
     Then I find 1 device
     And I filter devices by
-      | serialNumber | displayName | kStatus |
+      | serialNumber | displayName | status |
       | 123          | test        | ENABLED |
     Then I find 3 devices
     And I filter devices by
-      | serialNumber | displayName | kStatus  |
+      | serialNumber | displayName | status  |
       | ABE          | test        | DISABLED |
     Then I find 0 devices
     And I logout
@@ -1510,15 +1510,15 @@ Feature: Device Registry Integration
       | test125  | test12323336 | SerialNum125    | 12341234ABE  | ENABLED  |
       | test126  | test12323337 | SerialNum124    | 12341234ABD  | DISABLED |
     And I filter devices by
-      | serialNumber | displayName | kStatus  | clientId |
+      | serialNumber | displayName | status  | clientId |
       | 125          | dis         | DISABLED | dev      |
     Then I find 1 device
     And I filter devices by
-      | serialNumber | displayName | kStatus | clientId |
+      | serialNumber | displayName | status | clientId |
       | 123          | test        | ENABLED | test     |
     Then I find 3 devices
     And I filter devices by
-      | serialNumber | displayName | kStatus | clientId |
+      | serialNumber | displayName | status | clientId |
       | 126          | test        | ENABLED | dev      |
     Then I find 0 devices
     And I logout
