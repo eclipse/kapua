@@ -117,6 +117,10 @@ public class TagLocatorConfiguration {
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("TagServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+
                 bind(TagFactory.class).to(TagFactoryImpl.class);
                 bind(TagService.class).to(TagServiceImpl.class);
             }

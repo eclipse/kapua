@@ -12,14 +12,52 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
+import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.commons.service.internal.ServiceDAO;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+import org.eclipse.kapua.service.tag.Tag;
+import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagService;
+
+import javax.inject.Named;
 
 public class TagModule extends AbstractKapuaModule {
     @Override
     protected void configureModule() {
         bind(TagService.class).to(TagServiceImpl.class);
         bind(TagFactory.class).to(TagFactoryImpl.class);
+    }
+
+    @Provides
+    @Named("TagServiceConfigurationManager")
+    ServiceConfigurationManager userServiceConfigurationManager(
+            TagEntityManagerFactory tagEntityManagerFactory,
+            TagFactory userFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester,
+            AccountChildrenFinder accountChildrenFinder,
+            ServiceDAO serviceDAO
+    ) {
+        return new ResourceLimitedServiceConfigurationManagerBase(
+                TagService.class.getName(),
+                TagDomains.TAG_DOMAIN,
+                new EntityManagerSession(tagEntityManagerFactory),
+                permissionFactory,
+                authorizationService,
+                rootUserTester,
+                accountChildrenFinder,
+                new UsedEntitiesCounterImpl(userFactory, authorizationService, permissionFactory, new EntityManagerSession(tagEntityManagerFactory), serviceDAO, Tag.class, TagImpl.class)) {
+
+        };
     }
 }

@@ -88,6 +88,9 @@ public class SecurityLocatorConfiguration {
                 // Inject actual Role service related services
                 AuthorizationEntityManagerFactory authorizationEntityManagerFactory = AuthorizationEntityManagerFactory.getInstance();
                 bind(AuthorizationEntityManagerFactory.class).toInstance(authorizationEntityManagerFactory);
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("RoleServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
                 bind(RoleService.class).to(RoleServiceImpl.class);
                 bind(RoleFactory.class).toInstance(new RoleFactoryImpl());
                 bind(RolePermissionFactory.class).toInstance(new RolePermissionFactoryImpl());
