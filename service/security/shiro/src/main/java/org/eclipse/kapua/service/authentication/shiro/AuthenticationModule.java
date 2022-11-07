@@ -13,8 +13,10 @@
 package org.eclipse.kapua.service.authentication.shiro;
 
 import com.google.inject.Provides;
+import com.google.inject.name.Names;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
@@ -52,6 +54,9 @@ public class AuthenticationModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(AuthenticationService.class).to(AuthenticationServiceShiroImpl.class);
 
+        bind(ServiceConfigurationManager.class)
+                .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
+                .to(CredentialServiceConfigurationManager.class);
         bind(CredentialFactory.class).to(CredentialFactoryImpl.class);
         bind(CredentialService.class).to(CredentialServiceImpl.class);
         bind(CredentialsFactory.class).to(CredentialsFactoryImpl.class);
@@ -82,7 +87,6 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
         final ServiceConfigurationManagerCachingWrapper cached = new ServiceConfigurationManagerCachingWrapper(credentialServiceConfigurationManager);
         return new CredentialServiceConfigurationManager() {
-            @Override
             public int getSystemMinimumPasswordLength() {
                 return credentialServiceConfigurationManager.getSystemMinimumPasswordLength();
             }
