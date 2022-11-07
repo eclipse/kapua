@@ -141,6 +141,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             accountCreator.setOrganizationPhoneNumber(gwtAccountCreator.getOrganizationPhoneNumber());
             accountCreator.setOrganizationAddressLine1(gwtAccountCreator.getOrganizationAddressLine1());
             accountCreator.setOrganizationAddressLine2(gwtAccountCreator.getOrganizationAddressLine2());
+            accountCreator.setOrganizationAddressLine3(gwtAccountCreator.getOrganizationAddressLine3());
             accountCreator.setOrganizationCity(gwtAccountCreator.getOrganizationCity());
             accountCreator.setOrganizationZipPostCode(gwtAccountCreator.getOrganizationZipPostCode());
             accountCreator.setOrganizationStateProvinceCounty(gwtAccountCreator.getOrganizationStateProvinceCounty());
@@ -267,6 +268,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationPhoneNumber", account.getOrganization().getPhoneNumber()));
             accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationAddress1", account.getOrganization().getAddressLine1()));
             accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationAddress2", account.getOrganization().getAddressLine2()));
+            accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationAddress3", account.getOrganization().getAddressLine3()));
             accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationZip", account.getOrganization().getZipPostCode()));
             accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationCity", account.getOrganization().getCity()));
             accountPropertiesPairs.add(new GwtGroupedNVPair(organizationInfo, "organizationState", account.getOrganization().getStateProvinceCounty()));
@@ -326,6 +328,7 @@ public class GwtAccountServiceImpl extends KapuaRemoteServiceServlet implements 
             account.getOrganization().setPhoneNumber(gwtAccount.getGwtOrganization().getPhoneNumber());
             account.getOrganization().setAddressLine1(gwtAccount.getGwtOrganization().getAddressLine1());
             account.getOrganization().setAddressLine2(gwtAccount.getGwtOrganization().getAddressLine2());
+            account.getOrganization().setAddressLine3(gwtAccount.getGwtOrganization().getAddressLine3());
             account.getOrganization().setZipPostCode(gwtAccount.getGwtOrganization().getZipPostCode());
             account.getOrganization().setCity(gwtAccount.getGwtOrganization().getCity());
             account.getOrganization().setStateProvinceCounty(gwtAccount.getGwtOrganization().getStateProvinceCounty());

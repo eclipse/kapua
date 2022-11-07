@@ -34,6 +34,7 @@ public class AccountCreatorImpl extends AbstractKapuaNamedEntityCreator<Account>
     private String organizationPhoneNumber;
     private String organizationAddressLine1;
     private String organizationAddressLine2;
+    private String organizationAddressLine3;
     private String organizationCity;
     private String organizationZipPostCode;
     private String organizationStateProvinceCounty;
@@ -110,6 +111,16 @@ public class AccountCreatorImpl extends AbstractKapuaNamedEntityCreator<Account>
     @Override
     public void setOrganizationAddressLine2(String organizationAddressLine2) {
         this.organizationAddressLine2 = organizationAddressLine2;
+    }
+
+    @Override
+    public String getOrganizationAddressLine3() {
+        return organizationAddressLine3;
+    }
+
+    @Override
+    public void setOrganizationAddressLine3(String organizationAddressLine3) {
+        this.organizationAddressLine3 = organizationAddressLine3;
     }
 
     @Override

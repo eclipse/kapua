@@ -45,6 +45,8 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
     private final KapuaTextField<String> organizationPhoneNumberField;
     private final KapuaTextField<String> organizationAddressLine1Field;
     private final KapuaTextField<String> organizationAddressLine2Field;
+
+    private final KapuaTextField<String> organizationAddressLine3Field;
     private final KapuaTextField<String> organizationZipPostCodeField;
     private final KapuaTextField<String> organizationCityField;
     private final KapuaTextField<String> organizationStateProvinceCountryField;
@@ -176,6 +178,20 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         organizationAddressLine2Field.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
         fieldsPanel.add(organizationAddressLine2Field);
 
+        Label organizationAddresLine3Label = new Label(MSGS.accountFilterOrgAddress3());
+        organizationAddresLine3Label.setWidth(WIDTH);
+        organizationAddresLine3Label.setStyleAttribute(CssLiterals.MARGIN, "5px");
+        fieldsPanel.add(organizationAddresLine3Label);
+
+        organizationAddressLine3Field = new KapuaTextField<String>();
+        organizationAddressLine3Field.setWidth(WIDTH);
+        organizationAddressLine3Field.setMaxLength(MAX_LEN);
+        organizationAddressLine3Field.setStyleAttribute(CssLiterals.MARGIN_TOP, "0px");
+        organizationAddressLine3Field.setStyleAttribute(CssLiterals.MARGIN_LEFT, "5px");
+        organizationAddressLine3Field.setStyleAttribute(CssLiterals.MARGIN_RIGHT, "5px");
+        organizationAddressLine3Field.setStyleAttribute(CssLiterals.MARGIN_BOTTOM, "10px");
+        fieldsPanel.add(organizationAddressLine3Field);
+
         Label organizationZipPostCodeLabel = new Label(MSGS.accountFilterOrgZipPostCode());
         organizationZipPostCodeLabel.setWidth(WIDTH);
         organizationZipPostCodeLabel.setStyleAttribute(CssLiterals.MARGIN, "5px");
@@ -243,6 +259,7 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         organizationPhoneNumberField.setValue(null);
         organizationAddressLine1Field.setValue(null);
         organizationAddressLine2Field.setValue(null);
+        organizationAddressLine3Field.setValue(null);
         organizationZipPostCodeField.setValue(null);
         organizationCityField.setValue(null);
         organizationStateProvinceCountryField.setValue(null);
@@ -264,6 +281,7 @@ public class AccountFilterPanel extends EntityFilterPanel<GwtAccount> {
         query.setOrganizationPhoneNumber(organizationPhoneNumberField.getValue());
         query.setOrganizationAddressLine1(organizationAddressLine1Field.getValue());
         query.setOrganizationAddressLine2(organizationAddressLine2Field.getValue());
+        query.setOrganizationAddressLine3(organizationAddressLine3Field.getValue());
         query.setOrganizationZipPostCode(organizationZipPostCodeField.getValue());
         query.setOrganizationCity(organizationCityField.getValue());
         query.setOrganizationStateProvinceCountry(organizationStateProvinceCountryField.getValue());

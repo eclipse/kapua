@@ -161,11 +161,11 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
     }
 
     public String getAddress1() {
-        return (String) getUnescaped("adress1");
+        return (String) getUnescaped("address1");
     }
 
-    public void setAddress1(String adress1) {
-        set("adress1", adress1);
+    public void setAddress1(String address1) {
+        set("address1", address1);
     }
 
     public String getAddress2() {
@@ -174,6 +174,14 @@ public class GwtAccount extends GwtUpdatableEntityModel implements Serializable 
 
     public void setAddress2(String address2) {
         set("address2", address2);
+    }
+
+    public String getAddress3() {
+        return (String) getUnescaped("address3");
+    }
+
+    public void setAddress3(String address3) {
+        set("address3", address3);
     }
 
     public String getZipPostCode() {

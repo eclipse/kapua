@@ -29,6 +29,7 @@ public class GwtAccountCreator extends GwtEntityCreator {
     private String organizationPhoneNumber;
     private String organizationAddressLine1;
     private String organizationAddressLine2;
+    private String organizationAddressLine3;
     private String organizationCity;
     private String organizationZipPostCode;
     private String organizationStateProvinceCounty;
@@ -100,6 +101,14 @@ public class GwtAccountCreator extends GwtEntityCreator {
 
     public void setOrganizationAddressLine2(String organizationAddressLine2) {
         this.organizationAddressLine2 = organizationAddressLine2;
+    }
+
+    public String getOrganizationAddressLine3() {
+        return organizationAddressLine3;
+    }
+
+    public void setOrganizationAddressLine3(String organizationAddressLine3) {
+        this.organizationAddressLine3 = organizationAddressLine3;
     }
 
     public String getOrganizationCity() {

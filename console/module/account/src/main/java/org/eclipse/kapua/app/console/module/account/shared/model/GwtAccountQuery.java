@@ -31,6 +31,7 @@ public class GwtAccountQuery extends GwtQuery {
     private String organizationPhoneNumber;
     private String organizationAddressLine1;
     private String organizationAddressLine2;
+    private String organizationAddressLine3;
     private String organizationZipPostCode;
     private String organizationCity;
     private String organizationStateProvinceCountry;
@@ -98,6 +99,14 @@ public class GwtAccountQuery extends GwtQuery {
 
     public void setOrganizationAddressLine2(String organizationAddressLine2) {
         this.organizationAddressLine2 = organizationAddressLine2;
+    }
+
+    public String getOrganizationAddressLine3() {
+        return organizationAddressLine3;
+    }
+
+    public void setOrganizationAddressLine3(String organizationAddressLine3) {
+        this.organizationAddressLine3 = organizationAddressLine3;
     }
 
     public String getOrganizationZipPostCode() {
