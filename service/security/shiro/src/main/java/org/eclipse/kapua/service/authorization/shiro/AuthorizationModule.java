@@ -85,7 +85,6 @@ public class AuthorizationModule extends AbstractKapuaModule {
         bind(GroupFactory.class).to(GroupFactoryImpl.class);
     }
 
-
     @Provides
     @Named("RoleServiceConfigurationManager")
     public ServiceConfigurationManager roleServiceConfigurationManager(

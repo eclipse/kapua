@@ -52,12 +52,12 @@ import javax.inject.Singleton;
  */
 @Singleton
 public class RoleServiceImpl extends KapuaConfigurableServiceBase implements RoleService {
-
     private static final Logger LOG = LoggerFactory.getLogger(RoleServiceImpl.class);
 
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
     private RolePermissionFactory rolePermissionFactory;
+    private final ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * @deprecated since 2.0.0 - please use {@link #RoleServiceImpl(AuthorizationEntityManagerFactory, RoleCacheFactory, PermissionFactory, AuthorizationService, RolePermissionFactory, ServiceConfigurationManager)} instead. This constructor might be removed in future releases.
@@ -66,6 +66,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
     public RoleServiceImpl() {
         super(AuthorizationEntityManagerFactory.getInstance(), RoleCacheFactory.getInstance(), null);
         this.rolePermissionFactory = null;
+        serviceConfigurationManager = null;
     }
 
     /**
@@ -89,6 +90,7 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.rolePermissionFactory = rolePermissionFactory;
+        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -275,7 +277,6 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
             delete(r.getScopeId(), r.getId());
         }
     }
-
 
     /**
      * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,

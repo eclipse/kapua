@@ -14,9 +14,7 @@ package org.eclipse.kapua.service.tag.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
-import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -29,7 +27,6 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagCreator;
 import org.eclipse.kapua.service.tag.TagDomains;
-import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagListResult;
 import org.eclipse.kapua.service.tag.TagService;
 
@@ -49,16 +46,6 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
     private AuthorizationService authorizationService;
 
     /**
-     * Deprecated constructor
-     *
-     * @deprecated since 2.0.0 - Please use {@link #TagServiceImpl(TagEntityManagerFactory, PermissionFactory, AuthorizationService, ServiceConfigurationManager)} instead. This constructor might be removed in future releases
-     */
-    @Deprecated
-    public TagServiceImpl() {
-        super(new TagEntityManagerFactory(), null, null);
-    }
-
-    /**
      * Injectable Constructor
      *
      * @param entityManagerFactory The {@link TagEntityManagerFactory} instance
@@ -75,36 +62,6 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         super(entityManagerFactory, null, serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
-    }
-
-    /**
-     * Injectable Constructor
-     *
-     * @param entityManagerFactory  The {@link TagEntityManagerFactory} instance
-     * @param factory               The {@link TagFactory} instance
-     * @param permissionFactory     The {@link PermissionFactory} instance
-     * @param authorizationService  The {@link AuthorizationService} instance
-     * @param accountChildrenFinder The {@link AccountChildrenFinder} instance
-     * @param rootUserTester        The {@link RootUserTester} instance
-     * @since 2.0.0
-     */
-    @Inject
-    public TagServiceImpl(
-            TagEntityManagerFactory entityManagerFactory,
-            TagFactory factory,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
-            AccountChildrenFinder accountChildrenFinder,
-            RootUserTester rootUserTester) {
-        super(TagService.class.getName(),
-                TagDomains.TAG_DOMAIN,
-                entityManagerFactory,
-                null,
-                factory,
-                permissionFactory,
-                authorizationService,
-                accountChildrenFinder,
-                rootUserTester);
     }
 
     @Override
@@ -228,7 +185,6 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         return entityManagerSession.doAction(em -> TagDAO.count(em, query));
     }
 
-
     /**
      * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
      * therefore fetching of the required instance is demanded to this artificial getter.
@@ -256,5 +212,4 @@ public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagS
         }
         return permissionFactory;
     }
-
 }
