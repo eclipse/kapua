@@ -177,14 +177,13 @@ Feature: Access Groups
     Then I find the group with description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNA"
     And No exception was thrown
 
-#This unit test will be commented until issue #2800 is fixed
-#  Scenario: Creating unique Access Group with too long description
- # Create unique Access Group with too long description, description that contains more than 255 characters.
-  #Kapua should not return any error.
-   # Given I create the group with name "NewAccessGroup" and description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
-    #When I search for the group with description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
-    #Then I find the group with description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
-    #And No exception was thrown
+  Scenario: Creating unique Access Group with too long description
+  Create unique Access Group with too long description, description that contains more than 255 characters.
+  Kapua should not return any error.
+    Given I create the group with name "NewAccessGroup" and description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
+    When I search for the group with description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
+    Then I find the group with description "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
+    And No exception was thrown
 
   Scenario: Editing Access Group name to valid one
   Create an Access Group with valid name. Edit the group name to different one, and try to search for it - it should have been changed.
@@ -344,14 +343,13 @@ Feature: Access Groups
     Then The group was correctly updated
     And No exception was thrown
 
-#This unit test will be commented until issue #2800 is fixed
-  #Scenario: Editing Access Group description to too long description
-  #Create unique Access Group with description. Edit the group description to too long description, description that contains more than 255 characters.
-  #Kapua should not return any errors.
-    #Given I create the group with name "NewAccessGroup" and description "description"
-    #When I update the group description from "description" to "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
-    #Then The group was correctly updated
-    #And No exception was thrown
+  Scenario: Editing Access Group description to too long description
+  Create unique Access Group with description. Edit the group description to too long description, description that contains more than 255 characters.
+  Kapua should not return any errors.
+    Given I create the group with name "NewAccessGroup" and description "description"
+    When I update the group description from "description" to "NewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroupNewAccessGroup"
+    Then The group was correctly updated
+    And No exception was thrown
 
   Scenario: Deleting an existing Access Group
   Create an Access Group with valid name. Then delete it and try to find that Access Group.
