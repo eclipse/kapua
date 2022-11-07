@@ -67,6 +67,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
     private TriggerService triggerService;
     //TODO: make final
     private TriggerFactory triggerFactory;
+    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Default constructor for injection
@@ -90,6 +91,7 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         this.authorizationService = authorizationService;
         this.triggerService = triggerService;
         this.triggerFactory = triggerFactory;
+        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -268,7 +270,6 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
 
         entityManagerSession.doTransactedAction(em -> JobDAO.delete(em, scopeId, jobId));
     }
-
 
     /**
      * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
