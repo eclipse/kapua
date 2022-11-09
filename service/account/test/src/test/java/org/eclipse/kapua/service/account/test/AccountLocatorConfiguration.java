@@ -20,17 +20,22 @@ import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
 import org.eclipse.kapua.model.query.QueryFactory;
 import org.eclipse.kapua.qa.common.MockedLocator;
+import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.AccountChildrenFinderImpl;
+import org.eclipse.kapua.service.account.internal.AccountDAO;
 import org.eclipse.kapua.service.account.internal.AccountEntityManagerFactory;
 import org.eclipse.kapua.service.account.internal.AccountFactoryImpl;
 import org.eclipse.kapua.service.account.internal.AccountServiceImpl;
@@ -69,16 +74,35 @@ public class AccountLocatorConfiguration {
 
                 bind(AuthorizationService.class).toInstance(mockedAuthorization);
                 // Inject mocked Permission Factory
-                bind(PermissionFactory.class).toInstance(Mockito.mock(PermissionFactory.class));
+                final PermissionFactory mockPermissionFactory = Mockito.mock(PermissionFactory.class);
+                bind(PermissionFactory.class).toInstance(mockPermissionFactory);
                 // Set KapuaMetatypeFactory for Metatype configuration
                 bind(KapuaMetatypeFactory.class).toInstance(new KapuaMetatypeFactoryImpl());
                 // Inject actual account related services
-                bind(AccountEntityManagerFactory.class).toInstance(AccountEntityManagerFactory.getInstance());
-                bind(AccountFactory.class).toInstance(new AccountFactoryImpl());
+                final AccountEntityManagerFactory entityManagerFactory = AccountEntityManagerFactory.getInstance();
+                bind(AccountEntityManagerFactory.class).toInstance(entityManagerFactory);
+                final AccountFactory accountFactory = new AccountFactoryImpl();
+                bind(AccountFactory.class).toInstance(accountFactory);
                 bind(AccountChildrenFinder.class).to(AccountChildrenFinderImpl.class);
                 bind(ServiceConfigurationManager.class)
                         .annotatedWith(Names.named("AccountServiceConfigurationManager"))
-                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+                        .toInstance(new ResourceLimitedServiceConfigurationManagerBase(
+                                AccountService.class.getName(),
+                                AccountDomains.ACCOUNT_DOMAIN,
+                                new EntityManagerSession(entityManagerFactory),
+                                mockPermissionFactory,
+                                mockedAuthorization,
+                                Mockito.mock(RootUserTester.class),
+                                Mockito.mock(AccountChildrenFinder.class),
+                                new UsedEntitiesCounterImpl(
+                                        accountFactory,
+                                        AccountDomains.ACCOUNT_DOMAIN,
+                                        AccountDAO::count,
+                                        mockedAuthorization,
+                                        mockPermissionFactory,
+                                        new EntityManagerSession(entityManagerFactory))
+                        ) {
+                        });
                 bind(AccountService.class).to(AccountServiceImpl.class);
             }
         };

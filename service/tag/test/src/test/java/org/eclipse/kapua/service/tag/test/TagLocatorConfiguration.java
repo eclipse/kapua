@@ -94,11 +94,6 @@ public class TagLocatorConfiguration {
                 bind(AccountChildrenFinder.class).toInstance(Mockito.mock(AccountChildrenFinder.class));
                 bind(AccountService.class).toInstance(Mockito.spy(new AccountServiceImpl()));
                 bind(AccountFactory.class).toInstance(Mockito.spy(new AccountFactoryImpl()));
-
-                bind(ServiceConfigurationManager.class)
-                        .annotatedWith(Names.named("DeviceConnectionServiceConfigurationManager"))
-                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
-
                 bind(RootUserTester.class).toInstance(Mockito.mock(RootUserTester.class));
 
                 // Inject actual Tag service related services

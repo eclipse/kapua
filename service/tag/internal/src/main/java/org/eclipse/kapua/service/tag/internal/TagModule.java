@@ -38,8 +38,8 @@ public class TagModule extends AbstractKapuaModule {
     @Provides
     @Named("TagServiceConfigurationManager")
     ServiceConfigurationManager userServiceConfigurationManager(
-            TagEntityManagerFactory tagEntityManagerFactory,
-            TagFactory userFactory,
+            TagEntityManagerFactory entityManagerFactory,
+            TagFactory factory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
@@ -48,18 +48,18 @@ public class TagModule extends AbstractKapuaModule {
         return new ResourceLimitedServiceConfigurationManagerBase(
                 TagService.class.getName(),
                 TagDomains.TAG_DOMAIN,
-                new EntityManagerSession(tagEntityManagerFactory),
+                new EntityManagerSession(entityManagerFactory),
                 permissionFactory,
                 authorizationService,
                 rootUserTester,
                 accountChildrenFinder,
                 new UsedEntitiesCounterImpl(
-                        userFactory,
+                        factory,
                         TagDomains.TAG_DOMAIN,
                         TagDAO::count,
                         authorizationService,
                         permissionFactory,
-                        new EntityManagerSession(tagEntityManagerFactory)
+                        new EntityManagerSession(entityManagerFactory)
                 )) {
 
         };

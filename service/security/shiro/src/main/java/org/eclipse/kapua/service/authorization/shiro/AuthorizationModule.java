@@ -54,7 +54,6 @@ import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
-import org.eclipse.kapua.service.user.UserService;
 
 import javax.inject.Named;
 
@@ -96,7 +95,8 @@ public class AuthorizationModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder
     ) {
-        return new ResourceLimitedServiceConfigurationManagerBase(UserService.class.getName(),
+        return new ResourceLimitedServiceConfigurationManagerBase(
+                RoleService.class.getName(),
                 AuthorizationDomains.ROLE_DOMAIN,
                 new EntityManagerSession(authorizationEntityManagerFactory),
                 permissionFactory,

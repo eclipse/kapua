@@ -14,11 +14,8 @@ package org.eclipse.kapua.service.authentication.shiro;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerBase;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
-import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
@@ -66,17 +63,16 @@ public class AuthenticationModule extends AbstractKapuaModule {
 
     @Provides
     @Named("CredentialServiceConfigurationManager")
-    public ServiceConfigurationManager deviceConnectionServiceConfigurationManager(
+    public CredentialServiceConfigurationManager deviceConnectionServiceConfigurationManager(
             AuthenticationEntityManagerFactory authenticationEntityManagerFactory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
-        return new ServiceConfigurationManagerBase(CredentialService.class.getName(),
-                AuthenticationDomains.CREDENTIAL_DOMAIN,
+        return new CredentialServiceConfigurationManagerImpl(
                 new EntityManagerSession(authenticationEntityManagerFactory),
                 permissionFactory,
                 authorizationService,
-                rootUserTester) {
-        };
+                rootUserTester);
     }
+
 }

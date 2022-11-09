@@ -37,7 +37,7 @@ public class JobModule extends AbstractKapuaModule {
 
     @Provides
     @Named("JobServiceConfigurationManager")
-    public ServiceConfigurationManager roleServiceConfigurationManager(
+    public ServiceConfigurationManager jobServiceConfigurationManager(
             JobFactory factory,
             JobEntityManagerFactory jobEntityManagerFactory,
             PermissionFactory permissionFactory,

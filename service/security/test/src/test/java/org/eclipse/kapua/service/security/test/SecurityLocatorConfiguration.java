@@ -23,6 +23,7 @@ import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaMetatypeFactory;
@@ -32,6 +33,9 @@ import org.eclipse.kapua.service.authentication.credential.CredentialFactory;
 import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialFactoryImpl;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialServiceImpl;
+import org.eclipse.kapua.service.authentication.shiro.AuthenticationEntityManagerFactory;
+import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManager;
+import org.eclipse.kapua.service.authentication.shiro.CredentialServiceConfigurationManagerImpl;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
@@ -101,9 +105,16 @@ public class SecurityLocatorConfiguration {
                 bind(GroupService.class).to(GroupServiceImpl.class);
                 bind(GroupFactory.class).toInstance(new GroupFactoryImpl());
                 bind(CredentialFactory.class).toInstance(new CredentialFactoryImpl());
-                bind(ServiceConfigurationManager.class)
+
+                bind(CredentialServiceConfigurationManager.class)
                         .annotatedWith(Names.named("CredentialServiceConfigurationManager"))
-                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
+                        .toInstance(
+                                new CredentialServiceConfigurationManagerImpl(
+                                        new EntityManagerSession(AuthenticationEntityManagerFactory.getInstance()),
+                                        mockPermissionFactory,
+                                        mockedAuthorization,
+                                        Mockito.mock(RootUserTester.class))
+                        );
                 bind(CredentialService.class).to(CredentialServiceImpl.class);
                 final UserFactoryImpl userFactory = new UserFactoryImpl();
                 bind(UserFactory.class).toInstance(userFactory);
