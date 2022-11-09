@@ -108,5 +108,4 @@ public class AuthenticationModule extends AbstractKapuaModule {
             }
         };
     }
-
 }
