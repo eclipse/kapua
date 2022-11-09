@@ -31,7 +31,6 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
-import org.eclipse.kapua.model.query.predicate.AttributePredicate.Operator;
 import org.eclipse.kapua.model.query.predicate.QueryPredicate;
 import org.eclipse.kapua.service.authentication.AuthenticationDomains;
 import org.eclipse.kapua.service.authentication.credential.Credential;
@@ -91,7 +90,6 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
 
     /*
      *
-
      * */
     @Inject
     public CredentialServiceImpl(
@@ -378,7 +376,7 @@ public class CredentialServiceImpl extends KapuaConfigurableServiceBase implemen
             // Build query
             KapuaQuery query = new CredentialQueryImpl();
             AttributePredicate<CredentialType> typePredicate = query.attributePredicate(CredentialAttributes.CREDENTIAL_TYPE, CredentialType.API_KEY);
-            AttributePredicate<String> keyPredicate = query.attributePredicate(CredentialAttributes.CREDENTIAL_KEY, apiKeyPreValue, Operator.STARTS_WITH);
+            AttributePredicate<String> keyPredicate = query.attributePredicate(CredentialAttributes.CREDENTIAL_KEY, apiKeyPreValue, AttributePredicate.Operator.STARTS_WITH);
 
             AndPredicate andPredicate = query.andPredicate(
                     typePredicate,
