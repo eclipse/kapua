@@ -21,10 +21,8 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
-import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.user.User;
 import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserFactory;
 import org.eclipse.kapua.service.user.UserNamedEntityService;
@@ -52,8 +50,7 @@ public class UserModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder,
-            ServiceDAO serviceDAO
+            AccountChildrenFinder accountChildrenFinder
     ) {
         return new ResourceLimitedServiceConfigurationManagerBase(UserService.class.getName(),
                 UserDomains.USER_DOMAIN,
@@ -62,8 +59,14 @@ public class UserModule extends AbstractKapuaModule {
                 authorizationService,
                 rootUserTester,
                 accountChildrenFinder,
-                new UsedEntitiesCounterImpl(userFactory, authorizationService, permissionFactory, new EntityManagerSession(userEntityManagerFactory), serviceDAO, User.class, UserImpl.class)) {
-
+                new UsedEntitiesCounterImpl(
+                        userFactory,
+                        UserDomains.USER_DOMAIN,
+                        UserDAO::count,
+                        authorizationService,
+                        permissionFactory,
+                        new EntityManagerSession(userEntityManagerFactory))
+        ) {
         };
     }
 }

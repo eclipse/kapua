@@ -20,10 +20,8 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
-import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagDomains;
 import org.eclipse.kapua.service.tag.TagFactory;
 import org.eclipse.kapua.service.tag.TagService;
@@ -45,8 +43,7 @@ public class TagModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder,
-            ServiceDAO serviceDAO
+            AccountChildrenFinder accountChildrenFinder
     ) {
         return new ResourceLimitedServiceConfigurationManagerBase(
                 TagService.class.getName(),
@@ -56,7 +53,14 @@ public class TagModule extends AbstractKapuaModule {
                 authorizationService,
                 rootUserTester,
                 accountChildrenFinder,
-                new UsedEntitiesCounterImpl(userFactory, authorizationService, permissionFactory, new EntityManagerSession(tagEntityManagerFactory), serviceDAO, Tag.class, TagImpl.class)) {
+                new UsedEntitiesCounterImpl(
+                        userFactory,
+                        TagDomains.TAG_DOMAIN,
+                        TagDAO::count,
+                        authorizationService,
+                        permissionFactory,
+                        new EntityManagerSession(tagEntityManagerFactory)
+                )) {
 
         };
     }

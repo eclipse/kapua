@@ -20,10 +20,8 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
-import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.JobDomains;
 import org.eclipse.kapua.service.job.JobFactory;
 import org.eclipse.kapua.service.job.JobService;
@@ -45,8 +43,7 @@ public class JobModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder,
-            ServiceDAO serviceDAO
+            AccountChildrenFinder accountChildrenFinder
     ) {
         return new ResourceLimitedServiceConfigurationManagerBase(
                 JobService.class.getName(),
@@ -56,7 +53,14 @@ public class JobModule extends AbstractKapuaModule {
                 authorizationService,
                 rootUserTester,
                 accountChildrenFinder,
-                new UsedEntitiesCounterImpl(factory, authorizationService, permissionFactory, new EntityManagerSession(jobEntityManagerFactory), serviceDAO, Job.class, JobImpl.class)) {
+                new UsedEntitiesCounterImpl(
+                        factory,
+                        JobDomains.JOB_DOMAIN,
+                        JobDAO::count,
+                        authorizationService,
+                        permissionFactory,
+                        new EntityManagerSession(jobEntityManagerFactory)
+                )) {
         };
     }
 }

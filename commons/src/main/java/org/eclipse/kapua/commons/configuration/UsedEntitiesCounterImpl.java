@@ -14,20 +14,20 @@
 package org.eclipse.kapua.commons.configuration;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
-import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityCreator;
 import org.eclipse.kapua.model.KapuaEntityFactory;
 import org.eclipse.kapua.model.domain.Actions;
+import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaListResult;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
-import org.eclipse.kapua.service.user.UserDomains;
 
 public class UsedEntitiesCounterImpl<
         E extends KapuaEntity,
@@ -38,27 +38,30 @@ public class UsedEntitiesCounterImpl<
         > implements UsedEntitiesCounter {
 
     private final F factory;
+    private final Domain domain;
+    private final DaoCounter daoCounter;
     private final AuthorizationService authorizationService;
     private final PermissionFactory permissionFactory;
     private final EntityManagerSession entityManagerSession;
-    private final ServiceDAO serviceDAO;
-    private final Class<E> interfaceClass;
-    private final Class<? extends E> implementationClass;
 
     public UsedEntitiesCounterImpl(F factory,
+                                   Domain domain,
+                                   DaoCounter daoCounter,
                                    AuthorizationService authorizationService,
                                    PermissionFactory permissionFactory,
-                                   EntityManagerSession entityManagerSession,
-                                   ServiceDAO serviceDAO,
-                                   Class<E> interfaceClass,
-                                   Class<? extends E> implementationClass) {
+                                   EntityManagerSession entityManagerSession) {
         this.factory = factory;
+        this.domain = domain;
+        this.daoCounter = daoCounter;
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.entityManagerSession = entityManagerSession;
-        this.serviceDAO = serviceDAO;
-        this.interfaceClass = interfaceClass;
-        this.implementationClass = implementationClass;
+    }
+
+    @FunctionalInterface
+    public static interface DaoCounter {
+        long count(EntityManager em, KapuaQuery userPermissionQuery)
+                throws KapuaException;
     }
 
     @Override
@@ -71,11 +74,11 @@ public class UsedEntitiesCounterImpl<
 
         //
         // Check Access
-        authorizationService.checkPermission(permissionFactory.newPermission(UserDomains.USER_DOMAIN, Actions.read, query.getScopeId()));
+        authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, query.getScopeId()));
 
         //
         // Do count
         return entityManagerSession.doAction(EntityManagerContainer.<Long>create()
-                .onResultHandler(em -> serviceDAO.count(em, interfaceClass, implementationClass, query)));
+                .onResultHandler(em -> daoCounter.count(em, query)));
     }
 }

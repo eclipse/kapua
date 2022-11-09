@@ -20,7 +20,6 @@ import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
-import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.service.authorization.AuthorizationDomains;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.access.AccessInfoFactory;
@@ -39,25 +38,22 @@ import org.eclipse.kapua.service.authorization.domain.DomainFactory;
 import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainFactoryImpl;
 import org.eclipse.kapua.service.authorization.domain.shiro.DomainRegistryServiceImpl;
-import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupFactory;
 import org.eclipse.kapua.service.authorization.group.GroupService;
+import org.eclipse.kapua.service.authorization.group.shiro.GroupDAO;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupFactoryImpl;
-import org.eclipse.kapua.service.authorization.group.shiro.GroupImpl;
 import org.eclipse.kapua.service.authorization.group.shiro.GroupServiceImpl;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.permission.shiro.PermissionFactoryImpl;
-import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RolePermissionService;
 import org.eclipse.kapua.service.authorization.role.RoleService;
+import org.eclipse.kapua.service.authorization.role.shiro.RoleDAO;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleFactoryImpl;
-import org.eclipse.kapua.service.authorization.role.shiro.RoleImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionFactoryImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RolePermissionServiceImpl;
 import org.eclipse.kapua.service.authorization.role.shiro.RoleServiceImpl;
-import org.eclipse.kapua.service.user.UserDomains;
 import org.eclipse.kapua.service.user.UserService;
 
 import javax.inject.Named;
@@ -98,17 +94,23 @@ public class AuthorizationModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder,
-            ServiceDAO serviceDAO
+            AccountChildrenFinder accountChildrenFinder
     ) {
         return new ResourceLimitedServiceConfigurationManagerBase(UserService.class.getName(),
-                UserDomains.USER_DOMAIN,
+                AuthorizationDomains.ROLE_DOMAIN,
                 new EntityManagerSession(authorizationEntityManagerFactory),
                 permissionFactory,
                 authorizationService,
                 rootUserTester,
                 accountChildrenFinder,
-                new UsedEntitiesCounterImpl(roleFactory, authorizationService, permissionFactory, new EntityManagerSession(authorizationEntityManagerFactory), serviceDAO, Role.class, RoleImpl.class)) {
+                new UsedEntitiesCounterImpl(
+                        roleFactory,
+                        AuthorizationDomains.ROLE_DOMAIN,
+                        RoleDAO::count,
+                        authorizationService,
+                        permissionFactory,
+                        new EntityManagerSession(authorizationEntityManagerFactory)
+                )) {
         };
     }
 
@@ -120,8 +122,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder,
-            ServiceDAO serviceDAO
+            AccountChildrenFinder accountChildrenFinder
     ) {
         return new ResourceLimitedServiceConfigurationManagerBase(
                 GroupService.class.getName(),
@@ -131,7 +132,14 @@ public class AuthorizationModule extends AbstractKapuaModule {
                 authorizationService,
                 rootUserTester,
                 accountChildrenFinder,
-                new UsedEntitiesCounterImpl(factory, authorizationService, permissionFactory, new EntityManagerSession(authorizationEntityManagerFactory), serviceDAO, Group.class, GroupImpl.class)) {
+                new UsedEntitiesCounterImpl(
+                        factory,
+                        AuthorizationDomains.GROUP_DOMAIN,
+                        GroupDAO::count,
+                        authorizationService,
+                        permissionFactory,
+                        new EntityManagerSession(authorizationEntityManagerFactory)
+                )) {
         };
     }
 }
