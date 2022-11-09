@@ -33,6 +33,7 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
+import org.eclipse.kapua.model.id.KapuaIdImpl;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.qa.common.StepData;
 import org.eclipse.kapua.qa.common.TestBase;
@@ -321,6 +322,19 @@ public class AccountServiceSteps extends TestBase {
             expirationDate = new SimpleDateFormat("yyyy-DD-mm").parse(expirationDateStr);
         }
         tmpAcc.setExpirationDate(expirationDate);
+        try {
+            primeException();
+            accountService.update(tmpAcc);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+    }
+
+    @When("I change the scope Id for account {string} to {int}")
+    public void changeParentPathForAccount(String name, int scopeId) throws Exception {
+        Account tmpAcc = accountService.findByName(name);
+        tmpAcc.setScopeId(new KapuaIdImpl(BigInteger.valueOf(scopeId)));
+
         try {
             primeException();
             accountService.update(tmpAcc);

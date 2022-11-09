@@ -74,19 +74,7 @@ public class CucDevice {
         this.applicationFrameworkVersion = applicationFrameworkVersion;
         this.applicationIdentifiers = applicationIdentifiers;
         this.acceptEncoding = acceptEncoding;
-        if (status != null) {
-            switch (status.trim().toUpperCase()) {
-                case "DISABLED":
-                    kStatus = DeviceStatus.DISABLED;
-                    break;
-                case "ENABLED":
-                    kStatus = DeviceStatus.ENABLED;
-                    break;
-                default:
-                    kStatus = null;
-                    break;
-            }
-        }
+        setStatus(this.status);
     }
 
     public void parse() {
@@ -104,6 +92,23 @@ public class CucDevice {
 
         if (preferredUserId != null) {
             kPreferredUserId = new KapuaEid(BigInteger.valueOf(preferredUserId));
+        }
+        setStatus(this.status);
+    }
+
+    public void setStatus(String status) {
+        if (status != null) {
+            switch (status.trim().toUpperCase()) {
+                case "DISABLED":
+                    kStatus = DeviceStatus.DISABLED;
+                    break;
+                case "ENABLED":
+                    kStatus = DeviceStatus.ENABLED;
+                    break;
+                default:
+                    kStatus = null;
+                    break;
+            }
         }
     }
 
