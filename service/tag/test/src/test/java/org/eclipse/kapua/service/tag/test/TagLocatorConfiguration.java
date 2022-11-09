@@ -108,11 +108,17 @@ public class TagLocatorConfiguration {
                 DeviceEntityManagerFactory deviceEntityManagerFactory = DeviceEntityManagerFactory.getInstance();
                 bind(DeviceEntityManagerFactory.class).toInstance(deviceEntityManagerFactory);
 
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("DeviceRegistryServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
                 bind(DeviceRegistryService.class).to(DeviceRegistryServiceImpl.class);
                 bind(DeviceFactory.class).toInstance(new DeviceFactoryImpl());
 
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("DeviceConnectionServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
                 bind(DeviceConnectionService.class).to(DeviceConnectionServiceImpl.class);
-                bind(DeviceConnectionFactory.class).toInstance(new DeviceConnectionFactoryImpl());
+                bind(DeviceConnectionFactory.class).to(DeviceConnectionFactoryImpl.class);
 
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());

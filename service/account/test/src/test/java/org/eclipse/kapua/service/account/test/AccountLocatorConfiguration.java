@@ -16,10 +16,12 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
+import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
 import org.eclipse.kapua.commons.model.query.QueryFactoryImpl;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -74,6 +76,9 @@ public class AccountLocatorConfiguration {
                 bind(AccountEntityManagerFactory.class).toInstance(AccountEntityManagerFactory.getInstance());
                 bind(AccountFactory.class).toInstance(new AccountFactoryImpl());
                 bind(AccountChildrenFinder.class).to(AccountChildrenFinderImpl.class);
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("AccountServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
                 bind(AccountService.class).to(AccountServiceImpl.class);
             }
         };

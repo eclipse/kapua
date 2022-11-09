@@ -13,10 +13,21 @@
 package org.eclipse.kapua.service.account.internal;
 
 import com.google.inject.Module;
+import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.service.account.AccountDomains;
 import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountService;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
+
+import javax.inject.Named;
 
 /**
  * {@code kapua-account-internal} {@link Module} implementation.
@@ -30,5 +41,35 @@ public class AccountModule extends AbstractKapuaModule implements Module {
         bind(AccountFactory.class).to(AccountFactoryImpl.class);
         bind(AccountChildrenFinder.class).to(AccountChildrenFinderImpl.class);
         bind(AccountService.class).to(AccountServiceImpl.class);
+    }
+
+
+    @Provides
+    @Named("AccountServiceConfigurationManager")
+    ServiceConfigurationManager accountServiceConfigurationManager(
+            AccountEntityManagerFactory entityManagerFactory,
+            AccountFactory factory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester,
+            AccountChildrenFinder accountChildrenFinder
+    ) {
+        return new ResourceLimitedServiceConfigurationManagerBase(
+                AccountService.class.getName(),
+                AccountDomains.ACCOUNT_DOMAIN,
+                new EntityManagerSession(entityManagerFactory),
+                permissionFactory,
+                authorizationService,
+                rootUserTester,
+                accountChildrenFinder,
+                new UsedEntitiesCounterImpl(
+                        factory,
+                        AccountDomains.ACCOUNT_DOMAIN,
+                        AccountDAO::count,
+                        authorizationService,
+                        permissionFactory,
+                        new EntityManagerSession(entityManagerFactory))
+        ) {
+        };
     }
 }

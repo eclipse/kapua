@@ -101,6 +101,9 @@ public class DeviceRegistryLocatorConfiguration {
                 bind(DeviceEventService.class).toInstance(new DeviceEventServiceImpl());
                 bind(DeviceEventFactory.class).toInstance(new DeviceEventFactoryImpl());
                 bind(KapuaMessageFactory.class).toInstance(new KapuaMessageFactoryImpl());
+                bind(ServiceConfigurationManager.class)
+                        .annotatedWith(Names.named("DeviceRegistryServiceConfigurationManager"))
+                        .toInstance(Mockito.mock(ServiceConfigurationManager.class));
                 bind(DeviceRegistryService.class).to(DeviceRegistryServiceImpl.class);
             }
         };

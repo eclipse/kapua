@@ -18,18 +18,19 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -38,9 +39,7 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountAttributes;
 import org.eclipse.kapua.service.account.AccountCreator;
 import org.eclipse.kapua.service.account.AccountDomains;
-import org.eclipse.kapua.service.account.AccountFactory;
 import org.eclipse.kapua.service.account.AccountListResult;
-import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.account.internal.exception.KapuaAccountErrorCodes;
 import org.eclipse.kapua.service.account.internal.exception.KapuaAccountException;
@@ -48,9 +47,12 @@ import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.persistence.TypedQuery;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * {@link AccountService} implementation.
@@ -58,25 +60,24 @@ import java.util.Objects;
  * @since 1.0.0
  */
 @Singleton
-public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Account, AccountCreator, AccountService, AccountListResult, AccountQuery, AccountFactory>
+public class AccountServiceImpl
+        extends AbstractKapuaService
         implements AccountService {
 
     private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
+    private PermissionFactory permissionFactory;
+    private AuthorizationService authorizationService;
+    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Constructor.
      *
      * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link #AccountServiceImpl(AccountEntityManagerFactory, AccountCacheFactory, AccountFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} instead. This may be removed in future releases.
+     * @deprecated since 2.0.0 - Please use {@link #AccountServiceImpl(AccountEntityManagerFactory, AccountCacheFactory, PermissionFactory, AuthorizationService, ServiceConfigurationManager)} instead. This may be removed in future releases.
      */
     @Deprecated
     public AccountServiceImpl() {
-        super(AccountService.class.getName(),
-                AccountDomains.ACCOUNT_DOMAIN,
-                AccountEntityManagerFactory.getInstance(),
-                AccountCacheFactory.getInstance(),
-                AccountService.class,
-                AccountFactory.class);
+        super(AccountEntityManagerFactory.getInstance(), AccountCacheFactory.getInstance());
     }
 
     /**
@@ -84,32 +85,22 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
      *
      * @param accountEntityManagerFactory The {@link AccountEntityManagerFactory} instance
      * @param accountCacheFactory         The {@link AccountCacheFactory} instance
-     * @param factory                     The {@link AccountFactory} instance
      * @param permissionFactory           The {@link PermissionFactory} instance
      * @param authorizationService        The {@link AuthorizationService} instance
-     * @param accountChildrenFinder       The {@link AccountChildrenFinder} instance
-     * @param rootUserTester              The {@link RootUserTester} instance
+     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
      * @since 2.0.0
      */
     @Inject
     public AccountServiceImpl(
             AccountEntityManagerFactory accountEntityManagerFactory,
             AccountCacheFactory accountCacheFactory,
-            AccountFactory factory,
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
-            AccountChildrenFinder accountChildrenFinder,
-            RootUserTester rootUserTester) {
-        super(AccountService.class.getName(),
-                AccountDomains.ACCOUNT_DOMAIN,
-                accountEntityManagerFactory,
-                accountCacheFactory,
-                factory,
-                permissionFactory,
-                authorizationService,
-                accountChildrenFinder,
-                rootUserTester
-        );
+            @Named("AccountServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+        super(accountEntityManagerFactory, accountCacheFactory);
+        this.permissionFactory = permissionFactory;
+        this.authorizationService = authorizationService;
+        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -130,7 +121,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
 
         //
         // Check entity limit
-        checkAllowedEntities(accountCreator.getScopeId(), "Accounts");
+        serviceConfigurationManager.checkAllowedEntities(accountCreator.getScopeId(), "Accounts");
 
         //
         // Check if the parent account exists
@@ -506,5 +497,49 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             // I'm looking for another account, so I need to check the permission on the account scope
             getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, action, scopeId, null, forwardable));
         }
+    }
+
+
+    /**
+     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AuthorizationService} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected AuthorizationService getAuthorizationService() {
+        if (authorizationService == null) {
+            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+        }
+        return authorizationService;
+    }
+
+    /**
+     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link PermissionFactory} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected PermissionFactory getPermissionFactory() {
+        if (permissionFactory == null) {
+            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        }
+        return permissionFactory;
+    }
+
+    @Override
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
+        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
+    }
+
+    @Override
+    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
+        return serviceConfigurationManager.getConfigValues(scopeId, true);
+    }
+
+    @Override
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
     }
 }

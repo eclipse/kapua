@@ -13,9 +13,12 @@
 package org.eclipse.kapua.service.device.registry;
 
 import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
@@ -32,6 +35,7 @@ import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventFactoryImpl;
 import org.eclipse.kapua.service.device.registry.event.internal.DeviceEventServiceImpl;
+import org.eclipse.kapua.service.device.registry.internal.DeviceDAO;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 import org.eclipse.kapua.service.device.registry.internal.DeviceFactoryImpl;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryCacheFactory;
@@ -68,13 +72,43 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
-        return new ServiceConfigurationManagerBase(DeviceConnectionService.class.getName(),
+        return new ServiceConfigurationManagerBase(
+                DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
                 new EntityManagerSession(deviceEntityManagerFactory),
                 permissionFactory,
                 authorizationService,
                 rootUserTester) {
+        };
+    }
 
+
+    @Provides
+    @Named("DeviceRegistryServiceConfigurationManager")
+    ServiceConfigurationManager deviceRegistryServiceConfigurationManager(
+            DeviceEntityManagerFactory deviceEntityManagerFactory,
+            DeviceFactory factory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester,
+            AccountChildrenFinder accountChildrenFinder
+    ) {
+        return new ResourceLimitedServiceConfigurationManagerBase(
+                DeviceRegistryService.class.getName(),
+                DeviceDomains.DEVICE_DOMAIN,
+                new EntityManagerSession(deviceEntityManagerFactory),
+                permissionFactory,
+                authorizationService,
+                rootUserTester,
+                accountChildrenFinder,
+                new UsedEntitiesCounterImpl(
+                        factory,
+                        DeviceDomains.DEVICE_DOMAIN,
+                        DeviceDAO::count,
+                        authorizationService,
+                        permissionFactory,
+                        new EntityManagerSession(deviceEntityManagerFactory))
+        ) {
         };
     }
 }

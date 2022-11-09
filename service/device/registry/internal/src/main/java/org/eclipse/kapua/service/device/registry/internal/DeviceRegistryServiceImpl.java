@@ -16,20 +16,17 @@ import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableResourceLimitedService;
-import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
-import org.eclipse.kapua.service.authorization.AuthorizationService;
-import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
-import org.eclipse.kapua.service.device.registry.DeviceDomains;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
@@ -39,7 +36,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * {@link DeviceRegistryService} implementation.
@@ -47,33 +47,30 @@ import javax.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResourceLimitedService<Device, DeviceCreator, DeviceRegistryService, DeviceListResult, DeviceQuery, DeviceFactory>
+public class DeviceRegistryServiceImpl
+        extends AbstractKapuaService
         implements DeviceRegistryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceRegistryServiceImpl.class);
+    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Constructor.
      *
      * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory#getInstance()}.
      * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, DeviceFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} instead. This constructor may be removed in future releases
+     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, ServiceConfigurationManager)} instead. This constructor may be removed in future releases
      */
     @Deprecated
     public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
-        super(DeviceRegistryService.class.getName(),
-                DeviceDomains.DEVICE_DOMAIN,
-                deviceEntityManagerFactory,
-                DeviceRegistryCacheFactory.getInstance(),
-                DeviceRegistryService.class,
-                DeviceFactory.class);
+        super(deviceEntityManagerFactory, DeviceRegistryCacheFactory.getInstance());
     }
 
     /**
      * Constructor.
      *
      * @since 1.0.0
-     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, DeviceFactory, PermissionFactory, AuthorizationService, AccountChildrenFinder, RootUserTester)} instead. This constructor may be removed in future releases
+     * @deprecated since 2.0.0 - Please use {@link #DeviceRegistryServiceImpl(DeviceEntityManagerFactory, DeviceRegistryCacheFactory, ServiceConfigurationManager)} instead. This constructor may be removed in future releases
      */
     @Deprecated
     public DeviceRegistryServiceImpl() {
@@ -83,32 +80,17 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
     /**
      * Injectable Constructor
      *
-     * @param deviceEntityManagerFactory The {@link DeviceEntityManagerFactory} instance
-     * @param deviceRegistryCacheFactory The {@link DeviceRegistryCacheFactory} instance
-     * @param factory                    The {@link DeviceFactory} instance
-     * @param permissionFactory          The {@link PermissionFactory} instance
-     * @param authorizationService       The {@link AuthorizationService} instance
-     * @param rootUserTester             The {@link RootUserTester} instance
+     * @param deviceEntityManagerFactory  The {@link DeviceEntityManagerFactory} instance
+     * @param deviceRegistryCacheFactory  The {@link DeviceRegistryCacheFactory} instance
+     * @param serviceConfigurationManager The {@link ServiceConfigurationManager} instance
      * @since 2.0.0
      */
     @Inject
     public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory,
                                      DeviceRegistryCacheFactory deviceRegistryCacheFactory,
-                                     DeviceFactory factory,
-                                     PermissionFactory permissionFactory,
-                                     AuthorizationService authorizationService,
-                                     AccountChildrenFinder accountChildrenFinder,
-                                     RootUserTester rootUserTester) {
-        super(DeviceRegistryService.class.getName(),
-                DeviceDomains.DEVICE_DOMAIN,
-                deviceEntityManagerFactory,
-                deviceRegistryCacheFactory,
-                factory,
-                permissionFactory,
-                authorizationService,
-                accountChildrenFinder,
-                rootUserTester
-        );
+                                     @Named("DeviceRegistryServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
+        super(deviceEntityManagerFactory, deviceRegistryCacheFactory);
+        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -118,7 +100,7 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
 
         //
         // Check entity limit
-        checkAllowedEntities(deviceCreator.getScopeId(), "Devices");
+        serviceConfigurationManager.checkAllowedEntities(deviceCreator.getScopeId(), "Devices");
 
         //
         // Check duplicate clientId
@@ -283,4 +265,18 @@ public class DeviceRegistryServiceImpl extends AbstractKapuaConfigurableResource
         }
     }
 
+    @Override
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
+        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
+    }
+
+    @Override
+    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
+        return serviceConfigurationManager.getConfigValues(scopeId, true);
+    }
+
+    @Override
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
+    }
 }
