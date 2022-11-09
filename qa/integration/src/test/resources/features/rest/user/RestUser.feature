@@ -11,6 +11,8 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @rest
+  # this test is excluded from the CI process and, if launched, fails
+  # this because it contains major flaws and rest features should be tested with a brand new feature file
 Feature: REST API tests for User
   REST API test of Kapua User API.
 

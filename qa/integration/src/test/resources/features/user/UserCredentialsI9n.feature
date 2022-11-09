@@ -83,21 +83,21 @@ Feature: Feature file for testing Password user credential
 
 ####   This scenario is currently failing. It will be uncommented when issue #(2842) is resolved.
 
-#  Scenario: Create a user with password credential with over 255 character
-#  Creating new user "kapua-a" from kapua-sys parent account with password credential that contain over 255 character.
-#  An exception should be thrown.
-#
-#    When I login as user with name "kapua-sys" and password "kapua-password"
-#    Then I select account "kapua-sys"
-#    And A generic user
-#      | name    | displayName  | email             | phoneNumber     | status  | userType |
-#      | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
-#    But I expect the exception "KapuaIllegalArgumentException" with the text "*"
-#    Then I add credentials
-#      | name    | password            | enabled |
-#      | kapua-a | ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#T   | true    |
-#    And An exception was thrown
-#    And I logout
+  Scenario: Create a user with password credential with over 255 character
+  Creating new user "kapua-a" from kapua-sys parent account with password credential that contain over 255 character.
+  An exception should be thrown.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Then I select account "kapua-sys"
+    And A generic user
+      | name    | displayName  | email             | phoneNumber     | status  | userType |
+      | kapua-a | Kapua User a | kapua_a@kapua.com | +386 31 321 123 | ENABLED | INTERNAL |
+    But I expect the exception "PasswordLengthException" with the text "*"
+    Then I add credentials
+      | name    | password            | enabled |
+      | kapua-a | ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#ToManySecrets123#T   | true    |
+    And An exception was thrown
+    And I logout
 
   Scenario: Create a user with password credential that does not contain upper case character
   Create a new user "kapua-a" from kapua-sys parent account with password credential that does not contain upper case character.

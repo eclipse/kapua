@@ -184,6 +184,7 @@ Feature: Broker ACL tests
     And clients are disconnected
     And Mqtt Device is stoped
 
+    #Since we cannot intercept topic creation on our broker security plugin, this test has no more sense on ActiveMQ 5.x
 #  Scenario: DM12 Data manage create sub-topic on ACL_CTRL_ACC_NOTIFY is not allowed
 #    Normal user with data manage profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.foo
 #    This means that foo topic is not created as data manage has no admin rights on this topic.

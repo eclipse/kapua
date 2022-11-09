@@ -217,6 +217,7 @@ Feature: Broker ACL tests
       And clients are disconnected
       And Mqtt Device is stoped
 
+    #Since we cannot intercept topic creation on our broker security plugin, this test has no more sense on ActiveMQ 5.x
 #  Scenario: B14 Broker create sub-topic on ACL_CTRL_ACC_NOTIFY is not allowed
 #    Normal user with broker connect profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.foo
 #    This means that foo topic is not created as broker has no admin rights on this topic.
@@ -373,6 +374,7 @@ Feature: Broker ACL tests
       And clients are disconnected
       And Mqtt Device is stoped
 
+    #Since we cannot intercept topic creation on our broker security plugin, this test has no more sense on ActiveMQ 5.x
 #  Scenario: D12 Device create sub-topic on ACL_CTRL_ACC_NOTIFY is not allowed
 #    Normal user with device manage profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.foo
 #    This means that foo topic is not created as broker has no admin rights on this topic.
@@ -425,7 +427,6 @@ Feature: Broker ACL tests
 
   Scenario: DV3 Data view subscribe on personal CTRL_ACC_REPLY
     Normal user with data view profile subscribes to $EDC.{0}.*.*.REPLY
-    Subscribe is not allowed, but it is on client's own topic. Is that OK?
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "$EDC/acme/client-1/CONF-V1/REPLY"
@@ -506,8 +507,6 @@ Feature: Broker ACL tests
 
   Scenario: DV10 Data view create sub-topic on ACL_DATA_ACC is allowed
     Normal user with data view profile publishes to topic {0}.foo
-    This means that foo topic is created as broker has admin rights on this topic, but
-    message is not received as publish is not allowed. How is this scenario possible?
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
@@ -532,7 +531,7 @@ Feature: Broker ACL tests
 
   Scenario: DV12 Data view publish to ACL_CTRL_ACC_CLI is allowed
     Normal user with data view profile publishes to topic {0}.{1}.>
-    Publish is allowed, but not subscribe and admin.
+    Publish is allowed.
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
@@ -544,9 +543,6 @@ Feature: Broker ACL tests
 
   Scenario: DV13 Data view create sub-topic on ACL_CTRL_ACC_CLI is not allowed
     Normal user with data view profile publishes to topic {0}.{1}.foo
-    This means that foo topic is not created as data view has no admin rights on this topic.
-    Because user also has broker connect privilege it out-rules this ACL and can admin this topic.
-    Is this correct behaviour?
     Given Mqtt Device is started
       And data view account and user are created
     When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic ""
@@ -556,16 +552,14 @@ Feature: Broker ACL tests
       And clients are disconnected
       And Mqtt Device is stoped
 
-#  Scenario: DV14 Data view subscribe on ACL_CTRL_ACC_CLI is not allowed
-#    Normal user with data view profile subscribes to {0}.{1}.>
-#    Because user also has broker connect privilege it out-rules this ACL and can subscribe to this topic.
-#    This out-roule is not applied? Why?
-#    Given Mqtt Device is started
-#      And data view account and user are created
-#    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme/client-1"
-#    Then exception is not thrown
-#      And clients are disconnected
-#      And Mqtt Device is stoped
+  Scenario: DV14 Data view subscribe on ACL_CTRL_ACC_CLI is not allowed
+    Normal user with data view profile subscribes to {0}.{1}.>
+    Given Mqtt Device is started
+      And data view account and user are created
+    When broker with clientId "client-1" and user "luise" and password "KeepCalm123." is listening on topic "acme/client-1"
+    Then exception is not thrown
+      And clients are disconnected
+      And Mqtt Device is stoped
 
   Scenario: DV15 Data view publish to ACL_CTRL_ACC_NOTIFY is allowed
     Normal user with data view profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.>
@@ -579,6 +573,7 @@ Feature: Broker ACL tests
       And clients are disconnected
       And Mqtt Device is stoped
 
+    #Since we cannot intercept topic creation on our broker security plugin, this test has no more sense on ActiveMQ 5.x
 #  Scenario: DV16 Data view create sub-topic on ACL_CTRL_ACC_NOTIFY is not allowed
 #    Normal user with data view profile publishes to topic $EDC.{0}.*.*.NOTIFY.{1}.foo
 #    This means that foo topic is not created as data view has no admin rights on this topic.
