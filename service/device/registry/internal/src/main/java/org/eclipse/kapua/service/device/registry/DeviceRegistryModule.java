@@ -82,7 +82,6 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                 rootUserTester));
     }
 
-
     @Provides
     @Named("DeviceRegistryServiceConfigurationManager")
     ServiceConfigurationManager deviceRegistryServiceConfigurationManager(
