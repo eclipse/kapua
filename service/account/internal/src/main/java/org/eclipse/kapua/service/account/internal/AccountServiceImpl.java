@@ -86,7 +86,7 @@ public class AccountServiceImpl
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
     }
-    
+
     @Override
     public Account create(AccountCreator accountCreator) throws KapuaException {
         //
@@ -482,7 +482,6 @@ public class AccountServiceImpl
             getAuthorizationService().checkPermission(getPermissionFactory().newPermission(domain, action, scopeId, null, forwardable));
         }
     }
-
 
     /**
      * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,

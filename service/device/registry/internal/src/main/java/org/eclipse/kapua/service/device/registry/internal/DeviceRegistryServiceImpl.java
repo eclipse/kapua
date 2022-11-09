@@ -49,6 +49,7 @@ public class DeviceRegistryServiceImpl
         implements DeviceRegistryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceRegistryServiceImpl.class);
+    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Constructor.

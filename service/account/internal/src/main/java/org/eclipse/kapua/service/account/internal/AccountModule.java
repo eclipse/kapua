@@ -44,7 +44,6 @@ public class AccountModule extends AbstractKapuaModule implements Module {
         bind(AccountService.class).to(AccountServiceImpl.class);
     }
 
-
     @Provides
     @Named("AccountServiceConfigurationManager")
     ServiceConfigurationManager accountServiceConfigurationManager(
