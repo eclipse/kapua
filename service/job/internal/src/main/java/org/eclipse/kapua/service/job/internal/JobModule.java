@@ -63,5 +63,6 @@ public class JobModule extends AbstractKapuaModule {
                                 permissionFactory,
                                 new EntityManagerSession(jobEntityManagerFactory)
                         )));
+
     }
 }
