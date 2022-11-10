@@ -49,7 +49,6 @@ public class DatastoreModule extends AbstractKapuaModule {
         bind(MetricInfoRegistryService.class).to(MetricInfoRegistryServiceImpl.class);
     }
 
-
     @Provides
     @Named("MessageStoreServiceConfigurationManager")
     ServiceConfigurationManager messageStoreServiceConfigurationManager(

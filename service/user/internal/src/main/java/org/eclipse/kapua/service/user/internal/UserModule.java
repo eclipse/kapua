@@ -81,21 +81,22 @@ public class UserModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder
     ) {
-        return new ResourceLimitedServiceConfigurationManagerBase(UserService.class.getName(),
-                UserDomains.USER_DOMAIN,
-                new EntityManagerSession(userEntityManagerFactory),
-                permissionFactory,
-                authorizationService,
-                rootUserTester,
-                accountChildrenFinder,
-                new UsedEntitiesCounterImpl(
-                        userFactory,
+        return new ServiceConfigurationManagerCachingWrapper(
+                new ResourceLimitedServiceConfigurationManagerBase(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
-                        UserDAO::count,
-                        authorizationService,
+                        new EntityManagerSession(userEntityManagerFactory),
                         permissionFactory,
-                        new EntityManagerSession(userEntityManagerFactory))
-        ) {
-        };
+                        authorizationService,
+                        rootUserTester,
+                        accountChildrenFinder,
+                        new UsedEntitiesCounterImpl(
+                                userFactory,
+                                UserDomains.USER_DOMAIN,
+                                UserDAO::count,
+                                authorizationService,
+                                permissionFactory,
+                                new EntityManagerSession(userEntityManagerFactory))
+                ) {
+                });
     }
 }
