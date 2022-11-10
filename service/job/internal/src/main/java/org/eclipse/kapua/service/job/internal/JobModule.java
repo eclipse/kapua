@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.job.internal;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
@@ -47,7 +47,7 @@ public class JobModule extends AbstractKapuaModule {
             AccountChildrenFinder accountChildrenFinder
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
-                new ResourceLimitedServiceConfigurationManagerBase(
+                new ResourceLimitedServiceConfigurationManagerImpl(
                         JobService.class.getName(),
                         JobDomains.JOB_DOMAIN,
                         new EntityManagerSession(jobEntityManagerFactory),
@@ -62,7 +62,6 @@ public class JobModule extends AbstractKapuaModule {
                                 authorizationService,
                                 permissionFactory,
                                 new EntityManagerSession(jobEntityManagerFactory)
-                        )) {
-                });
+                        )));
     }
 }

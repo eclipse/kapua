@@ -19,7 +19,7 @@ import com.google.inject.Singleton;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.configuration.metatype.KapuaMetatypeFactoryImpl;
@@ -91,7 +91,7 @@ public class UserLocatorConfiguration {
                 bind(RootUserTester.class).toInstance(mockRootUserTester);
                 final UserNamedEntityService namedEntityService = new UserNamedEntityServiceImpl(userEntityManagerFactory, new UserCacheFactory(), mockPermissionFactory, mockedAuthorization);
                 bind(UserNamedEntityService.class).toInstance(namedEntityService);
-                final ResourceLimitedServiceConfigurationManagerBase userConfigurationManager = new ResourceLimitedServiceConfigurationManagerBase(UserService.class.getName(),
+                final ResourceLimitedServiceConfigurationManagerImpl userConfigurationManager = new ResourceLimitedServiceConfigurationManagerImpl(UserService.class.getName(),
                         UserDomains.USER_DOMAIN,
                         new EntityManagerSession(userEntityManagerFactory),
                         mockPermissionFactory,
@@ -105,8 +105,7 @@ public class UserLocatorConfiguration {
                                 mockedAuthorization,
                                 mockPermissionFactory,
                                 new EntityManagerSession(userEntityManagerFactory))
-                ) {
-                };
+                );
                 bind(UserService.class).toInstance(
                         new UserServiceImpl(
                                 mockedAuthorization,

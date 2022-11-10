@@ -14,11 +14,11 @@ package org.eclipse.kapua.service.device.registry;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
@@ -73,14 +73,13 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
-        return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerBase(
+        return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerImpl(
                 DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
                 new EntityManagerSession(deviceEntityManagerFactory),
                 permissionFactory,
                 authorizationService,
-                rootUserTester) {
-        });
+                rootUserTester));
     }
 
 
@@ -95,7 +94,7 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             AccountChildrenFinder accountChildrenFinder
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
-                new ResourceLimitedServiceConfigurationManagerBase(
+                new ResourceLimitedServiceConfigurationManagerImpl(
                         DeviceRegistryService.class.getName(),
                         DeviceDomains.DEVICE_DOMAIN,
                         new EntityManagerSession(deviceEntityManagerFactory),
@@ -110,7 +109,6 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
                                 authorizationService,
                                 permissionFactory,
                                 new EntityManagerSession(deviceEntityManagerFactory))
-                ) {
-                });
+                ));
     }
 }

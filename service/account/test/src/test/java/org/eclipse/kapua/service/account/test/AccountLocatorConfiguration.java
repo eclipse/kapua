@@ -20,7 +20,7 @@ import com.google.inject.name.Names;
 import io.cucumber.java.Before;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
@@ -86,7 +86,7 @@ public class AccountLocatorConfiguration {
                 bind(AccountChildrenFinder.class).to(AccountChildrenFinderImpl.class);
                 bind(ServiceConfigurationManager.class)
                         .annotatedWith(Names.named("AccountServiceConfigurationManager"))
-                        .toInstance(new ResourceLimitedServiceConfigurationManagerBase(
+                        .toInstance(new ResourceLimitedServiceConfigurationManagerImpl(
                                 AccountService.class.getName(),
                                 AccountDomains.ACCOUNT_DOMAIN,
                                 new EntityManagerSession(entityManagerFactory),
@@ -101,8 +101,7 @@ public class AccountLocatorConfiguration {
                                         mockedAuthorization,
                                         mockPermissionFactory,
                                         new EntityManagerSession(entityManagerFactory))
-                        ) {
-                        });
+                        ));
                 bind(AccountService.class).to(AccountServiceImpl.class);
             }
         };

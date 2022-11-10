@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.tag.internal;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
@@ -47,7 +47,7 @@ public class TagModule extends AbstractKapuaModule {
             AccountChildrenFinder accountChildrenFinder
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
-                new ResourceLimitedServiceConfigurationManagerBase(
+                new ResourceLimitedServiceConfigurationManagerImpl(
                         TagService.class.getName(),
                         TagDomains.TAG_DOMAIN,
                         new EntityManagerSession(entityManagerFactory),
@@ -62,7 +62,6 @@ public class TagModule extends AbstractKapuaModule {
                                 authorizationService,
                                 permissionFactory,
                                 new EntityManagerSession(entityManagerFactory)
-                        )) {
-                });
+                        )));
     }
 }

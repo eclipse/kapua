@@ -15,7 +15,7 @@ package org.eclipse.kapua.service.authentication.shiro;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
-import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurationManagerBase implements CredentialServiceConfigurationManager {
+public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurationManagerImpl implements CredentialServiceConfigurationManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceConfigurationManagerImpl.class);
     private final int systemMinimumPasswordLength;

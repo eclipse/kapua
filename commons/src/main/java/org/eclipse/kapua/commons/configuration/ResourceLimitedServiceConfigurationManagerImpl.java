@@ -31,13 +31,13 @@ import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class ResourceLimitedServiceConfigurationManagerBase
-        extends ServiceConfigurationManagerBase {
+public class ResourceLimitedServiceConfigurationManagerImpl
+        extends ServiceConfigurationManagerImpl {
 
     private final AccountChildrenFinder accountChildrenFinder;
     private final UsedEntitiesCounter usedEntitiesCounter;
 
-    public ResourceLimitedServiceConfigurationManagerBase(String pid, Domain domain, EntityManagerSession entityManagerSession, PermissionFactory permissionFactory, AuthorizationService authorizationService, RootUserTester rootUserTester, AccountChildrenFinder accountChildrenFinder, UsedEntitiesCounter usedEntitiesCounter) {
+    public ResourceLimitedServiceConfigurationManagerImpl(String pid, Domain domain, EntityManagerSession entityManagerSession, PermissionFactory permissionFactory, AuthorizationService authorizationService, RootUserTester rootUserTester, AccountChildrenFinder accountChildrenFinder, UsedEntitiesCounter usedEntitiesCounter) {
         super(pid, domain, entityManagerSession, permissionFactory, authorizationService, rootUserTester);
         this.accountChildrenFinder = accountChildrenFinder;
         this.usedEntitiesCounter = usedEntitiesCounter;

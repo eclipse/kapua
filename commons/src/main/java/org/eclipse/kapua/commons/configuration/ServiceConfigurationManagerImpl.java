@@ -53,7 +53,30 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
-public abstract class ServiceConfigurationManagerBase implements ServiceConfigurationManager {
+public class ServiceConfigurationManagerImpl implements ServiceConfigurationManager {
+
+    private static final EntityCache PRIVATE_ENTITY_CACHE = AbstractKapuaConfigurableServiceCache.getInstance().createCache();
+    protected final String pid;
+    protected final Domain domain;
+    protected final EntityManagerSession entityManagerSession;
+    private final PermissionFactory permissionFactory;
+    private final AuthorizationService authorizationService;
+    private final RootUserTester rootUserTester;
+
+    public ServiceConfigurationManagerImpl(
+            String pid,
+            Domain domain,
+            EntityManagerSession entityManagerSession,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester) {
+        this.pid = pid;
+        this.domain = domain;
+        this.entityManagerSession = entityManagerSession;
+        this.permissionFactory = permissionFactory;
+        this.authorizationService = authorizationService;
+        this.rootUserTester = rootUserTester;
+    }
 
     /**
      * Whether this {@link KapuaService} is enabled for the given scope {@link KapuaId}.
@@ -109,68 +132,6 @@ public abstract class ServiceConfigurationManagerBase implements ServiceConfigur
     public void checkAllowedEntities(KapuaId scopeId, String entityType) throws KapuaException {
 
     }
-
-    private static final EntityCache PRIVATE_ENTITY_CACHE = AbstractKapuaConfigurableServiceCache.getInstance().createCache();
-//    private static final int LOCAL_CACHE_SIZE_MAX = SystemSetting.getInstance().getInt(SystemSettingKey.TMETADATA_LOCAL_CACHE_SIZE_MAXIMUM, 100);
-//    /**
-//     * This cache is to hold the {@link KapuaTocd}s that are read from the metatype files.
-//     * <p>
-//     * The key is a {@link Triple} composed by:
-//     * <ul>
-//     *     <li>The {@link KapuaConfigurableService} PID</li>
-//     *     <li>The ID of the {@link Account} for the current request</li>
-//     *     <li>A {@link Boolean} flag indicating whether disabled properties are excluded from the AD or not</li>
-//     * </ul>
-//     *
-//     * @since 1.2.0
-//     */
-//    private static final LocalCache<Triple<String, KapuaId, Boolean>, KapuaTocd> KAPUA_TOCD_LOCAL_CACHE = new LocalCache<>(LOCAL_CACHE_SIZE_MAX, null);
-//
-//    /**
-//     * This cache only holds the {@link Boolean} value {@literal True} if the {@link KapuaTocd} has been already read from the file
-//     * at least once, regardless of the value. With this we can know when a read from {@code KAPUA_TOCD_LOCAL_CACHE}
-//     * returns {@literal null} because of the requested key is not present, and when the key is present but its actual value
-//     * is {@literal null}.
-//     *
-//     * @since 1.2.0
-//     */
-//    private static final LocalCache<Triple<String, KapuaId, Boolean>, Boolean> KAPUA_TOCD_EMPTY_LOCAL_CACHE = new LocalCache<>(LOCAL_CACHE_SIZE_MAX, false);
-
-
-    protected final String pid;
-    protected final Domain domain;
-
-    protected final EntityManagerSession entityManagerSession;
-
-    public ServiceConfigurationManagerBase(
-            String pid,
-            Domain domain,
-            EntityManagerSession entityManagerSession,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
-            RootUserTester rootUserTester) {
-        this.pid = pid;
-        this.domain = domain;
-        this.entityManagerSession = entityManagerSession;
-        this.permissionFactory = permissionFactory;
-        this.authorizationService = authorizationService;
-        this.rootUserTester = rootUserTester;
-    }
-
-    //TODO: make final as soon as deprecated constructors are removed
-    private PermissionFactory permissionFactory;
-    private AuthorizationService authorizationService;
-    private RootUserTester rootUserTester;
-
-//    @Override
-//    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-//        return getConfigMetadata(scopeId, true);
-//    }
-//
-//    @Override
-//    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-//        return getConfigValues(scopeId, true);
-//    }
 
     @Override
     public void setConfigValues(KapuaId scopeId, Optional<KapuaId> parentId, Map<String, Object> values) throws KapuaException {

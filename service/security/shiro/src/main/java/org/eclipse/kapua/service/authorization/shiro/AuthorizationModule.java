@@ -14,7 +14,7 @@ package org.eclipse.kapua.service.authorization.shiro;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
@@ -97,7 +97,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
             AccountChildrenFinder accountChildrenFinder
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
-                new ResourceLimitedServiceConfigurationManagerBase(
+                new ResourceLimitedServiceConfigurationManagerImpl(
                         RoleService.class.getName(),
                         AuthorizationDomains.ROLE_DOMAIN,
                         new EntityManagerSession(authorizationEntityManagerFactory),
@@ -112,8 +112,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
                                 authorizationService,
                                 permissionFactory,
                                 new EntityManagerSession(authorizationEntityManagerFactory)
-                        )) {
-                });
+                        )));
     }
 
     @Provides
@@ -127,7 +126,7 @@ public class AuthorizationModule extends AbstractKapuaModule {
             AccountChildrenFinder accountChildrenFinder
     ) {
         return new ServiceConfigurationManagerCachingWrapper(
-                new ResourceLimitedServiceConfigurationManagerBase(
+                new ResourceLimitedServiceConfigurationManagerImpl(
                         GroupService.class.getName(),
                         AuthorizationDomains.GROUP_DOMAIN,
                         new EntityManagerSession(authorizationEntityManagerFactory),
@@ -142,7 +141,6 @@ public class AuthorizationModule extends AbstractKapuaModule {
                                 authorizationService,
                                 permissionFactory,
                                 new EntityManagerSession(authorizationEntityManagerFactory)
-                        )) {
-                });
+                        )));
     }
 }
