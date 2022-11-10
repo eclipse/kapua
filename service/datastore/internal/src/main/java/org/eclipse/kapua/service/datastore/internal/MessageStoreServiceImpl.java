@@ -57,7 +57,6 @@ import java.util.UUID;
  */
 @Singleton
 public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implements MessageStoreService {
-
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceImpl.class);
 
     //TODO inject!!!
@@ -69,6 +68,7 @@ public class MessageStoreServiceImpl extends KapuaConfigurableServiceBase implem
     protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
     protected static final Integer MAX_LIMIT_VALUE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.MAX_LIMIT_VALUE);
     protected final MessageStoreFacade messageStoreFacade;
+    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Constructor.
