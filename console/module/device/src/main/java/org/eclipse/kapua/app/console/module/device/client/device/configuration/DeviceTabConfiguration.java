@@ -21,18 +21,24 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.IconSet;
 import org.eclipse.kapua.app.console.module.api.client.resources.icons.KapuaIcon;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.KapuaTabItem;
 import org.eclipse.kapua.app.console.module.api.client.ui.tab.TabItem;
+import org.eclipse.kapua.app.console.module.api.client.util.FailureHandler;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.device.client.messages.ConsoleDeviceMessages;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.permission.DeviceManagementSessionPermission;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementService;
+import org.eclipse.kapua.app.console.module.device.shared.service.GwtDeviceManagementServiceAsync;
 
 public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
 
     private static final ConsoleDeviceMessages MSGS = GWT.create(ConsoleDeviceMessages.class);
+
+    private static final GwtDeviceManagementServiceAsync GWT_DEVICE_MANAGEMENT_SERVICE = GWT.create(GwtDeviceManagementService.class);
 
     private TabPanel tabsPanel;
     private TabItem tabComponents;
@@ -43,8 +49,10 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
 
     public DeviceTabConfiguration(GwtSession currentSession) {
         super(currentSession, MSGS.tabConfiguration(), new KapuaIcon(IconSet.WRENCH));
+
         configComponents = new DeviceConfigComponents(currentSession, this);
         configSnapshots = new DeviceConfigSnapshots(currentSession, this);
+
         setEnabled(false);
         getHeader().setVisible(false);
     }
@@ -52,13 +60,33 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
     @Override
     public void setEntity(GwtDevice gwtDevice) {
         super.setEntity(gwtDevice);
+
         if (gwtDevice != null) {
             setEnabled(gwtDevice.isOnline() && currentSession.hasPermission(DeviceManagementSessionPermission.read()));
             getHeader().setVisible(gwtDevice.hasApplication(GwtDevice.GwtDeviceApplication.APP_CONFIGURATION));
+            setText(MSGS.tabConfiguration());
+
+            if (!gwtDevice.isOnline()) {
+                GWT_DEVICE_MANAGEMENT_SERVICE.isStoreServiceEnabled(gwtDevice.getScopeId(), gwtDevice.getId(), new AsyncCallback<Boolean>() {
+                    @Override
+                    public void onFailure(Throwable t) {
+                        FailureHandler.handle(t);
+                    }
+
+                    @Override
+                    public void onSuccess(Boolean enabled) {
+                        if (enabled) {
+                            setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.read()));
+                            setText(MSGS.tabConfiguration() + " (Offline)");
+                        }
+                    }
+                });
+            }
         } else {
             setEnabled(false);
             getHeader().setVisible(false);
         }
+
         doRefresh();
     }
 
@@ -74,9 +102,14 @@ public class DeviceTabConfiguration extends KapuaTabItem<GwtDevice> {
         } else if (tabsPanel.getSelectedItem() == tabSnapshots) {
             configSnapshots.refresh();
         }
+
         if (selectedEntity != null) {
+            // Configurations
             configComponents.setDevice(selectedEntity);
+
+            // Snapshot
             configSnapshots.setDevice(selectedEntity);
+            tabSnapshots.setEnabled(selectedEntity.isOnline());
         }
     }
 

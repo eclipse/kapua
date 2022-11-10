@@ -284,19 +284,24 @@
                 <!-- TODO EXT-CAMEL only for test remove when jobs will be defined in their own container -->
                 <include>${pom.groupId}:kapua-device-management-job-api</include>
                 <include>${pom.groupId}:kapua-device-management-job-internal</include>
+                <include>${pom.groupId}:kapua-device-management-asset-api</include>
+                <include>${pom.groupId}:kapua-device-management-asset-internal</include>
+                <include>${pom.groupId}:kapua-device-management-asset-store-api</include>
+                <include>${pom.groupId}:kapua-device-management-asset-store-dummy</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-api</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-internal</include>
                 <include>${pom.groupId}:kapua-device-management-command-api</include>
                 <include>${pom.groupId}:kapua-device-management-command-internal</include>
                 <include>${pom.groupId}:kapua-device-management-command-job</include>
-                <include>${pom.groupId}:kapua-device-management-asset-api</include>
-                <include>${pom.groupId}:kapua-device-management-asset-internal</include>
                 <include>${pom.groupId}:kapua-device-management-bundle-api</include>
                 <include>${pom.groupId}:kapua-device-management-bundle-internal</include>
                 <include>${pom.groupId}:kapua-device-management-command-api</include>
                 <include>${pom.groupId}:kapua-device-management-command-internal</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-api</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-internal</include>
+                <include>${pom.groupId}:kapua-device-management-configuration-store-api</include>
+                <include>${pom.groupId}:kapua-device-management-configuration-store-dummy</include>
+                <include>${pom.groupId}:kapua-device-management-configuration-message-api</include>
                 <include>${pom.groupId}:kapua-device-management-packages-api</include>
                 <include>${pom.groupId}:kapua-device-management-packages-internal</include>
                 <include>${pom.groupId}:kapua-job-api</include>

@@ -22,12 +22,8 @@
         <version>2.0.0-SNAPSHOT</version>
     </parent>
 
-    <packaging>pom</packaging>
     <artifactId>kapua-assembly-broker</artifactId>
-
-    <properties>
-        <jbatch.version>1.0.2</jbatch.version>
-    </properties>
+    <packaging>pom</packaging>
 
     <dependencies>
         <dependency>

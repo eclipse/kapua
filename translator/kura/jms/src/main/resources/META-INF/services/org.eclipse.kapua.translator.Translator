@@ -1,8 +1,9 @@
-org.eclipse.kapua.translator.jms.kura.TranslatorDataJmsKura
-org.eclipse.kapua.translator.jms.kura.TranslatorLifeAppsJmsKura
-org.eclipse.kapua.translator.jms.kura.TranslatorLifeBirthJmsKura
-org.eclipse.kapua.translator.jms.kura.TranslatorLifeDisconnectJmsKura
-org.eclipse.kapua.translator.jms.kura.TranslatorLifeMissingJmsKura
-org.eclipse.kapua.translator.jms.kura.TranslatorLifeNotifyJmsKura
+org.eclipse.kapua.translator.jms.kura.data.TranslatorDataJmsKura
+org.eclipse.kapua.translator.jms.kura.event.TranslatorEventConfigurationManagementJmsKura
+org.eclipse.kapua.translator.jms.kura.lifecycle.TranslatorLifeAppsJmsKura
+org.eclipse.kapua.translator.jms.kura.lifecycle.TranslatorLifeBirthJmsKura
+org.eclipse.kapua.translator.jms.kura.lifecycle.TranslatorLifeDisconnectJmsKura
+org.eclipse.kapua.translator.jms.kura.lifecycle.TranslatorLifeMissingJmsKura
+org.eclipse.kapua.translator.jms.kura.notify.TranslatorLifeNotifyJmsKura
 
-org.eclipse.kapua.translator.kura.jms.TranslatorDataKuraJms
+org.eclipse.kapua.translator.kura.jms.data.TranslatorDataKuraJms

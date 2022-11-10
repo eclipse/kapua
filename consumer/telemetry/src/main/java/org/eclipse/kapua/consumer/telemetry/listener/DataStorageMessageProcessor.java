@@ -22,8 +22,10 @@ import org.eclipse.kapua.commons.metric.MetricServiceFactory;
 import org.eclipse.kapua.commons.metric.MetricsService;
 import org.eclipse.kapua.consumer.commons.listener.AbstractProcessor;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.device.data.KapuaDataMessage;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.internal.mediator.DatastoreCommunicationException;
+import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +40,8 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
     private static final Logger LOG = LoggerFactory.getLogger(DataStorageMessageProcessor.class);
 
     private final MessageStoreService messageStoreService = KapuaLocator.getInstance().getService(MessageStoreService.class);
+
+    private final DeviceAssetStoreService deviceAssetStoreService = KapuaLocator.getInstance().getService(DeviceAssetStoreService.class);
 
     // queues counters
     private final Counter metricQueueCommunicationErrorCount;
@@ -67,6 +71,13 @@ public class DataStorageMessageProcessor extends AbstractProcessor<CamelKapuaMes
         } catch (DatastoreCommunicationException e) {
             message.setDatastoreId(e.getUuid());
             throw e;
+        }
+
+        // Update asset values in AssetStoreService
+        if (message.getMessage().getChannel().toString().startsWith("W1/A1")) {
+            deviceAssetStoreService.storeAssetValues((KapuaDataMessage) message.getMessage());
+        } else {
+            LOG.debug("This message did not matched W1/A1. Channel was: {}", message.getMessage().getChannel());
         }
     }
 

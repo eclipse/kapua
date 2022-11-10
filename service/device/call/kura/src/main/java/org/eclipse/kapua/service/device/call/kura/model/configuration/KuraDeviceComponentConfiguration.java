@@ -12,19 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.configuration;
 
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import org.eclipse.kapua.commons.configuration.metatype.TocdImpl;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+import org.eclipse.kapua.service.device.call.kura.model.configuration.xml.KuraXmlConfigPropertiesAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.eclipse.kapua.commons.configuration.metatype.TocdImpl;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
-import org.eclipse.kapua.service.device.call.kura.model.configuration.xml.KuraXmlConfigPropertiesAdapter;
+import java.util.Map;
 
 /**
  * Describes the configuration of an OSGi Component.<br>
@@ -34,9 +35,8 @@ import org.eclipse.kapua.service.device.call.kura.model.configuration.xml.KuraXm
  * Instead it returns the raw ObjectClassDefintion as parsed from the MetaType Information XML resource associated to this Component.
  *
  * @since 1.0
- *
  */
-@XmlRootElement(name = "configuration")
+@JsonRootName("componentConfiguration")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class KuraDeviceComponentConfiguration {
 
@@ -47,6 +47,7 @@ public class KuraDeviceComponentConfiguration {
      * Component Descriptor XML file; at runtime, the same value is also available
      * in the component.name and in the service.pid attributes of the Component Configuration.
      */
+    @JsonProperty("pid")
     @XmlAttribute(name = "pid")
     private String componentId;
 
@@ -54,12 +55,14 @@ public class KuraDeviceComponentConfiguration {
      * The raw ObjectClassDefinition as parsed from the MetaType
      * Information XML resource associated to this Component.
      */
+    @JsonIgnore
     @XmlElementRef(type = KapuaTocd.class)
     private TocdImpl definition;
 
     /**
      * The Dictionary of properties currently used by this component.
      */
+    @JsonIgnore
     @XmlElement(name = "properties")
     @XmlJavaTypeAdapter(KuraXmlConfigPropertiesAdapter.class)
     private Map<String, Object> properties;

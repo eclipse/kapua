@@ -15,7 +15,6 @@ package org.eclipse.kapua.service.datastore.internal;
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Timer;
 import com.codahale.metrics.Timer.Context;
-
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
@@ -200,9 +199,9 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
         } catch (Exception e) {
             logException(e);
             throw new DatastoreException(
-                KapuaErrorCodes.INTERNAL_ERROR,
-                e,
-                e.getCause().getMessage() != null ? e.getCause().getMessage() : e.getMessage()
+                    KapuaErrorCodes.INTERNAL_ERROR,
+                    e,
+                    e.getCause().getMessage() != null ? e.getCause().getMessage() : e.getMessage()
             );
         }
     }
@@ -246,7 +245,7 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
     }
 
     @Override
-    protected boolean isServiceEnabled(KapuaId scopeId) {
+    public boolean isServiceEnabled(KapuaId scopeId) {
         return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
     }
 

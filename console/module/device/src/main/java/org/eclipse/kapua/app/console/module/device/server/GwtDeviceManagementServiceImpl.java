@@ -28,11 +28,13 @@ import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigParameter.GwtConfigParameterType;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
+import org.eclipse.kapua.app.console.module.api.shared.util.GwtKapuaCommonsModelConverter;
 import org.eclipse.kapua.app.console.module.device.shared.model.GwtDevice;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.bundles.GwtBundle;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.bundles.GwtBundleInfo;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.command.GwtDeviceCommandInput;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.command.GwtDeviceCommandOutput;
+import org.eclipse.kapua.app.console.module.device.shared.model.management.configurations.GwtDeviceConfigurationStoreSettings;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.configurations.GwtSnapshot;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.packages.GwtDeploymentPackage;
 import org.eclipse.kapua.app.console.module.device.shared.model.management.packages.GwtPackageDownloadOperation;
@@ -59,6 +61,10 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceComponent
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService;
+import org.eclipse.kapua.service.device.management.configuration.store.DeviceConfigurationStoreFactory;
+import org.eclipse.kapua.service.device.management.configuration.store.DeviceConfigurationStoreService;
+import org.eclipse.kapua.service.device.management.configuration.store.settings.DeviceConfigurationStoreEnablementPolicy;
+import org.eclipse.kapua.service.device.management.configuration.store.settings.DeviceConfigurationStoreSettings;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageFactory;
 import org.eclipse.kapua.service.device.management.packages.DevicePackageManagementService;
 import org.eclipse.kapua.service.device.management.packages.model.DevicePackage;
@@ -120,6 +126,10 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
 
     private static final DeviceConfigurationManagementService CONFIGURATION_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceConfigurationManagementService.class);
     private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = LOCATOR.getFactory(DeviceConfigurationFactory.class);
+
+    private static final DeviceConfigurationStoreService DEVICE_CONFIGURATION_STORE_SERVICE = LOCATOR.getService(DeviceConfigurationStoreService.class);
+
+    private static final DeviceConfigurationStoreFactory DEVICE_CONFIGURATION_STORE_FACTORY = LOCATOR.getFactory(DeviceConfigurationStoreFactory.class);
 
     private static final DevicePackageManagementService PACKAGE_MANAGEMENT_SERVICE = LOCATOR.getService(DevicePackageManagementService.class);
     private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
@@ -265,6 +275,7 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
     //
     // Configurations
     //
+
     @Override
     public List<GwtConfigComponent> findDeviceConfigurations(GwtDevice device)
             throws GwtKapuaException {
@@ -442,6 +453,57 @@ public class GwtDeviceManagementServiceImpl extends KapuaRemoteServiceServlet im
             // to give the time to the device to apply the received
             // configuration
             Thread.sleep(1000);
+        } catch (Throwable t) {
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
+        }
+    }
+
+    //
+    // Configuration Store Settings
+    // 
+
+    public boolean isStoreServiceEnabled(String scopeIdString, String deviceIdString) throws GwtKapuaException {
+        try {
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+            KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
+
+            return DEVICE_CONFIGURATION_STORE_SERVICE.isServiceEnabled(scopeId) && DEVICE_CONFIGURATION_STORE_SERVICE.isApplicationEnabled(scopeId, deviceId);
+        } catch (Throwable t) {
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
+        }
+    }
+
+    @Override
+    public GwtDeviceConfigurationStoreSettings getApplicationSettings(String scopeIdString, String deviceIdString) throws GwtKapuaException {
+        try {
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+            KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
+
+            DeviceConfigurationStoreSettings deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_SERVICE.getApplicationSettings(scopeId, deviceId);
+
+            GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings = new GwtDeviceConfigurationStoreSettings();
+            gwtDeviceConfigurationStoreSettings.setStoreEnablementPolicy(GwtDeviceConfigurationStoreSettings.GwtDeviceConfigurationStoreEnablementPolicy.valueOf(deviceConfigurationStoreSettings.getEnablementPolicy().name()));
+
+            return gwtDeviceConfigurationStoreSettings;
+        } catch (Throwable t) {
+            throw KapuaExceptionHandler.buildExceptionFromError(t);
+        }
+    }
+
+    @Override
+    public void setApplicationSettings(GwtXSRFToken xsrfToken, String scopeIdString, String deviceIdString, GwtDeviceConfigurationStoreSettings gwtDeviceConfigurationStoreSettings) throws GwtKapuaException {
+        checkXSRFToken(xsrfToken);
+
+        try {
+            KapuaId scopeId = GwtKapuaCommonsModelConverter.convertKapuaId(scopeIdString);
+            KapuaId deviceId = GwtKapuaCommonsModelConverter.convertKapuaId(deviceIdString);
+
+            DeviceConfigurationStoreSettings deviceConfigurationStoreSettings = DEVICE_CONFIGURATION_STORE_FACTORY.newDeviceConfigurationStoreSettings();
+            deviceConfigurationStoreSettings.setScopeId(scopeId);
+            deviceConfigurationStoreSettings.setDeviceId(deviceId);
+            deviceConfigurationStoreSettings.setEnablementPolicy(DeviceConfigurationStoreEnablementPolicy.valueOf(gwtDeviceConfigurationStoreSettings.getStoreEnablementPolicy()));
+
+            DEVICE_CONFIGURATION_STORE_SERVICE.setApplicationSettings(scopeId, deviceId, deviceConfigurationStoreSettings);
         } catch (Throwable t) {
             throw KapuaExceptionHandler.buildExceptionFromError(t);
         }
