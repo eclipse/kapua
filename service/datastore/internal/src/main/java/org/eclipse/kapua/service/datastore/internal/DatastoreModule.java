@@ -45,4 +45,24 @@ public class DatastoreModule extends AbstractKapuaModule {
         bind(MetricInfoFactory.class).to(MetricInfoFactoryImpl.class);
         bind(MetricInfoRegistryService.class).to(MetricInfoRegistryServiceImpl.class);
     }
+
+
+    @Provides
+    @Named("MessageStoreServiceConfigurationManager")
+    ServiceConfigurationManager messageStoreServiceConfigurationManager(
+            DatastoreEntityManagerFactory entityManagerFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            RootUserTester rootUserTester
+    ) {
+        return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerBase(
+                MessageStoreService.class.getName(),
+                DatastoreDomains.DATASTORE_DOMAIN,
+                new EntityManagerSession(entityManagerFactory),
+                permissionFactory,
+                authorizationService,
+                rootUserTester
+        ) {
+        });
+    }
 }

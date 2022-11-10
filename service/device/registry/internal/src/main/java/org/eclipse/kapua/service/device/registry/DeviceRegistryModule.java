@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurati
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
@@ -72,14 +73,14 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             RootUserTester rootUserTester) {
-        return new ServiceConfigurationManagerBase(
+        return new ServiceConfigurationManagerCachingWrapper(new ServiceConfigurationManagerBase(
                 DeviceConnectionService.class.getName(),
                 DeviceDomains.DEVICE_CONNECTION_DOMAIN,
                 new EntityManagerSession(deviceEntityManagerFactory),
                 permissionFactory,
                 authorizationService,
                 rootUserTester) {
-        };
+        });
     }
 
 
@@ -93,22 +94,23 @@ public class DeviceRegistryModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder
     ) {
-        return new ResourceLimitedServiceConfigurationManagerBase(
-                DeviceRegistryService.class.getName(),
-                DeviceDomains.DEVICE_DOMAIN,
-                new EntityManagerSession(deviceEntityManagerFactory),
-                permissionFactory,
-                authorizationService,
-                rootUserTester,
-                accountChildrenFinder,
-                new UsedEntitiesCounterImpl(
-                        factory,
+        return new ServiceConfigurationManagerCachingWrapper(
+                new ResourceLimitedServiceConfigurationManagerBase(
+                        DeviceRegistryService.class.getName(),
                         DeviceDomains.DEVICE_DOMAIN,
-                        DeviceDAO::count,
-                        authorizationService,
+                        new EntityManagerSession(deviceEntityManagerFactory),
                         permissionFactory,
-                        new EntityManagerSession(deviceEntityManagerFactory))
-        ) {
-        };
+                        authorizationService,
+                        rootUserTester,
+                        accountChildrenFinder,
+                        new UsedEntitiesCounterImpl(
+                                factory,
+                                DeviceDomains.DEVICE_DOMAIN,
+                                DeviceDAO::count,
+                                authorizationService,
+                                permissionFactory,
+                                new EntityManagerSession(deviceEntityManagerFactory))
+                ) {
+                });
     }
 }

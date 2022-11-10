@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
@@ -45,23 +46,23 @@ public class TagModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder
     ) {
-        return new ResourceLimitedServiceConfigurationManagerBase(
-                TagService.class.getName(),
-                TagDomains.TAG_DOMAIN,
-                new EntityManagerSession(entityManagerFactory),
-                permissionFactory,
-                authorizationService,
-                rootUserTester,
-                accountChildrenFinder,
-                new UsedEntitiesCounterImpl(
-                        factory,
+        return new ServiceConfigurationManagerCachingWrapper(
+                new ResourceLimitedServiceConfigurationManagerBase(
+                        TagService.class.getName(),
                         TagDomains.TAG_DOMAIN,
-                        TagDAO::count,
-                        authorizationService,
+                        new EntityManagerSession(entityManagerFactory),
                         permissionFactory,
-                        new EntityManagerSession(entityManagerFactory)
-                )) {
-
-        };
+                        authorizationService,
+                        rootUserTester,
+                        accountChildrenFinder,
+                        new UsedEntitiesCounterImpl(
+                                factory,
+                                TagDomains.TAG_DOMAIN,
+                                TagDAO::count,
+                                authorizationService,
+                                permissionFactory,
+                                new EntityManagerSession(entityManagerFactory)
+                        )) {
+                });
     }
 }

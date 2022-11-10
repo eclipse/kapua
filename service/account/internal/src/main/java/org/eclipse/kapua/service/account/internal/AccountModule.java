@@ -18,6 +18,7 @@ import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
@@ -54,22 +55,23 @@ public class AccountModule extends AbstractKapuaModule implements Module {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder
     ) {
-        return new ResourceLimitedServiceConfigurationManagerBase(
-                AccountService.class.getName(),
-                AccountDomains.ACCOUNT_DOMAIN,
-                new EntityManagerSession(entityManagerFactory),
-                permissionFactory,
-                authorizationService,
-                rootUserTester,
-                accountChildrenFinder,
-                new UsedEntitiesCounterImpl(
-                        factory,
+        return new ServiceConfigurationManagerCachingWrapper(
+                new ResourceLimitedServiceConfigurationManagerBase(
+                        AccountService.class.getName(),
                         AccountDomains.ACCOUNT_DOMAIN,
-                        AccountDAO::count,
-                        authorizationService,
+                        new EntityManagerSession(entityManagerFactory),
                         permissionFactory,
-                        new EntityManagerSession(entityManagerFactory))
-        ) {
-        };
+                        authorizationService,
+                        rootUserTester,
+                        accountChildrenFinder,
+                        new UsedEntitiesCounterImpl(
+                                factory,
+                                AccountDomains.ACCOUNT_DOMAIN,
+                                AccountDAO::count,
+                                authorizationService,
+                                permissionFactory,
+                                new EntityManagerSession(entityManagerFactory))
+                ) {
+                });
     }
 }

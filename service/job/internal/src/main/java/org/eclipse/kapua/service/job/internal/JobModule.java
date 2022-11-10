@@ -17,6 +17,7 @@ import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.configuration.UsedEntitiesCounterImpl;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
@@ -45,22 +46,23 @@ public class JobModule extends AbstractKapuaModule {
             RootUserTester rootUserTester,
             AccountChildrenFinder accountChildrenFinder
     ) {
-        return new ResourceLimitedServiceConfigurationManagerBase(
-                JobService.class.getName(),
-                JobDomains.JOB_DOMAIN,
-                new EntityManagerSession(jobEntityManagerFactory),
-                permissionFactory,
-                authorizationService,
-                rootUserTester,
-                accountChildrenFinder,
-                new UsedEntitiesCounterImpl(
-                        factory,
+        return new ServiceConfigurationManagerCachingWrapper(
+                new ResourceLimitedServiceConfigurationManagerBase(
+                        JobService.class.getName(),
                         JobDomains.JOB_DOMAIN,
-                        JobDAO::count,
-                        authorizationService,
+                        new EntityManagerSession(jobEntityManagerFactory),
                         permissionFactory,
-                        new EntityManagerSession(jobEntityManagerFactory)
-                )) {
-        };
+                        authorizationService,
+                        rootUserTester,
+                        accountChildrenFinder,
+                        new UsedEntitiesCounterImpl(
+                                factory,
+                                JobDomains.JOB_DOMAIN,
+                                JobDAO::count,
+                                authorizationService,
+                                permissionFactory,
+                                new EntityManagerSession(jobEntityManagerFactory)
+                        )) {
+                });
     }
 }
