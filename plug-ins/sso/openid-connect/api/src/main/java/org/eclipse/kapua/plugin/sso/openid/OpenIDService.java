@@ -28,7 +28,7 @@ public interface OpenIDService {
     /**
      * Check if the service is enabled.
      *
-     * @return <tt>true</tt> if the service is enabled, <tt>false</tt> otherwise.
+     * @return <code>true</code> if the service is enabled, <code>false</code> otherwise.
      * @since 1.0.0
      */
     boolean isEnabled();

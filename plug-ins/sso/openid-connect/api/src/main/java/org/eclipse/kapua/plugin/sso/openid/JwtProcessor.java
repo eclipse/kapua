@@ -25,7 +25,7 @@ public interface JwtProcessor extends AutoCloseable {
      * Validates the JWT passed as parameter.
      *
      * @param jwt the String representing the JWT.
-     * @return <tt>true</tt> if the validation succeeds, <tt>false</tt> otherwise.
+     * @return <code>true</code> if the validation succeeds, <code>false</code> otherwise.
      * @throws OpenIDJwtException if the validation fails.
      * @since 1.2.0
      */
