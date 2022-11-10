@@ -12,20 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import org.apache.commons.lang3.tuple.Triple;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaIllegalNullArgumentException;
-import org.eclipse.kapua.commons.cache.LocalCache;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.jpa.EntityManagerSession;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.service.internal.KapuaServiceDisabledException;
 import org.eclipse.kapua.commons.service.internal.ServiceDAO;
 import org.eclipse.kapua.commons.service.internal.cache.EntityCache;
-import org.eclipse.kapua.commons.setting.system.SystemSetting;
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.commons.util.StringUtil;
@@ -38,7 +34,6 @@ import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.KapuaService;
-import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -116,30 +111,30 @@ public abstract class ServiceConfigurationManagerBase implements ServiceConfigur
     }
 
     private static final EntityCache PRIVATE_ENTITY_CACHE = AbstractKapuaConfigurableServiceCache.getInstance().createCache();
-    private static final int LOCAL_CACHE_SIZE_MAX = SystemSetting.getInstance().getInt(SystemSettingKey.TMETADATA_LOCAL_CACHE_SIZE_MAXIMUM, 100);
-    /**
-     * This cache is to hold the {@link KapuaTocd}s that are read from the metatype files.
-     * <p>
-     * The key is a {@link Triple} composed by:
-     * <ul>
-     *     <li>The {@link KapuaConfigurableService} PID</li>
-     *     <li>The ID of the {@link Account} for the current request</li>
-     *     <li>A {@link Boolean} flag indicating whether disabled properties are excluded from the AD or not</li>
-     * </ul>
-     *
-     * @since 1.2.0
-     */
-    private static final LocalCache<Triple<String, KapuaId, Boolean>, KapuaTocd> KAPUA_TOCD_LOCAL_CACHE = new LocalCache<>(LOCAL_CACHE_SIZE_MAX, null);
-
-    /**
-     * This cache only holds the {@link Boolean} value {@literal True} if the {@link KapuaTocd} has been already read from the file
-     * at least once, regardless of the value. With this we can know when a read from {@code KAPUA_TOCD_LOCAL_CACHE}
-     * returns {@literal null} because of the requested key is not present, and when the key is present but its actual value
-     * is {@literal null}.
-     *
-     * @since 1.2.0
-     */
-    private static final LocalCache<Triple<String, KapuaId, Boolean>, Boolean> KAPUA_TOCD_EMPTY_LOCAL_CACHE = new LocalCache<>(LOCAL_CACHE_SIZE_MAX, false);
+//    private static final int LOCAL_CACHE_SIZE_MAX = SystemSetting.getInstance().getInt(SystemSettingKey.TMETADATA_LOCAL_CACHE_SIZE_MAXIMUM, 100);
+//    /**
+//     * This cache is to hold the {@link KapuaTocd}s that are read from the metatype files.
+//     * <p>
+//     * The key is a {@link Triple} composed by:
+//     * <ul>
+//     *     <li>The {@link KapuaConfigurableService} PID</li>
+//     *     <li>The ID of the {@link Account} for the current request</li>
+//     *     <li>A {@link Boolean} flag indicating whether disabled properties are excluded from the AD or not</li>
+//     * </ul>
+//     *
+//     * @since 1.2.0
+//     */
+//    private static final LocalCache<Triple<String, KapuaId, Boolean>, KapuaTocd> KAPUA_TOCD_LOCAL_CACHE = new LocalCache<>(LOCAL_CACHE_SIZE_MAX, null);
+//
+//    /**
+//     * This cache only holds the {@link Boolean} value {@literal True} if the {@link KapuaTocd} has been already read from the file
+//     * at least once, regardless of the value. With this we can know when a read from {@code KAPUA_TOCD_LOCAL_CACHE}
+//     * returns {@literal null} because of the requested key is not present, and when the key is present but its actual value
+//     * is {@literal null}.
+//     *
+//     * @since 1.2.0
+//     */
+//    private static final LocalCache<Triple<String, KapuaId, Boolean>, Boolean> KAPUA_TOCD_EMPTY_LOCAL_CACHE = new LocalCache<>(LOCAL_CACHE_SIZE_MAX, false);
 
 
     protected final String pid;
@@ -486,26 +481,8 @@ public abstract class ServiceConfigurationManagerBase implements ServiceConfigur
         authorizationService.checkPermission(permissionFactory.newPermission(domain, Actions.read, scopeId));
 
         // Get the Tocd
-        // Keep distinct values for service PID, Scope ID and disabled properties included/excluded from AD
-        Triple<String, KapuaId, Boolean> cacheKey = Triple.of(pid, scopeId, excludeDisabled);
         try {
-            // Check if the OCD is already in cache, but not in the "empty" cache
-            KapuaTocd tocd;
-            tocd = KAPUA_TOCD_LOCAL_CACHE.get(cacheKey);
-            if (tocd == null && !KAPUA_TOCD_EMPTY_LOCAL_CACHE.get(cacheKey)) {
-                // If not, read metadata and process it
-                tocd = processMetadata(readMetadata(pid), scopeId, excludeDisabled);
-                // If null, put it in the "empty" ocd cache, else put it in the "standard" cache
-                if (tocd != null) {
-                    // If the value is not null, put it in "standard" cache and remove the entry from the "empty" cache if present
-                    KAPUA_TOCD_LOCAL_CACHE.put(cacheKey, tocd);
-                    KAPUA_TOCD_EMPTY_LOCAL_CACHE.remove(cacheKey);
-                } else {
-                    // If the value is null, just remember we already read it from file at least once
-                    KAPUA_TOCD_EMPTY_LOCAL_CACHE.put(cacheKey, true);
-                }
-            }
-            return tocd;
+            return processMetadata(readMetadata(pid), scopeId, excludeDisabled);
         } catch (Exception e) {
             throw KapuaException.internalError(e);
         }

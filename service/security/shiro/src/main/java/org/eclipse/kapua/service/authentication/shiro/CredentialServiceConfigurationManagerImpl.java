@@ -125,6 +125,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class CredentialServiceConfigurationManagerImpl extends ServiceConfigurationManagerBase implements CredentialServiceConfigurationManager {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceConfigurationManagerImpl.class);
     private final int systemMinimumPasswordLength;
 
