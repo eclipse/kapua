@@ -12,17 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.asset.store.dummy;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreFactory;
 import org.eclipse.kapua.service.device.management.asset.store.settings.DeviceAssetStoreSettings;
-
-import javax.inject.Singleton;
 
 /**
  * {@link DeviceAssetStoreFactory} dummy implementation.
  *
  * @since 2.0.0
  */
-@Singleton
+@KapuaProvider
 public class DeviceAssetStoreFactoryDummy implements DeviceAssetStoreFactory {
 
     @Override

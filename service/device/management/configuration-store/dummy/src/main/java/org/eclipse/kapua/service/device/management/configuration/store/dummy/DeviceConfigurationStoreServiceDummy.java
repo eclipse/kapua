@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.management.configuration.store.dummy;
 
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
@@ -19,7 +20,6 @@ import org.eclipse.kapua.service.device.management.configuration.DeviceConfigura
 import org.eclipse.kapua.service.device.management.configuration.store.DeviceConfigurationStoreService;
 import org.eclipse.kapua.service.device.management.configuration.store.settings.DeviceConfigurationStoreSettings;
 
-import javax.inject.Singleton;
 import java.util.Map;
 
 /**
@@ -27,7 +27,7 @@ import java.util.Map;
  *
  * @since 2.0.0
  */
-@Singleton
+@KapuaProvider
 public class DeviceConfigurationStoreServiceDummy implements DeviceConfigurationStoreService {
 
     @Override

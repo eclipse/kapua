@@ -63,6 +63,8 @@
 
         <api>org.eclipse.kapua.service.device.management.asset.DeviceAssetManagementService</api>
         <api>org.eclipse.kapua.service.device.management.asset.DeviceAssetFactory</api>
+        <api>org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService</api>
+        <api>org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreFactory</api>
 
         <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService</api>
         <api>org.eclipse.kapua.service.device.management.bundle.DeviceBundleFactory</api>
@@ -72,6 +74,8 @@
 
         <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationManagementService</api>
         <api>org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory</api>
+        <api>org.eclipse.kapua.service.device.management.configuration.store.DeviceConfigurationStoreService</api>
+        <api>org.eclipse.kapua.service.device.management.configuration.store.DeviceConfigurationStoreFactory</api>
 
         <api>org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationService</api>
         <api>org.eclipse.kapua.service.device.management.job.JobDeviceManagementOperationFactory</api>
