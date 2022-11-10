@@ -14,7 +14,6 @@ package org.eclipse.kapua.service.user.internal;
 
 import com.google.inject.Provides;
 import org.eclipse.kapua.commons.configuration.AccountChildrenFinder;
-import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerBase;
 import org.eclipse.kapua.commons.configuration.ResourceLimitedServiceConfigurationManagerImpl;
 import org.eclipse.kapua.commons.configuration.RootUserTester;
 import org.eclipse.kapua.commons.configuration.RootUserTesterImpl;
@@ -71,32 +70,4 @@ public class UserModule extends AbstractKapuaModule {
                 ));
     }
 
-    @Provides
-    @Named("UserServiceConfigurationManager")
-    ServiceConfigurationManager userServiceConfigurationManager(
-            UserEntityManagerFactory userEntityManagerFactory,
-            UserFactory userFactory,
-            PermissionFactory permissionFactory,
-            AuthorizationService authorizationService,
-            RootUserTester rootUserTester,
-            AccountChildrenFinder accountChildrenFinder
-    ) {
-        return new ServiceConfigurationManagerCachingWrapper(
-                new ResourceLimitedServiceConfigurationManagerBase(UserService.class.getName(),
-                        UserDomains.USER_DOMAIN,
-                        new EntityManagerSession(userEntityManagerFactory),
-                        permissionFactory,
-                        authorizationService,
-                        rootUserTester,
-                        accountChildrenFinder,
-                        new UsedEntitiesCounterImpl(
-                                userFactory,
-                                UserDomains.USER_DOMAIN,
-                                UserDAO::count,
-                                authorizationService,
-                                permissionFactory,
-                                new EntityManagerSession(userEntityManagerFactory))
-                ) {
-                });
-    }
 }
