@@ -15,11 +15,14 @@ package org.eclipse.kapua.service.datastore.internal;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
 
+import javax.inject.Singleton;
+
 /**
  * Datastore module {@link EntityManagerFactory} impleemntation
  *
  * @since 1.0.0
  */
+@Singleton
 public class DatastoreEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-datastore";
@@ -31,7 +34,7 @@ public class DatastoreEntityManagerFactory extends AbstractEntityManagerFactory 
      *
      * @since 1.0.0
      */
-    private DatastoreEntityManagerFactory() {
+    public DatastoreEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
 
@@ -40,7 +43,9 @@ public class DatastoreEntityManagerFactory extends AbstractEntityManagerFactory 
      *
      * @return The {@link EntityManagerFactory} instance.
      * @since 1.0.0
+     * @deprecated since 2.0.0 - please use public constructor
      */
+    @Deprecated
     public static DatastoreEntityManagerFactory getInstance() {
         return INSTANCE;
     }

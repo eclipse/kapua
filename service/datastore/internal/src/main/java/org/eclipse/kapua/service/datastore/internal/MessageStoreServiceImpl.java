@@ -16,11 +16,23 @@ import com.codahale.metrics.Timer.Context;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+<<<<<<< HEAD
 import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
+||||||| parent of 604c38bff3 (:ref: removed last usages of AbstractKapuaConfigurableService and derivates)
+import org.eclipse.kapua.commons.configuration.AbstractKapuaConfigurableService;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
+=======
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.metric.MetricServiceFactory;
+import org.eclipse.kapua.commons.metric.MetricsLabel;
+>>>>>>> 604c38bff3 (:ref: removed last usages of AbstractKapuaConfigurableService and derivates)
 import org.eclipse.kapua.commons.metric.MetricsService;
+import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.message.KapuaMessage;
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.AccountService;
@@ -44,7 +56,11 @@ import org.eclipse.kapua.service.storable.model.query.StorableFetchStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -53,21 +69,19 @@ import java.util.UUID;
  * @since 1.0.0
  */
 @Singleton
-public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService implements MessageStoreService {
+public class MessageStoreServiceImpl extends AbstractKapuaService implements MessageStoreService {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageStoreServiceImpl.class);
 
-    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
-    protected final AccountService accountService = LOCATOR.getService(AccountService.class);
-    protected final AuthorizationService authorizationService = LOCATOR.getService(AuthorizationService.class);
-    protected final PermissionFactory permissionFactory = LOCATOR.getFactory(PermissionFactory.class);
-    protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
-
-    protected final MessageStoreFacade messageStoreFacade;
-
     //TODO inject!!!
     private MetricsDatastore metrics;
+    protected AccountService accountService;
+    protected AuthorizationService authorizationService;
+    protected PermissionFactory permissionFactory;
+
+    protected static final Integer MAX_ENTRIES_ON_DELETE = DatastoreSettings.getInstance().getInt(DatastoreSettingsKey.CONFIG_MAX_ENTRIES_ON_DELETE);
+    protected final MessageStoreFacade messageStoreFacade;
+    private final ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Constructor.
@@ -75,17 +89,27 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
      * Initializes {@link ConfigurationProvider} and {@link MetricsService}
      *
      * @since 1.0.0
+     * @deprecated since 2.0.0 - please use {@link #MessageStoreServiceImpl(DatastoreEntityManagerFactory, PermissionFactory, AuthorizationService, AccountService, ServiceConfigurationManager)} instead. This constructor might be removed in future releases.
      */
+    @Deprecated
     public MessageStoreServiceImpl() {
-        super(MessageStoreService.class.getName(),
-                DatastoreDomains.DATASTORE_DOMAIN,
-                DatastoreEntityManagerFactory.getInstance(),
-                null,
-                null,
-                null,
-                null);
+        this(new DatastoreEntityManagerFactory(), null, null, KapuaLocator.getInstance().getService(AccountService.class), null);
+    }
+
+    @Inject
+    public MessageStoreServiceImpl(
+            DatastoreEntityManagerFactory entityManagerFactory,
+            PermissionFactory permissionFactory,
+            AuthorizationService authorizationService,
+            AccountService accountService,
+            @Named("MessageStoreServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager
+    ) {
+        super(entityManagerFactory, null);
+        this.permissionFactory = permissionFactory;
+        this.authorizationService = authorizationService;
+        this.serviceConfigurationManager = serviceConfigurationManager;
+        final ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         metrics = MetricsDatastore.getInstance();
-        ConfigurationProviderImpl configurationProvider = new ConfigurationProviderImpl(this, accountService);
         messageStoreFacade = new MessageStoreFacade(configurationProvider, DatastoreMediator.getInstance());
         DatastoreMediator.getInstance().setMessageStoreFacade(messageStoreFacade);
     }
@@ -229,13 +253,57 @@ public class MessageStoreServiceImpl extends AbstractKapuaConfigurableService im
 
     protected void checkDataAccess(KapuaId scopeId, Actions action)
             throws KapuaException {
-        Permission permission = permissionFactory.newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
-        authorizationService.checkPermission(permission);
+        Permission permission = getPermissionFactory().newPermission(DatastoreDomains.DATASTORE_DOMAIN, action, scopeId);
+        getAuthorizationService().checkPermission(permission);
     }
 
     private void logException(Exception e) {
         if (e instanceof RuntimeException) {
             logger.debug("", e);
         }
+    }
+
+    @Override
+    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
+        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
+    }
+
+    @Override
+    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
+        return serviceConfigurationManager.getConfigValues(scopeId, true);
+    }
+
+    @Override
+    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
+        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
+    }
+
+
+    /**
+     * AuthorizationService should be provided by the Locator, but in most cases when this class is instantiated through the deprecated constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link AuthorizationService} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected AuthorizationService getAuthorizationService() {
+        if (authorizationService == null) {
+            authorizationService = KapuaLocator.getInstance().getService(AuthorizationService.class);
+        }
+        return authorizationService;
+    }
+
+    /**
+     * PermissionFactory should be provided by the Locator, but in most cases when this class is instantiated through this constructor the Locator is not yet ready,
+     * therefore fetching of the required instance is demanded to this artificial getter.
+     *
+     * @return The instantiated (hopefully) {@link PermissionFactory} instance
+     */
+    //TODO: Remove as soon as deprecated constructors are removed, use field directly instead.
+    protected PermissionFactory getPermissionFactory() {
+        if (permissionFactory == null) {
+            permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
+        }
+        return permissionFactory;
     }
 }

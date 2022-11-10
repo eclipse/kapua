@@ -58,7 +58,9 @@ import java.util.Optional;
  * @param <Q> The {@link KapuaQuery} type.
  * @param <F> The {@link KapuaEntityFactory} type.
  * @since 1.0.0
+ * @deprecated since 2.0.0, in favour of separate configuration component - see {@link ServiceConfigurationManager} and implementations for more details
  */
+@Deprecated
 public abstract class AbstractKapuaConfigurableResourceLimitedService<
         E extends KapuaEntity,
         C extends KapuaEntityCreator<E>,

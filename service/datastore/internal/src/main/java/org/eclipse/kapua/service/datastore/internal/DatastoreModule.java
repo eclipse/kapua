@@ -12,15 +12,26 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal;
 
+import com.google.inject.Provides;
+import org.eclipse.kapua.commons.configuration.RootUserTester;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerBase;
+import org.eclipse.kapua.commons.configuration.ServiceConfigurationManagerCachingWrapper;
 import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.commons.jpa.EntityManagerSession;
+import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoFactory;
 import org.eclipse.kapua.service.datastore.ChannelInfoRegistryService;
 import org.eclipse.kapua.service.datastore.ClientInfoFactory;
 import org.eclipse.kapua.service.datastore.ClientInfoRegistryService;
+import org.eclipse.kapua.service.datastore.DatastoreDomains;
 import org.eclipse.kapua.service.datastore.MessageStoreFactory;
 import org.eclipse.kapua.service.datastore.MessageStoreService;
 import org.eclipse.kapua.service.datastore.MetricInfoFactory;
 import org.eclipse.kapua.service.datastore.MetricInfoRegistryService;
+
+import javax.inject.Named;
 
 public class DatastoreModule extends AbstractKapuaModule {
     @Override

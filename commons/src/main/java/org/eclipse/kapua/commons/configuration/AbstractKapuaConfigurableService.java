@@ -66,7 +66,9 @@ import java.util.stream.Collectors;
  * Base {@code abstract} {@link KapuaConfigurableService} implementation.
  *
  * @since 1.0.0
+ * @deprecated since 2.0.0, in favour of separate configuration component - see {@link ServiceConfigurationManager} and implementations for more details
  */
+@Deprecated
 public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService {
 
     private static final EntityCache PRIVATE_ENTITY_CACHE = AbstractKapuaConfigurableServiceCache.getInstance().createCache();
