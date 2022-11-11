@@ -7,28 +7,25 @@ We use `gitbook` to build the documentation.
 ## Kapua
 
 Kapua is being compiled with Maven.
-For a quick build of Kapua, for testing purposes and packaged with the web console build, we recommend the command:
-
-`mvn clean install -DskipTests=true -Pdev,console`
 
 There are 3 build options you can use, based on the need to perform the various tests, these are now reported in ascending order of building times.
 
-1. Build without tests:
+#### Build without tests
 
    `mvn clean install -DskipTests=true`
 
-2. Build executing only unit tests:
-```
-    mvn clean install -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true
-```
+#### Build executing unit tests
 
-For the next build option, considering that some integration tests require access to services deployed in a docker container, first of all, you have to launch these 2 commands in order to build and create the kapua docker images (NB: now make sure the docker daemon is running!)
+   `mvn clean install -Dcucumber.filter.tags=@env_none -DskipITs=true`
+
+In this project there are some unit tests made with junit and others with cucumber (read "QA process" for further information)
+#### Build executing unit tests and integration tests
+
+For the next build option, considering that some cucumber integration tests require access to services deployed in a docker container, first of all, you have to launch these 2 commands in order to build and create the kapua docker images (NB: now make sure the docker daemon is running!)
 
 `mvn clean install -DskipTests=true  -Pconsole,docker`
 
 Attention: if the kapua containers are already running in your environment, for example in the case of a previous building that terminated abnormally, please stop their execution before proceeding with the next build commands
-
-3. Build executing both unit tests and integration tests.
 
 We created a bash script for the combined launch of integration tests and unit tests.
 Some integration tests communicate with the broker using an alias and, therefore,
@@ -43,22 +40,6 @@ The aforementioned script is located under 'qa' folder and it's called 'RunKapua
 
 Launch it in order to build Kapua executing all the tests. Integration tests are divided by category to offer maximum error-check-granularity. 
 
-Note: there are 2 maven profiles than can be used in the building options above
-1. The "console" profile allows building the web console if needed.
-
-   Usage example, building without tests & with the web console:
-
-   `mvn clean install -DskipTests=true -Pconsole`
-
-2. The "dev" profile speeds up some building processes.
-
-   Usage example, in the scenario in which you only want to run Kapua locally for testing:
-
-   `mvn clean install -DskipTests=true -Pdev`
-
-   then, if needed, add the console profile as well:
-
-   `mvn clean install -DskipTests=true -Pdev, console`
 ## Documentation
 
 Before you can build documentation, you need to install `gitbook`

@@ -36,6 +36,41 @@ To stop Kapua, run
 
     kapua/deployment/docker/docker-undeploy.sh
 
+## Running modes
+The above-mentioned deployment script can be launched with different options that will be now explained.
+Notice that it's possible to combine this options as you wish, in this way it's possible to select the ones for all different needs.
+
+#### Dev mode
+The developer mode can be activated with the option '--dev'. Usage example:
+
+`kapua/deployment/docker/docker-deploy.sh --dev`
+
+This mode is useful for developers who want to inspect the state of the H2 DB (containing kapua entities data like devices, accounts, users and so on)
+Upon the deployment with the dev option, it's possible to open a web browser and look on the port 8181 (so, having deployed in local, you can look for http://localhost:8181/)
+A configuration panel will appear, which can be configured as shown in the image:
+
+![WebBrowserH2Sett](images/kapua-webBrowserH2Settings.png "WebBrowser H2 settings")
+
+Using the 'kapua' word as username and password.
+
+Then, it will be possible to inspect the state of the DB in the browser.
+
+As an alternative to the browser view, it's possible to use a database tools like dbeaver: https://dbeaver.io/ 
+Configurable like showed in this image:
+
+![DbeaverH2Sett](images/kapua-dbeaverH2Settings.png "Dbeaver H2 settings")
+
+#### Debug mode
+
+TODO
+
+#### Logs mode
+The logs mode can be activated with the option '--logs'. Usage example:
+
+`kapua/deployment/docker/docker-deploy.sh --logs`
+
+This mode prints the detailed logs for each container, through the launch of another script called "docker-logs.sh", situated in the same position of the one used for deploy (it can be launched independently also after the deployment of Kapua, if logs are needed)
+
 ## OpenShift
 
 OpenShift is a PaaS (Platform As A Service) platform based on Kubernetes. Kapua supports deployments

@@ -3,9 +3,9 @@
 #THIS SCRIPT IS SIMILAR TO "RUNKAPUATESTS.SH' BUT EXECUTES TESTS IN THE SAME WAY AS THE GIT ACTION CI PROCESS DOES, AKA USING THE CATEGORY TAGS
 
 #RUNS BOTH UNIT AND INTEGRATION TESTS AND FINALLY BUILDS THE PROJECT
-#FIRT, UNIT TESTS ARE LAUNCHED, IF THEY PASS INTEGRATION TESTS ARE THEN EXECUTED
+#FIRT, JUNIT TESTS ARE LAUNCHED, IF THEY PASS CUCUMBER TESTS ARE THEN EXECUTED
 
-cucumberTags=('@brokerAcl' '@tag' '@broker' '@device' '@deviceManagement' '@connection' '@datastore' '@user' '@userIntegrationBase' '@userIntegration' '@security' '@jobs' '@scheduler' '@jobsIntegrationBase' '@triggerService' '@triggerServiceIntegrationBase' '@triggerServiceIntegration' '@account' '@translator' '@jobEngineStepDefinitions' '@jobEngineStartOfflineDevice' '@jobEngineRestartOnlineDevice' '@jobEngineStartOnlineDevice' '@jobEngineRestartOfflineDevice' '@jobEngineRestartOnlineDeviceSecondPart' '@jobsIntegration' '@jobEngineServiceStop')
+cucumberTags=('@brokerAcl' '@tag' '@broker' '@device' '@deviceManagement' '@connection' '@datastore' '@user' '@userIntegrationBase' '@userIntegration' '@security' '@jobs' '@scheduler' '@jobsIntegrationBase' '@triggerService' '@triggerServiceIntegrationBase' '@triggerServiceIntegration' '@account' '@translator' '@jobEngineStepDefinitions' '@jobEngineStartOfflineDevice' '@jobEngineRestartOnlineDevice' '@jobEngineStartOnlineDevice' '@jobEngineRestartOfflineDevice' '@jobEngineRestartOnlineDeviceSecondPart' '@jobsIntegration' '@jobEngineServiceStop' '@endpoint' '@deviceRegistry' '@role' '@group')
 exitCodesTests=() #will contain exit code for each batch of tests
 
 #checks if the last build command exited normally and exits if necessary
@@ -18,7 +18,7 @@ checkErrorLastBuild() {
 
 #print in tabular form the building phases for each batch of tests
 printTestResults() {
-  printf "Unit tests passed, build launched with integration tests results:\n";
+  printf "Unit tests passed, build launched with cucumber tests results:\n";
   for i in "${!cucumberTags[@]}"
   do
     if [ "${exitCodesTests[$i]}" -ne 0 ]; then #error on this test
@@ -38,10 +38,10 @@ grep -q "127.0.0.1 message-broker" /etc/hosts || { echo "password required to ch
 
 echo "Started junit tests";
 mvn clean verify -Dcommons.settings.hotswap=true -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true;
-checkErrorLastBuild "error on junit tests. Execution terminated because it's pointless to proceed with integration tests";
+checkErrorLastBuild "error on junit tests. Execution terminated because it's pointless to proceed with cucumber tests";
 for tag in "${cucumberTags[@]}"
 do
-	echo "Started integration tests tagged as $tag";
+	echo "cucumber tests tagged as $tag";
 	bash -c 'mvn verify -Dcommons.db.schema=kapuadb -Dcommons.settings.hotswap=true -Dbroker.host=localhost -Dgroups="!org.eclipse.kapua.qa.markers.junit.JUnitTests" -Dcrypto.secret.key=kapuaTestsKey!!! -Duser.timezone=UTC -Dcucumber.filter.tags=$0' $tag;
 	exitCodesTests+=($?);
 done
