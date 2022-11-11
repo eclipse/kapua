@@ -15,6 +15,7 @@ package org.eclipse.kapua.extras.migrator.encryption.authentication;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.extras.migrator.encryption.MigratorEntityManagerFactory;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
@@ -22,14 +23,12 @@ import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionCreator;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionListResult;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
 
-import javax.inject.Singleton;
-
 /**
  * {@link MfaOptionService} implementation.
  *
  * @since 1.0.0
  */
-@Singleton
+@KapuaProvider
 public class MfaOptionMigratorServiceImpl extends AbstractKapuaService implements MfaOptionService {
 
     public MfaOptionMigratorServiceImpl() {

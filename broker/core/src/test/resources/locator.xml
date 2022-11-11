@@ -66,6 +66,9 @@
         <api>org.eclipse.kapua.service.device.call.DeviceCallFactory</api>
         <api>org.eclipse.kapua.service.device.call.DeviceMessageFactory</api>
 
+        <api>org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreService</api>
+        <api>org.eclipse.kapua.service.device.management.asset.store.DeviceAssetStoreFactory</api>
+
         <api>org.eclipse.kapua.service.device.registry.DeviceFactory</api>
         <api>org.eclipse.kapua.service.device.registry.DeviceRegistryService</api>
         <api>org.eclipse.kapua.service.device.registry.connection.DeviceConnectionFactory</api>

@@ -14,14 +14,21 @@ package org.eclipse.kapua.service.device.management.configuration.message.intern
 
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.message.KapuaPayload;
 import org.eclipse.kapua.service.device.management.commons.message.response.KapuaResponsePayloadImpl;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSetting;
 import org.eclipse.kapua.service.device.management.commons.setting.DeviceManagementSettingKey;
+import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationFactory;
+import org.eclipse.kapua.service.device.management.configuration.internal.settings.DeviceConfigurationManagementSettings;
+import org.eclipse.kapua.service.device.management.configuration.internal.settings.DeviceConfigurationManagementSettingsKeys;
 import org.eclipse.kapua.service.device.management.message.response.KapuaResponsePayload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
+import java.util.stream.Collectors;
 
 /**
  * {@link DeviceConfiguration} {@link KapuaResponsePayload} implementation.
@@ -30,8 +37,9 @@ import javax.validation.constraints.NotNull;
  */
 public class ConfigurationResponsePayload extends KapuaResponsePayloadImpl implements KapuaResponsePayload {
 
-    private static final long serialVersionUID = 3537585208524333690L;
+    private static final Logger LOG = LoggerFactory.getLogger(ConfigurationResponsePayload.class);
 
+    private static final String PAYLOAD_TO_DISPLAY_STRING_MODE = DeviceConfigurationManagementSettings.getInstance().getString(DeviceConfigurationManagementSettingsKeys.PAYLOAD_TO_DISPLAY_STRING_MODE, "NONE");
     private static final String CHAR_ENCODING = DeviceManagementSetting.getInstance().getString(DeviceManagementSettingKey.CHAR_ENCODING);
 
     private static final DeviceConfigurationFactory DEVICE_CONFIGURATION_FACTORY = KapuaLocator.getInstance().getFactory(DeviceConfigurationFactory.class);
@@ -63,4 +71,70 @@ public class ConfigurationResponsePayload extends KapuaResponsePayloadImpl imple
         String bodyString = XmlUtil.marshal(deviceConfiguration);
         setBody(bodyString.getBytes(CHAR_ENCODING));
     }
+
+    @Override
+    public String toDisplayString() {
+        try {
+            PayloadToDisplayStringMode toDisplayStringMode;
+            try {
+                toDisplayStringMode = PayloadToDisplayStringMode.valueOf(PAYLOAD_TO_DISPLAY_STRING_MODE);
+            } catch (IllegalArgumentException iae) {
+                LOG.warn("Invalid device.management.configuration.payload.toDisplayString.mode setting value {}. Please fix the configuration value. Allowed values are: NONE, DEFAULT, NUMBER_OF_COMPONENTS, LIST_OF_COMPONENTS. Defaulting to DEFAULT", PAYLOAD_TO_DISPLAY_STRING_MODE);
+                toDisplayStringMode = PayloadToDisplayStringMode.DEFAULT;
+            }
+
+            switch (toDisplayStringMode) {
+                case NONE:
+                    return "";
+                case DEFAULT:
+                    return super.toDisplayString();
+                case NUMBER_OF_COMPONENTS:
+                    return "Read " + getDeviceConfigurations().getComponentConfigurations().size() + " configuration components: " + getDeviceConfigurations().getComponentConfigurations().stream().map(DeviceComponentConfiguration::getId).sorted(String::compareTo).collect(Collectors.joining(", "));
+                case LIST_OF_COMPONENTS:
+                    return "Read configuration components: " + getDeviceConfigurations().getComponentConfigurations().stream().map(DeviceComponentConfiguration::getId).sorted(String::compareTo).collect(Collectors.joining(", "));
+            }
+        } catch (Exception e) {
+            LOG.warn("Error while invoking ConfigurationResponsePayload.toDisplayString(). Defaulting to KapuaResponsePayload.toDisplayString(). Error: {}", e.getMessage());
+        }
+
+        return super.toDisplayString();
+    }
+
+    /**
+     * Defines the way the {@link #toDisplayString()} will behave.
+     *
+     * @since 2.0.0
+     */
+    private enum PayloadToDisplayStringMode {
+
+        /**
+         * Displays nothing.
+         *
+         * @since 2.0.0
+         */
+        NONE,
+
+        /**
+         * Displays what {@link KapuaPayload#toDisplayString()} displays (only metrics currently).
+         *
+         * @since 2.0.0
+         */
+        DEFAULT,
+
+        /**
+         * Displays the number of {@link DeviceComponentConfiguration} in the {@link DeviceConfiguration}.
+         *
+         * @since 2.0.0
+         */
+        NUMBER_OF_COMPONENTS,
+
+        /**
+         * Displays the list of {@link DeviceComponentConfiguration} in the {@link DeviceConfiguration}.
+         *
+         * @since 2.0.0
+         */
+        LIST_OF_COMPONENTS,
+    }
 }
+
+

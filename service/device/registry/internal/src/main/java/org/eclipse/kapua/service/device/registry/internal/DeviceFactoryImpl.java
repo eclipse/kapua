@@ -58,16 +58,16 @@ public class DeviceFactoryImpl implements DeviceFactory {
     }
 
     @Override
+    public DeviceExtendedProperty newExtendedProperty(String groupName, String name, String value) {
+        return new DeviceExtendedPropertyImpl(groupName, name, value);
+    }
+
+    @Override
     public Device clone(Device device) {
         try {
             return new DeviceImpl(device);
         } catch (Exception e) {
             throw new KapuaEntityCloneException(e, Device.TYPE, device);
         }
-    }
-
-    @Override
-    public DeviceExtendedProperty newExtendedProperty(String groupName, String name, String value) {
-        return new DeviceExtendedPropertyImpl(groupName, name, value);
     }
 }

@@ -15,6 +15,7 @@ package org.eclipse.kapua.service.device.management.commons;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
+import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.ThrowingRunnable;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -39,6 +40,11 @@ import org.eclipse.kapua.service.device.management.registry.operation.DeviceMana
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationProperty;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceFactory;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
+import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventCreator;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventFactory;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
@@ -66,8 +72,15 @@ public abstract class AbstractDeviceManagementServiceImpl {
     private static final DeviceEventService DEVICE_EVENT_SERVICE = LOCATOR.getService(DeviceEventService.class);
     private static final DeviceEventFactory DEVICE_EVENT_FACTORY = LOCATOR.getFactory(DeviceEventFactory.class);
 
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
+    private static final DeviceFactory DEVICE_FACTORY = LOCATOR.getFactory(DeviceFactory.class);
+
     private static final DeviceManagementOperationRegistryService DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE = LOCATOR.getService(DeviceManagementOperationRegistryService.class);
     private static final DeviceManagementOperationFactory DEVICE_MANAGEMENT_OPERATION_FACTORY = LOCATOR.getFactory(DeviceManagementOperationFactory.class);
+
+    //
+    // Device Registry
+    //
 
     /**
      * Creates a {@link org.eclipse.kapua.service.device.registry.event.DeviceEvent} extracting data from the given {@link KapuaRequestMessage} and {@link KapuaResponseMessage}.
@@ -99,6 +112,38 @@ public abstract class AbstractDeviceManagementServiceImpl {
 
         KapuaSecurityUtils.doPrivileged(() -> DEVICE_EVENT_SERVICE.create(deviceEventCreator));
     }
+
+    /**
+     * Checks whether the {@link Device} exists and if it is connected.
+     *
+     * @param scopeId  The {@link Device#getScopeId()}.
+     * @param deviceId The {@link Device#getId()}.
+     * @return {@code true} if {@link Device} exists, has a {@link Device#getConnection()} and the {@link DeviceConnection#getStatus()} is {@link DeviceConnectionStatus#CONNECTED}, {@code false} otherwise.
+     * @throws KapuaException
+     */
+    public boolean isDeviceConnected(KapuaId scopeId, KapuaId deviceId) throws KapuaException {
+        //
+        // Validate arguments
+        ArgumentValidator.notNull(scopeId, "scopeId");
+        ArgumentValidator.notNull(deviceId, "deviceId");
+
+        //
+        // Check Device existence
+        Device device = DEVICE_REGISTRY_SERVICE.find(scopeId, deviceId);
+
+        if (device == null) {
+            throw new KapuaEntityNotFoundException(Device.TYPE, deviceId);
+        }
+
+        //
+        // Check Device Connection status
+        return device.getConnection() != null &&
+                DeviceConnectionStatus.CONNECTED.equals(device.getConnection().getStatus());
+    }
+
+    //
+    // Device Management Operations
+    //
 
     protected KapuaId createManagementOperation(KapuaId scopeId, KapuaId deviceId, KapuaId operationId, KapuaRequestMessage<?, ?> requestMessage) throws KapuaException {
 
@@ -139,6 +184,10 @@ public abstract class AbstractDeviceManagementServiceImpl {
         KapuaSecurityUtils.doPrivileged(() -> DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE.update(deviceManagementOperation));
     }
 
+
+    //
+    // Response handling
+    //
 
     /**
      * Checks the {@link KapuaResponseMessage#getResponseCode()} if it is {@link KapuaResponseCode#ACCEPTED} or throws the proper {@link DeviceManagementResponseCodeException}.
@@ -207,6 +256,10 @@ public abstract class AbstractDeviceManagementServiceImpl {
                 return new DeviceManagementResponseUnknownCodeException(kapuaResponseMessage.getResponseCode(), responsePayload.getExceptionMessage(), responsePayload.getExceptionMessage());
         }
     }
+
+    //
+    // Private methods
+    //
 
     private List<DeviceManagementOperationProperty> extractInputProperties(KapuaRequestMessage<?, ?> requestMessage) {
 

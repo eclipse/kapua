@@ -261,7 +261,7 @@ public class MetricInfoRegistryServiceImpl extends AbstractKapuaService implemen
     }
 
     @Override
-    protected boolean isServiceEnabled(KapuaId scopeId) {
+    public boolean isServiceEnabled(KapuaId scopeId) {
         return !DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false);
     }
 

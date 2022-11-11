@@ -15,6 +15,7 @@ package org.eclipse.kapua.extras.migrator.encryption.job;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.extras.migrator.encryption.MigratorEntityManagerFactory;
+import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.job.step.JobStep;
@@ -22,14 +23,12 @@ import org.eclipse.kapua.service.job.step.JobStepCreator;
 import org.eclipse.kapua.service.job.step.JobStepListResult;
 import org.eclipse.kapua.service.job.step.JobStepService;
 
-import javax.inject.Singleton;
-
 /**
  * {@link JobStepService} implementation.
  *
  * @since 1.0.0
  */
-@Singleton
+@KapuaProvider
 public class JobStepMigratorServiceImpl extends AbstractKapuaService implements JobStepService {
 
     public JobStepMigratorServiceImpl() {

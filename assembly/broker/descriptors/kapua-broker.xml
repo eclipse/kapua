@@ -154,7 +154,6 @@
             <fileMode>0644</fileMode>
             <includes>
                 <include>aopalliance:aopalliance</include>
-
                 <include>com.carrotsearch:hppc</include>
                 <include>com.fasterxml.jackson.core:*</include>
                 <include>com.fasterxml.jackson.dataformat:*</include>
@@ -262,12 +261,17 @@
                 <include>${pom.groupId}:kapua-device-management-api</include>
                 <include>${pom.groupId}:kapua-device-management-asset-api</include>
                 <include>${pom.groupId}:kapua-device-management-asset-internal</include>
+                <include>${pom.groupId}:kapua-device-management-asset-store-api</include>
+                <include>${pom.groupId}:kapua-device-management-asset-store-dummy</include>
                 <include>${pom.groupId}:kapua-device-management-bundle-api</include>
                 <include>${pom.groupId}:kapua-device-management-bundle-internal</include>
                 <include>${pom.groupId}:kapua-device-management-command-api</include>
                 <include>${pom.groupId}:kapua-device-management-command-internal</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-api</include>
                 <include>${pom.groupId}:kapua-device-management-configuration-internal</include>
+                <include>${pom.groupId}:kapua-device-management-configuration-store-api</include>
+                <include>${pom.groupId}:kapua-device-management-configuration-store-dummy</include>
+                <include>${pom.groupId}:kapua-device-management-configuration-message-api</include>
                 <include>${pom.groupId}:kapua-device-management-inventory-api</include>
                 <include>${pom.groupId}:kapua-device-management-inventory-internal</include>
                 <include>${pom.groupId}:kapua-device-management-keystore-api</include>

@@ -27,7 +27,8 @@ public enum DeviceBundleAppProperties implements KapuaAppProperties {
     /**
      * Version
      */
-    APP_VERSION("1.0.0"),;
+    APP_VERSION("1.0.0"),
+    ;
 
     private String value;
 

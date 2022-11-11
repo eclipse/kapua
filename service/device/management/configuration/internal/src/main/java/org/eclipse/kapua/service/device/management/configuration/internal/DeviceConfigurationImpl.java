@@ -47,4 +47,13 @@ public class DeviceConfigurationImpl implements DeviceConfiguration {
         return configurations;
     }
 
+    @Override
+    public void addComponentConfiguration(DeviceComponentConfiguration componentConfiguration) {
+        getComponentConfigurations().add(componentConfiguration);
+    }
+
+    @Override
+    public void setComponentConfigurations(List<DeviceComponentConfiguration> componentConfigurations) {
+        this.configurations = componentConfigurations;
+    }
 }

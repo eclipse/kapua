@@ -117,6 +117,7 @@ public class DeviceConfigSnapshots extends LayoutContainer {
 
     public void setDevice(GwtDevice selectedDevice) {
         dirty = true;
+
         this.selectedDevice = selectedDevice;
     }
 
@@ -525,16 +526,17 @@ public class DeviceConfigSnapshots extends LayoutContainer {
             if (le.exception != null) {
                 FailureHandler.handle(le.exception);
             }
+
             refreshButton.enable();
             uploadButton.setEnabled(currentSession.hasPermission(DeviceManagementSessionPermission.write()));
         }
 
         @Override
         public void loaderLoadException(LoadEvent le) {
-
             if (le.exception != null) {
                 ConsoleInfo.display(MSGS.popupError(), DEVICE_MSGS.deviceConnectionError());
             }
+
             store.removeAll();
             grid.unmask();
             toolBar.enable();

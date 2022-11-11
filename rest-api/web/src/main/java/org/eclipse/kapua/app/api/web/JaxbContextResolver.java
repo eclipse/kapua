@@ -170,6 +170,7 @@ import org.eclipse.kapua.service.device.call.kura.model.inventory.system.KuraInv
 import org.eclipse.kapua.service.device.call.kura.model.snapshot.KuraSnapshotIds;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssetXmlRegistry;
 import org.eclipse.kapua.service.device.management.asset.DeviceAssets;
+import org.eclipse.kapua.service.device.management.asset.store.settings.DeviceAssetStoreSettings;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundle;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleXmlRegistry;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundles;
@@ -179,6 +180,7 @@ import org.eclipse.kapua.service.device.management.command.DeviceCommandXmlRegis
 import org.eclipse.kapua.service.device.management.configuration.DeviceComponentConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfiguration;
 import org.eclipse.kapua.service.device.management.configuration.DeviceConfigurationXmlRegistry;
+import org.eclipse.kapua.service.device.management.configuration.store.settings.DeviceConfigurationStoreSettings;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundle;
 import org.eclipse.kapua.service.device.management.inventory.model.bundle.DeviceInventoryBundles;
 import org.eclipse.kapua.service.device.management.inventory.model.container.DeviceInventoryContainer;
@@ -466,6 +468,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
 
                     // Device Management Assets
                     DeviceAssets.class,
+                    DeviceAssetStoreSettings.class,
                     DeviceAssetXmlRegistry.class,
 
                     // Device Management Bundles
@@ -483,6 +486,7 @@ public class JaxbContextResolver implements ContextResolver<JAXBContext> {
                     KuraDeviceConfiguration.class,
                     DeviceConfiguration.class,
                     DeviceComponentConfiguration.class,
+                    DeviceConfigurationStoreSettings.class,
                     DeviceConfigurationXmlRegistry.class,
 
                     // Device Management Inventory
