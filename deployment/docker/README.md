@@ -117,6 +117,13 @@ Example:
 ./docker-deploy.sh --dev
 ```
 
+With this mode, you can access a web browser on http://localhost:8181/ to see the H2 web admin console, that has to be configured with the settings previously shown in the "Accessing components" subsection.
+We propose an image to simplify this configuration phase:
+
+![WebBrowserH2Sett](kapua-webBrowserH2Settings.png "WebBrowser H2 settings")
+
+It is to be noted that as an alternative of the web console you can, of course, use whatever database tool you like, for example "dbeaver" https://dbeaver.io/
+
 ---
 
 ### Enabling remote JVM debug mode
