@@ -459,6 +459,7 @@
                         <configuration>
                             <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
                             <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
