@@ -192,7 +192,7 @@
                 <include>javax.annotation:javax.annotation-api</include>
                 <include>javax.inject:javax.inject</include>
                 <include>javax.batch:javax.batch-api</include>
-                <include>javax.ws.rs:javax.ws.rs-api</include>
+                <include>jakarta.ws.rs:jakarta.ws.rs-api</include>
 
                 <include>joda-time:joda-time</include>
 

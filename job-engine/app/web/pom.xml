@@ -31,8 +31,8 @@
             <artifactId>hk2-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
         </dependency>
         <!-- fixes java.lang.ClassNotFoundException: javax.ws.rs.client.RxInvokerProvider -->
         <dependency>

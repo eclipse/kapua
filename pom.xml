@@ -2011,6 +2011,11 @@
                 <version>${hk2-api.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.glassfish.jersey.bundles</groupId>
+                <artifactId>jaxrs-ri</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
                 <artifactId>jersey-guava</artifactId>
                 <version>${jersey-repackaged.version}</version>
