@@ -291,28 +291,31 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
 
         // Console info
         SystemSetting commonsConfig = SystemSetting.getInstance();
+
         gwtSession.setVersion(commonsConfig.getString(SystemSettingKey.VERSION));
         gwtSession.setBuildVersion(commonsConfig.getString(SystemSettingKey.BUILD_VERSION));
         gwtSession.setBuildNumber(commonsConfig.getString(SystemSettingKey.BUILD_NUMBER));
         gwtSession.setSsoEnabled(ConsoleSsoLocator.getLocator(this).getService().isEnabled());
         gwtSession.setDatastoreDisabled(DatastoreSettings.getInstance().getBoolean(DatastoreSettingsKey.DISABLE_DATASTORE, false));
 
-        // User info
-        gwtSession.setUserId(gwtUser.getId());
+        // Account Info
         gwtSession.setAccountId(gwtAccount.getId());
-        gwtSession.setRootAccountId(gwtAccount.getId());
-        gwtSession.setSelectedAccountId(gwtAccount.getId());
-
-        gwtSession.setUserName(gwtUser.getUsername());
-        gwtSession.setUserDisplayName(gwtUser.getDisplayName());
         gwtSession.setAccountName(gwtAccount.getName());
-        gwtSession.setRootAccountName(gwtAccount.getName());
-        gwtSession.setSelectedAccountName(gwtAccount.getName());
-
         gwtSession.setAccountPath(gwtAccount.getParentAccountPath());
+        // Following 2 have been commented after deprecation of GwtSession.getRootAccount* methods
+        // gwtSession.setRootAccountId(gwtAccount.getId());
+        // gwtSession.setRootAccountName(gwtAccount.getName());
+
+        // Selected Account info
+        gwtSession.setSelectedAccountId(gwtAccount.getId());
+        gwtSession.setSelectedAccountName(gwtAccount.getName());
         gwtSession.setSelectedAccountPath(gwtAccount.getParentAccountPath());
 
-        // Setting Id token
+        // User info
+        gwtSession.setUserId(gwtUser.getId());
+        gwtSession.setUserName(gwtUser.getUsername());
+        gwtSession.setUserDisplayName(gwtUser.getDisplayName());
+        gwtSession.setTokenId(kapuaSession.getAccessToken().getTokenId());
         gwtSession.setOpenIDIdToken(kapuaSession.getOpenIDidToken());
 
         // Setting Mfa trust key
@@ -352,8 +355,8 @@ public class GwtAuthorizationServiceImpl extends KapuaRemoteServiceServlet imple
             }
         });
 
-        // Save AccessToken
-        gwtSession.setTokenId(kapuaSession.getAccessToken().getTokenId());
+        //
+        // Return session
         return gwtSession;
     }
 
