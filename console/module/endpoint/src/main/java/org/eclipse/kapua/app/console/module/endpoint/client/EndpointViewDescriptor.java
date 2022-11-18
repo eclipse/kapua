@@ -47,6 +47,6 @@ public class EndpointViewDescriptor extends AbstractEntityViewDescriptor<GwtEndp
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.getRootAccountId().equals(currentSession.getSelectedAccountId());
+        return currentSession.getAccountId().equals(currentSession.getSelectedAccountId());
     }
 }
