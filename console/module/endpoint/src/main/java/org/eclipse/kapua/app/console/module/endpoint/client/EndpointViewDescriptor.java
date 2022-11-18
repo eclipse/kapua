@@ -17,6 +17,7 @@ import org.eclipse.kapua.app.console.module.api.client.ui.view.EntityView;
 import org.eclipse.kapua.app.console.module.api.client.ui.view.descriptor.AbstractEntityViewDescriptor;
 import org.eclipse.kapua.app.console.module.api.shared.model.session.GwtSession;
 import org.eclipse.kapua.app.console.module.endpoint.shared.model.GwtEndpoint;
+import org.eclipse.kapua.app.console.module.endpoint.shared.model.permission.EndpointSessionPermission;
 
 public class EndpointViewDescriptor extends AbstractEntityViewDescriptor<GwtEndpoint> {
 
@@ -47,6 +48,11 @@ public class EndpointViewDescriptor extends AbstractEntityViewDescriptor<GwtEndp
 
     @Override
     public Boolean isEnabled(GwtSession currentSession) {
-        return currentSession.getAccountId().equals(currentSession.getSelectedAccountId());
+        return currentSession.hasPermission(EndpointSessionPermission.readAll()) &&
+                (
+                        currentSession.isSelectedAccountRootLevel()
+                                ||
+                                currentSession.isSelectedAccountFirstLevel()
+                );
     }
 }
