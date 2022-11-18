@@ -36,6 +36,8 @@ If you want to manually enter this association, execute this command:
 
 The aforementioned script is located under 'qa' folder and it's called 'RunKapuaTests.sh'.
 
+NOTE: It is important to launch the script being in the "Kapua" root folder, in this way all the maven modules will be recognized
+
 `qa/RunKapuaTests.sh`
 
 Launch it in order to build Kapua executing all the tests. Integration tests are divided by category to offer maximum error-check-granularity. 
