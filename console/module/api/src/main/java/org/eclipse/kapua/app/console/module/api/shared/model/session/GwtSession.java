@@ -201,6 +201,42 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.selectedAccountPath = selectedAccountPath;
     }
 
+    /**
+     * Checks if the selected Account is at root level (it means it is kapua-sys)
+     *
+     * @return {@code true} if it is, {@code false} otherwise
+     * @since 2.0.0
+     */
+    public boolean isSelectedAccountRootLevel() {
+        return isSelectedAccountAtLevel(0);
+    }
+
+    /**
+     * Checks if the selected Account is a first level (it means it is a direct son of kapua-sys)
+     *
+     * @return {@code true} if it is, {@code false} otherwise
+     * @since 2.0.0
+     */
+    public boolean isSelectedAccountFirstLevel() {
+        return isSelectedAccountAtLevel(1);
+    }
+
+    /**
+     * Checks if the selected Account is the given level.
+     *
+     * <ul>
+     *     <li>/1 = level 0</li>
+     *     <li>/1/1234 = level 1</li>
+     * </ul>
+     *
+     * @param level The level to check against
+     * @return {@code true} if it is, {@code false} otherwise
+     * @since 2.0.0
+     */
+    public boolean isSelectedAccountAtLevel(int level) {
+        return getSelectedAccountPath().split("/").length == (level + 2);
+    }
+
     // User info
     public String getUserId() {
         return userId;
