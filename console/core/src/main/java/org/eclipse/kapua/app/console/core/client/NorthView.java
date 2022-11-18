@@ -12,8 +12,27 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.core.client;
 
-import java.util.List;
-
+import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.Point;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.layout.TableData;
+import com.extjs.gxt.ui.client.widget.layout.TableLayout;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.eclipse.kapua.app.console.core.client.util.TokenCleaner;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationService;
 import org.eclipse.kapua.app.console.core.shared.service.GwtAuthorizationServiceAsync;
@@ -38,32 +57,13 @@ import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtMfaCr
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsService;
 import org.eclipse.kapua.app.console.module.authentication.shared.service.GwtMfaCredentialOptionsServiceAsync;
 
-import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.util.Point;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.layout.TableLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.List;
 
 public class NorthView extends LayoutContainer {
 
     private static final ConsoleMessages MSGS = GWT.create(ConsoleMessages.class);
     private static final ConsoleCredentialMessages CREDENTIAL_MSGS = GWT.create(ConsoleCredentialMessages.class);
+
     private final GwtAuthorizationServiceAsync gwtAuthorizationService = GWT.create(GwtAuthorizationService.class);
     private final GwtAccountServiceAsync gwtAccountService = GWT.create(GwtAccountService.class);
     private final GwtConsoleServiceAsync gwtConsoleService = GWT.create(GwtConsoleService.class);
@@ -71,19 +71,26 @@ public class NorthView extends LayoutContainer {
     private final GwtMfaCredentialOptionsServiceAsync gwtMfaCredentialOptionsService = GWT.create(GwtMfaCredentialOptionsService.class);
 
     // UI stuff
-    private KapuaCloudConsole parent;
+    private final KapuaCloudConsole parent;
     private Menu subAccountMenu;
     private Button userActionButton;
 
     // Data
-    private GwtSession currentSession;
-    private String rootAccountId;
-    private String userId;
+    private final GwtSession currentSession;
 
-    private String username;
+    private final String accountId;
+    private final String accountName;
+
+    private final String selectedAccountId;
+    private final String selectedAccountName;
+
+    // Following 2 have been commented after deprecation of GwtSession.getRootAccount* methods
+    //    private String rootAccountId;
+    //    private String rootAccountName;
+
+    private final String userId;
+    private final String username;
     private String userDisplayName;
-    private String rootAccountName;
-    private String selectedAccountName;
 
     // Listener
     private final SelectionListener<MenuEvent> switchToAccountListener = new SelectionListener<MenuEvent>() {
@@ -98,13 +105,21 @@ public class NorthView extends LayoutContainer {
         this.parent = parent;
 
         this.currentSession = currentSession;
-        this.rootAccountId = currentSession.getRootAccountId();
-        this.userId = currentSession.getUserId();
 
+        this.accountId = currentSession.getAccountId();
+        this.accountName = currentSession.getAccountName();
+
+        this.selectedAccountId = currentSession.getSelectedAccountId();
+        this.selectedAccountName = currentSession.getSelectedAccountName();
+
+        // Following 2 have been commented after deprecation of GwtSession.getRootAccount* methods
+        // this.rootAccountId = currentSession.getRootAccountId();
+        // this.rootAccountName = currentSession.getRootAccountName();
+
+        this.userId = currentSession.getUserId();
         this.username = currentSession.getUserName();
         this.userDisplayName = currentSession.getUserDisplayName();
-        this.rootAccountName = currentSession.getRootAccountName();
-        this.selectedAccountName = currentSession.getSelectedAccountName();
+
     }
 
     @Override
@@ -274,20 +289,20 @@ public class NorthView extends LayoutContainer {
      * @return the MenuItem
      */
     public MenuItem createAccountNavigationMenuItem() {
-        KapuaMenuItem rootAccountMenuItem = new KapuaMenuItem();
-        rootAccountMenuItem.setText(MSGS.accountSelectorItemYourAccount(rootAccountName));
-        rootAccountMenuItem.setToolTip(MSGS.accountSelectorTooltipYourAccount());
-        rootAccountMenuItem.setIcon(IconSet.USER_MD);
-        rootAccountMenuItem.setId(rootAccountId);
-        rootAccountMenuItem.addSelectionListener(switchToAccountListener);
+        KapuaMenuItem mainAccountMenuItem = new KapuaMenuItem();
+        mainAccountMenuItem.setText(MSGS.accountSelectorItemYourAccount(accountName));
+        mainAccountMenuItem.setToolTip(MSGS.accountSelectorTooltipYourAccount());
+        mainAccountMenuItem.setIcon(IconSet.USER_MD);
+        mainAccountMenuItem.setId(accountId);
+        mainAccountMenuItem.addSelectionListener(switchToAccountListener);
 
         subAccountMenu = new Menu();
         subAccountMenu.setAutoWidth(true);
         subAccountMenu.setAutoHeight(true);
-        subAccountMenu.add(rootAccountMenuItem);
+        subAccountMenu.add(mainAccountMenuItem);
         subAccountMenu.add(new SeparatorMenuItem());
 
-        populateNavigatorMenu(subAccountMenu, rootAccountId);
+        populateNavigatorMenu(subAccountMenu, accountId);
 
         KapuaMenuItem switchToAccountMenuItem = new KapuaMenuItem();
         switchToAccountMenuItem.setText(MSGS.consoleHeaderUserActionSwitchToAccount());
@@ -309,7 +324,7 @@ public class NorthView extends LayoutContainer {
         loadingChildAccounts = new KapuaMenuItem(MSGS.accountSelectorLoadingChildAccounts());
         loadingChildAccounts.setToolTip(MSGS.accountSelectorTooltipYourAccount());
         loadingChildAccounts.setIcon(IconSet.USER_MD);
-        loadingChildAccounts.setId(rootAccountId);
+        loadingChildAccounts.setId(accountId);
         loadingChildAccounts.disable();
 
         menu.add(loadingChildAccounts);

@@ -36,7 +36,16 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private String accountId;
     private String accountName;
     private String accountPath;
+
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
     private String rootAccountId;
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
     private String rootAccountName;
 
     // Selected Account info
@@ -135,18 +144,34 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.accountPath = accountPath;
     }
 
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
     public String getRootAccountId() {
         return rootAccountId;
     }
 
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
     public void setRootAccountId(String rootAccountId) {
         this.rootAccountId = rootAccountId;
     }
 
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
     public String getRootAccountName() {
         return rootAccountName;
     }
 
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
     public void setRootAccountName(String rootAccountName) {
         this.rootAccountName = rootAccountName;
     }
