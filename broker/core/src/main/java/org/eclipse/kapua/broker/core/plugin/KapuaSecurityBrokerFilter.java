@@ -465,7 +465,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
                     accessToken.getScopeId(), info.getClientId()
                 )
             );
-            if (DeviceStatus.DISABLED.equals(device.getStatus())) {
+            if (device != null && DeviceStatus.DISABLED.equals(device.getStatus())) {
                 logger.warn("Device {} is disabled", info.getClientId());
                 throw new SecurityException("Device is disabled");
             }
