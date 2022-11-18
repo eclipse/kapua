@@ -157,7 +157,7 @@
         <karaf-maven-plugin.version>4.4.2</karaf-maven-plugin.version>
         <license-maven-plugin.version>1.9</license-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
-        <protoc-jar-maven-plugin.version>3.8.0</protoc-jar-maven-plugin.version>
+        <protoc-jar-maven-plugin.version>3.11.4</protoc-jar-maven-plugin.version>
         <sql-maven-plugin.version>1.5</sql-maven-plugin.version>
         <surefire.version>3.0.0-M7</surefire.version>
 
@@ -2539,7 +2539,6 @@
         <module>job-engine</module>
         <module>broker</module>
         <module>consumer</module>
-
         <!-- Client -->
         <module>client</module>
 

@@ -122,8 +122,9 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
+                            <protocArtifact>com.google.protobuf:protoc:${protobuf.version}:exe</protocArtifact>
                             <protocVersion>${protobuf.version}</protocVersion>
-                            <includeStdTypes>true</includeStdTypes>
+                            <includeMavenTypes>transitive</includeMavenTypes>
                             <inputDirectories>
                                 <include>src/main/protobuf</include>
                             </inputDirectories>
