@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = {
-                "classpath:features/account/AccountService.feature",
+                "classpath:features/account/AccountServiceCreation.feature",
                 "classpath:features/account/AccountExpirationI9n.feature",
                 "classpath:features/account/FindSelfAccount.feature",
                 "classpath:features/account/AccountGroupService.feature",
