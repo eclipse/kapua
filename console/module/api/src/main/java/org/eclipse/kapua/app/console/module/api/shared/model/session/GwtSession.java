@@ -32,37 +32,53 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     private boolean ssoEnabled;
     private boolean datastoreDisabled;
 
-    // User info
+    // Account info
     private String accountId;
     private String accountName;
     private String accountPath;
+
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
     private String rootAccountId;
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
     private String rootAccountName;
 
+    // Selected Account info
     private String selectedAccountId;
     private String selectedAccountName;
     private String selectedAccountPath;
 
+    // User info
     private String userId;
     private String userName;
     private String userDisplayName;
+    private String tokenId;
+    private String trustKey;
     private String openIDIdToken;
 
-    private String tokenId;
-
-    private String trustKey;
-
+    // Permission info
     private List<GwtSessionPermission> sessionPermissions = new ArrayList<GwtSessionPermission>();
     private Map<GwtSessionPermission, Boolean> checkedPermissionsCache = new HashMap<GwtSessionPermission, Boolean>();
 
+    // UI
     /**
      * Is UI form dirty and needs save.
+     * <p>
+     * This field is set by UI to offer "Do you want to discard unsaved changes?" feature.
+     *
+     * @since 1.0.0
      */
     private boolean formDirty;
 
     public GwtSession() {
     }
 
+    // Console info
     public String getVersion() {
         return version;
     }
@@ -87,36 +103,29 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.buildNumber = buildNumber;
     }
 
-    public String getUserId() {
-        return userId;
+    public boolean isSsoEnabled() {
+        return ssoEnabled;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setSsoEnabled(boolean ssoEnabled) {
+        this.ssoEnabled = ssoEnabled;
     }
 
+    public boolean isDatastoreDisabled() {
+        return datastoreDisabled;
+    }
+
+    public void setDatastoreDisabled(boolean datastoreDisabled) {
+        this.datastoreDisabled = datastoreDisabled;
+    }
+
+    // Account info
     public String getAccountId() {
         return accountId;
     }
 
     public void setAccountId(String accountId) {
         this.accountId = accountId;
-    }
-
-    public String getAccountPath() {
-        return accountPath;
-    }
-
-    public void setAccountPath(String accountPath) {
-        this.accountPath = accountPath;
-    }
-
-    public void setRootAccountId(String rootAccountId) {
-        this.rootAccountId = rootAccountId;
-    }
-
-    public String getRootAccountId() {
-        return rootAccountId;
     }
 
     public String getAccountName() {
@@ -127,12 +136,61 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.accountName = name;
     }
 
+    public String getAccountPath() {
+        return accountPath;
+    }
+
+    public void setAccountPath(String accountPath) {
+        this.accountPath = accountPath;
+    }
+
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
+    public String getRootAccountId() {
+        return rootAccountId;
+    }
+
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
+    public void setRootAccountId(String rootAccountId) {
+        this.rootAccountId = rootAccountId;
+    }
+
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
+    public String getRootAccountName() {
+        return rootAccountName;
+    }
+
+    /**
+     * @deprecated Since 2.0.0. This is very misleading since it seems that is a reference to the kapua-sys account (aka root account) but is not.
+     */
+    @Deprecated
+    public void setRootAccountName(String rootAccountName) {
+        this.rootAccountName = rootAccountName;
+    }
+
+    // Selected Account info
+    public String getSelectedAccountId() {
+        return selectedAccountId;
+    }
+
     public void setSelectedAccountId(String selectedAccountId) {
         this.selectedAccountId = selectedAccountId;
     }
 
-    public String getSelectedAccountId() {
-        return selectedAccountId;
+    public String getSelectedAccountName() {
+        return selectedAccountName;
+    }
+
+    public void setSelectedAccountName(String selectedAccountName) {
+        this.selectedAccountName = selectedAccountName;
     }
 
     public String getSelectedAccountPath() {
@@ -141,6 +199,51 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
 
     public void setSelectedAccountPath(String selectedAccountPath) {
         this.selectedAccountPath = selectedAccountPath;
+    }
+
+    /**
+     * Checks if the selected Account is at root level (it means it is kapua-sys)
+     *
+     * @return {@code true} if it is, {@code false} otherwise
+     * @since 2.0.0
+     */
+    public boolean isSelectedAccountRootLevel() {
+        return isSelectedAccountAtLevel(0);
+    }
+
+    /**
+     * Checks if the selected Account is a first level (it means it is a direct son of kapua-sys)
+     *
+     * @return {@code true} if it is, {@code false} otherwise
+     * @since 2.0.0
+     */
+    public boolean isSelectedAccountFirstLevel() {
+        return isSelectedAccountAtLevel(1);
+    }
+
+    /**
+     * Checks if the selected Account is the given level.
+     *
+     * <ul>
+     *     <li>/1 = level 0</li>
+     *     <li>/1/1234 = level 1</li>
+     * </ul>
+     *
+     * @param level The level to check against
+     * @return {@code true} if it is, {@code false} otherwise
+     * @since 2.0.0
+     */
+    public boolean isSelectedAccountAtLevel(int level) {
+        return getSelectedAccountPath().split("/").length == (level + 2);
+    }
+
+    // User info
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getUserName() {
@@ -159,22 +262,6 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.userDisplayName = userDisplayName;
     }
 
-    public String getRootAccountName() {
-        return rootAccountName;
-    }
-
-    public void setRootAccountName(String rootAccountName) {
-        this.rootAccountName = rootAccountName;
-    }
-
-    public String getSelectedAccountName() {
-        return selectedAccountName;
-    }
-
-    public void setSelectedAccountName(String selectedAccountName) {
-        this.selectedAccountName = selectedAccountName;
-    }
-
     public String getTokenId() {
         return tokenId;
     }
@@ -183,22 +270,23 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         this.tokenId = tokenId;
     }
 
-    public boolean isSsoEnabled() {
-        return ssoEnabled;
+    public String getTrustKey() {
+        return trustKey;
     }
 
-    public void setSsoEnabled(boolean ssoEnabled) {
-        this.ssoEnabled = ssoEnabled;
+    public void setTrustKey(String trustKey) {
+        this.trustKey = trustKey;
     }
 
-    public boolean isDatastoreDisabled() {
-        return datastoreDisabled;
+    public String getOpenIDIdToken() {
+        return openIDIdToken;
     }
 
-    public void setDatastoreDisabled(boolean datastoreDisabled) {
-        this.datastoreDisabled = datastoreDisabled;
+    public void setOpenIDIdToken(String openIDIdToken) {
+        this.openIDIdToken = openIDIdToken;
     }
 
+    // Permission info
     public List<GwtSessionPermission> getSessionPermissions() {
         if (sessionPermissions == null) {
             sessionPermissions = new ArrayList<GwtSessionPermission>();
@@ -222,7 +310,7 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
      * @param domain      The domain to check
      * @param action      The {@link GwtSessionPermissionAction} to check
      * @param targetScope The {@link GwtSessionPermissionScope} to check
-     * @return {@code true} if the current {@link GwtSession} has the permission, {@false} otherwise
+     * @return {@code true} if the current {@link GwtSession} has the permission, {@code false} otherwise
      * @since 1.0.0
      */
     public boolean hasPermission(String domain, GwtSessionPermissionAction action, GwtSessionPermissionScope targetScope) {
@@ -239,14 +327,14 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
      * </p>
      *
      * @param permissionToCheck The {@link GwtSessionPermission} to check
-     * @return {@code true} if the current {@link GwtSession} has the permission, {@false} otherwise
+     * @return {@code true} if the current {@link GwtSession} has the permission, {@code false} otherwise
      * @since 1.0.0
      */
     public boolean hasPermission(GwtSessionPermission permissionToCheck) {
         // Check cache
         Boolean cachedResult = checkedPermissionsCache.get(permissionToCheck);
         if (cachedResult != null) {
-            return cachedResult.booleanValue();
+            return cachedResult;
         }
 
         // Check permission
@@ -258,6 +346,48 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
         // Return it
         return permitted;
     }
+
+    /**
+     * This methods simulates the check that is performed by the {@link org.eclipse.kapua.service.authorization.AuthorizationService#isPermitted(Permission)}.
+     * {@link Permission#getForwardable()} property is supported in a different way, but produces the same results.
+     *
+     * @param permissionToCheck The {@link GwtSessionPermission} to check
+     * @return {@code true} if the current {@link GwtSession} has the permission, {@code false} otherwise
+     * @since 1.0.0
+     */
+    private boolean isPermitted(GwtSessionPermission permissionToCheck) {
+
+        for (GwtSessionPermission gsp : getSessionPermissions()) {
+            if (gsp.getDomain() == null || gsp.getDomain().equals(permissionToCheck.getDomain())) {
+                if (gsp.getAction() == null || gsp.getAction().equals(permissionToCheck.getAction())) {
+
+                    GwtSessionPermissionScope permissionToCheckScope = permissionToCheck.getPermissionScope();
+
+                    boolean check = false;
+                    switch (gsp.getPermissionScope()) {
+                        case ALL:
+                            check = true;
+                            break;
+                        case CHILDREN:
+                            check = (GwtSessionPermissionScope.CHILDREN.equals(permissionToCheckScope) ||
+                                    GwtSessionPermissionScope.SELF.equals(permissionToCheckScope));
+                            break;
+                        case SELF:
+                            check = GwtSessionPermissionScope.SELF.equals(permissionToCheckScope);
+                            break;
+                    }
+
+                    if (check) {
+                        return check;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    // UI
 
     /**
      * Is UI form dirty and needs confirmation to switch menu.
@@ -276,61 +406,4 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     public void setFormDirty(boolean formDirty) {
         this.formDirty = formDirty;
     }
-
-    /**
-     * This methods simulates the check that is performed by the {@link org.eclipse.kapua.service.authorization.AuthorizationService#isPermitted(Permission)}.
-     * {@link Permission#getForwardable()} property is supported in a different way, but produces the same results.
-     *
-     * @param permissionToCheck The {@link GwtSessionPermission} to check
-     * @return {@code true} if the current {@link GwtSession} has the permission, {@false} otherwise
-     * @since 1.0.0
-     */
-    private boolean isPermitted(GwtSessionPermission permissionToCheck) {
-
-        for (GwtSessionPermission gsp : getSessionPermissions()) {
-            if (gsp.getDomain() == null || gsp.getDomain().equals(permissionToCheck.getDomain())) {
-                if (gsp.getAction() == null || gsp.getAction().equals(permissionToCheck.getAction())) {
-
-                    GwtSessionPermissionScope permissionToCheckScope = permissionToCheck.getPermissionScope();
-
-                    boolean check = false;
-                    switch (gsp.getPermissionScope()) {
-                    case ALL:
-                        check = true;
-                        break;
-                    case CHILDREN:
-                        check = (GwtSessionPermissionScope.CHILDREN.equals(permissionToCheckScope) ||
-                                GwtSessionPermissionScope.SELF.equals(permissionToCheckScope));
-                        break;
-                    case SELF:
-                        check = GwtSessionPermissionScope.SELF.equals(permissionToCheckScope);
-                        break;
-                    }
-
-                    if (check) {
-                        return check;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public String getOpenIDIdToken() {
-        return openIDIdToken;
-    }
-
-    public void setOpenIDIdToken(String openIDIdToken) {
-        this.openIDIdToken = openIDIdToken;
-    }
-
-    public String getTrustKey() {
-        return trustKey;
-    }
-
-    public void setTrustKey(String trustKey) {
-        this.trustKey = trustKey;
-    }
-
 }
