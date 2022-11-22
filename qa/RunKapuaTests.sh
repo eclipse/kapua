@@ -43,7 +43,8 @@ for tag in "${cucumberTags[@]}"
 do
 	echo "Started cucumber tests tagged as $tag";
 	bash -c 'mvn verify -Dgroups="!org.eclipse.kapua.qa.markers.junit.JUnitTests" -Dcucumber.filter.tags=$0' $tag;
-	exitCodesTests+=($?);
+	checkErrorLastBuild "error while building with cucumber tests tagged as <$tag>...building has been terminated.
+	You can view logs under qa/integration/target/surefire-reports/ for results of the precise tests";
 done
+echo "Started final, complete build"
 mvn install -DskipTests=true #finally, build completely the project
-printTestResults;
