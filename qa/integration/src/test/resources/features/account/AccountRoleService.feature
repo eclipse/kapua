@@ -10,7 +10,6 @@
 # Contributors:
 #     Eurotech - initial API and implementation
 ###############################################################################
-@account
 @role
 @env_none
 

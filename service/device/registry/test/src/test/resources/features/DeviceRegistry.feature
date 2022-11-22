@@ -11,7 +11,6 @@
 #     Eurotech - initial API and implementation
 ###############################################################################
 @deviceRegistry
-@device
 @env_none
 
 Feature: Device Registry CRUD tests

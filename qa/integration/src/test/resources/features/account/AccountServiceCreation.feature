@@ -13,6 +13,8 @@
 @account
 @env_none
 
+#this feature file is similar to the one created for account service but located under service > account, this one is more focused on the creation of accounts rather that findings of / query of
+
 Feature: Account Service Tests
 
   @setup
