@@ -438,19 +438,14 @@ public class BrokerSteps extends TestBase {
     public void clientConnect(String clientName, String clientId, String user, String password) throws Exception {
         MqttClient mqttClient = null;
         MqttConnectOptions clientOpts = new MqttConnectOptions();
+        primeException();
         try {
-            mqttClient = new MqttClient(BROKER_URI, clientId,
-                    new MemoryPersistence());
-        } catch (MqttException e) {
-            logger.error("Error: {}", e.getMessage(), e);
-        }
-        clientOpts.setUserName(user);
-        clientOpts.setPassword(password.toCharArray());
-        try {
+            mqttClient = new MqttClient(BROKER_URI, clientId, new MemoryPersistence());
+            clientOpts.setUserName(user);
+            clientOpts.setPassword(password.toCharArray());
             mqttClient.connect(clientOpts);
         } catch (MqttException e) {
-            logger.error("Error: {}", e.getMessage(), e);
-            throw new Exception("Mqtt test client not connected.");
+            verifyException(e);
         }
         stepData.put(clientName, mqttClient);
     }
