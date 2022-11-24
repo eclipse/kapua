@@ -152,8 +152,8 @@
         <docker-maven-plugin.version>0.40.2</docker-maven-plugin.version>
         <eclipse-lifecycle-mapping.version>1.0.0</eclipse-lifecycle-mapping.version>
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
-        <jacoco.version>0.7.9</jacoco.version>
-        <jacoco-extras.version>0.1.1</jacoco-extras.version>
+        <jacoco.version>0.8.8</jacoco.version>
+        <jacoco-extras.version>0.1.6</jacoco-extras.version>
         <karaf-maven-plugin.version>4.4.2</karaf-maven-plugin.version>
         <license-maven-plugin.version>1.9</license-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
