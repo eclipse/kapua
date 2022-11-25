@@ -25,8 +25,16 @@
     <properties>
         <!-- Build properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <!-- Compiler level and JDK for all modules -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.toolchain.jdk.version>11</maven.toolchain.jdk.version>
+
+        <!-- Console compiler level and JDK -->
+        <!-- Console is limited to Java 1.6, so we are using JDK 8 -->
+        <console.maven.compiler.source>1.6</console.maven.compiler.source>
+        <console.maven.compiler.target>1.6</console.maven.compiler.target>
+        <console.maven.toolchain.jdk.version>8</console.maven.toolchain.jdk.version>
 
         <!-- Dependencies versions -->
         <activemq.version>5.14.5</activemq.version>
@@ -146,6 +154,7 @@
         <maven-shade-plugin.version>3.4.1</maven-shade-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-war-plugin.version>3.3.2</maven-war-plugin.version>
+        <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
 
         <checkstyle.version>7.6.1</checkstyle.version>
         <dependency-check-maven.version>1.4.5</dependency-check-maven.version>
@@ -255,6 +264,25 @@
                         <systemPropertyVariables>
                             <commons.settings.hotswap>true</commons.settings.hotswap>
                         </systemPropertyVariables>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-toolchains-plugin</artifactId>
+                    <version>${maven-toolchains-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>toolchain</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <toolchains>
+                            <jdk>
+                                <version>${maven.toolchain.jdk.version}</version>
+                            </jdk>
+                        </toolchains>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -498,6 +526,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>com.github.eirslett</groupId>

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2017, 2022 Red Hat Inc and others
+    Copyright (c) 2022 Eurotech and/or its affiliates and others
 
     This program and the accompanying materials are made
     available under the terms of the Eclipse Public License 2.0
@@ -9,45 +9,41 @@
     SPDX-License-Identifier: EPL-2.0
 
     Contributors:
-        Red Hat Inc - initial API and implementation
-        Eurotech
+        Eurotech - initial API and implementation
  -->
 <!--
-    RHEL/Fedora/CentOS based toolchain file
-    sudo yum install java-1.6.0-openjdk-devel java-1.7.0-openjdk-devel java-1.8.0-openjdk-devel
+    MacOS based toolchain file
+    brew install openjdk@8 openjdk@11 openjdk@17
 -->
 <toolchains>
     <!-- JDK toolchains -->
     <toolchain>
         <type>jdk</type>
         <provides>
-            <id>JavaSE-1.6</id>
-            <version>1.6</version>
+            <version>8</version>
         </provides>
         <configuration>
-            <jdkHome>/usr/lib/jvm/java-1.6.0/jre</jdkHome>
+            <jdkHome>/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home</jdkHome>
         </configuration>
     </toolchain>
 
     <toolchain>
         <type>jdk</type>
         <provides>
-            <id>JavaSE-1.7</id>
-            <version>1.7</version>
+            <version>11</version>
         </provides>
         <configuration>
-            <jdkHome>/usr/lib/jvm/java-1.7.0</jdkHome>
+            <jdkHome>/Library/Java/JavaVirtualMachines/adoptopenjdk-11.jdk/Contents/Home</jdkHome>
         </configuration>
     </toolchain>
 
     <toolchain>
         <type>jdk</type>
         <provides>
-            <id>JavaSE-1.8</id>
-            <version>1.8</version>
+            <version>17</version>
         </provides>
         <configuration>
-            <jdkHome>/usr/lib/jvm/java-1.8.0</jdkHome>
+            <jdkHome>/Library/Java/JavaVirtualMachines/adoptopenjdk-17.jdk/Contents/Home</jdkHome>
         </configuration>
     </toolchain>
 </toolchains>

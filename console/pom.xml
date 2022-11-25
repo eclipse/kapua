@@ -32,6 +32,11 @@
     </modules>
 
     <properties>
+        <!-- Console is limited to Java 1.6, so we are using JDK 8 -->
+        <maven.compiler.source>${console.maven.compiler.source}</maven.compiler.source>
+        <maven.compiler.target>${console.maven.compiler.target}</maven.compiler.target>
+        <maven.toolchain.jdk.version>${console.maven.toolchain.jdk.version}</maven.toolchain.jdk.version>
+
         <com.google.gwt.version>2.4.0</com.google.gwt.version>
         <com.extjs.gxt.version>2.2.5</com.extjs.gxt.version>
         <com.allen-sauer.gwt.log.version>3.1.8</com.allen-sauer.gwt.log.version>
@@ -260,27 +265,16 @@
                 </plugin>
 
                 <plugin>
-                    <!-- GWT 2.4 is limited to Java 6 -->
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                        <jdkToolchain>
-                            <version>6</version>
-                        </jdkToolchain>
-                    </configuration>
-                </plugin>
-
-                <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <configuration>
                         <excludePackageNames>*.messages</excludePackageNames>
                     </configuration>
                 </plugin>
 
-                <!-- This plugin's configuration is used to store Eclipse
-                    m2e settings only. It has no influence on the Maven build itself. -->
+                <!--
+                    This plugin's configuration is used to store Eclipse m2e settings only.
+                    It has no influence on the Maven build itself.
+                -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>

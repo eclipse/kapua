@@ -7,7 +7,9 @@ As those toolchains reference local directories, those file can look different f
 This directory contains a few pre-configured toolchains for well known configurations. You can either use
 those directly or create a new toolchain file which works for you.
 
-## `fedora-rhel-centos.xml`
+## Fedora/RHEL/CentOS
+
+- `fedora-rhel-centos.xml`
 
 This file is for Fedora/RHEL/CentOS based distributions. In order to install required JDKs issue
 the following commands with root privileges:
@@ -18,4 +20,15 @@ Or (when using `dnf` instead of `yum`):
 
     dnf install java-1.6.0-openjdk-devel java-1.7.0-openjdk-devel java-1.8.0-openjdk-devel
 
-Either copy or sym-link this file to `~/.m2/toolchains.xml` to activate it.
+Open the file, modify the jdk path in order to match your machine configuration, and then copy this file to `~/.m2/toolchains.xml` to use it.
+
+## MacOS
+
+- `macos.xml`
+
+This file is for MacOS based distributions. In order to install required JDKs issue
+the following commands with root privileges:
+
+    brew install openjdk@8 openjdk@11 openjdk@17
+
+Open the file, modify the jdk path in order to match your machine configuration, and then copy this file to `~/.m2/toolchains.xml` to use it.
