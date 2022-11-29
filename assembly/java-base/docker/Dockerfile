@@ -26,6 +26,7 @@ RUN yum install -y java-1.8.0-openjdk && \
 RUN mkdir -p /etc/opt/kapua && \
     openssl req -x509 -newkey rsa:4096 -keyout /etc/opt/kapua/key.pem -out /etc/opt/kapua/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX' && \
     openssl pkcs8 -topk8 -in /etc/opt/kapua/key.pem -out /etc/opt/kapua/key.pk8 -nocrypt && \
+    chmod +r /etc/opt/kapua/key.pk8 && \
     rm /etc/opt/kapua/key.pem
 
 EXPOSE 8778
