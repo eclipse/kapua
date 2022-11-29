@@ -153,9 +153,7 @@
             <fileMode>0644</fileMode>
             <includes>
                 <include>aopalliance:aopalliance</include>
-                <include>com.carrotsearch:hppc</include>
                 <include>com.fasterxml.jackson.core:*</include>
-                <include>com.fasterxml.jackson.dataformat:*</include>
                 <include>com.google.guava:guava</include>
                 <include>com.google.guava:failureaccess</include>
                 <include>com.google.guava:listenablefuture</include>
@@ -164,7 +162,6 @@
                 <include>com.google.protobuf:protobuf-java</include>
                 <include>com.h2database:h2</include>
                 <include>com.zaxxer:HikariCP</include>
-                <include>com.tdunning:t-digest</include>
 
                 <include>commons-codec:commons-codec</include>
                 <include>commons-collections:commons-collections</include>
@@ -199,9 +196,7 @@
                 <include>org.apache.commons:commons-lang3</include>
                 <include>org.apache.commons:commons-pool2</include>
                 <include>org.apache.geronimo.specs:geronimo-jms_2.0_spec</include>
-                <include>org.apache.httpcomponents:httpasyncclient</include>
                 <include>org.apache.httpcomponents:httpclient</include>
-                <include>org.apache.httpcomponents:httpcore-nio</include>
                 <include>org.apache.httpcomponents:httpcore</include>
                 <include>org.apache.logging.log4j:log4j-api</include>
                 <include>org.apache.logging.log4j:log4j-to-slf4j</include>
@@ -227,7 +222,6 @@
                 <include>org.glassfish.jersey.core:jersey-common</include>
                 <include>org.glassfish.jersey.ext:jersey-entity-filtering</include>
                 <include>org.glassfish.jersey.media:jersey-media-moxy</include>
-                <include>org.hdrhistogram:HdrHistogram</include>
                 <include>org.javassist:javassist</include>
                 <include>org.liquibase:liquibase-core</include>
                 <include>org.reflections:reflections</include>
@@ -274,7 +268,6 @@
                 <include>${pom.groupId}:kapua-security-shiro</include>
                 <include>${pom.groupId}:kapua-service-api</include>
                 <include>${pom.groupId}:kapua-service-elasticsearch-client-api</include>
-                <include>${pom.groupId}:kapua-service-elasticsearch-client-rest</include>
                 <include>${pom.groupId}:kapua-service-storable-api</include>
                 <include>${pom.groupId}:kapua-service-storable-internal</include>
                 <include>${pom.groupId}:kapua-tag-api</include>
