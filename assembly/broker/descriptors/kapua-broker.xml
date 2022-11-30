@@ -234,7 +234,6 @@
                 <include>com.warrenstrange:googleauth</include>
                 <include>com.google.zxing:core</include>
 
-                <!-- java11 -->
                 <include>jakarta.xml.bind:jakarta.xml.bind-api</include>
                 <include>com.sun.xml.bind:jaxb-impl</include>
 

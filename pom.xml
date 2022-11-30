@@ -25,6 +25,7 @@
     <properties>
         <!-- Build properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <!-- Compiler level and JDK for all modules -->
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -2572,6 +2573,7 @@
         <module>job-engine</module>
         <module>broker</module>
         <module>consumer</module>
+
         <!-- Client -->
         <module>client</module>
 
