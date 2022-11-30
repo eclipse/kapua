@@ -1443,11 +1443,6 @@
                 <artifactId>jaxb-core</artifactId>
                 <version>${jaxb-core.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>${jaxb-impl.version}</version>
-            </dependency>
 
             <dependency>
                 <!-- TOTP dependencies -->
@@ -1992,7 +1987,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-moxy</artifactId>
-                <version>${jersey-repackaged.version}</version>
+                <version>${jersey.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
