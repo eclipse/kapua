@@ -57,12 +57,12 @@
         <guava-failureaccess.version>1.0.1</guava-failureaccess.version>
         <guava-listenablefuture.version>9999.0-empty-to-avoid-conflict-with-guava</guava-listenablefuture.version>
         <!-- upgraded Guice to 5.1.0 to avoid this error (ok warning maybe) on jetty
-        08:31:28.687 [main] INFO  o.e.kapua.locator.guice.KapuaModule - Binding service modules ...
-        WARNING: An illegal reflective access operation has occurred
-        WARNING: Illegal reflective access by com.google.inject.internal.cglib.core.$ReflectUtils$1 (file:/var/opt/jetty/webapps/root/WEB-INF/lib/guice-4.2.3.jar) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int,java.security.ProtectionDomain)
-        WARNING: Please consider reporting this to the maintainers of com.google.inject.internal.cglib.core.$ReflectUtils$1
-        WARNING: Use - -illegal-access=warn to enable warnings of further illegal reflective access operations
-        WARNING: All illegal access operations will be denied in a future release -->
+                08:31:28.687 [main] INFO  o.e.kapua.locator.guice.KapuaModule - Binding service modules ...
+                WARNING: An illegal reflective access operation has occurred
+                WARNING: Illegal reflective access by com.google.inject.internal.cglib.core.$ReflectUtils$1 (file:/var/opt/jetty/webapps/root/WEB-INF/lib/guice-4.2.3.jar) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int,java.security.ProtectionDomain)
+                WARNING: Please consider reporting this to the maintainers of com.google.inject.internal.cglib.core.$ReflectUtils$1
+                WARNING: Use - -illegal-access=warn to enable warnings of further illegal reflective access operations
+                WARNING: All illegal access operations will be denied in a future release -->
         <guice.version>5.1.0</guice.version>
         <guice-multibindings.version>4.2.3</guice-multibindings.version>
         <hamcrest-core.version>2.2</hamcrest-core.version>
@@ -82,11 +82,13 @@
         <javax-persistence.version>2.1.1</javax-persistence.version>
         <javax-servlet-api.version>3.1.0</javax-servlet-api.version>
         <javax-validation-api.version>2.0.1.Final</javax-validation-api.version>
-        <javax-ws-rs-api.version>2.0.1</javax-ws-rs-api.version>
+        <jakarta-ws-rs-api.version>2.1.6</jakarta-ws-rs-api.version>
+        <jakarta-xml-bind-api.version>2.3.3</jakarta-xml-bind-api.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jaxb-core.version>2.3.0.1</jaxb-core.version>
         <jaxb-impl.version>2.3.6</jaxb-impl.version>
         <jbatch.version>1.0.2</jbatch.version>
+        <!-- 2.27 is the minimum for jvm11 but here there is a managed version 2.33 so check dependency tree -->
         <jersey.version>2.27</jersey.version>
         <jersey-repackaged.version>2.26-b03</jersey-repackaged.version>
         <jetty.version>9.4.44.v20210927</jetty.version>
@@ -129,7 +131,7 @@
         <!-- Plugins versions -->
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
-        <maven-bundle-plugin.version>3.3.0</maven-bundle-plugin.version>
+        <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
         <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.0.1</maven-dependency-plugin.version>
@@ -141,11 +143,10 @@
         <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-<!-- java11 - resource plugin update was mandatory with new jvm, others updated because pretty old - TODO check others -->
         <maven-resources-plugin.version>3.3.0</maven-resources-plugin.version>
-        <maven-shade-plugin.version>3.4.1</maven-shade-plugin.version> <!-- latest 3.4.1 -->
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version> <!-- latest 3.2.1 -->
-        <maven-war-plugin.version>3.3.2</maven-war-plugin.version> <!-- latest 3.3.2 -->
+        <maven-shade-plugin.version>3.4.1</maven-shade-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <maven-war-plugin.version>3.3.2</maven-war-plugin.version>
 
         <checkstyle.version>7.6.1</checkstyle.version>
         <dependency-check-maven.version>1.4.5</dependency-check-maven.version>
@@ -154,12 +155,11 @@
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
         <jacoco.version>0.7.9</jacoco.version>
         <jacoco-extras.version>0.1.1</jacoco-extras.version>
-        <karaf-maven-plugin.version>4.1.1</karaf-maven-plugin.version>
+        <karaf-maven-plugin.version>4.4.2</karaf-maven-plugin.version>
         <license-maven-plugin.version>1.9</license-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.5</nexus-staging-maven-plugin.version>
         <protoc-jar-maven-plugin.version>3.8.0</protoc-jar-maven-plugin.version>
         <sql-maven-plugin.version>1.5</sql-maven-plugin.version>
-<!-- java11 - solves errors (see plugin configuration) -->
         <surefire.version>3.0.0-M7</surefire.version>
 
         <!-- Docker configuration -->
@@ -256,10 +256,6 @@
                         <systemPropertyVariables>
                             <commons.settings.hotswap>true</commons.settings.hotswap>
                         </systemPropertyVariables>
-                        <!-- java11 - solves errors while starting tests (errors while forking process) but should be investigated further)-->
-                        <argLine>
-                            --illegal-access=permit
-                        </argLine>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -1395,6 +1391,16 @@
             </dependency>
 
             <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>${jakarta-xml-bind-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jakarta-xml-bind-api.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
                 <version>${jaxb-api.version}</version>
@@ -1484,9 +1490,9 @@
                 <version>${javax-validation-api.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>javax.ws.rs-api</artifactId>
-                <version>${javax-ws-rs-api.version}</version>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>${jakarta-ws-rs-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>joda-time</groupId>
@@ -1953,7 +1959,7 @@
             <dependency>
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-moxy</artifactId>
-                <version>${jersey.version}</version>
+                <version>${jersey-repackaged.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>

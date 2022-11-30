@@ -26,25 +26,24 @@
 
     <dependencies>
 
-<!-- java11 - TODO move to dependency management -->
-<dependency>
-    <groupId>org.glassfish.hk2</groupId>
-    <artifactId>hk2-api</artifactId>
-</dependency>
-<dependency>
-    <groupId>javax.ws.rs</groupId>
-    <artifactId>javax.ws.rs-api</artifactId>
-</dependency>
-<!-- fixes java.lang.ClassNotFoundException: javax.ws.rs.client.RxInvokerProvider -->
-<dependency>
-    <groupId>org.glassfish.jersey.bundles</groupId>
-    <artifactId>jaxrs-ri</artifactId>
-    <version>${jersey.version}</version>
-</dependency>
-<dependency>
-    <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
-    <artifactId>jersey-guava</artifactId>
-</dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+        </dependency>
+        <!-- fixes java.lang.ClassNotFoundException: javax.ws.rs.client.RxInvokerProvider -->
+        <dependency>
+            <groupId>org.glassfish.jersey.bundles</groupId>
+            <artifactId>jaxrs-ri</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
+            <artifactId>jersey-guava</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
@@ -232,7 +231,7 @@
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-json-jackson</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>

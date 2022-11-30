@@ -12,7 +12,7 @@
         Red Hat Inc - initial API and implementation
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -28,10 +28,21 @@
     <name>Eclipse Kapua :: Gateway Client :: Features :: Karaf</name>
 
     <properties>
-        <karaf.version>4.1.1</karaf.version>
+        <karaf.version>4.4.2</karaf.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.karaf.features</groupId>
             <artifactId>framework</artifactId>
@@ -91,7 +102,7 @@
                                 <descriptor>file:${project.build.directory}/feature/feature.xml</descriptor>
                             </descriptors>
                             <distribution>org.apache.karaf.features:framework</distribution>
-                            <javase>1.8</javase>
+                            <javase>11</javase>
                             <framework>
                                 <feature>framework</feature>
                             </framework>

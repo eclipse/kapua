@@ -25,10 +25,8 @@
     <packaging>pom</packaging>
     <name>Eclipse Kapua :: Gateway Client :: Features</name>
 
-<!--
     <modules>
         <module>karaf</module>
     </modules>
--->
 
 </project>

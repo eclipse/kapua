@@ -25,22 +25,21 @@
 
     <dependencies>
 
-<!-- java11 - TODO move to dependency management -->
-<dependency>
-    <groupId>org.glassfish.hk2</groupId>
-    <artifactId>hk2-api</artifactId>
-</dependency>
-<!-- fixes java.lang.ClassNotFoundException: javax.ws.rs.client.RxInvokerProvider -->
-<dependency>
-    <groupId>org.glassfish.jersey.bundles</groupId>
-    <artifactId>jaxrs-ri</artifactId>
-    <version>${jersey.version}</version>
-</dependency>
-<!-- fixes java.lang.NoClassDefFoundError: jersey.repackaged.com.google.common.util.concurrent.MoreExecutors -->
-<dependency>
-    <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
-    <artifactId>jersey-guava</artifactId>
-</dependency>
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-api</artifactId>
+        </dependency>
+        <!-- fixes java.lang.ClassNotFoundException: javax.ws.rs.client.RxInvokerProvider -->
+        <dependency>
+            <groupId>org.glassfish.jersey.bundles</groupId>
+            <artifactId>jaxrs-ri</artifactId>
+            <version>${jersey.version}</version>
+        </dependency>
+        <!-- fixes java.lang.NoClassDefFoundError: jersey.repackaged.com.google.common.util.concurrent.MoreExecutors -->
+        <dependency>
+            <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
+            <artifactId>jersey-guava</artifactId>
+        </dependency>
 
         <!-- Required service interfaces -->
         <dependency>
