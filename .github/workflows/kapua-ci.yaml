@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3 # Cache local Maven repository to reuse dependencies
         with:
@@ -35,7 +35,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -60,7 +60,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -83,7 +83,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -108,7 +108,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -133,7 +133,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -158,7 +158,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -183,7 +183,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -208,7 +208,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -231,7 +231,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -256,7 +256,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -281,7 +281,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -304,7 +304,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -327,7 +327,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -352,7 +352,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -377,7 +377,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -402,7 +402,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -425,7 +425,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -450,7 +450,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -475,7 +475,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -500,7 +500,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -525,7 +525,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -550,7 +550,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -575,7 +575,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -600,7 +600,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -623,7 +623,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -648,7 +648,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -673,7 +673,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
@@ -696,7 +696,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '8'
+          java-version: 11
           cache: 'maven'
       - uses: actions/cache@v3
         with:
