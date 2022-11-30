@@ -52,7 +52,7 @@ public class RestApisApplication extends ResourceConfig {
 
             @Override
             public void onStartup(Container container) {
-                ServiceLocator serviceLocator = container.getApplicationHandler().getServiceLocator();
+                ServiceLocator serviceLocator = container.getApplicationHandler().getInjectionManager().getInstance(ServiceLocator.class);
 
                 RestApiJAXBContextProvider provider = serviceLocator.createAndInitialize(RestApiJAXBContextProvider.class);
                 XmlUtil.setContextProvider(provider);

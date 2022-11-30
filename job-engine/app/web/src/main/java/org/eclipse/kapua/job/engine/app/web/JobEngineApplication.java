@@ -45,7 +45,7 @@ public class JobEngineApplication extends ResourceConfig {
 
             @Override
             public void onStartup(Container container) {
-                ServiceLocator serviceLocator = container.getApplicationHandler().getServiceLocator();
+                ServiceLocator serviceLocator = container.getApplicationHandler().getInjectionManager().getInstance(ServiceLocator.class);
                 JobEngineJAXBContextProvider provider = serviceLocator.createAndInitialize(JobEngineJAXBContextProvider.class);
                 XmlUtil.setContextProvider(provider);
             }

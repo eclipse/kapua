@@ -25,6 +25,15 @@
     <artifactId>kapua-consumer-lifecycle-app</artifactId>
 
     <dependencies>
+
+<!-- java11 - TODO move to dependency management -->
+<!-- fixes java.lang.ClassNotFoundException: javax.ws.rs.client.RxInvokerProvider -->
+<!-- 2.27 is the minimum (see root pom ${jersey.version}) for jvm11 but here there is a managed version 2.33 so check dependency tree -->
+<dependency>
+    <groupId>org.glassfish.jersey.bundles</groupId>
+    <artifactId>jaxrs-ri</artifactId>
+</dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>

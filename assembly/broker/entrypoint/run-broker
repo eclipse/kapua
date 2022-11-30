@@ -51,4 +51,5 @@ if [ "${KAPUA_DISABLE_SSL}" == "false" ]; then
 fi
 
 # Run broker
+ACTIVEMQ_OPTS="${ACTIVEMQ_OPTS} --add-opens java.base/java.lang=ALL-UNNAMED"
 /opt/activemq/bin/activemq console
