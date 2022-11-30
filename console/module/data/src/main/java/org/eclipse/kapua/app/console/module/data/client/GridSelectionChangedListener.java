@@ -44,7 +44,7 @@ public class GridSelectionChangedListener<M extends ModelData> implements Listen
     }
 
     /**
-     * Method for handling the SelectionChangedEvent<M> on grid rows.
+     * Method for handling the SelectionChangedEvent on grid rows.
      * This method prevents row deselection using CTRL + Click, by selecting
      * the previously chosen value again. In all other cases the row selection
      * works as usual.
