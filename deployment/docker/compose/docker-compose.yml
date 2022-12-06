@@ -102,7 +102,7 @@ services:
       - KAPUA_KEYSTORE
       - KAPUA_KEYSTORE_PASSWORD
       - LOGBACK_LOG_LEVEL
-      - SWAGGER=${KAPUA_SWAGGER_ENABLE}
+      - SWAGGER=${KAPUA_SWAGGER_ENABLE:-true}
   job-engine:
     container_name: job-engine
     image: kapua/kapua-job-engine:${IMAGE_VERSION}
