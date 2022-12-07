@@ -34,9 +34,8 @@ import org.mockito.Mockito;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
@@ -194,7 +193,7 @@ public class ScratchCodeDAOTest {
         Mockito.when(entityManager.find(ScratchCodeImpl.class, scratchCodeId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        Assert.assertTrue("True expected.", ScratchCodeDAO.find(entityManager, scopeId, scratchCodeId) instanceof ScratchCode);
+        Assert.assertTrue("True expected.", ScratchCodeDAO.find(entityManager, KapuaId.ANY, scratchCodeId) instanceof ScratchCode);
     }
 
     @Test(expected = NullPointerException.class)
@@ -306,6 +305,7 @@ public class ScratchCodeDAOTest {
     @Test
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(ScratchCodeImpl.class, scratchCodeId)).thenReturn(entityToFindOrDelete);
+        Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
         Assert.assertTrue("True expected.", ScratchCodeDAO.delete(entityManager, scopeId, scratchCodeId) instanceof ScratchCode);
     }

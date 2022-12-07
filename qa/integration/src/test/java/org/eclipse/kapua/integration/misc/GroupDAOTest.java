@@ -19,7 +19,6 @@ import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.group.GroupCreator;
 import org.eclipse.kapua.service.authorization.group.GroupListResult;
@@ -34,10 +33,10 @@ import org.mockito.Mockito;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.EntityType;
 import java.sql.SQLException;
@@ -200,8 +199,8 @@ public class GroupDAOTest {
         Mockito.when(entityManager.find(GroupImpl.class, groupId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        Assert.assertTrue("True expected.", GroupDAO.find(entityManager, scopeId, groupId) instanceof Group);
-        Assert.assertNull("Null expected.", GroupDAO.find(entityManager, scopeId, groupId).getScopeId());
+        Assert.assertTrue("True expected.", GroupDAO.find(entityManager, KapuaId.ANY, groupId) instanceof Group);
+        Assert.assertNull("Null expected.", GroupDAO.find(entityManager, scopeId, groupId));
     }
 
     @Test(expected = NullPointerException.class)
@@ -311,6 +310,8 @@ public class GroupDAOTest {
     @Test
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(GroupImpl.class, groupId)).thenReturn(entityToFindOrDelete);
+        Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
+
         Assert.assertTrue("True expected.", GroupDAO.delete(entityManager, scopeId, groupId) instanceof Group);
     }
 
