@@ -45,11 +45,11 @@ public interface AccountService extends KapuaEntityService<Account, AccountCreat
     AccountListResult query(@NotNull KapuaQuery query) throws KapuaException;
 
     /**
-     * Returns an {@link AccountListResult} of direct child {@link Account} of the given {@link Account#getId()}.
+     * Returns an {@link AccountListResult} of direct children {@link Account}s of the given {@link Account#getId()}.
      *
-     * @param accountId The {@link Account#getId()}.
-     * @return The {@link AccountListResult} of direct child {@link Account}.
+     * @param scopeId The {@link Account#getId()}.
+     * @return The {@link AccountListResult} of direct children {@link Account}s.
      * @throws KapuaException
      */
-    AccountListResult findChildrenRecursively(@NotNull KapuaId accountId) throws KapuaException;
+    AccountListResult findChildrenRecursively(@NotNull KapuaId scopeId) throws KapuaException;
 }
