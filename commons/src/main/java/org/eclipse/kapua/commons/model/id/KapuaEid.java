@@ -45,7 +45,7 @@ public class KapuaEid implements KapuaId, Serializable {
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param id The id in {@link BigInteger} form.
      * @since 1.0.0
@@ -55,7 +55,7 @@ public class KapuaEid implements KapuaId, Serializable {
     }
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param id The id in {@link KapuaId} form.
      * @since 1.0.0
@@ -94,36 +94,16 @@ public class KapuaEid implements KapuaId, Serializable {
 
     @Override
     public String toString() {
-        return toStringId();
+        return KapuaId.toString(this);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (eid == null ? 0 : eid.hashCode());
-        return result;
+        return KapuaId.hashCode(this);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof KapuaId)) {
-            return false;
-        }
-        KapuaId other = (KapuaId) obj;
-        if (eid == null) {
-            if (other.getId() != null) {
-                return false;
-            }
-        } else if (!eid.equals(other.getId())) {
-            return false;
-        }
-        return true;
+        return KapuaId.areEquals(this, obj);
     }
 }
