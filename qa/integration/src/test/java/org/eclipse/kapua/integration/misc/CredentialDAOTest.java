@@ -21,10 +21,10 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.authentication.credential.Credential;
+import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
+import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
 import org.eclipse.kapua.service.authentication.credential.CredentialStatus;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
-import org.eclipse.kapua.service.authentication.credential.CredentialListResult;
-import org.eclipse.kapua.service.authentication.credential.CredentialCreator;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialDAO;
 import org.eclipse.kapua.service.authentication.credential.shiro.CredentialImpl;
 import org.junit.Assert;
@@ -36,8 +36,8 @@ import org.mockito.Mockito;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
@@ -250,7 +250,7 @@ public class CredentialDAOTest {
         Mockito.when(entityManager.find(CredentialImpl.class, credentialId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        Assert.assertTrue("True expected.", CredentialDAO.find(entityManager, scopeId, credentialId) instanceof Credential);
+        Assert.assertTrue("True expected.", CredentialDAO.find(entityManager, KapuaId.ANY, credentialId) instanceof Credential);
     }
 
     @Test(expected = NullPointerException.class)
@@ -362,6 +362,7 @@ public class CredentialDAOTest {
     @Test
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(CredentialImpl.class, credentialId)).thenReturn(entityToFindOrDelete);
+        Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
         Assert.assertTrue("True expected.", CredentialDAO.delete(entityManager, scopeId, credentialId) instanceof Credential);
     }

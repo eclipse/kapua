@@ -36,14 +36,13 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Selection;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.EntityType;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -185,7 +184,7 @@ public class DomainDAOTest {
         Mockito.when(entityManager.find(DomainImpl.class, domainId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        Assert.assertTrue("True expected.", DomainDAO.find(entityManager, scopeId, domainId) instanceof Domain);
+        Assert.assertTrue("True expected.", DomainDAO.find(entityManager, KapuaId.ANY, domainId) instanceof Domain);
     }
 
     @Test(expected = NullPointerException.class)
@@ -298,6 +297,7 @@ public class DomainDAOTest {
     @Test
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(DomainImpl.class, domainId)).thenReturn(entityToFindOrDelete);
+        Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
         Assert.assertTrue("True expected.", DomainDAO.delete(entityManager, scopeId, domainId) instanceof Domain);
     }
