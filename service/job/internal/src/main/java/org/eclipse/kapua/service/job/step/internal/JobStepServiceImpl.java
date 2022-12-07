@@ -323,7 +323,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
     //
     // Private methods
     private void validateJobStepProperties(JobStepCreator jobStepCreator) throws KapuaException {
-        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(jobStepCreator.getScopeId(), jobStepCreator.getJobStepDefinitionId());
+        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(KapuaId.ANY, jobStepCreator.getJobStepDefinitionId());
         ArgumentValidator.notNull(jobStepDefinition, "jobStepCreator.jobStepDefinitionId");
 
         try {
@@ -334,7 +334,7 @@ public class JobStepServiceImpl extends AbstractKapuaService implements JobStepS
     }
 
     private void validateJobStepProperties(JobStep jobStep) throws KapuaException {
-        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
+        JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(KapuaId.ANY, jobStep.getJobStepDefinitionId());
         ArgumentValidator.notNull(jobStepDefinition, "jobStep.jobStepDefinitionId");
 
         try {
