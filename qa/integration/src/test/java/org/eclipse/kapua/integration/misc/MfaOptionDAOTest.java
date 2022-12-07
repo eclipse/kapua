@@ -35,8 +35,8 @@ import org.mockito.Mockito;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
@@ -192,7 +192,7 @@ public class MfaOptionDAOTest {
         Mockito.when(entityManager.find(MfaOptionImpl.class, mfaOptionId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        Assert.assertThat("Instance of MfaOption object expected.", MfaOptionDAO.find(entityManager, scopeId, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
+        Assert.assertThat("Instance of MfaOption object expected.", MfaOptionDAO.find(entityManager, KapuaId.ANY, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
     }
 
     @Test(expected = NullPointerException.class)
@@ -287,7 +287,7 @@ public class MfaOptionDAOTest {
         for (long number : longNumberList) {
             Mockito.doReturn(number).when(query).getSingleResult();
 
-        Assert.assertThat("Long object expected.", MfaOptionDAO.count(entityManager, kapuaQuery), IsInstanceOf.instanceOf(Long.class));
+            Assert.assertThat("Long object expected.", MfaOptionDAO.count(entityManager, kapuaQuery), IsInstanceOf.instanceOf(Long.class));
             Assert.assertEquals("Expected and actual values should be the same.", number, MfaOptionDAO.count(entityManager, kapuaQuery));
         }
     }
@@ -305,6 +305,7 @@ public class MfaOptionDAOTest {
     @Test
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(MfaOptionImpl.class, mfaOptionId)).thenReturn(entityToFindOrDelete);
+        Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
         Assert.assertThat("Instance of MfaOption object expected.", MfaOptionDAO.delete(entityManager, scopeId, mfaOptionId), IsInstanceOf.instanceOf(MfaOption.class));
     }
