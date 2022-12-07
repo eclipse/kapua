@@ -50,7 +50,7 @@ public class GwtJobStepDefinitionServiceImpl extends KapuaRemoteServiceServlet i
     public ListLoadResult<GwtJobStepDefinition> findAll() throws GwtKapuaException {
         List<GwtJobStepDefinition> gwtJobStepDefinitionList = new ArrayList<GwtJobStepDefinition>();
         try {
-            JobStepDefinitionListResult result = JOB_STEP_DEFINITION_SERVICE.query(JOB_STEP_DEFINITION_FACTORY.newQuery(null));
+            JobStepDefinitionListResult result = JOB_STEP_DEFINITION_SERVICE.query(JOB_STEP_DEFINITION_FACTORY.newQuery(KapuaId.ANY));
             for (JobStepDefinition jsd : result.getItems()) {
 
                 if (!Strings.isNullOrEmpty(JOB_STEP_DEFINITION_EXCLUDE_REGEX) && jsd.getName().matches(JOB_STEP_DEFINITION_EXCLUDE_REGEX)) {
@@ -76,7 +76,7 @@ public class GwtJobStepDefinitionServiceImpl extends KapuaRemoteServiceServlet i
 
         GwtJobStepDefinition gwtJobStepDefinition = null;
         try {
-            JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(null, jobStepDefinitionId);
+            JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(KapuaId.ANY, jobStepDefinitionId);
             if (jobStepDefinition != null) {
                 gwtJobStepDefinition = KapuaGwtJobModelConverter.convertJobStepDefinition(jobStepDefinition);
 

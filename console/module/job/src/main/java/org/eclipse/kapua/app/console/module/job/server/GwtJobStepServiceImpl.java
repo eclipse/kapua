@@ -71,7 +71,7 @@ public class GwtJobStepServiceImpl extends KapuaRemoteServiceServlet implements 
             for (JobStep js : jobStepList.getItems()) {
                 GwtJobStep gwtJobStep = KapuaGwtJobModelConverter.convertJobStep(js);
 
-                JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getScopeId()), GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
+                JobStepDefinition jobStepDefinition = JOB_STEP_DEFINITION_SERVICE.find(KapuaId.ANY, GwtKapuaCommonsModelConverter.convertKapuaId(gwtJobStep.getJobStepDefinitionId()));
                 gwtJobStep.setJobStepDefinitionName(jobStepDefinition.getName());
 
                 setEnumOnJobStepProperty(gwtJobStep.getStepProperties());
