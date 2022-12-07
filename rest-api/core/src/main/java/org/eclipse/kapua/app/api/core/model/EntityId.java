@@ -12,12 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.model;
 
-import java.math.BigInteger;
-import java.util.Base64;
+import org.eclipse.kapua.model.id.KapuaId;
 
 import javax.ws.rs.PathParam;
-
-import org.eclipse.kapua.model.id.KapuaId;
+import java.math.BigInteger;
+import java.util.Base64;
 
 /**
  * {@link KapuaId} implementation to be used on REST API to parse the {@link PathParam} entityId.
@@ -52,6 +51,16 @@ public class EntityId implements KapuaId {
 
     @Override
     public String toString() {
-        return getId().toString();
+        return KapuaId.toString(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return KapuaId.hashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return KapuaId.areEquals(this, obj);
     }
 }
