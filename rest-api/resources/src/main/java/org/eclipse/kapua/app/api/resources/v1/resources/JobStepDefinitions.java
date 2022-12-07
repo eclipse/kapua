@@ -12,22 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-
+import com.google.common.base.Strings;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.app.api.core.model.CountResult;
 import org.eclipse.kapua.app.api.core.model.EntityId;
 import org.eclipse.kapua.app.api.core.model.ScopeId;
 import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
 import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.SortOrder;
 import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.job.Job;
@@ -40,7 +32,15 @@ import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionListResult
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionQuery;
 import org.eclipse.kapua.service.job.step.definition.JobStepDefinitionService;
 
-import com.google.common.base.Strings;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
 @Path("{scopeId}/jobStepDefinitions")
 public class JobStepDefinitions extends AbstractKapuaResource {
@@ -52,11 +52,11 @@ public class JobStepDefinitions extends AbstractKapuaResource {
     /**
      * Gets the {@link JobStep} list for a given {@link Job}.
      *
-     * @param scopeId       The {@link ScopeId} in which to search results.
-     * @param sortParam     The name of the parameter that will be used as a sorting key
-     * @param sortDir       The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
-     * @param offset        The result set offset.
-     * @param limit         The result set limit.
+     * @param scopeId   The {@link ScopeId} in which to search results.
+     * @param sortParam The name of the parameter that will be used as a sorting key
+     * @param sortDir   The sort direction. Can be ASCENDING (default), DESCENDING. Case-insensitive.
+     * @param offset    The result set offset.
+     * @param limit     The result set limit.
      * @return The {@link JobStepListResult} of all the jobs jobSteps associated to the current selected job.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
      * @since 1.5.0
@@ -70,7 +70,7 @@ public class JobStepDefinitions extends AbstractKapuaResource {
             @QueryParam("offset") @DefaultValue("0") int offset,
             @QueryParam("limit") @DefaultValue("50") int limit) throws KapuaException {
 
-        JobStepDefinitionQuery query = jobStepDefinitionFactory.newQuery(null);
+        JobStepDefinitionQuery query = jobStepDefinitionFactory.newQuery(KapuaId.ANY);
 
         if (!Strings.isNullOrEmpty(sortParam)) {
             query.setSortCriteria(query.fieldSortCriteria(sortParam, sortDir));
@@ -98,7 +98,8 @@ public class JobStepDefinitions extends AbstractKapuaResource {
     public JobStepDefinitionListResult query(
             @PathParam("scopeId") ScopeId scopeId,
             JobStepDefinitionQuery query) throws KapuaException {
-        query.setScopeId(null);
+        query.setScopeId(KapuaId.ANY);
+
         return jobStepDefinitionService.query(query);
     }
 
@@ -118,7 +119,7 @@ public class JobStepDefinitions extends AbstractKapuaResource {
     public CountResult count(
             @PathParam("scopeId") ScopeId scopeId,
             JobStepQuery query) throws KapuaException {
-        query.setScopeId(null);
+        query.setScopeId(KapuaId.ANY);
 
         return new CountResult(jobStepDefinitionService.count(query));
     }
@@ -126,7 +127,7 @@ public class JobStepDefinitions extends AbstractKapuaResource {
     /**
      * Returns the Job specified by the "jobId" path parameter.
      *
-     * @param scopeId The {@link ScopeId} of the requested {@link Job}.
+     * @param scopeId          The {@link ScopeId} of the requested {@link Job}.
      * @param stepDefinitionId The id of the requested JobStep.
      * @return The requested Job object.
      * @throws KapuaException Whenever something bad happens. See specific {@link KapuaService} exceptions.
@@ -138,7 +139,7 @@ public class JobStepDefinitions extends AbstractKapuaResource {
     public JobStepDefinition find(
             @PathParam("scopeId") ScopeId scopeId,
             @PathParam("stepDefinitionId") EntityId stepDefinitionId) throws KapuaException {
-        return jobStepDefinitionService.find(null, stepDefinitionId);
+        return jobStepDefinitionService.find(KapuaId.ANY, stepDefinitionId);
     }
 
 }
