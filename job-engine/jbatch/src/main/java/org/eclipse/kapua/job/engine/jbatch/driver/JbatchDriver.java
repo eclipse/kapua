@@ -146,7 +146,7 @@ public class JbatchDriver {
                 JobStep jobStep = jobStepIterator.next();
 
                 Step jslStep = new Step();
-                JobStepDefinition jobStepDefinition = STEP_DEFINITION_SERVICE.find(jobStep.getScopeId(), jobStep.getJobStepDefinitionId());
+                JobStepDefinition jobStepDefinition = STEP_DEFINITION_SERVICE.find(KapuaId.ANY, jobStep.getJobStepDefinitionId());
                 switch (jobStepDefinition.getStepType()) {
                     case GENERIC:
                         jslStep.setBatchlet(JobDefinitionBuildUtils.buildGenericStep(jobStepDefinition));
