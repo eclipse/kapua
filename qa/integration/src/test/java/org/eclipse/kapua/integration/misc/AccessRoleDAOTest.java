@@ -19,9 +19,9 @@ import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.AccessRoleCreator;
 import org.eclipse.kapua.service.authorization.access.AccessRoleListResult;
-import org.eclipse.kapua.service.authorization.access.AccessRole;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleDAO;
 import org.eclipse.kapua.service.authorization.access.shiro.AccessRoleImpl;
 import org.junit.Assert;
@@ -33,10 +33,10 @@ import org.mockito.Mockito;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.EntityType;
 import java.sql.SQLException;
@@ -162,7 +162,7 @@ public class AccessRoleDAOTest {
         Mockito.when(entityManager.find(AccessRoleImpl.class, accessRoleId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        Assert.assertTrue("True expected.", AccessRoleDAO.find(entityManager, scopeId, accessRoleId) instanceof AccessRole);
+        Assert.assertTrue("True expected.", AccessRoleDAO.find(entityManager, KapuaId.ANY, accessRoleId) instanceof AccessRole);
     }
 
     @Test(expected = NullPointerException.class)
@@ -274,6 +274,7 @@ public class AccessRoleDAOTest {
     @Test
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(AccessRoleImpl.class, accessRoleId)).thenReturn(entityToFindOrDelete);
+        Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
         Assert.assertTrue("True expected.", AccessRoleDAO.delete(entityManager, scopeId, accessRoleId) instanceof AccessRole);
     }

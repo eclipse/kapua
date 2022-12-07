@@ -34,10 +34,10 @@ import org.mockito.Mockito;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.EntityType;
 import java.sql.SQLException;
@@ -153,7 +153,7 @@ public class AccessPermissionDAOTest {
         Mockito.when(entityManager.find(AccessPermissionImpl.class, accessPermissionId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        Assert.assertTrue("True expected.", AccessPermissionDAO.find(entityManager, scopeId, accessPermissionId) instanceof AccessPermission);
+        Assert.assertTrue("True expected.", AccessPermissionDAO.find(entityManager, KapuaId.ANY, accessPermissionId) instanceof AccessPermission);
     }
 
     @Test(expected = NullPointerException.class)
@@ -265,6 +265,7 @@ public class AccessPermissionDAOTest {
     @Test
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(AccessPermissionImpl.class, accessPermissionId)).thenReturn(entityToFindOrDelete);
+        Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
         Assert.assertTrue("True expected.", AccessPermissionDAO.delete(entityManager, scopeId, accessPermissionId) instanceof AccessPermission);
     }
