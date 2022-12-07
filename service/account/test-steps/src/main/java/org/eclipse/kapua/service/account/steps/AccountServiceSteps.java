@@ -51,6 +51,7 @@ import org.eclipse.kapua.service.account.Organization;
 import org.eclipse.kapua.service.account.AccountQuery;
 import org.eclipse.kapua.service.account.AccountListResult;
 import org.eclipse.kapua.service.account.AccountAttributes;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -469,19 +470,17 @@ public class AccountServiceSteps extends TestBase {
         }
     }
 
-    @When("^I try to delete the system account$")
-    public void deleteSystemAccount()
-            throws Exception {
+    @When("I try to delete the system account")
+    public void deleteSystemAccount() throws Exception {
+        String adminAccountName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT);
+        Account adminAccount = accountService.findByName(adminAccountName);
 
-        String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        Account tmpAcc = accountService.findByName(adminUserName);
-
-        assertNotNull(tmpAcc);
-        assertNotNull(tmpAcc.getId());
+        Assert.assertNotNull(adminAccount);
+        Assert.assertNotNull(adminAccount.getId());
 
         try {
             primeException();
-            accountService.delete(SYS_SCOPE_ID, tmpAcc.getId());
+            accountService.delete(KapuaId.ANY, adminAccount.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -962,8 +961,8 @@ public class AccountServiceSteps extends TestBase {
     @When("^I look for my account by id and scope id$")
     public void findMyAccountByIdAndScopeId() throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        Account selfAccount = accountService.find(account.getId(), account.getScopeId());
-        stepData.put(LAST_ACCOUNT,selfAccount);
+        Account selfAccount = accountService.find(account.getId(), account.getId());
+        stepData.put(LAST_ACCOUNT, selfAccount);
     }
 
     @When("^I look for my account by name$")

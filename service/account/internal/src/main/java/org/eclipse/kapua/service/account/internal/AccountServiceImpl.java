@@ -260,8 +260,10 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         entityManagerSession.doTransactedAction(
                 EntityManagerContainer.<Account>create()
                         .onResultHandler(em -> {
-                            // Entity needs to be loaded in the context of the same EntityManger to be able to delete it afterwards
-                            Account account = AccountDAO.find(em, scopeId, accountId);
+                            Account account = scopeId.equals(accountId) ?
+                                    AccountDAO.find(em, KapuaId.ANY, accountId) :
+                                    AccountDAO.find(em, scopeId, accountId);
+
                             if (account == null) {
                                 throw new KapuaEntityNotFoundException(Account.TYPE, accountId);
                             }
