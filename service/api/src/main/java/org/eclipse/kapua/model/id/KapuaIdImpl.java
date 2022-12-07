@@ -34,33 +34,16 @@ public final class KapuaIdImpl implements KapuaId {
 
     @Override
     public String toString() {
-        return toStringId();
+        return KapuaId.toString(this);
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + getId().hashCode();
-        return result;
+        return KapuaId.hashCode(this);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass() && !(obj instanceof KapuaId)) {
-            return false;
-        }
-        KapuaId other = (KapuaId) obj;
-        if (!getId().equals(other.getId())) {
-            return false;
-        }
-        return true;
+        return KapuaId.areEquals(this, obj);
     }
-
 }
