@@ -73,6 +73,16 @@ public class ScopeId implements KapuaId {
 
     @Override
     public String toString() {
-        return getId().toString();
+        return KapuaId.toString(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return KapuaId.hashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return KapuaId.areEquals(this, obj);
     }
 }

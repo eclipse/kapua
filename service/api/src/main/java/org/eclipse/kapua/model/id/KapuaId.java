@@ -15,6 +15,7 @@ package org.eclipse.kapua.model.id;
 import org.eclipse.kapua.KapuaSerializable;
 import org.eclipse.kapua.model.KapuaEntity;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlTransient;
 import java.math.BigInteger;
 import java.util.Base64;
@@ -29,24 +30,37 @@ import java.util.Base64;
  */
 public interface KapuaId extends KapuaSerializable {
 
+
+    /**
+     * Identifies any {@link KapuaId}.
+     *
+     * @since 1.0.0
+     */
+    // FIXME: This is maybe worth to be moved to a ScopeId class
     @XmlTransient
     KapuaId ANY = new KapuaIdImpl(BigInteger.ONE.negate());
 
+    /**
+     * Identifies the {@link KapuaId} represented by 1.
+     *
+     * @since 1.0.0
+     */
+    // FIXME: This is maybe worth to be moved to a ScopeId class
     @XmlTransient
     KapuaId ONE = new KapuaIdImpl(BigInteger.ONE);
 
     /**
-     * Get the identifier
+     * Gets the numeric representation of the KapuaId.
      *
-     * @return
+     * @return The numeric representation of the KapuaId.
      * @since 1.0.0
      */
     BigInteger getId();
 
     /**
-     * Get the identifier Base64 URL encoded formatted.
+     * Produces the {@link Base64} representation of the {@link KapuaId}.
      *
-     * @return
+     * @return The {@link Base64} representation of the {@link KapuaId}.
      * @since 1.0.0
      */
     default String toCompactId() {
@@ -54,13 +68,76 @@ public interface KapuaId extends KapuaSerializable {
     }
 
     /**
-     * Get the identifier numeric String formatted.
+     * Produces the {@link String} representation of the {@link KapuaId}.
      *
-     * @return
+     * @return The {@link String} representation of the {@link KapuaId}.
      * @since 1.0.0
      */
     default String toStringId() {
-        return getId().toString();
+        return KapuaId.toString(this);
+    }
+
+    /**
+     * Returns the {@link String} representation of the given {@link KapuaId}.
+     * <p>
+     * It is meant to be used by all {@link KapuaId} implementation to {@code override} the {@link Object#toString()} method.
+     *
+     * @param kapuaId The {@link KapuaId} to represent in {@link String} form.
+     * @return The {@link String} representation of the given {@link KapuaId}.
+     * @since 2.0.0
+     */
+    static String toString(@NotNull KapuaId kapuaId) {
+        return kapuaId.getId().toString();
+    }
+
+    /**
+     * Checks whether two {@link KapuaId}s are equals comparing their {@link KapuaId#getId()}.
+     * <p>
+     * It is meant to be used by all {@link KapuaId} implementation to {@code override} the {@link Object#equals(Object)} method.
+     *
+     * @param aKapuaId    A {@link KapuaId}.
+     * @param otherObject Another {@link Object} to compare.
+     * @return {@code true} if they represent the same {@link KapuaId}, {@code false} otherwise.
+     * @since 2.0.0
+     */
+    static boolean areEquals(KapuaId aKapuaId, Object otherObject) {
+        if (aKapuaId == otherObject) {
+            return true;
+        }
+
+        if (aKapuaId == null || otherObject == null) {
+            return false;
+        }
+
+        if (!(otherObject instanceof KapuaId)) {
+            return false;
+        }
+
+        KapuaId otherKapuaId = (KapuaId) otherObject;
+        if (aKapuaId.getId() == null) {
+            if (otherKapuaId.getId() != null) {
+                return false;
+            }
+        } else if (!aKapuaId.getId().equals(otherKapuaId.getId())) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Generates a hash code of the given {@link KapuaId}.
+     * <p>
+     * It is meant to be used by all {@link KapuaId} implementation to {@code override} the {@link Object#hashCode()} method.
+     *
+     * @param kapuaId The {@link KapuaId} to hash.
+     * @return The hash code of the given {@link KapuaId}.
+     * @since 2.0.0
+     */
+    static int hashCode(@NotNull KapuaId kapuaId) {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (kapuaId.getId() == null ? 0 : kapuaId.getId().hashCode());
+        return result;
     }
 
 }
