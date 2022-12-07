@@ -30,6 +30,8 @@ import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
+import org.eclipse.kapua.model.KapuaNamedEntity;
+import org.eclipse.kapua.model.KapuaNamedEntityAttributes;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
@@ -83,7 +85,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
-
+import javax.validation.constraints.Null;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -185,37 +187,6 @@ public class ServiceDAO {
     }
 
     /**
-     * Find {@link KapuaEntity} utility method
-     *
-     * @param em       The {@link EntityManager} that holds the transaction.
-     * @param clazz    The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param scopeId  The {@link KapuaEntity} scopeId of the entity to be found.
-     * @param entityId The {@link KapuaEntity} {@link KapuaId} of the entity to be found.
-     * @since 1.0.0
-     */
-    public static <E extends KapuaEntity> E find(@NonNull EntityManager em, @NonNull Class<E> clazz, @Nullable KapuaId scopeId, @NonNull KapuaId entityId) {
-        //
-        // Checking existence
-        E entityToFind = em.find(clazz, entityId);
-
-        //
-        // Return if not null and scopeIds matches
-        if (entityToFind != null) {
-            if (scopeId == null) {
-                return entityToFind;
-            } else if (entityToFind.getScopeId() == null) {
-                return entityToFind;
-            } else if (entityToFind.getScopeId().equals(scopeId)) {
-                return entityToFind;
-            } else {
-                return null;
-            }
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * Update {@link KapuaUpdatableEntity} utility method.
      *
      * @param em     The {@link EntityManager} that holds the transaction.
@@ -248,35 +219,75 @@ public class ServiceDAO {
     }
 
     /**
-     * Delete {@link KapuaEntity} utility method
+     * Finds a {@link KapuaEntity}.
      *
      * @param em       The {@link EntityManager} that holds the transaction.
      * @param clazz    The {@link KapuaEntity} class. This must be the implementing {@code class}.
-     * @param scopeId  The {@link KapuaEntity} scopeId of the entity to be deleted.
-     * @param entityId The {@link KapuaEntity} {@link KapuaId} of the entity to be deleted.
-     * @return The deleted {@link KapuaEntity}.
-     * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
+     * @param scopeId  The {@link KapuaEntity#getScopeId()} the entity to be found.
+     * @param entityId The {@link KapuaEntity#getId()} of the entity to be found.
      * @since 1.0.0
      */
-    public static <E extends KapuaEntity> E delete(@NonNull EntityManager em, @NonNull Class<E> clazz, @NonNull KapuaId scopeId, @NonNull KapuaId entityId)
-            throws KapuaEntityNotFoundException {
+    public static <E extends KapuaEntity> E find(@NonNull EntityManager em, @NonNull Class<E> clazz, @Null KapuaId scopeId, @NonNull KapuaId entityId) {
         //
         // Checking existence
-        E entityToDelete = find(em, clazz, scopeId, entityId);
+        E entityToFind = em.find(clazz, entityId);
+
+        // If 'null' ScopeId has been requested, it means that we need to look for ANY ScopeId.
+        KapuaId scopeIdToMatch = scopeId != null ? scopeId : KapuaId.ANY;
 
         //
-        // Deleting if not null and scopeIds matches
-        if (entityToDelete != null) {
-            em.remove(entityToDelete);
-            em.flush();
+        // Return if not null and ScopeIds matches
+        if (entityToFind != null) {
+            if (KapuaId.ANY.equals(scopeIdToMatch)) { // If requested ScopeId is ANY, return whatever Entity has been found
+                return entityToFind;
+            } else if (scopeIdToMatch.equals(entityToFind.getScopeId())) { // If a specific ScopeId is requested, return Entity if given ScopeId matches Entity.scopeId
+                return entityToFind;
+            } else { // If no match, return no result
+                return null;
+            }
         } else {
-            throw new KapuaEntityNotFoundException(clazz.getSimpleName(), entityId);
+            return null;
         }
-        return entityToDelete;
     }
 
     /**
-     * Find by fields {@link KapuaEntity} utility method
+     * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
+     *
+     * @param em    The {@link EntityManager} that holds the transaction.
+     * @param clazz The {@link KapuaNamedEntity} class. This must be the implementing {@code class}.
+     * @param value The value of the {@link KapuaNamedEntity#getName()} to search.
+     * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
+     * @throws NonUniqueResultException When more than one result is returned
+     * @since 2.0.0
+     */
+    @Nullable
+    public static <E extends KapuaNamedEntity> E findByName(@NonNull EntityManager em,
+                                                            @NonNull Class<E> clazz,
+                                                            @NonNull Object value) {
+        return findByName(em, clazz, KapuaId.ANY, value);
+    }
+
+    /**
+     * Finds a {@link KapuaNamedEntity} by {@link KapuaNamedEntity#getName()}.
+     *
+     * @param em      The {@link EntityManager} that holds the transaction.
+     * @param clazz   The {@link KapuaNamedEntity} class. This must be the implementing {@code class}.
+     * @param scopeId The {@link KapuaNamedEntity#getScopeId()} in which to look for results.
+     * @param value   The value of the field from which to search.
+     * @return The {@link KapuaNamedEntity} found, or {@code null} if not found.
+     * @throws NonUniqueResultException When more than one result is returned.
+     * @since 1.0.0
+     */
+    @Nullable
+    public static <E extends KapuaNamedEntity> E findByName(@NonNull EntityManager em,
+                                                            @NonNull Class<E> clazz,
+                                                            @NonNull KapuaId scopeId,
+                                                            @NonNull Object value) {
+        return findByField(em, clazz, scopeId, KapuaNamedEntityAttributes.NAME, value);
+    }
+
+    /**
+     * Find a {@link KapuaEntity} by one of its fields.
      *
      * @param em    The {@link EntityManager} that holds the transaction.
      * @param clazz The {@link KapuaEntity} class. This must be the implementing {@code class}.
@@ -291,7 +302,7 @@ public class ServiceDAO {
                                                         @NonNull Class<E> clazz,
                                                         @NonNull String name,
                                                         @NonNull Object value) {
-        return findByField(em, clazz, null, name, value);
+        return findByField(em, clazz, KapuaId.ANY, name, value);
     }
 
     /**
@@ -309,7 +320,7 @@ public class ServiceDAO {
     @Nullable
     public static <E extends KapuaEntity> E findByField(@NonNull EntityManager em,
                                                         @NonNull Class<E> clazz,
-                                                        @Nullable KapuaId scopeId,
+                                                        @NonNull KapuaId scopeId,
                                                         @NonNull String name,
                                                         @NonNull Object value) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -329,7 +340,7 @@ public class ServiceDAO {
 
         ParameterExpression<KapuaId> pScopeId = null;
 
-        if (scopeId != null) {
+        if (!KapuaId.ANY.equals(scopeId)) {
             pScopeId = cb.parameter(KapuaId.class, KapuaEntityAttributes.SCOPE_ID);
             Predicate scopeIdPredicate = cb.equal(entityRoot.get(KapuaEntityAttributes.SCOPE_ID), pScopeId);
 
@@ -406,7 +417,9 @@ public class ServiceDAO {
         //
         // WHERE
         QueryPredicate kapuaPredicates = kapuaQuery.getPredicate();
-        if (kapuaQuery.getScopeId() != null) {
+        // Add ScopeId to query if has been defined one specific
+        if (kapuaQuery.getScopeId() != null && // Support for old method of querying for all ScopeIds (e.g.: query.setScopeId(null)
+                !kapuaQuery.getScopeId().equals(KapuaId.ANY)) {// Support for new method of querying for all ScopeIds (e.g.: query.setScopeId(KapuaId.ANY)
 
             AndPredicate scopedAndPredicate = kapuaQuery.andPredicate(
                     kapuaQuery.attributePredicate(KapuaEntityAttributes.SCOPE_ID, kapuaQuery.getScopeId())
@@ -515,7 +528,9 @@ public class ServiceDAO {
         //
         // WHERE
         QueryPredicate kapuaPredicates = kapuaQuery.getPredicate();
-        if (kapuaQuery.getScopeId() != null) {
+        // Add ScopeId to query if has been defined one specific
+        if (kapuaQuery.getScopeId() != null && // Support for old method of querying for all ScopeIds (e.g.: query.setScopeId(null)
+                !kapuaQuery.getScopeId().equals(KapuaId.ANY)) {// Support for new method of querying for all ScopeIds (e.g.: query.setScopeId(KapuaId.ANY)
 
             AndPredicate scopedAndPredicate = kapuaQuery.andPredicate();
 
@@ -549,6 +564,41 @@ public class ServiceDAO {
 
         return query.getSingleResult();
     }
+
+    /**
+     * Deletes a {@link KapuaEntity}.
+     *
+     * @param em       The {@link EntityManager} that holds the transaction.
+     * @param clazz    The {@link KapuaEntity} class. This must be the implementing {@code class}.
+     * @param scopeId  The {@link KapuaEntity#getScopeId()} of the entity to be deleted.
+     * @param entityId The {@link KapuaEntity#getId()} of the entity to be deleted.
+     * @return The deleted {@link KapuaEntity}.
+     * @throws KapuaEntityNotFoundException If the {@link KapuaEntity} does not exists.
+     * @since 1.0.0
+     */
+    public static <E extends KapuaEntity> E delete(@NonNull EntityManager em, @NonNull Class<E> clazz, @NonNull KapuaId scopeId, @NonNull KapuaId entityId)
+            throws KapuaEntityNotFoundException {
+        //
+        // Checking existence
+        E entityToDelete = find(em, clazz, scopeId, entityId);
+
+        //
+        // Deleting if found
+        if (entityToDelete != null) {
+            em.remove(entityToDelete);
+            em.flush();
+        } else {
+            throw new KapuaEntityNotFoundException(clazz.getSimpleName(), entityId);
+        }
+
+        //
+        // Returning deleted entity
+        return entityToDelete;
+    }
+
+    //
+    // Private Methods
+    //
 
     /**
      * Handles {@link QueryPredicate} contained of a {@link KapuaQuery}.
