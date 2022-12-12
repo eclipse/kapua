@@ -401,15 +401,15 @@ public class AccountServiceSteps extends TestBase {
 
     @When("I try to delete the system account")
     public void deleteSystemAccount() throws Exception {
-        String adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
-        Account tmpAcc = accountService.findByName(adminUserName);
+        String adminAccountName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_ACCOUNT);
+        Account adminAccount = accountService.findByName(adminAccountName);
 
-        Assert.assertNotNull(tmpAcc);
-        Assert.assertNotNull(tmpAcc.getId());
+        Assert.assertNotNull(adminAccount);
+        Assert.assertNotNull(adminAccount.getId());
 
         try {
             primeException();
-            accountService.delete(SYS_SCOPE_ID, tmpAcc.getId());
+            accountService.delete(KapuaId.ANY, adminAccount.getId());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -841,7 +841,7 @@ public class AccountServiceSteps extends TestBase {
     @When("I look for my account by id and scope id")
     public void findMyAccountByIdAndScopeId() throws Exception {
         Account account = (Account) stepData.get(LAST_ACCOUNT);
-        Account selfAccount = accountService.find(account.getId(), account.getScopeId());
+        Account selfAccount = accountService.find(account.getId(), account.getId());
         stepData.put(LAST_ACCOUNT, selfAccount);
     }
 

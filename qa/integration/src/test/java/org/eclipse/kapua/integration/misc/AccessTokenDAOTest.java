@@ -35,13 +35,12 @@ import javax.persistence.EntityExistsException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.Predicate;
-
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.EntityType;
 import java.sql.SQLException;
@@ -217,7 +216,7 @@ public class AccessTokenDAOTest {
         Mockito.when(entityManager.find(AccessTokenImpl.class, accessTokenId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        Assert.assertTrue("True expected.", AccessTokenDAO.find(entityManager, scopeId, accessTokenId) instanceof AccessToken);
+        Assert.assertTrue("True expected.", AccessTokenDAO.find(entityManager, KapuaId.ANY, accessTokenId) instanceof AccessToken);
     }
 
     @Test(expected = NullPointerException.class)
@@ -439,6 +438,7 @@ public class AccessTokenDAOTest {
     @Test
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(AccessTokenImpl.class, accessTokenId)).thenReturn(entityToFindOrDelete);
+        Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
         Assert.assertTrue("True expected.", AccessTokenDAO.delete(entityManager, scopeId, accessTokenId) instanceof AccessToken);
     }

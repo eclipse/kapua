@@ -25,7 +25,6 @@ import org.eclipse.kapua.model.KapuaEntity;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,12 +34,12 @@ import org.mockito.Mockito;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.Selection;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.metamodel.EntityType;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
+import javax.persistence.metamodel.EntityType;
 import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -177,22 +176,25 @@ public class EventStoreDAOTest {
         }
 
         //entityToFind not null
-        for (KapuaId event : eventIds) {
+        for (KapuaId eventId : eventIds) {
             eventStoreRecordImpl.setScopeId(null);
-            Mockito.when(entityManager.find(EventStoreRecordImpl.class, event)).thenReturn(eventStoreRecordImpl);
-            Assert.assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.find(entityManager, null, event));
-            Assert.assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.find(entityManager, scopeIdOne, event));
+            Mockito.when(entityManager.find(EventStoreRecordImpl.class, eventId)).thenReturn(eventStoreRecordImpl);
+            Assert.assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.find(entityManager, null, eventId));
+            Assert.assertNull("Expected and actual values should be the same.", EventStoreDAO.find(entityManager, scopeIdOne, eventId));
+
             eventStoreRecordImpl.setScopeId(scopeIdOne);
-            Assert.assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.find(entityManager, scopeIdOne, event));
+            Assert.assertEquals("Expected and actual values should be the same.", eventStoreRecordImpl, EventStoreDAO.find(entityManager, scopeIdOne, eventId));
+
             eventStoreRecordImpl.setScopeId(scopeIdTen);
-            Assert.assertNull("Null expected", EventStoreDAO.find(entityManager, scopeIdOne, event));
+            Assert.assertNull("Null expected", EventStoreDAO.find(entityManager, scopeIdOne, eventId));
+
             try {
-                EventStoreDAO.find(null, scopeIdOne, event);
+                EventStoreDAO.find(null, scopeIdOne, eventId);
             } catch (Exception e) {
                 Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
             }
             try {
-                EventStoreDAO.find(null, null, event);
+                EventStoreDAO.find(null, null, eventId);
             } catch (Exception e) {
                 Assert.assertEquals("NullPointerException expected.", nullPointerException.toString(), e.toString());
             }
@@ -246,7 +248,7 @@ public class EventStoreDAOTest {
         Mockito.when(entityManager.createQuery(criteriaQuery1)).thenReturn(query);
         for (long number : longNumberList) {
             Mockito.doReturn(number).when(query).getSingleResult();
-        Assert.assertThat("Long object expected.", EventStoreDAO.count(entityManager, kapuaQuery), IsInstanceOf.instanceOf(Long.class));
+            Assert.assertThat("Long object expected.", EventStoreDAO.count(entityManager, kapuaQuery), IsInstanceOf.instanceOf(Long.class));
         }
     }
 
@@ -271,19 +273,6 @@ public class EventStoreDAOTest {
                 EventStoreDAO.delete(null, scopeId, eventIds[1]);
             } catch (Exception e) {
                 Assert.assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
-            }
-        }
-
-        //entityToDelete not null
-        for (KapuaId eventId : eventIds) {
-            for (KapuaId scopeId : scopeIds) {
-                Mockito.when(entityManager.find(EventStoreRecordImpl.class, eventId)).thenReturn(eventStoreRecordImpl);
-                Assert.assertEquals(eventStoreRecordImpl, EventStoreDAO.delete(entityManager, scopeId, eventId));
-                try {
-                    EventStoreDAO.delete(null, scopeId, eventId);
-                } catch (Exception e) {
-                    Assert.assertEquals("NullPointerException expected", nullPointerException.toString(), e.toString());
-                }
             }
         }
     }

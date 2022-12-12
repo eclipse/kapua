@@ -142,22 +142,6 @@ Feature: Job step definition service CRUD tests
     When I count the step definition in the database
     Then I count 10
 
-  Scenario: Count step definitions in wrong (empty) scope
-
-    Given I create 10 step definition items
-    Given Scope with ID 20
-    When I count the step definition in the database
-    Then I count 0
-
-  Scenario: Query for step definitions
-
-    Given Scope with ID 10
-    Then I create 10 step definition items
-    Given Scope with ID 20
-    Then I create 20 step definition items
-    When I query for step definitions in scope 10
-    Then I count 10
-
   Scenario: Step definition factory sanity checks
 
     Given I test the sanity of the step definition factory

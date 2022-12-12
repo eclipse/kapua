@@ -186,7 +186,7 @@ public class JobStepDefinitionServiceSteps extends JobServiceTestBase {
         primeException();
         try {
             stepData.remove(JOB_STEP_DEFINITION);
-            JobStepDefinition stepDefinition = jobStepDefinitionService.find(getCurrentScopeId(), currentStepDefId);
+            JobStepDefinition stepDefinition = jobStepDefinitionService.find(KapuaId.ANY, currentStepDefId);
             stepData.put(JOB_STEP_DEFINITION, stepDefinition);
         } catch (KapuaException ex) {
             verifyException(ex);
@@ -215,12 +215,12 @@ public class JobStepDefinitionServiceSteps extends JobServiceTestBase {
 
     @When("I count the step definition in the database")
     public void countStepDefinitionInDatabase() throws Exception {
-        updateCount(() -> (int) jobStepDefinitionService.count(jobStepDefinitionFactory.newQuery(getCurrentScopeId())));
+        updateCount(() -> (int) jobStepDefinitionService.count(jobStepDefinitionFactory.newQuery(KapuaId.ANY)));
     }
 
     @When("I query for step definitions in scope {int}")
     public void countStepDefinitijonsInScope(Integer id) throws Exception {
-        updateCount(() -> jobStepDefinitionService.query(jobStepDefinitionFactory.newQuery(getKapuaId(id))).getSize());
+        updateCount(() -> jobStepDefinitionService.query(jobStepDefinitionFactory.newQuery(KapuaId.ANY)).getSize());
     }
 
     @When("I delete the step definition")
@@ -228,7 +228,7 @@ public class JobStepDefinitionServiceSteps extends JobServiceTestBase {
         KapuaId currentStepDefId = (KapuaId) stepData.get(CURRENT_JOB_STEP_DEFINITION_ID);
         primeException();
         try {
-            jobStepDefinitionService.delete(getCurrentScopeId(), currentStepDefId);
+            jobStepDefinitionService.delete(KapuaId.ANY, currentStepDefId);
         } catch (KapuaException ex) {
             verifyException(ex);
         }

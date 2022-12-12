@@ -33,10 +33,10 @@ import org.mockito.Mockito;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.EntityType;
 import java.sql.SQLException;
@@ -189,7 +189,7 @@ public class RoleDAOTest {
         Mockito.when(entityManager.find(RoleImpl.class, roleId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        Assert.assertTrue("True expected.", RoleDAO.find(entityManager, scopeId, roleId) instanceof Role);
+        Assert.assertTrue("True expected.", RoleDAO.find(entityManager, KapuaId.ANY, roleId) instanceof Role);
     }
 
     @Test(expected = NullPointerException.class)
@@ -301,6 +301,7 @@ public class RoleDAOTest {
     @Test
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(RoleImpl.class, roleId)).thenReturn(entityToFindOrDelete);
+        Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
         Assert.assertTrue("True expected.", RoleDAO.delete(entityManager, scopeId, roleId) instanceof Role);
     }

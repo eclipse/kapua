@@ -33,10 +33,10 @@ import org.mockito.Mockito;
 import javax.persistence.EntityExistsException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.EntityType;
 import java.sql.SQLException;
@@ -49,7 +49,7 @@ public class AccessInfoDAOTest {
 
     EntityManager entityManager;
     AccessInfoCreator accessInfoCreator;
-   KapuaId scopeId, accessInfoId;
+    KapuaId scopeId, accessInfoId;
     AccessInfoImpl entityToFindOrDelete;
     KapuaQuery kapuaQuery;
 
@@ -154,7 +154,7 @@ public class AccessInfoDAOTest {
         Mockito.when(entityManager.find(AccessInfoImpl.class, accessInfoId)).thenReturn(entityToFindOrDelete);
         Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(null);
 
-        Assert.assertTrue("True expected.", AccessInfoDAO.find(entityManager, scopeId, accessInfoId) instanceof AccessInfo);
+        Assert.assertTrue("True expected.", AccessInfoDAO.find(entityManager, KapuaId.ANY, accessInfoId) instanceof AccessInfo);
     }
 
     @Test(expected = NullPointerException.class)
@@ -266,6 +266,7 @@ public class AccessInfoDAOTest {
     @Test
     public void deleteTest() throws KapuaEntityNotFoundException {
         Mockito.when(entityManager.find(AccessInfoImpl.class, accessInfoId)).thenReturn(entityToFindOrDelete);
+        Mockito.when(entityToFindOrDelete.getScopeId()).thenReturn(KapuaId.ONE);
 
         Assert.assertTrue("True expected.", AccessInfoDAO.delete(entityManager, scopeId, accessInfoId) instanceof AccessInfo);
     }
