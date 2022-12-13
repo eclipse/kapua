@@ -18,7 +18,7 @@
     <parent>
         <artifactId>kapua-consumer</artifactId>
         <groupId>org.eclipse.kapua</groupId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>2.0.0-JAXB-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -459,7 +459,7 @@
                                     <resource>META-INF/persistence.xml</resource>
                                 </transformer>
                                 <transformer
-                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <Main-Class>org.eclipse.kapua.consumer.telemetry.TelemetryApplication</Main-Class>
                                     </manifestEntries>
@@ -487,7 +487,7 @@
                                     <resource>META-INF/services/org.eclipse.kapua.translator.Translator</resource>
                                 </transformer>
                             </transformers>
-                            <artifactSet />
+                            <artifactSet/>
                             <outputFile>${project.build.directory}/kapua-consumer-telemetry-${project.version}-app.jar</outputFile>
                         </configuration>
                     </execution>

@@ -16,19 +16,21 @@
 ![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https:%2F%2Fci.eclipse.org%2Fkapua%2Fjob%2Fdevelop-build&label=Jenkins%20Build&logo=jenkins) <br/>
 ![Jenkins](https://img.shields.io/jenkins/tests?compact_message&failed_label=%E2%9D%8C&jobUrl=https%3A%2F%2Fci.eclipse.org%2Fkapua%2Fjob%2Fdevelop%2F&label=Jenkins%20CI&passed_label=%E2%9C%85&skipped_label=%E2%9D%95&logo=jenkins) <br/>
 
-[Eclipse Kapua&trade;](http://eclipse.org/kapua) is a modular platform providing the services required to manage IoT gateways and smart edge devices. Kapua provides a core integration framework and an initial set of core IoT services including a device registry, device management services, messaging services, data management, and application enablement.
-
+[Eclipse Kapua&trade;](http://eclipse.org/kapua) is a modular platform providing the services required to manage IoT gateways and smart edge devices. Kapua provides a core integration framework and an initial set of core IoT services including a device registry, device management services, messaging
+services, data management, and application enablement.
 
 ## Quick Start Guide
 
 Running an Eclipse Kapua&trade; demo instance on your local machine is a simple task.
 
 Eclipse Kapua&trade; runs as distributed application that exposes three basic services:
+
 * The Messaging Service
 * The RESTful API
 * The Web Administration Console
 
 Two more backend services are required that implement the data tier:
+
 * The Event Bus Service
 * The SQL database
 * The NoSQL datastore
@@ -46,13 +48,14 @@ Before starting, check that your environment has the following prerequisites:
 
 ### Demo Setup
 
-The team maintains some docker images in a Docker Hub repository at [Kapua Repository](https://hub.docker.com/r/kapua/). Check the repo to view the list of available images, if you haven't found one fitting your needs you may create your own. Please refer to the paragraph [More deployment info](#more-deployment-info) to find more about creating your own images and/or alternative demo deployment scenarios.
+The team maintains some docker images in a Docker Hub repository at [Kapua Repository](https://hub.docker.com/r/kapua/). Check the repo to view the list of available images, if you haven't found one fitting your needs you may create your own. Please refer to the
+paragraph [More deployment info](#more-deployment-info) to find more about creating your own images and/or alternative demo deployment scenarios.
 
 ***
 **Note:** the Docker Hub repository mentioned above is not the official project repository from Eclipse Foundation.
 ***
 
-Suppose the target is the current snapshot 2.0.0-SNAPSHOT.
+Suppose the target is the current snapshot 2.0.0-JAXB-SNAPSHOT.
 
 * Clone Eclipse Kapua&trade; into a local directory
 * Open an OS shell and move to Kapua project root directory
@@ -104,12 +107,12 @@ On Windows (PowerShell):
 ### Access
 
 Once the containers are running, the Kapua services can be accessed. Eclipse Kapua&trade; is a multi tenant
-system. The demo installation comes with one default tenant, called _kapua-sys_, which is also the root tenant. 
+system. The demo installation comes with one default tenant, called _kapua-sys_, which is also the root tenant.
 In Eclipse Kapua&trade; a _tenant_ is commonly referred to as an _account_.
 
 #### The console
 
-The administration console is available at [http://localhost:8080/](http://localhost:8080/). 
+The administration console is available at [http://localhost:8080/](http://localhost:8080/).
 Copy paste the URL above to a Web browser, as the login screen appears, type the following credentials:
 
 * Username: `kapua-sys`
@@ -183,6 +186,7 @@ the IP address of your docker instance.
 Kapua comes with a framework that you can use to simulate Kura gateways. It can be used to test your Kapua deployments easily. See [Simulator documentation](docs/user-manual/en/simulator.md) for more info.
 
 #### More deployment info
+
 Installing and running a demo using Docker is easy, but it's not the only way. There are other scenarios that the users may be interested in. We provide advanced setup scenarios in the following guides:
 
 * [Running with Docker](deployment/docker/README.md)
