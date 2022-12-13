@@ -840,20 +840,24 @@ public class ServiceDAO {
     /**
      * Utility method that selects the correct {@link Root} attribute.
      * <p>
-     * This method handles {@link Embedded} attributes and nested {@link KapuaEntity}es up to one level of nesting.
+     * This method handles {@link Embedded} attributes and nested {@link KapuaEntity}es.
      * <p>
      * Filter predicates takes advantage of the dot notation to access {@link Embedded} attributes and nested {@link KapuaEntity}es.
      *
      * @param entityRoot    The {@link Root} entity from which extract the attribute.
-     * @param attributeName The full attribute name. It can contain at maximum one '.' separator.
+     * @param attributeName The full attribute name.
      * @return The {@link Path} expression that matches the given {@code attributeName} parameter.
      * @since 1.0.0
      */
     private static <E, P> Path<P> extractAttribute(@NonNull Root<E> entityRoot, @NonNull String attributeName) {
-
-        Path<P> expressionPath;
+        Path<P> expressionPath = null;
         if (attributeName.contains(ATTRIBUTE_SEPARATOR)) {
-            expressionPath = entityRoot.get(attributeName.split(ATTRIBUTE_SEPARATOR_ESCAPED)[0]).get(attributeName.split(ATTRIBUTE_SEPARATOR_ESCAPED)[1]);
+            String[] pathComponents = attributeName.split(ATTRIBUTE_SEPARATOR_ESCAPED);
+            Path<P> rootPath = entityRoot.get(pathComponents[0]);
+            for (int i = 1; i < pathComponents.length; i++) {
+                expressionPath = rootPath.get(pathComponents[i]);
+                rootPath = expressionPath;
+            }
         } else {
             expressionPath = entityRoot.get(attributeName);
         }
