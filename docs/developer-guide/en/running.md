@@ -36,6 +36,15 @@ To stop Kapua, run
 
     kapua/deployment/docker/docker-undeploy.sh
 
+#### Advanced options
+
+It's possible to deploy kapua with some advanced options that are exposed in this document:
+
+kapua/deployment/docker/README.md
+
+If you are interested in having debugging/logging capabilities we recommend you to consult it.
+
+
 ## OpenShift
 
 OpenShift is a PaaS (Platform As A Service) platform based on Kubernetes. Kapua supports deployments
@@ -49,7 +58,7 @@ development purposes, please install Linux
 ### Starting OpenShift cluster
 
 For running Kapua on an OpenShift you need to have OpenShift cluster installed and started in the first place. You can
-install it by yourself or rely on the script we provides:
+install it by yourself or rely on the script we provide:
 
     sudo kapua/deployment/openshift/openshift-start.sh
 

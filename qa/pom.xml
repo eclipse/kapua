@@ -40,7 +40,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <systemPropertyVariables>
-                        <groups>'!org.eclipse.kapua.test.junit.JUnitTests'</groups>
                         <commons.settings.hotswap>true</commons.settings.hotswap>
                         <commons.db.schema>kapuadb</commons.db.schema>
                         <crypto.secret.key>kapuaTestsKey!!!</crypto.secret.key>

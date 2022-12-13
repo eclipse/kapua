@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 #RUNS BOTH UNIT AND INTEGRATION TESTS AND FINALLY BUILDS THE PROJECT
-#FIRT, UNIT TESTS ARE LAUNCHED, IF THEY PASS INTEGRATION TESTS ARE THEN EXECUTED
+#FIRT, JUNIT TESTS ARE LAUNCHED, IF THEY PASS CUCUMBER TESTS ARE THEN EXECUTED
 
 cucumberTags=('@env_none' '@env_docker_base' '@env_docker')
-testDescriptions=('minimal integration tests with embedded services and no containers' 'integration tests with a minimal set of containers' 'integration tests with a full deployment of containers')
+testDescriptions=('minimal cucumber tests with embedded services and no containers' 'cucumber tests with a minimal set of containers' 'cucumber tests with a full deployment of containers')
 exitCodesTests=() #will contain exit code for each batch of tests
 
 #checks if the last build command exited normally and exits if necessary
@@ -17,7 +17,7 @@ checkErrorLastBuild() {
 
 #print in tabular form the building phases for each batch of tests
 printTestResults() {
-  printf "Unit tests passed, build launched with integration tests results:\n";
+  printf "junit tests passed, build launched with cucumber tests results:\n";
   printf "%s\t\t\t%s\t\t\t%s\n\n" "OUTCOME" "CUCUMBER_TAG" "BRIEF DESCRIPTION";
   for i in "${!cucumberTags[@]}"
   do
@@ -38,12 +38,13 @@ grep -q "127.0.0.1 message-broker" /etc/hosts || { echo "password required to ch
 
 echo "Started junit tests";
 mvn clean verify -Dgroups='org.eclipse.kapua.qa.markers.junit.JUnitTests' -DskipITs=true;
-checkErrorLastBuild "error on junit tests. Execution terminated because it's pointless to proceed with integration tests";
+checkErrorLastBuild "error on junit tests. Execution terminated because it's pointless to proceed with cucumber tests";
 for tag in "${cucumberTags[@]}"
 do
-	echo "Started integration tests tagged as $tag";
+	echo "Started cucumber tests tagged as $tag";
 	bash -c 'mvn verify -Dgroups="!org.eclipse.kapua.qa.markers.junit.JUnitTests" -Dcucumber.filter.tags=$0' $tag;
-	exitCodesTests+=($?);
+	checkErrorLastBuild "error while building with cucumber tests tagged as <$tag>...building has been terminated.
+	You can view logs under qa/integration/target/surefire-reports/ for results of the precise tests";
 done
+echo "Started final, complete build"
 mvn install -DskipTests=true #finally, build completely the project
-printTestResults;
