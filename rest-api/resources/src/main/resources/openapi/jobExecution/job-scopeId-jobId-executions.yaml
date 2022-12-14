@@ -28,7 +28,7 @@ paths:
         - $ref: '../openapi.yaml#/components/parameters/askTotalCount'
       responses:
         200:
-          description: The list of the Jobs available in the Scope
+          description: The list of the Executions of the Job
           content:
             application/json:
               schema:
