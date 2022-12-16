@@ -34,13 +34,13 @@ public interface MfaAuthenticator {
     /**
      * Validates a code generated with the authenticator app.
      *
-     * @param encryptedSecret  The encoded secret key
+     * @param mfaSecretKey     The MFA secret key.
      * @param verificationCode The verification code
-     * @return {@code true} if the verficationCode is valid, {@code false} otherwise
+     * @return {@code true} if the verficationCode is valid, {@code false} otherwise.
      * @throws KapuaException
      * @since 1.3.0
      */
-    boolean authorize(String encryptedSecret, int verificationCode) throws KapuaException;
+    boolean authorize(String mfaSecretKey, int verificationCode) throws KapuaException;
 
     /**
      * Validates a scratch code.

@@ -21,7 +21,6 @@ import org.eclipse.kapua.commons.util.log.ConfigurationPrinter;
 import org.eclipse.kapua.service.authentication.mfa.MfaAuthenticator;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSettingKeys;
-import org.eclipse.kapua.service.authentication.shiro.utils.AuthenticationUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -89,19 +88,17 @@ public class MfaAuthenticatorImpl implements MfaAuthenticator {
     }
 
     @Override
-    public boolean authorize(String encryptedSecret, int verificationCode) throws KapuaException {
+    public boolean authorize(String mfaSecretKey, int verificationCode) throws KapuaException {
         //
         // Argument validation
-        ArgumentValidator.notNull(encryptedSecret, "encryptedSecret");
+        ArgumentValidator.notNull(mfaSecretKey, "mfaSecretKey");
         ArgumentValidator.notNegative(verificationCode, "verificationCode");
 
         //
         // Do check
-        String secret = AuthenticationUtils.decryptAes(encryptedSecret);
-
         GoogleAuthenticator ga = new GoogleAuthenticator(GOOGLE_AUTHENTICATOR_CONFIG);
 
-        return ga.authorize(secret, verificationCode);
+        return ga.authorize(mfaSecretKey, verificationCode);
     }
 
     @Override
