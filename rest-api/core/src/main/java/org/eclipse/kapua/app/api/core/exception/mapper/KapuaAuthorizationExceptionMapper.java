@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
-import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
+import org.eclipse.kapua.service.authorization.exception.KapuaAuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

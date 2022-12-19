@@ -51,6 +51,7 @@ import org.eclipse.kapua.service.authentication.credential.CredentialService;
 import org.eclipse.kapua.service.authentication.credential.CredentialType;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
 import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.shiro.exceptions.MfaRequiredException;
 import org.eclipse.kapua.service.authentication.shiro.session.ShiroSessionKeys;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaAuthenticationSetting;

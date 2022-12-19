@@ -63,7 +63,7 @@ import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.authorization.role.RoleCreator;
 import org.eclipse.kapua.service.authorization.role.RoleFactory;
 import org.eclipse.kapua.service.authorization.role.RoleService;
-import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
+import org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
 import org.eclipse.kapua.service.endpoint.EndpointInfo;
 import org.eclipse.kapua.service.endpoint.EndpointInfoDomain;

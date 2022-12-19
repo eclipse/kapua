@@ -42,8 +42,8 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValida
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
-import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationErrorCodes;
-import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
+import org.eclipse.kapua.service.authorization.exception.KapuaAuthorizationErrorCodes;
+import org.eclipse.kapua.service.authorization.exception.KapuaAuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -171,12 +171,12 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(AccessInfoAttributes.USER_ID, userId));
         return entityManagerSession.doAction(EntityManagerContainer.<AccessInfo>create().onResultHandler(em -> {
-            AccessInfoListResult result = AccessInfoDAO.query(em, query);
-            if (!result.isEmpty()) {
-                return result.getFirstItem();
-            }
-            return null;
-        }).onBeforeHandler(() -> (AccessInfo) ((AccessInfoCache) entityCache).getByUserId(scopeId, userId))
+                    AccessInfoListResult result = AccessInfoDAO.query(em, query);
+                    if (!result.isEmpty()) {
+                        return result.getFirstItem();
+                    }
+                    return null;
+                }).onBeforeHandler(() -> (AccessInfo) ((AccessInfoCache) entityCache).getByUserId(scopeId, userId))
                 .onAfterHandler((entity) -> entityCache.put(entity)));
     }
 

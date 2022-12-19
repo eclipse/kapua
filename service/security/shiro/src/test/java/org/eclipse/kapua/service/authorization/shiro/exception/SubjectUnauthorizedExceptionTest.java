@@ -13,6 +13,8 @@
 package org.eclipse.kapua.service.authorization.shiro.exception;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
+import org.eclipse.kapua.service.authorization.exception.KapuaAuthorizationErrorCodes;
+import org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.junit.Assert;
 import org.junit.Before;

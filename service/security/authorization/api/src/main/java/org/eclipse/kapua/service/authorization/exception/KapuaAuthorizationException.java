@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.shiro.exception;
+package org.eclipse.kapua.service.authorization.exception;
 
 import org.eclipse.kapua.KapuaException;
 
@@ -56,7 +56,7 @@ public class KapuaAuthorizationException extends KapuaException {
     }
 
     @Override
-    protected String getKapuaErrorMessagesBundle() {
+    public String getKapuaErrorMessagesBundle() {
         return KAPUA_ERROR_MESSAGES;
     }
 }
