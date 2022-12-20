@@ -36,8 +36,8 @@ public class KapuaLocatorExceptionTest {
                 KapuaLocatorErrorCodes.FACTORY_UNAVAILABLE, KapuaLocatorErrorCodes.FACTORY_PROVIDER_INVALID, KapuaLocatorErrorCodes.COMPONENT_UNAVAILABLE,
                 KapuaLocatorErrorCodes.COMPONENT_PROVIDER_INVALID, KapuaLocatorErrorCodes.INVALID_CONFIGURATION};
         argument1 = "argument1";
-        argument2 = "argument2";
-        argument3 = "argument3";
+        argument2 = 42;
+        argument3 = 'c';
         throwables = new Throwable[]{new Throwable(), null};
         expectedMessageNullArguments = new String[]{"Service unavailable {0}", "{0} is not a valid service provider for {1}", "Factory unavailable {0}",
                 "{0} is not a valid factory provider for {1}", "Error: ", "Error: ", "Error: "};
@@ -57,13 +57,13 @@ public class KapuaLocatorExceptionTest {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void kapuaLocatorExceptionKapuaLocatorNullErrorCodesParameterTest() {
         KapuaLocatorException kapuaLocatorException = new KapuaLocatorException(null);
         Assert.assertNull("Null expected.", kapuaLocatorException.getCode());
         Assert.assertNull("Null expected.", kapuaLocatorException.getCause());
         Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaLocatorException.getKapuaErrorMessagesBundle());
-        kapuaLocatorException.getMessage();
+        Assert.assertEquals("Error: ", kapuaLocatorException.getMessage());
     }
 
     @Test
@@ -88,22 +88,22 @@ public class KapuaLocatorExceptionTest {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void kapuaLocatorExceptionNullKapuaLocatorErrorCodesObjectParametersTest() {
         KapuaLocatorException kapuaLocatorException = new KapuaLocatorException(null, argument1, argument2, argument3);
         Assert.assertNull("Null expected.", kapuaLocatorException.getCode());
         Assert.assertNull("Null expected.", kapuaLocatorException.getCause());
         Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaLocatorException.getKapuaErrorMessagesBundle());
-        kapuaLocatorException.getMessage();
+        Assert.assertEquals("Error: argument1, 42, c", kapuaLocatorException.getMessage());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void kapuaLocatorExceptionNullKapuaLocatorErrorCodesNullObjectParametersTest() {
         KapuaLocatorException kapuaLocatorException = new KapuaLocatorException(null, null);
         Assert.assertNull("Null expected.", kapuaLocatorException.getCode());
         Assert.assertNull("Null expected.", kapuaLocatorException.getCause());
         Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaLocatorException.getKapuaErrorMessagesBundle());
-        kapuaLocatorException.getMessage();
+        Assert.assertEquals("Error: ", kapuaLocatorException.getMessage());
     }
 
     @Test
@@ -132,26 +132,25 @@ public class KapuaLocatorExceptionTest {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void kapuaLocatorExceptionKapuaLocatorNullErrorCodesThrowableObjectParametersTest() {
         for (Throwable throwable : throwables) {
             KapuaLocatorException kapuaLocatorException = new KapuaLocatorException(null, throwable, argument1, argument2, argument3);
             Assert.assertNull("Null expected.", kapuaLocatorException.getCode());
             Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaLocatorException.getCause());
             Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaLocatorException.getKapuaErrorMessagesBundle());
-            kapuaLocatorException.getMessage();
+            Assert.assertEquals("Error: argument1, 42, c", kapuaLocatorException.getMessage());
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void kapuaLocatorExceptionKapuaLocatorNullErrorCodesThrowableNullObjectParametersTest() {
         for (Throwable throwable : throwables) {
             KapuaLocatorException kapuaLocatorException = new KapuaLocatorException(null, throwable, null);
             Assert.assertNull("Null expected", kapuaLocatorException.getCode());
             Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaLocatorException.getCause());
             Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaLocatorException.getKapuaErrorMessagesBundle());
-            kapuaLocatorException.getMessage();
-
+            Assert.assertEquals("Error: ", kapuaLocatorException.getMessage());
         }
     }
 }

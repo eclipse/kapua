@@ -44,13 +44,13 @@ public class RestApiRuntimeExceptionTest {
         Assert.assertNull("Null expected.", restApiRuntimeException.getCause());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void restApiRuntimeExceptionNullCodeTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(null);
 
         Assert.assertNull("Null expected.", restApiRuntimeException.getCode());
         Assert.assertNull("Null expected.", restApiRuntimeException.getCause());
-        restApiRuntimeException.getMessage();
+        Assert.assertEquals("Error: ", restApiRuntimeException.getMessage());
     }
 
     @Test
@@ -62,13 +62,13 @@ public class RestApiRuntimeExceptionTest {
         Assert.assertNull("Null expected.", restApiRuntimeException.getCause());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void restApiRuntimeExceptionNullCodeArgumentsTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(null, stringObject, intObject, charObject);
 
         Assert.assertNull("Null expected.", restApiRuntimeException.getCode());
         Assert.assertNull("Null expected.", restApiRuntimeException.getCause());
-        restApiRuntimeException.getMessage();
+        Assert.assertEquals("Error: String Object, 10, c", restApiRuntimeException.getMessage());
     }
 
     @Test
@@ -89,14 +89,13 @@ public class RestApiRuntimeExceptionTest {
         Assert.assertEquals("Expected and actual values should be the same.", cause, restApiRuntimeException.getCause());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void restApiRuntimeExceptionNullCodeCauseArgumentsTest() {
         RestApiRuntimeException restApiRuntimeException = new RestApiRuntimeException(null, cause, stringObject, intObject, charObject);
 
         Assert.assertNull("Null expected.", restApiRuntimeException.getCode());
         Assert.assertEquals("Expected and actual values should be the same.", cause, restApiRuntimeException.getCause());
-
-        restApiRuntimeException.getMessage();
+        Assert.assertEquals("Error: String Object, 10, c", restApiRuntimeException.getMessage());
     }
 
     @Test
