@@ -13,8 +13,8 @@
 package org.eclipse.kapua.service.authorization.shiro.exception;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kapua.service.authorization.exception.KapuaAuthorizationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.SelfManagedOnlyException;
+import org.eclipse.kapua.service.authorization.exception.KapuaAuthorizationErrorCodes;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
