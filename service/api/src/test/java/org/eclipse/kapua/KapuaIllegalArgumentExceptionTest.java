@@ -113,7 +113,7 @@ public class KapuaIllegalArgumentExceptionTest {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void kapuaIllegalArgumentExceptionNullKapuaErrorCodesStringParametersTest() {
         for (String name : argumentName) {
             for (String value : argumentValue) {
@@ -122,26 +122,42 @@ public class KapuaIllegalArgumentExceptionTest {
                 Assert.assertEquals("Expected and actual values should be the same.", name, kapuaIllegalArgumentException.getArgumentName());
                 Assert.assertEquals("Expected and actual values should be the same.", value, kapuaIllegalArgumentException.getArgumentValue());
                 Assert.assertNull("Null expected.", kapuaIllegalArgumentException.getCause());
-                kapuaIllegalArgumentException.getMessage();
+                Assert.assertEquals(String.format("Error: %s, %s", name, value), kapuaIllegalArgumentException.getMessage());
             }
         }
     }
 
-    @Test(expected = KapuaIllegalArgumentException.class)
+    @Test
     public void throwingExceptionStringParametersTest() throws KapuaIllegalArgumentException {
         for (String name : argumentName) {
             for (String value : argumentValue) {
-                throw new KapuaIllegalArgumentException(name, value);
+                try {
+                    throw new KapuaIllegalArgumentException(name, value);
+                } catch (KapuaIllegalArgumentException ex) {
+                    Assert.assertEquals(
+                            String.format("An illegal value was provided for the argument %s: %s.", name, value),
+                            ex.getMessage());
+                } catch (Throwable t) {
+                    Assert.fail();
+                }
             }
         }
     }
 
-    @Test(expected = KapuaIllegalArgumentException.class)
+    @Test
     public void throwingExceptionKapuaErrorCodesStringParametersTest() throws KapuaIllegalArgumentException {
         for (String name : argumentName) {
             for (String value : argumentValue) {
                 for (KapuaErrorCodes code : kapuaErrorCodes) {
-                    throw new KapuaIllegalArgumentException(code, name, value);
+                    try {
+                        throw new KapuaIllegalArgumentException(code, name, value);
+                    } catch (KapuaIllegalArgumentException ex) {
+                        //We just want to check that this type of exception is thrown two lines above... very low value test
+                        //correct error messages are tested separately above
+                        Assert.assertTrue(true);
+                    } catch (Throwable t) {
+                        Assert.fail();
+                    }
                 }
             }
         }

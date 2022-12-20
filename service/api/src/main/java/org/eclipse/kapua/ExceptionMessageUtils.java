@@ -106,6 +106,10 @@ public class ExceptionMessageUtils {
             LOG.warn("Could not load exception messages for resource: {} in locale: {}. A generic error message will be printed.", resourceBundleName, locale);
             return null;
         }
+        if (code == null) {
+            LOG.warn("Could not load exception messages for null code. A generic error message will be printed.");
+            return null;
+        }
         try {
             messagePattern = resourceBundle.getString(code.name());
         } catch (MissingResourceException mre) {
