@@ -56,18 +56,8 @@ public class KapuaRuntimeExceptionTest {
         Assert.assertNull("Null expected.", kapuaRuntimeException.getCode());
         Assert.assertNull("Null expected.", kapuaRuntimeException.getCause());
         Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaRuntimeException.getKapuaErrorMessagesBundle());
-        try {
-            kapuaRuntimeException.getMessage();
-            Assert.fail("NullPointerException expected.");
-        } catch (Exception e) {
-            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-        }
-        try {
-            kapuaRuntimeException.getLocalizedMessage();
-            Assert.fail("NullPointerException expected.");
-        } catch (Exception e) {
-            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-        }
+        Assert.assertEquals("Error: ", kapuaRuntimeException.getMessage());
+        Assert.assertEquals("Error: ", kapuaRuntimeException.getLocalizedMessage());
     }
 
     @Test
@@ -99,18 +89,8 @@ public class KapuaRuntimeExceptionTest {
         Assert.assertNull("Null expected.", kapuaRuntimeException.getCode());
         Assert.assertNull("Null expected.", kapuaRuntimeException.getCause());
         Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaRuntimeException.getKapuaErrorMessagesBundle());
-        try {
-            kapuaRuntimeException.getMessage();
-            Assert.fail("NullPointerException expected.");
-        } catch (Exception e) {
-            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-        }
-        try {
-            kapuaRuntimeException.getLocalizedMessage();
-            Assert.fail("NullPointerException expected.");
-        } catch (Exception e) {
-            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-        }
+        Assert.assertEquals("Error: user, 1, c", kapuaRuntimeException.getMessage());
+        Assert.assertEquals("Error: user, 1, c", kapuaRuntimeException.getLocalizedMessage());
     }
 
     @Test
@@ -132,18 +112,8 @@ public class KapuaRuntimeExceptionTest {
             Assert.assertNull("Null expected.", kapuaRuntimeException.getCode());
             Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaRuntimeException.getCause());
             Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaRuntimeException.getKapuaErrorMessagesBundle());
-            try {
-                kapuaRuntimeException.getMessage();
-                Assert.fail("NullPointerException expected.");
-            } catch (Exception e) {
-                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-            }
-            try {
-                kapuaRuntimeException.getLocalizedMessage();
-                Assert.fail("NullPointerException expected.");
-            } catch (Exception e) {
-                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-            }
+            Assert.assertEquals("Error: user, 1, c", kapuaRuntimeException.getMessage());
+            Assert.assertEquals("Error: user, 1, c", kapuaRuntimeException.getLocalizedMessage());
         }
     }
 
@@ -165,7 +135,7 @@ public class KapuaRuntimeExceptionTest {
 
         for (Throwable throwable : throwables) {
             for (String msg : messages) {
-        Assert.assertThat("Instance of KapuaRuntimeException expected.", KapuaRuntimeException.internalError(throwable, msg), IsInstanceOf.instanceOf(KapuaRuntimeException.class));
+                Assert.assertThat("Instance of KapuaRuntimeException expected.", KapuaRuntimeException.internalError(throwable, msg), IsInstanceOf.instanceOf(KapuaRuntimeException.class));
                 Assert.assertEquals("Expected and actual values should be the same.", new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, throwable, msg).toString(), KapuaRuntimeException.internalError(throwable, msg).toString());
                 Assert.assertEquals("Expected and actual values should be the same.", "An internal error occurred: " + msg + ".", KapuaRuntimeException.internalError(throwable, msg).getMessage());
                 Assert.assertEquals("Expected and actual values should be the same.", throwable, KapuaRuntimeException.internalError(throwable, msg).getCause());
@@ -184,7 +154,7 @@ public class KapuaRuntimeExceptionTest {
         String[] arguments = {"Message", "java.lang.Throwable"};
 
         for (int i = 0; i < throwables.length; i++) {
-        Assert.assertThat("Instance of KapuaRuntimeException expected.", KapuaRuntimeException.internalError(throwables[i]), IsInstanceOf.instanceOf(KapuaRuntimeException.class));
+            Assert.assertThat("Instance of KapuaRuntimeException expected.", KapuaRuntimeException.internalError(throwables[i]), IsInstanceOf.instanceOf(KapuaRuntimeException.class));
             Assert.assertEquals("Expected and actual values should be the same.", new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, throwables[i], arguments[i]).toString(), KapuaRuntimeException.internalError(throwables[i]).toString());
             Assert.assertEquals("Expected and actual values should be the same.", expectedMessage[i], KapuaRuntimeException.internalError(throwables[i]).getMessage());
             Assert.assertEquals("Expected and actual values should be the same.", throwables[i], KapuaRuntimeException.internalError(throwables[i]).getCause());
@@ -204,7 +174,7 @@ public class KapuaRuntimeExceptionTest {
         String[] messages = {"Message", null};
 
         for (String msg : messages) {
-        Assert.assertThat("Instance of KapuaRuntimeException expected.", KapuaRuntimeException.internalError(msg), IsInstanceOf.instanceOf(KapuaRuntimeException.class));
+            Assert.assertThat("Instance of KapuaRuntimeException expected.", KapuaRuntimeException.internalError(msg), IsInstanceOf.instanceOf(KapuaRuntimeException.class));
             Assert.assertEquals("Expected and actual values should be the same.", new KapuaRuntimeException(KapuaErrorCodes.INTERNAL_ERROR, null, msg).toString(), KapuaRuntimeException.internalError(msg).toString());
             Assert.assertEquals("Expected and actual values should be the same.", "An internal error occurred: " + msg + ".", KapuaRuntimeException.internalError(msg).getMessage());
             Assert.assertNull("Null expected.", KapuaRuntimeException.internalError(msg).getCause());

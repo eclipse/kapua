@@ -55,18 +55,8 @@ public class KapuaExceptionTest {
         Assert.assertNull("Null expected.", kapuaException.getCode());
         Assert.assertNull("Null expected.", kapuaException.getCause());
         Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
-        try {
-            kapuaException.getMessage();
-            Assert.fail("NullPointerException expected.");
-        } catch (Exception e) {
-            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-        }
-        try {
-            kapuaException.getLocalizedMessage();
-            Assert.fail("NullPointerException expected.");
-        } catch (Exception e) {
-            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-        }
+        Assert.assertEquals("Error: ", kapuaException.getMessage());
+        Assert.assertEquals("Error: ", kapuaException.getLocalizedMessage());
     }
 
     @Test
@@ -85,18 +75,8 @@ public class KapuaExceptionTest {
         Assert.assertNull("Null expected.", kapuaException.getCode());
         Assert.assertNull("Null expected.", kapuaException.getCause());
         Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
-        try {
-            kapuaException.getMessage();
-            Assert.fail("NullPointerException expected.");
-        } catch (Exception e) {
-            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-        }
-        try {
-            kapuaException.getLocalizedMessage();
-            Assert.fail("NullPointerException expected.");
-        } catch (Exception e) {
-            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-        }
+        Assert.assertEquals("Error: user, 2, c", kapuaException.getMessage());
+        Assert.assertEquals("Error: user, 2, c", kapuaException.getLocalizedMessage());
     }
 
     @Test
@@ -115,18 +95,8 @@ public class KapuaExceptionTest {
         Assert.assertNull("Null expected.", kapuaException.getCode());
         Assert.assertNull("Null expected.", kapuaException.getCause());
         Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
-        try {
-            kapuaException.getMessage();
-            Assert.fail("NullPointerException expected.");
-        } catch (Exception e) {
-            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-        }
-        try {
-            kapuaException.getLocalizedMessage();
-            Assert.fail("NullPointerException expected.");
-        } catch (Exception e) {
-            Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-        }
+        Assert.assertEquals("Error: ", kapuaException.getMessage());
+        Assert.assertEquals("Error: ", kapuaException.getLocalizedMessage());
     }
 
     @Test
@@ -148,18 +118,8 @@ public class KapuaExceptionTest {
             Assert.assertNull("Null expected.", kapuaException.getCode());
             Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaException.getCause());
             Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
-            try {
-                kapuaException.getMessage();
-                Assert.fail("NullPointerException expected.");
-            } catch (Exception e) {
-                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-            }
-            try {
-                kapuaException.getLocalizedMessage();
-                Assert.fail("NullPointerException expected.");
-            } catch (Exception e) {
-                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-            }
+            Assert.assertEquals("Error: user, 2, c", kapuaException.getMessage());
+            Assert.assertEquals("Error: user, 2, c", kapuaException.getLocalizedMessage());
         }
     }
 
@@ -182,18 +142,8 @@ public class KapuaExceptionTest {
             Assert.assertNull("Null expected.", kapuaException.getCode());
             Assert.assertEquals("Expected and actual values should be the same.", expectedErrorMessage, kapuaException.getKapuaErrorMessagesBundle());
             Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaException.getCause());
-            try {
-                kapuaException.getMessage();
-                Assert.fail("NullPointerException expected.");
-            } catch (Exception e) {
-                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-            }
-            try {
-                kapuaException.getLocalizedMessage();
-                Assert.fail("NullPointerException expected.");
-            } catch (Exception e) {
-                Assert.assertEquals("NullPointerException expected.", new NullPointerException().toString(), e.toString());
-            }
+            Assert.assertEquals("Error: ", kapuaException.getMessage());
+            Assert.assertEquals("Error: ", kapuaException.getLocalizedMessage());
         }
     }
 
