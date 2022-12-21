@@ -90,9 +90,10 @@ public class ExceptionMessageUtilsTest {
         ExceptionMessageUtils.getLocalizedMessage("kapua-service-error-messages", locale, mockedKapuaErrorCode, objectList);
     }
 
-    @Test(expected = NullPointerException.class)
-    public void getLocalizedMessageNullKapuaErrorCodeTest() {
-        ExceptionMessageUtils.getLocalizedMessage(resourceBundleName[0], locale, null, objectList);
+    @Test
+    public void nullErrorCodeLeadsToDefaultErrorMessage() {
+        final String got = ExceptionMessageUtils.getLocalizedMessage(resourceBundleName[0], locale, null, objectList);
+        Assert.assertEquals("Error: 0, 10, 100000, String, c, -10, -1000000000, -100000000000, 10, 10.0, null, 10.1, true, false", got);
     }
 
     @Test

@@ -24,7 +24,7 @@ import org.junit.experimental.categories.Category;
 public class KapuaAuthenticationExceptionTest {
 
     KapuaAuthenticationErrorCodes[] kapuaAuthenticationErrorCodes;
-    String kapuaErrorMessage, expectedMessageWithoutArguments, expectedMessageWithArguments;
+    String kapuaErrorMessageBundle, expectedMessageWithoutArguments, expectedMessageWithArguments;
     Object stringObject, intObject, charObject;
     Throwable[] throwables;
 
@@ -35,7 +35,7 @@ public class KapuaAuthenticationExceptionTest {
                 KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL, KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL, KapuaAuthenticationErrorCodes.UNKNOWN_SESSION_CREDENTIAL, KapuaAuthenticationErrorCodes.INVALID_SESSION_CREDENTIALS,
                 KapuaAuthenticationErrorCodes.EXPIRED_SESSION_CREDENTIALS, KapuaAuthenticationErrorCodes.LOCKED_SESSION_CREDENTIAL, KapuaAuthenticationErrorCodes.DISABLED_SESSION_CREDENTIAL, KapuaAuthenticationErrorCodes.JWK_FILE_ERROR,
                 KapuaAuthenticationErrorCodes.REFRESH_ERROR, KapuaAuthenticationErrorCodes.JWK_GENERATION_ERROR, KapuaAuthenticationErrorCodes.JWT_CERTIFICATE_NOT_FOUND, KapuaAuthenticationErrorCodes.PASSWORD_CANNOT_BE_CHANGED};
-        kapuaErrorMessage = "kapua-authentication-service-error-messages";
+        kapuaErrorMessageBundle = "kapua-authentication-service-error-messages";
         expectedMessageWithoutArguments = "Error: ";
         stringObject = "String Object";
         intObject = 10;
@@ -51,7 +51,7 @@ public class KapuaAuthenticationExceptionTest {
             Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, kapuaAuthenticationException.getCode());
             Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutArguments, kapuaAuthenticationException.getMessage());
             Assert.assertNull("Null expected.", kapuaAuthenticationException.getCause());
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessageBundle, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
         }
     }
 
@@ -62,7 +62,7 @@ public class KapuaAuthenticationExceptionTest {
             Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, kapuaAuthenticationException.getCode());
             Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithArguments, kapuaAuthenticationException.getMessage());
             Assert.assertNull("Null expected.", kapuaAuthenticationException.getCause());
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessageBundle, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
         }
     }
 
@@ -73,7 +73,7 @@ public class KapuaAuthenticationExceptionTest {
             Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, kapuaAuthenticationException.getCode());
             Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutArguments, kapuaAuthenticationException.getMessage());
             Assert.assertNull("Null expected.", kapuaAuthenticationException.getCause());
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
+            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessageBundle, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
         }
     }
 
@@ -85,7 +85,7 @@ public class KapuaAuthenticationExceptionTest {
                 Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, kapuaAuthenticationException.getCode());
                 Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithArguments, kapuaAuthenticationException.getMessage());
                 Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaAuthenticationException.getCause());
-                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
+                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessageBundle, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
             }
         }
     }
@@ -98,7 +98,7 @@ public class KapuaAuthenticationExceptionTest {
                 Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, kapuaAuthenticationException.getCode());
                 Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutArguments, kapuaAuthenticationException.getMessage());
                 Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaAuthenticationException.getCause());
-                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessage, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
+                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessageBundle, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
             }
         }
     }
