@@ -20,15 +20,19 @@ import org.eclipse.kapua.client.security.bean.AuthContext;
 import org.eclipse.kapua.client.security.metric.LoginMetric;
 import org.eclipse.kapua.commons.event.ServiceEventBusManager;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.event.ServiceEventBus;
 import org.eclipse.kapua.event.ServiceEventBusException;
+import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.service.authentication.setting.ServiceAuthenticationSetting;
 import org.eclipse.kapua.service.authentication.setting.ServiceAuthenticationSettingKey;
 import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.device.registry.DeviceStatus;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +56,7 @@ public class DefaultAuthenticator implements Authenticator {
         DISCONNECT
     }
 
+    private DeviceRegistryService deviceRegistryService;
     private LoginMetric loginMetric = LoginMetric.getInstance();
     private boolean raiseLifecycleEvents;
     private String lifecycleEventAddress;
@@ -73,6 +78,7 @@ public class DefaultAuthenticator implements Authenticator {
      * @throws KapuaException
      */
     public DefaultAuthenticator() throws KapuaException {
+        deviceRegistryService = KapuaLocator.getInstance().getService(DeviceRegistryService.class);
         adminUserName = SystemSetting.getInstance().getString(SystemSettingKey.SYS_ADMIN_USERNAME);
         raiseLifecycleEvents = ServiceAuthenticationSetting.getInstance().getBoolean(ServiceAuthenticationSettingKey.SERVICE_AUTHENTICATION_ENABLE_LIFECYCLE_EVENTS, false);
         if (raiseLifecycleEvents) {
@@ -87,6 +93,12 @@ public class DefaultAuthenticator implements Authenticator {
     @Override
     public List<AuthAcl> connect(AuthContext authContext) throws KapuaException {
         List<AuthAcl> authorizationEntries = null;
+        Device device = KapuaSecurityUtils.doPrivileged(() ->
+            deviceRegistryService.findByClientId(KapuaEid.parseCompactId(authContext.getScopeId()), authContext.getClientId()));
+        if (device != null && DeviceStatus.DISABLED.equals(device.getStatus())) {
+            logger.warn("Device {} is disabled", authContext.getClientId());
+            throw new SecurityException("Device is disabled");
+        }
         if (isAdminUser(authContext)) {
             loginMetric.getAdminAttempt().inc();
             if (authContext.isStealingLink()) {
