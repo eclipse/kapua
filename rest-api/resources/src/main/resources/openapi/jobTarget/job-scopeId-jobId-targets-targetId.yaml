@@ -29,6 +29,11 @@ paths:
             application/json:
               schema:
                 $ref: './jobTarget.yaml#/components/schemas/jobTarget'
+              examples:
+                Successfully processed Job Target:
+                  $ref: './jobTarget.yaml#/components/examples/jobTargetSuccess'
+                Failed processed Job Target:
+                  $ref: './jobTarget.yaml#/components/examples/jobTargetFailed'
         401:
           $ref: '../openapi.yaml#/components/responses/unauthenticated'
         403:
