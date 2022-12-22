@@ -306,6 +306,7 @@
                 <include>${pom.groupId}:kapua-job-engine-client</include>
                 <include>${pom.groupId}:kapua-commons-rest-model</include>
                 <include>${pom.groupId}:kapua-commons-rest-errors</include>
+                <include>${pom.groupId}:kapua-commons-rest-filters</include>
                 <include>${pom.groupId}:kapua-scheduler-api</include>
                 <include>${pom.groupId}:kapua-scheduler-quartz</include>
                 <include>org.quartz-scheduler:quartz</include>

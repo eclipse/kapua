@@ -14,7 +14,7 @@ package org.eclipse.kapua.integration.misc;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
-import org.eclipse.kapua.app.api.core.filter.KapuaSessionCleanupFilter;
+import org.eclipse.kapua.commons.rest.filters.KapuaSessionCleanupFilter;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;

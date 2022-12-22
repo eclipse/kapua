@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.core.filter;
+package org.eclipse.kapua.commons.rest.filters;
 
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ import java.io.IOException;
 
 public class SwaggerUIFilter implements Filter {
     private final Logger logger =
-        LoggerFactory.getLogger(SwaggerUIFilter.class);
+            LoggerFactory.getLogger(SwaggerUIFilter.class);
     private boolean swaggerEnable;
 
 
@@ -41,11 +41,11 @@ public class SwaggerUIFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain)
-    throws IOException, ServletException {
+            throws IOException, ServletException {
         if (!swaggerEnable) {
             HttpServletResponse httpResponse = WebUtils.toHttp(response);
             httpResponse.sendError(
-                HttpServletResponse.SC_NOT_FOUND, "Swagger UI disabled");
+                    HttpServletResponse.SC_NOT_FOUND, "Swagger UI disabled");
             return;
         }
         chain.doFilter(request, response);

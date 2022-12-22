@@ -113,7 +113,7 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-rest-api-core</artifactId>
+            <artifactId>kapua-commons-rest-filters</artifactId>
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>

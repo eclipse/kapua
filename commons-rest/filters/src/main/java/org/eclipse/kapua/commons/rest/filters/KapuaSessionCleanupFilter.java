@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.core.filter;
+package org.eclipse.kapua.commons.rest.filters;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
