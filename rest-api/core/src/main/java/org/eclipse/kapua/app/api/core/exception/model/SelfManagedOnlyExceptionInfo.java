@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.exception.model;
 
-import org.eclipse.kapua.service.authentication.exception.SelfManagedOnlyException;
+import org.eclipse.kapua.service.authorization.exception.SelfManagedOnlyException;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlAccessType;

@@ -10,22 +10,25 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authentication.exception;
+package org.eclipse.kapua.service.authorization.exception;
 
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaOption;
-import org.eclipse.kapua.service.authentication.credential.mfa.MfaOptionService;
-import org.eclipse.kapua.service.authorization.exception.KapuaAuthorizationErrorCodes;
-import org.eclipse.kapua.service.authorization.exception.KapuaAuthorizationException;
+import org.eclipse.kapua.service.user.User;
+import org.eclipse.kapua.service.user.UserType;
 
 /**
- * InternalUserOnlyException is used by the {@link MfaOptionService}, when an external user tries to create an {@link MfaOption}.
+ * {@link KapuaAuthorizationException} to {@code throw} when an operation is reserved only to {@link User}s with {@link User#getUserType()} is {@link UserType#INTERNAL}.
  *
- * @since 1.4
+ * @since 1.4.0
  */
 public class InternalUserOnlyException extends KapuaAuthorizationException {
 
     private static final long serialVersionUID = 2018380306732864218L;
 
+    /**
+     * Constructor.
+     *
+     * @since 1.4.0
+     */
     public InternalUserOnlyException() {
         super(KapuaAuthorizationErrorCodes.INTERNAL_USER_ONLY);
     }
