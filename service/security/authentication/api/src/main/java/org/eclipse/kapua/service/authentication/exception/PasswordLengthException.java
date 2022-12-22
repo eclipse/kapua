@@ -35,7 +35,7 @@ public class PasswordLengthException extends KapuaAuthenticationException {
      * @since 1.0.0
      */
     public PasswordLengthException(int minLength, int maxLength) {
-        super(AuthenticationErrorCodes.PASSWORD_INVALID_LENGTH, minLength, maxLength);
+        super(KapuaAuthenticationErrorCodes.PASSWORD_INVALID_LENGTH, minLength, maxLength);
 
         this.minLength = minLength;
         this.maxLength = maxLength;

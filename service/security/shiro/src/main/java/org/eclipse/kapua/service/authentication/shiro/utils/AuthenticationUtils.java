@@ -20,7 +20,7 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.eclipse.kapua.commons.crypto.CryptoUtil;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
-import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSetting;
 import org.eclipse.kapua.service.authentication.shiro.setting.KapuaCryptoSettingKeys;
 import org.springframework.security.crypto.bcrypt.BCrypt;

@@ -122,7 +122,7 @@ Scenario: Initialize test environment
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | false   |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are DISABLED."
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -157,7 +157,7 @@ Scenario: Initialize test environment
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | false   |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are DISABLED."
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout

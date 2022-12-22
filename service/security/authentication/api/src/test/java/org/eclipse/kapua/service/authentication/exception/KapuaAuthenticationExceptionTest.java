@@ -13,93 +13,82 @@
 package org.eclipse.kapua.service.authentication.exception;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
-
 @Category(JUnitTests.class)
 public class KapuaAuthenticationExceptionTest {
-
-    KapuaAuthenticationErrorCodes[] kapuaAuthenticationErrorCodes;
-    String kapuaErrorMessageBundle, expectedMessageWithoutArguments, expectedMessageWithArguments;
-    Object stringObject, intObject, charObject;
-    Throwable[] throwables;
-
-    @Before
-    public void initialize() {
-        kapuaAuthenticationErrorCodes = new KapuaAuthenticationErrorCodes[]{null, KapuaAuthenticationErrorCodes.SUBJECT_ALREADY_LOGGED, KapuaAuthenticationErrorCodes.INVALID_CREDENTIALS_TYPE_PROVIDED, KapuaAuthenticationErrorCodes.AUTHENTICATION_ERROR,
-                KapuaAuthenticationErrorCodes.CREDENTIAL_CRYPT_ERROR, KapuaAuthenticationErrorCodes.UNKNOWN_LOGIN_CREDENTIAL, KapuaAuthenticationErrorCodes.INVALID_LOGIN_CREDENTIALS, KapuaAuthenticationErrorCodes.EXPIRED_LOGIN_CREDENTIALS,
-                KapuaAuthenticationErrorCodes.LOCKED_LOGIN_CREDENTIAL, KapuaAuthenticationErrorCodes.DISABLED_LOGIN_CREDENTIAL, KapuaAuthenticationErrorCodes.UNKNOWN_SESSION_CREDENTIAL, KapuaAuthenticationErrorCodes.INVALID_SESSION_CREDENTIALS,
-                KapuaAuthenticationErrorCodes.EXPIRED_SESSION_CREDENTIALS, KapuaAuthenticationErrorCodes.LOCKED_SESSION_CREDENTIAL, KapuaAuthenticationErrorCodes.DISABLED_SESSION_CREDENTIAL, KapuaAuthenticationErrorCodes.JWK_FILE_ERROR,
-                KapuaAuthenticationErrorCodes.REFRESH_ERROR, KapuaAuthenticationErrorCodes.JWK_GENERATION_ERROR, KapuaAuthenticationErrorCodes.JWT_CERTIFICATE_NOT_FOUND, KapuaAuthenticationErrorCodes.PASSWORD_CANNOT_BE_CHANGED};
-        kapuaErrorMessageBundle = "authentication-error-messages";
-        expectedMessageWithoutArguments = "Error: ";
-        stringObject = "String Object";
-        intObject = 10;
-        charObject = 'c';
-        expectedMessageWithArguments = "Error: " + stringObject + ", " + intObject + ", " + charObject;
-        throwables = new Throwable[]{null, new Throwable(), new Throwable(new Exception()), new Throwable("message")};
-    }
-
     @Test
-    public void kapuaAuthenticationExceptionCodeParameterTest() {
-        for (KapuaAuthenticationErrorCodes kapuaAuthenticationErrorCode : kapuaAuthenticationErrorCodes) {
-            KapuaAuthenticationException kapuaAuthenticationException = new KapuaAuthenticationException(kapuaAuthenticationErrorCode);
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, kapuaAuthenticationException.getCode());
-            Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutArguments, kapuaAuthenticationException.getMessage());
-            Assert.assertNull("Null expected.", kapuaAuthenticationException.getCause());
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessageBundle, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
+    public void kapuaKapuaAuthenticationErrorCodesTest() {
+        for (KapuaAuthenticationErrorCodes errorCode : KapuaAuthenticationErrorCodes.values()) {
+            KapuaAuthenticationException authenticationException = new KapuaAuthenticationException(errorCode);
+
+            Assert.assertNotEquals(
+                    "If this fails it means that KapuaKapuaAuthenticationErrorCodes." + errorCode + " does not have a message configured in the resource bundle: " + authenticationException.getKapuaErrorMessagesBundle(),
+                    "Error: ",
+                    authenticationException.getMessage()
+            );
         }
     }
 
     @Test
-    public void kapuaAuthenticationExceptionCodeArgumentsParametersTest() {
-        for (KapuaAuthenticationErrorCodes kapuaAuthenticationErrorCode : kapuaAuthenticationErrorCodes) {
-            KapuaAuthenticationException kapuaAuthenticationException = new KapuaAuthenticationException(kapuaAuthenticationErrorCode, stringObject, intObject, charObject);
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, kapuaAuthenticationException.getCode());
-            Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithArguments, kapuaAuthenticationException.getMessage());
-            Assert.assertNull("Null expected.", kapuaAuthenticationException.getCause());
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessageBundle, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
-        }
+    public void kapuaAuthenticationExceptionTest() {
+
+        KapuaAuthenticationErrorCodes errorCode = KapuaAuthenticationErrorCodes.PASSWORD_INVALID_LENGTH;
+
+        Throwable throwable = new Throwable();
+
+        String argument1 = "argument";
+        String argument2 = "argument";
+
+        // Code
+        KapuaAuthenticationException exception = new KapuaAuthenticationException(errorCode, throwable, argument1, argument2);
+
+        Assert.assertEquals(errorCode, exception.getCode());
+        Assert.assertEquals(throwable, exception.getCause());
+        Assert.assertEquals("Password length must be between argument and argument characters long (inclusive).", exception.getMessage());
     }
 
     @Test
-    public void kapuaAuthenticationExceptionCodeNullArgumentsParametersTest() {
-        for (KapuaAuthenticationErrorCodes kapuaAuthenticationErrorCode : kapuaAuthenticationErrorCodes) {
-            KapuaAuthenticationException kapuaAuthenticationException = new KapuaAuthenticationException(kapuaAuthenticationErrorCode, null);
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, kapuaAuthenticationException.getCode());
-            Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutArguments, kapuaAuthenticationException.getMessage());
-            Assert.assertNull("Null expected.", kapuaAuthenticationException.getCause());
-            Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessageBundle, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
-        }
+    public void kapuaAuthenticationExceptionTestNull() {
+        // Code
+        KapuaAuthenticationException exception = new KapuaAuthenticationException(null);
+
+        Assert.assertNull(exception.getCode());
+        Assert.assertEquals("Error: ", exception.getMessage());
+        Assert.assertNull(exception.getCause());
+
+        // Code, Throwable
+        exception = new KapuaAuthenticationException(null, (Throwable) null);
+
+        Assert.assertNull(exception.getCode());
+        Assert.assertEquals("Error: ", exception.getMessage());
+        Assert.assertNull(exception.getCause());
+
+        // Code, Throwable, Args
+        exception = new KapuaAuthenticationException(null, null, (Object) null);
+
+        Assert.assertNull(exception.getCode());
+        Assert.assertEquals("Error: null", exception.getMessage());
+        Assert.assertNull(exception.getCause());
     }
 
     @Test
-    public void kapuaAuthenticationExceptionCodeCauseArgumentsParametersTest() {
-        for (KapuaAuthenticationErrorCodes kapuaAuthenticationErrorCode : kapuaAuthenticationErrorCodes) {
-            for (Throwable throwable : throwables) {
-                KapuaAuthenticationException kapuaAuthenticationException = new KapuaAuthenticationException(kapuaAuthenticationErrorCode, throwable, stringObject, intObject, charObject);
-                Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, kapuaAuthenticationException.getCode());
-                Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithArguments, kapuaAuthenticationException.getMessage());
-                Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaAuthenticationException.getCause());
-                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessageBundle, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
-            }
-        }
+    public void duplicatedPasswordCredentialExceptionTest() {
+        DuplicatedPasswordCredentialException exception = new DuplicatedPasswordCredentialException();
+
+        Assert.assertEquals(KapuaAuthenticationErrorCodes.DUPLICATED_PASSWORD_CREDENTIAL, exception.getCode());
+        Assert.assertEquals("The user already has a Credential of type PASSWORD.", exception.getMessage());
+        Assert.assertNull(exception.getCause());
     }
 
     @Test
-    public void kapuaAuthenticationExceptionCodeCauseNullArgumentsParametersTest() {
-        for (KapuaAuthenticationErrorCodes kapuaAuthenticationErrorCode : kapuaAuthenticationErrorCodes) {
-            for (Throwable throwable : throwables) {
-                KapuaAuthenticationException kapuaAuthenticationException = new KapuaAuthenticationException(kapuaAuthenticationErrorCode, throwable, null);
-                Assert.assertEquals("Expected and actual values should be the same.", kapuaAuthenticationErrorCode, kapuaAuthenticationException.getCode());
-                Assert.assertEquals("Expected and actual values should be the same.", expectedMessageWithoutArguments, kapuaAuthenticationException.getMessage());
-                Assert.assertEquals("Expected and actual values should be the same.", throwable, kapuaAuthenticationException.getCause());
-                Assert.assertEquals("Expected and actual values should be the same.", kapuaErrorMessageBundle, kapuaAuthenticationException.getKapuaErrorMessagesBundle());
-            }
-        }
+    public void subjectUnauthorizedExceptionTest() {
+        PasswordLengthException exception = new PasswordLengthException(5, 10);
+
+        Assert.assertEquals(KapuaAuthenticationErrorCodes.PASSWORD_INVALID_LENGTH, exception.getCode());
+        Assert.assertEquals("Password length must be between 5 and 10 characters long (inclusive).", exception.getMessage());
+        Assert.assertNull(exception.getCause());
     }
 }

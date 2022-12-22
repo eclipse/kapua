@@ -59,7 +59,7 @@ public class InternalUserOnlyExceptionInfoTest {
             InternalUserOnlyExceptionInfo internalUserOnlyExceptionInfo = new InternalUserOnlyExceptionInfo(statusList[i], internalUserOnlyException);
             Assert.assertEquals("Expected and actual values should be the same.", "INTERNAL_USER_ONLY", internalUserOnlyExceptionInfo.getKapuaErrorCode());
             Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], internalUserOnlyExceptionInfo.getHttpErrorCode());
-            Assert.assertEquals("Expected and actual values should be the same.", "This action can be performed only by internal users.", internalUserOnlyExceptionInfo.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", "This operation is reserved only for Users of type INTERNAL.", internalUserOnlyExceptionInfo.getMessage());
         }
     }
 

@@ -30,7 +30,7 @@ import org.eclipse.kapua.commons.configuration.exception.KapuaConfigurationError
 import org.eclipse.kapua.commons.configuration.exception.KapuaConfigurationException;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException;
 import org.eclipse.kapua.service.device.management.exception.DeviceManagementException;

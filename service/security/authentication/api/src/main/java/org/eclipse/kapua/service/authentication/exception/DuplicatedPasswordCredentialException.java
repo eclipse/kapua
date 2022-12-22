@@ -32,6 +32,6 @@ public class DuplicatedPasswordCredentialException extends KapuaAuthenticationEx
      * @since 2.0.0
      */
     public DuplicatedPasswordCredentialException() {
-        super(AuthenticationErrorCodes.DUPLICATED_PASSWORD_CREDENTIAL);
+        super(KapuaAuthenticationErrorCodes.DUPLICATED_PASSWORD_CREDENTIAL);
     }
 }

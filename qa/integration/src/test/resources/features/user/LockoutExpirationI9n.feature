@@ -93,7 +93,7 @@ Scenario: Init Security Context for all scenarios
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | false   |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are DISABLED."
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -130,7 +130,7 @@ Scenario: Init Security Context for all scenarios
       | name    | password          | enabled | expirationDate |
       | kapua-a | ToManySecrets123# | true    | yesterday      |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are expired."
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -165,7 +165,7 @@ Scenario: Init Security Context for all scenarios
       | name    | password          | enabled | expirationDate |
       | kapua-a | ToManySecrets123# | true    | today          |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text " The provided LoginCredentials are expired."
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -231,7 +231,7 @@ Scenario: Init Security Context for all scenarios
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are expired."
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -263,7 +263,7 @@ Scenario: Init Security Context for all scenarios
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are expired."
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -329,10 +329,14 @@ Scenario: Init Security Context for all scenarios
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials dont match."
     When I login as user with name "kapua-a" and password "WrongPassword123#"
+    Then An exception was thrown
     When I login as user with name "kapua-a" and password "WrongPassword123#"
+    Then An exception was thrown
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are locked."
     When I login as user with name "kapua-a" and password "WrongPassword123#"
+    Then An exception was thrown
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Then An exception was thrown
     And I logout
@@ -365,7 +369,7 @@ Scenario: Init Security Context for all scenarios
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials dont match."
     When I login as user with name "kapua-a" and password "WrongPassword123#"
     Then An exception was thrown
     When I login as user with name "kapua-a" and password "WrongPassword123#"
@@ -408,7 +412,7 @@ Scenario: Init Security Context for all scenarios
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are locked."
     When I login as user with name "kapua-a" and password "WrongPassword123#"
     Then An exception was thrown
     And I wait 1 second
@@ -451,7 +455,7 @@ Scenario: Init Security Context for all scenarios
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials are locked."
     When I login as user with name "kapua-a" and password "WrongPassword123#"
     Then An exception was thrown
     Then I wait 1 second
@@ -494,7 +498,7 @@ Scenario: Init Security Context for all scenarios
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials dont match."
     When I login as user with name "kapua-a" and password "WrongPassword123#"
     Then An exception was thrown
     Then I wait 2 seconds
@@ -556,7 +560,7 @@ Scenario: Init Security Context for all scenarios
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials dont match."
     When I login as user with name "kapua-a" and password "WrongPassword123#"
     Then An exception was thrown
     Then The lockout error counter for user "kapua-a" is 1
@@ -589,7 +593,7 @@ Scenario: Init Security Context for all scenarios
     And I enable mfa
     Then I have mfa enable
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials dont match."
     When I login as user with name "kapua-a" and password "WrongPassword123#"
     Then An exception was thrown
     Then The lockout error counter for user "kapua-a" is 1
@@ -654,7 +658,7 @@ Scenario: Init Security Context for all scenarios
     And I enable mfa
     Then I have mfa enable
     And I logout
-    Given I expect the exception "KapuaAuthenticationException" with the text "Error: kapua-a"
+    Given I expect the exception "KapuaAuthenticationException" with the text "The provided LoginCredentials dont match."
     When I login as user with name "kapua-a" and password "WrongPassword123#"
     Then An exception was thrown
     Then The lockout error counter for user "kapua-a" is 1

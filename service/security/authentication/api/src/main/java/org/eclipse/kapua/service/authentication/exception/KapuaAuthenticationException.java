@@ -12,9 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.exception;
 
-import org.eclipse.kapua.KapuaErrorCode;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
 
 import javax.validation.constraints.NotNull;
 
@@ -57,41 +55,6 @@ public class KapuaAuthenticationException extends KapuaException {
      * @since 2.0.0
      */
     public KapuaAuthenticationException(@NotNull KapuaAuthenticationErrorCodes code, @NotNull Throwable cause, Object... arguments) {
-        super(code, cause, arguments);
-    }
-
-
-    /**
-     * /**
-     * Constructor.
-     *
-     * @param code The {@link KapuaErrorCode} associated with the {@link KapuaAuthenticationException}.
-     * @since 2.0.0
-     */
-    public KapuaAuthenticationException(@NotNull AuthenticationErrorCodes code) {
-        super(code);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param code      The {@link KapuaErrorCode} associated with the {@link KapuaAuthenticationException}.
-     * @param arguments The arguments associated with the {@link KapuaAuthenticationException}.
-     * @since 2.0.0
-     */
-    public KapuaAuthenticationException(@NotNull AuthenticationErrorCodes code, Object... arguments) {
-        super(code, arguments);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param code      The {@link KapuaErrorCode} associated with the {@link KapuaAuthenticationException}.
-     * @param cause     The original {@link Throwable}.
-     * @param arguments The arguments associated with the {@link KapuaAuthenticationException}.
-     * @since 2.0.0
-     */
-    public KapuaAuthenticationException(@NotNull AuthenticationErrorCodes code, @NotNull Throwable cause, Object... arguments) {
         super(code, cause, arguments);
     }
 

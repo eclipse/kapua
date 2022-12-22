@@ -13,7 +13,7 @@
 package org.eclipse.kapua.app.api.core.exception.mapper;
 
 import org.eclipse.kapua.app.api.core.exception.model.MfaRequiredExceptionInfo;
-import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
