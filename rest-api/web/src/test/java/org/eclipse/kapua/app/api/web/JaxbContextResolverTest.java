@@ -12,7 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.web;
 
-import org.eclipse.kapua.app.api.core.exception.model.EntityNotFoundExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.EntityNotFoundExceptionInfo;
 import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
 import org.eclipse.kapua.service.account.Account;

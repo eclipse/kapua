@@ -259,7 +259,6 @@
                 <include>${pom.groupId}:kapua-message-api</include>
                 <include>${pom.groupId}:kapua-message-internal</include>
                 <include>${pom.groupId}:kapua-openid-api</include>
-                <include>${pom.groupId}:kapua-rest-api-core</include>
                 <include>${pom.groupId}:kapua-security-authentication-api</include>
                 <include>${pom.groupId}:kapua-security-authorization-api</include>
                 <include>${pom.groupId}:kapua-security-certificate-api</include>
@@ -305,6 +304,8 @@
                 <include>${pom.groupId}:kapua-job-engine-api</include>
                 <include>${pom.groupId}:kapua-job-engine-commons</include>
                 <include>${pom.groupId}:kapua-job-engine-client</include>
+                <include>${pom.groupId}:kapua-commons-rest-model</include>
+                <include>${pom.groupId}:kapua-commons-rest-errors</include>
                 <include>${pom.groupId}:kapua-scheduler-api</include>
                 <include>${pom.groupId}:kapua-scheduler-quartz</include>
                 <include>org.quartz-scheduler:quartz</include>

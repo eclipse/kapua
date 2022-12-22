@@ -12,6 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.resources.v1.resources;
 
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.app.api.core.model.EntityId;
+import org.eclipse.kapua.app.api.core.model.ScopeId;
+import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
+import org.eclipse.kapua.commons.rest.model.IsJobRunningMultipleResponse;
+import org.eclipse.kapua.commons.rest.model.IsJobRunningResponse;
+import org.eclipse.kapua.commons.rest.model.MultipleJobIdRequest;
+import org.eclipse.kapua.job.engine.JobEngineService;
+import org.eclipse.kapua.job.engine.JobStartOptions;
+import org.eclipse.kapua.locator.KapuaLocator;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -19,17 +30,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBException;
-
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.api.core.model.EntityId;
-import org.eclipse.kapua.app.api.core.model.ScopeId;
-import org.eclipse.kapua.app.api.core.model.job.IsJobRunningMultipleResponse;
-import org.eclipse.kapua.app.api.core.model.job.IsJobRunningResponse;
-import org.eclipse.kapua.app.api.core.model.job.MultipleJobIdRequest;
-import org.eclipse.kapua.app.api.core.resources.AbstractKapuaResource;
-import org.eclipse.kapua.job.engine.JobEngineService;
-import org.eclipse.kapua.job.engine.JobStartOptions;
-import org.eclipse.kapua.locator.KapuaLocator;
 
 @Path("{scopeId}/jobs")
 public class JobEngine extends AbstractKapuaResource {

@@ -51,6 +51,10 @@
         <!-- Internal dependencies -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-account-internal</artifactId>
         </dependency>
 
@@ -116,7 +120,6 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-job-engine-client</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-message-internal</artifactId>
@@ -222,10 +225,16 @@
             <groupId>com.allen-sauer.gwt.log</groupId>
             <artifactId>gwt-log</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
-            <artifactId>kapua-rest-api-core</artifactId>
+            <artifactId>kapua-commons</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-service-api</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

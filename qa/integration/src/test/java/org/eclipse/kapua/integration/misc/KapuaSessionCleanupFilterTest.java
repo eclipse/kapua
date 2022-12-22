@@ -25,10 +25,10 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.mockito.Mockito;
 
-import javax.servlet.FilterConfig;
 import javax.servlet.FilterChain;
-import javax.servlet.ServletResponse;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import java.io.IOException;
 
 
