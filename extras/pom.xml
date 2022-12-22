@@ -28,6 +28,7 @@
         <module>foreignkeys</module>
         <module>es-migrator</module>
         <module>encryption-migrator</module>
+        <module>liquibaseUnlocker</module>
     </modules>
 
 </project>
