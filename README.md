@@ -16,19 +16,21 @@
 ![Jenkins](https://img.shields.io/jenkins/build?jobUrl=https:%2F%2Fci.eclipse.org%2Fkapua%2Fjob%2Fdevelop-build&label=Jenkins%20Build&logo=jenkins) <br/>
 ![Jenkins](https://img.shields.io/jenkins/tests?compact_message&failed_label=%E2%9D%8C&jobUrl=https%3A%2F%2Fci.eclipse.org%2Fkapua%2Fjob%2Fdevelop%2F&label=Jenkins%20CI&passed_label=%E2%9C%85&skipped_label=%E2%9D%95&logo=jenkins) <br/>
 
-[Eclipse Kapua&trade;](http://eclipse.org/kapua) is a modular platform providing the services required to manage IoT gateways and smart edge devices. Kapua provides a core integration framework and an initial set of core IoT services including a device registry, device management services, messaging services, data management, and application enablement.
-
+[Eclipse Kapua&trade;](http://eclipse.org/kapua) is a modular platform providing the services required to manage IoT gateways and smart edge devices. Kapua provides a core integration framework and an
+initial set of core IoT services including a device registry, device management services, messaging services, data management, and application enablement.
 
 ## Quick Start Guide
 
 Running an Eclipse Kapua&trade; demo instance on your local machine is a simple task.
 
 Eclipse Kapua&trade; runs as distributed application that exposes three basic services:
+
 * The Messaging Service
 * The RESTful API
 * The Web Administration Console
 
 Two more backend services are required that implement the data tier:
+
 * The Event Bus Service
 * The SQL database
 * The NoSQL datastore
@@ -46,7 +48,9 @@ Before starting, check that your environment has the following prerequisites:
 
 ### Demo Setup
 
-The team maintains some docker images in a Docker Hub repository at [Kapua Repository](https://hub.docker.com/r/kapua/). Check the repo to view the list of available images, if you haven't found one fitting your needs you may create your own. Please refer to the paragraph [More deployment info](#more-deployment-info) to find more about creating your own images and/or alternative demo deployment scenarios.
+The team maintains some docker images in a Docker Hub repository at [Kapua Repository](https://hub.docker.com/r/kapua/). Check the repo to view the list of available images, if you haven't found one
+fitting your needs you may create your own. Please refer to the paragraph [More deployment info](#more-deployment-info) to find more about creating your own images and/or alternative demo deployment
+scenarios.
 
 ***
 **Note:** the Docker Hub repository mentioned above is not the official project repository from Eclipse Foundation.
@@ -122,11 +126,13 @@ the IP address of your docker instance.
 
 #### RESTful APIs
 
-The documentation of RESTful API is available at [http://localhost:8081/doc/](http://localhost:8081/doc/) while the mount points are available at [http://localhost:8081/v1/](http://localhost:8081/v1/).
+The documentation of RESTful API is available at [http://localhost:8081/doc/](http://localhost:8081/doc/) while the mount points are available at [http://localhost:8081/v1/](http://localhost:8081/v1/)
+.
 
 The documentation is available through Swagger UI which greatly helps testing and exploring the exposed services.
 
-In order to get access a REST resource through an API, an authentication token is needed. Fortunately the token can be easily obtained by executing the authentication API. There are several ways to invoke the API, an easy one is by using the Swagger UI:
+In order to get access a REST resource through an API, an authentication token is needed. Fortunately the token can be easily obtained by executing the authentication API. There are several ways to
+invoke the API, an easy one is by using the Swagger UI:
 
 * Open the URL http://localhost:8081/doc/
 * Select item _Authentication_
@@ -166,7 +172,8 @@ the IP address of your docker instance.
 The broker container exposes an [Mqtt](http://mqtt.org/) end point at tcp://localhost:1883/.
 The broker can be accessed through either [Eclipse Kura&trade;](http://www.eclipse.org/kura/) or a plain Mqtt client like, for example, [Eclipse Paho&trade;](http://www.eclipse.org/paho/).
 
-In order for a client to establish a Mqtt connection with the broker, a client must provide a valid identity. The _kapua-sys_ account provides the user named _kapua-broker_ which has been pre-seeded and profiled for the purpose.
+In order for a client to establish a Mqtt connection with the broker, a client must provide a valid identity. The _kapua-sys_ account provides the user named _kapua-broker_ which has been pre-seeded
+and profiled for the purpose.
 
 The credentials for the user kapua-broker are the following:
 
@@ -180,10 +187,13 @@ the IP address of your docker instance.
 
 #### Simulation
 
-Kapua comes with a framework that you can use to simulate Kura gateways. It can be used to test your Kapua deployments easily. See [Simulator documentation](docs/user-manual/en/simulator.md) for more info.
+Kapua comes with a framework that you can use to simulate Kura gateways. It can be used to test your Kapua deployments easily. See [Simulator documentation](docs/user-manual/en/simulator.md) for more
+info.
 
 #### More deployment info
-Installing and running a demo using Docker is easy, but it's not the only way. There are other scenarios that the users may be interested in. We provide advanced setup scenarios in the following guides:
+
+Installing and running a demo using Docker is easy, but it's not the only way. There are other scenarios that the users may be interested in. We provide advanced setup scenarios in the following
+guides:
 
 * [Running with Docker](deployment/docker/README.md)
 * [Running with OpenShift](docs/developer-guide/en/running.md#openshift)
@@ -198,7 +208,8 @@ They will provide more advanced deployment scenarios.
 
 ### Contributing
 
-If you're interested to get involved in IoT and Eclipse Kapua&trade; project, join the community and give your contribution to the project, please read [how to contribute to Eclipse Kapua&trade;](https://github.com/eclipse/kapua/blob/develop/CONTRIBUTING.md).
+If you're interested to get involved in IoT and Eclipse Kapua&trade; project, join the community and give your contribution to the project, please
+read [how to contribute to Eclipse Kapua&trade;](https://github.com/eclipse/kapua/blob/develop/CONTRIBUTING.md).
 
 ### Community
 

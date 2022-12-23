@@ -5,4 +5,4 @@ services:
     ports:
       - ${KAPUA_CONSOLE_DEBUG_PORT:-5007}:5005
     environment:
-      - JETTY_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=${KAPUA_CONSOLE_DEBUG_SUSPEND:-n},address=5005
+      - JETTY_DEBUG_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=${KAPUA_CONSOLE_DEBUG_SUSPEND:-n},address=*:5005

@@ -110,6 +110,11 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-simulator-kura</artifactId>
         </dependency>
+        <!-- why no more resolved from simulator-kura? -->
+        <dependency>
+            <groupId>org.eclipse.neoscada.utils</groupId>
+            <artifactId>org.eclipse.scada.utils</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-stream-api</artifactId>

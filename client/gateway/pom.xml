@@ -26,21 +26,17 @@
 
     <modules>
 
-        <!-- core modules -->
-
+        <!-- Core modules -->
         <module>api</module>
         <module>spi</module>
 
-        <!-- transport providers -->
-
+        <!-- Transport providers -->
         <module>provider</module>
 
-        <!-- communication profiles -->
-
+        <!-- Communication profiles -->
         <module>profile/kura</module>
 
-        <!-- feature packages -->
-
+        <!-- Feature packages -->
         <module>features</module>
 
     </modules>

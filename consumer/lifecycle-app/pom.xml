@@ -25,6 +25,13 @@
     <artifactId>kapua-consumer-lifecycle-app</artifactId>
 
     <dependencies>
+
+        <!-- fixes java.lang.ClassNotFoundException: javax.ws.rs.client.RxInvokerProvider -->
+        <dependency>
+            <groupId>org.glassfish.jersey.bundles</groupId>
+            <artifactId>jaxrs-ri</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-commons</artifactId>
@@ -452,6 +459,7 @@
                         <configuration>
                             <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
                             <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>

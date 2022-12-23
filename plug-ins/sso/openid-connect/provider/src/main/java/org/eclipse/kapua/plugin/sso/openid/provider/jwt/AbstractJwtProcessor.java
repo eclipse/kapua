@@ -217,7 +217,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
          * Validate a JWT.
          *
          * @param jwt a JWT in the form of a String.
-         * @return <tt>true</tt> if the validation succeeds, <tt>false</tt> otherwise.
+         * @return <code>true</code> if the validation succeeds, <code>false</code> otherwise.
          */
         public boolean validate(final String jwt) {
             try {
@@ -248,7 +248,7 @@ public abstract class AbstractJwtProcessor implements JwtProcessor {
          * Check if this Processor is expired.
          *
          * @param timeout the JwtProcessor expiration time.
-         * @return <tt>true</tt> if the Processor is expired, <tt>false</tt> otherwise.
+         * @return <code>true</code> if the Processor is expired, <code>false</code> otherwise.
          */
         public boolean isExpired(final Duration timeout) {
             return lastUsed.plus(timeout).isBefore(Instant.now());

@@ -12,9 +12,9 @@
         Red Hat Inc - initial API and implementation
  -->
 
-<features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0"
+<features xmlns="http://karaf.apache.org/xmlns/features/v1.6.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.4.0 http://karaf.apache.org/xmlns/features/v1.4.0"
+    xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.6.0 http://karaf.apache.org/xmlns/features/v1.6.0"
     name="kapua-client-gateway-${project.version}">
 
     <feature name="kapua-client-gateway" hidden="true"

@@ -13,9 +13,9 @@
 package org.eclipse.kapua;
 
 /**
- * KapuaIllegalNullArgumentException is thrown when <tt>null</tt> is passed to a method for an argument
- * or as a value for field in an object where <tt>null</tt> is not allowed.<br>
- * This should always be used instead of <tt>NullPointerException</tt> as the latter is too easily confused with programming bugs.
+ * KapuaIllegalNullArgumentException is thrown when <code>null</code> is passed to a method for an argument
+ * or as a value for field in an object where <code>null</code> is not allowed.<br>
+ * This should always be used instead of <code>NullPointerException</code> as the latter is too easily confused with programming bugs.
  *
  * @since 1.0.0
  */

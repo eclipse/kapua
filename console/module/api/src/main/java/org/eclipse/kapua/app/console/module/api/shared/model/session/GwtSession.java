@@ -406,4 +406,6 @@ public class GwtSession extends KapuaBaseModel implements Serializable {
     public void setFormDirty(boolean formDirty) {
         this.formDirty = formDirty;
     }
+
+
 }

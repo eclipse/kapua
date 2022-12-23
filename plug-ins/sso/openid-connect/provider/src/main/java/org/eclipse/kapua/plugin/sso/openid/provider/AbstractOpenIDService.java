@@ -108,7 +108,7 @@ public abstract class AbstractOpenIDService implements OpenIDService {
     /**
      * Check if the service is enabled.
      *
-     * @return always <tt>true</tt>
+     * @return always <code>true</code>
      */
     @Override
     public boolean isEnabled() {
