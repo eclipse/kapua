@@ -115,7 +115,7 @@ Scenario: Initialize test environment
       | test        | read,write, execute |
     And The permissions "read, write, execute"
     And An invalid role ID
-    Given I expect the exception "KapuaAuthorizationException" with the text "Error: Role not found in the scope"
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type role with id/name "
     When I create the access info entity
     Then An exception was thrown
     Then I logout
@@ -707,7 +707,7 @@ Scenario: Initialize test environment
       | integer | maxNumberChildEntities     | 5     |
     And The role "test_role_1"
     Given Scope with ID 10
-    Given I expect the exception "KapuaAuthorizationException" with the text "Role not found in the scope:"
+    Given I expect the exception "KapuaEntityNotFoundException" with the text "The entity of type role with id/name "
     When I create the access info entity
     Then An exception was thrown
     Then I logout

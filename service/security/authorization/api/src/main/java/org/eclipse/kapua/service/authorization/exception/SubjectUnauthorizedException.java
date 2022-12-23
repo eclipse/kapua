@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.shiro.exception;
+package org.eclipse.kapua.service.authorization.exception;
 
 import org.eclipse.kapua.service.authorization.permission.Permission;
 import org.eclipse.kapua.service.user.User;

@@ -19,7 +19,7 @@ import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.security.KapuaSession;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
+import org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException;
 
 import javax.inject.Singleton;
 import java.util.Arrays;

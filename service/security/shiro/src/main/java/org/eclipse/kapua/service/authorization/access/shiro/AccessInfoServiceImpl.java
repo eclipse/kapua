@@ -42,8 +42,6 @@ import org.eclipse.kapua.service.authorization.permission.shiro.PermissionValida
 import org.eclipse.kapua.service.authorization.role.Role;
 import org.eclipse.kapua.service.authorization.role.RoleService;
 import org.eclipse.kapua.service.authorization.shiro.AuthorizationEntityManagerFactory;
-import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationErrorCodes;
-import org.eclipse.kapua.service.authorization.shiro.exception.KapuaAuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,9 +97,9 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
                 // This checks also that the role belong to the same scopeId in which the access info is created
                 Role role = roleService.find(accessInfoCreator.getScopeId(), roleId);
 
-                // If (role == null) then roleId does not exists or it isn't in the same scope.
+                // If (role == null) then roleId does not exist, or it is in another Account scope.
                 if (role == null) {
-                    throw new KapuaAuthorizationException(KapuaAuthorizationErrorCodes.ENTITY_SCOPE_MISSMATCH, null, "Role not found in the scope: " + accessInfoCreator.getScopeId());
+                    throw new KapuaEntityNotFoundException(Role.TYPE, roleId);
                 }
             }
         }
@@ -171,12 +169,12 @@ public class AccessInfoServiceImpl extends AbstractKapuaService implements Acces
         AccessInfoQuery query = accessInfoFactory.newQuery(scopeId);
         query.setPredicate(query.attributePredicate(AccessInfoAttributes.USER_ID, userId));
         return entityManagerSession.doAction(EntityManagerContainer.<AccessInfo>create().onResultHandler(em -> {
-            AccessInfoListResult result = AccessInfoDAO.query(em, query);
-            if (!result.isEmpty()) {
-                return result.getFirstItem();
-            }
-            return null;
-        }).onBeforeHandler(() -> (AccessInfo) ((AccessInfoCache) entityCache).getByUserId(scopeId, userId))
+                    AccessInfoListResult result = AccessInfoDAO.query(em, query);
+                    if (!result.isEmpty()) {
+                        return result.getFirstItem();
+                    }
+                    return null;
+                }).onBeforeHandler(() -> (AccessInfo) ((AccessInfoCache) entityCache).getByUserId(scopeId, userId))
                 .onAfterHandler((entity) -> entityCache.put(entity)));
     }
 

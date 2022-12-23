@@ -13,8 +13,8 @@
 package org.eclipse.kapua.app.api.core.exception.model;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kapua.service.authentication.KapuaAuthenticationErrorCodes;
-import org.eclipse.kapua.service.authentication.shiro.KapuaAuthenticationException;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +75,7 @@ public class MfaRequiredExceptionInfoTest {
                 MfaRequiredExceptionInfo mfaRequiredExceptionInfo = new MfaRequiredExceptionInfo(statusList[i], kapuaException);
                 Assert.assertEquals("Expected and actual values should be the same.", expectedKapuaErrorCode[j], mfaRequiredExceptionInfo.getKapuaErrorCode());
                 Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], mfaRequiredExceptionInfo.getHttpErrorCode());
-                Assert.assertEquals("Expected and actual values should be the same.", "Error: ", mfaRequiredExceptionInfo.getMessage());
+                Assert.assertNotEquals("Expected and actual values should be the same.", "Error: ", mfaRequiredExceptionInfo.getMessage());
             }
         }
     }

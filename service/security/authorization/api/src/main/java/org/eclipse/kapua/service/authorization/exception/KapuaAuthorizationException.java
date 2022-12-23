@@ -10,53 +10,56 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.shiro.exception;
+package org.eclipse.kapua.service.authorization.exception;
 
 import org.eclipse.kapua.KapuaException;
 
 /**
- * Authorization exception.
+ * {@link KapuaException} for `kapua-authorization-api` module.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 public class KapuaAuthorizationException extends KapuaException {
 
     private static final long serialVersionUID = -6207605695086240243L;
 
-    private static final String KAPUA_ERROR_MESSAGES = "kapua-service-error-messages";
+    private static final String ERROR_MESSAGE_RESOURCE_BUNDLE = "authorization-error-messages";
 
     /**
-     * Constructs the exception by error code
+     * Constructor.
      *
-     * @param code error code
+     * @param code The {@link KapuaAuthorizationErrorCodes} associated with the {@link KapuaAuthorizationException}.
+     * @since 1.0.0
      */
     public KapuaAuthorizationException(KapuaAuthorizationErrorCodes code) {
         super(code);
     }
 
     /**
-     * Constructs the exception by error code and custom arguments
+     * Constructor.
      *
-     * @param code      error code
-     * @param arguments arguments
+     * @param code      The {@link KapuaAuthorizationErrorCodes} associated with the {@link KapuaAuthorizationException}.
+     * @param arguments The arguments associated with the {@link KapuaAuthorizationException}.
+     * @since 1.0.0
      */
     public KapuaAuthorizationException(KapuaAuthorizationErrorCodes code, Object... arguments) {
         super(code, arguments);
     }
 
     /**
-     * Constructs the exception by error code, custom arguments and cause
+     * Constructor.
      *
-     * @param code      error code
-     * @param cause     original cause
-     * @param arguments arguments
+     * @param code      The {@link KapuaAuthorizationErrorCodes} associated with the {@link KapuaAuthorizationException}.
+     * @param cause     The original {@link Throwable}.
+     * @param arguments The arguments associated with the {@link KapuaAuthorizationException}.
+     * @since 1.0.0
      */
     public KapuaAuthorizationException(KapuaAuthorizationErrorCodes code, Throwable cause, Object... arguments) {
         super(code, cause, arguments);
     }
 
     @Override
-    protected String getKapuaErrorMessagesBundle() {
-        return KAPUA_ERROR_MESSAGES;
+    public String getKapuaErrorMessagesBundle() {
+        return ERROR_MESSAGE_RESOURCE_BUNDLE;
     }
 }

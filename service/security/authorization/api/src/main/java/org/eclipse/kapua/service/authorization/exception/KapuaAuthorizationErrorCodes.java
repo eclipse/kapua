@@ -10,20 +10,16 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.service.authorization.shiro.exception;
+package org.eclipse.kapua.service.authorization.exception;
 
 import org.eclipse.kapua.KapuaErrorCode;
 
 /**
- * {@link KapuaErrorCode}s implementation for {@link KapuaAuthorizationException}.
+ * {@link KapuaErrorCode}s for {@link KapuaAuthorizationException}.
  *
  * @since 1.0.0
  */
 public enum KapuaAuthorizationErrorCodes implements KapuaErrorCode {
-    /**
-     * Invalid string permission representation
-     */
-    INVALID_STRING_PERMISSION,
 
     /**
      * See {@link SubjectUnauthorizedException}.
@@ -33,17 +29,16 @@ public enum KapuaAuthorizationErrorCodes implements KapuaErrorCode {
     SUBJECT_UNAUTHORIZED,
 
     /**
-     * One or more embedded entities is not found or does not match the scopeId of the root entity
-     */
-    ENTITY_SCOPE_MISSMATCH,
-
-    /**
-     * Subject is doing something on behalf of someone else
+     * See {@link SelfManagedOnlyException}.
+     *
+     * @since 1.4.0
      */
     SELF_MANAGED_ONLY,
 
     /**
-     * The operation is only allowed on internal users
+     * See {@link InternalUserOnlyException}.
+     *
+     * @since 1.4.0
      */
     INTERNAL_USER_ONLY
 }

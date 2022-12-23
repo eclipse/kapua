@@ -13,7 +13,7 @@
 package org.eclipse.kapua.app.api.core.exception.model;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kapua.service.authorization.shiro.exception.SelfManagedOnlyException;
+import org.eclipse.kapua.service.authorization.exception.SelfManagedOnlyException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class SelfManagedOnlyExceptionInfoTest {
             SelfManagedOnlyExceptionInfo selfManagedOnlyExceptionInfo = new SelfManagedOnlyExceptionInfo(statusList[i], selfManagedOnlyException);
             Assert.assertEquals("Expected and actual values should be the same.", "SELF_MANAGED_ONLY", selfManagedOnlyExceptionInfo.getKapuaErrorCode());
             Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], selfManagedOnlyExceptionInfo.getHttpErrorCode());
-            Assert.assertEquals("Expected and actual values should be the same.", "User cannot perform this action on behalf of another user. This action can be performed only in self-management.", selfManagedOnlyExceptionInfo.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", "This operation can be performed only on the current logged User.", selfManagedOnlyExceptionInfo.getMessage());
         }
     }
 

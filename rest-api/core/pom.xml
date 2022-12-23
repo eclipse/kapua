@@ -106,5 +106,13 @@
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-endpoint-api</artifactId>
         </dependency>
+
+        <!-- -->
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

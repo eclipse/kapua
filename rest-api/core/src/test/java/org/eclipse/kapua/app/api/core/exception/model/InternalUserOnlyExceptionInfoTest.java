@@ -13,7 +13,7 @@
 package org.eclipse.kapua.app.api.core.exception.model;
 
 import org.eclipse.kapua.qa.markers.junit.JUnitTests;
-import org.eclipse.kapua.service.authorization.shiro.exception.InternalUserOnlyException;
+import org.eclipse.kapua.service.authorization.exception.InternalUserOnlyException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +59,7 @@ public class InternalUserOnlyExceptionInfoTest {
             InternalUserOnlyExceptionInfo internalUserOnlyExceptionInfo = new InternalUserOnlyExceptionInfo(statusList[i], internalUserOnlyException);
             Assert.assertEquals("Expected and actual values should be the same.", "INTERNAL_USER_ONLY", internalUserOnlyExceptionInfo.getKapuaErrorCode());
             Assert.assertEquals("Expected and actual values should be the same.", expectedStatusCodes[i], internalUserOnlyExceptionInfo.getHttpErrorCode());
-            Assert.assertEquals("Expected and actual values should be the same.", "This action can be performed only by internal users.", internalUserOnlyExceptionInfo.getMessage());
+            Assert.assertEquals("Expected and actual values should be the same.", "This operation is reserved only for Users of type INTERNAL.", internalUserOnlyExceptionInfo.getMessage());
         }
     }
 

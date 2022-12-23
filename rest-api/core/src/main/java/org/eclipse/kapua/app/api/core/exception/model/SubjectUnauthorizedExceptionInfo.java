@@ -13,7 +13,7 @@
 package org.eclipse.kapua.app.api.core.exception.model;
 
 import org.eclipse.kapua.service.authorization.permission.Permission;
-import org.eclipse.kapua.service.authorization.shiro.exception.SubjectUnauthorizedException;
+import org.eclipse.kapua.service.authorization.exception.SubjectUnauthorizedException;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;

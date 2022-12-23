@@ -13,7 +13,7 @@
 package org.eclipse.kapua.app.api.core.exception;
 
 import org.eclipse.kapua.app.api.core.exception.model.InternalUserOnlyExceptionInfo;
-import org.eclipse.kapua.service.authorization.shiro.exception.InternalUserOnlyException;
+import org.eclipse.kapua.service.authorization.exception.InternalUserOnlyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
