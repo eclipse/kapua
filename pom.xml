@@ -70,13 +70,6 @@
         <guava.version>30.1-jre</guava.version>
         <guava-failureaccess.version>1.0.1</guava-failureaccess.version>
         <guava-listenablefuture.version>9999.0-empty-to-avoid-conflict-with-guava</guava-listenablefuture.version>
-        <!-- upgraded Guice to 5.1.0 to avoid this error (ok warning maybe) on jetty
-                08:31:28.687 [main] INFO  o.e.kapua.locator.guice.KapuaModule - Binding service modules ...
-                WARNING: An illegal reflective access operation has occurred
-                WARNING: Illegal reflective access by com.google.inject.internal.cglib.core.$ReflectUtils$1 (file:/var/opt/jetty/webapps/root/WEB-INF/lib/guice-4.2.3.jar) to method java.lang.ClassLoader.defineClass(java.lang.String,byte[],int,int,java.security.ProtectionDomain)
-                WARNING: Please consider reporting this to the maintainers of com.google.inject.internal.cglib.core.$ReflectUtils$1
-                WARNING: Use - -illegal-access=warn to enable warnings of further illegal reflective access operations
-                WARNING: All illegal access operations will be denied in a future release -->
         <guice.version>5.1.0</guice.version>
         <guice-multibindings.version>4.2.3</guice-multibindings.version>
         <hamcrest-core.version>2.2</hamcrest-core.version>
@@ -102,7 +95,6 @@
         <jaxb-core.version>2.3.0.1</jaxb-core.version>
         <jaxb-impl.version>2.3.6</jaxb-impl.version>
         <jbatch.version>1.0.2</jbatch.version>
-        <!-- 2.27 is the minimum for jvm11 but here there is a managed version 2.33 so check dependency tree -->
         <jersey.version>2.27</jersey.version>
         <jersey-repackaged.version>2.26-b03</jersey-repackaged.version>
         <jetty.version>9.4.44.v20210927</jetty.version>
@@ -232,6 +224,11 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
                     <version>${maven-install-plugin.version}</version>
                 </plugin>
@@ -309,6 +306,18 @@
                 </plugin>
 
                 <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>${dependency-check-maven.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>${nexus-staging-maven-plugin.version}</version>
+                </plugin>
+
+                <plugin>
                     <groupId>com.github.os72</groupId>
                     <artifactId>protoc-jar-maven-plugin</artifactId>
                     <version>${protoc-jar-maven-plugin.version}</version>
@@ -319,7 +328,6 @@
                     <artifactId>docker-maven-plugin</artifactId>
                     <version>${docker-maven-plugin.version}</version>
                 </plugin>
-
 
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -2330,11 +2338,6 @@
                         <groupId>log4j</groupId>
                         <artifactId>log4j</artifactId>
                     </exclusion>
-                    <exclusion>
-                        <!-- FIXME: This exclusion can be rmeoved after https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/issues/4106 gets approved -->
-                        <groupId>jakarta.security.auth.message</groupId>
-                        <artifactId>jakarta.security.auth.message-api</artifactId>
-                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -2347,11 +2350,6 @@
                     <exclusion>
                         <groupId>log4j</groupId>
                         <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <!-- FIXME: This exclusion can be rmeoved after https://gitlab.eclipse.org/eclipsefdn/emo-team/iplab/-/issues/4106 gets approved -->
-                        <groupId>jakarta.security.auth.message</groupId>
-                        <artifactId>jakarta.security.auth.message-api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -2508,7 +2506,6 @@
             </dependency>
 
             <!-- Spring boot -->
-            <!-- http://localhost:8080/actuator/health -->
             <dependency>
                 <groupId>org.apache.camel.springboot</groupId>
                 <artifactId>camel-spring-boot</artifactId>
@@ -2553,8 +2550,12 @@
     </dependencyManagement>
 
     <modules>
+        <!-- Dev -->
         <module>build-tools</module>
+        <module>dev-tools</module>
+        <module>deployment</module>
 
+        <!-- Core -->
         <module>commons</module>
         <module>locator</module>
         <module>service</module>
@@ -2563,10 +2564,9 @@
         <module>translator</module>
         <module>qa</module>
 
-        <module>plug-ins</module>
-
         <!-- Extras  -->
         <module>extras</module>
+        <module>plug-ins</module>
 
         <!-- Applications -->
         <module>rest-api</module>
@@ -2582,9 +2582,6 @@
 
         <!-- Assembly -->
         <module>assembly</module>
-
-        <module>dev-tools</module>
-        <module>deployment</module>
 
     </modules>
 
@@ -2605,7 +2602,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>${maven-gpg-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -2648,7 +2644,6 @@
                     <plugin>
                         <groupId>org.sonatype.plugins</groupId>
                         <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${nexus-staging-maven-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
                             <serverId>ossrh</serverId>
@@ -2683,7 +2678,6 @@
                     <plugin>
                         <groupId>org.owasp</groupId>
                         <artifactId>dependency-check-maven</artifactId>
-                        <version>${dependency-check-maven.version}</version>
                         <executions>
                             <execution>
                                 <goals>
