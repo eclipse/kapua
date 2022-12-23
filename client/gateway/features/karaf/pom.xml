@@ -13,7 +13,6 @@
  -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -23,16 +22,15 @@
         <relativePath>..</relativePath>
     </parent>
 
+    <name>Eclipse Kapua :: Gateway Client :: Features :: Karaf</name>
     <artifactId>kapua-client-gateway-feature-karaf</artifactId>
     <packaging>feature</packaging>
-    <name>Eclipse Kapua :: Gateway Client :: Features :: Karaf</name>
 
     <properties>
         <karaf.version>4.4.2</karaf.version>
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
@@ -102,7 +100,7 @@
                                 <descriptor>file:${project.build.directory}/feature/feature.xml</descriptor>
                             </descriptors>
                             <distribution>org.apache.karaf.features:framework</distribution>
-                            <javase>11</javase>
+                            <javase>${maven.compiler.source}</javase>
                             <framework>
                                 <feature>framework</feature>
                             </framework>

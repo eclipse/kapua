@@ -31,6 +31,11 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.toolchain.jdk.version>11</maven.toolchain.jdk.version>
 
+        <!-- Kapua Client compiler level and JDK -->
+        <kapua-client.maven.compiler.source>11</kapua-client.maven.compiler.source>
+        <kapua-client.maven.compiler.target>11</kapua-client.maven.compiler.target>
+        <kapua-client.maven.toolchain.jdk.version>11</kapua-client.maven.toolchain.jdk.version>
+
         <!-- Console compiler level and JDK -->
         <!-- Console is limited to Java 1.6, so we are using JDK 8 -->
         <console.maven.compiler.source>1.6</console.maven.compiler.source>
