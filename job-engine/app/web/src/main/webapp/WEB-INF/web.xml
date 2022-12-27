@@ -70,7 +70,13 @@
             <param-name>javax.ws.rs.Application</param-name>
             <param-value>org.eclipse.kapua.job.engine.app.web.JobEngineApplication</param-value>
         </init-param>
-       <load-on-startup>1</load-on-startup>
+        <init-param>
+            <param-name>jersey.config.server.provider.packages</param-name>
+            <param-value>
+                org.eclipse.kapua.job.engine.app
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
         <servlet-name>Jersey Web Application</servlet-name>
