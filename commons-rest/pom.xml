@@ -26,5 +26,6 @@
     <modules>
         <module>model</module>
         <module>errors</module>
+        <module>filters</module>
     </modules>
 </project>

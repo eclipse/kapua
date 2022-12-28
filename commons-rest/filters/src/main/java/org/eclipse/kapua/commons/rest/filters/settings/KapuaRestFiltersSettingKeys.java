@@ -10,7 +10,7 @@
  * Contributors:
  *     Eurotech - initial API and implementation
  *******************************************************************************/
-package org.eclipse.kapua.app.api.core.settings;
+package org.eclipse.kapua.commons.rest.filters.settings;
 
 import org.eclipse.kapua.commons.setting.SettingKey;
 
@@ -19,25 +19,16 @@ import org.eclipse.kapua.commons.setting.SettingKey;
  *
  * @since 1.0.0
  */
-public enum KapuaApiCoreSettingKeys implements SettingKey {
+public enum KapuaRestFiltersSettingKeys implements SettingKey {
 
     /**
-     * @since 1.0.0
+     * @since 1.5.0
      */
-    API_PATH_PARAM_SCOPEID_WILDCARD("api.path.param.scopeId.wildcard"),
-
+    API_CORS_REFRESH_INTERVAL("api.cors.refresh.interval"),
     /**
-     * @since 1.0.0
+     * @since 1.5.0
      */
-    API_EXCEPTION_STACKTRACE_SHOW("api.exception.stacktrace.show"),
-
-    /**
-     * Whether DeviceManagementPakages.download and DeviceManagementPakages.uninstall should return 200 with DeviceManagementOperation entity ({@code false}) or
-     * 204 without a content ({@code false})
-     *
-     * @since 2.0.0
-     */
-    API_DEVICE_MANAGEMENT_PACKAGE_RESPONSE_LEGACY_MODE("api.device.management.package.response.legacy.mode");
+    API_CORS_ORIGINS_ALLOWED("api.cors.origins.allowed");
 
     private final String key;
 
@@ -47,7 +38,7 @@ public enum KapuaApiCoreSettingKeys implements SettingKey {
      * @param key The value for the setting.
      * @since 1.0.0
      */
-    KapuaApiCoreSettingKeys(String key) {
+    KapuaRestFiltersSettingKeys(String key) {
         this.key = key;
     }
 

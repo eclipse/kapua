@@ -45,7 +45,7 @@
 
     <filter>
         <filter-name>SwaggerUIFilter</filter-name>
-        <filter-class>org.eclipse.kapua.app.api.core.filter.SwaggerUIFilter</filter-class>
+        <filter-class>org.eclipse.kapua.commons.rest.filters.SwaggerUIFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>SwaggerUIFilter</filter-name>
@@ -54,7 +54,7 @@
 
     <filter>
         <filter-name>CORSResponseFilter</filter-name>
-        <filter-class>org.eclipse.kapua.app.api.core.filter.CORSResponseFilter</filter-class>
+        <filter-class>org.eclipse.kapua.commons.rest.filters.CORSResponseFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>CORSResponseFilter</filter-name>
@@ -63,7 +63,7 @@
 
     <filter>
         <filter-name>KapuaSessionCleanUpFilter</filter-name>
-        <filter-class>org.eclipse.kapua.app.api.core.filter.KapuaSessionCleanupFilter</filter-class>
+        <filter-class>org.eclipse.kapua.commons.rest.filters.KapuaSessionCleanupFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>KapuaSessionCleanUpFilter</filter-name>
