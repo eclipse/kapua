@@ -244,7 +244,9 @@
                 <include>${pom.groupId}:kapua-consumer-commons</include>
                 <include>${pom.groupId}:kapua-commons</include>
                 <include>${pom.groupId}:kapua-datastore-api</include>
+                <include>${pom.groupId}:kapua-datastore-internal</include>
                 <include>${pom.groupId}:kapua-device-api</include>
+                <include>${pom.groupId}:kapua-device-internal</include>
                 <include>${pom.groupId}:kapua-device-call-api</include>
                 <include>${pom.groupId}:kapua-device-call-kura</include>
                 <include>${pom.groupId}:kapua-device-commons</include>

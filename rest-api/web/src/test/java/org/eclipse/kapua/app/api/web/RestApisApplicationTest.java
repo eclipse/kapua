@@ -35,7 +35,6 @@ public class RestApisApplicationTest {
         Assert.assertEquals("{jersey.config.server.mediaTypeMappings={xml=application/xml, json=application/json}, jersey.config.server.wadl.disableWadl=true}", restApisApplication.getProperties().toString());
         Assert.assertTrue("True expected.", restApisApplication.isRegistered(UriConnegFilter.class));
         Assert.assertTrue("True expected.", restApisApplication.isRegistered(JaxbContextResolver.class));
-        Assert.assertTrue("True expected.", restApisApplication.isRegistered(RestApiJAXBContextProvider.class));
         Assert.assertTrue("True expected.", restApisApplication.isRegistered(KapuaSerializableBodyWriter.class));
         Assert.assertTrue("True expected.", restApisApplication.isRegistered(ListBodyWriter.class));
         Assert.assertTrue("True expected.", restApisApplication.isRegistered(MoxyJsonConfigContextResolver.class));

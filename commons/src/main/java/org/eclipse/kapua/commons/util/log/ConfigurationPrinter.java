@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -85,7 +87,7 @@ public class ConfigurationPrinter {
      * @return The parent {@link Logger} to be used to {@link #printLog()}
      * @since 1.3.0
      */
-    protected Logger getParentLogger() {
+    public Logger getParentLogger() {
         return parentLogger;
     }
 
@@ -431,7 +433,33 @@ public class ConfigurationPrinter {
         return new ConfigurationPrinter();
     }
 
+    public <R extends Comparable<R>> void logSections(String sectionName, @NotNull Collection<R> sectionDetails) {
+        this.openSection(sectionName);
 
+        if (sectionDetails.isEmpty()) {
+            this.addSimpleParameter("None");
+        } else {
+            sectionDetails
+                    .stream()
+                    .sorted()
+                    .forEach(this::addSimpleParameter);
+        }
+        this.closeSection();
+    }
+
+    public <R> void logSections(String sectionName, @NotNull Collection<R> sectionDetails, Comparator<? super R> comparator) {
+        this.openSection(sectionName);
+
+        if (sectionDetails.isEmpty()) {
+            this.addSimpleParameter("None");
+        } else {
+            sectionDetails
+                    .stream()
+                    .sorted(comparator)
+                    .forEach(this::addSimpleParameter);
+        }
+        this.closeSection();
+    }
     //
     // Configuration Classes
     //

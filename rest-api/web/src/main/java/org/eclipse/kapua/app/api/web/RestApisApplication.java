@@ -16,14 +16,10 @@ import org.eclipse.kapua.app.api.core.KapuaSerializableBodyWriter;
 import org.eclipse.kapua.app.api.core.ListBodyWriter;
 import org.eclipse.kapua.app.api.core.MoxyJsonConfigContextResolver;
 import org.eclipse.kapua.commons.rest.errors.ExceptionConfigurationProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
-import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.filter.UriConnegFilter;
-import org.glassfish.jersey.server.spi.Container;
-import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
 
 import javax.inject.Singleton;
 import javax.ws.rs.core.MediaType;
@@ -59,34 +55,8 @@ public class RestApisApplication extends ResourceConfig {
         register(MoxyJsonConfigContextResolver.class);
         register(UriConnegFilter.class);
         register(JaxbContextResolver.class);
-        register(RestApiJAXBContextProvider.class);
         register(KapuaSerializableBodyWriter.class);
         register(ListBodyWriter.class);
-
-        register(new ContainerLifecycleListener() {
-
-            @Override
-            public void onStartup(Container container) {
-                ServiceLocator serviceLocator = container.getApplicationHandler().getInjectionManager().getInstance(ServiceLocator.class);
-
-                RestApiJAXBContextProvider provider = serviceLocator.createAndInitialize(RestApiJAXBContextProvider.class);
-                XmlUtil.setContextProvider(provider);
-            }
-
-            @Override
-            /**
-             * Nothing to do
-             */
-            public void onReload(Container container) {
-            }
-
-            @Override
-            /**
-             * Nothing to do
-             */
-            public void onShutdown(Container container) {
-            }
-        });
     }
 
 }

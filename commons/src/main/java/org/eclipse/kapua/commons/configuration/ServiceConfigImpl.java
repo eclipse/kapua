@@ -32,7 +32,7 @@ import java.util.Properties;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"pid", "configurations"})
+@XmlType(propOrder = {"pid"})
 @Entity(name = "ServiceConfig")
 @Table(name = "sys_configuration")
 /**
