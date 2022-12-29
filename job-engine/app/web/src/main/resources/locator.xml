@@ -18,7 +18,9 @@
 
     <packages>
         <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.model</package>
         <package>org.eclipse.kapua.job.engine.jbatch</package>
+        <package>org.eclipse.kapua.job.engine.commons</package>
         <package>org.eclipse.kapua.job.engine.queue.jbatch</package>
         <package>org.eclipse.kapua.message</package>
         <package>org.eclipse.kapua.service</package>

@@ -14,6 +14,20 @@ package org.eclipse.kapua.qa.common;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
+import org.eclipse.kapua.commons.rest.model.errors.CleanJobDataExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.ExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.JobAlreadyRunningExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.JobEngineExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.JobInvalidTargetExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.JobMissingStepExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.JobMissingTargetExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.JobNotRunningExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.JobResumingExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.JobRunningExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.JobScopedEngineExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.JobStartingExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.JobStoppingExceptionInfo;
+import org.eclipse.kapua.commons.rest.model.errors.ThrowableInfo;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordCreator;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordListResult;
 import org.eclipse.kapua.commons.service.event.store.api.EventStoreRecordQuery;
@@ -108,6 +122,24 @@ public class TestJAXBContextProvider implements JAXBContextProvider {
     public JAXBContext getJAXBContext() throws KapuaException {
         if (context == null) {
             Class<?>[] classes = new Class<?>[]{
+                    // REST API exception models
+                    ThrowableInfo.class,
+                    ExceptionInfo.class,
+
+                    // Jobs Exception Info
+                    CleanJobDataExceptionInfo.class,
+                    JobAlreadyRunningExceptionInfo.class,
+                    JobEngineExceptionInfo.class,
+                    JobScopedEngineExceptionInfo.class,
+                    JobInvalidTargetExceptionInfo.class,
+                    JobMissingStepExceptionInfo.class,
+                    JobMissingTargetExceptionInfo.class,
+                    JobNotRunningExceptionInfo.class,
+                    JobResumingExceptionInfo.class,
+                    JobRunningExceptionInfo.class,
+                    JobStartingExceptionInfo.class,
+                    JobStoppingExceptionInfo.class,
+
                     KapuaTmetadata.class,
                     KapuaTocd.class,
                     KapuaTad.class,
