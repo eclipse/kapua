@@ -18,5 +18,6 @@
 
     <packages>
         <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.model</package>
     </packages>
 </locator-config>

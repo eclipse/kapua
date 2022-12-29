@@ -15,15 +15,10 @@
 <beans
         xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:util="http://www.springframework.org/schema/util"
         xsi:schemaLocation="http://www.springframework.org/schema/beans
          http://www.springframework.org/schema/beans/spring-beans.xsd
          http://activemq.apache.org/schema/core
-         http://activemq.apache.org/schema/core/activemq-core.xsd
-         http://camel.apache.org/schema/spring
-         http://camel.apache.org/schema/spring/camel-spring-2.15.1.xsd
-         http://www.springframework.org/schema/util
-         http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+         http://activemq.apache.org/schema/core/activemq-core.xsd">
 
     <!-- Allows us to use system properties as variables in this configuration file -->
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -33,21 +28,16 @@
     </bean>
 
     <bean xmlns="http://www.springframework.org/schema/beans"
-        id="jaxbContextLoader"
-        class="org.eclipse.kapua.broker.core.KapuaBrokerJAXBContextLoader"
-        init-method="init"/>
+          id="databaseCheckUpdate"
+          class="org.eclipse.kapua.broker.core.KapuaDatabaseCheckUpdate"/>
     <bean xmlns="http://www.springframework.org/schema/beans"
-        id="databaseCheckUpdate"
-        class="org.eclipse.kapua.broker.core.KapuaDatabaseCheckUpdate"
-        depends-on="jaxbContextLoader"/>
+          id="applicationPlugin"
+          class="org.eclipse.kapua.broker.core.KapuaBrokerApplicationPlugin"
+          depends-on="databaseCheckUpdate"/>
     <bean xmlns="http://www.springframework.org/schema/beans"
-        id="applicationPlugin"
-        class="org.eclipse.kapua.broker.core.KapuaBrokerApplicationPlugin"
-        depends-on="databaseCheckUpdate"/>
-    <bean xmlns="http://www.springframework.org/schema/beans"
-        id="securityPlugin"
-        class="org.eclipse.kapua.broker.core.KapuaBrokerSecurityPlugin"
-        depends-on="applicationPlugin"/>
+          id="securityPlugin"
+          class="org.eclipse.kapua.broker.core.KapuaBrokerSecurityPlugin"
+          depends-on="applicationPlugin"/>
 
     <broker xmlns="http://activemq.apache.org/schema/core"
             brokerName="message-broker"

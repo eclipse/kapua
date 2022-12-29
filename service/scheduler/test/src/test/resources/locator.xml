@@ -18,6 +18,7 @@
 
     <packages>
         <package>org.eclipse.kapua.commons</package>
+        <package>org.eclipse.kapua.model</package>
         <package>org.eclipse.kapua.service.generator.id.sequence</package>
         <package>org.eclipse.kapua.service.scheduler.internal</package>
     </packages>

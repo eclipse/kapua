@@ -20,16 +20,17 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = {
-                "classpath:features/account/AccountServiceCreation.feature",
-                "classpath:features/account/AccountExpirationI9n.feature",
-                "classpath:features/account/FindSelfAccount.feature",
-                "classpath:features/account/AccountGroupService.feature",
-                "classpath:features/account/AccountDeviceRegistryService.feature",
-                "classpath:features/account/AccountJobService.feature",
-                "classpath:features/account/AccountRoleService.feature",
-                "classpath:features/account/AccountTagService.feature",
-                "classpath:features/account/AccountUserService.feature",
-                "classpath:features/account/AccountCredentialService.feature"
+//                "classpath:features/account/AccountServiceCreation.feature",
+//                "classpath:features/account/AccountExpirationI9n.feature",
+//                "classpath:features/account/FindSelfAccount.feature",
+//                "classpath:features/account/AccountGroupService.feature",
+//                "classpath:features/account/AccountDeviceRegistryService.feature",
+//                "classpath:features/account/AccountJobService.feature",
+//                "classpath:features/account/AccountRoleService.feature",
+                "classpath:features/account/AccountTagService.feature"
+//                ,
+//                "classpath:features/account/AccountUserService.feature",
+//                "classpath:features/account/AccountCredentialService.feature"
         },
         glue = {"org.eclipse.kapua.qa.common",
                 "org.eclipse.kapua.service.account.steps",

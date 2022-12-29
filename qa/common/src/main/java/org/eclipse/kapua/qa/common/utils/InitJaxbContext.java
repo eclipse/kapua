@@ -12,14 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common.utils;
 
+import io.cucumber.guice.ScenarioScoped;
+import io.cucumber.java.en.Given;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.qa.common.TestJAXBContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import io.cucumber.guice.ScenarioScoped;
-import io.cucumber.java.en.Given;
 
 @ScenarioScoped
 public class InitJaxbContext {
@@ -30,6 +29,17 @@ public class InitJaxbContext {
     public void initJAXBContext() throws KapuaException {
         logger.info("Initializing Test JAXB context...");
         XmlUtil.setContextProvider(new TestJAXBContextProvider());
+//        final HashSet<ClassProvider> providers = new HashSet<>();
+//        providers.add(new XmlSerializableClassesProvider(
+//                ConfigurationPrinter
+//                        .create()
+//                        .withLogger(LoggerFactory.getLogger(this.getClass()))
+//                        .withLogLevel(ConfigurationPrinter.LogLevel.INFO)
+//                        .withTitle("Kapua Locator Configuration")
+//                        .addParameter("Resource Name", "tests configuration"),
+//                Arrays.asList("org.eclipse.kapua"),
+//                Collections.emptyList()));
+//        XmlUtil.setContextProvider(new JAXBContextProviderImpl(providers));
         logger.info("Initializing Test JAXB context... DONE");
     }
 }

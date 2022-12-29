@@ -15,17 +15,17 @@
 @env_none
 
 Feature: Account expiration features
-    Accounts have an expiration date. From this date onward the accounts are considered disabled
-    and cannot be logged into anymore.
+  Accounts have an expiration date. From this date onward the accounts are considered disabled
+  and cannot be logged into anymore.
 
-@setup
-Scenario: Initialize test environment
+  @setup
+  Scenario: Initialize test environment
     Given Init Jaxb Context
     And Init Security Context
 
   Scenario: Account with future expiration date
-    Set the expiration date of an account in the future. It must be possible to log into such
-    account.
+  Set the expiration date of an account in the future. It must be possible to log into such
+  account.
 
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I configure account service
@@ -33,20 +33,20 @@ Scenario: Initialize test environment
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 50    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 20     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 20    |
     Given Account
       | name      | scopeId | expirationDate |
       | account-a | 1       | tomorrow       |
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  10    |
+      | integer | maxNumberChildEntities | 10    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
@@ -67,20 +67,20 @@ Scenario: Initialize test environment
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 50    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 20     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 20    |
     Given Account
       | name      | scopeId |
       | account-a | 1       |
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  10    |
+      | integer | maxNumberChildEntities | 10    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
@@ -93,17 +93,17 @@ Scenario: Initialize test environment
     And I logout
 
   Scenario: Account past its expiration date
-    Set the expiration date of the account in the past. Te account should be expired and should
-    not be possible to log in with it.
+  Set the expiration date of the account in the past. Te account should be expired and should
+  not be possible to log in with it.
     When I login as user with name "kapua-sys" and password "kapua-password"
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 50    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 30    |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 30    |
     Given Account
       | name      | scopeId | expirationDate |
       | account-a | 1       | yesterday      |
@@ -112,9 +112,9 @@ Scenario: Initialize test environment
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 10    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
@@ -136,9 +136,9 @@ Scenario: Initialize test environment
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 50    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 30    |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 30    |
     Given Account
       | name      | scopeId | expirationDate |
       | account-a | 1       | today          |
@@ -147,9 +147,9 @@ Scenario: Initialize test environment
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 10    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
@@ -162,33 +162,33 @@ Scenario: Initialize test environment
     Then An exception was thrown
     And I logout
 
-    Scenario: Child account expires before parent
-    Create a chain of accounts. Each child account expires before its parent.
-      When I login as user with name "kapua-sys" and password "kapua-password"
-      And I configure account service
-        | type    | name                   | value |
-        | boolean | infiniteChildEntities  | true  |
-        | integer | maxNumberChildEntities | 50    |
-      Given Account
-        | name      | scopeId | expirationDate |
-        | account-a | 1       | 20/7/2018      |
-      And I configure account service
-        | type    | name                   | value |
-        | boolean | infiniteChildEntities  | true  |
-        | integer | maxNumberChildEntities | 40    |
-      Given I select account "account-a"
-      And Account
-        | name      | expirationDate |
-        | account-b | 19/7/2018      |
-      And I configure account service
-        | type    | name                   | value |
-        | boolean | infiniteChildEntities  | true  |
-        | integer | maxNumberChildEntities | 40    |
-      Given I select account "account-b"
-      And Account
-        | name      | expirationDate |
-        | account-c | 18/7/2018      |
-      And I logout
+  Scenario: Child account expires before parent
+  Create a chain of accounts. Each child account expires before its parent.
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 50    |
+    Given Account
+      | name      | scopeId | expirationDate |
+      | account-a | 1       | 20/7/2018      |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 40    |
+    Given I select account "account-a"
+    And Account
+      | name      | expirationDate |
+      | account-b | 19/7/2018      |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 40    |
+    Given I select account "account-b"
+    And Account
+      | name      | expirationDate |
+      | account-c | 18/7/2018      |
+    And I logout
 
   Scenario: Both the parent and child accounts have the same expiration date
   Create a chain of accounts. All accounts have the same expiration dates. This should be allowed.
@@ -338,8 +338,8 @@ Scenario: Initialize test environment
       | integer | maxNumberChildEntities | 40    |
     Given I select account "account-a"
     And Account
-      | name      |expirationDate |
-      | account-b |19/7/2018      |
+      | name      | expirationDate |
+      | account-b | 19/7/2018      |
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
@@ -526,20 +526,20 @@ Scenario: Initialize test environment
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 50    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 20     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 20    |
     Given Account
       | name      | scopeId | expirationDate |
       | account-a | 1       | tomorrow       |
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  10    |
+      | integer | maxNumberChildEntities | 10    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
@@ -547,9 +547,9 @@ Scenario: Initialize test environment
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
-      | domain      | action |
-      | account     | read   |
-      | account     | write  |
+      | domain  | action |
+      | account | read   |
+      | account | write  |
     And I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Given I select account "account-a"
@@ -568,20 +568,20 @@ Scenario: Initialize test environment
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 50    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 20     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 20    |
     Given Account
       | name      | scopeId | expirationDate |
-      | account-a | 1       | null       |
+      | account-a | 1       | null           |
     And I configure account service
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
-      | integer | maxNumberChildEntities |  10    |
+      | integer | maxNumberChildEntities | 10    |
     And I configure user service
-      | type    | name                       | value |
-      | boolean | infiniteChildEntities      | true  |
-      | integer | maxNumberChildEntities     | 5     |
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 5     |
     And User A
       | name    | displayName  | email             | phoneNumber     | status  | userType |
       | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
@@ -589,9 +589,9 @@ Scenario: Initialize test environment
       | name    | password          | enabled |
       | kapua-a | ToManySecrets123# | true    |
     And Add permissions to the last created user
-      | domain      | action |
-      | account     | read   |
-      | account     | write  |
+      | domain  | action |
+      | account | read   |
+      | account | write  |
     And I logout
     When I login as user with name "kapua-a" and password "ToManySecrets123#"
     Given I select account "account-a"
@@ -600,6 +600,6 @@ Scenario: Initialize test environment
     Then An exception was thrown
     And I logout
 
-@teardown
-Scenario: Reset Security Context for all scenarios
-  Given Reset Security Context
+  @teardown
+  Scenario: Reset Security Context for all scenarios
+    Given Reset Security Context
