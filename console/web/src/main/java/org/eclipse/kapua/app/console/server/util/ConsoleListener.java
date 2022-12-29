@@ -14,14 +14,11 @@ package org.eclipse.kapua.app.console.server.util;
 
 import com.google.common.base.MoreObjects;
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.app.console.ConsoleJAXBContextProvider;
 import org.eclipse.kapua.commons.core.ServiceModuleBundle;
 import org.eclipse.kapua.commons.jpa.JdbcConnectionUrlResolvers;
 import org.eclipse.kapua.commons.liquibase.KapuaLiquibaseClient;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-import org.eclipse.kapua.commons.util.xml.JAXBContextProvider;
-import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.service.scheduler.quartz.SchedulerServiceInit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,16 +39,6 @@ public class ConsoleListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(final ServletContextEvent event) {
-        try {
-            LOG.info("Initialize Console JABContext Provider...");
-            JAXBContextProvider consoleProvider = new ConsoleJAXBContextProvider();
-            XmlUtil.setContextProvider(consoleProvider);
-            LOG.info("Initialize Console JABContext Provider... DONE!");
-        } catch (Exception e) {
-            LOG.error("Initialize Console JABContext Provider... ERROR! Error: {}", e.getMessage(), e);
-            throw new ExceptionInInitializerError(e);
-        }
-
         if (SYSTEM_SETTING.getBoolean(SystemSettingKey.DB_SCHEMA_UPDATE, false)) {
             try {
                 String dbUsername = SYSTEM_SETTING.getString(SystemSettingKey.DB_USERNAME);
