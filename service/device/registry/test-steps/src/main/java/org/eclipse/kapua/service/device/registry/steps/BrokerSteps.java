@@ -53,6 +53,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.junit.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.nio.file.Files;
@@ -68,6 +70,8 @@ import java.util.stream.Collectors;
  */
 @Singleton
 public class BrokerSteps extends TestBase {
+
+    protected static final Logger logger = LoggerFactory.getLogger(BrokerSteps.class);
 
     /**
      * Embedded broker configuration file from classpath resources.
@@ -528,8 +532,6 @@ public class BrokerSteps extends TestBase {
             }
         }
         Assert.assertTrue("Bad Device(s) status (expected " + deviceStatus + ")", checkDone);
-        stepData.put(DEVICE_CONNECTION, deviceConnection);
-        stepData.put(DEVICE_CONNECTIONS, deviceConnections);
         logger.info("Device(s) status check: {} DONE", timeout);
     }
 
