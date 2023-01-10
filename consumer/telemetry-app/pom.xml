@@ -79,6 +79,26 @@
         </dependency>
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-job-engine-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-job-internal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-call-kura</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
+            <artifactId>kapua-device-management-all-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-device-registry-internal</artifactId>
         </dependency>
         <dependency>
