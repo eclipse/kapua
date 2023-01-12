@@ -174,7 +174,7 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             //check if the updated account is an admin account
             if (setting.getString(SystemSettingKey.SYS_ADMIN_ACCOUNT).equals(account.getName())) {
                 //throw exception if trying to set an expiration date for an admin account
-                throw new KapuaIllegalArgumentException("notAllowedExpirationDate", account.getExpirationDate().toString());
+                throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "Admin account cannot have an expiration date set");
             }
         }
 
