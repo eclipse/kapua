@@ -20,7 +20,7 @@ Feature: Role Service
   @setup
   @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
      Scenario: Initialize test environment
-       Given Init Jaxb Context
+    Given Init test environment
 
   Scenario: Creating a valid role
   Create a role entry with specified name and description. Once created, search for it - it should have been created.

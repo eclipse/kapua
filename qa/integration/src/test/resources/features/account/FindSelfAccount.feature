@@ -19,8 +19,7 @@ Feature: Self account find feature
 
 @setup
 Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Find self account by id
     When I login as user with name "kapua-sys" and password "kapua-password"

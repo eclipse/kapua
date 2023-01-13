@@ -17,8 +17,7 @@ Feature: Trigger service tests
 
   @setup
   Scenario: Init Security Context for all scenarios
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start base docker environment
 
   Scenario: Adding "Device Connect" Schedule With All Valid Parameters

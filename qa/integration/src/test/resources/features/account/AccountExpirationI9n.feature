@@ -20,8 +20,7 @@ Feature: Account expiration features
 
   @setup
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Account with future expiration date
   Set the expiration date of an account in the future. It must be possible to log into such

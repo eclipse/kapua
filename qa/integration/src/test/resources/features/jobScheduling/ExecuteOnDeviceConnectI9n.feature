@@ -17,8 +17,7 @@ Feature: JobEngineService execute job on device connect
 
   @setup
   Scenario: Start full docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   Scenario: Executing Job When Device Connected After The Specified Start Date And Time

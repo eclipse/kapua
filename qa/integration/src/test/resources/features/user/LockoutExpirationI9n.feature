@@ -21,8 +21,7 @@ Feature: User and Credential expiration abd lockout features
 
 @setup
 Scenario: Init Security Context for all scenarios
-  Given Init Jaxb Context
-  And Init Security Context
+    Given Init Security Context
 
 #
 # Credential state

@@ -19,7 +19,7 @@ Feature: Credentials
   @setup
   @KapuaProperties("locator.class.impl=org.eclipse.kapua.qa.common.MockedLocator")
   Scenario: Initialize test environment
-    Given Init Jaxb Context
+    Given Init test environment
 
   Scenario: Creating a new PASSWORD Credential meeting the standard length requirement
   Create a new Credential of type PASSWORD that meets the default string length requirements

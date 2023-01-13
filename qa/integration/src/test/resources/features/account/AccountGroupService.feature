@@ -17,8 +17,7 @@ Feature: Account Group Service Integration Tests
 
   @setup
   Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: Creating Groups Under Account That Allows Infinite Child Groups
   Login as kapua-sys, create an account

@@ -18,8 +18,7 @@ Feature: Device data scenarios
 
 @setup
   Scenario: Start docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   Scenario: Connect to the system and publish some data

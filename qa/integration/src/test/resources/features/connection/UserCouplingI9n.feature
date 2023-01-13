@@ -18,8 +18,7 @@ Feature: User Coupling
 
 @setup
   Scenario: Start docker environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
     And Start full docker environment
 
   Scenario: Test LOOSE user coupling on single connection

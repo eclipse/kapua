@@ -20,8 +20,7 @@ Feature: Tenant service with Service Events
 
 @setup
 Scenario: Initialize test environment
-    Given Init Jaxb Context
-    And Init Security Context
+    Given Init Security Context
 
   Scenario: To be defined
 #    Given this step says to skip
