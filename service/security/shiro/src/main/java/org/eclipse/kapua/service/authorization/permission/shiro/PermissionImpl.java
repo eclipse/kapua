@@ -29,6 +29,8 @@ import org.eclipse.kapua.service.KapuaEntityService;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
+import org.eclipse.kapua.service.authorization.domain.Domain;
+import org.eclipse.kapua.service.authorization.domain.DomainRegistryService;
 import org.eclipse.kapua.service.authorization.group.Group;
 import org.eclipse.kapua.service.authorization.permission.Permission;
 
@@ -53,7 +55,10 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     private static final long serialVersionUID = 1480557438886065675L;
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     private static final AccountService ACCOUNT_SERVICE = LOCATOR.getService(AccountService.class);
+
+    private static final DomainRegistryService DOMAIN_SERVICE = LOCATOR.getService(DomainRegistryService.class);
 
     @Basic
     @Column(name = "domain", nullable = true, updatable = false)
@@ -80,7 +85,9 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     private boolean forwardable;
 
     /**
-     * Constructor
+     * Constructor.
+     *
+     * @since 1.0.0
      */
     protected PermissionImpl() {
         super();
@@ -93,8 +100,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
      * @since 1.0.0
      */
     public PermissionImpl(Permission permission) {
-        this(
-                permission.getDomain(),
+        this(permission.getDomain(),
                 permission.getAction(),
                 permission.getTargetScopeId(),
                 permission.getGroupId(),
@@ -104,10 +110,10 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     /**
      * Constructor.
      *
-     * @param domain
-     * @param action
-     * @param targetScopeId
-     * @param groupId
+     * @param domain        The {@link Permission#getDomain()}.
+     * @param action        The {@link Permission#getAction()}.
+     * @param targetScopeId The {@link Permission#getTargetScopeId()}.
+     * @param groupId       The {@link Permission#getGroupId()}.
      * @since 1.0.0
      */
     public PermissionImpl(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId) {
@@ -117,10 +123,11 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     /**
      * Constructor.
      *
-     * @param domain
-     * @param action
-     * @param targetScopeId
-     * @param groupId
+     * @param domain        The {@link Permission#getDomain()}.
+     * @param action        The {@link Permission#getAction()}.
+     * @param targetScopeId The {@link Permission#getTargetScopeId()}.
+     * @param groupId       The {@link Permission#getGroupId()}.
+     * @param forwardable   Whether the {@link Permission} is {@link Permission#getForwardable()}
      * @since 1.0.0
      */
     public PermissionImpl(String domain, Actions action, KapuaId targetScopeId, KapuaId groupId, boolean forwardable) {
@@ -185,8 +192,7 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     }
 
     /**
-     * This methods needs to be overridden to support Access {@link Group} feature.<br>
-     * <p>
+     * This method needs to be overridden to support Access {@link Group} feature.
      * <p>
      * {@link KapuaEntityService}s that access a specific {@link KapuaEntity} (i.e. {@link KapuaEntityService#create(KapuaEntityCreator)}, {@link KapuaEntityService#delete(KapuaId, KapuaId)})
      * can make the control taking in consideration of the {@link Group#getId()} parameter as it is known.<br>
@@ -196,11 +202,9 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
      * The access control then, is performed by hiding the data that a {@link Subject} cannot see instead of throwing {@link UnauthorizedException}.
      * </p>
      * <p>
-     * <p>
      * The access control for {@link KapuaEntityService#query(KapuaQuery)}, {@link KapuaEntityService#count(KapuaQuery)}) must specify that {@link Group#ANY} group assigned to the permission is
      * enough to pass the {@link AuthorizationService#checkPermission(Permission)}.
      * </p>
-     * <p>
      * <p>
      * In case of the {@link Permission#getForwardable()} equals to {@code true}, more lookup is required.<br>
      * If a parent account access the resources of one of its child accounts it won't have the direct permission to access it.
@@ -211,32 +215,61 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
      * @since 1.0.0
      */
     @Override
-    public boolean implies(org.apache.shiro.authz.Permission p) {
+    public boolean implies(org.apache.shiro.authz.Permission shiroPermission) {
 
-        Permission permission = (Permission) p;
+        Permission targetPermission = (Permission) shiroPermission;
 
-        if (KapuaId.ANY.equals(permission.getTargetScopeId())) {
-            setTargetScopeId(null);
+        // Check target Permission domain
+        checkTargetPermissionIsGroupable(targetPermission);
+
+        // If checked Permission ask for ANY targetScopeId, promote this Permission.targetScopeId to `null` (a.k.a. ALL scopes).
+        if (KapuaId.ANY.equals(targetPermission.getTargetScopeId())) {
+            this.setTargetScopeId(null);
         }
 
-        if (Group.ANY.equals(permission.getGroupId())) {
-            setGroupId(null);
+        // If checked Permission ask for ANY groupId, promote this Permission.groupId to `null` (a.k.a. ALL groups).
+        if (Group.ANY.equals(targetPermission.getGroupId())) {
+            this.setGroupId(null);
         }
 
-        setParts(toString());
+        // Set part of the Shiro Permission to then run 'implies' with the target Permission
+        this.setParts(this.toString());
 
-        boolean implies = super.implies(p);
+        boolean implies = super.implies(shiroPermission);
 
-        if (!implies && permission.getTargetScopeId() != null && getForwardable()) {
-            implies = forwardPermission(p);
+        // If it fails try forward permission if this Permission is forwardable
+        if (!implies && targetPermission.getTargetScopeId() != null && this.getForwardable()) {
+            implies = forwardPermission(shiroPermission);
         }
 
+        // Return result
         return implies;
     }
 
     /**
-     * Checks {@code this} Permission against the given {@link Permission} parameter.<br>
+     * Checks whether the given {@link Permission#getDomain()} is {@link Domain#getGroupable()}.
      * <p>
+     * If it is, promotes this {@link Permission#getGroupId()} to {@code null} (a.k.a. ALL groups).
+     *
+     * @param targetPermission The target {@link Permission} to check.
+     * @since 2.0.0
+     */
+    private void checkTargetPermissionIsGroupable(Permission targetPermission) {
+        if (targetPermission.getDomain() != null) {
+            try {
+                Domain domainDefinition = KapuaSecurityUtils.doPrivileged(() -> DOMAIN_SERVICE.findByName(targetPermission.getDomain()));
+
+                if (!domainDefinition.getGroupable()) {
+                    this.setGroupId(null);
+                }
+            } catch (Exception e) {
+                throw KapuaRuntimeException.internalError(e, "Error while resolving target Permission.domain: " + targetPermission.getDomain());
+            }
+        }
+    }
+
+    /**
+     * Checks {@code this} Permission against the given {@link Permission} parameter.
      * <p>
      * It tries to forward {@code this} Permission to the {@link #getTargetScopeId()} of the given {@link org.apache.shiro.authz.Permission} parameter.<br>
      * This means that if the required permission has scope id 'B' and {@code this} {@link Permission} has scope id 'A',
@@ -244,39 +277,37 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
      * to the same level of the given {@link org.apache.shiro.authz.Permission}.
      * </p>
      * <p>
-     * <p>
-     * <b>Example:</b>
-     * User 'A' in account 'A' has scopeId 'A' and this permission (A) "*:*:A:*".<br>
-     * Account 'A' has a child account 'B', then 'B' has this parent account path: '/A/B';<br>
-     * <br>
+     * <h3>Example:</h3>
+     * User 'A' in account 'A' has scopeId 'A' and this permission (A) "*:*:A:*".
+     * Account 'A' has a child account 'B', then 'B' has this parent account path: '/A/B';
      * User 'A' tries to access a resource of account 'B' an the direct check {@link org.apache.shiro.authz.Permission#implies(org.apache.shiro.authz.Permission)} fails.
      * So this method searches the parent account path of account 'B', found that 'A' is a parent of 'B'
      * so then {@code this} {@link Permission} is checked again with 'B' as scopeId.
      * </p>
      *
-     * @param p The permission to check against.
+     * @param shiroPermission The permission to check against.
      * @return {@code true} if this permission is forward-able and is valid when forwarded, {@code false otherwise}
      * @since 1.0.0
      */
-    private boolean forwardPermission(org.apache.shiro.authz.Permission p) {
-        Permission permission = (Permission) p;
+    private boolean forwardPermission(org.apache.shiro.authz.Permission shiroPermission) {
+        Permission targetPermission = (Permission) shiroPermission;
 
         try {
-            Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(permission.getTargetScopeId()));
+            Account account = KapuaSecurityUtils.doPrivileged(() -> ACCOUNT_SERVICE.find(targetPermission.getTargetScopeId()));
 
             if (account != null && account.getScopeId() != null) {
                 String parentAccountPath = account.getParentAccountPath();
 
                 // If it doesn't contain the scope id in the parent, don't even try to check against
                 if (parentAccountPath.contains("/" + getTargetScopeId().toStringId() + "/")) {
-                    setTargetScopeId(permission.getTargetScopeId());
-                    setParts(toString());
+                    this.setTargetScopeId(targetPermission.getTargetScopeId());
+                    this.setParts(this.toString());
 
-                    return super.implies(p);
+                    return super.implies(shiroPermission);
                 }
             }
         } catch (KapuaException e) {
-            throw KapuaRuntimeException.internalError(e, "Error while forwarding permission: " + p.toString());
+            throw KapuaRuntimeException.internalError(e, "Error while forwarding target Permission: " + shiroPermission);
         }
 
         return false;
@@ -286,12 +317,12 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(domain != null ? domain : Permission.WILDCARD) //
-                .append(Permission.SEPARATOR) //
-                .append(action != null ? action.name() : Permission.WILDCARD) //
-                .append(Permission.SEPARATOR) //
-                .append(targetScopeId != null ? targetScopeId.getId() : Permission.WILDCARD) //
-                .append(Permission.SEPARATOR) //
+        sb.append(domain != null ? domain : Permission.WILDCARD)
+                .append(Permission.SEPARATOR)
+                .append(action != null ? action.name() : Permission.WILDCARD)
+                .append(Permission.SEPARATOR)
+                .append(targetScopeId != null ? targetScopeId.getId() : Permission.WILDCARD)
+                .append(Permission.SEPARATOR)
                 .append(groupId != null ? groupId.getId() : Permission.WILDCARD);
 
         return sb.toString();
@@ -338,12 +369,9 @@ public class PermissionImpl extends WildcardPermission implements Permission, or
             return false;
         }
         if (groupId == null) {
-            if (other.groupId != null) {
-                return false;
-            }
-        } else if (!groupId.equals(other.groupId)) {
-            return false;
+            return other.groupId == null;
+        } else {
+            return groupId.equals(other.groupId);
         }
-        return true;
     }
 }
