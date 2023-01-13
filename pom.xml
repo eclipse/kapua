@@ -1691,6 +1691,11 @@
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
+                <artifactId>netty-handler-ssl-ocsp</artifactId>
+                <version>${netty.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.netty</groupId>
                 <artifactId>netty-resolver</artifactId>
                 <version>${netty.version}</version>
             </dependency>
