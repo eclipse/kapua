@@ -4,9 +4,9 @@ We use Apache Maven as the build tool of choice.
 
 We use `gitbook` to build the documentation.
 
-## Kapua
+## How to build
 
-Kapua is being compiled with Maven. 
+Kapua is being compiled with Maven.
 
 You can run the Kapua full build issuing the command:
 
@@ -24,6 +24,15 @@ by using:
 Again, add the `console` profile as well if needed:
 
     mvn clean install -Pdev,console -DskipTests=true
+
+## Security Scan
+
+You can perform the CVE scan of the project by running with the following command:
+
+`mvn verify -DskipTests -Psecurity-scan`
+
+Currently, is configured to run the scan and produce reports but not to fail in case of CVEs detected. 
+Reports can be found in the `target/security-scan/` directory of each module.
 
 ## Documentation
 
