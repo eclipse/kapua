@@ -20,7 +20,7 @@ Feature: Account expiration features
 
 @setup
 Scenario: Initialize test environment
-    GivenInit Jaxb Context
+    Given Init Jaxb Context
     And Init Security Context
 
   Scenario: Account with future expiration date
@@ -513,6 +513,90 @@ Scenario: Initialize test environment
     Given I select account "account-b"
     Given I expect the exception "KapuaIllegalArgumentException" with the text "argument expirationDate"
     When I change the current account expiration date to "null"
+    Then An exception was thrown
+    And I logout
+
+  Scenario: User cannot modify expiration date of the account in which it is defined
+  A user defined inside an account cannot update the expiration date if its account.
+  In this test the user tries to change the expiration date from a defined date to a "no expiration date".
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 50    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 20     |
+    Given Account
+      | name      | scopeId | expirationDate |
+      | account-a | 1       | tomorrow       |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities |  10    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    And User A
+      | name    | displayName  | email             | phoneNumber     | status  | userType |
+      | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
+    And I add credentials
+      | name    | password          | enabled |
+      | kapua-a | ToManySecrets123# | true    |
+    And Add permissions to the last created user
+      | domain      | action |
+      | account     | read   |
+      | account     | write  |
+    And I logout
+    When I login as user with name "kapua-a" and password "ToManySecrets123#"
+    Given I select account "account-a"
+    Given I expect the exception "KapuaAccountException" with the text "A user cannot modify expiration date of the account in which it's defined"
+    When I change the current account expiration date to "null"
+    Then An exception was thrown
+    And I logout
+
+  Scenario: User cannot modify expiration date of the account in which it is defined - 2
+  A user defined inside an account cannot update the expiration date if its account.
+  In this test the user tries to change the expiration date from a "no expiration date" to a defined date.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 50    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 20     |
+    Given Account
+      | name      | scopeId | expirationDate |
+      | account-a | 1       | null       |
+    And I configure account service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities |  10    |
+    And I configure user service
+      | type    | name                       | value |
+      | boolean | infiniteChildEntities      | true  |
+      | integer | maxNumberChildEntities     | 5     |
+    And User A
+      | name    | displayName  | email             | phoneNumber     | status  | userType |
+      | kapua-a | Kapua User A | kapua_a@kapua.com | +386 31 323 444 | ENABLED | INTERNAL |
+    And I add credentials
+      | name    | password          | enabled |
+      | kapua-a | ToManySecrets123# | true    |
+    And Add permissions to the last created user
+      | domain      | action |
+      | account     | read   |
+      | account     | write  |
+    And I logout
+    When I login as user with name "kapua-a" and password "ToManySecrets123#"
+    Given I select account "account-a"
+    Given I expect the exception "KapuaAccountException" with the text "A user cannot modify expiration date of the account in which it's defined"
+    When I change the current account expiration date to "20/11/1997"
     Then An exception was thrown
     And I logout
 

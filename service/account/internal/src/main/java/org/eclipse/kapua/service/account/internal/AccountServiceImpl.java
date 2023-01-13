@@ -169,11 +169,31 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
             authorizationService.checkPermission(permissionFactory.newPermission(AccountDomains.ACCOUNT_DOMAIN, Actions.write, account.getScopeId()));
         }
 
+        if (account.getExpirationDate() != null) {
+            SystemSetting setting = SystemSetting.getInstance();
+            //check if the updated account is an admin account
+            if (setting.getString(SystemSettingKey.SYS_ADMIN_ACCOUNT).equals(account.getName())) {
+                //throw exception if trying to set an expiration date for an admin account
+                throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "Admin account cannot have an expiration date set");
+            }
+        }
+
         //
         // Check existence
         Account oldAccount = find(account.getId());
         if (oldAccount == null) {
             throw new KapuaEntityNotFoundException(Account.TYPE, account.getId());
+        }
+
+        //
+        // Check if user tries to change expiration date of the account in which it is defined (the account is not the admin one considering previous checks)
+        if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
+            // Editing self - aka user that edits its account
+             if ( (oldAccount.getExpirationDate() == null && account.getExpirationDate() != null) || //old exp. date was "no expiration" and now the update restricts it
+                     (oldAccount.getExpirationDate() != null && ! oldAccount.getExpirationDate().equals(account.getExpirationDate())) ) { //old exp. date was some date and the update refers to another date
+                 // Editing the expiration date
+                 throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "A user cannot modify expiration date of the account in which it's defined");
+             }
         }
 
         //
@@ -192,12 +212,6 @@ public class AccountServiceImpl extends AbstractKapuaConfigurableResourceLimited
         }
 
         if (account.getExpirationDate() != null) {
-            SystemSetting setting = SystemSetting.getInstance();
-            //check if the updated account is an admin account
-            if (setting.getString(SystemSettingKey.SYS_ADMIN_ACCOUNT).equals(account.getName())) {
-                //throw exception if trying to set an expiration date for an admin account
-                throw new KapuaIllegalArgumentException("notAllowedExpirationDate", account.getExpirationDate().toString());
-            }
             // check that expiration date is after all the children account
             // if expiration date is null it means the account never expires, so it will be obviously later its children
             AccountListResult childrenAccounts = findChildrenRecursively(account.getId());
