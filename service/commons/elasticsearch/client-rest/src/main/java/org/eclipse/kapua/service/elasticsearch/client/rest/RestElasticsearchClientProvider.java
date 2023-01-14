@@ -321,8 +321,8 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
         }
 
         //issue #
-        final SSLContext finalSslContext = sslContext;
-        final CredentialsProvider finalCredentialsProvider = credentialsProvider;
+        SSLContext finalSslContext = sslContext;
+        CredentialsProvider finalCredentialsProvider = credentialsProvider;
         restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> customizeHttpClient(httpClientBuilder, finalSslContext, finalCredentialsProvider));
 //        restClientBuilder.setFailureListener(new RestElasticsearchFailureListener());
 
@@ -342,11 +342,11 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
 
     private HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder, SSLContext sslContext, CredentialsProvider credentialsProvider) {
         try {
-            if(sslContext != null) {
+            if (sslContext != null) {
                 httpClientBuilder.setSSLContext(sslContext);
             }
 
-            if(credentialsProvider != null) {
+            if (credentialsProvider != null) {
                 httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
             }
 
@@ -371,8 +371,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
             });
 
             httpClientBuilder.setConnectionManager(new PoolingNHttpClientConnectionManager(ioReactor));
-        }
-        catch (IOReactorException e) {
+        } catch (IOReactorException e) {
             throw new RuntimeException(e);
         }
 
@@ -423,7 +422,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     /**
      * Gets the {@link ElasticsearchClientSslConfiguration}.
      * <p>
-     * Shortcut for {@link #getClientConfiguration()#getClientSslConfiguration()}
+     * Shortcut for {@link ElasticsearchClientConfiguration#getSslConfiguration()}.
      *
      * @return The {@link ElasticsearchClientSslConfiguration}
      * @since 1.3.0
@@ -435,7 +434,7 @@ public class RestElasticsearchClientProvider implements ElasticsearchClientProvi
     /**
      * Gets the {@link ElasticsearchClientReconnectConfiguration}.
      * <p>
-     * Shortcut for {@link #getClientConfiguration()#getClientReconnectConfiguration()}
+     * Shortcut for {@link ElasticsearchClientConfiguration#getReconnectConfiguration()}.
      *
      * @return The {@link ElasticsearchClientReconnectConfiguration}
      * @since 1.3.0

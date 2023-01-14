@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.api.core.model;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.eclipse.kapua.model.xml.BinaryXmlAdapter;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.Base64;
 
 /**
- * This class is used to deserialize a {@link Byte}[] {@link javax.ws.rs.QueryParam} from a {@link Base64} encoded {@link String} to a {@link Byte[]}
+ * This class is used to deserialize a {@link Byte}[] {@link javax.ws.rs.QueryParam} from a {@link Base64} encoded {@link String} to a {@link Byte}[].
  *
  * @since 1.0.0
  */

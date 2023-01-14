@@ -610,7 +610,7 @@ public class ServiceDAO {
      * <li>{@link AttributePredicate}</li>
      * <li>{@link AndPredicate}</li>
      * <li>{@link OrPredicate}</li>
-     * </ol>
+     * </ul>
      * <p>
      * It can be invoked recursively (i.e. to handle {@link AttributePredicate}s of the {@link AndPredicate}.
      *
