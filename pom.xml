@@ -137,7 +137,7 @@
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
         <maven-assembly-plugin.version>3.0.0</maven-assembly-plugin.version>
         <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
-        <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+        <maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.0.1</maven-dependency-plugin.version>
         <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
@@ -471,12 +471,15 @@
                         <configLocation>checkstyle/kapua.xml</configLocation>
                         <suppressionsLocation>checkstyle/kapua.suppressions.xml</suppressionsLocation>
 
+                        <excludes>**/target/**/*, **/.settings/**/*, maven/**/*, .maven/**/*, .idea/**/*, **/node/**/*</excludes>
+                        <includes>**/*.java, **/*.xml</includes>
+
                         <includeResources>false</includeResources>
                         <includeTestResources>false</includeTestResources>
 
-                        <sourceDirectory>${project.basedir}</sourceDirectory>
-                        <includes>**/*.java, **/*.xml</includes>
-                        <excludes>**/target/**/*, **/.settings/**/*, maven/**/*, .maven/**/*, .idea/**/*, **/node/**/*</excludes>
+                        <sourceDirectories>
+                            <directory>${project.basedir}</directory>
+                        </sourceDirectories>
                     </configuration>
                 </plugin>
             </plugins>
