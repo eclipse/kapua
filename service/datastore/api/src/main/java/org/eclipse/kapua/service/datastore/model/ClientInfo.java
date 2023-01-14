@@ -65,7 +65,7 @@ public interface ClientInfo extends Storable {
     /**
      * Get the client identifier
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "clientId")
@@ -82,7 +82,7 @@ public interface ClientInfo extends Storable {
     /**
      * Get the message identifier (of the first message published by this client)
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "firstMessageId")
@@ -100,7 +100,7 @@ public interface ClientInfo extends Storable {
     /**
      * Get the message timestamp (of the first message published by this client)
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "firstMessageOn")
@@ -119,7 +119,7 @@ public interface ClientInfo extends Storable {
      * Get the message identifier of the last published message for this client.<br>
      * <b>Transient data field (the last publish message identifier should get from the message table by the find service)</b>
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "lastMessageId")
@@ -139,7 +139,7 @@ public interface ClientInfo extends Storable {
      * Get the identifier of the last published message for this client.<br>
      * <b>Transient data field (the last publish timestamp should get from the message table by the find service)</b>
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "lastMessageOn")

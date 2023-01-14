@@ -79,7 +79,7 @@ public class ServiceMap {
      * Get the address associated to the specific service
      *
      * @param serviceName
-     * @return
+     * @return test
      */
     public static String getAddress(String serviceName) {
         return AVAILABLE_SERVICES.get(serviceName);

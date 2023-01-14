@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authentication.shared.service;
 
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredential;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialCreator;
 import org.eclipse.kapua.app.console.module.authentication.shared.model.GwtCredentialQuery;
-
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("credential")
 public interface GwtCredentialService extends RemoteService {
@@ -30,7 +29,7 @@ public interface GwtCredentialService extends RemoteService {
      * Returns the list of all Credentials matching the query.
      *
      * @param gwtCredentialQuery
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     public PagingLoadResult<GwtCredential> query(PagingLoadConfig loadConfig, GwtCredentialQuery gwtCredentialQuery)

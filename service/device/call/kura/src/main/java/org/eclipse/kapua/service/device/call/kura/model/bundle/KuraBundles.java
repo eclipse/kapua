@@ -21,7 +21,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Kura bundles list definition.
  *
  * @since 1.0
- *
  */
 @XmlRootElement(name = "bundles")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -33,7 +32,7 @@ public class KuraBundles {
     /**
      * Get the bundles list
      *
-     * @return
+     * @return test
      */
     public KuraBundle[] getBundles() {
         return bundles;

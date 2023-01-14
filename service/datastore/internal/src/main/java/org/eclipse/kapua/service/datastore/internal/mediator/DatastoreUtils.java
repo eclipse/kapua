@@ -52,7 +52,7 @@ public class DatastoreUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DatastoreUtils.class);
 
-    private enum IndexType { CHANNEL, CLIENT, METRIC }
+    private enum IndexType {CHANNEL, CLIENT, METRIC}
 
     private DatastoreUtils() {
     }
@@ -124,7 +124,7 @@ public class DatastoreUtils {
      * Return the hash code for the provided components (typically components are a sequence of account - client id - channel ...)
      *
      * @param components
-     * @return
+     * @return test
      */
     public static String getHashCode(String... components) {
         String concatString = "";
@@ -190,7 +190,7 @@ public class DatastoreUtils {
      * Return the metric parts for the composed metric name (split the metric name by '.')
      *
      * @param fullName
-     * @return
+     * @return test
      */
     public static String[] getMetricParts(String fullName) {
         return fullName == null ? null : fullName.split(Pattern.quote("."));
@@ -247,11 +247,11 @@ public class DatastoreUtils {
      * Normalize the account index name and and the suffix '-*'
      *
      * @param scopeId
-     * @return
+     * @return test
      */
     public static String getDataIndexName(KapuaId scopeId) {
-        final StringBuilder sb = new StringBuilder();
-        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
+        StringBuilder sb = new StringBuilder();
+        String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {
             sb.append(prefix).append("-");
         }
@@ -265,15 +265,15 @@ public class DatastoreUtils {
      *
      * @param scopeId
      * @param timestamp
-     * @return
+     * @return test
      */
     public static String getDataIndexName(KapuaId scopeId, long timestamp, String indexingWindowOption) throws KapuaException {
-        final StringBuilder sb = new StringBuilder();
-        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
+        StringBuilder sb = new StringBuilder();
+        String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {
             sb.append(prefix).append("-");
         }
-        final String actualName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
+        String actualName = DatastoreUtils.normalizedIndexName(scopeId.toStringId());
         sb.append(actualName).append('-').append("data-message").append('-');
         DateTimeFormatter formatter;
         switch (indexingWindowOption) {
@@ -312,8 +312,8 @@ public class DatastoreUtils {
      * @since 1.0.0
      */
     private static String getRegistryIndexName(KapuaId scopeId, IndexType indexType) {
-        final StringBuilder sb = new StringBuilder();
-        final String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
+        StringBuilder sb = new StringBuilder();
+        String prefix = DatastoreSettings.getInstance().getString(DatastoreSettingsKey.INDEX_PREFIX);
         if (StringUtils.isNotEmpty(prefix)) {
             sb.append(prefix).append("-");
         }
@@ -327,7 +327,7 @@ public class DatastoreUtils {
      * Normalize the index ({@link DatastoreUtils#normalizeIndexName(String index)}
      *
      * @param index
-     * @return
+     * @return test
      */
     public static String normalizedIndexName(String index) {
         return normalizeIndexName(index);
@@ -423,7 +423,7 @@ public class DatastoreUtils {
      *
      * @param name
      * @param type
-     * @return
+     * @return test
      */
     public static String getMetricValueQualifier(String name, String type) {
         String shortType = DatastoreUtils.getClientMetricFromAcronym(type);
@@ -503,7 +503,7 @@ public class DatastoreUtils {
      * Check if the metric type is date
      *
      * @param acronym
-     * @return
+     * @return test
      */
     public static boolean isDateMetric(String acronym) {
         return CLIENT_METRIC_TYPE_DATE_ACRONYM.equals(acronym);

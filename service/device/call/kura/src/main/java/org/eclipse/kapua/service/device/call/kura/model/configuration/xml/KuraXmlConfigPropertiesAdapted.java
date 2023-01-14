@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlElement;
  * A container for XmlConfigPropertyAdapted organized into an array.
  *
  * @since 1.0
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class KuraXmlConfigPropertiesAdapted {
@@ -37,7 +36,7 @@ public class KuraXmlConfigPropertiesAdapted {
     /**
      * Get the adapted configuration properties array
      *
-     * @return
+     * @return test
      */
     public XmlConfigPropertyAdapted[] getProperties() {
         return properties;

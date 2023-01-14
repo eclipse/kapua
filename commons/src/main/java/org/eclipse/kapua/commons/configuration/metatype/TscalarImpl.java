@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration.metatype;
 
+import org.eclipse.kapua.model.config.metatype.KapuaTscalar;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.eclipse.kapua.model.config.metatype.KapuaTscalar;
 
 /**
  * <p>
@@ -93,7 +93,7 @@ public enum TscalarImpl implements KapuaTscalar {
      * Convert a String value to a {@link TscalarImpl}
      *
      * @param v
-     * @return
+     * @return test
      */
     public static TscalarImpl fromValue(String v) {
         for (TscalarImpl c : TscalarImpl.values()) {

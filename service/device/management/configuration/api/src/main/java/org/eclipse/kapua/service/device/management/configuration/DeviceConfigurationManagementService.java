@@ -31,7 +31,7 @@ public interface DeviceConfigurationManagementService extends DeviceManagementSe
      * @param configurationId
      * @param configurationComponentPid
      * @param timeout                   timeout waiting for the device response
-     * @return
+     * @return test
      * @throws KapuaException
      */
     DeviceConfiguration get(KapuaId scopeId, KapuaId deviceId,

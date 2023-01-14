@@ -30,7 +30,7 @@ public class PackageRequestChannel extends KapuaRequestChannelImpl {
     /**
      * Get package resource
      *
-     * @return
+     * @return test
      */
     public PackageResource getPackageResource() {
         return packageResource;

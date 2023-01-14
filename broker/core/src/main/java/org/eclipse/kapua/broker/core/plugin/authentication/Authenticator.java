@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin.authentication;
 
-import java.util.List;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
 
+import java.util.List;
+
 /**
  * Authenticator api
- * 
- * @since 1.0
  *
+ * @since 1.0
  */
 public interface Authenticator {
 
@@ -33,34 +32,32 @@ public interface Authenticator {
 
     /**
      * Execute the connect logic returning the authorization list (ACL)
-     * 
+     *
      * @param kapuaSecurityContext
-     * @return
-     * @throws KapuaException
-     *             if any checks fails (credential not valid, profile missing, ...)
+     * @return test
+     * @throws KapuaException if any checks fails (credential not valid, profile missing, ...)
      */
     public abstract List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> connect(KapuaSecurityContext kapuaSecurityContext)
             throws KapuaException;
 
     /**
      * Execute the disconnect logic
-     * 
+     *
      * @param kapuaSecurityContext
-     * @param error
-     *            not null if the disconnection is due to an error not related to the client (network I/O error, server side error, ...)
+     * @param error                not null if the disconnection is due to an error not related to the client (network I/O error, server side error, ...)
      */
     public abstract void disconnect(KapuaSecurityContext kapuaSecurityContext, Throwable error);
 
     /**
      * Send the connect message (this message is mainly for internal use to enforce the stealing link)
-     * 
+     *
      * @param kapuaSecurityContext
      */
     public abstract void sendConnectMessage(KapuaSecurityContext kapuaSecurityContext);
 
     /**
      * Send the disconnect message (this message is mainly for internal use)
-     * 
+     *
      * @param kapuaSecurityContext
      */
     public abstract void sendDisconnectMessage(KapuaSecurityContext kapuaSecurityContext);

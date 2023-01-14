@@ -30,7 +30,7 @@ public interface DeviceEventCreator extends KapuaEntityCreator<DeviceEvent> {
     /**
      * Get the device identifier
      *
-     * @return
+     * @return test
      */
     KapuaId getDeviceId();
 
@@ -44,7 +44,7 @@ public interface DeviceEventCreator extends KapuaEntityCreator<DeviceEvent> {
     /**
      * Get the sent on date
      *
-     * @return
+     * @return test
      */
     Date getSentOn();
 
@@ -58,7 +58,7 @@ public interface DeviceEventCreator extends KapuaEntityCreator<DeviceEvent> {
     /**
      * Get the received on date
      *
-     * @return
+     * @return test
      */
     Date getReceivedOn();
 
@@ -72,7 +72,7 @@ public interface DeviceEventCreator extends KapuaEntityCreator<DeviceEvent> {
     /**
      * Get device position
      *
-     * @return
+     * @return test
      */
     KapuaPosition getPosition();
 
@@ -86,7 +86,7 @@ public interface DeviceEventCreator extends KapuaEntityCreator<DeviceEvent> {
     /**
      * Get resource
      *
-     * @return
+     * @return test
      */
     String getResource();
 
@@ -100,7 +100,7 @@ public interface DeviceEventCreator extends KapuaEntityCreator<DeviceEvent> {
     /**
      * GHet action
      *
-     * @return
+     * @return test
      */
     KapuaMethod getAction();
 
@@ -114,7 +114,7 @@ public interface DeviceEventCreator extends KapuaEntityCreator<DeviceEvent> {
     /**
      * Get response code
      *
-     * @return
+     * @return test
      */
     KapuaResponseCode getResponseCode();
 
@@ -128,7 +128,7 @@ public interface DeviceEventCreator extends KapuaEntityCreator<DeviceEvent> {
     /**
      * Get event message
      *
-     * @return
+     * @return test
      */
     String getEventMessage();
 

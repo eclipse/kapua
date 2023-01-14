@@ -55,8 +55,7 @@ public interface Transport {
      * last known state.
      * </p>
      *
-     * @param listener
-     *            the listener to transport state changes
+     * @param listener the listener to transport state changes
      */
     public ListenerHandle listen(Listener listener);
 
@@ -84,30 +83,28 @@ public interface Transport {
      * });
      * </pre>
      *
-     * @param events
-     *            code to update the {@link TransportEvents}
-     * @return
-     *
+     * @param events code to update the {@link TransportEvents}
+     * @return test
      */
-    public default ListenerHandle events(final Consumer<TransportEvents> events) {
+    public default ListenerHandle events(Consumer<TransportEvents> events) {
         class TransportEventsImpl implements TransportEvents {
 
             private Runnable connected;
             private Runnable disconnected;
 
             @Override
-            public void connected(final Runnable runnable) {
+            public void connected(Runnable runnable) {
                 connected = runnable;
             }
 
             @Override
-            public void disconnected(final Runnable runnable) {
+            public void disconnected(Runnable runnable) {
                 disconnected = runnable;
             }
 
         }
 
-        final TransportEventsImpl impl = new TransportEventsImpl();
+        TransportEventsImpl impl = new TransportEventsImpl();
 
         events.accept(impl);
 
@@ -130,15 +127,13 @@ public interface Transport {
      * <b>Note:</b> This method will reset the transport listeners.
      * </p>
      *
-     * @param transport
-     *            to wait on
-     * @throws InterruptedException
-     *             if the wait got interrupted
+     * @param transport to wait on
+     * @throws InterruptedException if the wait got interrupted
      */
-    public static void waitForConnection(final Transport transport) throws InterruptedException {
+    public static void waitForConnection(Transport transport) throws InterruptedException {
         Objects.requireNonNull(transport);
 
-        final Semaphore sem = new Semaphore(0);
+        Semaphore sem = new Semaphore(0);
 
         try (ListenerHandle handle = transport.listen(state -> {
             if (state) {
@@ -155,18 +150,15 @@ public interface Transport {
      * <b>Note:</b> This method will reset the transport listeners.
      * </p>
      *
-     * @param transport
-     *            to wait on
-     * @param timeout
-     *            the timeout
-     * @throws InterruptedException
-     *             if the wait got interrupted
+     * @param transport to wait on
+     * @param timeout   the timeout
+     * @throws InterruptedException if the wait got interrupted
      */
-    public static boolean waitForConnection(final Transport transport, final Duration timeout) throws InterruptedException {
+    public static boolean waitForConnection(Transport transport, Duration timeout) throws InterruptedException {
         Objects.requireNonNull(transport);
         Objects.requireNonNull(timeout);
 
-        final Semaphore sem = new Semaphore(0);
+        Semaphore sem = new Semaphore(0);
 
         try (ListenerHandle handle = transport.listen(state -> {
             if (state) {

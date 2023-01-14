@@ -33,7 +33,7 @@ public class DatastoreMessageXmlRegistry {
     /**
      * Creates a {@link MessageListResult} instance
      *
-     * @return
+     * @return test
      */
     public MessageListResult newListResult() {
         return MESSAGE_STORE_FACTORY.newListResult();
@@ -42,7 +42,7 @@ public class DatastoreMessageXmlRegistry {
     /**
      * Creates a {@link MessageQuery} instance.
      *
-     * @return
+     * @return test
      */
     public MessageQuery newQuery() {
         return MESSAGE_STORE_FACTORY.newQuery(null);

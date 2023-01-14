@@ -43,7 +43,7 @@ public interface JobExecution extends KapuaUpdatableEntity {
     }
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     KapuaId getJobId();
@@ -55,7 +55,7 @@ public interface JobExecution extends KapuaUpdatableEntity {
     void setJobId(KapuaId jobId);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     Date getStartedOn();
@@ -67,7 +67,7 @@ public interface JobExecution extends KapuaUpdatableEntity {
     void setStartedOn(Date startedOn);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     Date getEndedOn();
@@ -79,7 +79,7 @@ public interface JobExecution extends KapuaUpdatableEntity {
     void setEndedOn(Date endedOn);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "targetIds")
@@ -93,7 +93,7 @@ public interface JobExecution extends KapuaUpdatableEntity {
     void setTargetIds(Set<KapuaId> tagTargetIds);
 
     /**
-     * @return
+     * @return test
      * @since 1.1.0
      */
     String getLog();

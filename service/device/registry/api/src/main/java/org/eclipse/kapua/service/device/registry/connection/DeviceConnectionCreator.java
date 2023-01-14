@@ -28,7 +28,7 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
     /**
      * Get the device connection status
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "status")
     DeviceConnectionStatus getStatus();
@@ -43,7 +43,7 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
     /**
      * Get the client identifier
      *
-     * @return
+     * @return test
      */
     String getClientId();
 
@@ -57,7 +57,7 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
     /**
      * Get the user identifier
      *
-     * @return
+     * @return test
      */
     KapuaId getUserId();
 
@@ -71,7 +71,7 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
     /**
      * Get the device connection user coupling mode.
      *
-     * @return
+     * @return test
      */
     ConnectionUserCouplingMode getUserCouplingMode();
 
@@ -85,7 +85,7 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
     /**
      * Get the reserved user identifier
      *
-     * @return
+     * @return test
      */
     KapuaId getReservedUserId();
 
@@ -114,7 +114,7 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
     /**
      * Get the device protocol
      *
-     * @return
+     * @return test
      */
     String getProtocol();
 
@@ -128,7 +128,7 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
     /**
      * Get the client ip
      *
-     * @return
+     * @return test
      */
     String getClientIp();
 
@@ -142,7 +142,7 @@ public interface DeviceConnectionCreator extends KapuaUpdatableEntityCreator<Dev
     /**
      * Get the server ip
      *
-     * @return
+     * @return test
      */
     String getServerIp();
 

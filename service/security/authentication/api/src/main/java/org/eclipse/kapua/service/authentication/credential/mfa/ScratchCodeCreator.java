@@ -34,7 +34,7 @@ public interface ScratchCodeCreator extends KapuaEntityCreator<ScratchCode> {
     /**
      * Return the {@link KapuaId} of the corresponding {@link MfaOption}
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "mfaOptionId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -50,7 +50,7 @@ public interface ScratchCodeCreator extends KapuaEntityCreator<ScratchCode> {
     /**
      * Return the scratch code
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "scratchCode")
     String getCode();

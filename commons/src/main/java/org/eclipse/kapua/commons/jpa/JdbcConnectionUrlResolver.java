@@ -22,7 +22,7 @@ public interface JdbcConnectionUrlResolver {
     /**
      * Return the jdbc connection url
      *
-     * @return
+     * @return test
      */
     String connectionUrl();
 

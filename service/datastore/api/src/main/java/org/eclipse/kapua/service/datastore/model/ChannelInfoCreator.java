@@ -27,7 +27,7 @@ public interface ChannelInfoCreator extends StorableCreator<ChannelInfo> {
     /**
      * Get the client identifier
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     String getClientId();
@@ -41,7 +41,7 @@ public interface ChannelInfoCreator extends StorableCreator<ChannelInfo> {
     /**
      * Get the name
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     String getName();
@@ -57,7 +57,7 @@ public interface ChannelInfoCreator extends StorableCreator<ChannelInfo> {
     /**
      * Get the message identifier (of the first message published on this channel)
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     StorableId getMessageId();
@@ -73,7 +73,7 @@ public interface ChannelInfoCreator extends StorableCreator<ChannelInfo> {
     /**
      * Get the message timestamp (of the first message published on this channel)
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     Date getMessageTimestamp();

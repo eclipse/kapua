@@ -36,7 +36,7 @@ public interface DeviceComponentConfiguration {
     /**
      * Get device configuration component identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "id")
     String getId();
@@ -51,7 +51,7 @@ public interface DeviceComponentConfiguration {
     /**
      * Get device configuration component name
      *
-     * @return
+     * @return test
      */
     @XmlAttribute(name = "name")
     String getName();
@@ -66,7 +66,7 @@ public interface DeviceComponentConfiguration {
     /**
      * Get device configuration component definition
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "definition")
     KapuaTocd getDefinition();
@@ -81,7 +81,7 @@ public interface DeviceComponentConfiguration {
     /**
      * Get device configuration component properties
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "properties")
     @XmlJavaTypeAdapter(DeviceXmlConfigPropertiesAdapter.class)

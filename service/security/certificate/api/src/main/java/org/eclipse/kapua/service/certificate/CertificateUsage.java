@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlType;
 public interface CertificateUsage {
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     String getName();

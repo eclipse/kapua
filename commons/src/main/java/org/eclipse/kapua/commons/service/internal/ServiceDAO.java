@@ -949,7 +949,7 @@ public class ServiceDAO {
      * @param domain
      * @param groupPermissions
      * @param permission
-     * @return
+     * @return test
      * @since 1.0.0
      */
     private static boolean checkGroupPermission(@NonNull Domain domain, @NonNull List<Permission> groupPermissions, @NonNull Permission permission) {

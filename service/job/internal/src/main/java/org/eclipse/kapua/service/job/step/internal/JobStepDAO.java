@@ -37,7 +37,7 @@ public class JobStepDAO {
      *
      * @param em
      * @param jobStepCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static JobStep create(EntityManager em, JobStepCreator jobStepCreator)
@@ -61,7 +61,7 @@ public class JobStepDAO {
      *
      * @param em
      * @param jobStep
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static JobStep update(EntityManager em, JobStep jobStep)
@@ -79,7 +79,7 @@ public class JobStepDAO {
      * @param em
      * @param scopeId
      * @param jobStepId
-     * @return
+     * @return test
      */
     public static JobStep find(EntityManager em, KapuaId scopeId, KapuaId jobStepId) {
         return ServiceDAO.find(em, JobStepImpl.class, scopeId, jobStepId);
@@ -90,7 +90,7 @@ public class JobStepDAO {
      *
      * @param em
      * @param name
-     * @return
+     * @return test
      */
     public static JobStep findByName(EntityManager em, String name) {
         return ServiceDAO.findByName(em, JobStepImpl.class, name);
@@ -101,7 +101,7 @@ public class JobStepDAO {
      *
      * @param em
      * @param jobStepQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static JobStepListResult query(EntityManager em, KapuaQuery jobStepQuery)
@@ -114,7 +114,7 @@ public class JobStepDAO {
      *
      * @param em
      * @param jobStepQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery jobStepQuery)

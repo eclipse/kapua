@@ -22,7 +22,7 @@ public interface DevicePackageInstallRequest {
     /**
      * Get the package name
      *
-     * @return
+     * @return test
      */
     String getName();
 
@@ -36,7 +36,7 @@ public interface DevicePackageInstallRequest {
     /**
      * Get the package version
      *
-     * @return
+     * @return test
      */
     String getVersion();
 
@@ -50,7 +50,7 @@ public interface DevicePackageInstallRequest {
     /**
      * Get the device reboot flag
      *
-     * @return
+     * @return test
      */
     Boolean isReboot();
 
@@ -64,7 +64,7 @@ public interface DevicePackageInstallRequest {
     /**
      * Get the reboot delay
      *
-     * @return
+     * @return test
      */
     Integer getRebootDelay();
 

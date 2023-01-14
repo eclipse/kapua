@@ -38,7 +38,7 @@ public class JobTargetDAO {
      *
      * @param em
      * @param jobTargetCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static JobTarget create(EntityManager em, JobTargetCreator jobTargetCreator)
@@ -60,7 +60,7 @@ public class JobTargetDAO {
      *
      * @param em
      * @param jobTarget
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static JobTarget update(EntityManager em, JobTarget jobTarget)
@@ -78,7 +78,7 @@ public class JobTargetDAO {
      * @param em
      * @param scopeId
      * @param jobTargetId
-     * @return
+     * @return test
      */
     public static JobTarget find(EntityManager em, KapuaId scopeId, KapuaId jobTargetId) {
         return ServiceDAO.find(em, JobTargetImpl.class, scopeId, jobTargetId);
@@ -89,7 +89,7 @@ public class JobTargetDAO {
      *
      * @param em
      * @param jobTargetQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static JobTargetListResult query(EntityManager em, KapuaQuery jobTargetQuery)
@@ -102,7 +102,7 @@ public class JobTargetDAO {
      *
      * @param em
      * @param jobTargetQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery jobTargetQuery)

@@ -28,15 +28,16 @@ public interface ClientInfoCreator extends StorableCreator<ClientInfo> {
     /**
      * Get the account
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
+    @Override
     KapuaId getScopeId();
 
     /**
      * Get the client identifier
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     String getClientId();
@@ -52,7 +53,7 @@ public interface ClientInfoCreator extends StorableCreator<ClientInfo> {
     /**
      * Get the message identifier (of the first message published by this client)
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     StorableId getMessageId();
@@ -68,7 +69,7 @@ public interface ClientInfoCreator extends StorableCreator<ClientInfo> {
     /**
      * Get the message timestamp (of the first message published by this client)
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     Date getMessageTimestamp();

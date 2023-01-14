@@ -25,7 +25,7 @@ public interface BrokerIdResolver {
      * Resolve the broker id
      *
      * @param brokerFilter
-     * @return
+     * @return test
      */
     String getBrokerId(BrokerFilter brokerFilter);
 

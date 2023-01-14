@@ -12,20 +12,18 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.metric;
 
-import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.service.KapuaService;
-
 import com.codahale.metrics.Counter;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.Histogram;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Timer;
+import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.service.KapuaService;
 
 /**
  * Metric service definition
  *
  * @since 1.0
- *
  */
 public interface MetricsService extends KapuaService {
 
@@ -35,7 +33,7 @@ public interface MetricsService extends KapuaService {
      * @param module
      * @param component
      * @param names
-     * @return
+     * @return test
      */
     public Counter getCounter(String module, String component, String... names);
 
@@ -45,7 +43,7 @@ public interface MetricsService extends KapuaService {
      * @param module
      * @param component
      * @param names
-     * @return
+     * @return test
      */
     public Histogram getHistogram(String module, String component, String... names);
 
@@ -55,7 +53,7 @@ public interface MetricsService extends KapuaService {
      * @param module
      * @param component
      * @param names
-     * @return
+     * @return test
      */
     public Timer getTimer(String module, String component, String... names);
 
@@ -65,8 +63,7 @@ public interface MetricsService extends KapuaService {
      * @param module
      * @param component
      * @param names
-     * @throws KapuaException
-     *             if the metric is already defined
+     * @throws KapuaException if the metric is already defined
      */
     public void registerGauge(Gauge<?> gauge, String module, String component, String... names) throws KapuaException;
 

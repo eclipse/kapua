@@ -77,7 +77,7 @@ public interface DeviceEvent extends KapuaEntity {
     /**
      * Get the sent on date
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "sentOn")
@@ -95,7 +95,7 @@ public interface DeviceEvent extends KapuaEntity {
     /**
      * Get the received on date
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "receivedOn")
@@ -113,7 +113,7 @@ public interface DeviceEvent extends KapuaEntity {
     /**
      * Get the device position
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "position")
@@ -130,7 +130,7 @@ public interface DeviceEvent extends KapuaEntity {
     /**
      * Get resource
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "resource")
@@ -146,7 +146,7 @@ public interface DeviceEvent extends KapuaEntity {
     /**
      * Get action
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "action")
@@ -163,7 +163,7 @@ public interface DeviceEvent extends KapuaEntity {
     /**
      * Get response code
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "responseCode")
@@ -180,7 +180,7 @@ public interface DeviceEvent extends KapuaEntity {
     /**
      * Get event message
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "eventMessage")

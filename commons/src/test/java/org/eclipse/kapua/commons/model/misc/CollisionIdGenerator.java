@@ -31,7 +31,7 @@ public class CollisionIdGenerator {
     /**
      * Generate a {@link BigInteger} fixed value until fixedValueGenerationCount is reached. After that the value will be incremental from the startIncrementalValue<br>
      *
-     * @return
+     * @return test
      */
     public BigInteger generate() {
         if (++extractedValues < fixedValueGenerationCount) {

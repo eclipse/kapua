@@ -36,7 +36,7 @@ public class ServiceXmlConfigPropertiesAdapted {
     /**
      * Get the adapted properties as array
      *
-     * @return
+     * @return test
      */
     public ServiceXmlConfigPropertyAdapted[] getProperties() {
         return properties;

@@ -32,7 +32,7 @@ public interface ChannelInfoRegistryMediator {
      *
      * @param scopeId
      * @param indexedOn
-     * @return
+     * @return test
      * @throws ClientException
      */
     Metadata getMetadata(KapuaId scopeId, long indexedOn)

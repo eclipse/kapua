@@ -32,7 +32,6 @@ import org.eclipse.kapua.service.elasticsearch.client.model.TypeDescriptor;
 import org.eclipse.kapua.service.storable.exception.MappingException;
 import org.eclipse.kapua.service.storable.model.utils.KeyValueEntry;
 import org.eclipse.kapua.service.storable.model.utils.MappingUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +53,7 @@ public class Schema {
      *
      * @param scopeId
      * @param time
-     * @return
+     * @return test
      * @throws ClientException
      * @since 1.0.0
      */
@@ -169,7 +168,7 @@ public class Schema {
 
     /**
      * @param esMetrics
-     * @return
+     * @return test
      * @throws DatamodelMappingException
      * @throws KapuaException
      * @since 1.0.0
@@ -219,7 +218,7 @@ public class Schema {
     /**
      * @param currentMetadata
      * @param esMetrics
-     * @return
+     * @return test
      * @since 1.0.0
      */
     private Map<String, Metric> getMessageMappingDiffs(Metadata currentMetadata, Map<String, Metric> esMetrics) {
@@ -243,7 +242,7 @@ public class Schema {
 
     /**
      * @param idxName
-     * @return
+     * @return test
      * @throws MappingException
      * @since 1.0.0
      */

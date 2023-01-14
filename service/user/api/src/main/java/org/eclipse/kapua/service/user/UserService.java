@@ -51,7 +51,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * and permissions, loaded.
      *
      * @param user to be update
-     * @return
+     * @return test
      * @throws KapuaException
      */
     @Override
@@ -72,7 +72,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
      * <b>The API does not perform any access control check and it is meant for internal use.</b>
      *
      * @param userId
-     * @return
+     * @return test
      * @throws KapuaException
      */
     @Override
@@ -81,7 +81,7 @@ public interface UserService extends KapuaEntityService<User, UserCreator>,
     /**
      * Returns the User with the specified username; returns null if the user is not found.
      *
-     * @return
+     * @return test
      * @throws KapuaException
      */
     @Override

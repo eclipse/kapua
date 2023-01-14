@@ -29,7 +29,7 @@ public interface ConfigurationProvider {
      * Get the configuration for the given scope
      *
      * @param scopeId
-     * @return
+     * @return test
      * @throws ConfigurationException
      */
     MessageStoreConfiguration getConfiguration(KapuaId scopeId) throws ConfigurationException;
@@ -38,7 +38,7 @@ public interface ConfigurationProvider {
      * Get the message information for the given scope
      *
      * @param scopeId
-     * @return
+     * @return test
      * @throws ConfigurationException
      */
     MessageInfo getInfo(KapuaId scopeId) throws ConfigurationException;

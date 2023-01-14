@@ -18,7 +18,6 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * Crypto setting implementation.
  *
  * @since 1.0
- *
  */
 public class KapuaCryptoSetting extends AbstractKapuaSetting<KapuaCryptoSettingKeys> {
 
@@ -36,7 +35,7 @@ public class KapuaCryptoSetting extends AbstractKapuaSetting<KapuaCryptoSettingK
     /**
      * Return the crypto setting instance (singleton)
      *
-     * @return
+     * @return test
      */
     public static KapuaCryptoSetting getInstance() {
         return INSTANCE;

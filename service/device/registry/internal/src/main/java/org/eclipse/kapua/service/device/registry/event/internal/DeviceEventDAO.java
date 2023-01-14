@@ -34,7 +34,7 @@ public class DeviceEventDAO extends ServiceDAO {
      *
      * @param em
      * @param deviceEventCreator
-     * @return
+     * @return test
      */
     public static DeviceEvent create(EntityManager em, DeviceEventCreator deviceEventCreator) {
         DeviceEvent deviceEvent = new DeviceEventImpl(deviceEventCreator.getScopeId());
@@ -56,7 +56,7 @@ public class DeviceEventDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param deviceEventId
-     * @return
+     * @return test
      */
     public static DeviceEvent find(EntityManager em, KapuaId scopeId, KapuaId deviceEventId) {
         return ServiceDAO.find(em, DeviceEventImpl.class, scopeId, deviceEventId);
@@ -67,7 +67,7 @@ public class DeviceEventDAO extends ServiceDAO {
      *
      * @param em
      * @param query
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static DeviceEventListResult query(EntityManager em, KapuaQuery query)
@@ -80,7 +80,7 @@ public class DeviceEventDAO extends ServiceDAO {
      *
      * @param em
      * @param query
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery query)

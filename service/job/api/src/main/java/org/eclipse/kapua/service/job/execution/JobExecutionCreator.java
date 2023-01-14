@@ -36,7 +36,7 @@ import java.util.Set;
 public interface JobExecutionCreator extends KapuaUpdatableEntityCreator<JobExecution> {
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     KapuaId getJobId();
@@ -48,7 +48,7 @@ public interface JobExecutionCreator extends KapuaUpdatableEntityCreator<JobExec
     void setJobId(KapuaId jobId);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     Date getStartedOn();
@@ -60,7 +60,7 @@ public interface JobExecutionCreator extends KapuaUpdatableEntityCreator<JobExec
     void setStartedOn(Date startedOn);
 
     /**
-     * @return
+     * @return test
      * @since 1.1.0
      */
     @XmlElement(name = "targetIds")

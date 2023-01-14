@@ -71,7 +71,7 @@ public enum ClientInfoField implements StorableField {
      * @param id
      * @param scopeId
      * @param clientId
-     * @return
+     * @return test
      */
     public static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId) {
         if (id == null) {
@@ -87,7 +87,7 @@ public enum ClientInfoField implements StorableField {
      *
      * @param id
      * @param clientInfo
-     * @return
+     * @return test
      */
     public static String getOrDeriveId(StorableId id, ClientInfo clientInfo) {
         return getOrDeriveId(id, clientInfo.getScopeId(), clientInfo.getClientId());

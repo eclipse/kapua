@@ -25,7 +25,6 @@ import java.util.Map;
  * Kapua {@link AuthenticationInfo} implementation
  *
  * @since 1.0
- *
  */
 public class LoginAuthenticationInfo implements AuthenticationInfo {
 
@@ -46,10 +45,10 @@ public class LoginAuthenticationInfo implements AuthenticationInfo {
      * @param credentials
      */
     public LoginAuthenticationInfo(String realmName,
-            Account account,
-            User user,
-            Credential credentials,
-            Map<String, Object> credentialServiceConfig) {
+                                   Account account,
+                                   User user,
+                                   Credential credentials,
+                                   Map<String, Object> credentialServiceConfig) {
         this.realmName = realmName;
         this.account = account;
         this.user = user;
@@ -60,7 +59,7 @@ public class LoginAuthenticationInfo implements AuthenticationInfo {
     /**
      * Return the user
      *
-     * @return
+     * @return test
      */
     public User getUser() {
         return user;
@@ -69,7 +68,7 @@ public class LoginAuthenticationInfo implements AuthenticationInfo {
     /**
      * Return the account
      *
-     * @return
+     * @return test
      */
     public Account getAccount() {
         return account;

@@ -62,7 +62,7 @@ public interface KapuaManagementEventChannel extends KapuaEventChannel {
     /**
      * Get the request resources
      *
-     * @return
+     * @return test
      * @since 2.0.0
      */
     String[] getResources();

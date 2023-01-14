@@ -12,22 +12,22 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.authorization.shared.service;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import java.util.List;
-import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
-import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
+import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtPermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRole;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRoleCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermission;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRolePermissionCreator;
 import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtRoleQuery;
+
+import java.util.List;
 
 @RemoteServiceRelativePath("role")
 public interface GwtRoleService extends RemoteService {
@@ -45,9 +45,8 @@ public interface GwtRoleService extends RemoteService {
      * Returns the list of all Roles which belong to an account.
      *
      * @param scopeIdStirng
-     * @return
+     * @return test
      * @throws GwtKapuaException
-     *
      */
     public List<GwtRole> findAll(String scopeIdStirng)
             throws GwtKapuaException;

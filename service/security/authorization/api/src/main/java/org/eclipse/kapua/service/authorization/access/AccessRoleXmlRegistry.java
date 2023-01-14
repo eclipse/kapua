@@ -25,7 +25,7 @@ public class AccessRoleXmlRegistry {
     /**
      * Creates a new {@link AccessRole} instance
      *
-     * @return
+     * @return test
      */
     public AccessRole newAccessRole() {
         return ACCESS_ROLE_FACTORY.newEntity(null);
@@ -34,7 +34,7 @@ public class AccessRoleXmlRegistry {
     /**
      * Creates a new {@link AccessRole} instance
      *
-     * @return
+     * @return test
      */
     public AccessRoleCreator newCreator() {
         return ACCESS_ROLE_FACTORY.newCreator(null);
@@ -43,7 +43,7 @@ public class AccessRoleXmlRegistry {
     /**
      * Creates a new {@link AccessRole} instance
      *
-     * @return
+     * @return test
      */
     public AccessRoleListResult newAccessRoleListResult() {
         return ACCESS_ROLE_FACTORY.newListResult();

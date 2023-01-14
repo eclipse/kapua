@@ -42,7 +42,7 @@ public interface GwtJobTargetService extends RemoteService {
      * @param scopeId
      * @param jobId
      * @param gwtJobTargetCreatorList
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     List<GwtJobTarget> create(GwtXSRFToken xsrfToken, String scopeId, String jobId, List<GwtJobTargetCreator> gwtJobTargetCreatorList)

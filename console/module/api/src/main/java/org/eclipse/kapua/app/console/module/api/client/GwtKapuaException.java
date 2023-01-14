@@ -73,7 +73,7 @@ public class GwtKapuaException extends Exception {
      *
      * @param cause
      * @param message
-     * @return
+     * @return test
      */
     public static GwtKapuaException internalError(Throwable cause, String message) {
         return new GwtKapuaException(GwtKapuaErrorCode.INTERNAL_ERROR, cause, message);

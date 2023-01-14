@@ -12,16 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.jpa;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Query;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.persistence.Query;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Sql script executor bean. Used to invoke the execution of sql scripts to update database schema.
@@ -58,7 +57,7 @@ public class SimpleSqlScriptExecutor {
     /**
      * Return the query list string
      *
-     * @return
+     * @return test
      */
     public List<String> getQueries() {
         return Collections.unmodifiableList(queryStrings);
@@ -67,11 +66,9 @@ public class SimpleSqlScriptExecutor {
     /**
      * Creates and configure a {@link SimpleSqlScriptExecutor} adding all the sql scripts matching the filter in the specified path
      *
-     * @param scanPath
-     *            path to be scanned
-     * @param filenameFilter
-     *            name filter matching <b>(must be not null!)</b>
-     * @return
+     * @param scanPath       path to be scanned
+     * @param filenameFilter name filter matching <b>(must be not null!)</b>
+     * @return test
      */
     public SimpleSqlScriptExecutor scanScripts(String scanPath, String filenameFilter) {
 
@@ -83,8 +80,8 @@ public class SimpleSqlScriptExecutor {
             suffix = filenameFilter.substring(pos + 1);
         }
 
-        final String finalPrefix = prefix;
-        final String finalSuffix = suffix;
+        String finalPrefix = prefix;
+        String finalSuffix = suffix;
 
         FilenameFilter sqlfilter = (dir, name) -> {
             if (finalPrefix.isEmpty() && finalSuffix.isEmpty()) {
@@ -102,7 +99,7 @@ public class SimpleSqlScriptExecutor {
             return true;
         };
 
-        String[] dirContents = new String[] {};
+        String[] dirContents = new String[]{};
         File sqlDir = new File(scanPath);
         if (sqlDir.isDirectory()) {
             dirContents = sqlDir.list(sqlfilter);
@@ -141,9 +138,8 @@ public class SimpleSqlScriptExecutor {
     /**
      * Creates and configure a {@link SimpleSqlScriptExecutor} adding the SQL script from the resources that matches the supplied name
      *
-     * @param resourceName
-     *            the name of the requested resource file
-     * @return
+     * @param resourceName the name of the requested resource file
+     * @return test
      */
     public SimpleSqlScriptExecutor scanResources(String resourceName) {
 
@@ -156,7 +152,7 @@ public class SimpleSqlScriptExecutor {
      * Creates and configure a {@link SimpleSqlScriptExecutor} adding all the sql scripts matching the filter in the default path {@link SimpleSqlScriptExecutor#DEFAULT_SCRIPTS_PATH}
      *
      * @param filenameFilter
-     * @return
+     * @return test
      */
     public SimpleSqlScriptExecutor scanScripts(String filenameFilter) {
         return scanScripts(DEFAULT_SCRIPTS_PATH, filenameFilter);
@@ -166,7 +162,7 @@ public class SimpleSqlScriptExecutor {
      * Add a query to the query string list
      *
      * @param sqlString
-     * @return
+     * @return test
      */
     public SimpleSqlScriptExecutor addQuery(String sqlString) {
         queryStrings.add(sqlString);
@@ -177,7 +173,7 @@ public class SimpleSqlScriptExecutor {
      * Add a queries to the query string list
      *
      * @param sqlStrings
-     * @return
+     * @return test
      */
     public SimpleSqlScriptExecutor addQueries(List<String> sqlStrings) {
         if (sqlStrings == null) {
@@ -193,7 +189,7 @@ public class SimpleSqlScriptExecutor {
      * Execute all the queries using the provided entity manager
      *
      * @param entityManager
-     * @return
+     * @return test
      */
     public int executeUpdate(EntityManager entityManager) {
         int i = 0;

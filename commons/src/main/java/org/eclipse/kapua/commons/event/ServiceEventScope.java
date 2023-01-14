@@ -33,7 +33,7 @@ public class ServiceEventScope {
     /**
      * Append the Kapua event to the current thread context Kapua event stack (setting a new context id in the Kapua event)
      *
-     * @return
+     * @return test
      */
     public static ServiceEvent begin() {
 
@@ -74,7 +74,7 @@ public class ServiceEventScope {
     /**
      * Get the current Kapua event from the thread context Kapua event stack
      *
-     * @return
+     * @return test
      */
     public static ServiceEvent get() {
         Stack<ServiceEvent> tmp = eventContextThdLocal.get();

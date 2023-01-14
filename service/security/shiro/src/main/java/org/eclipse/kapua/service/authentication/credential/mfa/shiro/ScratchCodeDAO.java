@@ -34,7 +34,7 @@ public class ScratchCodeDAO extends ServiceDAO {
      *
      * @param em
      * @param scratchCodeCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static ScratchCode create(EntityManager em, ScratchCodeCreator scratchCodeCreator) throws KapuaException {
@@ -56,7 +56,7 @@ public class ScratchCodeDAO extends ServiceDAO {
      *
      * @param em
      * @param code
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static ScratchCode update(EntityManager em, ScratchCode code) throws KapuaException {
@@ -70,7 +70,7 @@ public class ScratchCodeDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param scratchCodeId
-     * @return
+     * @return test
      */
     public static ScratchCode find(EntityManager em, KapuaId scopeId, KapuaId scratchCodeId) {
         return ServiceDAO.find(em, ScratchCodeImpl.class, scopeId, scratchCodeId);
@@ -81,7 +81,7 @@ public class ScratchCodeDAO extends ServiceDAO {
      *
      * @param em
      * @param scratchCodeQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static ScratchCodeListResult query(EntityManager em, KapuaQuery scratchCodeQuery) throws KapuaException {
@@ -93,7 +93,7 @@ public class ScratchCodeDAO extends ServiceDAO {
      *
      * @param em
      * @param scratchCodeQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery scratchCodeQuery) throws KapuaException {

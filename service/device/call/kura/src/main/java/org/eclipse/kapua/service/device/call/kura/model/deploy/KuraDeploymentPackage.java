@@ -42,7 +42,7 @@ public class KuraDeploymentPackage {
     /**
      * Get the deployment package name
      *
-     * @return
+     * @return test
      */
     public String getName() {
         return name;
@@ -60,7 +60,7 @@ public class KuraDeploymentPackage {
     /**
      * Get the deployment package version
      *
-     * @return
+     * @return test
      */
     public String getVersion() {
         return version;
@@ -78,7 +78,7 @@ public class KuraDeploymentPackage {
     /**
      * Get the bundle information array
      *
-     * @return
+     * @return test
      */
     public KuraBundleInfo[] getBundleInfos() {
         if (bundleInfos == null) {

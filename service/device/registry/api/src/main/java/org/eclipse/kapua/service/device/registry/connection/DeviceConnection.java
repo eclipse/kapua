@@ -40,7 +40,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
         "reservedUserId",
         "protocol",
         "clientIp",
-        "serverIp" }, //
+        "serverIp"}, //
         factoryClass = DeviceConnectionXmlRegistry.class, //
         factoryMethod = "newDeviceConnection")
 public interface DeviceConnection extends KapuaUpdatableEntity {
@@ -55,7 +55,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
     /**
      * Get the device connection status
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "status")
     DeviceConnectionStatus getStatus();
@@ -70,7 +70,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
     /**
      * Get the client identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "clientId")
     String getClientId();
@@ -85,7 +85,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
     /**
      * Get the user identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -116,7 +116,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
     /**
      * Get the device connection user coupling mode.
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "userCouplingMode")
     ConnectionUserCouplingMode getUserCouplingMode();
@@ -131,7 +131,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
     /**
      * Get the reserved user identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "reservedUserId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -147,7 +147,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
     /**
      * Get the device protocol
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "protocol")
     String getProtocol();
@@ -162,7 +162,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
     /**
      * Get the client ip
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "clientIp")
     String getClientIp();
@@ -177,7 +177,7 @@ public interface DeviceConnection extends KapuaUpdatableEntity {
     /**
      * Get the server ip
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "serverIp")
     String getServerIp();

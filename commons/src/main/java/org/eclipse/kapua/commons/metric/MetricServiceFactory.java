@@ -28,7 +28,7 @@ public class MetricServiceFactory {
     /**
      * Get the {@link MetricsService} singleton instance
      *
-     * @return
+     * @return test
      */
     public static MetricsService getInstance() {
         if (instance == null) {

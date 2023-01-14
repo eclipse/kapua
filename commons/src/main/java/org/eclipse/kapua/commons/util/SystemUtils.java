@@ -12,17 +12,16 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * System utilities.
  *
  * @since 1.0
- *
  */
 public class SystemUtils {
 
@@ -32,7 +31,7 @@ public class SystemUtils {
     /**
      * Get the broker url. Gets the broker schema, host and port from the {@link SystemSetting}
      *
-     * @return
+     * @return test
      * @throws URISyntaxException
      */
     public static URI getNodeURI()

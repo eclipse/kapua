@@ -33,7 +33,7 @@ public class MetricInfoXmlRegistry {
     /**
      * Creates a {@link MetricInfoListResult} instance
      *
-     * @return
+     * @return test
      */
     public MetricInfoListResult newListResult() {
         return METRIC_INFO_FACTORY.newListResult();
@@ -42,7 +42,7 @@ public class MetricInfoXmlRegistry {
     /**
      * Creates a {@link MetricInfoQuery} instance.
      *
-     * @return
+     * @return test
      */
     public MetricInfoQuery newQuery() {
         return METRIC_INFO_FACTORY.newQuery(null);

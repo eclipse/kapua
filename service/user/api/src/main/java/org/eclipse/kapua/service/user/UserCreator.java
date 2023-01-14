@@ -36,7 +36,7 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
     /**
      * Return the display name (may be a friendly username to show in the UI)
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "displayName")
     String getDisplayName();
@@ -51,7 +51,7 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
     /**
      * Get the email
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "email")
     String getEmail();
@@ -66,7 +66,7 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
     /**
      * Get the phone number
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "phoneNumber")
     String getPhoneNumber();
@@ -81,7 +81,7 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
     /**
      * Get the user type
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "userType")
     UserType getUserType();
@@ -96,7 +96,7 @@ public interface UserCreator extends KapuaNamedEntityCreator<User> {
     /**
      * Get the external ID
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "externalId")
     String getExternalId();

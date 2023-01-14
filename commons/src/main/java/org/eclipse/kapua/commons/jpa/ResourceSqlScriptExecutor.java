@@ -37,7 +37,7 @@ public class ResourceSqlScriptExecutor {
     /**
      * Return the query list string
      *
-     * @return
+     * @return test
      */
     public List<String> getQueries() {
         return Collections.unmodifiableList(queryStrings);
@@ -47,7 +47,7 @@ public class ResourceSqlScriptExecutor {
      * Add a queries to the query string list
      *
      * @param sqlStrings
-     * @return
+     * @return test
      */
     public ResourceSqlScriptExecutor addQueries(List<String> sqlStrings) {
         if (sqlStrings == null) {
@@ -63,7 +63,7 @@ public class ResourceSqlScriptExecutor {
      * Add a query to the query string list
      *
      * @param sqlString single sql script
-     * @return
+     * @return test
      */
     public ResourceSqlScriptExecutor addQuery(String sqlString) {
         if (sqlString == null) {
@@ -79,7 +79,7 @@ public class ResourceSqlScriptExecutor {
      * Execute all the queries using the provided entity manager
      *
      * @param entityManager
-     * @return
+     * @return test
      */
     public int executeUpdate(EntityManager entityManager) {
         int i = 0;
@@ -90,8 +90,8 @@ public class ResourceSqlScriptExecutor {
             StringBuilder sqlStringBuilder = new StringBuilder();
             try {
                 try (
-                    InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(qStr);
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+                        InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(qStr);
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
 
                     String sqlLine;
                     while ((sqlLine = bufferedReader.readLine()) != null) {

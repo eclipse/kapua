@@ -33,7 +33,7 @@ public interface DeviceConnectionService extends KapuaEntityService<DeviceConnec
      *
      * @param scopeId
      * @param clientId
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */

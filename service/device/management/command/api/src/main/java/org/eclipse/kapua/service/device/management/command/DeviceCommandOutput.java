@@ -38,7 +38,7 @@ public interface DeviceCommandOutput extends DeviceCommand {
     /**
      * Get the standard error
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "stderr")
     String getStderr();
@@ -53,7 +53,7 @@ public interface DeviceCommandOutput extends DeviceCommand {
     /**
      * Get the standard output
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "stdout")
     String getStdout();
@@ -68,7 +68,7 @@ public interface DeviceCommandOutput extends DeviceCommand {
     /**
      * Get the command execution exception message
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "exceptionMessage")
     String getExceptionMessage();
@@ -83,7 +83,7 @@ public interface DeviceCommandOutput extends DeviceCommand {
     /**
      * Get the command execution exception stack
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "exceptionStack")
     String getExceptionStack();
@@ -98,7 +98,7 @@ public interface DeviceCommandOutput extends DeviceCommand {
     /**
      * Get the command execution exit code
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "exitCode")
     Integer getExitCode();
@@ -113,7 +113,7 @@ public interface DeviceCommandOutput extends DeviceCommand {
     /**
      * Get the command execution timed out flag
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "hasTimedout")
     Boolean getHasTimedout();

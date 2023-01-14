@@ -27,7 +27,7 @@ public interface GwtJobExecutionService extends RemoteService {
      *
      * @param scopeId
      * @param jobId
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     PagingLoadResult<GwtJobExecution> findByJobId(PagingLoadConfig loadConfig, String scopeId, String jobId)

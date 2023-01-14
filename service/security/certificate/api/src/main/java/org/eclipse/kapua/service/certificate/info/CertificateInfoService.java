@@ -33,7 +33,7 @@ public interface CertificateInfoService extends KapuaEntityService<CertificateIn
     /**
      * @param scopeId
      * @param usage
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.1.0
      */

@@ -27,7 +27,7 @@ public interface ServiceEventMarshaler {
     /**
      * Return the encoded content type
      *
-     * @return
+     * @return test
      */
     String getContentType();
 
@@ -35,7 +35,7 @@ public interface ServiceEventMarshaler {
      * Unmarshal the message received from the bus
      *
      * @param message
-     * @return
+     * @return test
      * @throws KapuaException
      */
     ServiceEvent unmarshal(String message) throws KapuaException;

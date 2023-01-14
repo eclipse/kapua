@@ -25,7 +25,7 @@ public class CredentialXmlRegistry {
     /**
      * Creates a new credential instance
      *
-     * @return
+     * @return test
      */
     public Credential newCredential() {
         return CREDENTIAL_FACTORY.newEntity(null);
@@ -34,7 +34,7 @@ public class CredentialXmlRegistry {
     /**
      * Creates a new credential list result instance
      *
-     * @return
+     * @return test
      */
     public CredentialListResult newCredentialListResult() {
         return CREDENTIAL_FACTORY.newListResult();
@@ -43,7 +43,7 @@ public class CredentialXmlRegistry {
     /**
      * Creates a new credential creator instance
      *
-     * @return
+     * @return test
      */
     public CredentialCreator newCredentialCreator() {
         return CREDENTIAL_FACTORY.newCreator(null, null, null, null, null, null);

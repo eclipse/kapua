@@ -18,7 +18,6 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * Authentication setting implementation.
  *
  * @since 1.0
- *
  */
 public class KapuaCertificateSetting extends AbstractKapuaSetting<KapuaCertificateSettingKeys> {
 
@@ -36,7 +35,7 @@ public class KapuaCertificateSetting extends AbstractKapuaSetting<KapuaCertifica
     /**
      * Return the authentication setting instance (singleton)
      *
-     * @return
+     * @return test
      */
     public static KapuaCertificateSetting getInstance() {
         return INSTANCE;

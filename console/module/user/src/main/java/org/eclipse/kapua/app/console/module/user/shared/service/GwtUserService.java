@@ -12,7 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.user.shared.service;
 
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
@@ -20,11 +24,6 @@ import org.eclipse.kapua.app.console.module.authorization.shared.model.GwtAccess
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUser;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserCreator;
 import org.eclipse.kapua.app.console.module.user.shared.model.GwtUserQuery;
-
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * The client side stub for the RPC service.
@@ -36,7 +35,7 @@ public interface GwtUserService extends RemoteService {
      * Creates a new user under the account specified in the UserCreator.
      *
      * @param gwtUserCreator
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     public GwtUser create(GwtXSRFToken xsfrToken, GwtUserCreator gwtUserCreator)
@@ -46,7 +45,7 @@ public interface GwtUserService extends RemoteService {
      * Updates an User in the database and returns the refreshed/reloaded entity instance.
      *
      * @param gwtUser
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     public GwtUser update(GwtXSRFToken xsfrToken, GwtUser gwtUser)
@@ -65,9 +64,8 @@ public interface GwtUserService extends RemoteService {
      * Returns an User by its Id or null if an account with such Id does not exist.
      *
      * @param userId
-     * @return
+     * @return test
      * @throws GwtKapuaException
-     *
      */
     public GwtUser find(String accountId, String userId)
             throws GwtKapuaException;
@@ -76,9 +74,8 @@ public interface GwtUserService extends RemoteService {
      * Returns the list of all User which belong to an account.
      *
      * @param scopeIdString
-     * @return
+     * @return test
      * @throws GwtKapuaException
-     *
      */
     public ListLoadResult<GwtUser> findAll(String scopeIdString)
             throws GwtKapuaException;
@@ -87,9 +84,8 @@ public interface GwtUserService extends RemoteService {
      * Returns the list of all User matching the query.
      *
      * @param gwtUserQuery
-     * @return
+     * @return test
      * @throws GwtKapuaException
-     *
      */
     public PagingLoadResult<GwtUser> query(PagingLoadConfig loadConfig, GwtUserQuery gwtUserQuery)
             throws GwtKapuaException;

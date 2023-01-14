@@ -97,7 +97,7 @@ public class EntityManager {
     /**
      * Return the transaction status
      *
-     * @return
+     * @return test
      */
     public boolean isTransactionActive() {
         return (javaxPersitenceEntityManager != null &&
@@ -171,7 +171,7 @@ public class EntityManager {
      *
      * @param clazz
      * @param id
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public <E extends Serializable> E findWithLock(Class<E> clazz, Object id) {
@@ -240,7 +240,7 @@ public class EntityManager {
     /**
      * Return the {@link javax.persistence.criteria.CriteriaBuilder}
      *
-     * @return
+     * @return test
      */
     public CriteriaBuilder getCriteriaBuilder() {
         return javaxPersitenceEntityManager.getCriteriaBuilder();
@@ -250,7 +250,7 @@ public class EntityManager {
      * Return the typed query based on the criteria
      *
      * @param criteriaSelectQuery
-     * @return
+     * @return test
      */
     public <E> TypedQuery<E> createQuery(CriteriaQuery<E> criteriaSelectQuery) {
         return javaxPersitenceEntityManager.createQuery(criteriaSelectQuery);
@@ -261,7 +261,7 @@ public class EntityManager {
      *
      * @param queryName
      * @param clazz
-     * @return
+     * @return test
      */
     public <E> TypedQuery<E> createNamedQuery(String queryName, Class<E> clazz) {
         return javaxPersitenceEntityManager.createNamedQuery(queryName, clazz);
@@ -271,7 +271,7 @@ public class EntityManager {
      * Return native query based on provided sql query
      *
      * @param querySelectUuidShort
-     * @return
+     * @return test
      */
     public <E> Query createNativeQuery(String querySelectUuidShort) {
         return javaxPersitenceEntityManager.createNativeQuery(querySelectUuidShort);

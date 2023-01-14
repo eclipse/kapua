@@ -37,7 +37,7 @@ public class JobStepDefinitionDAO {
      *
      * @param em
      * @param jobStepDefinitionCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static JobStepDefinition create(EntityManager em, JobStepDefinitionCreator jobStepDefinitionCreator)
@@ -62,7 +62,7 @@ public class JobStepDefinitionDAO {
      *
      * @param em
      * @param jobStepDefinition
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static JobStepDefinition update(EntityManager em, JobStepDefinition jobStepDefinition)
@@ -90,7 +90,7 @@ public class JobStepDefinitionDAO {
      *
      * @param em
      * @param stepDefinitionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static JobStepDefinitionListResult query(EntityManager em, KapuaQuery stepDefinitionQuery)
@@ -103,7 +103,7 @@ public class JobStepDefinitionDAO {
      *
      * @param em
      * @param stepDefinitionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery stepDefinitionQuery)

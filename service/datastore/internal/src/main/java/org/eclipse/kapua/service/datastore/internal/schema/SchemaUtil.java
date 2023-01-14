@@ -39,7 +39,7 @@ public class SchemaUtil {
      * @param key
      * @param subKeys
      * @param values
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public static Map<String, Object> getMapOfMap(String key, String[] subKeys, String[] values) {
@@ -56,7 +56,7 @@ public class SchemaUtil {
      * Get the Elasticsearch data index name
      *
      * @param scopeId
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public static String getDataIndexName(KapuaId scopeId) {
@@ -67,7 +67,7 @@ public class SchemaUtil {
      * Get the Kapua data index name
      *
      * @param scopeId
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public static String getChannelIndexName(KapuaId scopeId) {
@@ -78,7 +78,7 @@ public class SchemaUtil {
      * Get the Kapua data index name
      *
      * @param scopeId
-     * @return
+     * @return test
      */
     public static String getClientIndexName(KapuaId scopeId) {
         return DatastoreUtils.getClientIndexName(scopeId);
@@ -88,7 +88,7 @@ public class SchemaUtil {
      * Get the Kapua data index name
      *
      * @param scopeId
-     * @return
+     * @return test
      */
     public static String getMetricIndexName(KapuaId scopeId) {
         return DatastoreUtils.getMetricIndexName(scopeId);

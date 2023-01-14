@@ -62,7 +62,7 @@ public class KapuaConfigurationException extends KapuaException {
      * and optional arguments for the associated exception message.
      *
      * @param message
-     * @return
+     * @return test
      */
     public static KapuaConfigurationException internalError(String message) {
         return new KapuaConfigurationException(KapuaConfigurationErrorCodes.INTERNAL_ERROR, null, message);

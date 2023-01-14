@@ -63,7 +63,7 @@ public interface MfaOption extends KapuaUpdatableEntity {
     /**
      * Return the {@link MfaOption} key
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "mfaSecretKey")
     String getMfaSecretKey();
@@ -78,7 +78,7 @@ public interface MfaOption extends KapuaUpdatableEntity {
     /**
      * Return the trust key
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "trustKey")
     String getTrustKey();

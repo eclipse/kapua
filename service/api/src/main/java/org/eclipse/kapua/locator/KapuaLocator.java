@@ -13,12 +13,12 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator;
 
-import java.util.ServiceLoader;
-
 import org.eclipse.kapua.KapuaRuntimeErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ServiceLoader;
 
 /**
  * Interface to load KapuaService instances in a given environment.<br>
@@ -49,7 +49,7 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
     /**
      * Creates the {@link KapuaLocator} instance,
      *
-     * @return
+     * @return test
      */
     private static KapuaLocator createInstance() {
         try {
@@ -84,7 +84,7 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
     /**
      * Return the {@link KapuaLocator} instance (singleton).
      *
-     * @return
+     * @return test
      */
     public static KapuaLocator getInstance() {
         return instance;
@@ -98,7 +98,7 @@ public abstract class KapuaLocator implements KapuaServiceLoader {
      * Get the locator classname implementation looking at the {@link KapuaLocator#LOCATOR_CLASS_NAME_SYSTEM_PROPERTY} system property or falling back to the
      * {@link KapuaLocator#LOCATOR_CLASS_NAME_ENVIRONMENT_PROPERTY} environment variable.
      *
-     * @return
+     * @return test
      */
     static String locatorClassName() {
         String locatorClass = System.getProperty(LOCATOR_CLASS_NAME_SYSTEM_PROPERTY);

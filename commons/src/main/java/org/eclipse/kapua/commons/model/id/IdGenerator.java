@@ -36,7 +36,7 @@ public class IdGenerator {
      * Generate a {@link BigInteger} random value.<br>
      * For more detail refer to: {@link SystemSettingKey#KAPUA_KEY_SIZE}
      *
-     * @return
+     * @return test
      */
     public static BigInteger generate() {
         return new BigInteger(ID_SIZE, RANDOM);

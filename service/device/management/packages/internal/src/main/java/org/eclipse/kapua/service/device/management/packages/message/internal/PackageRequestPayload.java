@@ -247,7 +247,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     /**
      * Get the is a download package and install flag
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public Boolean isPackageDownloadInstall() {
@@ -291,7 +291,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     /**
      * Get the download block size
      *
-     * @return
+     * @return test
      * @since 1.1.0
      */
     public Integer getPackageDownloadBlockSize() {
@@ -398,7 +398,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     /**
      * Get the package install name
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public String getPackageInstallName() {
@@ -420,7 +420,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     /**
      * Get the package install version
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public String getPackageInstallVersion() {
@@ -446,7 +446,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     /**
      * Get the package uninstall name
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public String getPackageUninstallName() {
@@ -468,7 +468,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     /**
      * Get the package uninstall version
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public String getPackageUninstallVersion() {
@@ -494,7 +494,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     /**
      * Get the is a download request flag
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public boolean isDownloadRequest() {
@@ -504,7 +504,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     /**
      * Get the is an install request flag
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public boolean isInstallRequest() {
@@ -514,7 +514,7 @@ public class PackageRequestPayload extends KapuaPayloadImpl implements KapuaRequ
     /**
      * Get the is an uninstall request flag
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public boolean isUninstallRequest() {

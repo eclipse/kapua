@@ -75,7 +75,7 @@ public class ClientInfoRegistryFacade extends AbstractRegistryFacade {
      * Update the client information after a message store operation
      *
      * @param clientInfo
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -148,7 +148,7 @@ public class ClientInfoRegistryFacade extends AbstractRegistryFacade {
      *
      * @param scopeId
      * @param id
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -172,7 +172,7 @@ public class ClientInfoRegistryFacade extends AbstractRegistryFacade {
      * Find clients informations matching the given query
      *
      * @param query
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -197,7 +197,7 @@ public class ClientInfoRegistryFacade extends AbstractRegistryFacade {
      * Get clients informations count matching the given query
      *
      * @param query
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException

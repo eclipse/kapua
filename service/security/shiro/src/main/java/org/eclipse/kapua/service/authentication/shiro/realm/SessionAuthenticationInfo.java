@@ -23,7 +23,6 @@ import org.eclipse.kapua.service.user.User;
  * Kapua {@link AuthenticationInfo} implementation
  *
  * @since 1.0
- *
  */
 public class SessionAuthenticationInfo implements AuthenticationInfo {
 
@@ -43,9 +42,9 @@ public class SessionAuthenticationInfo implements AuthenticationInfo {
      * @param accessToken
      */
     public SessionAuthenticationInfo(String realmName,
-            Account account,
-            User user,
-            AccessToken accessToken) {
+                                     Account account,
+                                     User user,
+                                     AccessToken accessToken) {
         this.realmName = realmName;
         this.account = account;
         this.user = user;
@@ -55,7 +54,7 @@ public class SessionAuthenticationInfo implements AuthenticationInfo {
     /**
      * Return the user
      *
-     * @return
+     * @return test
      */
     public User getUser() {
         return user;
@@ -64,7 +63,7 @@ public class SessionAuthenticationInfo implements AuthenticationInfo {
     /**
      * Return the account
      *
-     * @return
+     * @return test
      */
     public Account getAccount() {
         return account;

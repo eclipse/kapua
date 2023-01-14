@@ -26,7 +26,8 @@ import java.util.List;
 
 public class KapuaGwtDataModelConverter {
 
-    private KapuaGwtDataModelConverter() { }
+    private KapuaGwtDataModelConverter() {
+    }
 
     public static GwtTopic convertToTopic(ChannelInfo channelInfo) {
         return new GwtTopic(channelInfo.getName(), channelInfo.getName(), channelInfo.getName(), channelInfo.getLastMessageOn());
@@ -45,7 +46,7 @@ public class KapuaGwtDataModelConverter {
 
     /**
      * @param client
-     * @return
+     * @return test
      */
     public static GwtDatastoreDevice convertToDatastoreDevice(ClientInfo client) {
         GwtDatastoreDevice device = new GwtDatastoreDevice(client.getClientId(), client.getLastMessageOn());
@@ -56,7 +57,7 @@ public class KapuaGwtDataModelConverter {
     /**
      * @param message
      * @param headers
-     * @return
+     * @return test
      */
     public static GwtMessage convertToMessage(DatastoreMessage message, List<GwtHeader> headers) {
         GwtMessage gwtMessage = new GwtMessage();

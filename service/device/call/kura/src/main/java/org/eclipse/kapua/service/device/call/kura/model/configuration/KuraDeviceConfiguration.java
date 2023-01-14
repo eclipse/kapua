@@ -12,19 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.configuration;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A container for a list of OSGi component configurations.
  *
  * @since 1.0
- *
  */
 @XmlRootElement(name = "configurations")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -34,6 +32,7 @@ public class KuraDeviceConfiguration {
     private List<KuraDeviceComponentConfiguration> configurations;
 
     // Required by JAXB
+
     /**
      * Constructor
      */
@@ -54,7 +53,7 @@ public class KuraDeviceConfiguration {
     /**
      * Get the device component configuration list
      *
-     * @return
+     * @return test
      */
     public List<KuraDeviceComponentConfiguration> getConfigurations() {
         if (configurations == null) {

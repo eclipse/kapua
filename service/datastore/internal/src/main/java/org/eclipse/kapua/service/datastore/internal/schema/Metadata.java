@@ -40,7 +40,7 @@ public class Metadata {
     /**
      * Get the mappings cache
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public Map<String, Metric> getMessageMappingsCache() {
@@ -63,7 +63,7 @@ public class Metadata {
     /**
      * Get the Elasticsearch data index name
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public String getDataIndexName() {
@@ -73,7 +73,7 @@ public class Metadata {
     /**
      * Get the Kapua channel index name
      *
-     * @return
+     * @return test
      * @since 1.4.0
      */
     public String getChannelRegistryIndexName() {
@@ -83,7 +83,7 @@ public class Metadata {
     /**
      * Get the Kapua client index name
      *
-     * @return
+     * @return test
      * @since 1.4.0
      */
     public String getClientRegistryIndexName() {
@@ -93,7 +93,7 @@ public class Metadata {
     /**
      * Get the Kapua metric index name
      *
-     * @return
+     * @return test
      * @since 1.4.0
      */
     public String getMetricRegistryIndexName() {

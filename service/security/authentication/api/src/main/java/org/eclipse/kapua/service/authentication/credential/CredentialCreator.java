@@ -32,17 +32,17 @@ import java.util.Date;
  */
 @XmlRootElement(name = "credentialCreator")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "userId",
+@XmlType(propOrder = {"userId",
         "credentialType",
         "credentialPlainKey",
         "credentialStatus",
-        "expirationDate" }, factoryClass = CredentialXmlRegistry.class, factoryMethod = "newCredentialCreator")
+        "expirationDate"}, factoryClass = CredentialXmlRegistry.class, factoryMethod = "newCredentialCreator")
 public interface CredentialCreator extends KapuaEntityCreator<Credential> {
 
     /**
      * Return the user identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -59,7 +59,7 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential> {
      * Return the credential type.<br>
      * The returned object will depend on the authentication algorithm.
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "credentialType")
     CredentialType getCredentialType();
@@ -74,7 +74,7 @@ public interface CredentialCreator extends KapuaEntityCreator<Credential> {
     /**
      * Return the plain credential (unencrypted value).
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "credentialKey")
     String getCredentialPlainKey();

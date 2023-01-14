@@ -56,7 +56,7 @@ public interface DatastoreMessage extends Storable {
     /**
      * Get the message identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "id")
     UUID getId();
@@ -71,7 +71,7 @@ public interface DatastoreMessage extends Storable {
     /**
      * Stored message identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "datastoreId")
     @XmlJavaTypeAdapter(StorableIdXmlAdapter.class)
@@ -85,7 +85,7 @@ public interface DatastoreMessage extends Storable {
     /**
      * Stored message timestamp
      *
-     * @return
+     * @return test
      */
     Date getTimestamp();
 
@@ -97,7 +97,7 @@ public interface DatastoreMessage extends Storable {
     /**
      * Get client identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "clientId")
     String getClientId();
@@ -112,7 +112,7 @@ public interface DatastoreMessage extends Storable {
     /**
      * Get device identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "deviceId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -128,7 +128,7 @@ public interface DatastoreMessage extends Storable {
     /**
      * Get the message received on date
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "receivedOn")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
@@ -144,7 +144,7 @@ public interface DatastoreMessage extends Storable {
     /**
      * Get the message sent on date
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "sentOn")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
@@ -160,7 +160,7 @@ public interface DatastoreMessage extends Storable {
     /**
      * Get the message captured on date
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "capturedOn")
     @XmlJavaTypeAdapter(DateXmlAdapter.class)
@@ -176,7 +176,7 @@ public interface DatastoreMessage extends Storable {
     /**
      * Get the device position
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "position")
     KapuaPosition getPosition();
@@ -191,7 +191,7 @@ public interface DatastoreMessage extends Storable {
     /**
      * Get the message channel
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "channel")
     KapuaDataChannel getChannel();
@@ -206,7 +206,7 @@ public interface DatastoreMessage extends Storable {
     /**
      * Get the message payload
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "payload")
     KapuaPayload getPayload();

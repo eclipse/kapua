@@ -26,7 +26,6 @@ import org.eclipse.kapua.service.authorization.role.RoleListResult;
  * Role DAO
  *
  * @since 1.0
- *
  */
 public class RoleDAO extends ServiceDAO {
 
@@ -35,7 +34,7 @@ public class RoleDAO extends ServiceDAO {
      *
      * @param em
      * @param creator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static Role create(EntityManager em, RoleCreator creator)
@@ -53,7 +52,7 @@ public class RoleDAO extends ServiceDAO {
      *
      * @param em
      * @param role
-     * @return
+     * @return test
      * @throws KapuaEntityNotFoundException
      *             If {@link Role} is not found.
      */
@@ -68,7 +67,7 @@ public class RoleDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param roleId
-     * @return
+     * @return test
      */
     public static Role find(EntityManager em, KapuaId scopeId, KapuaId roleId) {
         return ServiceDAO.find(em, RoleImpl.class, scopeId, roleId);
@@ -79,7 +78,7 @@ public class RoleDAO extends ServiceDAO {
      *
      * @param em
      * @param roleQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static RoleListResult query(EntityManager em, KapuaQuery roleQuery)
@@ -92,7 +91,7 @@ public class RoleDAO extends ServiceDAO {
      *
      * @param em
      * @param roleQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery roleQuery)

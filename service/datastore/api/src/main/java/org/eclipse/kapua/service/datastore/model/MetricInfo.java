@@ -69,7 +69,7 @@ public interface MetricInfo extends Storable {
     /**
      * Get the client identifier
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "clientId")
@@ -86,7 +86,7 @@ public interface MetricInfo extends Storable {
     /**
      * Get the channel
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "channel")
@@ -137,7 +137,7 @@ public interface MetricInfo extends Storable {
     /**
      * Get the message identifier (of the first message published that containing this metric)
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "firstMessageId")
@@ -155,7 +155,7 @@ public interface MetricInfo extends Storable {
     /**
      * Get the message timestamp (of the first message published that containing this metric)
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "firstMessageOn")
@@ -174,7 +174,7 @@ public interface MetricInfo extends Storable {
      * Get the message identifier of the last published message for this metric.<br>
      * <b>Transient data field (the last publish message identifier should get from the message table by the find service)</b>
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "lastMessageId")
@@ -194,7 +194,7 @@ public interface MetricInfo extends Storable {
      * Get the timestamp of the last published message for this metric.<br>
      * <b>Transient data field (the last publish timestamp should get from the message table by the find service)</b>
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "lastMessageOn")

@@ -33,7 +33,7 @@ public class ChannelInfoXmlRegistry {
     /**
      * Creates a {@link ChannelInfoListResult} instance
      *
-     * @return
+     * @return test
      */
     public ChannelInfoListResult newListResult() {
         return CHANNEL_INFO_FACTORY.newListResult();
@@ -42,7 +42,7 @@ public class ChannelInfoXmlRegistry {
     /**
      * Creates a {@link ChannelInfoQuery} instance.
      *
-     * @return
+     * @return test
      */
     public ChannelInfoQuery newQuery() {
         return CHANNEL_INFO_FACTORY.newQuery(null);

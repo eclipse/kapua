@@ -12,15 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.client.pool;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.eclipse.kapua.broker.client.setting.BrokerClientSetting;
 import org.eclipse.kapua.broker.client.setting.BrokerClientSettingKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class is needed by KapuaSecurityBrokerFilter to handle a vm connection.<BR>
@@ -53,7 +53,7 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
     private static Map<DESTINATIONS, JmsAssistantProducerPool> pools;
 
     static {
-        pools = new HashMap<JmsAssistantProducerPool.DESTINATIONS, JmsAssistantProducerPool>();
+        pools = new HashMap<>();
         logger.info("Create pools (internal broker use)...");
         logger.info("Create NoDestination pool...");
         pools.put(DESTINATIONS.NO_DESTINATION,
@@ -90,7 +90,7 @@ public class JmsAssistantProducerPool extends GenericObjectPool<JmsAssistantProd
      * Return a JmsAssistantProducerPool for the given destination
      *
      * @param destination
-     * @return
+     * @return test
      */
     public static JmsAssistantProducerPool getIOnstance(DESTINATIONS destination) {
         return pools.get(destination);

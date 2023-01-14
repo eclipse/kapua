@@ -90,7 +90,7 @@ public class KapuaSession implements Serializable {
     /**
      * Creates a {@link KapuaSession} copy with trusted mode flag set to true (to be used only from trusted classes)
      *
-     * @return
+     * @return test
      */
     public static KapuaSession createFrom() {
         if (isCallerClassTrusted()) {
@@ -109,7 +109,7 @@ public class KapuaSession implements Serializable {
     /**
      * Creates a new {@link KapuaSession} with trusted mode flag set to true (to be used only from trusted classes)
      *
-     * @return
+     * @return test
      */
     public static KapuaSession createFrom(KapuaId scopeId, KapuaId userId) {
         if (isCallerClassTrusted()) {
@@ -125,7 +125,7 @@ public class KapuaSession implements Serializable {
     /**
      * Check if the caller is included in the caller list allowed to change the trusted mode flag.
      *
-     * @return
+     * @return test
      */
     private static boolean isCallerClassTrusted() {
         // the stack trace should be like
@@ -149,8 +149,8 @@ public class KapuaSession implements Serializable {
      * @param userId
      */
     public KapuaSession(AccessToken accessToken,
-            KapuaId scopeId,
-            KapuaId userId) {
+                        KapuaId scopeId,
+                        KapuaId userId) {
         this();
         this.accessToken = accessToken;
         this.scopeId = scopeId;
@@ -186,7 +186,7 @@ public class KapuaSession implements Serializable {
     /**
      * Get the access token
      *
-     * @return
+     * @return test
      */
     public AccessToken getAccessToken() {
         return accessToken;
@@ -195,7 +195,7 @@ public class KapuaSession implements Serializable {
     /**
      * Get the scope identifier
      *
-     * @return
+     * @return test
      */
     public KapuaId getScopeId() {
         return scopeId;
@@ -204,7 +204,7 @@ public class KapuaSession implements Serializable {
     /**
      * Get the user identifier
      *
-     * @return
+     * @return test
      */
     public KapuaId getUserId() {
         return userId;
@@ -213,7 +213,7 @@ public class KapuaSession implements Serializable {
     /**
      * Get the OpenID Connect idToken
      *
-     * @return
+     * @return test
      */
     public String getOpenIDidToken() {
         return openIDidToken;
@@ -231,7 +231,7 @@ public class KapuaSession implements Serializable {
      * Return the trusted mode status.<br>
      * If true every rights check will be skipped, in other word <b>the user is trusted so he is allowed to execute every operation</b> defined in the system.
      *
-     * @return
+     * @return test
      */
     public final boolean isTrustedMode() {
         return trustedMode;

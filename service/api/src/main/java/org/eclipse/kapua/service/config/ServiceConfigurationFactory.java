@@ -24,14 +24,14 @@ public interface ServiceConfigurationFactory extends KapuaObjectFactory {
     /**
      * Creates a new {@link ServiceComponentConfiguration} using the given component configuration identifier
      *
-     * @return
+     * @return test
      */
     ServiceComponentConfiguration newComponentConfigurationInstance(String componentConfigurationId);
 
     /**
      * Creates a new {@link ServiceConfiguration}
      *
-     * @return
+     * @return test
      */
     ServiceConfiguration newConfigurationInstance();
 }

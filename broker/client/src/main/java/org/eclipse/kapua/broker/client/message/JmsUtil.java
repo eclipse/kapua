@@ -48,7 +48,7 @@ public class JmsUtil {
      * Return the topic for the message's destination
      *
      * @param jmsMessage
-     * @return
+     * @return test
      * @throws JMSException
      */
     public static String getJmsTopic(ActiveMQMessage jmsMessage) throws JMSException {
@@ -129,7 +129,7 @@ public class JmsUtil {
      * @param jmsTopic
      * @param queuedOn
      * @param connectionId
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static CamelKapuaMessage<?> convertToCamelKapuaMessage(ProtocolDescriptor connectorDescriptor, MessageType messageType, byte[] messageBody, String jmsTopic, Date queuedOn,
@@ -147,7 +147,7 @@ public class JmsUtil {
      * @param messageBody
      * @param jmsTopic
      * @param queuedOn
-     * @return
+     * @return test
      * @throws KapuaException
      */
     private static KapuaMessage<?, ?> convertToKapuaMessage(Class<? extends DeviceMessage<?, ?>> deviceMessageType, Class<? extends KapuaMessage<?, ?>> kapuaMessageType, byte[] messageBody,
@@ -173,7 +173,7 @@ public class JmsUtil {
      * @param connectorDescriptor
      * @param messageType
      * @param kapuaMessage
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static JmsMessage convertToJmsMessage(ProtocolDescriptor connectorDescriptor, MessageType messageType, KapuaMessage<?, ?> kapuaMessage) throws KapuaException, ClassNotFoundException {
@@ -198,7 +198,7 @@ public class JmsUtil {
      * sub tree &gt; #
      *
      * @param jmsTopic
-     * @return
+     * @return test
      */
     public static String convertJmsWildCardToMqtt(String jmsTopic) {
         String processedTopic = null;
@@ -231,7 +231,7 @@ public class JmsUtil {
      * sub tree &gt; #
      *
      * @param mqttTopic
-     * @return
+     * @return test
      */
     public static String convertMqttWildCardToJms(String mqttTopic) {
         String processedTopic = null;

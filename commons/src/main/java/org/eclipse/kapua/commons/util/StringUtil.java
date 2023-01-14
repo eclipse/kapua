@@ -12,14 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.configuration.metatype.Password;
 import org.eclipse.kapua.commons.configuration.metatype.TscalarImpl;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Utilities to manipulate string
@@ -38,7 +37,7 @@ public class StringUtil {
      * Split the string using the delimiter {@link StringUtil#DELIMITER}
      *
      * @param strValues
-     * @return
+     * @return test
      */
     public static String[] splitValues(String strValues) {
         // List<String> defaultValues = new ArrayList<String>();
@@ -137,10 +136,10 @@ public class StringUtil {
     /**
      * Convert the string to the appropriate Object based on type
      *
-     * @param type              allowed values are {@link TscalarImpl}
-     * @param string            the input value
-     * @return                  the output value
-     * @throws KapuaException   when something goes wrong
+     * @param type   allowed values are {@link TscalarImpl}
+     * @param string the input value
+     * @return the output value
+     * @throws KapuaException when something goes wrong
      */
     public static Object stringToValue(String type, String string) throws KapuaException {
         if (string == null) {
@@ -201,7 +200,7 @@ public class StringUtil {
      * It supports also arrays such as Integer[], Boolean[], ... Password[]). For the arrays the converted String will be a comma separated concatenation.
      *
      * @param value
-     * @return
+     * @return test
      */
     public static String valueToString(Object value) {
         String result = null;
@@ -356,7 +355,7 @@ public class StringUtil {
      * Escaped values are '\' ',' and ' '
      *
      * @param s
-     * @return
+     * @return test
      */
     public static String escapeString(String s) {
         String escaped = s;
@@ -370,7 +369,7 @@ public class StringUtil {
      * Remove the escaped values from the string (remove escape prefix, if present, for ',' ' ' and the spaces at the beginning and the end of the String
      *
      * @param s
-     * @return
+     * @return test
      */
     public static String unescapeString(String s) {
         String value = s;

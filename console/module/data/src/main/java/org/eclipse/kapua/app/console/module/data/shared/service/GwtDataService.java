@@ -12,26 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.data.shared.service;
 
-import java.util.Date;
-import java.util.List;
-
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.LoadConfig;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
-
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.data.client.GwtTopic;
 import org.eclipse.kapua.app.console.module.data.client.util.GwtMessage;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDataChannelInfoQuery;
-
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.LoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreAsset;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtDatastoreDevice;
 import org.eclipse.kapua.app.console.module.data.shared.model.GwtHeader;
+
+import java.util.Date;
+import java.util.List;
 
 @RemoteServiceRelativePath("data")
 public interface GwtDataService extends RemoteService {
@@ -41,7 +38,7 @@ public interface GwtDataService extends RemoteService {
      * be fed into the TreeGrid UI widget, so it contains all the topic children.
      *
      * @param scopeId
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     List<GwtTopic> findTopicsTree(String scopeId) throws GwtKapuaException;
@@ -57,7 +54,7 @@ public interface GwtDataService extends RemoteService {
     /**
      * @param config
      * @param scopeId
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     PagingLoadResult<GwtDatastoreDevice> findDevices(PagingLoadConfig config, String scopeId, String filter) throws GwtKapuaException;
@@ -71,7 +68,7 @@ public interface GwtDataService extends RemoteService {
      * @param config
      * @param scopeId
      * @param topic
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtTopic topic) throws GwtKapuaException;
@@ -83,7 +80,7 @@ public interface GwtDataService extends RemoteService {
      * @param config
      * @param scopeId
      * @param topic
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     ListLoadResult<GwtHeader> findNumberHeaders(LoadConfig config, String scopeId, GwtTopic topic) throws GwtKapuaException;
@@ -95,7 +92,7 @@ public interface GwtDataService extends RemoteService {
      * @param config
      * @param scopeId
      * @param device
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     ListLoadResult<GwtHeader> findHeaders(LoadConfig config, String scopeId, GwtDatastoreDevice device) throws GwtKapuaException;

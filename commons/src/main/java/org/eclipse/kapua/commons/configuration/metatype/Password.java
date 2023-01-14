@@ -33,7 +33,7 @@ public class Password {
     /**
      * Get password
      *
-     * @return
+     * @return test
      */
     public String getPassword() {
         return password;

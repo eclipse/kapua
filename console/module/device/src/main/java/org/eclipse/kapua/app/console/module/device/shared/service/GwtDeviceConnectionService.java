@@ -32,7 +32,7 @@ public interface GwtDeviceConnectionService extends RemoteService {
      * Returns a GwtDeviceConnection by its Id or null if a device connection with such Id does not exist.
      *
      * @param connectionId
-     * @return
+     * @return test
      */
     public GwtDeviceConnection find(String scopeId, String connectionId)
             throws GwtKapuaException;
@@ -41,7 +41,7 @@ public interface GwtDeviceConnectionService extends RemoteService {
      * Get connection info ad name values pairs
      *
      * @param gwtDeviceConnectionId
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     public ListLoadResult<GwtGroupedNVPair> getConnectionInfo(String scopeIdString, String gwtDeviceConnectionId)
@@ -51,7 +51,7 @@ public interface GwtDeviceConnectionService extends RemoteService {
      * Returns the list of all DeviceConnection matching the query.
      *
      * @param gwtDeviceConnectionQuery
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     PagingLoadResult<GwtDeviceConnection> query(PagingLoadConfig loadConfig, GwtDeviceConnectionQuery gwtDeviceConnectionQuery)

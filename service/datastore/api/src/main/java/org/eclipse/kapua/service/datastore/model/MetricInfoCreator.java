@@ -28,15 +28,16 @@ public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
     /**
      * Get the account
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
+    @Override
     KapuaId getScopeId();
 
     /**
      * Get the client identifier
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     String getClientId();
@@ -52,7 +53,7 @@ public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
     /**
      * Get the channel
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     String getChannel();
@@ -68,7 +69,7 @@ public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
     /**
      * Get the metric name
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     String getName();
@@ -84,7 +85,7 @@ public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
     /**
      * Get the metric type
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     Class<T> getMetricType();
@@ -100,7 +101,7 @@ public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
     /**
      * Get the message identifier (of the first message published that containing this metric)
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     StorableId getMessageId();
@@ -116,7 +117,7 @@ public interface MetricInfoCreator<T> extends StorableCreator<MetricInfo> {
     /**
      * Get the message timestamp (of the first message published that containing this metric)
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     Date getMessageTimestamp();

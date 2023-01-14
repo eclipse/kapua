@@ -62,7 +62,7 @@ public class ServiceEventBusManager {
     /**
      * Get the event bus instance
      *
-     * @return
+     * @return test
      * @throws ServiceEventBusException
      */
     public static ServiceEventBus getInstance() throws ServiceEventBusException {

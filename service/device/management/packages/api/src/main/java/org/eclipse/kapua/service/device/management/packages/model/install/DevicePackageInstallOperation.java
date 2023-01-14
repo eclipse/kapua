@@ -36,7 +36,7 @@ public interface DevicePackageInstallOperation {
     /**
      * Get the package identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "id")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -52,7 +52,7 @@ public interface DevicePackageInstallOperation {
     /**
      * Get the package name
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "name")
     String getName();
@@ -67,7 +67,7 @@ public interface DevicePackageInstallOperation {
     /**
      * Get the package version
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "version")
     String getVersion();
@@ -82,7 +82,7 @@ public interface DevicePackageInstallOperation {
     /**
      * Get the package install status
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "status")
     DevicePackageInstallStatus getStatus();

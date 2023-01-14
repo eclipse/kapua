@@ -12,8 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.consumer.commons.camel;
 
-import javax.jms.JMSException;
-
 import org.apache.activemq.command.ActiveMQDestination;
 import org.apache.activemq.command.ActiveMQTopic;
 import org.apache.camel.Message;
@@ -21,6 +19,8 @@ import org.eclipse.kapua.broker.client.message.MessageConstants;
 import org.eclipse.kapua.consumer.commons.listener.CamelConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jms.JMSException;
 
 /**
  * Camel utility methods
@@ -38,7 +38,7 @@ public class CamelUtil {
      * Extract the topic from the {@link Message} looking for Kapua header property that handles this value and inspecting Camel header properties)
      *
      * @param message
-     * @return
+     * @return test
      * @throws JMSException
      */
     public static String getTopic(org.apache.camel.Message message) throws JMSException {

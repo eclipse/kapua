@@ -35,7 +35,7 @@ public class AccessTokenDAO extends ServiceDAO {
      *
      * @param em
      * @param accessTokenCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static AccessToken create(EntityManager em, AccessTokenCreator accessTokenCreator)
@@ -57,7 +57,7 @@ public class AccessTokenDAO extends ServiceDAO {
      *
      * @param em
      * @param accessToken
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static AccessToken update(EntityManager em, AccessToken accessToken)
@@ -75,7 +75,7 @@ public class AccessTokenDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param accessTokenId
-     * @return
+     * @return test
      */
     public static AccessToken find(EntityManager em, KapuaId scopeId, KapuaId accessTokenId) {
         return ServiceDAO.find(em, AccessTokenImpl.class, scopeId, accessTokenId);
@@ -86,7 +86,7 @@ public class AccessTokenDAO extends ServiceDAO {
      *
      * @param em
      * @param tokenId
-     * @return
+     * @return test
      */
     public static AccessToken findByTokenId(EntityManager em, String tokenId) {
         return ServiceDAO.findByField(em, AccessTokenImpl.class, AccessTokenAttributes.TOKEN_ID, tokenId);
@@ -97,7 +97,7 @@ public class AccessTokenDAO extends ServiceDAO {
      *
      * @param em
      * @param accessTokenQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static AccessTokenListResult query(EntityManager em, KapuaQuery accessTokenQuery)
@@ -110,7 +110,7 @@ public class AccessTokenDAO extends ServiceDAO {
      *
      * @param em
      * @param accessTokenQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery accessTokenQuery)

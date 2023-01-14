@@ -25,7 +25,7 @@ public class MfaOptionXmlRegistry {
     /**
      * Creates a new {@link MfaOption} instance
      *
-     * @return
+     * @return test
      */
     public MfaOption newMfaOption() {
         return MFA_OPTION_FACTORY.newEntity(null);
@@ -34,7 +34,7 @@ public class MfaOptionXmlRegistry {
     /**
      * Creates a new {@link MfaOption} list result instance
      *
-     * @return
+     * @return test
      */
     public MfaOptionListResult newMfaOptionListResult() {
         return MFA_OPTION_FACTORY.newListResult();
@@ -43,7 +43,7 @@ public class MfaOptionXmlRegistry {
     /**
      * Creates a new {@link MfaOption} creator instance
      *
-     * @return
+     * @return test
      */
     public MfaOptionCreator newMfaOptionCreator() {
         return MFA_OPTION_FACTORY.newCreator(null, null, null);

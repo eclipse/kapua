@@ -30,7 +30,7 @@ public class DeviceXmlRegistry {
     /**
      * Creates a new {@link Device}
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public Device newDevice() {
@@ -40,7 +40,7 @@ public class DeviceXmlRegistry {
     /**
      * Creates a new device creator
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public DeviceCreator newDeviceCreator() {
@@ -50,7 +50,7 @@ public class DeviceXmlRegistry {
     /**
      * Creates a new device list result
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public DeviceListResult newDeviceListResult() {

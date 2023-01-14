@@ -63,7 +63,7 @@ public class MetricsServiceImpl implements MetricsService {
     }
 
     private void enableJmxSupport() {
-        final Builder builder = JmxReporter.forRegistry(this.metricRegistry);
+        Builder builder = JmxReporter.forRegistry(this.metricRegistry);
         builder.convertDurationsTo(TimeUnit.MILLISECONDS);
         builder.convertRatesTo(TimeUnit.SECONDS);
         builder.inDomain("org.eclipse.kapua");
@@ -129,7 +129,7 @@ public class MetricsServiceImpl implements MetricsService {
      * @param module
      * @param component
      * @param metricsName
-     * @return
+     * @return test
      */
     private String getMetricName(String module, String component, String... metricsName) {
         return MessageFormat.format(METRICS_NAME_FORMAT, module, component, convertToDotNotation(metricsName));
@@ -139,7 +139,7 @@ public class MetricsServiceImpl implements MetricsService {
      * Convert the metric names to a concatenated dot separated string
      *
      * @param metricsName
-     * @return
+     * @return test
      */
     private String convertToDotNotation(String... metricsName) {
         StringBuilder builder = new StringBuilder();

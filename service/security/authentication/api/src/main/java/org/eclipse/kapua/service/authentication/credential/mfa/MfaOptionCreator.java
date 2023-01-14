@@ -52,7 +52,7 @@ public interface MfaOptionCreator extends KapuaEntityCreator<MfaOption> {
     /**
      * Return the {@link MfaOption} key
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "mfaSecretKey")
     String getMfaSecretKey();

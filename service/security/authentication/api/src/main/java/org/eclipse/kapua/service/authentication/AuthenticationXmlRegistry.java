@@ -23,7 +23,7 @@ public class AuthenticationXmlRegistry {
     /**
      * Creates a new {@link UsernamePasswordCredentials} instance
      *
-     * @return
+     * @return test
      */
     public UsernamePasswordCredentials newUsernamePasswordCredentials() {
         return CREDENTIALS_FACTORY.newUsernamePasswordCredentials();
@@ -32,7 +32,7 @@ public class AuthenticationXmlRegistry {
     /**
      * Creates a new {@link ApiKeyCredentials} instance
      *
-     * @return
+     * @return test
      */
     public ApiKeyCredentials newApiKeyCredentials() {
         return CREDENTIALS_FACTORY.newApiKeyCredentials(null);
@@ -41,7 +41,7 @@ public class AuthenticationXmlRegistry {
     /**
      * Creates a new {@link JwtCredentials} instance
      *
-     * @return
+     * @return test
      */
     public JwtCredentials newJwtCredentials() {
         return CREDENTIALS_FACTORY.newJwtCredentials(null, null);
@@ -50,7 +50,7 @@ public class AuthenticationXmlRegistry {
     /**
      * Creates a new {@link AccessTokenCredentials} instance
      *
-     * @return
+     * @return test
      */
     public AccessTokenCredentials newAccessTokenCredentials() {
         return CREDENTIALS_FACTORY.newAccessTokenCredentials(null);
@@ -59,7 +59,7 @@ public class AuthenticationXmlRegistry {
     /**
      * Creates a new {@link RefreshTokenCredentials} instance
      *
-     * @return
+     * @return test
      */
     public RefreshTokenCredentials newRefreshTokenCredentials() {
         return CREDENTIALS_FACTORY.newRefreshTokenCredentials(null, null);

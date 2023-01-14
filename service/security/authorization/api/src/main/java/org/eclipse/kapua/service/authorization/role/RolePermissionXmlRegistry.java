@@ -25,7 +25,7 @@ public class RolePermissionXmlRegistry {
     /**
      * Creates a new {@link RolePermission} instance
      *
-     * @return
+     * @return test
      */
     public RolePermission newRolePermission() {
         return ROLE_PERMISSION_FACTORY.newEntity(null);
@@ -34,7 +34,7 @@ public class RolePermissionXmlRegistry {
     /**
      * Creates a new {@link RolePermission} instance
      *
-     * @return
+     * @return test
      */
     public RolePermissionCreator newCreator() {
         return ROLE_PERMISSION_FACTORY.newCreator(null);
@@ -43,7 +43,7 @@ public class RolePermissionXmlRegistry {
     /**
      * Creates a new {@link RolePermissionListResult} instance
      *
-     * @return
+     * @return test
      */
     public RolePermissionListResult newRolePermissionListResult() {
         return ROLE_PERMISSION_FACTORY.newListResult();

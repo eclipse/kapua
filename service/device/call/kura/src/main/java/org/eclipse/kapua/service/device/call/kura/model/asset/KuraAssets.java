@@ -12,15 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.asset;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.eclipse.kapua.KapuaException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.eclipse.kapua.KapuaException;
-
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * {@link KuraAssets} list definition.
@@ -34,8 +33,7 @@ public class KuraAssets {
     /**
      * Get the assets list
      *
-     * @return
-     *
+     * @return test
      * @since 1.0.0
      */
     public List<KuraAsset> getAssets() {
@@ -50,7 +48,6 @@ public class KuraAssets {
      * Set the assets list
      *
      * @param assets
-     *
      * @since 1.0.0
      */
     public void setAssets(List<KuraAsset> assets) {
@@ -60,12 +57,9 @@ public class KuraAssets {
     /**
      * Parse a {@link JsonNode} that represent the {@link KuraAssets} object.
      *
-     * @param jsonKuraAssets
-     *            The {@link JsonNode} to parse
+     * @param jsonKuraAssets The {@link JsonNode} to parse
      * @return The parsed {@link KuraAssets} result.
-     *
      * @throws KapuaException
-     *
      * @since 1.0.0
      */
     public static KuraAssets readJsonNode(JsonNode jsonKuraAssets) throws KapuaException {
@@ -84,8 +78,7 @@ public class KuraAssets {
     /**
      * Serialize {@code  this} {@link KuraAssets} into json using the given {@link JsonGenerator}.
      *
-     * @param jsonGenerator
-     *            The {@link JsonGenerator} to put serialized {@link KuraAssets}.
+     * @param jsonGenerator The {@link JsonGenerator} to put serialized {@link KuraAssets}.
      * @throws IOException
      * @since 1.0.0
      */

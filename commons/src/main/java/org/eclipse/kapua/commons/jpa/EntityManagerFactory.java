@@ -24,7 +24,7 @@ public interface EntityManagerFactory {
     /**
      * Creates an instance of {@link EntityManager}
      *
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public EntityManager createEntityManager() throws KapuaException;

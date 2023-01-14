@@ -37,7 +37,7 @@ public class JobDeviceManagementOperationDAO {
      *
      * @param em
      * @param jobDeviceManagementOperationCreator
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.1.0
      */
@@ -58,7 +58,7 @@ public class JobDeviceManagementOperationDAO {
      * @param em
      * @param scopeId
      * @param jobDeviceManagementOperationId
-     * @return
+     * @return test
      * @since 1.1.0
      */
     public static JobDeviceManagementOperation find(EntityManager em, KapuaId scopeId, KapuaId jobDeviceManagementOperationId) {
@@ -70,7 +70,7 @@ public class JobDeviceManagementOperationDAO {
      *
      * @param em
      * @param jobDeviceManagementOperationQuery
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.1.0
      */
@@ -84,7 +84,7 @@ public class JobDeviceManagementOperationDAO {
      *
      * @param em
      * @param jobDeviceManagementOperationQuery
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.1.0
      */

@@ -37,7 +37,7 @@ public class JobExecutionDAO {
      *
      * @param em
      * @param jobExecutionCreator
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */
@@ -58,7 +58,7 @@ public class JobExecutionDAO {
      *
      * @param em
      * @param jobExecution
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */
@@ -77,7 +77,7 @@ public class JobExecutionDAO {
      * @param em
      * @param scopeId
      * @param jobExecutionId
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public static JobExecution find(EntityManager em, KapuaId scopeId, KapuaId jobExecutionId) {
@@ -89,7 +89,7 @@ public class JobExecutionDAO {
      *
      * @param em
      * @param jobExecutionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */
@@ -103,7 +103,7 @@ public class JobExecutionDAO {
      *
      * @param em
      * @param jobExecutionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */

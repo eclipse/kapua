@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 public interface JobStepProperty {
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     String getName();
@@ -42,7 +42,7 @@ public interface JobStepProperty {
     void setName(String name);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     String getPropertyType();
@@ -54,7 +54,7 @@ public interface JobStepProperty {
     void setPropertyType(String propertyType);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     String getPropertyValue();
@@ -66,7 +66,7 @@ public interface JobStepProperty {
     void setPropertyValue(String propertyValue);
 
     /**
-     * @return
+     * @return test
      * @since 1.1.0
      */
     String getExampleValue();
@@ -110,7 +110,7 @@ public interface JobStepProperty {
     void setSecret(Boolean se);
 
     /**
-     * @return
+     * @return test
      * @since 1.5.0
      */
     Integer getMinLength();
@@ -122,7 +122,7 @@ public interface JobStepProperty {
     void setMinLength(Integer minLength);
 
     /**
-     * @return
+     * @return test
      * @since 1.5.0
      */
     Integer getMaxLength();
@@ -134,7 +134,7 @@ public interface JobStepProperty {
     void setMaxLength(Integer maxLength);
 
     /**
-     * @return
+     * @return test
      * @since 1.5.0
      */
     String getMinValue();
@@ -146,7 +146,7 @@ public interface JobStepProperty {
     void setMinValue(String minValue);
 
     /**
-     * @return
+     * @return test
      * @since 1.5.0
      */
     String getMaxValue();
@@ -158,7 +158,7 @@ public interface JobStepProperty {
     void setMaxValue(String maxValue);
 
     /**
-     * @return
+     * @return test
      * @since 1.5.0
      */
     String getValidationRegex();

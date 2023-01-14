@@ -30,7 +30,7 @@ public class DeviceConfigurationXmlRegistry {
     /**
      * Creates a new device configuration
      *
-     * @return
+     * @return test
      */
     public DeviceConfiguration newConfiguration() {
         return DEVICE_CONFIGURATION_FACTORY.newConfigurationInstance();
@@ -39,7 +39,7 @@ public class DeviceConfigurationXmlRegistry {
     /**
      * Creates a new device component configuration
      *
-     * @return
+     * @return test
      */
     public DeviceComponentConfiguration newComponentConfiguration() {
         return DEVICE_CONFIGURATION_FACTORY.newComponentConfigurationInstance(null);

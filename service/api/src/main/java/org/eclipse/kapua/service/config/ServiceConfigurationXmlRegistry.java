@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.config;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.xml.bind.annotation.XmlRegistry;
 
 /**
  * {@link ServiceConfiguration} xml factory class
@@ -30,7 +30,7 @@ public class ServiceConfigurationXmlRegistry {
     /**
      * Creates a new service configuration
      *
-     * @return
+     * @return test
      */
     public ServiceConfiguration newConfiguration() {
         return SERVICE_CONFIGURATION_FACTORY.newConfigurationInstance();
@@ -39,7 +39,7 @@ public class ServiceConfigurationXmlRegistry {
     /**
      * Creates a new service component configuration
      *
-     * @return
+     * @return test
      */
     public ServiceComponentConfiguration newComponentConfiguration() {
         return SERVICE_CONFIGURATION_FACTORY.newComponentConfigurationInstance(null);

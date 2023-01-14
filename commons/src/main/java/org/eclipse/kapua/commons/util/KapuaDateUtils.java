@@ -18,7 +18,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-//import java.time.format.ResolverStyle;
 import java.util.Date;
 import java.util.Locale;
 
@@ -45,6 +44,7 @@ public final class KapuaDateUtils {
             .ofPattern(ISO_DATE_PATTERN)
             .withLocale(KapuaDateUtils.getLocale())
             .withZone(getTimeZone());
+
     /**
      * Get current date
      *
@@ -66,7 +66,7 @@ public final class KapuaDateUtils {
      * Parse the provided String using the {@link KapuaDateUtils#ISO_DATE_PATTERN default pattern}
      *
      * @param date
-     * @return
+     * @return test
      * @throws ParseException
      */
     public static Date parseDate(String date) throws ParseException {
@@ -81,7 +81,7 @@ public final class KapuaDateUtils {
      * Format the provided Date using the {@link KapuaDateUtils#ISO_DATE_PATTERN default pattern}
      *
      * @param date
-     * @return
+     * @return test
      * @throws ParseException
      */
     public static String formatDate(Date date) throws ParseException {

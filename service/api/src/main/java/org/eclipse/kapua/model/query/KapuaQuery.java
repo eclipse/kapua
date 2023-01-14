@@ -242,7 +242,7 @@ public interface KapuaQuery {
      *
      * @param attributeName The name of the attribute
      * @param sortOrder     The {@link SortOrder}
-     * @return
+     * @return test
      */
     FieldSortCriteria fieldSortCriteria(String attributeName, SortOrder sortOrder);
 

@@ -49,7 +49,7 @@ public class DatastoreCacheManager {
     /**
      * Get the cache manager instance
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public static DatastoreCacheManager getInstance() {
@@ -59,7 +59,7 @@ public class DatastoreCacheManager {
     /**
      * Get the channels informations cache
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public LocalCache<String, Boolean> getChannelsCache() {
@@ -69,7 +69,7 @@ public class DatastoreCacheManager {
     /**
      * Get the metrics informations cache
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public LocalCache<String, Boolean> getMetricsCache() {
@@ -79,7 +79,7 @@ public class DatastoreCacheManager {
     /**
      * Get the clients informations cache
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public LocalCache<String, Boolean> getClientsCache() {
@@ -89,7 +89,7 @@ public class DatastoreCacheManager {
     /**
      * Get the metadata informations cache
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public LocalCache<String, Metadata> getMetadataCache() {

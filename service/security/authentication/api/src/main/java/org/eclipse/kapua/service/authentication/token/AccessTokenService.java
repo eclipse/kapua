@@ -30,7 +30,7 @@ public interface AccessTokenService extends KapuaEntityService<AccessToken, Acce
      *
      * @param scopeId
      * @param userId
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0
      */
@@ -40,7 +40,7 @@ public interface AccessTokenService extends KapuaEntityService<AccessToken, Acce
      * Find the access token by the given tokenId.
      *
      * @param tokenId
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0
      */

@@ -19,7 +19,6 @@ import org.eclipse.kapua.commons.service.event.store.internal.EventStoreRecordIm
  * Utility to convert event from/to entity event
  *
  * @since 1.0
- *
  */
 public class ServiceEventUtil {
 
@@ -31,7 +30,7 @@ public class ServiceEventUtil {
      * Convert the service event entity to the service bus object
      *
      * @param serviceEventEntity
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      */
     public static org.eclipse.kapua.event.ServiceEvent toServiceEventBus(EventStoreRecord serviceEventEntity) throws KapuaIllegalArgumentException {
@@ -60,9 +59,8 @@ public class ServiceEventUtil {
      * {@link #mergeToEntity(EventStoreRecord, org.eclipse.kapua.event.ServiceEvent)} method)
      *
      * @param serviceEventBus
-     * @return
-     * @throws KapuaIllegalArgumentException
-     *             if the service event bus id is not null
+     * @return test
+     * @throws KapuaIllegalArgumentException if the service event bus id is not null
      */
     public static EventStoreRecord fromServiceEventBus(org.eclipse.kapua.event.ServiceEvent serviceEventBus) throws KapuaIllegalArgumentException {
         if (serviceEventBus.getId() != null) {
@@ -72,12 +70,10 @@ public class ServiceEventUtil {
     }
 
     /**
-     *
      * @param serviceEventEntity
      * @param serviceEventBus
-     * @return
-     * @throws KapuaIllegalArgumentException
-     *             if the service event bus id is null or differs to the service event entity
+     * @return test
+     * @throws KapuaIllegalArgumentException if the service event bus id is null or differs to the service event entity
      */
     public static EventStoreRecord mergeToEntity(EventStoreRecord serviceEventEntity, org.eclipse.kapua.event.ServiceEvent serviceEventBus) throws KapuaIllegalArgumentException {
         if (serviceEventEntity.getId() == null) {

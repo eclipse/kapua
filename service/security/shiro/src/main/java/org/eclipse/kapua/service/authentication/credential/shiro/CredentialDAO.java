@@ -38,7 +38,7 @@ public class CredentialDAO extends ServiceDAO {
      *
      * @param em
      * @param credentialCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static Credential create(EntityManager em, CredentialCreator credentialCreator)
@@ -48,13 +48,13 @@ public class CredentialDAO extends ServiceDAO {
         // Crypto credential
         String cryptedCredential;
         switch (credentialCreator.getCredentialType()) {
-        case API_KEY:
-            cryptedCredential = cryptApiKey(credentialCreator.getCredentialPlainKey());
-            break;
-        case PASSWORD:
-        default:
-            cryptedCredential = cryptPassword(credentialCreator.getCredentialPlainKey());
-            break;
+            case API_KEY:
+                cryptedCredential = cryptApiKey(credentialCreator.getCredentialPlainKey());
+                break;
+            case PASSWORD:
+            default:
+                cryptedCredential = cryptPassword(credentialCreator.getCredentialPlainKey());
+                break;
         }
 
         //
@@ -76,7 +76,7 @@ public class CredentialDAO extends ServiceDAO {
      *
      * @param em
      * @param credential
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static Credential update(EntityManager em, Credential credential)
@@ -94,7 +94,7 @@ public class CredentialDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param credentialId
-     * @return
+     * @return test
      */
     public static Credential find(EntityManager em, KapuaId scopeId, KapuaId credentialId) {
         return ServiceDAO.find(em, CredentialImpl.class, scopeId, credentialId);
@@ -105,7 +105,7 @@ public class CredentialDAO extends ServiceDAO {
      *
      * @param em
      * @param credentialQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static CredentialListResult query(EntityManager em, KapuaQuery credentialQuery)
@@ -118,7 +118,7 @@ public class CredentialDAO extends ServiceDAO {
      *
      * @param em
      * @param credentialQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery credentialQuery)

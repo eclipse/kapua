@@ -66,9 +66,9 @@ import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
 import org.eclipse.kapua.service.authentication.AuthenticationService;
 import org.eclipse.kapua.service.authentication.CredentialsFactory;
-import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.KapuaPrincipal;
 import org.eclipse.kapua.service.authentication.LoginCredentials;
+import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationErrorCodes;
 import org.eclipse.kapua.service.authentication.exception.KapuaAuthenticationException;
 import org.eclipse.kapua.service.authentication.token.AccessToken;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -351,7 +351,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
      * Pass through connection is a connection with null connector (Advisory topic connection) or embedded broker connection (connection string starts by vm://)
      *
      * @param context
-     * @return
+     * @return test
      */
     private boolean isPassThroughConnection(ConnectionContext context) {
         if (context != null) {
@@ -388,7 +388,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
      * Return true if
      *
      * @param context
-     * @return
+     * @return test
      */
     private boolean isTrustedContext(ConnectionContext context) {
         if (context == null) {
@@ -454,7 +454,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
             LoginCredentials credentials = credentialsFactory.newUsernamePasswordCredentials(info.getUserName(), info.getPassword());
             AccessToken accessToken = authenticationService.login(credentials);
 
-            final Account account = getAccount(accessToken.getScopeId());
+            Account account = getAccount(accessToken.getScopeId());
 
             KapuaPrincipal principal = new KapuaPrincipalImpl(accessToken,
                     info.getUserName(),
@@ -570,7 +570,7 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     }
 
     private Account getAccount(KapuaId scopeId) {
-        final Account account;
+        Account account;
         try {
             account = KapuaSecurityUtils.doPrivileged(() -> accountService.find(scopeId));
         } catch (AuthenticationException e) {
@@ -734,7 +734,6 @@ public class KapuaSecurityBrokerFilter extends BrokerFilter {
     // ------------------------------------------------------------------
 
     protected void buildAuthorization(KapuaSecurityContext kapuaSecurityContext, List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> authorizationEntries) {
-        @SuppressWarnings("rawtypes")
         List<DestinationMapEntry> entries = new ArrayList<>();
         for (org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry entry : authorizationEntries) {
             entries.add(createAuthorizationEntry(kapuaSecurityContext, entry.getAcl(), entry.getAddress()));

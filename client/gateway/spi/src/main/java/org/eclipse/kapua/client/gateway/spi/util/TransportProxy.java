@@ -12,13 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.client.gateway.spi.util;
 
+import org.eclipse.kapua.client.gateway.Transport;
+
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.Executor;
-
-import org.eclipse.kapua.client.gateway.Transport;
 
 public final class TransportProxy implements Transport, AutoCloseable {
 
@@ -32,7 +32,7 @@ public final class TransportProxy implements Transport, AutoCloseable {
 
     private boolean lastKnownState;
 
-    private TransportProxy(final Transport transport, final Executor executor) {
+    private TransportProxy(Transport transport, Executor executor) {
         this.transport = transport;
         this.executor = executor;
     }
@@ -43,7 +43,7 @@ public final class TransportProxy implements Transport, AutoCloseable {
     }
 
     @Override
-    public synchronized ListenerHandle listen(final Listener listener) {
+    public synchronized ListenerHandle listen(Listener listener) {
         Objects.requireNonNull(listener);
 
         checkClosed();
@@ -86,22 +86,21 @@ public final class TransportProxy implements Transport, AutoCloseable {
      * If the proxy instance is already closed, this method will <b>not</b> throw any exception
      * </p>
      *
-     * @param listener
-     *            the listener to remove
+     * @param listener the listener to remove
      */
-    private synchronized void removeListener(final Listener listener) {
+    private synchronized void removeListener(Listener listener) {
 
         // simply remove listener
 
         listeners.remove(listener);
     }
 
-    private synchronized void handleChange(final boolean state) {
+    private synchronized void handleChange(boolean state) {
         lastKnownState = state;
         fireEvent(state, new CopyOnWriteArraySet<>(listeners));
     }
 
-    private void fireEvent(final boolean state, final Set<Listener> listeners) {
+    private void fireEvent(boolean state, Set<Listener> listeners) {
         executor.execute(() -> {
             listeners.stream().forEach(l -> l.stateChange(state));
         });
@@ -129,12 +128,11 @@ public final class TransportProxy implements Transport, AutoCloseable {
     }
 
     /**
-     *
      * @param transport
      * @param executor
-     * @return
+     * @return test
      */
-    public static TransportProxy proxy(final Transport transport, final Executor executor) {
+    public static TransportProxy proxy(Transport transport, Executor executor) {
         Objects.requireNonNull(transport);
         Objects.requireNonNull(executor);
 

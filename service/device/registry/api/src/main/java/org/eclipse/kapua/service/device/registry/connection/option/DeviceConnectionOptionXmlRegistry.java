@@ -30,7 +30,7 @@ public class DeviceConnectionOptionXmlRegistry {
     /**
      * Creates a new {@link DeviceConnectionOption}
      *
-     * @return
+     * @return test
      */
     public DeviceConnectionOption newDeviceConnectionOption() {
         return DEVICE_CONNECTION_OPTION_FACTORY.newEntity(null);
@@ -39,7 +39,7 @@ public class DeviceConnectionOptionXmlRegistry {
     /**
      * Creates a new device connection options list result
      *
-     * @return
+     * @return test
      */
     public DeviceConnectionOptionListResult newDeviceConnectionOptionListResult() {
         return DEVICE_CONNECTION_OPTION_FACTORY.newListResult();

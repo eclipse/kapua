@@ -13,10 +13,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.internal.mediator;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Models a topic for messages posted to the Kapua platform.<br>
@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
  */
 public class DatastoreChannel {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(DatastoreChannel.class);
 
     /**
@@ -81,7 +80,7 @@ public class DatastoreChannel {
     /**
      * Return the channel without the multi level wildcard, if any.
      *
-     * @return
+     * @return test
      */
     public String getChannelCleaned() {
         if (isAnyChannel()) {
@@ -97,7 +96,7 @@ public class DatastoreChannel {
      * Check if the channel is an alert channel, so if it has 'ALERT' as third level topic (and no more topics level).<br>
      * In the MQTT word this method return true if the topic is like 'account/client/ALERT'.
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public boolean isAlertTopic() {
@@ -107,7 +106,7 @@ public class DatastoreChannel {
     /**
      * Return true if the channel is single path channel and the last channel part is the {@link DatastoreChannel#MULTI_LEVEL_WCARD} char.
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public boolean isAnyChannel() {
@@ -118,7 +117,7 @@ public class DatastoreChannel {
      * Return true if the channel is multi path channel and the last channel part is the {@link DatastoreChannel#MULTI_LEVEL_WCARD} char.<br>
      * <b>This method returns false if the channel is {@link DatastoreChannel#MULTI_LEVEL_WCARD}.</b>
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public boolean isWildcardChannel() {
@@ -129,17 +128,17 @@ public class DatastoreChannel {
      * Get the channel formatted string given the topic parts
      *
      * @param parts
-     * @return
+     * @return test
      * @since 1.0.0
      */
-    public static String getChannel(final List<String> parts) {
+    public static String getChannel(List<String> parts) {
         return String.join(DatastoreChannel.TOPIC_SEPARATOR, parts);
     }
 
     /**
      * Get the channel
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public String getChannel() {
@@ -149,7 +148,7 @@ public class DatastoreChannel {
     /**
      * Get the last topic part (leaf)
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public String getLeafName() {
@@ -159,7 +158,7 @@ public class DatastoreChannel {
     /**
      * Get the parent topic
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public String getParentTopic() {
@@ -170,7 +169,7 @@ public class DatastoreChannel {
     /**
      * Get the grand parent topic
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public String getGrandParentTopic() {
@@ -186,7 +185,7 @@ public class DatastoreChannel {
     /**
      * Get the channel parts
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public String[] getParts() {

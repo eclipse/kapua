@@ -29,7 +29,7 @@ public interface ScratchCodeService extends KapuaEntityService<ScratchCode, Scra
      * The scratch code provided within the scratchCodeCreator parameter is ignored.
      *
      * @param scratchCodeCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     ScratchCodeListResult createAllScratchCodes(ScratchCodeCreator scratchCodeCreator) throws KapuaException;
@@ -39,7 +39,7 @@ public interface ScratchCodeService extends KapuaEntityService<ScratchCode, Scra
      *
      * @param scopeId
      * @param mfaOptionId
-     * @return
+     * @return test
      * @throws KapuaException
      */
     ScratchCodeListResult findByMfaOptionId(KapuaId scopeId, KapuaId mfaOptionId) throws KapuaException;

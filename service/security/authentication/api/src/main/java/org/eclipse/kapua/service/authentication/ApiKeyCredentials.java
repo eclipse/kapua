@@ -25,13 +25,13 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "apiKeyCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "apiKey" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newApiKeyCredentials")
+@XmlType(propOrder = {"apiKey"}, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newApiKeyCredentials")
 public interface ApiKeyCredentials extends LoginCredentials {
 
     /**
      * return the api key
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "apiKey")
     String getApiKey();

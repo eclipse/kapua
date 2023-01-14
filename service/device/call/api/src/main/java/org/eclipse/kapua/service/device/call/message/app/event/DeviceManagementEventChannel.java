@@ -56,7 +56,7 @@ public interface DeviceManagementEventChannel extends DeviceChannel {
     /**
      * Get the request resources
      *
-     * @return
+     * @return test
      * @since 2.0.0
      */
     String[] getResources();

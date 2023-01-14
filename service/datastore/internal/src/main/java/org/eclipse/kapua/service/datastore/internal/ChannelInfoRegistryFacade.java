@@ -75,7 +75,7 @@ public class ChannelInfoRegistryFacade extends AbstractRegistryFacade {
      * Update the channel information after a message store operation
      *
      * @param channelInfo
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -153,7 +153,7 @@ public class ChannelInfoRegistryFacade extends AbstractRegistryFacade {
      *
      * @param scopeId
      * @param id
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -177,7 +177,7 @@ public class ChannelInfoRegistryFacade extends AbstractRegistryFacade {
      * Find channels informations matching the given query
      *
      * @param query
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -202,7 +202,7 @@ public class ChannelInfoRegistryFacade extends AbstractRegistryFacade {
      * Get channels informations count matching the given query
      *
      * @param query
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException

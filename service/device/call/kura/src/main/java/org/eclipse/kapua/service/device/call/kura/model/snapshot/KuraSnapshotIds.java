@@ -12,15 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.call.kura.model.snapshot;
 
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 /**
  * Utility class to serialize a set of snapshot ids.
  *
  * @since 1.0
- *
  */
 @XmlRootElement(name = "snapshot-ids")
 public class KuraSnapshotIds {
@@ -36,7 +34,7 @@ public class KuraSnapshotIds {
     /**
      * Get the snapshot identifiers list
      *
-     * @return
+     * @return test
      */
     public List<Long> getSnapshotIds() {
         return snapshotIds;

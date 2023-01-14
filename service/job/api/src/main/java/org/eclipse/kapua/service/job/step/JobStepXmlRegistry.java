@@ -31,7 +31,7 @@ public class JobStepXmlRegistry {
     /**
      * Creates a new job instance
      *
-     * @return
+     * @return test
      */
     public JobStep newJobStep() {
         return JOB_STEP_FACTORY.newEntity(null);
@@ -40,7 +40,7 @@ public class JobStepXmlRegistry {
     /**
      * Creates a new job creator instance
      *
-     * @return
+     * @return test
      */
     public JobStepCreator newJobStepCreator() {
         return JOB_STEP_FACTORY.newCreator(null);
@@ -49,7 +49,7 @@ public class JobStepXmlRegistry {
     /**
      * Creates a new job list result instance
      *
-     * @return
+     * @return test
      */
     public JobStepListResult newJobStepListResult() {
         return JOB_STEP_FACTORY.newListResult();

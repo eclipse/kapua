@@ -12,16 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.broker.core.plugin;
 
-import java.math.BigInteger;
-import java.security.Principal;
-import java.security.cert.Certificate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.activemq.command.ConnectionInfo;
 import org.apache.activemq.security.AuthorizationMap;
 import org.apache.activemq.security.SecurityContext;
@@ -35,6 +25,16 @@ import org.eclipse.kapua.service.authentication.KapuaPrincipal;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.math.BigInteger;
+import java.security.Principal;
+import java.security.cert.Certificate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Kapua security context implementation of ActiveMQ broker {@link SecurityContext}
@@ -88,12 +88,12 @@ public class KapuaSecurityContext extends SecurityContext {
     }
 
     public KapuaSecurityContext(KapuaPrincipal principal, String brokerId, String brokerIpOrHostName, String accountName, ConnectionInfo info, String connectorName) {
-        super(principal!=null ? principal.getName() : null);
+        super(principal != null ? principal.getName() : null);
         this.principal = principal;
         this.brokerId = brokerId;
         this.brokerIpOrHostName = brokerIpOrHostName;
         this.accountName = accountName;
-        principals = new HashSet<Principal>();
+        principals = new HashSet<>();
         if (principal != null) {
             userId = principal.getUserId();
             scopeId = principal.getAccountId();
@@ -113,7 +113,7 @@ public class KapuaSecurityContext extends SecurityContext {
         if (connectorDescriptor == null) {
             throw new IllegalStateException(String.format("Unable to find connector descriptor for connector '%s'", connectorName));
         }
-        if(info.getTransportContext() instanceof Certificate[]) {
+        if (info.getTransportContext() instanceof Certificate[]) {
             clientCertificates = (Certificate[]) info.getTransportContext();
         }
         updateFullClientId();
@@ -127,6 +127,7 @@ public class KapuaSecurityContext extends SecurityContext {
         return principal;
     }
 
+    @Override
     public Set<Principal> getPrincipals() {
         return principals;
     }
@@ -268,16 +269,14 @@ public class KapuaSecurityContext extends SecurityContext {
     }
 
     /**
-     *
      * @param key
      * @param defaultValue
-     *
+     * @return test
      * @throws ClassCastException if the property object is different from what expected by the caller (in other words no check before casting is done!)
-     * @return
      */
     public <T> T getProperty(String key, T defaultValue) {
-        T value = (T)properties.get(key);
-        return value!=null ? value : defaultValue;
+        T value = (T) properties.get(key);
+        return value != null ? value : defaultValue;
     }
 
     public void addAuthDestinationToLog(String message) {

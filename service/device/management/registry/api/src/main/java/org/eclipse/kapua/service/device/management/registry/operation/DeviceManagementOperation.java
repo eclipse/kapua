@@ -45,7 +45,7 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
     }
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "startedOn")
@@ -59,7 +59,7 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
     void setStartedOn(Date startedOn);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "endedOn")
@@ -73,7 +73,7 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
     void setEndedOn(Date endedOn);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "deviceId")
@@ -87,7 +87,7 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
     void setDeviceId(KapuaId deviceId);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "operationId")
@@ -101,7 +101,7 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
     void setOperationId(KapuaId operationId);
 
     /**
-     * @return
+     * @return test
      */
     @XmlElement(name = "appId")
     String getAppId();
@@ -113,7 +113,7 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
     void setAppId(String appId);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "action")
@@ -126,7 +126,7 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
     void setAction(KapuaMethod action);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "resource")
@@ -139,7 +139,7 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
     void setResource(String resource);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "status")
@@ -153,7 +153,7 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
 
     /**
      * @param <P>
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElementWrapper(name = "operationProperties")
@@ -167,7 +167,7 @@ public interface DeviceManagementOperation extends KapuaUpdatableEntity {
     void setInputProperties(List<DeviceManagementOperationProperty> inputProperties);
 
     /**
-     * @return
+     * @return test
      * @since 1.2.0
      */
     String getLog();

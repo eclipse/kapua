@@ -30,7 +30,7 @@ public class UserXmlRegistry {
     /**
      * Creates a new user instance
      *
-     * @return
+     * @return test
      */
     public User newUser() {
         return USER_FACTORY.newEntity(null);
@@ -39,7 +39,7 @@ public class UserXmlRegistry {
     /**
      * Creates a new user creator instance
      *
-     * @return
+     * @return test
      */
     public UserCreator newUserCreator() {
         return USER_FACTORY.newCreator(null, null);
@@ -48,7 +48,7 @@ public class UserXmlRegistry {
     /**
      * Creates new user list result
      *
-     * @return
+     * @return test
      */
     public UserListResult newUserListResult() {
         return USER_FACTORY.newListResult();

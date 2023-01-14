@@ -12,18 +12,17 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.setting;
 
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.DataConfiguration;
+import org.apache.commons.configuration.MapConfiguration;
+import org.apache.commons.configuration.PropertyConverter;
+import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
-
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.DataConfiguration;
-import org.apache.commons.configuration.MapConfiguration;
-import org.apache.commons.configuration.PropertyConverter;
 
 /**
  * An abstract base class which does not make any assumptions on where the
@@ -53,7 +52,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
 
     protected final DataConfiguration config;
 
-    public AbstractBaseKapuaSetting(final DataConfiguration dataConfiguration) {
+    public AbstractBaseKapuaSetting(DataConfiguration dataConfiguration) {
         this.config = dataConfiguration;
         systemPropertyHotSwap = config.getBoolean(SystemSettingKey.SETTINGS_HOTSWAP.key(), false);
     }
@@ -63,7 +62,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param cls
      * @param key
-     * @return
+     * @return test
      * @deprecated since 1.0. Use typed get instead.
      */
     @Deprecated
@@ -77,7 +76,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @param cls
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      * @deprecated since 1.0. Use typed get instead.
      */
     @Deprecated
@@ -90,7 +89,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param cls
      * @param key
-     * @return
+     * @return test
      */
     public <T> List<T> getList(Class<T> cls, K key) {
         return config.getList(cls, key.key());
@@ -102,7 +101,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * @param valueType
      * @param prefixKey
      * @param regex
-     * @return
+     * @return test
      */
     public <V> Map<String, V> getMap(Class<V> valueType, K prefixKey, String regex) {
         Map<String, V> map = new HashMap<>();
@@ -122,7 +121,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param valueType
      * @param prefixKey
-     * @return
+     * @return test
      */
     public <V> Map<String, V> getMap(Class<V> valueType, K prefixKey) {
         Map<String, V> map = new HashMap<>();
@@ -139,7 +138,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * Get an integer property
      *
      * @param key
-     * @return
+     * @return test
      */
     public int getInt(K key) {
         if (systemPropertyHotSwap) {
@@ -156,7 +155,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      */
     public int getInt(K key, int defaultValue) {
         if (systemPropertyHotSwap) {
@@ -173,7 +172,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      */
     public int getInt(K key, Integer defaultValue) {
         if (systemPropertyHotSwap) {
@@ -189,7 +188,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * Get a boolean property
      *
      * @param key
-     * @return
+     * @return test
      */
     public boolean getBoolean(K key) {
         if (systemPropertyHotSwap) {
@@ -206,7 +205,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      */
     public boolean getBoolean(K key, boolean defaultValue) {
         if (systemPropertyHotSwap) {
@@ -223,7 +222,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      */
     public boolean getBoolean(K key, Boolean defaultValue) {
         if (systemPropertyHotSwap) {
@@ -239,7 +238,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * Get a String property
      *
      * @param key
-     * @return
+     * @return test
      */
     public String getString(K key) {
         if (systemPropertyHotSwap) {
@@ -256,7 +255,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      */
     public String getString(K key, String defaultValue) {
         if (systemPropertyHotSwap) {
@@ -272,7 +271,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * Get a long property
      *
      * @param key
-     * @return
+     * @return test
      */
     public long getLong(K key) {
         if (systemPropertyHotSwap) {
@@ -289,7 +288,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      */
     public long getLong(K key, long defaultValue) {
         if (systemPropertyHotSwap) {
@@ -306,7 +305,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      */
     public long getLong(K key, Long defaultValue) {
         if (systemPropertyHotSwap) {
@@ -322,7 +321,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * Get a float property
      *
      * @param key
-     * @return
+     * @return test
      */
     public float getFloat(K key) {
         if (systemPropertyHotSwap) {
@@ -339,7 +338,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      */
     public float getFloat(K key, float defaultValue) {
         if (systemPropertyHotSwap) {
@@ -356,7 +355,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      */
     public float getFloat(K key, Float defaultValue) {
         if (systemPropertyHotSwap) {
@@ -372,7 +371,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      * Get a double property
      *
      * @param key
-     * @return
+     * @return test
      */
     public double getDouble(K key) {
         if (systemPropertyHotSwap) {
@@ -389,7 +388,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      */
     public double getDouble(K key, double defaultValue) {
         if (systemPropertyHotSwap) {
@@ -406,7 +405,7 @@ public class AbstractBaseKapuaSetting<K extends SettingKey> {
      *
      * @param key
      * @param defaultValue
-     * @return
+     * @return test
      */
     public double getDouble(K key, Double defaultValue) {
         if (systemPropertyHotSwap) {

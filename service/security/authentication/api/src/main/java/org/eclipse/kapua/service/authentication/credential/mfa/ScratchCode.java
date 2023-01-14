@@ -59,7 +59,7 @@ public interface ScratchCode extends KapuaUpdatableEntity {
     /**
      * Return the scratch code
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "scratchCode")
     String getCode();

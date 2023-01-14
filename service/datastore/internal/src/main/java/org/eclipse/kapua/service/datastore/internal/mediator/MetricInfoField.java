@@ -103,7 +103,7 @@ public enum MetricInfoField implements StorableField {
      * @param channel
      * @param metricName
      * @param metricType
-     * @return
+     * @return test
      */
     private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel, String metricName, Class<?> metricType) {
         if (id == null) {
@@ -121,7 +121,7 @@ public enum MetricInfoField implements StorableField {
      *
      * @param id
      * @param metricInfoCreator
-     * @return
+     * @return test
      */
     public static String getOrDeriveId(StorableId id, MetricInfoCreator metricInfoCreator) {
         return getOrDeriveId(id,
@@ -138,7 +138,7 @@ public enum MetricInfoField implements StorableField {
      *
      * @param id
      * @param metricInfo
-     * @return
+     * @return test
      */
     public static String getOrDeriveId(StorableId id, MetricInfo metricInfo) {
         return getOrDeriveId(id,

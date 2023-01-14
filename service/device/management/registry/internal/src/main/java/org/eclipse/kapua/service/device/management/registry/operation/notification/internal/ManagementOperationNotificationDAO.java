@@ -37,7 +37,7 @@ public class ManagementOperationNotificationDAO {
      *
      * @param em
      * @param managementOperationNotificationCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static ManagementOperationNotification create(EntityManager em, ManagementOperationNotificationCreator managementOperationNotificationCreator)
@@ -80,7 +80,7 @@ public class ManagementOperationNotificationDAO {
      *
      * @param em
      * @param stepDefinitionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static ManagementOperationNotificationListResult query(EntityManager em, KapuaQuery stepDefinitionQuery)
@@ -93,7 +93,7 @@ public class ManagementOperationNotificationDAO {
      *
      * @param em
      * @param stepDefinitionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery stepDefinitionQuery)

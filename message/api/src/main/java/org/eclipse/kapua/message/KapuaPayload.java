@@ -39,7 +39,7 @@ public interface KapuaPayload extends Payload {
     /**
      * Get the metrics map
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "metrics")
@@ -57,7 +57,7 @@ public interface KapuaPayload extends Payload {
     /**
      * Get the message body
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     @XmlElement(name = "body")

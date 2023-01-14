@@ -31,7 +31,7 @@ public interface ClientInfoRegistryMediator {
      *
      * @param scopeId
      * @param indexedOn
-     * @return
+     * @return test
      * @throws ClientException
      */
     Metadata getMetadata(KapuaId scopeId, long indexedOn) throws ClientException, MappingException;

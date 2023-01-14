@@ -26,7 +26,6 @@ import org.eclipse.kapua.service.authorization.role.RolePermissionListResult;
  * {@link RolePermission} DAO
  *
  * @since 1.0
- *
  */
 public class RolePermissionDAO extends ServiceDAO {
 
@@ -35,7 +34,7 @@ public class RolePermissionDAO extends ServiceDAO {
      *
      * @param em
      * @param creator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static RolePermission create(EntityManager em, RolePermissionCreator creator)
@@ -54,7 +53,7 @@ public class RolePermissionDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param roleId
-     * @return
+     * @return test
      */
     public static RolePermission find(EntityManager em, KapuaId scopeId, KapuaId roleId) {
         return ServiceDAO.find(em, RolePermissionImpl.class, scopeId, roleId);
@@ -65,7 +64,7 @@ public class RolePermissionDAO extends ServiceDAO {
      *
      * @param em
      * @param rolePermissionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static RolePermissionListResult query(EntityManager em, KapuaQuery rolePermissionQuery)
@@ -78,7 +77,7 @@ public class RolePermissionDAO extends ServiceDAO {
      *
      * @param em
      * @param rolePermissionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery rolePermissionQuery)
@@ -93,8 +92,7 @@ public class RolePermissionDAO extends ServiceDAO {
      * @param scopeId
      * @param rolePermissionId
      * @return the deleted {@link RolePermission}
-     * @throws KapuaEntityNotFoundException
-     *             If {@link RolePermission} is not found.
+     * @throws KapuaEntityNotFoundException If {@link RolePermission} is not found.
      */
     public static RolePermission delete(EntityManager em, KapuaId scopeId, KapuaId rolePermissionId) throws KapuaEntityNotFoundException {
         return ServiceDAO.delete(em, RolePermissionImpl.class, scopeId, rolePermissionId);

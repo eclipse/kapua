@@ -33,7 +33,7 @@ public class DeviceConnectionOptionDAO extends ServiceDAO {
      *
      * @param em
      * @param deviceConnectionOptions
-     * @return
+     * @return test
      * @throws KapuaEntityNotFoundException If the {@link DeviceConnectionOption} is not found.
      */
     public static DeviceConnectionOption update(EntityManager em, DeviceConnectionOption deviceConnectionOptions)
@@ -48,7 +48,7 @@ public class DeviceConnectionOptionDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param deviceConnectionOptionsId
-     * @return
+     * @return test
      */
     public static DeviceConnectionOption find(EntityManager em, KapuaId scopeId, KapuaId deviceConnectionOptionsId) {
         return ServiceDAO.find(em, DeviceConnectionOptionImpl.class, scopeId, deviceConnectionOptionsId);
@@ -59,7 +59,7 @@ public class DeviceConnectionOptionDAO extends ServiceDAO {
      *
      * @param em
      * @param query
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static DeviceConnectionOptionListResult query(EntityManager em, KapuaQuery query)
@@ -72,7 +72,7 @@ public class DeviceConnectionOptionDAO extends ServiceDAO {
      *
      * @param em
      * @param query
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery query)

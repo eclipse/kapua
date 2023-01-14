@@ -35,7 +35,7 @@ public class MetatypeXmlRegistry {
     /**
      * Returns a {@link KapuaTocd} instance
      *
-     * @return
+     * @return test
      */
     public KapuaTocd newKapuaTocd() {
         return factory.newKapuaTocd();
@@ -44,7 +44,7 @@ public class MetatypeXmlRegistry {
     /**
      * Returns a {@link KapuaTad} instance
      *
-     * @return
+     * @return test
      */
     public KapuaTad newKapuaTad() {
         return factory.newKapuaTad();
@@ -53,7 +53,7 @@ public class MetatypeXmlRegistry {
     /**
      * Returns a {@link KapuaTicon} instance
      *
-     * @return
+     * @return test
      */
     public KapuaTicon newKapuaTicon() {
         return factory.newKapuaTicon();
@@ -62,7 +62,7 @@ public class MetatypeXmlRegistry {
     /**
      * Returns a {@link KapuaToption} instance
      *
-     * @return
+     * @return test
      */
     public KapuaToption newKapuaToption() {
         return factory.newKapuaToption();
@@ -71,7 +71,7 @@ public class MetatypeXmlRegistry {
     /**
      * Returns a {@link KapuaTmetadata} instance
      *
-     * @return
+     * @return test
      */
     public KapuaTmetadata newKapuaTmetadata() {
         return factory.newKapuaTmetadata();
@@ -80,7 +80,7 @@ public class MetatypeXmlRegistry {
     /**
      * Returns a {@link KapuaTdesignate} instance
      *
-     * @return
+     * @return test
      */
     public KapuaTdesignate newKapuaTdesignate() {
         return factory.newKapuaTdesignate();
@@ -89,7 +89,7 @@ public class MetatypeXmlRegistry {
     /**
      * Returns a {@link KapuaTobject} instance
      *
-     * @return
+     * @return test
      */
     public KapuaTobject newKapuaTobject() {
         return factory.newKapuaTobject();

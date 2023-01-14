@@ -39,7 +39,7 @@ public interface GwtDeviceService extends RemoteService {
      *
      * @param scopeIdString
      * @param deviceIdString
-     * @return
+     * @return test
      */
     GwtDevice findDevice(String scopeIdString, String deviceIdString)
             throws GwtKapuaException;
@@ -49,7 +49,7 @@ public interface GwtDeviceService extends RemoteService {
      *
      * @param loadConfig
      * @param gwtDeviceQuery
-     * @return
+     * @return test
      */
     PagingLoadResult<GwtDevice> query(PagingLoadConfig loadConfig, GwtDeviceQuery gwtDeviceQuery)
             throws GwtKapuaException;
@@ -58,7 +58,7 @@ public interface GwtDeviceService extends RemoteService {
      * Finds devices in an account with query
      *
      * @param gwtDeviceQuery
-     * @return
+     * @return test
      */
     List<GwtDevice> query(GwtDeviceQuery gwtDeviceQuery)
             throws GwtKapuaException;
@@ -68,7 +68,7 @@ public interface GwtDeviceService extends RemoteService {
      *
      * @param xsrfToken
      * @param gwtDeviceCreator
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     GwtDevice createDevice(GwtXSRFToken xsrfToken, GwtDeviceCreator gwtDeviceCreator)
@@ -78,7 +78,7 @@ public interface GwtDeviceService extends RemoteService {
      * Updates a device entity with the given gwtDevice new values for custom attributes, display name and associated tag
      *
      * @param gwtDevice
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     GwtDevice updateAttributes(GwtXSRFToken xsfrToken, GwtDevice gwtDevice)
@@ -91,7 +91,7 @@ public interface GwtDeviceService extends RemoteService {
      * @param gwtDevice  the device to return the events of
      * @param startDate  the start of the date range in milliseconds since epoch (Date.getTime())
      * @param endDate    the end of the date range in milliseconds since epoch (Date.getTime())
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     PagingLoadResult<GwtDeviceEvent> findDeviceEvents(PagingLoadConfig loadConfig, GwtDevice gwtDevice, Date startDate, Date endDate)

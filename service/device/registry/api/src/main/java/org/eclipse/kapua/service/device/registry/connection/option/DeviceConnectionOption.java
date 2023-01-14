@@ -66,7 +66,7 @@ public interface DeviceConnectionOption extends KapuaUpdatableEntity {
     /**
      * Get the device connection user coupling mode.
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "userCouplingMode")
     ConnectionUserCouplingMode getUserCouplingMode();
@@ -81,7 +81,7 @@ public interface DeviceConnectionOption extends KapuaUpdatableEntity {
     /**
      * Get the reserved user identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "reservedUserId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)

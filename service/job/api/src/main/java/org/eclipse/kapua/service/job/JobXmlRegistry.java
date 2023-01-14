@@ -30,7 +30,7 @@ public class JobXmlRegistry {
     /**
      * Creates a new job instance
      *
-     * @return
+     * @return test
      */
     public Job newJob() {
         return JOB_FACTORY.newEntity(null);
@@ -39,7 +39,7 @@ public class JobXmlRegistry {
     /**
      * Creates a new job creator instance
      *
-     * @return
+     * @return test
      */
     public JobCreator newJobCreator() {
         return JOB_FACTORY.newCreator(null);
@@ -48,7 +48,7 @@ public class JobXmlRegistry {
     /**
      * Creates a new job list result instance
      *
-     * @return
+     * @return test
      */
     public JobListResult newJobListResult() {
         return JOB_FACTORY.newListResult();

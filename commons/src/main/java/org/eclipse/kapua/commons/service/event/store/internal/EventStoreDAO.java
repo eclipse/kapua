@@ -31,7 +31,7 @@ public class EventStoreDAO {
      *
      * @param em
      * @param kapuaEvent
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static EventStoreRecord create(EntityManager em, EventStoreRecord kapuaEvent)
@@ -44,7 +44,7 @@ public class EventStoreDAO {
      *
      * @param em
      * @param kapuaEvent
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static EventStoreRecord update(EntityManager em, EventStoreRecord kapuaEvent)
@@ -61,7 +61,7 @@ public class EventStoreDAO {
      * @param em
      * @param scopeId
      * @param eventId
-     * @return
+     * @return test
      */
     public static EventStoreRecord find(EntityManager em, KapuaId scopeId, KapuaId eventId) {
         return ServiceDAO.find(em, EventStoreRecordImpl.class, scopeId, eventId);
@@ -72,7 +72,7 @@ public class EventStoreDAO {
      *
      * @param em
      * @param kapuaEventQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static EventStoreRecordListResult query(EntityManager em, KapuaQuery kapuaEventQuery)
@@ -85,7 +85,7 @@ public class EventStoreDAO {
      *
      * @param em
      * @param kapuaEventQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery kapuaEventQuery)

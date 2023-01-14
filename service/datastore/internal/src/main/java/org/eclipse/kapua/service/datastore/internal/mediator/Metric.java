@@ -36,7 +36,7 @@ public class Metric {
     /**
      * Get the metric name
      *
-     * @return
+     * @return test
      */
     public String getName() {
         return name;
@@ -45,7 +45,7 @@ public class Metric {
     /**
      * Get the metric type
      *
-     * @return
+     * @return test
      */
     public String getType() {
         return type;

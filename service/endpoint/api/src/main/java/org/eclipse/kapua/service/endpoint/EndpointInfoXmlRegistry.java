@@ -25,7 +25,7 @@ public class EndpointInfoXmlRegistry {
     /**
      * Creates a new {@link EndpointInfo} instance
      *
-     * @return
+     * @return test
      */
     public EndpointInfo newEntity() {
         return FACTORY.newEntity(null);
@@ -34,7 +34,7 @@ public class EndpointInfoXmlRegistry {
     /**
      * Creates a new {@link EndpointInfoCreator} instance
      *
-     * @return
+     * @return test
      */
     public EndpointInfoCreator newCreator() {
         return FACTORY.newCreator(null);
@@ -43,7 +43,7 @@ public class EndpointInfoXmlRegistry {
     /**
      * Creates a new {@link EndpointInfoListResult}
      *
-     * @return
+     * @return test
      */
     public EndpointInfoListResult newListResult() {
         return FACTORY.newListResult();
@@ -52,7 +52,7 @@ public class EndpointInfoXmlRegistry {
     /**
      * Creates a new {@link EndpointInfoQuery}
      *
-     * @return
+     * @return test
      */
     public EndpointInfoQuery newQuery() {
         return FACTORY.newQuery(null);

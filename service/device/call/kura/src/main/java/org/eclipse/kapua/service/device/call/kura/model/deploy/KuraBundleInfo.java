@@ -22,11 +22,10 @@ import javax.xml.bind.annotation.XmlType;
  * Kura bundle information.
  *
  * @since 1.0
- *
  */
 @XmlRootElement(name = "bundleInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "version" })
+@XmlType(propOrder = {"name", "version"})
 public class KuraBundleInfo {
 
     @XmlElement(name = "name")
@@ -38,7 +37,7 @@ public class KuraBundleInfo {
     /**
      * Get the bundle name
      *
-     * @return
+     * @return test
      */
     public String getName() {
         return name;
@@ -56,7 +55,7 @@ public class KuraBundleInfo {
     /**
      * Get the bundle version
      *
-     * @return
+     * @return test
      */
     public String getVersion() {
         return version;

@@ -32,7 +32,7 @@ public class MfaOptionDAO extends ServiceDAO {
      *
      * @param em
      * @param mfaOptionCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static MfaOption create(EntityManager em, MfaOptionCreator mfaOptionCreator) throws KapuaException {
@@ -53,7 +53,7 @@ public class MfaOptionDAO extends ServiceDAO {
      *
      * @param em
      * @param mfaOption
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static MfaOption update(EntityManager em, MfaOption mfaOption)
@@ -71,7 +71,7 @@ public class MfaOptionDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param mfaOptionId
-     * @return
+     * @return test
      */
     public static MfaOption find(EntityManager em, KapuaId scopeId, KapuaId mfaOptionId) {
         return ServiceDAO.find(em, MfaOptionImpl.class, scopeId, mfaOptionId);
@@ -82,7 +82,7 @@ public class MfaOptionDAO extends ServiceDAO {
      *
      * @param em
      * @param mfaOptionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static MfaOptionListResult query(EntityManager em, KapuaQuery mfaOptionQuery) throws KapuaException {
@@ -94,7 +94,7 @@ public class MfaOptionDAO extends ServiceDAO {
      *
      * @param em
      * @param mfaOptionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery mfaOptionQuery) throws KapuaException {

@@ -36,7 +36,7 @@ public class UserDAO extends ServiceDAO {
      *
      * @param em
      * @param userCreator
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public static User create(EntityManager em, UserCreator userCreator) {
@@ -61,7 +61,7 @@ public class UserDAO extends ServiceDAO {
      *
      * @param em
      * @param user
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */
@@ -77,7 +77,7 @@ public class UserDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param userId
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public static User find(EntityManager em, KapuaId scopeId, KapuaId userId) {
@@ -89,7 +89,7 @@ public class UserDAO extends ServiceDAO {
      *
      * @param em
      * @param name
-     * @return
+     * @return test
      */
     public static User findByName(EntityManager em, String name) {
         return ServiceDAO.findByName(em, UserImpl.class, name);
@@ -102,7 +102,7 @@ public class UserDAO extends ServiceDAO {
      * @param externalId id the external ID so search for
      * @return the user record, may be {@code null}
      */
-    public static User findByExternalId(final EntityManager em, final String externalId) {
+    public static User findByExternalId(EntityManager em, String externalId) {
         return ServiceDAO.findByField(em, UserImpl.class, UserAttributes.EXTERNAL_ID, externalId);
     }
 
@@ -124,7 +124,7 @@ public class UserDAO extends ServiceDAO {
      *
      * @param em
      * @param userPermissionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static UserListResult query(EntityManager em, KapuaQuery userPermissionQuery)
@@ -137,7 +137,7 @@ public class UserDAO extends ServiceDAO {
      *
      * @param em
      * @param userPermissionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery userPermissionQuery)

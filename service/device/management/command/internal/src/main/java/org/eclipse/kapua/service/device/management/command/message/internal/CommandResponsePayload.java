@@ -95,7 +95,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
     /**
      * Get the command exit code
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public Integer getExitCode() {
@@ -115,7 +115,7 @@ public class CommandResponsePayload extends KapuaResponsePayloadImpl implements 
     /**
      * Get the command execution timed out flag
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public Boolean hasTimedout() {

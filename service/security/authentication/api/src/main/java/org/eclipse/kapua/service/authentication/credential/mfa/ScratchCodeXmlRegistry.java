@@ -25,7 +25,7 @@ public class ScratchCodeXmlRegistry {
     /**
      * Creates a new {@link ScratchCode} instance
      *
-     * @return
+     * @return test
      */
     public ScratchCode newScratchCode() {
         return SCRATCH_CODE_FACTORY.newEntity(null);
@@ -34,7 +34,7 @@ public class ScratchCodeXmlRegistry {
     /**
      * Creates a new {@link ScratchCodeListResult} instance
      *
-     * @return
+     * @return test
      */
     public ScratchCodeListResult newScratchCodeListResult() {
         return SCRATCH_CODE_FACTORY.newListResult();
@@ -43,7 +43,7 @@ public class ScratchCodeXmlRegistry {
     /**
      * Creates a new {@link ScratchCodeCreator} instance
      *
-     * @return
+     * @return test
      */
     public ScratchCodeCreator newScratchCodeCreator() {
         return SCRATCH_CODE_FACTORY.newCreator(null, null, null);

@@ -12,14 +12,14 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.config;
 
+import org.eclipse.kapua.KapuaSerializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import java.util.List;
-
-import org.eclipse.kapua.KapuaSerializable;
 
 /**
  * Service configuration entity definition.
@@ -34,7 +34,7 @@ public interface ServiceConfiguration extends KapuaSerializable {
     /**
      * Get the service component configuration list
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "configuration")
     List<ServiceComponentConfiguration> getComponentConfigurations();

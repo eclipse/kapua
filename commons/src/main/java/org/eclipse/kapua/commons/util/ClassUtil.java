@@ -41,7 +41,7 @@ public class ClassUtil {
      *
      * @param clazz
      * @param defaultInstance
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static <T> T newInstance(String clazz, Class<T> defaultInstance) throws KapuaException {
@@ -55,7 +55,7 @@ public class ClassUtil {
      * @param defaultInstance
      * @param parameterTypes  constructor parameters type
      * @param parameters      constructor parameters value
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static <T> T newInstance(String clazz, Class<T> defaultInstance, Class<?>[] parameterTypes, Object[] parameters) throws KapuaException {
@@ -70,10 +70,9 @@ public class ClassUtil {
             } catch (ClassNotFoundException e) {
                 throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz, clazzToInstantiate));
             }
-        } else if (defaultInstance!=null) {
+        } else if (defaultInstance != null) {
             logger.info("Initializing instance of. Instantiate default instance {} ...", defaultInstance);
-        }
-        else {
+        } else {
             throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz, clazzToInstantiate));
         }
         if (parameterTypes == null || parameterTypes.length <= 0) {
@@ -89,7 +88,8 @@ public class ClassUtil {
             try {
                 Constructor<T> constructor = clazzToInstantiate.getDeclaredConstructor(parameterTypes);
                 instance = constructor.newInstance(parameters);
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
+                     InvocationTargetException e) {
                 throw new KapuaException(KapuaErrorCodes.INTERNAL_ERROR, e, String.format(CANNOT_LOAD_INSTANCE_ERROR_MSG, clazz, clazzToInstantiate));
             }
         }

@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import java.util.Properties;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaUpdatableEntityCreator;
+
+import java.util.Properties;
 
 /**
  * Service configuration creator definition.
@@ -27,7 +27,7 @@ public interface ServiceConfigCreator extends KapuaUpdatableEntityCreator<Servic
     /**
      * Return service pid
      *
-     * @return
+     * @return test
      */
     public String getPid();
 
@@ -41,7 +41,7 @@ public interface ServiceConfigCreator extends KapuaUpdatableEntityCreator<Servic
     /**
      * Return service configurations
      *
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public Properties getConfigurations() throws KapuaException;

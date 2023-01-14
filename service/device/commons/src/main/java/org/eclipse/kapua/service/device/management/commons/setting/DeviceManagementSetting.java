@@ -18,7 +18,6 @@ import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
  * Class that offers access to device management settings
  *
  * @since 1.0
- *
  */
 public class DeviceManagementSetting extends AbstractKapuaSetting<DeviceManagementSettingKey> {
 
@@ -40,7 +39,7 @@ public class DeviceManagementSetting extends AbstractKapuaSetting<DeviceManageme
     /**
      * Get a singleton instance of {@link DeviceManagementSetting}.
      *
-     * @return
+     * @return test
      */
     public static DeviceManagementSetting getInstance() {
         return INSTANCE;

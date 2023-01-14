@@ -114,7 +114,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
      * Store a message
      *
      * @param message
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -244,7 +244,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
      * @param scopeId
      * @param id
      * @param fetchStyle
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws QueryMappingException
      * @throws ClientException
@@ -272,7 +272,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
      * Find messages matching the given query
      *
      * @param query
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws QueryMappingException
@@ -301,7 +301,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
      * Get messages count matching the given query
      *
      * @param query
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -487,7 +487,7 @@ public final class MessageStoreFacade extends AbstractRegistryFacade {
      * In the MQTT word this method return true if the topic starts with 'account/+/'.
      *
      * @param clientId
-     * @return
+     * @return test
      * @since 1.0.0
      */
     private boolean isAnyClientId(String clientId) {

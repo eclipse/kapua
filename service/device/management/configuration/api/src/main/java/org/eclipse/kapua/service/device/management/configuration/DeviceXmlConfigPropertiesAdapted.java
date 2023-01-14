@@ -36,7 +36,7 @@ public class DeviceXmlConfigPropertiesAdapted {
     /**
      * Get the adapted properties as array
      *
-     * @return
+     * @return test
      */
     public DeviceXmlConfigPropertyAdapted[] getProperties() {
         return properties;

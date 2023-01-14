@@ -55,7 +55,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
     /**
      * Get the package download operation identifier
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public KapuaId getPackageDownloadOperationId() {
@@ -77,7 +77,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
     /**
      * Get the package download operation status
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public DevicePackageDownloadStatus getPackageDownloadOperationStatus() {
@@ -99,7 +99,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
     /**
      * Set the package download size
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public Integer getPackageDownloadOperationSize() {
@@ -121,7 +121,7 @@ public class PackageResponsePayload extends KapuaResponsePayloadImpl implements 
     /**
      * Get the package download progress
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public Integer getPackageDownloadOperationProgress() {

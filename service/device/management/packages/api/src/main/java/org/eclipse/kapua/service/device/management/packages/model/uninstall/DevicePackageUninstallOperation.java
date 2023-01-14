@@ -34,7 +34,7 @@ public interface DevicePackageUninstallOperation {
     /**
      * Get the package identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "id")
     KapuaId getId();
@@ -49,7 +49,7 @@ public interface DevicePackageUninstallOperation {
     /**
      * Get the package name
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "name")
     String getName();
@@ -64,7 +64,7 @@ public interface DevicePackageUninstallOperation {
     /**
      * Get the package version
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "version")
     String getVersion();
@@ -79,7 +79,7 @@ public interface DevicePackageUninstallOperation {
     /**
      * Get the package uninstall status
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "status")
     DevicePackageUninstallStatus getStatus();

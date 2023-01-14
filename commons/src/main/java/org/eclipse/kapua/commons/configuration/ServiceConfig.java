@@ -12,10 +12,10 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.configuration;
 
-import java.util.Properties;
-
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.model.KapuaUpdatableEntity;
+
+import java.util.Properties;
 
 /**
  * Configuration service definition.
@@ -32,6 +32,7 @@ public interface ServiceConfig extends KapuaUpdatableEntity {
     /**
      * Return the service type
      */
+    @Override
     public default String getType() {
         return TYPE;
     }
@@ -39,7 +40,7 @@ public interface ServiceConfig extends KapuaUpdatableEntity {
     /**
      * Return service pid
      *
-     * @return
+     * @return test
      */
     public String getPid();
 
@@ -53,7 +54,7 @@ public interface ServiceConfig extends KapuaUpdatableEntity {
     /**
      * Return service configurations
      *
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public Properties getConfigurations() throws KapuaException;

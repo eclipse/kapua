@@ -28,35 +28,35 @@ public interface KapuaPrincipal extends Principal, java.io.Serializable {
     /**
      * Return the token identifier
      *
-     * @return
+     * @return test
      */
     String getTokenId();
 
     /**
      * Return the user id
      *
-     * @return
+     * @return test
      */
     KapuaId getUserId();
 
     /**
      * Retur the account it
      *
-     * @return
+     * @return test
      */
     KapuaId getAccountId();
 
     /**
      * Return the remote client ip from which the user should be connected
      *
-     * @return
+     * @return test
      */
     String getClientIp();
 
     /**
      * Return the client identifiers from which the user should be connected
      *
-     * @return
+     * @return test
      */
     String getClientId();
 

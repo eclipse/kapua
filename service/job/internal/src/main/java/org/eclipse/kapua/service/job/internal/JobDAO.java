@@ -37,7 +37,7 @@ public class JobDAO {
      *
      * @param em
      * @param jobCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static Job create(EntityManager em, JobCreator jobCreator)
@@ -57,7 +57,7 @@ public class JobDAO {
      *
      * @param em
      * @param job
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static Job update(EntityManager em, Job job)
@@ -75,7 +75,7 @@ public class JobDAO {
      * @param em
      * @param scopeId
      * @param jobId
-     * @return
+     * @return test
      */
     public static Job find(EntityManager em, KapuaId scopeId, KapuaId jobId) {
         return ServiceDAO.find(em, JobImpl.class, scopeId, jobId);
@@ -86,7 +86,7 @@ public class JobDAO {
      *
      * @param em
      * @param name
-     * @return
+     * @return test
      */
     public static Job findByName(EntityManager em, String name) {
         return ServiceDAO.findByName(em, JobImpl.class, name);
@@ -97,7 +97,7 @@ public class JobDAO {
      *
      * @param em
      * @param jobQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static JobListResult query(EntityManager em, KapuaQuery jobQuery)
@@ -110,7 +110,7 @@ public class JobDAO {
      *
      * @param em
      * @param jobQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery jobQuery)

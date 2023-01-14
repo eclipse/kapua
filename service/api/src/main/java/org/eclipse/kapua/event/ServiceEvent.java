@@ -120,7 +120,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the event id
      *
-     * @return
+     * @return test
      */
     public String getId() {
         return id;
@@ -138,7 +138,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the context id
      *
-     * @return
+     * @return test
      */
     public String getContextId() {
         return contextId;
@@ -156,7 +156,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the event timestamp (event triggered)
      *
-     * @return
+     * @return test
      */
     public Date getTimestamp() {
         return timestamp;
@@ -174,7 +174,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the user id that fired the event
      *
-     * @return
+     * @return test
      */
     public KapuaId getUserId() {
         return userId;
@@ -192,7 +192,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the service name that fired the event
      *
-     * @return
+     * @return test
      */
     public String getService() {
         return service;
@@ -210,7 +210,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the entity type related to the fired event
      *
-     * @return
+     * @return test
      */
     public String getEntityType() {
         return entityType;
@@ -228,7 +228,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the scope id of the user that fired the event
      *
-     * @return
+     * @return test
      */
     public KapuaId getScopeId() {
         return scopeId;
@@ -246,7 +246,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the entity scope id related to the fired event
      *
-     * @return
+     * @return test
      */
     public KapuaId getEntityScopeId() {
         return entityScopeId;
@@ -264,7 +264,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the entity id related to the fired event
      *
-     * @return
+     * @return test
      */
     public KapuaId getEntityId() {
         return entityId;
@@ -282,7 +282,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the operation that fired the event
      *
-     * @return
+     * @return test
      */
     public String getOperation() {
         return operation;
@@ -300,7 +300,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the inputs
      *
-     * @return
+     * @return test
      */
     public String getInputs() {
         return inputs;
@@ -318,7 +318,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the outputs
      *
-     * @return
+     * @return test
      */
     public String getOutputs() {
         return outputs;
@@ -336,7 +336,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the event status
      *
-     * @return
+     * @return test
      */
     public EventStatus getStatus() {
         return status;
@@ -354,7 +354,7 @@ public class ServiceEvent implements Serializable {
     /**
      * Get the notes
      *
-     * @return
+     * @return test
      */
     public String getNote() {
         return note;

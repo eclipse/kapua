@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.config;
 
+import org.eclipse.kapua.model.config.metatype.KapuaTocd;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -20,8 +22,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Map;
-
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 
 /**
  * Service component configuration entity definition.
@@ -41,7 +41,7 @@ public interface ServiceComponentConfiguration {
     /**
      * Get service configuration component identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "id")
     String getId();
@@ -56,7 +56,7 @@ public interface ServiceComponentConfiguration {
     /**
      * Get service configuration component name
      *
-     * @return
+     * @return test
      */
     @XmlAttribute(name = "name")
     String getName();
@@ -71,7 +71,7 @@ public interface ServiceComponentConfiguration {
     /**
      * Get service configuration component definition
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "definition")
     KapuaTocd getDefinition();
@@ -86,7 +86,7 @@ public interface ServiceComponentConfiguration {
     /**
      * Get service configuration component properties
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "properties")
     @XmlJavaTypeAdapter(ServiceXmlConfigPropertiesAdapter.class)

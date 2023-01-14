@@ -79,7 +79,7 @@ public enum ChannelInfoField implements StorableField {
      * @param scopeId
      * @param clientId
      * @param channel
-     * @return
+     * @return test
      */
     private static String getOrDeriveId(StorableId id, KapuaId scopeId, String clientId, String channel) {
         if (id == null) {
@@ -94,7 +94,7 @@ public enum ChannelInfoField implements StorableField {
      *
      * @param id
      * @param channelInfoCreator
-     * @return
+     * @return test
      */
     public static String getOrDeriveId(StorableId id, ChannelInfoCreator channelInfoCreator) {
         return getOrDeriveId(id,
@@ -108,7 +108,7 @@ public enum ChannelInfoField implements StorableField {
      *
      * @param id
      * @param channelInfo
-     * @return
+     * @return test
      */
     public static String getOrDeriveId(StorableId id, ChannelInfo channelInfo) {
         return getOrDeriveId(id,

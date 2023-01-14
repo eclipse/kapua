@@ -30,7 +30,7 @@ public class DeviceSnapshotXmlRegistry {
     /**
      * Creates a new device snapshots list
      *
-     * @return
+     * @return test
      */
     public DeviceSnapshots newDeviceSnapshots() {
         return DEVICE_SNAPSHOT_FACTORY.newDeviceSnapshots();
@@ -39,7 +39,7 @@ public class DeviceSnapshotXmlRegistry {
     /**
      * Creates a new device snapshot
      *
-     * @return
+     * @return test
      */
     public DeviceSnapshot newDeviceSnapshot() {
         return DEVICE_SNAPSHOT_FACTORY.newDeviceSnapshot();

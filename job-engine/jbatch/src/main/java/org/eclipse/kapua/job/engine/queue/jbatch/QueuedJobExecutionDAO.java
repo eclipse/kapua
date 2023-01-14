@@ -38,7 +38,7 @@ public class QueuedJobExecutionDAO {
      *
      * @param em
      * @param queuedJobExecutionCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static QueuedJobExecution create(EntityManager em, QueuedJobExecutionCreator queuedJobExecutionCreator)
@@ -58,7 +58,7 @@ public class QueuedJobExecutionDAO {
      *
      * @param em
      * @param queuedJobExecution
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static QueuedJobExecution update(EntityManager em, QueuedJobExecution queuedJobExecution)
@@ -74,7 +74,7 @@ public class QueuedJobExecutionDAO {
      * @param em
      * @param scopeId
      * @param queuedJobExecutionId
-     * @return
+     * @return test
      */
     public static QueuedJobExecution find(EntityManager em, KapuaId scopeId, KapuaId queuedJobExecutionId) {
         return ServiceDAO.find(em, QueuedJobExecutionImpl.class, scopeId, queuedJobExecutionId);
@@ -85,7 +85,7 @@ public class QueuedJobExecutionDAO {
      *
      * @param em
      * @param queuedJobExecutionKapuaQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static QueuedJobExecutionListResult query(EntityManager em, KapuaQuery queuedJobExecutionKapuaQuery)
@@ -98,7 +98,7 @@ public class QueuedJobExecutionDAO {
      *
      * @param em
      * @param queuedJobExecutionKapuaQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery queuedJobExecutionKapuaQuery)

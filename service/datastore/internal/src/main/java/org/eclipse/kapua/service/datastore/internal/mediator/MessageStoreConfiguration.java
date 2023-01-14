@@ -126,7 +126,7 @@ public class MessageStoreConfiguration {
     /**
      * Get the expiration date parameter ({@link MessageStoreConfiguration#CONFIGURATION_EXPIRATION_DATE_KEY}
      *
-     * @return
+     * @return test
      */
     public Date getExpirationDate() {
         return expirationDate;
@@ -142,7 +142,7 @@ public class MessageStoreConfiguration {
     /**
      * Get the data storage enabled parameter ({@link MessageStoreConfiguration#CONFIGURATION_DATA_STORAGE_ENABLED_KEY}
      *
-     * @return
+     * @return test
      */
     public boolean getDataStorageEnabled() {
         return dataStorageEnabled;
@@ -158,7 +158,7 @@ public class MessageStoreConfiguration {
     /**
      * Get the data time to live in millisecond parameter ({@link MessageStoreConfiguration#CONFIGURATION_DATA_TTL_KEY}
      *
-     * @return
+     * @return test
      */
     public long getDataTimeToLiveMilliseconds() {
         return dataTimeToLive.toMillis();
@@ -167,7 +167,7 @@ public class MessageStoreConfiguration {
     /**
      * Get the data time to live parameter ({@link MessageStoreConfiguration#CONFIGURATION_DATA_TTL_KEY}
      *
-     * @return
+     * @return test
      */
     public long getDataTimeToLive() {
         return dataTimeToLive.toDays();
@@ -187,7 +187,7 @@ public class MessageStoreConfiguration {
     /**
      * Get the rx byte limit parameter ({@link MessageStoreConfiguration#CONFIGURATION_RX_BYTE_LIMIT_KEY}
      *
-     * @return
+     * @return test
      */
     public long getRxByteLimit() {
         return rxByteLimit;
@@ -203,7 +203,7 @@ public class MessageStoreConfiguration {
     /**
      * Get the data index by parameter ({@link MessageStoreConfiguration#CONFIGURATION_DATA_INDEX_BY_KEY}
      *
-     * @return
+     * @return test
      */
     public DataIndexBy getDataIndexBy() {
         return dataIndexBy;
@@ -219,7 +219,7 @@ public class MessageStoreConfiguration {
     /**
      * Get the metrics index by parameter ({@link MessageStoreConfiguration#CONFIGURATION_METRICS_INDEX_BY_KEY}
      *
-     * @return
+     * @return test
      */
     public MetricsIndexBy getMetricsIndexBy() {
         return metricsIndexBy;

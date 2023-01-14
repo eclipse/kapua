@@ -26,7 +26,6 @@ import org.eclipse.kapua.service.authorization.access.AccessPermissionListResult
  * {@link AccessPermission} {@link ServiceDAO}
  *
  * @since 1.0
- *
  */
 public class AccessPermissionDAO extends ServiceDAO {
 
@@ -35,7 +34,7 @@ public class AccessPermissionDAO extends ServiceDAO {
      *
      * @param em
      * @param creator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static AccessPermission create(EntityManager em, AccessPermissionCreator creator)
@@ -54,7 +53,7 @@ public class AccessPermissionDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param accessPermissionId
-     * @return
+     * @return test
      */
     public static AccessPermission find(EntityManager em, KapuaId scopeId, KapuaId accessPermissionId) {
         return ServiceDAO.find(em, AccessPermissionImpl.class, scopeId, accessPermissionId);
@@ -65,7 +64,7 @@ public class AccessPermissionDAO extends ServiceDAO {
      *
      * @param em
      * @param accessInfoPermissionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static AccessPermissionListResult query(EntityManager em, KapuaQuery accessInfoPermissionQuery)
@@ -78,7 +77,7 @@ public class AccessPermissionDAO extends ServiceDAO {
      *
      * @param em
      * @param accessPermissionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery accessPermissionQuery)
@@ -93,8 +92,7 @@ public class AccessPermissionDAO extends ServiceDAO {
      * @param scopeId
      * @param accessPermissionId
      * @return the deleted {@link AccessPermission}
-     * @throws KapuaEntityNotFoundException
-     *             If {@link AccessPermission} is not found.
+     * @throws KapuaEntityNotFoundException If {@link AccessPermission} is not found.
      */
     public static AccessPermission delete(EntityManager em, KapuaId scopeId, KapuaId accessPermissionId) throws KapuaEntityNotFoundException {
         return ServiceDAO.delete(em, AccessPermissionImpl.class, scopeId, accessPermissionId);

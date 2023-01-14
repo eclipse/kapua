@@ -33,7 +33,7 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
      *
      * @param scopeId
      * @param userId
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0
      */
@@ -70,9 +70,10 @@ public interface CredentialService extends KapuaEntityService<Credential, Creden
 
     /**
      * Returns the minimum password length according to account setting and system default
-     * @param scopeId           The id of the Account to check the setting
-     * @return                  The minimum required password length
-     * @throws KapuaException   When something goes wrong
+     *
+     * @param scopeId The id of the Account to check the setting
+     * @return The minimum required password length
+     * @throws KapuaException When something goes wrong
      */
     int getMinimumPasswordLength(KapuaId scopeId) throws KapuaException;
 }

@@ -34,7 +34,7 @@ public class AccessRoleDAO extends ServiceDAO {
      *
      * @param em
      * @param creator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static AccessRole create(EntityManager em, AccessRoleCreator creator)
@@ -53,10 +53,10 @@ public class AccessRoleDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param accessRoleId
-     * @return
+     * @return test
      */
     public static AccessRole find(EntityManager em, KapuaId scopeId, KapuaId accessRoleId) {
-        return ServiceDAO.find(em , AccessRoleImpl.class, scopeId, accessRoleId);
+        return ServiceDAO.find(em, AccessRoleImpl.class, scopeId, accessRoleId);
     }
 
     /**
@@ -64,7 +64,7 @@ public class AccessRoleDAO extends ServiceDAO {
      *
      * @param em
      * @param accessInfoPermissionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static AccessRoleListResult query(EntityManager em, KapuaQuery accessInfoPermissionQuery)
@@ -77,7 +77,7 @@ public class AccessRoleDAO extends ServiceDAO {
      *
      * @param em
      * @param accessPermissionQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery accessPermissionQuery)
@@ -92,8 +92,7 @@ public class AccessRoleDAO extends ServiceDAO {
      * @param scopeId
      * @param accessRoleId
      * @return the deleted {@link AccessRole}
-     * @throws KapuaEntityNotFoundException
-     *             If {@link AccessRole} is not found.
+     * @throws KapuaEntityNotFoundException If {@link AccessRole} is not found.
      */
     public static AccessRole delete(EntityManager em, KapuaId scopeId, KapuaId accessRoleId) throws KapuaEntityNotFoundException {
         return ServiceDAO.delete(em, AccessRoleImpl.class, scopeId, accessRoleId);

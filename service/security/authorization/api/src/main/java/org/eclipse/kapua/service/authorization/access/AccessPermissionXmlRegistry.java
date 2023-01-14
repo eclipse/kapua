@@ -25,7 +25,7 @@ public class AccessPermissionXmlRegistry {
     /**
      * Creates a new {@link AccessPermission} instance
      *
-     * @return
+     * @return test
      */
     public AccessPermission newAccessPermission() {
         return ACCESS_PERMISSION_FACTORY.newEntity(null);
@@ -34,7 +34,7 @@ public class AccessPermissionXmlRegistry {
     /**
      * Creates a new {@link AccessPermission} instance
      *
-     * @return
+     * @return test
      */
     public AccessPermissionCreator newCreator() {
         return ACCESS_PERMISSION_FACTORY.newCreator(null);
@@ -43,7 +43,7 @@ public class AccessPermissionXmlRegistry {
     /**
      * Creates a new {@link AccessPermission} instance
      *
-     * @return
+     * @return test
      */
     public AccessPermissionListResult newAccessPermissionListResult() {
         return ACCESS_PERMISSION_FACTORY.newListResult();

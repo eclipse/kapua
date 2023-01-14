@@ -42,7 +42,7 @@ public interface CredentialsFactory extends KapuaObjectFactory {
      * Creates a new {@link ApiKeyCredentials} instance based on provided api key
      *
      * @param apiKey
-     * @return
+     * @return test
      */
     ApiKeyCredentials newApiKeyCredentials(String apiKey);
 
@@ -51,7 +51,7 @@ public interface CredentialsFactory extends KapuaObjectFactory {
      *
      * @param jwt
      * @param idToken the OpenID Connect idToken, used for the logout
-     * @return
+     * @return test
      */
     JwtCredentials newJwtCredentials(String jwt, String idToken);
 
@@ -59,7 +59,7 @@ public interface CredentialsFactory extends KapuaObjectFactory {
      * Creates a new {@link AccessTokenCredentials} instance based on provided tokenId
      *
      * @param tokenId
-     * @return
+     * @return test
      */
     AccessTokenCredentials newAccessTokenCredentials(String tokenId);
 
@@ -67,7 +67,7 @@ public interface CredentialsFactory extends KapuaObjectFactory {
      * Creates a new {@link RefreshTokenCredentials} instance based on provided tokenId and refresh token
      *
      * @param tokenId
-     * @return
+     * @return test
      */
     RefreshTokenCredentials newRefreshTokenCredentials(String tokenId, String refreshToken);
 

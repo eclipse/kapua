@@ -26,7 +26,6 @@ import javax.xml.bind.annotation.XmlEnumValue;
  * encrypted.
  *
  * @since 1.0
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class XmlConfigPropertyAdapted {
@@ -90,8 +89,8 @@ public class XmlConfigPropertyAdapted {
      * @param values
      */
     public XmlConfigPropertyAdapted(String name,
-            ConfigPropertyType type,
-            String[] values) {
+                                    ConfigPropertyType type,
+                                    String[] values) {
         super();
 
         this.type = type;
@@ -102,7 +101,7 @@ public class XmlConfigPropertyAdapted {
     /**
      * Get the property name
      *
-     * @return
+     * @return test
      */
     public String getName() {
         return name;
@@ -120,7 +119,7 @@ public class XmlConfigPropertyAdapted {
     /**
      * Get the is array flag property
      *
-     * @return
+     * @return test
      */
     public boolean getArray() {
         return array;
@@ -138,7 +137,7 @@ public class XmlConfigPropertyAdapted {
     /**
      * Get the property type
      *
-     * @return
+     * @return test
      */
     public ConfigPropertyType getType() {
         return type;
@@ -156,7 +155,7 @@ public class XmlConfigPropertyAdapted {
     /**
      * Get the is encrypted flag property
      *
-     * @return
+     * @return test
      */
     public boolean isEncrypted() {
         return encrypted;
@@ -174,7 +173,7 @@ public class XmlConfigPropertyAdapted {
     /**
      * Get property values
      *
-     * @return
+     * @return test
      */
     public String[] getValues() {
         return values;

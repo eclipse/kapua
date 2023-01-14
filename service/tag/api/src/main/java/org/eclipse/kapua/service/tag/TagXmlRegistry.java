@@ -25,7 +25,7 @@ public class TagXmlRegistry {
     /**
      * Creates a new tag instance
      *
-     * @return
+     * @return test
      */
     public Tag newTag() {
         return TAG_FACTORY.newEntity(null);
@@ -34,7 +34,7 @@ public class TagXmlRegistry {
     /**
      * Creates a new tag creator instance
      *
-     * @return
+     * @return test
      */
     public TagCreator newTagCreator() {
         return TAG_FACTORY.newCreator(null, null);
@@ -43,7 +43,7 @@ public class TagXmlRegistry {
     /**
      * Creates a new tag creator instance
      *
-     * @return
+     * @return test
      */
     public TagListResult newTagListResult() {
         return TAG_FACTORY.newListResult();

@@ -22,7 +22,7 @@ public interface BrokerIpResolver {
     /**
      * Resolve the broker address (private ip)
      *
-     * @return
+     * @return test
      */
     String getBrokerIpOrHostName();
 

@@ -36,7 +36,7 @@ public interface DevicePackageDownloadOperation {
     /**
      * Get the download package identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "id")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -52,7 +52,7 @@ public interface DevicePackageDownloadOperation {
     /**
      * Get the package size
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "size")
     Integer getSize();
@@ -67,7 +67,7 @@ public interface DevicePackageDownloadOperation {
     /**
      * Get the download progress
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "progress")
     Integer getProgress();
@@ -82,7 +82,7 @@ public interface DevicePackageDownloadOperation {
     /**
      * Get the download status
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "status")
     DevicePackageDownloadStatus getStatus();

@@ -34,7 +34,7 @@ public interface GwtJobService extends RemoteService {
      * Creates a new job under the account specified in the JobCreator.
      *
      * @param gwtJobCreator
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     GwtJob create(GwtXSRFToken xsrfToken, GwtJobCreator gwtJobCreator) throws GwtKapuaException;
@@ -43,7 +43,7 @@ public interface GwtJobService extends RemoteService {
      * Returns a Job by its Id or null if a job with such Id does not exist.
      *
      * @param jobId
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     GwtJob find(String accountId, String jobId) throws GwtKapuaException;
@@ -52,7 +52,7 @@ public interface GwtJobService extends RemoteService {
      * Updates a Job in the database and returns the refreshed/reloaded entity instance.
      *
      * @param gwtJob
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     GwtJob update(GwtXSRFToken xsrfToken, GwtJob gwtJob) throws GwtKapuaException;

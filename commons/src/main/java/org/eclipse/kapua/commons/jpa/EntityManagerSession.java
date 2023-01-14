@@ -62,7 +62,7 @@ public class EntityManagerSession {
      * This method performs only a rollback (if the transaction is active and an error occurred)!<br>
      *
      * @param resultHandler
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public <T> T doAction(EntityManagerCallback<T> resultHandler) throws KapuaException {
@@ -79,7 +79,7 @@ public class EntityManagerSession {
      * The transactionality is managed by this method so the called entityManagerResultCallback must leave the transaction open<br>
      *
      * @param resultHandler
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public <T> T doTransactedAction(EntityManagerCallback<T> resultHandler) throws KapuaException {
@@ -93,13 +93,13 @@ public class EntityManagerSession {
      * The maximum allowed retry is set by {@link SystemSettingKey#KAPUA_INSERT_MAX_RETRY}.<br>
      * <br>
      * This method allows to set the before and after result handler calls
-     *
+     * <p>
      * WARNING!<br>
      * The transactionality (if needed by the code) must be managed internally to the entityManagerCallback.<br>
      * This method performs only a rollback (if the transaction is active and an error occurred)!<br>
      *
      * @param container
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public <T> T doAction(EntityManagerContainer<T> container) throws KapuaException {
@@ -113,12 +113,12 @@ public class EntityManagerSession {
      * The maximum allowed retry is set by {@link SystemSettingKey#KAPUA_INSERT_MAX_RETRY}.<br>
      * <br>
      * This method allows to set the before and after result handler calls
-     *
+     * <p>
      * WARNING!<br>
      * The transactionality is managed by this method so the called entityManagerResultCallback must leave the transaction open<br>
      *
      * @param container
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public <T> T doTransactedAction(EntityManagerContainer<T> container) throws KapuaException {

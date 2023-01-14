@@ -30,7 +30,7 @@ public class DeviceEventXmlRegistry {
     /**
      * Creates a new device event
      *
-     * @return
+     * @return test
      */
     public DeviceEvent newDeviceEvent() {
         return DEVICE_EVENT_FACTORY.newEntity(null);
@@ -39,7 +39,7 @@ public class DeviceEventXmlRegistry {
     /**
      * Creates a new device event list result
      *
-     * @return
+     * @return test
      */
     public DeviceEventListResult newDeviceEventListResult() {
         return DEVICE_EVENT_FACTORY.newListResult();

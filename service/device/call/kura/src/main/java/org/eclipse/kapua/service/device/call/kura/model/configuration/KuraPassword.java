@@ -16,7 +16,6 @@ package org.eclipse.kapua.service.device.call.kura.model.configuration;
  * Kura password
  *
  * @since 1.0
- *
  */
 public class KuraPassword {
 
@@ -35,7 +34,7 @@ public class KuraPassword {
     /**
      * Get the password
      *
-     * @return
+     * @return test
      */
     public String getPassword() {
         return password;

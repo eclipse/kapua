@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
         "name",
         "version",
         "reboot",
-        "rebootDelay" },
+        "rebootDelay"},
         factoryClass = DevicePackageXmlRegistry.class,
         factoryMethod = "newDevicePackageUninstallRequest")
 public interface DevicePackageUninstallRequest {
@@ -39,7 +39,7 @@ public interface DevicePackageUninstallRequest {
     /**
      * Get package name
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "name")
     String getName();
@@ -54,7 +54,7 @@ public interface DevicePackageUninstallRequest {
     /**
      * Get package version
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "version")
     String getVersion();
@@ -69,7 +69,7 @@ public interface DevicePackageUninstallRequest {
     /**
      * Get the device reboot flag
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "reboot")
     Boolean isReboot();
@@ -84,7 +84,7 @@ public interface DevicePackageUninstallRequest {
     /**
      * Get the reboot delay
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "rebootDelay")
     Integer getRebootDelay();

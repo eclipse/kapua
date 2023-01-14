@@ -30,7 +30,7 @@ public class KapuaDeviceRegistrySettings extends AbstractKapuaSetting<KapuaDevic
     /**
      * Return the device registry setting instance (singleton)
      *
-     * @return
+     * @return test
      */
     public static KapuaDeviceRegistrySettings getInstance() {
         return INSTANCE;

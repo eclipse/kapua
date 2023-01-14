@@ -27,7 +27,7 @@ public class DeviceBundleXmlRegistry {
     /**
      * Creates a new device bundles list
      *
-     * @return
+     * @return test
      */
     public DeviceBundles newBundleListResult() {
         return factory.newBundleListResult();
@@ -36,7 +36,7 @@ public class DeviceBundleXmlRegistry {
     /**
      * Creates a new device bundle
      *
-     * @return
+     * @return test
      */
     public DeviceBundle newDeviceBundle() {
         return factory.newDeviceBundle();

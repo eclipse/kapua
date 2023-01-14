@@ -33,7 +33,7 @@ public class JobEngineSetting extends AbstractKapuaSetting<JobEngineSettingKeys>
     /**
      * Return the job engine setting instance (singleton)
      *
-     * @return
+     * @return test
      */
     public static JobEngineSetting getInstance() {
         return INSTANCE;

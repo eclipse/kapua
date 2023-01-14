@@ -16,8 +16,8 @@ import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.broker.BrokerDomains;
 import org.eclipse.kapua.broker.core.plugin.Acl;
 import org.eclipse.kapua.broker.core.plugin.KapuaBrokerErrorCodes;
-import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
 import org.eclipse.kapua.broker.core.plugin.KapuaIllegalDeviceStateException;
+import org.eclipse.kapua.broker.core.plugin.KapuaSecurityContext;
 import org.eclipse.kapua.broker.core.plugin.metric.ClientMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.LoginMetric;
 import org.eclipse.kapua.broker.core.plugin.metric.PublishMetric;
@@ -76,6 +76,7 @@ public abstract class AuthenticationLogic {
     protected DeviceConnectionService deviceConnectionService = KapuaLocator.getInstance().getService(DeviceConnectionService.class);
 
     private static final String USER_NOT_AUTHORIZED = "User not authorized!";
+
     /**
      * Default constructor
      *
@@ -92,7 +93,7 @@ public abstract class AuthenticationLogic {
      * Execute the connect logic returning the authorization list (ACL)
      *
      * @param kapuaSecurityContext
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public abstract List<org.eclipse.kapua.broker.core.plugin.authentication.AuthorizationEntry> connect(KapuaSecurityContext kapuaSecurityContext)
@@ -110,7 +111,7 @@ public abstract class AuthenticationLogic {
 
     /**
      * @param kapuaSecurityContext
-     * @return
+     * @return test
      */
     protected abstract List<AuthorizationEntry> buildAuthorizationMap(KapuaSecurityContext kapuaSecurityContext);
 
@@ -119,7 +120,7 @@ public abstract class AuthenticationLogic {
      *
      * @param pattern
      * @param kapuaSecurityContext
-     * @return
+     * @return test
      */
     protected String formatAcl(String pattern, KapuaSecurityContext kapuaSecurityContext) {
         return MessageFormat.format(pattern, kapuaSecurityContext.getAccountName());
@@ -130,7 +131,7 @@ public abstract class AuthenticationLogic {
      *
      * @param pattern
      * @param kapuaSecurityContext
-     * @return
+     * @return test
      */
     protected String formatAclFull(String pattern, KapuaSecurityContext kapuaSecurityContext) {
         return MessageFormat.format(pattern, kapuaSecurityContext.getAccountName(), kapuaSecurityContext.getClientId());
@@ -142,7 +143,7 @@ public abstract class AuthenticationLogic {
      * @param kapuaSecurityContext
      * @param acl
      * @param address
-     * @return
+     * @return test
      */
     protected AuthorizationEntry createAuthorizationEntry(KapuaSecurityContext kapuaSecurityContext, Acl acl, String address) {
         AuthorizationEntry entry = new AuthorizationEntry(address, acl);
@@ -243,7 +244,7 @@ public abstract class AuthenticationLogic {
      * <b>Utility method used by the connection logic</b>
      *
      * @param options
-     * @return
+     * @return test
      */
     protected ConnectionUserCouplingMode loadConnectionUserCouplingModeFromConfig(Map<String, Object> options) {
         String tmp = (String) options.get("deviceConnectionUserCouplingDefaultMode");// TODO move to constants
@@ -263,12 +264,12 @@ public abstract class AuthenticationLogic {
     }
 
     protected boolean isStealingLink(KapuaSecurityContext kapuaSecurityContext, Throwable error) {
-        if(isIllegalState(kapuaSecurityContext, error)) {
+        if (isIllegalState(kapuaSecurityContext, error)) {
             return true;
         }
 
         KapuaIllegalDeviceStateException illegalStateException = null;
-        if(error instanceof KapuaIllegalDeviceStateException) {
+        if (error instanceof KapuaIllegalDeviceStateException) {
             illegalStateException = (KapuaIllegalDeviceStateException) error;
         } else if (error != null && error.getCause() != null && error.getCause() instanceof KapuaIllegalDeviceStateException) {
             illegalStateException = (KapuaIllegalDeviceStateException) error.getCause();
@@ -281,14 +282,13 @@ public abstract class AuthenticationLogic {
         boolean isIllegalState = false;
         if (kapuaSecurityContext.getOldConnectionId() != null) {
             isIllegalState = !kapuaSecurityContext.getOldConnectionId().equals(kapuaSecurityContext.getConnectionId());
-        }
-        else {
+        } else {
             logger.error("Cannot find connection id for client id {} on connection map. Correct connection id is {} - IP: {}",
                     kapuaSecurityContext.getClientId(),
                     kapuaSecurityContext.getConnectionId(),
                     kapuaSecurityContext.getClientIp());
         }
-        if (!isIllegalState && (error instanceof KapuaIllegalDeviceStateException || (error!=null && error.getCause() instanceof KapuaIllegalDeviceStateException))) {
+        if (!isIllegalState && (error instanceof KapuaIllegalDeviceStateException || (error != null && error.getCause() instanceof KapuaIllegalDeviceStateException))) {
             isIllegalState = true;
             logger.warn("Detected Stealing link for cliend id {} - account id {} - last connection id was {} - current connection id is {} - IP: {} - No disconnection info will be added!",
                     kapuaSecurityContext.getClientId(),

@@ -27,7 +27,7 @@ public class KapuaDataChannelImpl extends KapuaChannelImpl implements KapuaDataC
     /**
      * Gets the client identifier
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public String getClientId() {

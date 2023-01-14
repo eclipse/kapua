@@ -65,7 +65,7 @@ public final class DeviceValidation {
      * Validates the device creates precondition
      *
      * @param deviceCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static DeviceCreator validateCreatePreconditions(DeviceCreator deviceCreator) throws KapuaException {
@@ -88,7 +88,7 @@ public final class DeviceValidation {
      * Validates the device updates precondition
      *
      * @param device
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static Device validateUpdatePreconditions(Device device) throws KapuaException {

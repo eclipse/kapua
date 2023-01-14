@@ -15,11 +15,8 @@ package org.eclipse.kapua.commons.cache;
 /**
  * Kapua cache definition
  *
- * @param <K>
- *            keys type
- * @param <V>
- *            values type
- *
+ * @param <K> keys type
+ * @param <V> values type
  * @since 1.0
  */
 public interface Cache<K, V> {
@@ -27,7 +24,7 @@ public interface Cache<K, V> {
     /**
      * Return the metric namespace
      *
-     * @return
+     * @return test
      */
     public String getNamespace();
 
@@ -42,7 +39,7 @@ public interface Cache<K, V> {
      * Return the cache value for the given key
      *
      * @param k
-     * @return
+     * @return test
      */
     public V get(K k);
 

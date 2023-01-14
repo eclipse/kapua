@@ -32,7 +32,7 @@ public interface EventStoreService extends KapuaEntityService<EventStoreRecord, 
      * Finds the kapuaEvent by kapuaEvent identifiers
      *
      * @param id
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public EventStoreRecord find(KapuaId id)

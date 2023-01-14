@@ -56,7 +56,7 @@ public abstract class AbstractListener {
      * The prefix is described by a combination of constructor parameters name and metricComponentName depending on which constructor will be used.
      *
      * @param names
-     * @return
+     * @return test
      */
     protected Counter registerCounter(String... names) {
         return METRICS_SERVICE.getCounter(metricComponentName, name, names);
@@ -67,7 +67,7 @@ public abstract class AbstractListener {
      * The prefix is described by a combination of constructor parameters name and metricComponentName depending on which constructor will be used.
      *
      * @param names
-     * @return
+     * @return test
      */
     protected Timer registerTimer(String... names) {
         return METRICS_SERVICE.getTimer(metricComponentName, name, names);

@@ -531,7 +531,7 @@ public class KapuaGwtCommonsModelConverter {
 
 //    /**
 //     * @param client
-//     * @return
+//     * @return test
 //     */
 //    public static GwtDatastoreDevice convertToDatastoreDevice(ClientInfo client) {
 //        return new GwtDatastoreDevice(client.getClientId(), client.getLastMessageOn());
@@ -540,7 +540,7 @@ public class KapuaGwtCommonsModelConverter {
 //    /**
 //     * @param message
 //     * @param headers
-//     * @return
+//     * @return test
 //     */
 //    public static GwtMessage convertToMessage(DatastoreMessage message, List<GwtHeader> headers) {
 //        GwtMessage gwtMessage = new GwtMessage();

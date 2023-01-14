@@ -25,13 +25,13 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "jwtCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "accessToken", "idToken" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newJwtCredentials")
+@XmlType(propOrder = {"accessToken", "idToken"}, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newJwtCredentials")
 public interface JwtCredentials extends LoginCredentials {
 
     /**
      * Gets the OpenID Connect accessToken
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "accessToken")
     String getAccessToken();
@@ -46,7 +46,7 @@ public interface JwtCredentials extends LoginCredentials {
     /**
      * Gets the OpenID Connect idToken
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "idToken")
     String getIdToken();

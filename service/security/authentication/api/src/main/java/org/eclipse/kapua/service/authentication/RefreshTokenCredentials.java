@@ -25,13 +25,13 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "refreshTokenCredentials")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "tokenId", "refreshToken" }, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newRefreshTokenCredentials")
+@XmlType(propOrder = {"tokenId", "refreshToken"}, factoryClass = AuthenticationXmlRegistry.class, factoryMethod = "newRefreshTokenCredentials")
 public interface RefreshTokenCredentials extends LoginCredentials {
 
     /**
      * return the token id
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "tokenId")
     String getTokenId();
@@ -46,7 +46,7 @@ public interface RefreshTokenCredentials extends LoginCredentials {
     /**
      * return the refresh token
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "refreshToken")
     String getRefreshToken();

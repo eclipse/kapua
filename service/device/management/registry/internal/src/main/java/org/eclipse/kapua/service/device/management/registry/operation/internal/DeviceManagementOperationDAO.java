@@ -37,7 +37,7 @@ public class DeviceManagementOperationDAO {
      *
      * @param em
      * @param deviceManagementOperationCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static DeviceManagementOperation create(EntityManager em, DeviceManagementOperationCreator deviceManagementOperationCreator)
@@ -64,7 +64,7 @@ public class DeviceManagementOperationDAO {
      *
      * @param em
      * @param deviceManagementOperation
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static DeviceManagementOperation update(EntityManager em, DeviceManagementOperation deviceManagementOperation)
@@ -99,7 +99,7 @@ public class DeviceManagementOperationDAO {
      *
      * @param em
      * @param query
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static DeviceManagementOperationListResult query(EntityManager em, KapuaQuery query)
@@ -112,7 +112,7 @@ public class DeviceManagementOperationDAO {
      *
      * @param em
      * @param query
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery query)

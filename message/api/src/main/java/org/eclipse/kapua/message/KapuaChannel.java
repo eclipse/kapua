@@ -34,7 +34,7 @@ public interface KapuaChannel extends Channel {
     /**
      * Get the channel destination semantic part
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     List<String> getSemanticParts();
@@ -48,7 +48,7 @@ public interface KapuaChannel extends Channel {
     void setSemanticParts(List<String> semanticParts);
 
     /**
-     * @return
+     * @return test
      * @since 1.0.0
      */
     default String toPathString() {

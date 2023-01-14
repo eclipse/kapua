@@ -89,7 +89,7 @@ public class DomainDAO extends ServiceDAO {
      *
      * @param em          The {@link EntityManager} that holds the transaction.
      * @param domainQuery The {@link DomainQuery} used to filter results.
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */

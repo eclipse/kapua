@@ -68,69 +68,69 @@ public class ValueTokenizer {
         for (int i = 0; i < valuesStr.length(); i++) {
             char c1 = valuesStr.charAt(i);
             switch (c1) {
-            case DELIMITER:
-                // When the delimiter is encountered, add the extracted
-                // token to the result and prepare the buffer to receive the
-                // next token.
-                values.add(buffer.toString());
-                buffer.delete(0, buffer.length());
-                break;
-            case ESCAPE:
-                // When the escape is encountered, add the immediately
-                // following character to the token, unless the end of the
-                // input has been reached. Note this will result in loop
-                // counter 'i' being incremented twice, once here and once
-                // at the end of the loop.
-                if (i + 1 < valuesStr.length()) {
-                    buffer.append(valuesStr.charAt(++i));
-                } else {
-                    // If the ESCAPE character occurs as the last character
-                    // of the string, log the error and ignore it.
-                    LOG.error(VALUE_INVALID);
-                }
-                break;
-            default:
-                // For all other characters, add them to the current token
-                // unless dealing with unescaped whitespace at the beginning
-                // or end. We know the whitespace is unescaped because it
-                // would have been handled in the ESCAPE case otherwise.
-                if (Character.isWhitespace(c1)) {
-                    // Ignore unescaped whitespace at the beginning of the
-                    // token.
-                    if (buffer.length() == 0) {
-                        continue;
+                case DELIMITER:
+                    // When the delimiter is encountered, add the extracted
+                    // token to the result and prepare the buffer to receive the
+                    // next token.
+                    values.add(buffer.toString());
+                    buffer.delete(0, buffer.length());
+                    break;
+                case ESCAPE:
+                    // When the escape is encountered, add the immediately
+                    // following character to the token, unless the end of the
+                    // input has been reached. Note this will result in loop
+                    // counter 'i' being incremented twice, once here and once
+                    // at the end of the loop.
+                    if (i + 1 < valuesStr.length()) {
+                        buffer.append(valuesStr.charAt(++i));
+                    } else {
+                        // If the ESCAPE character occurs as the last character
+                        // of the string, log the error and ignore it.
+                        LOG.error(VALUE_INVALID);
                     }
-                    // If the whitespace is not at the beginning, look
-                    // forward, starting with the next character, to see if
-                    // it's in the middle or at the end. Unescaped
-                    // whitespace in the middle is okay.
-                    for (int j = i + 1; j < valuesStr.length(); j++) {
-                        // Keep looping until the end of the string is
-                        // reached or a non-whitespace character other than
-                        // the escape is seen.
-                        char c2 = valuesStr.charAt(j);
-                        if (!Character.isWhitespace(c2)) {
-                            // If the current character is not the DELIMITER, all whitespace
-                            // characters are significant and should be added to the token.
-                            // Otherwise, they're at the end and should be ignored. But watch
-                            // out for an escape character at the end of the input. Ignore it
-                            // and any previous insignificant whitespace if it exists.
-                            if (c2 == ESCAPE && j + 1 >= valuesStr.length()) {
-                                continue;
-                            }
-                            if (c2 != DELIMITER) {
-                                buffer.append(valuesStr.substring(i, j));
-                            }
-                            // Let loop counter i catch up with the inner loop but keep in
-                            // mind it will still be incremented at the end of the outer loop.
-                            i = j - 1;
-                            break;
+                    break;
+                default:
+                    // For all other characters, add them to the current token
+                    // unless dealing with unescaped whitespace at the beginning
+                    // or end. We know the whitespace is unescaped because it
+                    // would have been handled in the ESCAPE case otherwise.
+                    if (Character.isWhitespace(c1)) {
+                        // Ignore unescaped whitespace at the beginning of the
+                        // token.
+                        if (buffer.length() == 0) {
+                            continue;
                         }
+                        // If the whitespace is not at the beginning, look
+                        // forward, starting with the next character, to see if
+                        // it's in the middle or at the end. Unescaped
+                        // whitespace in the middle is okay.
+                        for (int j = i + 1; j < valuesStr.length(); j++) {
+                            // Keep looping until the end of the string is
+                            // reached or a non-whitespace character other than
+                            // the escape is seen.
+                            char c2 = valuesStr.charAt(j);
+                            if (!Character.isWhitespace(c2)) {
+                                // If the current character is not the DELIMITER, all whitespace
+                                // characters are significant and should be added to the token.
+                                // Otherwise, they're at the end and should be ignored. But watch
+                                // out for an escape character at the end of the input. Ignore it
+                                // and any previous insignificant whitespace if it exists.
+                                if (c2 == ESCAPE && j + 1 >= valuesStr.length()) {
+                                    continue;
+                                }
+                                if (c2 != DELIMITER) {
+                                    buffer.append(valuesStr.substring(i, j));
+                                }
+                                // Let loop counter i catch up with the inner loop but keep in
+                                // mind it will still be incremented at the end of the outer loop.
+                                i = j - 1;
+                                break;
+                            }
+                        }
+                    } else {
+                        // For non-whitespace characters.
+                        buffer.append(c1);
                     }
-                } else {
-                    // For non-whitespace characters.
-                    buffer.append(c1);
-                }
             }
         }
         // Don't forget to add the last token.
@@ -140,7 +140,7 @@ public class ValueTokenizer {
     /**
      * Return values as Vector.
      *
-     * @return
+     * @return test
      */
     public Collection<String> getValues() {
         return Collections.unmodifiableList(values);
@@ -149,7 +149,7 @@ public class ValueTokenizer {
     /**
      * Return values as String[] or null.
      *
-     * @return
+     * @return test
      */
     public String[] getValuesAsArray() {
         if (values.isEmpty()) {
@@ -162,7 +162,7 @@ public class ValueTokenizer {
     /**
      * Return values as String
      *
-     * @return
+     * @return test
      */
     public String getValuesAsString() {
         if (values.isEmpty()) {
@@ -185,7 +185,7 @@ public class ValueTokenizer {
      * Validate Tad
      *
      * @param ad
-     * @return
+     * @return test
      */
     public String validate(KapuaTad ad) {
         // An empty list means the original value was null. Null is never valid.
@@ -217,92 +217,92 @@ public class ValueTokenizer {
                 Object maxVal = null;
                 TscalarImpl adScalarType = TscalarImpl.fromValue(ad.getType().value());
                 switch (adScalarType) {
-                case PASSWORD:
-                case STRING:
-                    minVal = ad.getMin() == null ? null : Integer.valueOf(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : Integer.valueOf(ad.getMax());
-                    if (minVal != null && s.length() < (Integer) maxVal) {
-                        rangeError = true;
-                    } else if (maxVal != null && s.length() > (Integer) maxVal) {
-                        rangeError = true;
-                    }
-                    break;
-                case INTEGER:
-                    minVal = ad.getMin() == null ? null : Integer.valueOf(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : Integer.valueOf(ad.getMax());
-                    Integer intVal = Integer.valueOf(s);
-                    if (minVal != null && intVal.compareTo((Integer) minVal) < 0) {
-                        rangeError = true;
-                    } else if (maxVal != null && intVal.compareTo((Integer) maxVal) > 0) {
-                        rangeError = true;
-                    }
-                    break;
-                case LONG:
-                    minVal = ad.getMin() == null ? null : Long.valueOf(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : Long.valueOf(ad.getMax());
-                    Long longVal = Long.valueOf(s);
-                    if (ad.getMin() != null && longVal.compareTo((Long) minVal) < 0) {
-                        rangeError = true;
-                    } else if (maxVal != null && longVal.compareTo((Long) maxVal) > 0) {
-                        rangeError = true;
-                    }
-                    break;
-                case DOUBLE:
-                    minVal = ad.getMin() == null ? null : Double.valueOf(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : Double.valueOf(ad.getMax());
-                    Double doubleVal = Double.valueOf(s);
-                    if (minVal != null && doubleVal.compareTo((Double) minVal) < 0) {
-                        rangeError = true;
-                    } else if (maxVal != null && doubleVal.compareTo((Double) maxVal) > 0) {
-                        rangeError = true;
-                    }
-                    break;
-                case BOOLEAN:
-                    // Any string can be converted into a boolean via Boolean.valueOf(String).
-                    // Seems unnecessary to impose any further restrictions.
-                    break;
-                case CHAR:
-                    minVal = ad.getMin() == null ? null : ad.getMin().charAt(0);
-                    maxVal = ad.getMax() == null ? null : ad.getMax().charAt(0);
-                    Character charVal = s.charAt(0);
-                    if (minVal != null && charVal.compareTo((Character) minVal) < 0) {
-                        rangeError = true;
-                    } else if (maxVal != null && charVal.compareTo((Character) maxVal) > 0) {
-                        rangeError = true;
-                    }
-                    break;
-                case FLOAT:
-                    minVal = ad.getMin() == null ? null : Float.valueOf(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : Float.valueOf(ad.getMax());
-                    Float floatVal = Float.valueOf(s);
-                    if (minVal != null && floatVal.compareTo((Float) minVal) < 0) {
-                        rangeError = true;
-                    } else if (maxVal != null && floatVal.compareTo((Float) maxVal) > 0) {
-                        rangeError = true;
-                    }
-                    break;
-                case SHORT:
-                    minVal = ad.getMin() == null ? null : Short.valueOf(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : Short.valueOf(ad.getMax());
-                    Short shortVal = Short.valueOf(s);
-                    if (minVal != null && shortVal.compareTo((Short) minVal) < 0) {
-                        rangeError = true;
-                    } else if (maxVal != null && shortVal.compareTo((Short) maxVal) > 0) {
-                        rangeError = true;
-                    }
-                    break;
-                case BYTE:
-                    minVal = ad.getMin() == null ? null : Byte.valueOf(ad.getMin());
-                    maxVal = ad.getMax() == null ? null : Byte.valueOf(ad.getMax());
-                    Byte byteVal = Byte.valueOf(s);
-                    if (minVal != null && byteVal.compareTo((Byte) minVal) < 0) {
-                        rangeError = true;
-                    } else if (maxVal != null && byteVal.compareTo((Byte) maxVal) > 0) {
-                        rangeError = true;
-                    }
-                    break;
-                default:
-                    throw new IllegalStateException();
+                    case PASSWORD:
+                    case STRING:
+                        minVal = ad.getMin() == null ? null : Integer.valueOf(ad.getMin());
+                        maxVal = ad.getMax() == null ? null : Integer.valueOf(ad.getMax());
+                        if (minVal != null && s.length() < (Integer) maxVal) {
+                            rangeError = true;
+                        } else if (maxVal != null && s.length() > (Integer) maxVal) {
+                            rangeError = true;
+                        }
+                        break;
+                    case INTEGER:
+                        minVal = ad.getMin() == null ? null : Integer.valueOf(ad.getMin());
+                        maxVal = ad.getMax() == null ? null : Integer.valueOf(ad.getMax());
+                        Integer intVal = Integer.valueOf(s);
+                        if (minVal != null && intVal.compareTo((Integer) minVal) < 0) {
+                            rangeError = true;
+                        } else if (maxVal != null && intVal.compareTo((Integer) maxVal) > 0) {
+                            rangeError = true;
+                        }
+                        break;
+                    case LONG:
+                        minVal = ad.getMin() == null ? null : Long.valueOf(ad.getMin());
+                        maxVal = ad.getMax() == null ? null : Long.valueOf(ad.getMax());
+                        Long longVal = Long.valueOf(s);
+                        if (ad.getMin() != null && longVal.compareTo((Long) minVal) < 0) {
+                            rangeError = true;
+                        } else if (maxVal != null && longVal.compareTo((Long) maxVal) > 0) {
+                            rangeError = true;
+                        }
+                        break;
+                    case DOUBLE:
+                        minVal = ad.getMin() == null ? null : Double.valueOf(ad.getMin());
+                        maxVal = ad.getMax() == null ? null : Double.valueOf(ad.getMax());
+                        Double doubleVal = Double.valueOf(s);
+                        if (minVal != null && doubleVal.compareTo((Double) minVal) < 0) {
+                            rangeError = true;
+                        } else if (maxVal != null && doubleVal.compareTo((Double) maxVal) > 0) {
+                            rangeError = true;
+                        }
+                        break;
+                    case BOOLEAN:
+                        // Any string can be converted into a boolean via Boolean.valueOf(String).
+                        // Seems unnecessary to impose any further restrictions.
+                        break;
+                    case CHAR:
+                        minVal = ad.getMin() == null ? null : ad.getMin().charAt(0);
+                        maxVal = ad.getMax() == null ? null : ad.getMax().charAt(0);
+                        Character charVal = s.charAt(0);
+                        if (minVal != null && charVal.compareTo((Character) minVal) < 0) {
+                            rangeError = true;
+                        } else if (maxVal != null && charVal.compareTo((Character) maxVal) > 0) {
+                            rangeError = true;
+                        }
+                        break;
+                    case FLOAT:
+                        minVal = ad.getMin() == null ? null : Float.valueOf(ad.getMin());
+                        maxVal = ad.getMax() == null ? null : Float.valueOf(ad.getMax());
+                        Float floatVal = Float.valueOf(s);
+                        if (minVal != null && floatVal.compareTo((Float) minVal) < 0) {
+                            rangeError = true;
+                        } else if (maxVal != null && floatVal.compareTo((Float) maxVal) > 0) {
+                            rangeError = true;
+                        }
+                        break;
+                    case SHORT:
+                        minVal = ad.getMin() == null ? null : Short.valueOf(ad.getMin());
+                        maxVal = ad.getMax() == null ? null : Short.valueOf(ad.getMax());
+                        Short shortVal = Short.valueOf(s);
+                        if (minVal != null && shortVal.compareTo((Short) minVal) < 0) {
+                            rangeError = true;
+                        } else if (maxVal != null && shortVal.compareTo((Short) maxVal) > 0) {
+                            rangeError = true;
+                        }
+                        break;
+                    case BYTE:
+                        minVal = ad.getMin() == null ? null : Byte.valueOf(ad.getMin());
+                        maxVal = ad.getMax() == null ? null : Byte.valueOf(ad.getMax());
+                        Byte byteVal = Byte.valueOf(s);
+                        if (minVal != null && byteVal.compareTo((Byte) minVal) < 0) {
+                            rangeError = true;
+                        } else if (maxVal != null && byteVal.compareTo((Byte) maxVal) > 0) {
+                            rangeError = true;
+                        }
+                        break;
+                    default:
+                        throw new IllegalStateException();
                 }
                 if (rangeError) {
                     return MessageFormat.format(VALUE_OUT_OF_RANGE, s);

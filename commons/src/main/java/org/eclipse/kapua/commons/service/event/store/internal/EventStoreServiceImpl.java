@@ -168,7 +168,7 @@ public class EventStoreServiceImpl extends AbstractKapuaService implements Event
      * Find an {@link EventStoreRecord} without authorization checks.
      *
      * @param kapuaEventId
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */

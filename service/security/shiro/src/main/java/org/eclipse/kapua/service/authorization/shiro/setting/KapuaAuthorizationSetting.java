@@ -33,7 +33,7 @@ public class KapuaAuthorizationSetting extends AbstractKapuaSetting<KapuaAuthori
     /**
      * Return the authorization setting instance (singleton)
      *
-     * @return
+     * @return test
      */
     public static KapuaAuthorizationSetting getInstance() {
         return INSTANCE;

@@ -37,7 +37,7 @@ public class DevicePackageXmlRegistry {
     /**
      * Creates a new device package instance
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public DevicePackage newDevicePackage() {
@@ -47,7 +47,7 @@ public class DevicePackageXmlRegistry {
     /**
      * Creates a new device packages instance
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public DevicePackages newDevicePackages() {
@@ -57,7 +57,7 @@ public class DevicePackageXmlRegistry {
     /**
      * Creates a new device package bundle information instance
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public DevicePackageBundleInfo newDevicePackageBundleInfo() {
@@ -67,7 +67,7 @@ public class DevicePackageXmlRegistry {
     /**
      * Creates a new device package bundle informations instance
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public DevicePackageBundleInfos newDevicePackageBundleInfos() {
@@ -77,7 +77,7 @@ public class DevicePackageXmlRegistry {
     /**
      * Creates a new device package download request instance
      *
-     * @return
+     * @return test
      */
     public DevicePackageDownloadRequest newDevicePackageDownloadRequest() {
         return DEVICE_PACKAGE_FACTORY.newPackageDownloadRequest();
@@ -86,7 +86,7 @@ public class DevicePackageXmlRegistry {
     /**
      * Creates a new device package download request instance
      *
-     * @return
+     * @return test
      * @since 1.1.0
      */
     public AdvancedPackageDownloadOptions newAdvancedPackageDownloadOptions() {
@@ -116,7 +116,7 @@ public class DevicePackageXmlRegistry {
     /**
      * Creates a new device package uninstall request instance
      *
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public DevicePackageUninstallRequest newDevicePackageUninstallRequest() {

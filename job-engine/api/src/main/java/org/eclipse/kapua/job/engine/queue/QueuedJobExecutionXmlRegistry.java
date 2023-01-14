@@ -30,7 +30,7 @@ public class QueuedJobExecutionXmlRegistry {
     /**
      * Creates a new job instance
      *
-     * @return
+     * @return test
      */
     public QueuedJobExecution newQueuedJobExecution() {
         return JOB_TARGET_FACTORY.newEntity(null);
@@ -39,7 +39,7 @@ public class QueuedJobExecutionXmlRegistry {
     /**
      * Creates a new job creator instance
      *
-     * @return
+     * @return test
      */
     public QueuedJobExecutionCreator newQueuedJobExecutionCreator() {
         return JOB_TARGET_FACTORY.newCreator(null);
@@ -48,7 +48,7 @@ public class QueuedJobExecutionXmlRegistry {
     /**
      * Creates a new job list result instance
      *
-     * @return
+     * @return test
      */
     public QueuedJobExecutionListResult newQueuedJobExecutionListResult() {
         return JOB_TARGET_FACTORY.newListResult();

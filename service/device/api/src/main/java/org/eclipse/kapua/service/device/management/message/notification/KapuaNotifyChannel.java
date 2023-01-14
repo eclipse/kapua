@@ -24,7 +24,7 @@ public interface KapuaNotifyChannel extends KapuaAppChannel {
     /**
      * Get the request resources
      *
-     * @return
+     * @return test
      * @since 1.2.0
      */
     String[] getResources();

@@ -12,9 +12,9 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.service.event.store.api;
 
-import javax.xml.bind.annotation.XmlRegistry;
-
 import org.eclipse.kapua.locator.KapuaLocator;
+
+import javax.xml.bind.annotation.XmlRegistry;
 
 @XmlRegistry
 public class EventStoreXmlRegistry {
@@ -26,7 +26,7 @@ public class EventStoreXmlRegistry {
     /**
      * Creates a new kapuaEvent instance
      *
-     * @return
+     * @return test
      */
     public EventStoreRecord newEventStoreRecord() {
         return kapuaEventFactory.newEntity(null);
@@ -35,7 +35,7 @@ public class EventStoreXmlRegistry {
     /**
      * Creates a new kapuaEvent creator instance
      *
-     * @return
+     * @return test
      */
     public EventStoreRecordCreator newEventStoreRecordCreator() {
         return kapuaEventFactory.newCreator(null);
@@ -44,7 +44,7 @@ public class EventStoreXmlRegistry {
     /**
      * Creates a new kapuaEvent list result instance
      *
-     * @return
+     * @return test
      */
     public EventStoreRecordListResult newEventStoreRecordListResult() {
         return kapuaEventFactory.newListResult();

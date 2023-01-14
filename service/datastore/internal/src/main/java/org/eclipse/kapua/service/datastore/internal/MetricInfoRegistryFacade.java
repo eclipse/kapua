@@ -77,7 +77,7 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
      * Update the metric information after a message store operation (for a single metric)
      *
      * @param metricInfo
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -116,7 +116,7 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
      * Update the metrics informations after a message store operation (for few metrics)
      *
      * @param metricInfos
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -217,7 +217,7 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
      *
      * @param scopeId
      * @param id
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -241,7 +241,7 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
      * Find metrics informations matching the given query
      *
      * @param query
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException
@@ -266,7 +266,7 @@ public class MetricInfoRegistryFacade extends AbstractRegistryFacade {
      * Get metrics informations count matching the given query
      *
      * @param query
-     * @return
+     * @return test
      * @throws KapuaIllegalArgumentException
      * @throws ConfigurationException
      * @throws ClientException

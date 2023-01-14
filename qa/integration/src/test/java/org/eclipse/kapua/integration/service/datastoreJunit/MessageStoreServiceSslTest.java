@@ -263,7 +263,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
      * @param deviceId
      * @param capturedOn
      * @param sentOn
-     * @return
+     * @return test
      */
     private KapuaDataMessage createMessage(String clientId, KapuaId scopeId, KapuaId deviceId, Date receivedOn, Date capturedOn, Date sentOn) {
         KapuaDataMessage message = KAPUA_DATA_MESSAGE_FACTORY.newKapuaDataMessage();
@@ -307,7 +307,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
     /**
      * Creates a new query setting the default base parameters (fetch style, sort, limit, offset, ...) for the Message schema
      *
-     * @return
+     * @return test
      */
     private MessageQuery getBaseMessageQuery(KapuaId scopeId, int limit) {
         MessageQuery query = MESSAGE_STORE_FACTORY.newQuery(scopeId);
@@ -369,7 +369,7 @@ public class MessageStoreServiceSslTest extends AbstractMessageStoreServiceTest 
      * <b>WARNING!!!!!!! Current implementation is not compliance with that since it is a temporary implementation that returns the default kapua-sys account</b>
      *
      * @param scopeId
-     * @return
+     * @return test
      * @throws KapuaException
      */
     private Account getTestAccountCreator(KapuaId scopeId) throws KapuaException {

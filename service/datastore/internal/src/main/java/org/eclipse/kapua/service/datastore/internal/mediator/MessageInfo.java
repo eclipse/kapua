@@ -36,7 +36,7 @@ public class MessageInfo {
     /**
      * Get the account
      *
-     * @return
+     * @return test
      */
     public Account getAccount() {
         return this.account;

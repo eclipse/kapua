@@ -24,7 +24,6 @@ import org.eclipse.kapua.model.query.KapuaQuery;
  * Service configuration DAO
  *
  * @since 1.0
- *
  */
 public class ServiceConfigDAO extends ServiceDAO {
 
@@ -33,7 +32,7 @@ public class ServiceConfigDAO extends ServiceDAO {
      *
      * @param em
      * @param serviceConfigCreator
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static ServiceConfigImpl create(EntityManager em, ServiceConfigCreatorImpl serviceConfigCreator)
@@ -53,7 +52,7 @@ public class ServiceConfigDAO extends ServiceDAO {
      *
      * @param em
      * @param serviceConfig
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static ServiceConfig update(EntityManager em, ServiceConfig serviceConfig)
@@ -71,7 +70,7 @@ public class ServiceConfigDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param userId
-     * @return
+     * @return test
      */
     public static ServiceConfig find(EntityManager em, KapuaId scopeId, KapuaId userId) {
         return ServiceDAO.find(em, ServiceConfigImpl.class, scopeId, userId);
@@ -82,7 +81,7 @@ public class ServiceConfigDAO extends ServiceDAO {
      *
      * @param em
      * @param name
-     * @return
+     * @return test
      */
     public static ServiceConfig findByName(EntityManager em, String name) {
         return ServiceDAO.findByField(em, ServiceConfigImpl.class, KapuaNamedEntityAttributes.NAME, name);
@@ -93,7 +92,7 @@ public class ServiceConfigDAO extends ServiceDAO {
      *
      * @param em
      * @param serviceConfigQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static ServiceConfigListResult query(EntityManager em, KapuaQuery serviceConfigQuery)
@@ -106,7 +105,7 @@ public class ServiceConfigDAO extends ServiceDAO {
      *
      * @param em
      * @param serviceConfigQuery
-     * @return
+     * @return test
      * @throws KapuaException
      */
     public static long count(EntityManager em, KapuaQuery serviceConfigQuery)

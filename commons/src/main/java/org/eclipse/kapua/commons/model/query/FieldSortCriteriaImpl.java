@@ -19,7 +19,6 @@ import org.eclipse.kapua.model.query.SortOrder;
  * Field sort criteria.
  *
  * @since 1.0
- *
  */
 public class FieldSortCriteriaImpl implements FieldSortCriteria {
 
@@ -47,7 +46,7 @@ public class FieldSortCriteriaImpl implements FieldSortCriteria {
     /**
      * Get the sort attribute name
      *
-     * @return
+     * @return test
      */
     @Override
     public String getAttributeName() {
@@ -57,7 +56,7 @@ public class FieldSortCriteriaImpl implements FieldSortCriteria {
     /**
      * Get the sort attribute order
      *
-     * @return
+     * @return test
      */
     @Override
     public SortOrder getSortOrder() {

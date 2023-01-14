@@ -36,7 +36,7 @@ public interface SystemMessageCreator {
      *
      * @param systemMessageType
      * @param parameters
-     * @return
+     * @return test
      */
     String createMessage(SystemMessageType systemMessageType, Map<Fields, String> parameters);
 

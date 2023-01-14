@@ -12,6 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.datastore.steps;
 
+import com.google.inject.Singleton;
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
+import io.cucumber.java.DataTableType;
+import io.cucumber.java.Scenario;
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.util.KapuaDateUtils;
@@ -97,17 +106,6 @@ import org.eclipse.kapua.service.storable.model.query.predicate.TermPredicate;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.inject.Singleton;
-
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
-import io.cucumber.java.DataTableType;
-import io.cucumber.java.Scenario;
-import io.cucumber.java.en.And;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 
 import javax.inject.Inject;
 import java.lang.reflect.Field;
@@ -240,9 +238,9 @@ public class DatastoreSteps extends TestBase {
     @DataTableType
     public MetricEntry metricEntry(Map<String, String> entry) {
         return new MetricEntry(
-            entry.get("key"),
-            entry.get("type"),
-            entry.get("value")
+                entry.get("key"),
+                entry.get("type"),
+                entry.get("value")
         );
     }
 
@@ -284,7 +282,7 @@ public class DatastoreSteps extends TestBase {
         this.session = session;
     }
 
-    @After(value="@setup")
+    @After(value = "@setup")
     public void setServices() throws Exception {
         locator = KapuaLocator.getInstance();
         // Get instance of services used in different scenarios
@@ -320,7 +318,7 @@ public class DatastoreSteps extends TestBase {
 
     }
 
-    @After(value="not (@setup or @teardown)", order=10)
+    @After(value = "not (@setup or @teardown)", order = 10)
     public void afterScenario() {
         try {
             deleteIndices();
@@ -375,7 +373,7 @@ public class DatastoreSteps extends TestBase {
 
     @Then("I expect the number of messages for this device to be {long}")
     public void expectNumberOfMessages(long numberOfMessages) throws Exception {
-        final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
+        MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
         session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
             MessageQuery query = messageStoreFactory.newQuery(account.getId());
             query.setPredicate(datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
@@ -391,7 +389,7 @@ public class DatastoreSteps extends TestBase {
 
     @Then("I delete the messages for this device")
     public void deleteMessages() throws Exception {
-        final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
+        MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
         session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
             MessageQuery query = messageStoreFactory.newQuery(account.getId());
             query.setPredicate(datastorePredicateFactory.newTermPredicate(MessageField.CLIENT_ID, currentDevice.getClientId()));
@@ -403,7 +401,7 @@ public class DatastoreSteps extends TestBase {
 
     @Then("I expect the latest captured message on channel {string} to have the metrics")
     public void testMessageData(String topic, List<MetricEntry> expectedMetrics) throws Exception {
-        final MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
+        MessageStoreService service = KapuaLocator.getInstance().getService(MessageStoreService.class);
         session.withLogin(() -> With.withUserAccount(currentDevice.getAccountName(), account -> {
             MessageQuery query = messageStoreFactory.newQuery(account.getId());
             AndPredicate and = datastorePredicateFactory.newAndPredicate();
@@ -416,7 +414,7 @@ public class DatastoreSteps extends TestBase {
             DatastoreMessage message = result.getFirstItem();
             Assert.assertEquals(currentDevice.getClientId(), message.getClientId());
             KapuaPayload payload = message.getPayload();
-            final Map<String, Object> properties = payload.getMetrics();
+            Map<String, Object> properties = payload.getMetrics();
             Assert.assertEquals(toData(expectedMetrics), properties);
         }));
     }
@@ -1484,12 +1482,12 @@ public class DatastoreSteps extends TestBase {
     @When("I count for metric info")
     public void countForMetricInfo() throws KapuaException {
         MetricInfoQuery metricInfoQuery = (MetricInfoQuery) stepData.get(METRIC_INFO_QUERY);
-        stepData.put("metricInfoCountResult", (int)metricInfoRegistryService.count(metricInfoQuery));
+        stepData.put("metricInfoCountResult", (int) metricInfoRegistryService.count(metricInfoQuery));
     }
 
     @Then("I get metric info count {int}")
     public void getDesiredMetricInfoCountResult(int desiredCount) {
-        int count = (int)stepData.get("metricInfoCountResult");
+        int count = (int) stepData.get("metricInfoCountResult");
         Assert.assertEquals(desiredCount, count);
     }
 
@@ -1583,13 +1581,13 @@ public class DatastoreSteps extends TestBase {
     // *******************
 
     private static Map<String, Object> toData(List<MetricEntry> metrics) {
-        final Map<String, Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
 
-        for (final MetricEntry entry : metrics) {
+        for (MetricEntry entry : metrics) {
 
-            final String key = entry.getKey();
-            final String stringValue = entry.getValue();
-            final String type = entry.getType();
+            String key = entry.getKey();
+            String stringValue = entry.getValue();
+            String type = entry.getType();
 
             switch (type.toUpperCase()) {
                 case "STRING":
@@ -1614,8 +1612,8 @@ public class DatastoreSteps extends TestBase {
         return data;
     }
 
-    private SimulatedDeviceApplication getMockApplication(final String applicationId) {
-        final SimulatedDeviceApplication app = currentDevice.getMockApplications().get(applicationId);
+    private SimulatedDeviceApplication getMockApplication(String applicationId) {
+        SimulatedDeviceApplication app = currentDevice.getMockApplications().get(applicationId);
         if (app == null) {
             throw new IllegalStateException(String.format("Application '%s' not found in current setup", applicationId));
         }
@@ -2029,7 +2027,7 @@ public class DatastoreSteps extends TestBase {
         private final SortField field;
         private final Function<Object, T> valueFunction;
 
-        public OrderConstraint(final SortField field, final Function<Object, T> valueFunction) {
+        public OrderConstraint(SortField field, Function<Object, T> valueFunction) {
             this.field = field;
             this.valueFunction = valueFunction;
         }
@@ -2038,9 +2036,9 @@ public class DatastoreSteps extends TestBase {
             return field;
         }
 
-        public boolean validate(final Object previousItem, final Object currentItem) {
-            final T v1 = valueFunction.apply(previousItem);
-            final T v2 = valueFunction.apply(currentItem);
+        public boolean validate(Object previousItem, Object currentItem) {
+            T v1 = valueFunction.apply(previousItem);
+            T v2 = valueFunction.apply(currentItem);
 
             if (!v2.equals(v1)) {
                 checkNextValueCoherence(field, v2, v1);
@@ -2090,7 +2088,7 @@ public class DatastoreSteps extends TestBase {
      * @param currentValue
      * @param previousValue
      */
-    private static <T extends Comparable<T>> void checkNextValueCoherence(final SortField field, final T currentValue, final T previousValue) {
+    private static <T extends Comparable<T>> void checkNextValueCoherence(SortField field, T currentValue, T previousValue) {
 
         if (SortDirection.ASC.equals(field.getSortDirection())) {
             Assert.assertTrue(String.format("The field [%s] is not correctly ordered as [%s] (%s -> %s)!", field.getField(), field.getSortDirection(), currentValue, previousValue),
@@ -2105,7 +2103,7 @@ public class DatastoreSteps extends TestBase {
      * Return the value of the field name provided (assuming that this value is a Comparable)
      *
      * @param field
-     * @return
+     * @return test
      */
     private static <T> T getValue(Object object, String field, Class<T> clazz) {
 
@@ -2138,7 +2136,7 @@ public class DatastoreSteps extends TestBase {
      * It removes the _ and append the remaining part capitalizing the first letter (if capitalizeFirstLetter = true)
      *
      * @param field
-     * @return
+     * @return test
      */
     private static String getFieldName(String field, boolean capitalizeFirstLetter) {
 
@@ -2178,7 +2176,7 @@ public class DatastoreSteps extends TestBase {
      * @param objetcClass
      * @param field
      * @param prefix
-     * @return
+     * @return test
      */
     private static Method getMethod(Class<?> objetcClass, String field, String prefix) {
 
@@ -2201,9 +2199,9 @@ public class DatastoreSteps extends TestBase {
      *
      * @param objectClass
      * @param field
-     * @return
+     * @return test
      */
-    private static Field getField(Class<?> objectClass, final String field) {
+    private static Field getField(Class<?> objectClass, String field) {
 
         Field objField = null;
         do {

@@ -24,14 +24,14 @@ public interface DeviceConfigurationFactory extends KapuaObjectFactory {
     /**
      * Creates a new {@link DeviceComponentConfiguration} using the given component configuration identifier
      *
-     * @return
+     * @return test
      */
     DeviceComponentConfiguration newComponentConfigurationInstance(String componentConfigurationId);
 
     /**
      * Creates a new {@link DeviceConfiguration}
      *
-     * @return
+     * @return test
      */
     DeviceConfiguration newConfigurationInstance();
 }

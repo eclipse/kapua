@@ -12,28 +12,23 @@
  *******************************************************************************/
 package org.eclipse.kapua.commons.cache;
 
+import com.google.common.cache.CacheBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.cache.CacheBuilder;
-
 /**
  * Default Kapua cache implementation
  *
- * @param <K>
- *            keys type
- * @param <V>
- *            values type
- *
+ * @param <K> keys type
+ * @param <V> values type
  * @since 1.0
  */
 public class LocalCache<K, V> implements Cache<K, V> {
 
-    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(LocalCache.class);
 
     private String namespace;
@@ -43,14 +38,11 @@ public class LocalCache<K, V> implements Cache<K, V> {
     /**
      * Construct local cache setting the provided max size, expire time and default value
      *
-     * @param sizeMax
-     *            max cache size
-     * @param expireAfter
-     *            values ttl
-     * @param defaultValue
-     *            default value (if no value is found for a specific key)
+     * @param sizeMax      max cache size
+     * @param expireAfter  values ttl
+     * @param defaultValue default value (if no value is found for a specific key)
      */
-    public LocalCache(int sizeMax, int expireAfter, final V defaultValue) {
+    public LocalCache(int sizeMax, int expireAfter, V defaultValue) {
         this.defaultValue = defaultValue;
         cache = CacheBuilder.newBuilder().maximumSize(sizeMax).expireAfterWrite(expireAfter, TimeUnit.SECONDS).build();
     }
@@ -58,12 +50,10 @@ public class LocalCache<K, V> implements Cache<K, V> {
     /**
      * Construct local cache setting the provided max size and default value. <b>ttl is disabled, so no time based eviction will be performed.</b>
      *
-     * @param sizeMax
-     *            max cache size
-     * @param defaultValue
-     *            default value (if no value is found for a specific key)
+     * @param sizeMax      max cache size
+     * @param defaultValue default value (if no value is found for a specific key)
      */
-    public LocalCache(int sizeMax, final V defaultValue) {
+    public LocalCache(int sizeMax, V defaultValue) {
         this.defaultValue = defaultValue;
         // from google javadoc ("https://google.github.io/guava/releases/19.0/api/docs/com/google/common/cache/CacheBuilder.html")
         // By default cache instances created by CacheBuilder will not perform any type of eviction.
@@ -96,10 +86,10 @@ public class LocalCache<K, V> implements Cache<K, V> {
     /**
      * Return the list of all the keys present in the cache
      *
-     * @return
+     * @return test
      */
     public List<K> getAllKeys() {
-        ArrayList<K> keys = new ArrayList<K>();
+        ArrayList<K> keys = new ArrayList<>();
         if (cache != null) {
             keys.addAll(cache.asMap().keySet());
         }

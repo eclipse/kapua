@@ -12,21 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.app.console.module.account.shared.service;
 
-import java.util.List;
-
+import com.extjs.gxt.ui.client.data.ListLoadResult;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
+import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
 import org.eclipse.kapua.app.console.module.api.client.GwtKapuaException;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtConfigComponent;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtGroupedNVPair;
 import org.eclipse.kapua.app.console.module.api.shared.model.GwtXSRFToken;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccount;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountCreator;
-import org.eclipse.kapua.app.console.module.account.shared.model.GwtAccountQuery;
 
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import java.util.List;
 
 /**
  * The client side stub for the RPC service.
@@ -39,7 +38,7 @@ public interface GwtAccountService extends RemoteService {
      * to seed users into the MQTT broker instance.
      *
      * @param gwtAccountCreator
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     public GwtAccount create(GwtXSRFToken xsfrToken, GwtAccountCreator gwtAccountCreator)
@@ -49,7 +48,7 @@ public interface GwtAccountService extends RemoteService {
      * Returns a GwtAccount by its Id or null if an account with such Id does not exist.
      *
      * @param accountId
-     * @return
+     * @return test
      */
     public GwtAccount find(String accountId)
             throws GwtKapuaException;
@@ -67,7 +66,7 @@ public interface GwtAccountService extends RemoteService {
      * Get account info ad name values pairs
      *
      * @param gwtAccountId
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     public ListLoadResult<GwtGroupedNVPair> getAccountInfo(String gwtScopeId, String gwtAccountId)
@@ -78,7 +77,7 @@ public interface GwtAccountService extends RemoteService {
      *
      * @param xsfrToken
      * @param gwtAccount
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     public GwtAccount updateAccountProperties(GwtXSRFToken xsfrToken, GwtAccount gwtAccount)
@@ -89,7 +88,7 @@ public interface GwtAccountService extends RemoteService {
      *
      * @param xsfrToken
      * @param gwtAccount
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     public GwtAccount update(GwtXSRFToken xsfrToken, GwtAccount gwtAccount)
@@ -107,7 +106,7 @@ public interface GwtAccountService extends RemoteService {
 
     /**
      * Lists GwtAccounts.
-     *
+     * <p>
      * FIXME: Add query predicates, ordering and pagination.
      *
      * @throws GwtKapuaException
@@ -118,11 +117,9 @@ public interface GwtAccountService extends RemoteService {
     /**
      * Lists GwtAccounts child of the given accountId.
      *
-     * @param accountId
-     *            The account id for which to find children
-     * @param includeSelf
-     *            If true the given account is also included in the list, otherwise it's not
-     * @return
+     * @param accountId   The account id for which to find children
+     * @param includeSelf If true the given account is also included in the list, otherwise it's not
+     * @return test
      * @throws GwtKapuaException
      */
     ListLoadResult<GwtAccount> findChildren(String accountId, boolean includeSelf)
@@ -132,7 +129,7 @@ public interface GwtAccountService extends RemoteService {
      * Returns the configuration of an Account as the list of all the configurable components.
      *
      * @param scopeId
-     * @return
+     * @return test
      */
     public List<GwtConfigComponent> findServiceConfigurations(String scopeId)
             throws GwtKapuaException;
@@ -141,9 +138,8 @@ public interface GwtAccountService extends RemoteService {
      * Returns the list of all Account matching the query.
      *
      * @param gwtAccountQuery
-     * @return
+     * @return test
      * @throws GwtKapuaException
-     *
      */
     PagingLoadResult<GwtAccount> query(PagingLoadConfig loadConfig, GwtAccountQuery gwtAccountQuery)
             throws GwtKapuaException;

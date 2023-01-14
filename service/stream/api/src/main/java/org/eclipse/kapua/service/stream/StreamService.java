@@ -26,7 +26,7 @@ public interface StreamService extends KapuaService {
     /**
      * @param message
      * @param timeout
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */

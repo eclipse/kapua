@@ -34,7 +34,7 @@ public class AccessInfoDAO extends ServiceDAO {
      *
      * @param em
      * @param creator
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */
@@ -51,7 +51,7 @@ public class AccessInfoDAO extends ServiceDAO {
      * @param em
      * @param scopeId
      * @param accessInfoId
-     * @return
+     * @return test
      * @since 1.0.0
      */
     public static AccessInfo find(EntityManager em, KapuaId scopeId, KapuaId accessInfoId) {
@@ -63,7 +63,7 @@ public class AccessInfoDAO extends ServiceDAO {
      *
      * @param em
      * @param accessInfoQuery
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */
@@ -77,7 +77,7 @@ public class AccessInfoDAO extends ServiceDAO {
      *
      * @param em
      * @param accessInfoQuery
-     * @return
+     * @return test
      * @throws KapuaException
      * @since 1.0.0
      */

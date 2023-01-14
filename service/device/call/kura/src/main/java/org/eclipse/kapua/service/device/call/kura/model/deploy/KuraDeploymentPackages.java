@@ -32,7 +32,7 @@ public class KuraDeploymentPackages {
     /**
      * Get the deployment package array
      *
-     * @return
+     * @return test
      */
     public KuraDeploymentPackage[] getDeploymentPackages() {
         if (deploymentPackages == null) {

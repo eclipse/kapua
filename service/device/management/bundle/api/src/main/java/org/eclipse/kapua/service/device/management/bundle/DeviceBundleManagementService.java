@@ -29,7 +29,7 @@ public interface DeviceBundleManagementService extends DeviceManagementService {
      * @param scopeId
      * @param deviceId
      * @param timeout  timeout waiting for the device response
-     * @return
+     * @return test
      * @throws KapuaException
      */
     DeviceBundles get(KapuaId scopeId, KapuaId deviceId, Long timeout) throws KapuaException;

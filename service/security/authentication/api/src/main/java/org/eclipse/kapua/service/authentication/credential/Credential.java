@@ -33,7 +33,7 @@ import java.util.Date;
  */
 @XmlRootElement(name = "credential")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-@XmlType(propOrder = { "userId",
+@XmlType(propOrder = {"userId",
         "credentialType",
         "credentialKey",
         "status",
@@ -41,7 +41,7 @@ import java.util.Date;
         "loginFailures",
         "firstLoginFailure",
         "loginFailuresReset",
-        "lockoutReset" }, //
+        "lockoutReset"}, //
         factoryClass = CredentialXmlRegistry.class, //
         factoryMethod = "newCredential") //
 public interface Credential extends KapuaUpdatableEntity {
@@ -56,7 +56,7 @@ public interface Credential extends KapuaUpdatableEntity {
     /**
      * Return the user identifier
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "userId")
     @XmlJavaTypeAdapter(KapuaIdAdapter.class)
@@ -70,7 +70,7 @@ public interface Credential extends KapuaUpdatableEntity {
     /**
      * Return the credential type
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "credentialType")
     CredentialType getCredentialType();
@@ -83,7 +83,7 @@ public interface Credential extends KapuaUpdatableEntity {
     /**
      * Return the credential key
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "credentialKey")
     String getCredentialKey();

@@ -42,7 +42,7 @@ public interface DeviceCommandInput extends DeviceCommand {
     /**
      * Get the device command
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "command")
     String getCommand();
@@ -57,7 +57,7 @@ public interface DeviceCommandInput extends DeviceCommand {
     /**
      * Get the device password
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "password")
     String getPassword();
@@ -72,7 +72,7 @@ public interface DeviceCommandInput extends DeviceCommand {
     /**
      * Get command arguments
      *
-     * @return
+     * @return test
      */
     @XmlElementWrapper(name = "arguments")
     @XmlElement(name = "argument")
@@ -88,7 +88,7 @@ public interface DeviceCommandInput extends DeviceCommand {
     /**
      * Get the command timeout
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "timeout")
     Integer getTimeout();
@@ -103,7 +103,7 @@ public interface DeviceCommandInput extends DeviceCommand {
     /**
      * Get the working directory
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "workingDir")
     String getWorkingDir();
@@ -118,7 +118,7 @@ public interface DeviceCommandInput extends DeviceCommand {
     /**
      * Get the command input body
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "body")
     byte[] getBody();
@@ -133,7 +133,7 @@ public interface DeviceCommandInput extends DeviceCommand {
     /**
      * Get the environment attributes
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "environment")
     String[] getEnvironment();
@@ -148,7 +148,7 @@ public interface DeviceCommandInput extends DeviceCommand {
     /**
      * Get the asynchronous run flag
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "runAsynch")
     boolean isRunAsynch();
@@ -163,7 +163,7 @@ public interface DeviceCommandInput extends DeviceCommand {
     /**
      * Get the device standard input
      *
-     * @return
+     * @return test
      */
     @XmlElement(name = "stdin")
     String getStdin();

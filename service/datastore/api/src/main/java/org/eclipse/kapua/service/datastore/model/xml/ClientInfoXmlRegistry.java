@@ -33,7 +33,7 @@ public class ClientInfoXmlRegistry {
     /**
      * Creates a {@link ClientInfoListResult} instance
      *
-     * @return
+     * @return test
      */
     public ClientInfoListResult newListResult() {
         return CLIENT_INFO_FACTORY.newListResult();
@@ -42,7 +42,7 @@ public class ClientInfoXmlRegistry {
     /**
      * Creates a {@link ClientInfoQuery} instance.
      *
-     * @return
+     * @return test
      */
     public ClientInfoQuery newQuery() {
         return CLIENT_INFO_FACTORY.newQuery(null);

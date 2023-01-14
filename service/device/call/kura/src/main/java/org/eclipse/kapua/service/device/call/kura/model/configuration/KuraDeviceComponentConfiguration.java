@@ -79,7 +79,7 @@ public class KuraDeviceComponentConfiguration {
      * Component Descriptor XML file; at runtime, the same value is also available
      * in the component.name and in the service.pid attributes of the Component Configuration.
      *
-     * @return
+     * @return test
      */
     public String getComponentId() {
         return componentId;
@@ -99,7 +99,7 @@ public class KuraDeviceComponentConfiguration {
      * The raw ObjectClassDefinition as parsed from the MetaType
      * Information XML resource associated to this Component.
      *
-     * @return
+     * @return test
      */
     public KapuaTocd getDefinition() {
         return definition;
@@ -118,7 +118,7 @@ public class KuraDeviceComponentConfiguration {
      * Get configuration properties.<br>
      * The Dictionary of properties currently used by this component.
      *
-     * @return
+     * @return test
      */
     public Map<String, Object> getProperties() {
         return properties;

@@ -39,7 +39,7 @@ public class Acl {
     /**
      * Has read rights
      *
-     * @return
+     * @return test
      */
     public boolean isRead() {
         return readPermission;
@@ -48,7 +48,7 @@ public class Acl {
     /**
      * Has write rights
      *
-     * @return
+     * @return test
      */
     public boolean isWrite() {
         return writePermission;
@@ -57,7 +57,7 @@ public class Acl {
     /**
      * Has admin rights
      *
-     * @return
+     * @return test
      */
     public boolean isAdmin() {
         return adminPermission;

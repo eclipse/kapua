@@ -25,7 +25,7 @@ public class AccessInfoXmlRegistry {
     /**
      * Creates a new access info instance
      *
-     * @return
+     * @return test
      */
     public AccessInfo newAccessInfo() {
         return ACCESS_INFO_FACTORY.newEntity(null);
@@ -34,7 +34,7 @@ public class AccessInfoXmlRegistry {
     /**
      * Creates a new access info creator instance
      *
-     * @return
+     * @return test
      */
     public AccessInfoCreator newAccessInfoCreator() {
         return ACCESS_INFO_FACTORY.newCreator(null);
@@ -43,7 +43,7 @@ public class AccessInfoXmlRegistry {
     /**
      * Creates a new {@link AccessInfoListResult} instance
      *
-     * @return
+     * @return test
      */
     public AccessInfoListResult newAccessInfoListResult() {
         return ACCESS_INFO_FACTORY.newListResult();

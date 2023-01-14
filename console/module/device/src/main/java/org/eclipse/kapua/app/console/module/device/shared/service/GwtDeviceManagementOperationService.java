@@ -30,7 +30,7 @@ public interface GwtDeviceManagementOperationService extends RemoteService {
      * Returns the list of all {@link org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation}s matching the query.
      *
      * @param gwtDeviceManagementOperationQuery
-     * @return
+     * @return test
      * @throws GwtKapuaException
      */
     PagingLoadResult<GwtDeviceManagementOperation> query(PagingLoadConfig loadConfig, GwtDeviceManagementOperationQuery gwtDeviceManagementOperationQuery)
