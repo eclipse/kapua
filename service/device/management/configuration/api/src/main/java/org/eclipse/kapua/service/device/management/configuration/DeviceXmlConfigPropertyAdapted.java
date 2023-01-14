@@ -31,16 +31,36 @@ public class DeviceXmlConfigPropertyAdapted {
 
     @XmlEnum
     public enum ConfigPropertyType {
-        @XmlEnumValue("String")stringType,
-        @XmlEnumValue("Long")longType,
-        @XmlEnumValue("Double")doubleType,
-        @XmlEnumValue("Float")floatType,
-        @XmlEnumValue("Integer")integerType,
-        @XmlEnumValue("Byte")byteType,
-        @XmlEnumValue("Char")charType,
-        @XmlEnumValue("Boolean")booleanType,
-        @XmlEnumValue("Short")shortType,
-        @XmlEnumValue("Password")passwordType
+
+        @XmlEnumValue("String")
+        stringType,
+
+        @XmlEnumValue("Long")
+        longType,
+
+        @XmlEnumValue("Double")
+        doubleType,
+
+        @XmlEnumValue("Float")
+        floatType,
+
+        @XmlEnumValue("Integer")
+        integerType,
+
+        @XmlEnumValue("Byte")
+        byteType,
+
+        @XmlEnumValue("Char")
+        charType,
+
+        @XmlEnumValue("Boolean")
+        booleanType,
+
+        @XmlEnumValue("Short")
+        shortType,
+
+        @XmlEnumValue("Password")
+        passwordType
     }
 
     /**
