@@ -15,7 +15,7 @@ package org.eclipse.kapua.commons.util;
 /**
  * Utility class to handle comparison between component versions.
  *
- * @see <a href="https://semver.org/">Semantic Versioning</a>.
+ * @see <a href="https://semver.org/">Semantic Versioning</a>
  * @since 1.2.0
  */
 public class SemanticVersion {

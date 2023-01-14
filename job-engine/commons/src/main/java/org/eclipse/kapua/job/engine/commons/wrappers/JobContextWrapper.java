@@ -193,7 +193,7 @@ public class JobContextWrapper {
 
     /**
      * @return {@link JobContext#getTransientUserData()}.
-     * @see JobContext#getTransientUserData().
+     * @see JobContext#getTransientUserData()
      * @since 1.0.0
      */
     private Object getTransientUserData() {
@@ -202,7 +202,7 @@ public class JobContextWrapper {
 
     /**
      * @param data {@link JobContext#setTransientUserData(Object)}.
-     * @see JobContext#setTransientUserData(Object).
+     * @see JobContext#setTransientUserData(Object)
      * @since 1.0.0
      */
     private void setTransientUserData(Object data) {
