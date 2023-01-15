@@ -4,7 +4,7 @@ We use Apache Maven as the build tool of choice.
 
 We use `gitbook` to build the documentation.
 
-## Kapua
+## How to build
 
 Kapua is being compiled with Maven.
 
@@ -12,18 +12,19 @@ There are 3 build options you can use, based on the need to perform the various 
 
 #### Build without tests
 
-   `mvn clean install -DskipTests=true`
+   `mvn clean install -DskipTests`
 
 #### Build executing unit tests
 
-   `mvn clean install -Dcucumber.filter.tags=@env_none -DskipITs=true`
+   `mvn clean install -DskipITs -Dcucumber.filter.tags=@env_none `
 
 In this project there are some unit tests made with junit and others with cucumber (read "QA process" for further information)
+
 #### Build executing unit tests and integration tests
 
 For the next build option, considering that some cucumber integration tests require access to services deployed in a docker container, first of all, you have to launch these 2 commands in order to build and create the kapua docker images (NB: now make sure the docker daemon is running!)
 
-`mvn clean install -DskipTests=true  -Pconsole,docker`
+`mvn clean install -DskipTests -Pconsole,docker`
 
 Attention: if the kapua containers are already running in your environment, for example in the case of a previous building that terminated abnormally, please stop their execution before proceeding with the next build commands
 
@@ -41,6 +42,15 @@ NOTE: It is important to launch the script being in the "Kapua" root folder, in 
 `qa/RunKapuaTests.sh`
 
 Launch it in order to build Kapua executing all the tests. Integration tests are divided by category to offer maximum error-check-granularity. 
+
+## Security Scan
+
+You can perform the CVE scan of the project by running with the following command:
+
+`mvn verify -DskipTests -Psecurity-scan`
+
+Currently, is configured to run the scan and produce reports but not to fail in case of CVEs detected. 
+Reports can be found in the `target/security-scan/` directory of each module.
 
 ## Documentation
 
