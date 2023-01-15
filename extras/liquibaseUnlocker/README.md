@@ -17,6 +17,6 @@ Tu unlock this situation, a manual operation on such table (for example, the del
 #### Usage
 
 ```bash
-java -jar kapua-liquibaseUnlocker-2.0.0-SNAPSHOT-app.jar
+java -jar kapua-liquibaseUnlocker-1.6.7-SNAPSHOT-app.jar
 ```
 To be used when the deployment is stucked for the afore mentioned reasons, the lock will be released and the deployment will continue.
