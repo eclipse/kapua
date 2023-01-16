@@ -96,6 +96,7 @@
         <jaxb-impl.version>2.3.6</jaxb-impl.version>
         <jbatch.version>1.0.2</jbatch.version>
         <jersey.version>2.27</jersey.version>
+        <jersey-hk2.version>2.30</jersey-hk2.version>
         <jersey-repackaged.version>2.26-b03</jersey-repackaged.version>
         <jetty.version>9.4.44.v20210927</jetty.version>
         <joda.version>2.9.4</joda.version>
@@ -2012,14 +2013,14 @@
 
             <!-- REST API -->
             <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-moxy</artifactId>
-                <version>${jersey.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>${javax-servlet-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-moxy</artifactId>
+                <version>${jersey.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.ext</groupId>
@@ -2050,6 +2051,11 @@
                 <groupId>org.glassfish.jersey.media</groupId>
                 <artifactId>jersey-media-json-jackson</artifactId>
                 <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.inject</groupId>
+                <artifactId>jersey-hk2</artifactId>
+                <version>${jersey-hk2.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.hk2</groupId>
