@@ -16,6 +16,9 @@ package org.eclipse.kapua.service.job.steps.model;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
+import org.eclipse.kapua.locator.KapuaLocator;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 
@@ -24,7 +27,8 @@ import javax.batch.runtime.context.StepContext;
 import javax.inject.Inject;
 
 public class TestJobStepProcessor extends AbstractTargetProcessor implements TargetProcessor {
-
+    private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
     @Inject
     JobContext jobContext;
 
@@ -44,5 +48,14 @@ public class TestJobStepProcessor extends AbstractTargetProcessor implements Tar
         if (fail) {
             throw KapuaException.internalError("This processing has been set to fail");
         }
+    }
+
+    @Override
+    protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
+        Device device = DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId());
+        if (device == null) {
+            return "N/A";
+        }
+        return device.getClientId();
     }
 }

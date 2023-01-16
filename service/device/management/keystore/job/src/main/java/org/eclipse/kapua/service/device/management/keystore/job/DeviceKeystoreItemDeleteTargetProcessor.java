@@ -21,6 +21,8 @@ import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
 import org.eclipse.kapua.service.device.management.keystore.job.definition.DeviceKeystoreItemDeletePropertyKeys;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 
@@ -34,8 +36,8 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceKeystoreItemDeleteTargetProcessor extends AbstractTargetProcessor implements TargetProcessor {
-
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
     private static final DeviceKeystoreManagementService KEYSTORE_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceKeystoreManagementService.class);
 
     @Inject
@@ -57,5 +59,14 @@ public class DeviceKeystoreItemDeleteTargetProcessor extends AbstractTargetProce
         Long timeout = stepContextWrapper.getStepProperty(DeviceKeystoreItemDeletePropertyKeys.TIMEOUT, Long.class);
 
         KapuaSecurityUtils.doPrivileged(() -> KEYSTORE_MANAGEMENT_SERVICE.deleteKeystoreItem(jobTarget.getScopeId(), jobTarget.getJobTargetId(), keystoreId, alias, timeout));
+    }
+
+    @Override
+    protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
+        Device device = DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId());
+        if (device == null) {
+            return "N/A";
+        }
+        return device.getClientId();
     }
 }
