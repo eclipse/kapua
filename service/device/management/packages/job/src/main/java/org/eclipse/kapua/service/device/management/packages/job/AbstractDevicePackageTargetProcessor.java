@@ -30,6 +30,8 @@ import org.eclipse.kapua.service.device.management.packages.DevicePackageManagem
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperation;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationFactory;
 import org.eclipse.kapua.service.device.management.registry.operation.DeviceManagementOperationRegistryService;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
@@ -40,9 +42,8 @@ import org.eclipse.kapua.service.job.targets.JobTargetStatus;
  * @since 1.1.0
  */
 public abstract class AbstractDevicePackageTargetProcessor extends AbstractTargetProcessor implements TargetProcessor {
-
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
     private static final DeviceManagementOperationRegistryService DEVICE_MANAGEMENT_OPERATION_REGISTRY_SERVICE = LOCATOR.getService(DeviceManagementOperationRegistryService.class);
     private static final DeviceManagementOperationFactory DEVICE_MANAGEMENT_OPERATION_FACTORY = LOCATOR.getFactory(DeviceManagementOperationFactory.class);
 
@@ -51,6 +52,7 @@ public abstract class AbstractDevicePackageTargetProcessor extends AbstractTarge
 
     private static final JobEngineService JOB_ENGINE_SERVICE = LOCATOR.getService(JobEngineService.class);
     private static final JobEngineFactory JOB_ENGINE_FACTORY = LOCATOR.getFactory(JobEngineFactory.class);
+
 
     protected void createJobDeviceManagementOperation(KapuaId scopeId, KapuaId jobId, JobTarget jobTarget, KapuaId operationId) throws KapuaException {
         //
@@ -98,4 +100,12 @@ public abstract class AbstractDevicePackageTargetProcessor extends AbstractTarge
         }
     }
 
+    @Override
+    protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
+        Device device = DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId());
+        if (device == null) {
+            return "N/A";
+        }
+        return device.getClientId();
+    }
 }
