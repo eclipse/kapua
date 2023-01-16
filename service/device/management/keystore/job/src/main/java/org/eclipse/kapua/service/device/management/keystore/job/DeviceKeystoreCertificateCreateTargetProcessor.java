@@ -22,6 +22,8 @@ import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManage
 import org.eclipse.kapua.service.device.management.keystore.DeviceKeystoreManagementService;
 import org.eclipse.kapua.service.device.management.keystore.job.definition.DeviceCertificateCreatePropertyKeys;
 import org.eclipse.kapua.service.device.management.keystore.model.DeviceKeystoreCertificate;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 
@@ -35,8 +37,8 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DeviceKeystoreCertificateCreateTargetProcessor extends AbstractTargetProcessor implements TargetProcessor {
-
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
     private static final DeviceKeystoreManagementService KEYSTORE_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceKeystoreManagementService.class);
     private static final DeviceKeystoreManagementFactory KEYSTORE_MANAGEMENT_FACTORY = LOCATOR.getFactory(DeviceKeystoreManagementFactory.class);
 
@@ -66,5 +68,14 @@ public class DeviceKeystoreCertificateCreateTargetProcessor extends AbstractTarg
         deviceKeystoreCertificate.setCertificate(certificate);
 
         KapuaSecurityUtils.doPrivileged(() -> KEYSTORE_MANAGEMENT_SERVICE.createKeystoreCertificate(jobTarget.getScopeId(), jobTarget.getJobTargetId(), deviceKeystoreCertificate, timeout));
+    }
+
+    @Override
+    protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
+        Device device = DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId());
+        if (device == null) {
+            return "N/A";
+        }
+        return device.getClientId();
     }
 }
