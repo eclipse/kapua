@@ -13,7 +13,6 @@
 package org.eclipse.kapua.service.device.management.bundle.job;
 
 import org.eclipse.kapua.KapuaException;
-import org.eclipse.kapua.commons.configuration.ServiceConfigDAO;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
