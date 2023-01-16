@@ -14,6 +14,7 @@
 package org.eclipse.kapua.service.job.steps;
 
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
@@ -52,7 +53,7 @@ public class TestJobStepProcessor extends AbstractTargetProcessor implements Tar
 
     @Override
     protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
-        Device device = DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId());
+        Device device = KapuaSecurityUtils.doPrivileged(() -> DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId()));;
         if (device == null) {
             return "N/A";
         }

@@ -63,7 +63,7 @@ public class DeviceConfigurationPutTargetProcessor extends AbstractTargetProcess
 
     @Override
     protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
-        Device device = DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId());
+        Device device = KapuaSecurityUtils.doPrivileged(() -> DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId()));;
         if (device == null) {
             return "N/A";
         }
