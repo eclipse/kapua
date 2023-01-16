@@ -51,15 +51,15 @@ public abstract class AbstractTargetProcessor implements TargetProcessor {
         jobLogger.setClassLog(LOG);
 
         JobTarget jobTarget = wrappedJobTarget.getJobTarget();
-        jobLogger.info("Processing item: {}", wrappedJobTarget.getJobTarget().getId());
+        jobLogger.info("Processing item: {} (with target: {})", wrappedJobTarget.getJobTarget().getId().toCompactId(), getTargetDisplayName(jobTarget));
         try {
             processTarget(jobTarget);
 
             jobTarget.setStatus(getCompletedStatus(jobTarget));
 
-            jobLogger.info("Processing item: {} - DONE!", jobTarget.getId());
+            jobLogger.info("Processing item: {} (with target: {}) - DONE!", jobTarget.getId().toCompactId(), getTargetDisplayName(jobTarget));
         } catch (Exception e) {
-            jobLogger.error(e, "Processing item: {} - Error!", jobTarget.getId());
+            jobLogger.error(e, "Processing item: {} (with target: {}) - Error!", jobTarget.getId().toCompactId(), getTargetDisplayName(jobTarget));
 
             jobTarget.setStatus(getFailedStatus(jobTarget));
             wrappedJobTarget.setProcessingException(e);
@@ -67,6 +67,8 @@ public abstract class AbstractTargetProcessor implements TargetProcessor {
 
         return wrappedJobTarget;
     }
+
+    protected abstract String getTargetDisplayName(JobTarget jobTarget) throws KapuaException;
 
     /**
      * Actions before {@link #processTarget(JobTarget)} invocation.

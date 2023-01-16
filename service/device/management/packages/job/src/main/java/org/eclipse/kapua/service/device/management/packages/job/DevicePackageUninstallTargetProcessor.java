@@ -22,6 +22,8 @@ import org.eclipse.kapua.service.device.management.packages.DevicePackageManagem
 import org.eclipse.kapua.service.device.management.packages.job.definition.DevicePackageUninstallPropertyKeys;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallOptions;
 import org.eclipse.kapua.service.device.management.packages.model.uninstall.DevicePackageUninstallRequest;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
 import org.eclipse.kapua.service.job.targets.JobTargetStatus;
@@ -36,9 +38,8 @@ import javax.inject.Inject;
  * @since 1.0.0
  */
 public class DevicePackageUninstallTargetProcessor extends AbstractDevicePackageTargetProcessor implements TargetProcessor {
-
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
-
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
     private static final DevicePackageManagementService PACKAGES_MANAGEMENT_SERVICE = LOCATOR.getService(DevicePackageManagementService.class);
     private static final DevicePackageFactory DEVICE_PACKAGE_FACTORY = LOCATOR.getFactory(DevicePackageFactory.class);
 
@@ -84,5 +85,14 @@ public class DevicePackageUninstallTargetProcessor extends AbstractDevicePackage
         }
 
         return super.getCompletedStatus(jobTarget);
+    }
+
+    @Override
+    protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
+        Device device = DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId());
+        if (device == null) {
+            return "N/A";
+        }
+        return device.getClientId();
     }
 }
