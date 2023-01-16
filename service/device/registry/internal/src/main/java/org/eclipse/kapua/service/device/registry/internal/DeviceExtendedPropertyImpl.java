@@ -109,13 +109,13 @@ public class DeviceExtendedPropertyImpl implements DeviceExtendedProperty {
     }
 
     /**
-     * Gets the value for big values.
+     * Gets the {@link #getValue()} for big values.
      * <p>
      * When setting a value which is longer than 255 chars,
      * the value is store in {@link #valueClob} while in {@link #value}
      * is trimmed at 255 chars for indexing performances.
      *
-     * @return The full value if greather than 255, or {@code null}
+     * @return The full value if greater than 255, or {@code null}
      * @since 1.5.0
      */
     private String getValueClob() {
@@ -123,9 +123,9 @@ public class DeviceExtendedPropertyImpl implements DeviceExtendedProperty {
     }
 
     /**
-     * Sets the value for big values.
+     * Sets the {@link #getValue()} for big values.
      *
-     * @param valueClob The value if greater than 255 chars.
+     * @param valueClob The value greater than 255 chars.
      * @since 1.5.0
      */
     private void setValueClob(String valueClob) {
