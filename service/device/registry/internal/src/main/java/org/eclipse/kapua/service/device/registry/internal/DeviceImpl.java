@@ -154,8 +154,16 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
     private String connectionInterface;
 
     @Basic
+    @Column(name = "connection_interface_clob")
+    private String connectionInterfaceClob;
+
+    @Basic
     @Column(name = "connection_ip")
     private String connectionIp;
+
+    @Basic
+    @Column(name = "connection_ip_clob")
+    private String connectionIpClob;
 
     @Basic
     @Column(name = "app_identifiers")
@@ -473,22 +481,80 @@ public class DeviceImpl extends AbstractKapuaUpdatableEntity implements Device, 
 
     @Override
     public String getConnectionInterface() {
-        return connectionInterface;
+        return getConnectionInterfaceClob() == null ? connectionInterface : getConnectionInterfaceClob();
     }
 
     @Override
     public void setConnectionInterface(String connectionInterface) {
-        this.connectionInterface = connectionInterface;
+        if (connectionInterface != null && connectionInterface.length() > 255) {
+            setConnectionInterfaceClob(connectionInterface);
+            this.connectionInterface = connectionInterface.substring(0, 255);
+        } else {
+            this.connectionInterface = connectionInterface;
+        }
+    }
+
+    /**
+     * Gets the {@link #getConnectionInterface()} for big values.
+     * <p>
+     * When setting a value which is longer than 255 chars,
+     * the value is stored in {@link #connectionInterfaceClob} while in {@link #connectionInterface}
+     * is trimmed at 255 chars for indexing performances.
+     *
+     * @return The full value if greater than 255, or {@code null}
+     * @since 2.0.0
+     */
+    private String getConnectionInterfaceClob() {
+        return connectionInterfaceClob;
+    }
+
+    /**
+     * Sets the {@link #getConnectionInterface()} for big values.
+     *
+     * @param connectionInterfaceClob The value greater than 255 chars.
+     * @since 2.0.0
+     */
+    private void setConnectionInterfaceClob(String connectionInterfaceClob) {
+        this.connectionInterfaceClob = connectionInterfaceClob;
     }
 
     @Override
     public String getConnectionIp() {
-        return connectionIp;
+        return getConnectionIpClob() == null ? connectionIp : getConnectionIpClob();
     }
 
     @Override
     public void setConnectionIp(String connectionIp) {
-        this.connectionIp = connectionIp;
+        if (connectionIp != null && connectionIp.length() > 255) {
+            setConnectionIpClob(connectionIp);
+            this.connectionIp = connectionIp.substring(0, 255);
+        } else {
+            this.connectionIp = connectionIp;
+        }
+    }
+
+    /**
+     * Gets the {@link #getConnectionIp()} for big values.
+     * <p>
+     * When setting a value which is longer than 64 chars,
+     * the value is stored in {@link #connectionIpClob} while in {@link #connectionIp}
+     * is trimmed at 64 chars for indexing performances.
+     *
+     * @return The full value if greater than 64, or {@code null}
+     * @since 2.0.0
+     */
+    private String getConnectionIpClob() {
+        return connectionIpClob;
+    }
+
+    /**
+     * Sets the {@link #getConnectionIp()} for big values.
+     *
+     * @param connectionIpClob The value greater than 64 chars.
+     * @since 2.0.0
+     */
+    private void setConnectionIpClob(String connectionIpClob) {
+        this.connectionIpClob = connectionIpClob;
     }
 
     @Override
