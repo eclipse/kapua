@@ -69,7 +69,7 @@ public abstract class AbstractTargetProcessor implements TargetProcessor {
     }
 
     /**
-     * Actions before {@link #processTarget(JobTarget)} invokation.
+     * Actions before {@link #processTarget(JobTarget)} invocation.
      *
      * @param wrappedJobTarget The current {@link JobTargetWrapper}
      * @since 1.1.0
