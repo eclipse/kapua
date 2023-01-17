@@ -14,7 +14,6 @@
 package org.eclipse.kapua.service.device.registry.common;
 
 import com.google.common.base.Strings;
-import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
@@ -42,7 +41,6 @@ import org.eclipse.kapua.service.device.registry.DeviceRegistrySettings;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.event.DeviceEventService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceRegistryServiceImpl;
-import org.eclipse.kapua.service.tag.Tag;
 import org.eclipse.kapua.service.tag.TagService;
 
 import java.util.List;
@@ -53,8 +51,6 @@ import java.util.List;
  * @since 1.0.0
  */
 public final class DeviceValidation {
-
-    private static final String DEVICE_CREATOR_CLIENT_ID = "deviceCreator.clientId";
 
     private static final DeviceRegistrySettings DEVICE_REGISTRY_SETTINGS = DeviceRegistrySettings.getInstance();
     private static final Integer BIRTH_FIELDS_CLOB_MAX_LENGTH = DEVICE_REGISTRY_SETTINGS.getInt(DeviceRegistrySettingKeys.DEVICE_REGISTRY_LIFECYCLE_BIRTH_FIELDS_CLOB_LENGTH_MAX);
@@ -96,9 +92,9 @@ public final class DeviceValidation {
         ArgumentValidator.notNull(deviceCreator.getScopeId(), "deviceCreator.scopeId");
 
         // .clientId
-        ArgumentValidator.notEmptyOrNull(deviceCreator.getClientId(), DEVICE_CREATOR_CLIENT_ID);
-        ArgumentValidator.lengthRange(deviceCreator.getClientId(), 1, 255, DEVICE_CREATOR_CLIENT_ID);
-        ArgumentValidator.match(deviceCreator.getClientId(), DeviceValidationRegex.CLIENT_ID, DEVICE_CREATOR_CLIENT_ID);
+        ArgumentValidator.notEmptyOrNull(deviceCreator.getClientId(), "deviceCreator.clientId");
+        ArgumentValidator.lengthRange(deviceCreator.getClientId(), 1, 255, "deviceCreator.clientId");
+        ArgumentValidator.match(deviceCreator.getClientId(), DeviceValidationRegex.CLIENT_ID, "deviceCreator.clientId");
 
         // .groupId
         if (deviceCreator.getGroupId() != null) {
@@ -222,17 +218,17 @@ public final class DeviceValidation {
             ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute1(), 1, 255, "deviceCreator.customAttribute2");
         }
 
-        // .customAttribute1
+        // .customAttribute3
         if (!Strings.isNullOrEmpty(deviceCreator.getCustomAttribute3())) {
             ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute3(), 1, 255, "deviceCreator.customAttribute3");
         }
 
-        // .customAttribute1
+        // .customAttribute4
         if (!Strings.isNullOrEmpty(deviceCreator.getCustomAttribute4())) {
             ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute4(), 1, 255, "deviceCreator.customAttribute4");
         }
 
-        // .customAttribute1
+        // .customAttribute5
         if (!Strings.isNullOrEmpty(deviceCreator.getCustomAttribute5())) {
             ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute1(), 1, 255, "deviceCreator.customAttribute5");
         }
@@ -268,28 +264,185 @@ public final class DeviceValidation {
      * @since 1.0.0
      */
     public static void validateUpdatePreconditions(Device device) throws KapuaException {
+        //
+        // Argument validation
         ArgumentValidator.notNull(device, "device");
-        ArgumentValidator.notNull(device.getId(), "device.id");
         ArgumentValidator.notNull(device.getScopeId(), "device.scopeId");
+        ArgumentValidator.notNull(device.getId(), "device.id");
 
-        // Check that current user can manage the current group of the device
+        // .clientId
+        ArgumentValidator.notEmptyOrNull(device.getClientId(), "device.clientId");
+        ArgumentValidator.lengthRange(device.getClientId(), 1, 255, "device.clientId");
+        ArgumentValidator.match(device.getClientId(), DeviceValidationRegex.CLIENT_ID, "device.clientId");
+
+        // .groupId
+        // Check that current User can manage the current Group of the Device
         KapuaId currentGroupId = findCurrentGroupId(device.getScopeId(), device.getId());
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.write, device.getScopeId(), currentGroupId));
 
-        // Check that current user can manage the target group of the device
+        // Check that current User can manage the target Group of the Device
         if (device.getGroupId() != null) {
-            ArgumentValidator.notNull(KapuaSecurityUtils.doPrivileged(() -> GROUP_SERVICE.find(device.getScopeId(), device.getGroupId())), "device.groupId");
+            ArgumentValidator.notNull(
+                    KapuaSecurityUtils.doPrivileged(
+                            () -> GROUP_SERVICE.find(device.getScopeId(), device.getGroupId())
+                    ), "device.groupId");
         }
         AUTHORIZATION_SERVICE.checkPermission(PERMISSION_FACTORY.newPermission(DEVICE_DOMAIN, Actions.write, device.getScopeId(), device.getGroupId()));
 
-        for (KapuaId tagId : device.getTagIds()) {
-            Tag tag = KapuaSecurityUtils.doPrivileged(() -> TAG_SERVICE.find(device.getScopeId(), tagId));
-            if (tag == null) {
-                throw new KapuaEntityNotFoundException(Tag.TYPE, tagId);
+        // .status
+        ArgumentValidator.notNull(device.getStatus(), "device.status");
+
+        // .connectionId
+        if (device.getConnectionId() != null) {
+            ArgumentValidator.notNull(
+                    KapuaSecurityUtils.doPrivileged(
+                            () -> DEVICE_CONNECTION_SERVICE.find(device.getScopeId(), device.getConnectionId())
+                    ), "device.connectionId");
+        }
+
+        // .lastEventId
+        if (device.getLastEventId() != null) {
+            ArgumentValidator.notNull(
+                    KapuaSecurityUtils.doPrivileged(
+                            () -> DEVICE_EVENT_SERVICE.find(device.getScopeId(), device.getLastEventId())
+                    ), "device.lastEventId");
+        }
+
+        // .displayName
+        if (!Strings.isNullOrEmpty(device.getDisplayName())) {
+            ArgumentValidator.lengthRange(device.getDisplayName(), 1, 255, "device.displayName");
+        }
+
+        // .serialNumber
+        if (!Strings.isNullOrEmpty(device.getSerialNumber())) {
+            ArgumentValidator.lengthRange(device.getSerialNumber(), 1, 255, "device.serialNumber");
+        }
+
+        // .modelId
+        if (!Strings.isNullOrEmpty(device.getModelId())) {
+            ArgumentValidator.lengthRange(device.getModelId(), 1, 255, "device.modelId");
+        }
+
+        // .modelName
+        if (!Strings.isNullOrEmpty(device.getModelName())) {
+            ArgumentValidator.lengthRange(device.getModelName(), 1, 255, "device.modelName");
+        }
+
+        // .imei
+        if (!Strings.isNullOrEmpty(device.getImei())) {
+            ArgumentValidator.lengthRange(device.getImei(), 1, 24, "device.imei");
+        }
+
+        // .imsi
+        if (!Strings.isNullOrEmpty(device.getImsi())) {
+            ArgumentValidator.lengthRange(device.getImsi(), 1, 15, "device.imsi");
+        }
+
+        // .iccid
+        if (!Strings.isNullOrEmpty(device.getIccid())) {
+            ArgumentValidator.lengthRange(device.getIccid(), 1, 22, "device.iccd");
+        }
+
+        // .biosVersion
+        if (!Strings.isNullOrEmpty(device.getBiosVersion())) {
+            ArgumentValidator.lengthRange(device.getBiosVersion(), 1, 255, "device.biosVersion");
+        }
+
+        // .firmwareVersion
+        if (!Strings.isNullOrEmpty(device.getFirmwareVersion())) {
+            ArgumentValidator.lengthRange(device.getFirmwareVersion(), 1, 255, "device.firmwareVersion");
+        }
+
+        // .osVersion
+        if (!Strings.isNullOrEmpty(device.getOsVersion())) {
+            ArgumentValidator.lengthRange(device.getOsVersion(), 1, 255, "device.osVersion");
+        }
+
+        // .jvmVersion
+        if (!Strings.isNullOrEmpty(device.getJvmVersion())) {
+            ArgumentValidator.lengthRange(device.getJvmVersion(), 1, 255, "device.jvmVersion");
+        }
+
+        // .osgiFrameworkVersion
+        if (!Strings.isNullOrEmpty(device.getOsgiFrameworkVersion())) {
+            ArgumentValidator.lengthRange(device.getOsgiFrameworkVersion(), 1, 255, "device.osgiFrameworkVersion");
+        }
+
+        // .applicationFrameworkVersion
+        if (!Strings.isNullOrEmpty(device.getApplicationFrameworkVersion())) {
+            ArgumentValidator.lengthRange(device.getApplicationFrameworkVersion(), 1, 255, "device.applicationFrameworkVersion");
+        }
+
+        // .connectionInterface
+        if (!Strings.isNullOrEmpty(device.getConnectionInterface())) {
+            ArgumentValidator.lengthRange(device.getConnectionInterface(), 1, BIRTH_FIELDS_CLOB_MAX_LENGTH, "device.connectionInterface");
+        }
+
+        // .connectionIp
+        if (!Strings.isNullOrEmpty(device.getConnectionIp())) {
+            ArgumentValidator.lengthRange(device.getConnectionIp(), 1, BIRTH_FIELDS_CLOB_MAX_LENGTH, "device.connectionIp");
+        }
+
+        // .applicationIdentifiers
+        if (!Strings.isNullOrEmpty(device.getApplicationIdentifiers())) {
+            ArgumentValidator.lengthRange(device.getApplicationIdentifiers(), 1, 1024, "device.applicationIdentifiers");
+        }
+
+        // .acceptEncoding
+        if (!Strings.isNullOrEmpty(device.getAcceptEncoding())) {
+            ArgumentValidator.lengthRange(device.getAcceptEncoding(), 1, 255, "device.acceptEncoding");
+        }
+
+        // .customAttribute1
+        if (!Strings.isNullOrEmpty(device.getCustomAttribute1())) {
+            ArgumentValidator.lengthRange(device.getCustomAttribute1(), 1, 255, "device.customAttribute1");
+        }
+
+        // .customAttribute2
+        if (!Strings.isNullOrEmpty(device.getCustomAttribute2())) {
+            ArgumentValidator.lengthRange(device.getCustomAttribute1(), 1, 255, "device.customAttribute2");
+        }
+
+        // .customAttribute3
+        if (!Strings.isNullOrEmpty(device.getCustomAttribute3())) {
+            ArgumentValidator.lengthRange(device.getCustomAttribute3(), 1, 255, "device.customAttribute3");
+        }
+
+        // .customAttribute4
+        if (!Strings.isNullOrEmpty(device.getCustomAttribute4())) {
+            ArgumentValidator.lengthRange(device.getCustomAttribute4(), 1, 255, "device.customAttribute4");
+        }
+
+        // .customAttribute5
+        if (!Strings.isNullOrEmpty(device.getCustomAttribute5())) {
+            ArgumentValidator.lengthRange(device.getCustomAttribute1(), 1, 255, "device.customAttribute5");
+        }
+
+        // .extendedProperties
+        for (DeviceExtendedProperty deviceExtendedProperty : device.getExtendedProperties()) {
+            // .groupName
+            if (!Strings.isNullOrEmpty(deviceExtendedProperty.getGroupName())) {
+                ArgumentValidator.lengthRange(deviceExtendedProperty.getGroupName(), 1, 64, "device.extendedProperties[].groupName");
+            }
+
+            // .name
+            ArgumentValidator.notNull(deviceExtendedProperty.getName(), "device.extendedProperties[].name");
+            ArgumentValidator.lengthRange(deviceExtendedProperty.getName(), 1, 64, "device.extendedProperties[].name");
+
+            // .value
+            if (!Strings.isNullOrEmpty(deviceExtendedProperty.getValue())) {
+                ArgumentValidator.lengthRange(deviceExtendedProperty.getValue(), 1, BIRTH_FIELDS_EXTENDED_PROPERTY_VALUE_MAX_LENGTH, "device.extendedProperties[].value");
             }
         }
 
-        return device;
+        // .tagsIds
+        for (KapuaId tagId : device.getTagIds()) {
+            ArgumentValidator.notNull(
+                    KapuaSecurityUtils.doPrivileged(
+                            () -> TAG_SERVICE.find(device.getScopeId(), tagId))
+                    , "device.tagsIds[].id"
+            );
+        }
     }
 
     /**
