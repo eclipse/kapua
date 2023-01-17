@@ -126,14 +126,14 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         JobTargetListResult jobTargets = KapuaSecurityUtils.doPrivileged(() -> jobTargetService.query(query));
 
 
-        jobLogger.info("Reading target: {} (target id: {})...", getTargetDisplayName(jobTargets.getItem(0)), jobTargets.getItem(0).getId().toCompactId());
+        jobLogger.info("Reading target: {} (id: {})...", getTargetDisplayName(jobTargets.getItem(0)), jobTargets.getItem(0).getId().toCompactId());
 
         JobTargetWrapper currentWrappedJobTarget = null;
         if (jobTargetIndex < wrappedJobTargets.size()) {
             currentWrappedJobTarget = wrappedJobTargets.get(jobTargetIndex++);
         }
 
-        jobLogger.info("Reading target: {} (target id: {})... DONE!", getTargetDisplayName(jobTargets.getItem(0)), jobTargets.getItem(0).getId().toCompactId());
+        jobLogger.info("Reading target: {} (id: {})... DONE!", getTargetDisplayName(jobTargets.getItem(0)), jobTargets.getItem(0).getId().toCompactId());
         return currentWrappedJobTarget;
     }
 
