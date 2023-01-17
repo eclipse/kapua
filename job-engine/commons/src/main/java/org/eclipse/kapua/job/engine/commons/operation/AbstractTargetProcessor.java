@@ -51,15 +51,15 @@ public abstract class AbstractTargetProcessor implements TargetProcessor {
         jobLogger.setClassLog(LOG);
 
         JobTarget jobTarget = wrappedJobTarget.getJobTarget();
-        jobLogger.info("Processing item: {} (with target: {})", wrappedJobTarget.getJobTarget().getId().toCompactId(), getTargetDisplayName(jobTarget));
+        jobLogger.info("Processing target: {} (target id: {})", getTargetDisplayName(jobTarget), jobTarget.getId().toCompactId());
         try {
             processTarget(jobTarget);
 
             jobTarget.setStatus(getCompletedStatus(jobTarget));
 
-            jobLogger.info("Processing item: {} (with target: {}) - DONE!", jobTarget.getId().toCompactId(), getTargetDisplayName(jobTarget));
+            jobLogger.info("Processing target: {} (target id: {}) - DONE!", getTargetDisplayName(jobTarget), jobTarget.getId().toCompactId());
         } catch (Exception e) {
-            jobLogger.error(e, "Processing item: {} (with target: {}) - Error!", jobTarget.getId().toCompactId(), getTargetDisplayName(jobTarget));
+            jobLogger.error(e, "Processing target: {} (target id: {}) - Error!", getTargetDisplayName(jobTarget), jobTarget.getId().toCompactId());
 
             jobTarget.setStatus(getFailedStatus(jobTarget));
             wrappedJobTarget.setProcessingException(e);

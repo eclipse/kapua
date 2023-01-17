@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.commons.operation;
 
+import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
 import org.eclipse.kapua.job.engine.commons.logger.JobLogger;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobContextWrapper;
@@ -21,6 +22,9 @@ import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.model.query.predicate.AndPredicate;
 import org.eclipse.kapua.model.query.predicate.AttributePredicate;
+import org.eclipse.kapua.service.device.registry.Device;
+import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
+import org.eclipse.kapua.service.job.Job;
 import org.eclipse.kapua.service.job.operation.TargetReader;
 import org.eclipse.kapua.service.job.step.JobStepIndex;
 import org.eclipse.kapua.service.job.targets.JobTarget;
@@ -53,6 +57,7 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
     private static final Logger LOG = LoggerFactory.getLogger(DefaultTargetReader.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+    private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
 
     private final JobTargetFactory jobTargetFactory = LOCATOR.getFactory(JobTargetFactory.class);
     private final JobTargetService jobTargetService = LOCATOR.getService(JobTargetService.class);
@@ -112,14 +117,23 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         JobLogger jobLogger = jobContextWrapper.getJobLogger();
         jobLogger.setClassLog(LOG);
 
-        jobLogger.info("Reading item...");
+        JobTargetQuery query = jobTargetFactory.newQuery(jobContextWrapper.getScopeId());
+
+        AndPredicate andPredicate = query.andPredicate(
+            query.attributePredicate(JobTargetAttributes.JOB_ID, jobContextWrapper.getJobId())
+        );
+        query.setPredicate(andPredicate);
+        JobTargetListResult jobTargets = KapuaSecurityUtils.doPrivileged(() -> jobTargetService.query(query));
+
+
+        jobLogger.info("Reading target: {} (target id: {})...", getTargetDisplayName(jobTargets.getItem(0)), jobTargets.getItem(0).getId().toCompactId());
 
         JobTargetWrapper currentWrappedJobTarget = null;
         if (jobTargetIndex < wrappedJobTargets.size()) {
             currentWrappedJobTarget = wrappedJobTargets.get(jobTargetIndex++);
         }
 
-        jobLogger.info("Reading item... DONE!");
+        jobLogger.info("Reading target: {} (target id: {})... DONE!", getTargetDisplayName(jobTargets.getItem(0)), jobTargets.getItem(0).getId().toCompactId());
         return currentWrappedJobTarget;
     }
 
@@ -167,6 +181,14 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         if (!jobContextWrapper.getTargetSublist().isEmpty()) {
             andPredicate.and(query.attributePredicate(JobTargetAttributes.ENTITY_ID, jobContextWrapper.getTargetSublist().getTargetIds()));
         }
+    }
+
+    protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
+        Device device = KapuaSecurityUtils.doPrivileged(() -> DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId()));
+        if (device == null) {
+            return "N/A";
+        }
+        return device.getClientId();
     }
 
 }
