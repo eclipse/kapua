@@ -12,11 +12,6 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.eclipse.kapua.commons.event.ServiceEventClientConfiguration;
 import org.eclipse.kapua.commons.event.ServiceEventModule;
 import org.eclipse.kapua.commons.event.ServiceEventModuleConfiguration;
@@ -24,7 +19,10 @@ import org.eclipse.kapua.commons.event.ServiceInspector;
 import org.eclipse.kapua.service.device.registry.connection.DeviceConnectionService;
 import org.eclipse.kapua.service.device.registry.internal.DeviceEntityManagerFactory;
 
-//@KapuaProvider
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+
 public class DeviceServiceModule extends ServiceEventModule {
 
     @Inject
@@ -34,14 +32,17 @@ public class DeviceServiceModule extends ServiceEventModule {
 
     @Override
     protected ServiceEventModuleConfiguration initializeConfiguration() {
-        KapuaDeviceRegistrySettings kds = KapuaDeviceRegistrySettings.getInstance();
-        List<ServiceEventClientConfiguration> selc = new ArrayList<>();
-        selc.addAll(ServiceInspector.getEventBusClients(deviceRegistryService, DeviceRegistryService.class));
-        selc.addAll(ServiceInspector.getEventBusClients(deviceConnectionService, DeviceConnectionService.class));
+        DeviceRegistrySettings deviceRegistrySettings = DeviceRegistrySettings.getInstance();
+
+        List<ServiceEventClientConfiguration> serviceEventListenerConfigurations = new ArrayList<>();
+        serviceEventListenerConfigurations.addAll(ServiceInspector.getEventBusClients(deviceRegistryService, DeviceRegistryService.class));
+        serviceEventListenerConfigurations.addAll(ServiceInspector.getEventBusClients(deviceConnectionService, DeviceConnectionService.class));
+
         return new ServiceEventModuleConfiguration(
-                kds.getString(KapuaDeviceRegistrySettingKeys.DEVICE_EVENT_ADDRESS),
+                deviceRegistrySettings.getString(DeviceRegistrySettingKeys.DEVICE_REGISTRY_EVENT_ADDRESS),
                 DeviceEntityManagerFactory.instance(),
-                selc.toArray(new ServiceEventClientConfiguration[0]));
+                serviceEventListenerConfigurations.toArray(new ServiceEventClientConfiguration[0])
+        );
     }
 
 }
