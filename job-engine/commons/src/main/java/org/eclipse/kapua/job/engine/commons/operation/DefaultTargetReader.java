@@ -56,6 +56,7 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
     private static final Logger LOG = LoggerFactory.getLogger(DefaultTargetReader.class);
 
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
+
     private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
 
     private final JobTargetFactory jobTargetFactory = LOCATOR.getFactory(JobTargetFactory.class);

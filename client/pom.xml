@@ -30,8 +30,8 @@
         <maven.toolchain.jdk.version>${kapua-client.maven.toolchain.jdk.version}</maven.toolchain.jdk.version>
     </properties>
 
-<!--    <modules>-->
-<!--        <module>gateway</module>-->
-<!--    </modules>-->
+    <modules>
+        <module>gateway</module>
+    </modules>
 
 </project>
