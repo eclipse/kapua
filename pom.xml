@@ -88,6 +88,7 @@
         <mockito.version>1.10.19</mockito.version>
         <netty.version>4.1.87.Final</netty.version>
         <netty3.version>3.10.6.Final</netty3.version>
+        <ow2-asm.version>9.4</ow2-asm.version>
         <opencsv.version>3.7</opencsv.version>
         <owasp-encoder.version>1.2.3</owasp-encoder.version>
         <paho.version>1.2.1</paho.version>
@@ -1432,6 +1433,28 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>${ow2-asm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-analysis</artifactId>
+                <version>${ow2-asm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-commons</artifactId>
+                <version>${ow2-asm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm-tree</artifactId>
+                <version>${ow2-asm.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.owasp.encoder</groupId>
                 <artifactId>encoder</artifactId>
