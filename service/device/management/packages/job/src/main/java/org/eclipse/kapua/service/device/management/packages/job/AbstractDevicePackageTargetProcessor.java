@@ -94,4 +94,5 @@ public abstract class AbstractDevicePackageTargetProcessor extends AbstractDevic
             KapuaSecurityUtils.doPrivileged(() -> JOB_ENGINE_SERVICE.startJob(scopeId, jobDeviceManagementOperation.getJobId(), jobStartOptions));
         }
     }
+
 }
