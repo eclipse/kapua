@@ -14,13 +14,12 @@ package org.eclipse.kapua.service.device.management.bundle.job;
 
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.job.engine.commons.operation.AbstractTargetProcessor;
+import org.eclipse.kapua.job.engine.commons.operation.AbstractDeviceTargetProcessor;
 import org.eclipse.kapua.job.engine.commons.wrappers.JobTargetWrapper;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.management.bundle.DeviceBundleManagementService;
 import org.eclipse.kapua.service.device.management.bundle.job.definition.DeviceBundlePropertyKeys;
-import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
@@ -34,7 +33,7 @@ import javax.inject.Inject;
  *
  * @since 1.0.0
  */
-public class DeviceBundleStartTargetProcessor extends AbstractTargetProcessor implements TargetProcessor {
+public class DeviceBundleStartTargetProcessor extends AbstractDeviceTargetProcessor implements TargetProcessor {
     private static final KapuaLocator LOCATOR = KapuaLocator.getInstance();
     private static final DeviceRegistryService DEVICE_REGISTRY_SERVICE = LOCATOR.getService(DeviceRegistryService.class);
     private static final DeviceBundleManagementService BUNDLE_MANAGEMENT_SERVICE = LOCATOR.getService(DeviceBundleManagementService.class);
@@ -57,14 +56,5 @@ public class DeviceBundleStartTargetProcessor extends AbstractTargetProcessor im
         Long timeout = stepContextWrapper.getStepProperty(DeviceBundlePropertyKeys.TIMEOUT, Long.class);
 
         KapuaSecurityUtils.doPrivileged(() -> BUNDLE_MANAGEMENT_SERVICE.start(jobTarget.getScopeId(), jobTarget.getJobTargetId(), bundleId, timeout));
-    }
-
-    @Override
-    protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
-        Device device = KapuaSecurityUtils.doPrivileged(() -> DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId()));;
-        if (device == null) {
-            return "N/A";
-        }
-        return device.getClientId();
     }
 }
