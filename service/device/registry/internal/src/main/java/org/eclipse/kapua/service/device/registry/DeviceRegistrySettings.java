@@ -12,27 +12,36 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry;
 
+import org.eclipse.kapua.commons.setting.AbstractBaseKapuaSetting;
 import org.eclipse.kapua.commons.setting.AbstractKapuaSetting;
 
-public class KapuaDeviceRegistrySettings extends AbstractKapuaSetting<KapuaDeviceRegistrySettingKeys> {
+/**
+ * {@link AbstractBaseKapuaSetting} for `kapua-device-registry-internal` module.
+ *
+ * @since 1.0.0
+ */
+public class DeviceRegistrySettings extends AbstractKapuaSetting<DeviceRegistrySettingKeys> {
 
-    private static final String DEVICE_REGISTRY_SETTING_RESOURCE = "kapua-device-registry-setting.properties";
+    private static final String DEVICE_REGISTRY_SETTING_RESOURCE = "device-registry-setting.properties";
 
-    private static final KapuaDeviceRegistrySettings INSTANCE = new KapuaDeviceRegistrySettings();
+    private static final DeviceRegistrySettings INSTANCE = new DeviceRegistrySettings();
 
     /**
-     * Construct a new device registry setting reading settings from {@link KapuaDeviceRegistrySettings#DEVICE_REGISTRY_SETTING_RESOURCE}
+     * Constructor.
+     *
+     * @since 1.0.0
      */
-    private KapuaDeviceRegistrySettings() {
+    private DeviceRegistrySettings() {
         super(DEVICE_REGISTRY_SETTING_RESOURCE);
     }
 
     /**
-     * Return the device registry setting instance (singleton)
+     * Gets the {@link DeviceRegistrySettings} singleton instance.
      *
-     * @return
+     * @return The {@link DeviceRegistrySettings} instance.
+     * @since 1.0.0
      */
-    public static KapuaDeviceRegistrySettings getInstance() {
+    public static DeviceRegistrySettings getInstance() {
         return INSTANCE;
     }
 
