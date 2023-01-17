@@ -35,11 +35,18 @@ public enum DeviceRegistrySettingKeys implements SettingKey {
     DEVICE_REGISTRY_EVENT_ADDRESS("device.registry.event.address"),
 
     /**
-     * Gets the hard limit for {@link KapuaBirthMessage} fields length.
+     * Gets the hard limit for {@link KapuaBirthMessage} generic fields length.
      *
      * @since 2.0.0
      */
-    DEVICE_REGISTRY_LIFECYCLE_BIRTH_FIELDS_LENGTH_MAX("device.registry.lifecycle.birth.fields.length.max"),
+    DEVICE_REGISTRY_LIFECYCLE_BIRTH_FIELDS_CLOB_LENGTH_MAX("device.registry.lifecycle.birth.fields.clob.length.max"),
+
+    /**
+     * Gets the hard limit for {@link KapuaBirthMessage} {@link DeviceExtendedProperty#getValue()} fields length hdrd limit.
+     *
+     * @since 2.0.0
+     */
+    DEVICE_REGISTRY_LIFECYCLE_BIRTH_FIELDS_EXTENDED_PROPERTIES_VALUE_LENGTH_MAX("device.registry.lifecycle.birth.fields.extendedProperties.value.length.max"),
 
     ;
 
