@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.device.registry.steps;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import io.cucumber.java.After;
@@ -291,7 +292,7 @@ public class DeviceRegistrySteps extends TestBase {
     @Given("The device ID {string}")
     public void setDeviceId(String deviceId) {
         KapuaId dev;
-        if (deviceId.trim().toLowerCase().equals("null")) {
+        if (deviceId.trim().equalsIgnoreCase("null")) {
             dev = null;
         } else {
             dev = getKapuaId(deviceId);
@@ -302,7 +303,7 @@ public class DeviceRegistrySteps extends TestBase {
     @Given("The device client ID {string}")
     public void setDeviceClientId(String clientId) {
         String id;
-        if (clientId.trim().toLowerCase().equals("null")) {
+        if (clientId.trim().equalsIgnoreCase("null")) {
             id = null;
         } else {
             id = clientId;
@@ -755,11 +756,14 @@ public class DeviceRegistrySteps extends TestBase {
     public void checkCreatedDeviceAgainstCreatorParameters() {
         DeviceCreator deviceCreator = (DeviceCreator) stepData.get(DEVICE_CREATOR);
         Device device = (Device) stepData.get(DEVICE);
+
         Assert.assertNotNull(device.getId());
         Assert.assertEquals(deviceCreator.getScopeId(), device.getScopeId());
-        Assert.assertEquals(deviceCreator.getClientId().length(), device.getClientId().length());
+        Assert.assertEquals(deviceCreator.getStatus(), device.getStatus());
+        Assert.assertEquals(deviceCreator.getGroupId(), device.getGroupId());
         Assert.assertEquals(deviceCreator.getClientId(), device.getClientId());
         Assert.assertEquals(deviceCreator.getConnectionId(), device.getConnectionId());
+        Assert.assertEquals(deviceCreator.getLastEventId(), device.getLastEventId());
         Assert.assertEquals(deviceCreator.getDisplayName(), device.getDisplayName());
         Assert.assertEquals(deviceCreator.getSerialNumber(), device.getSerialNumber());
         Assert.assertEquals(deviceCreator.getModelId(), device.getModelId());
@@ -780,41 +784,41 @@ public class DeviceRegistrySteps extends TestBase {
         Assert.assertEquals(deviceCreator.getCustomAttribute3(), device.getCustomAttribute3());
         Assert.assertEquals(deviceCreator.getCustomAttribute4(), device.getCustomAttribute4());
         Assert.assertEquals(deviceCreator.getCustomAttribute5(), device.getCustomAttribute5());
-        Assert.assertEquals(deviceCreator.getStatus(), device.getStatus());
     }
 
     @Then("The device was correctly updated")
     public void checkUpdatedDeviceAgainstOriginal() throws Exception {
         Device device = (Device) stepData.get(DEVICE);
-        Device tmpDevice;
+        Device deviceFromDb;
         primeException();
         try {
-            tmpDevice = deviceRegistryService.find(device.getScopeId(), device.getId());
-            Assert.assertEquals(tmpDevice.getScopeId(), device.getScopeId());
-            Assert.assertEquals(tmpDevice.getClientId().length(), device.getClientId().length());
-            Assert.assertEquals(tmpDevice.getClientId(), device.getClientId());
-            Assert.assertEquals(tmpDevice.getConnectionId(), device.getConnectionId());
-            Assert.assertEquals(tmpDevice.getDisplayName(), device.getDisplayName());
-            Assert.assertEquals(tmpDevice.getSerialNumber(), device.getSerialNumber());
-            Assert.assertEquals(tmpDevice.getModelId(), device.getModelId());
-            Assert.assertEquals(tmpDevice.getModelName(), device.getModelName());
-            Assert.assertEquals(tmpDevice.getImei(), device.getImei());
-            Assert.assertEquals(tmpDevice.getImsi(), device.getImsi());
-            Assert.assertEquals(tmpDevice.getIccid(), device.getIccid());
-            Assert.assertEquals(tmpDevice.getBiosVersion(), device.getBiosVersion());
-            Assert.assertEquals(tmpDevice.getFirmwareVersion(), device.getFirmwareVersion());
-            Assert.assertEquals(tmpDevice.getOsVersion(), device.getOsVersion());
-            Assert.assertEquals(tmpDevice.getJvmVersion(), device.getJvmVersion());
-            Assert.assertEquals(tmpDevice.getOsgiFrameworkVersion(), device.getOsgiFrameworkVersion());
-            Assert.assertEquals(tmpDevice.getApplicationFrameworkVersion(), device.getApplicationFrameworkVersion());
-            Assert.assertEquals(tmpDevice.getApplicationIdentifiers(), device.getApplicationIdentifiers());
-            Assert.assertEquals(tmpDevice.getAcceptEncoding(), device.getAcceptEncoding());
-            Assert.assertEquals(tmpDevice.getCustomAttribute1(), device.getCustomAttribute1());
-            Assert.assertEquals(tmpDevice.getCustomAttribute2(), device.getCustomAttribute2());
-            Assert.assertEquals(tmpDevice.getCustomAttribute3(), device.getCustomAttribute3());
-            Assert.assertEquals(tmpDevice.getCustomAttribute4(), device.getCustomAttribute4());
-            Assert.assertEquals(tmpDevice.getCustomAttribute5(), device.getCustomAttribute5());
-            Assert.assertEquals(tmpDevice.getStatus(), device.getStatus());
+            deviceFromDb = deviceRegistryService.find(device.getScopeId(), device.getId());
+
+            Assert.assertEquals(deviceFromDb.getScopeId(), device.getScopeId());
+            Assert.assertEquals(deviceFromDb.getStatus(), device.getStatus());
+            Assert.assertEquals(deviceFromDb.getClientId(), device.getClientId());
+            Assert.assertEquals(deviceFromDb.getLastEventId(), device.getLastEventId());
+            Assert.assertEquals(deviceFromDb.getConnectionId(), device.getConnectionId());
+            Assert.assertEquals(deviceFromDb.getDisplayName(), device.getDisplayName());
+            Assert.assertEquals(deviceFromDb.getSerialNumber(), device.getSerialNumber());
+            Assert.assertEquals(deviceFromDb.getModelId(), device.getModelId());
+            Assert.assertEquals(deviceFromDb.getModelName(), device.getModelName());
+            Assert.assertEquals(deviceFromDb.getImei(), device.getImei());
+            Assert.assertEquals(deviceFromDb.getImsi(), device.getImsi());
+            Assert.assertEquals(deviceFromDb.getIccid(), device.getIccid());
+            Assert.assertEquals(deviceFromDb.getBiosVersion(), device.getBiosVersion());
+            Assert.assertEquals(deviceFromDb.getFirmwareVersion(), device.getFirmwareVersion());
+            Assert.assertEquals(deviceFromDb.getOsVersion(), device.getOsVersion());
+            Assert.assertEquals(deviceFromDb.getJvmVersion(), device.getJvmVersion());
+            Assert.assertEquals(deviceFromDb.getOsgiFrameworkVersion(), device.getOsgiFrameworkVersion());
+            Assert.assertEquals(deviceFromDb.getApplicationFrameworkVersion(), device.getApplicationFrameworkVersion());
+            Assert.assertEquals(deviceFromDb.getApplicationIdentifiers(), device.getApplicationIdentifiers());
+            Assert.assertEquals(deviceFromDb.getAcceptEncoding(), device.getAcceptEncoding());
+            Assert.assertEquals(deviceFromDb.getCustomAttribute1(), device.getCustomAttribute1());
+            Assert.assertEquals(deviceFromDb.getCustomAttribute2(), device.getCustomAttribute2());
+            Assert.assertEquals(deviceFromDb.getCustomAttribute3(), device.getCustomAttribute3());
+            Assert.assertEquals(deviceFromDb.getCustomAttribute4(), device.getCustomAttribute4());
+            Assert.assertEquals(deviceFromDb.getCustomAttribute5(), device.getCustomAttribute5());
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -877,7 +881,7 @@ public class DeviceRegistrySteps extends TestBase {
         DeviceQuery tmpQuery;
         DeviceListResult tmpListRes;
         tmpDevice = deviceFactory.newEntity(SYS_SCOPE_ID);
-        tmpCreator = deviceFactory.newCreator(SYS_SCOPE_ID, "TestDevice");
+        tmpCreator = deviceFactory.newCreator(SYS_SCOPE_ID);
         tmpQuery = deviceFactory.newQuery(SYS_SCOPE_ID);
         tmpListRes = deviceFactory.newListResult();
         Assert.assertNotNull(tmpDevice);
@@ -1059,8 +1063,10 @@ public class DeviceRegistrySteps extends TestBase {
     public void checkConnectionObjectAgainstCreator() {
         DeviceConnection connection = (DeviceConnection) stepData.get(DEVICE_CONNECTION);
         DeviceConnectionCreator connectionCreator = (DeviceConnectionCreator) stepData.get(DEVICE_CONNECTION_CREATOR);
+
         Assert.assertNotNull(connection);
         Assert.assertNotNull(connectionCreator);
+        Assert.assertEquals(connectionCreator.getStatus(), connection.getStatus());
         Assert.assertEquals(connectionCreator.getScopeId(), connection.getScopeId());
         Assert.assertEquals(connectionCreator.getClientId(), connection.getClientId());
         Assert.assertEquals(connectionCreator.getUserId(), connection.getUserId());
@@ -1149,7 +1155,7 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @When("I query for all connections with the parameter {string} set to {string}")
-    public void cueryForConnections(String parameter, String value) throws Exception {
+    public void queryForConnections(String parameter, String value) throws Exception {
         DeviceConnectionQuery query = deviceConnectionFactory.newQuery(getCurrentScopeId());
         query.setPredicate(query.attributePredicate(parameter, value, AttributePredicate.Operator.EQUAL));
         primeException();
@@ -1466,6 +1472,7 @@ public class DeviceRegistrySteps extends TestBase {
     public void checkCreatedEventAgainstCreatorParameters() {
         DeviceEventCreator eventCreator = (DeviceEventCreator) stepData.get(DEVICE_EVENT_CREATOR);
         DeviceEvent event = (DeviceEvent) stepData.get(DEVICE_EVENT);
+
         Assert.assertNotNull(event.getId());
         Assert.assertEquals(eventCreator.getScopeId(), event.getScopeId());
         Assert.assertEquals(eventCreator.getDeviceId(), event.getDeviceId());
@@ -1475,8 +1482,7 @@ public class DeviceRegistrySteps extends TestBase {
         Assert.assertEquals(eventCreator.getResponseCode(), event.getResponseCode());
         Assert.assertEquals(eventCreator.getEventMessage(), event.getEventMessage());
         Assert.assertEquals(eventCreator.getAction(), event.getAction());
-        Assert.assertEquals(eventCreator.getPosition().toDisplayString(),
-                event.getPosition().toDisplayString());
+        Assert.assertEquals(eventCreator.getPosition().toDisplayString(), event.getPosition().toDisplayString());
     }
 
     @Then("The type of the last event is {string}")
@@ -1613,97 +1619,124 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @Given("A birth message from device {string}")
-    public void createABirthMessage(String clientId) throws KapuaException {
-        Account tmpAccount = (Account) stepData.get(LAST_ACCOUNT);
-        Assert.assertNotNull(clientId);
-        Assert.assertFalse(clientId.isEmpty());
-        Assert.assertNotNull(tmpAccount);
-        Assert.assertNotNull(tmpAccount.getId());
-        Device tmpDev;
-        List<String> tmpSemParts = new ArrayList<>();
-        KapuaBirthMessage tmpMsg = lifecycleMessageFactory.newKapuaBirthMessage();
-        KapuaBirthChannel tmpChan = lifecycleMessageFactory.newKapuaBirthChannel();
-        KapuaBirthPayload tmpPayload = prepareDefaultBirthPayload();
-        tmpChan.setClientId(clientId);
-        tmpSemParts.add(PART1);
-        tmpSemParts.add(PART2);
-        tmpChan.setSemanticParts(tmpSemParts);
-        tmpMsg.setChannel(tmpChan);
-        tmpMsg.setPayload(tmpPayload);
-        tmpMsg.setScopeId(tmpAccount.getId());
-        tmpMsg.setClientId(clientId);
-        tmpMsg.setId(UUID.randomUUID());
-        tmpMsg.setReceivedOn(new Date());
-        tmpMsg.setPosition(getDefaultPosition());
-        tmpDev = deviceRegistryService.findByClientId(tmpAccount.getId(), clientId);
-        if (tmpDev != null) {
-            tmpMsg.setDeviceId(tmpDev.getId());
-        } else {
-            tmpMsg.setDeviceId(null);
-        }
-        deviceLifeCycleService.birth(getKapuaId(), tmpMsg);
-    }
+    public void createABirthMessage(String clientId) throws Exception {
+        Account lastAccount = (Account) stepData.get(LAST_ACCOUNT);
+        Assert.assertNotNull(lastAccount);
+        Assert.assertNotNull(lastAccount.getId());
 
-    @Given("A disconnect message from device {string}")
-    public void createADeathMessage(String clientId) throws Exception {
-        Account tmpAccount = (Account) stepData.get(LAST_ACCOUNT);
-        Device tmpDev;
-        List<String> tmpSemParts = new ArrayList<>();
-        KapuaDisconnectMessage tmpMsg = lifecycleMessageFactory.newKapuaDisconnectMessage();
-        KapuaDisconnectChannel tmpChan = lifecycleMessageFactory.newKapuaDisconnectChannel();
-        KapuaDisconnectPayload tmpPayload = prepareDefaultDeathPayload();
-        tmpChan.setClientId(clientId);
-        tmpSemParts.add(PART1);
-        tmpSemParts.add(PART2);
-        tmpChan.setSemanticParts(tmpSemParts);
-        tmpMsg.setChannel(tmpChan);
-        tmpMsg.setPayload(tmpPayload);
-        tmpMsg.setScopeId(tmpAccount.getId());
-        tmpMsg.setClientId(clientId);
-        tmpMsg.setId(UUID.randomUUID());
-        tmpMsg.setReceivedOn(new Date());
-        tmpMsg.setPosition(getDefaultPosition());
-        tmpDev = deviceRegistryService.findByClientId(tmpAccount.getId(), clientId);
-        if (tmpDev != null) {
-            tmpMsg.setDeviceId(tmpDev.getId());
+        List<String> semanticParts = new ArrayList<>();
+        semanticParts.add(PART1);
+        semanticParts.add(PART2);
+
+        KapuaBirthChannel birthChannel = lifecycleMessageFactory.newKapuaBirthChannel();
+        birthChannel.setClientId(clientId);
+        birthChannel.setSemanticParts(semanticParts);
+
+        KapuaBirthPayload birthPayload = prepareDefaultBirthPayload();
+
+        KapuaBirthMessage birthMessage = lifecycleMessageFactory.newKapuaBirthMessage();
+        birthMessage.setChannel(birthChannel);
+        birthMessage.setPayload(birthPayload);
+        birthMessage.setScopeId(lastAccount.getId());
+        birthMessage.setClientId(clientId);
+        birthMessage.setId(UUID.randomUUID());
+        birthMessage.setReceivedOn(new Date());
+        birthMessage.setPosition(getDefaultPosition());
+
+        Device device = deviceRegistryService.findByClientId(lastAccount.getId(), clientId);
+        if (device != null) {
+            birthMessage.setDeviceId(device.getId());
         } else {
-            tmpMsg.setDeviceId(null);
+            birthMessage.setDeviceId(null);
         }
+
         try {
             primeException();
-            deviceLifeCycleService.death(getKapuaId(), tmpMsg);
+            deviceLifeCycleService.birth(null, birthMessage);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
     }
 
+    @Given("A disconnect message from device {string}")
+    public void createADeathMessage(String clientId) throws Exception {
+        Assert.assertNotNull(clientId);
+        Assert.assertFalse(clientId.isEmpty());
+
+        Account lastAccount = (Account) stepData.get(LAST_ACCOUNT);
+        Assert.assertNotNull(lastAccount);
+        Assert.assertNotNull(lastAccount.getId());
+
+        List<String> semanticParts = new ArrayList<>();
+        semanticParts.add(PART1);
+        semanticParts.add(PART2);
+
+        KapuaDisconnectChannel disconnectChannel = lifecycleMessageFactory.newKapuaDisconnectChannel();
+        disconnectChannel.setClientId(clientId);
+        disconnectChannel.setSemanticParts(semanticParts);
+
+        KapuaDisconnectPayload disconnectPayload = prepareDefaultDeathPayload();
+
+        KapuaDisconnectMessage disconnectMessage = lifecycleMessageFactory.newKapuaDisconnectMessage();
+        disconnectMessage.setChannel(disconnectChannel);
+        disconnectMessage.setPayload(disconnectPayload);
+        disconnectMessage.setScopeId(lastAccount.getId());
+        disconnectMessage.setClientId(clientId);
+        disconnectMessage.setId(UUID.randomUUID());
+        disconnectMessage.setReceivedOn(new Date());
+        disconnectMessage.setPosition(getDefaultPosition());
+
+        Device device = deviceRegistryService.findByClientId(lastAccount.getId(), clientId);
+        if (device != null) {
+            disconnectMessage.setDeviceId(device.getId());
+        } else {
+            disconnectMessage.setDeviceId(null);
+        }
+
+        try {
+            primeException();
+            deviceLifeCycleService.death(null, disconnectMessage);
+        } catch (KapuaException ex) {
+            verifyException(ex);
+        }
+
+    }
+
     @Given("A missing message from device {string}")
     public void createAMissingMessage(String clientId) throws Exception {
-        Account tmpAccount = (Account) stepData.get(LAST_ACCOUNT);
-        Device tmpDev;
-        List<String> tmpSemParts = new ArrayList<>();
-        KapuaMissingMessage tmpMsg = lifecycleMessageFactory.newKapuaMissingMessage();
-        KapuaMissingChannel tmpChan = lifecycleMessageFactory.newKapuaMissingChannel();
-        KapuaMissingPayload tmpPayload = prepareDefaultMissingPayload();
-        tmpChan.setClientId(clientId);
-        tmpSemParts.add(PART1);
-        tmpSemParts.add(PART2);
-        tmpChan.setSemanticParts(tmpSemParts);
-        tmpMsg.setChannel(tmpChan);
-        tmpMsg.setPayload(tmpPayload);
-        tmpMsg.setScopeId(tmpAccount.getId());
-        tmpMsg.setId(UUID.randomUUID());
-        tmpMsg.setReceivedOn(new Date());
-        tmpMsg.setPosition(getDefaultPosition());
-        tmpDev = deviceRegistryService.findByClientId(tmpAccount.getId(), clientId);
-        if (tmpDev != null) {
-            tmpMsg.setDeviceId(tmpDev.getId());
+        Assert.assertNotNull(clientId);
+        Assert.assertFalse(clientId.isEmpty());
+
+        Account lastAccount = (Account) stepData.get(LAST_ACCOUNT);
+        Assert.assertNotNull(lastAccount);
+        Assert.assertNotNull(lastAccount.getId());
+
+        List<String> semanticParts = new ArrayList<>();
+        semanticParts.add(PART1);
+        semanticParts.add(PART2);
+
+        KapuaMissingChannel missingChannel = lifecycleMessageFactory.newKapuaMissingChannel();
+        missingChannel.setClientId(clientId);
+        missingChannel.setSemanticParts(semanticParts);
+
+        KapuaMissingPayload missingPayload = prepareDefaultMissingPayload();
+        KapuaMissingMessage missingMessage = lifecycleMessageFactory.newKapuaMissingMessage();
+        missingMessage.setChannel(missingChannel);
+        missingMessage.setPayload(missingPayload);
+        missingMessage.setScopeId(lastAccount.getId());
+        missingMessage.setId(UUID.randomUUID());
+        missingMessage.setReceivedOn(new Date());
+        missingMessage.setPosition(getDefaultPosition());
+
+        Device device = deviceRegistryService.findByClientId(lastAccount.getId(), clientId);
+        if (device != null) {
+            missingMessage.setDeviceId(device.getId());
         } else {
-            tmpMsg.setDeviceId(null);
+            missingMessage.setDeviceId(null);
         }
         try {
             primeException();
-            deviceLifeCycleService.missing(getKapuaId(), tmpMsg);
+            deviceLifeCycleService.missing(null, missingMessage);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1711,31 +1744,41 @@ public class DeviceRegistrySteps extends TestBase {
 
     @Given("An application message from device {string}")
     public void createAnApplicationMessage(String clientId) throws Exception {
-        Account tmpAccount = (Account) stepData.get(LAST_ACCOUNT);
-        Device tmpDev;
-        List<String> tmpSemParts = new ArrayList<>();
-        KapuaAppsMessage tmpMsg = lifecycleMessageFactory.newKapuaAppsMessage();
-        KapuaAppsChannel tmpChan = lifecycleMessageFactory.newKapuaAppsChannel();
-        KapuaAppsPayload tmpPayload = prepareDefaultApplicationPayload();
-        tmpChan.setClientId(clientId);
-        tmpSemParts.add(PART1);
-        tmpSemParts.add(PART2);
-        tmpChan.setSemanticParts(tmpSemParts);
-        tmpMsg.setChannel(tmpChan);
-        tmpMsg.setPayload(tmpPayload);
-        tmpMsg.setScopeId(tmpAccount.getId());
-        tmpMsg.setId(UUID.randomUUID());
-        tmpMsg.setReceivedOn(new Date());
-        tmpMsg.setPosition(getDefaultPosition());
-        tmpDev = deviceRegistryService.findByClientId(tmpAccount.getId(), clientId);
-        if (tmpDev != null) {
-            tmpMsg.setDeviceId(tmpDev.getId());
+        Assert.assertNotNull(clientId);
+        Assert.assertFalse(clientId.isEmpty());
+
+        Account lastAccount = (Account) stepData.get(LAST_ACCOUNT);
+        Assert.assertNotNull(lastAccount);
+        Assert.assertNotNull(lastAccount.getId());
+
+        List<String> semanticParts = new ArrayList<>();
+        semanticParts.add(PART1);
+        semanticParts.add(PART2);
+
+        KapuaAppsChannel appsChannel = lifecycleMessageFactory.newKapuaAppsChannel();
+        appsChannel.setClientId(clientId);
+        appsChannel.setSemanticParts(semanticParts);
+
+        KapuaAppsPayload appsPayload = prepareDefaultApplicationPayload();
+
+        KapuaAppsMessage appsMessage = lifecycleMessageFactory.newKapuaAppsMessage();
+        appsMessage.setChannel(appsChannel);
+        appsMessage.setPayload(appsPayload);
+        appsMessage.setScopeId(lastAccount.getId());
+        appsMessage.setId(UUID.randomUUID());
+        appsMessage.setReceivedOn(new Date());
+        appsMessage.setPosition(getDefaultPosition());
+
+        Device device = deviceRegistryService.findByClientId(lastAccount.getId(), clientId);
+        if (device != null) {
+            appsMessage.setDeviceId(device.getId());
         } else {
-            tmpMsg.setDeviceId(null);
+            appsMessage.setDeviceId(null);
         }
+
         try {
             primeException();
-            deviceLifeCycleService.applications(getKapuaId(), tmpMsg);
+            deviceLifeCycleService.applications(null, appsMessage);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1916,30 +1959,36 @@ public class DeviceRegistrySteps extends TestBase {
     // *******************
 
     // Create a device creator object. The creator is pre-filled with default data.
-    private DeviceCreator prepareRegularDeviceCreator(KapuaId accountId, String client) {
-        DeviceCreator tmpDeviceCreator = deviceFactory.newCreator(accountId, client);
-        tmpDeviceCreator.setConnectionId(getKapuaId());
-        tmpDeviceCreator.setDisplayName(TEST_DEVICE_NAME);
-        tmpDeviceCreator.setSerialNumber("serialNumber");
-        tmpDeviceCreator.setModelId("modelId");
-        tmpDeviceCreator.setImei(getRandomString());
-        tmpDeviceCreator.setImsi(getRandomString());
-        tmpDeviceCreator.setIccid(getRandomString());
-        tmpDeviceCreator.setBiosVersion("biosVersion");
-        tmpDeviceCreator.setFirmwareVersion("firmwareVersion");
-        tmpDeviceCreator.setOsVersion("osVersion");
-        tmpDeviceCreator.setJvmVersion("jvmVersion");
-        tmpDeviceCreator.setOsgiFrameworkVersion("osgiFrameworkVersion");
-        tmpDeviceCreator.setApplicationFrameworkVersion("kapuaVersion");
-        tmpDeviceCreator.setApplicationIdentifiers("applicationIdentifiers");
-        tmpDeviceCreator.setAcceptEncoding("acceptEncoding");
-        tmpDeviceCreator.setCustomAttribute1("customAttribute1");
-        tmpDeviceCreator.setCustomAttribute2("customAttribute2");
-        tmpDeviceCreator.setCustomAttribute3("customAttribute3");
-        tmpDeviceCreator.setCustomAttribute4("customAttribute4");
-        tmpDeviceCreator.setCustomAttribute5("customAttribute5");
-        tmpDeviceCreator.setStatus(DeviceStatus.ENABLED);
-        return tmpDeviceCreator;
+    private DeviceCreator prepareRegularDeviceCreator(KapuaId scopeId, String clientId) {
+        DeviceCreator deviceCreator = deviceFactory.newCreator(scopeId);
+
+        deviceCreator.setClientId(clientId);
+        deviceCreator.setStatus(DeviceStatus.ENABLED);
+//        deviceCreator.setConnectionId(getKapuaId());
+        deviceCreator.setDisplayName(TEST_DEVICE_NAME);
+        deviceCreator.setSerialNumber("serialNumber");
+        deviceCreator.setModelId("modelId");
+        deviceCreator.setModelName("modelName");
+        deviceCreator.setImei(getRandomString());
+        deviceCreator.setImsi(getRandomString());
+        deviceCreator.setIccid(getRandomString());
+        deviceCreator.setBiosVersion("biosVersion");
+        deviceCreator.setFirmwareVersion("firmwareVersion");
+        deviceCreator.setOsVersion("osVersion");
+        deviceCreator.setJvmVersion("jvmVersion");
+        deviceCreator.setOsgiFrameworkVersion("osgiFrameworkVersion");
+        deviceCreator.setApplicationFrameworkVersion("applicationFrameworkVersion");
+        deviceCreator.setConnectionInterface("connectionInterface");
+        deviceCreator.setConnectionIp("connectionIp");
+        deviceCreator.setApplicationIdentifiers("applicationIdentifiers");
+        deviceCreator.setAcceptEncoding("acceptEncoding");
+        deviceCreator.setCustomAttribute1("customAttribute1");
+        deviceCreator.setCustomAttribute2("customAttribute2");
+        deviceCreator.setCustomAttribute3("customAttribute3");
+        deviceCreator.setCustomAttribute4("customAttribute4");
+        deviceCreator.setCustomAttribute5("customAttribute5");
+
+        return deviceCreator;
     }
 
     // Create a device object. The device is pre-filled with default data.
@@ -2138,72 +2187,77 @@ public class DeviceRegistrySteps extends TestBase {
         return payload;
     }
 
-    private DeviceCreator prepareDeviceCreatorFromCucDevice(CucDevice dev) {
-        Account tmpAccount = (Account) stepData.get(LAST_ACCOUNT);
-        DeviceCreator tmpCr;
-        KapuaId tmpScope;
-        if (dev.getScopeId() != null) {
-            tmpScope = dev.getScopeId();
+    private DeviceCreator prepareDeviceCreatorFromCucDevice(CucDevice cucDevice) {
+
+        KapuaId lastAccountId;
+        DeviceCreator deviceCreator;
+        if (cucDevice.getScopeId() != null) {
+            lastAccountId = cucDevice.getScopeId();
         } else {
-            Assert.assertNotNull(tmpAccount);
-            Assert.assertNotNull(tmpAccount.getId());
-            tmpScope = tmpAccount.getId();
+            Account lastAccount = (Account) stepData.get(LAST_ACCOUNT);
+
+            Assert.assertNotNull(lastAccount);
+            Assert.assertNotNull(lastAccount.getId());
+            lastAccountId = lastAccount.getId();
         }
-        Assert.assertNotNull(dev.getClientId());
-        Assert.assertNotEquals(0, dev.getClientId().length());
-        tmpCr = prepareRegularDeviceCreator(tmpScope, dev.getClientId());
-        if (dev.getGroupId() != null) {
-            tmpCr.setGroupId(dev.getGroupId());
+
+        Assert.assertNotNull(cucDevice.getClientId());
+        Assert.assertFalse(Strings.isNullOrEmpty(cucDevice.getClientId()));
+
+        deviceCreator = prepareRegularDeviceCreator(lastAccountId, cucDevice.getClientId());
+
+        if (cucDevice.getGroupId() != null) {
+            deviceCreator.setGroupId(cucDevice.getGroupId());
         }
-        if (dev.getConnectionId() != null) {
-            tmpCr.setConnectionId(dev.getConnectionId());
+        if (cucDevice.getConnectionId() != null) {
+            deviceCreator.setConnectionId(cucDevice.getConnectionId());
         }
-        if (dev.getDisplayName() != null) {
-            tmpCr.setDisplayName(dev.getDisplayName());
+        if (cucDevice.getDisplayName() != null) {
+            deviceCreator.setDisplayName(cucDevice.getDisplayName());
         }
-        if (dev.getStatus() != null) {
-            tmpCr.setStatus(dev.getStatus());
+        if (cucDevice.getStatus() != null) {
+            deviceCreator.setStatus(cucDevice.getStatus());
         }
-        if (dev.getModelId() != null) {
-            tmpCr.setModelId(dev.getModelId());
+        if (cucDevice.getModelId() != null) {
+            deviceCreator.setModelId(cucDevice.getModelId());
         }
-        if (dev.getSerialNumber() != null) {
-            tmpCr.setSerialNumber(dev.getSerialNumber());
+        if (cucDevice.getSerialNumber() != null) {
+            deviceCreator.setSerialNumber(cucDevice.getSerialNumber());
         }
-        if (dev.getImei() != null) {
-            tmpCr.setImei(dev.getImei());
+        if (cucDevice.getImei() != null) {
+            deviceCreator.setImei(cucDevice.getImei());
         }
-        if (dev.getImsi() != null) {
-            tmpCr.setImsi(dev.getImsi());
+        if (cucDevice.getImsi() != null) {
+            deviceCreator.setImsi(cucDevice.getImsi());
         }
-        if (dev.getIccid() != null) {
-            tmpCr.setIccid(dev.getIccid());
+        if (cucDevice.getIccid() != null) {
+            deviceCreator.setIccid(cucDevice.getIccid());
         }
-        if (dev.getBiosVersion() != null) {
-            tmpCr.setBiosVersion(dev.getBiosVersion());
+        if (cucDevice.getBiosVersion() != null) {
+            deviceCreator.setBiosVersion(cucDevice.getBiosVersion());
         }
-        if (dev.getFirmwareVersion() != null) {
-            tmpCr.setFirmwareVersion(dev.getFirmwareVersion());
+        if (cucDevice.getFirmwareVersion() != null) {
+            deviceCreator.setFirmwareVersion(cucDevice.getFirmwareVersion());
         }
-        if (dev.getOsVersion() != null) {
-            tmpCr.setOsVersion(dev.getOsVersion());
+        if (cucDevice.getOsVersion() != null) {
+            deviceCreator.setOsVersion(cucDevice.getOsVersion());
         }
-        if (dev.getJvmVersion() != null) {
-            tmpCr.setJvmVersion(dev.getJvmVersion());
+        if (cucDevice.getJvmVersion() != null) {
+            deviceCreator.setJvmVersion(cucDevice.getJvmVersion());
         }
-        if (dev.getOsgiFrameworkVersion() != null) {
-            tmpCr.setOsgiFrameworkVersion(dev.getOsgiFrameworkVersion());
+        if (cucDevice.getOsgiFrameworkVersion() != null) {
+            deviceCreator.setOsgiFrameworkVersion(cucDevice.getOsgiFrameworkVersion());
         }
-        if (dev.getApplicationFrameworkVersion() != null) {
-            tmpCr.setApplicationFrameworkVersion(dev.getApplicationFrameworkVersion());
+        if (cucDevice.getApplicationFrameworkVersion() != null) {
+            deviceCreator.setApplicationFrameworkVersion(cucDevice.getApplicationFrameworkVersion());
         }
-        if (dev.getApplicationIdentifiers() != null) {
-            tmpCr.setApplicationIdentifiers(dev.getApplicationIdentifiers());
+        if (cucDevice.getApplicationIdentifiers() != null) {
+            deviceCreator.setApplicationIdentifiers(cucDevice.getApplicationIdentifiers());
         }
-        if (dev.getAcceptEncoding() != null) {
-            tmpCr.setAcceptEncoding(dev.getAcceptEncoding());
+        if (cucDevice.getAcceptEncoding() != null) {
+            deviceCreator.setAcceptEncoding(cucDevice.getAcceptEncoding());
         }
-        return tmpCr;
+        return deviceCreator;
     }
 
     DeviceConnectionStatus parseConnectionStatusString(String stat) {

@@ -12,14 +12,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
+import io.cucumber.java.Scenario;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.util.RandomUtils;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.account.Account;
 import org.junit.Assert;
-
-import io.cucumber.java.Scenario;
 
 import java.math.BigInteger;
 import java.text.DateFormat;
@@ -127,11 +126,11 @@ public class TestBase {
         if (!exceptionExpected ||
                 (!exceptionName.isEmpty() && !ex.getClass().toGenericString().contains(exceptionName)) ||
                 (!exceptionMessage.isEmpty() && !exceptionMessage.trim().contentEquals("*") && !ex.getMessage().contains(exceptionMessage))) {
-            scenario.log("An unexpected exception was raised!");
+            scenario.log("An unexpected exception was raised: " + ex.getClass().getSimpleName() + " with message: " + ex.getMessage());
             throw (ex);
         }
 
-        scenario.log("Exception raised as expected: " + ex.getClass().getCanonicalName() + ", " + ex.getMessage());
+        scenario.log("Exception raised as expected: " + ex.getClass().getSimpleName() + " with message: " + ex.getMessage());
         stepData.put("ExceptionCaught", true);
         stepData.put("Exception", ex);
     }
