@@ -12,11 +12,11 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common.cucumber;
 
-import java.math.BigInteger;
-
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.service.device.registry.DeviceStatus;
+
+import java.math.BigInteger;
 
 /**
  * Data object used in Gherkin to input Device parameters.
@@ -38,6 +38,7 @@ public class CucDevice {
     String status;
     DeviceStatus kStatus;
     String modelId;
+    String modelName;
     String serialNumber;
     String imei;
     String imsi;
@@ -48,12 +49,44 @@ public class CucDevice {
     String jvmVersion;
     String osgiFrameworkVersion;
     String applicationFrameworkVersion;
+    String connectionInterface;
+    String connectionIp;
     String applicationIdentifiers;
     String acceptEncoding;
+    String customAttribute1;
+    String customAttribute2;
+    String customAttribute3;
+    String customAttribute4;
+    String customAttribute5;
 
-    public CucDevice(Integer scopeId, Integer groupId, Integer connectionId, Integer preferredUserId, String clientId, String displayName, String status, String modelId,
-        String serialNumber, String imei, String imsi, String iccid, String biosVersion, String firmwareVersion, String osVersion, String jvmVersion, String osgiFrameworkVersion,
-        String applicationFrameworkVersion, String applicationIdentifiers, String acceptEncoding) {
+    public CucDevice(Integer scopeId,
+                     Integer groupId,
+                     Integer connectionId,
+                     Integer preferredUserId,
+                     String clientId,
+                     String displayName,
+                     String status,
+                     String modelId,
+                     String modelName,
+                     String serialNumber,
+                     String imei,
+                     String imsi,
+                     String iccid,
+                     String biosVersion,
+                     String firmwareVersion,
+                     String osVersion,
+                     String jvmVersion,
+                     String osgiFrameworkVersion,
+                     String applicationFrameworkVersion,
+                     String connectionInterface,
+                     String connectionIp,
+                     String applicationIdentifiers,
+                     String acceptEncoding,
+                     String customAttribute1,
+                     String customAttribute2,
+                     String customAttribute3,
+                     String customAttribute4,
+                     String customAttribute5) {
         this.scopeId = scopeId;
         this.groupId = groupId;
         this.connectionId = connectionId;
@@ -62,6 +95,7 @@ public class CucDevice {
         this.displayName = displayName;
         this.status = status;
         this.modelId = modelId;
+        this.modelName = modelName;
         this.serialNumber = serialNumber;
         this.imei = imei;
         this.imsi = imsi;
@@ -72,8 +106,16 @@ public class CucDevice {
         this.jvmVersion = jvmVersion;
         this.osgiFrameworkVersion = osgiFrameworkVersion;
         this.applicationFrameworkVersion = applicationFrameworkVersion;
+        this.connectionInterface = connectionInterface;
+        this.connectionIp = connectionIp;
         this.applicationIdentifiers = applicationIdentifiers;
         this.acceptEncoding = acceptEncoding;
+        this.customAttribute1 = customAttribute1;
+        this.customAttribute2 = customAttribute2;
+        this.customAttribute3 = customAttribute3;
+        this.customAttribute4 = customAttribute4;
+        this.customAttribute5 = customAttribute5;
+
         setStatus(this.status);
     }
 
@@ -176,6 +218,14 @@ public class CucDevice {
         this.modelId = modelId;
     }
 
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
     public String getSerialNumber() {
         return serialNumber;
     }
@@ -256,6 +306,22 @@ public class CucDevice {
         this.applicationFrameworkVersion = applicationFrameworkVersion;
     }
 
+    public String getConnectionInterface() {
+        return connectionInterface;
+    }
+
+    public void setConnectionInterface(String connectionInterface) {
+        this.connectionInterface = connectionInterface;
+    }
+
+    public String getConnectionIp() {
+        return connectionIp;
+    }
+
+    public void setConnectionIp(String connectionIp) {
+        this.connectionIp = connectionIp;
+    }
+
     public String getApplicationIdentifiers() {
         return applicationIdentifiers;
     }
@@ -270,5 +336,45 @@ public class CucDevice {
 
     public void setAcceptEncoding(String acceptEncoding) {
         this.acceptEncoding = acceptEncoding;
+    }
+
+    public String getCustomAttribute1() {
+        return customAttribute1;
+    }
+
+    public void setCustomAttribute1(String customAttribute1) {
+        this.customAttribute1 = customAttribute1;
+    }
+
+    public String getCustomAttribute2() {
+        return customAttribute2;
+    }
+
+    public void setCustomAttribute2(String customAttribute2) {
+        this.customAttribute2 = customAttribute2;
+    }
+
+    public String getCustomAttribute3() {
+        return customAttribute3;
+    }
+
+    public void setCustomAttribute3(String customAttribute3) {
+        this.customAttribute3 = customAttribute3;
+    }
+
+    public String getCustomAttribute4() {
+        return customAttribute4;
+    }
+
+    public void setCustomAttribute4(String customAttribute4) {
+        this.customAttribute4 = customAttribute4;
+    }
+
+    public String getCustomAttribute5() {
+        return customAttribute5;
+    }
+
+    public void setCustomAttribute5(String customAttribute5) {
+        this.customAttribute5 = customAttribute5;
     }
 }

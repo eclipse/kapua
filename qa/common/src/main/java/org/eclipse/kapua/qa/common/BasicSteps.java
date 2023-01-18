@@ -166,6 +166,7 @@ public class BasicSteps extends TestBase {
                 entry.get("displayName"),
                 entry.get("status"),
                 entry.get("modelId"),
+                entry.get("modelName"),
                 entry.get("serialNumber"),
                 entry.get("imei"),
                 entry.get("imsi"),
@@ -176,8 +177,15 @@ public class BasicSteps extends TestBase {
                 entry.get("jvmVersion"),
                 entry.get("osgiFrameworkVersion"),
                 entry.get("applicationFrameworkVersion"),
+                entry.get("connectionInterface"),
+                entry.get("connectionIp"),
                 entry.get("applicationIdentifiers"),
-                entry.get("acceptEncoding")
+                entry.get("acceptEncoding"),
+                entry.get("customAttribute1"),
+                entry.get("customAttribute2"),
+                entry.get("customAttribute3"),
+                entry.get("customAttribute4"),
+                entry.get("customAttribute5")
         );
     }
 

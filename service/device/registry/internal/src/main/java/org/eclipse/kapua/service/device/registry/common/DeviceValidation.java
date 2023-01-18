@@ -157,7 +157,7 @@ public final class DeviceValidation {
 
         // .iccid
         if (!Strings.isNullOrEmpty(deviceCreator.getIccid())) {
-            ArgumentValidator.lengthRange(deviceCreator.getIccid(), 1, 22, "deviceCreator.iccd");
+            ArgumentValidator.lengthRange(deviceCreator.getIccid(), 1, 22, "deviceCreator.iccid");
         }
 
         // .biosVersion
@@ -217,7 +217,7 @@ public final class DeviceValidation {
 
         // .customAttribute2
         if (!Strings.isNullOrEmpty(deviceCreator.getCustomAttribute2())) {
-            ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute1(), 1, 255, "deviceCreator.customAttribute2");
+            ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute2(), 1, 255, "deviceCreator.customAttribute2");
         }
 
         // .customAttribute3
@@ -232,7 +232,7 @@ public final class DeviceValidation {
 
         // .customAttribute5
         if (!Strings.isNullOrEmpty(deviceCreator.getCustomAttribute5())) {
-            ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute1(), 1, 255, "deviceCreator.customAttribute5");
+            ArgumentValidator.lengthRange(deviceCreator.getCustomAttribute5(), 1, 255, "deviceCreator.customAttribute5");
         }
 
         // .extendedProperties
@@ -343,7 +343,7 @@ public final class DeviceValidation {
 
         // .iccid
         if (!Strings.isNullOrEmpty(device.getIccid())) {
-            ArgumentValidator.lengthRange(device.getIccid(), 1, 22, "device.iccd");
+            ArgumentValidator.lengthRange(device.getIccid(), 1, 22, "device.iccid");
         }
 
         // .biosVersion
@@ -403,7 +403,7 @@ public final class DeviceValidation {
 
         // .customAttribute2
         if (!Strings.isNullOrEmpty(device.getCustomAttribute2())) {
-            ArgumentValidator.lengthRange(device.getCustomAttribute1(), 1, 255, "device.customAttribute2");
+            ArgumentValidator.lengthRange(device.getCustomAttribute2(), 1, 255, "device.customAttribute2");
         }
 
         // .customAttribute3
@@ -418,7 +418,7 @@ public final class DeviceValidation {
 
         // .customAttribute5
         if (!Strings.isNullOrEmpty(device.getCustomAttribute5())) {
-            ArgumentValidator.lengthRange(device.getCustomAttribute1(), 1, 255, "device.customAttribute5");
+            ArgumentValidator.lengthRange(device.getCustomAttribute5(), 1, 255, "device.customAttribute5");
         }
 
         // .extendedProperties

@@ -262,6 +262,7 @@ Feature: Device Registry Integration
       | type    | name                   | value |
       | boolean | infiniteChildEntities  | true  |
       | integer | maxNumberChildEntities | 10    |
+    And No exception was thrown
     And A birth message from device "device_1"
     And I search for the device "device_1" in account "AccountA"
     And I tag device with "KuraDevice" tag
@@ -297,6 +298,8 @@ Feature: Device Registry Integration
     And I create a device with parameters
       | clientId | displayName  | modelId         | serialNumber |
       | device_2 | testGateway3 | ReliaGate 10-20 | 12541234ABC  |
+    And No exception was thrown
+    And The device matches the creator parameters
     And A birth message from device "device_1"
     And I search for the device "device_1" in account "AccountA"
     And I tag device with "KuraDevice2" tag
@@ -325,6 +328,7 @@ Feature: Device Registry Integration
       | clientId | displayName  | modelId         | serialNumber |
       | Device1  | testGateway3 | ReliaGate 10-20 | 12541234ABC  |
     Then No exception was thrown
+    And The device matches the creator parameters
     When I search for a device with the client ID "Device1"
     Then I find the device
     And I logout
@@ -345,6 +349,7 @@ Feature: Device Registry Integration
       | clientId | displayName  | modelId         | serialNumber |
       | Device1  | testGateway3 | ReliaGate 10-20 | 12541234ABC  |
     Then No exception was thrown
+    And The device matches the creator parameters
     Given I expect the exception "KapuaDuplicateNameException" with the text "An entity with the same name Device1 already exists."
     When I create a device with parameters
       | clientId | displayName  | modelId         | serialNumber |
@@ -368,6 +373,7 @@ Feature: Device Registry Integration
       | clientId | displayName  | modelId         | serialNumber |
       | d        | testGateway3 | ReliaGate 10-20 | 12541234ABC  |
     Then No exception was thrown
+    And The device matches the creator parameters
     And I logout
 
   Scenario: Creating a Device with no 'clientId'
@@ -403,6 +409,7 @@ Feature: Device Registry Integration
       | clientId  | displayName  | modelId         | serialNumber |
       | dev-1_2_3 | testGateway3 | ReliaGate 10-20 | 12541234ABC  |
     Then No exception was thrown
+    And The device matches the creator parameters
     And I logout
 
   Scenario: Creating a Device with 'clientId' containing invalid symbols
@@ -436,6 +443,7 @@ Feature: Device Registry Integration
       | integer | maxNumberChildEntities | 10    |
     And I create a device with name "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
     Then No exception was thrown
+    And The device matches the creator parameters
     And I logout
 
   Scenario: Creating a Device with too long 'clientId'
@@ -471,6 +479,8 @@ Feature: Device Registry Integration
     And I create a device with parameters
       | clientId | displayName       | modelId         | serialNumber |
       | dev-123  | dply-Name_123@#$% | ReliaGate 10-20 | 12541234ABC  |
+    And No exception was thrown
+    And The device matches the creator parameters
     When I search for a device with the client ID "dev-123"
     Then I try to edit device to clientId "device1"
     Then There is no device with the client ID "device1"
@@ -495,6 +505,7 @@ Feature: Device Registry Integration
       | clientId | displayName       | modelId         | serialNumber | status   |
       | dev-123  | dply-Name_123@#$% | ReliaGate 10-20 | 12541234ABC  | DISABLED |
     Then No exception was thrown
+    And The device matches the creator parameters
     Then I logout
 
   Scenario: Creating a Device with 'status' set as 'DISABLED' and trying to connect to the broker.
@@ -507,6 +518,7 @@ Feature: Device Registry Integration
       | clientId | displayName       | modelId         | serialNumber | status   | scopeId |
       | dev-123  | dply-Name_123@#$% | ReliaGate 10-20 | 12541234ABC  | DISABLED | 1       |
     Then No exception was thrown
+    And The device matches the creator parameters
     Then I logout
     Given I expect the exception "MqttSecurityException" with the text "Not authorized to connect"
     When Client with name "dev-123" with client id "dev-123" user "kapua-broker" password "kapua-password" is connected
@@ -528,6 +540,7 @@ Feature: Device Registry Integration
       | clientId | displayName       | modelId         | serialNumber | status  |
       | dev-123  | dply-Name_123@#$% | ReliaGate 10-20 | 12541234ABC  | ENABLED |
     Then No exception was thrown
+    And The device matches the creator parameters
     Then I logout
 
   Scenario: Creating a Device with 'status' set to 'ENABLED' and trying to connect to the broker.
@@ -540,6 +553,7 @@ Feature: Device Registry Integration
       | clientId | displayName       | modelId         | serialNumber | status  | scopeId |
       | dev-123  | dply-Name_123@#$% | ReliaGate 10-20 | 12541234ABC  | ENABLED | 1       |
     Then No exception was thrown
+    And The device matches the creator parameters
     Then I logout
     When Client with name "dev-12" with client id "dev-12" user "kapua-broker" password "kapua-password" is connected
     Then No exception was thrown
@@ -560,6 +574,8 @@ Feature: Device Registry Integration
     And I create a device with parameters
       | clientId | displayName  | modelId         | serialNumber | status   |
       | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | DISABLED |
+    And No exception was thrown
+    And The device matches the creator parameters
     And I search for a device with the client ID "dev-123"
     And I change device status to "ENABLED"
     Then No exception was thrown
@@ -581,6 +597,8 @@ Feature: Device Registry Integration
     And I create a device with parameters
       | clientId | displayName  | modelId         | serialNumber | status  |
       | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | ENABLED |
+    And No exception was thrown
+    And The device matches the creator parameters
     And I search for a device with the client ID "dev-123"
     And I change device status to "DISABLED"
     Then No exception was thrown
@@ -605,9 +623,10 @@ Feature: Device Registry Integration
       | clientId | displayName  | modelId         | serialNumber |
       | dev-123  | displayName1 | ReliaGate 10-20 | 12541234ABC  |
     Then No exception was thrown
+    And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with non-unique '.displayName'
+  Scenario: Creating a Device with non-unique 'displayName'
   Login as kapua-sys, go to devices, create two devices with different clientIDs and same Display Names.
   Kapua should not any return errors. Duplicates are allowed.
 
@@ -626,6 +645,7 @@ Feature: Device Registry Integration
       | clientId | displayName    | modelId         | serialNumber |
       | dev-222  | displayName222 | ReliaGate 10-20 | 12541234ABC  |
     Then No exception was thrown
+    And The device matches the creator parameters
     And I logout
 
   Scenario: Creating a Device with short 'displayName'
@@ -644,6 +664,7 @@ Feature: Device Registry Integration
       | clientId | displayName | modelId         | serialNumber |
       | dev-123  | d           | ReliaGate 10-20 | 12541234ABC  |
     Then No exception was thrown
+    And The device matches the creator parameters
     And I logout
 
   Scenario: Creating a Device with long 'displayName'
@@ -662,6 +683,7 @@ Feature: Device Registry Integration
       | clientId | displayName                                                                                                                                                                                                                                                     | modelId         | serialNumber |
       | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL | ReliaGate 10-20 | 12541234ABC  |
     Then No exception was thrown
+    And The device matches the creator parameters
     And I logout
 
   Scenario: Creating a Device with too long 'displayName'
@@ -699,6 +721,7 @@ Feature: Device Registry Integration
       | clientId | displayName       | modelId         | serialNumber |
       | dev-123  | dply-Name_123@#$% | ReliaGate 10-20 | 12541234ABC  |
     Then No exception was thrown
+    And The device matches the creator parameters
     Then I logout
 
   Scenario: Deleting a Device
@@ -716,11 +739,3689 @@ Feature: Device Registry Integration
     And I create a device with parameters
       | clientId | displayName  | modelId         | serialNumber | status  |
       | dev-123  | displayNam22 | ReliaGate 10-20 | 12541234ABC  | ENABLED |
+    Then No exception was thrown
+    And The device matches the creator parameters
     And I delete the device with the clientId "dev-123"
     When I search for a device with the client ID "dev-123"
     Then There is no such device
     Then No exception was thrown
     And I logout
+
+  #
+  # serialNumber
+
+  Scenario: Creating a Device with no 'serialNumber'
+  Login as kapua-sys, go to Devices, create a Device without a serialNumber.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | serialNumber |
+      | dev-123  |              |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'serialNumber'
+  Login as kapua-sys, go to Devices, create a Device with a short serialNumber.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | serialNumber |
+      | dev-123  | d            |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'serialNumber'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) serialNumber.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | serialNumber                                                                                                                                                                                                                                                    |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'serialNumber'
+  Login as kapua-sys, go to devices, create a Device with too long serialNumber.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.serialNumber: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | serialNumber                                                                                                                                                                                                                                                     |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'serialNumber'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a serialNumber.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | serialNumber |
+      | dev-123  | serialNumber |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device serialNumber to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'serialNumber'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short serialNumber.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | serialNumber |
+      | dev-123  | serialNumber |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device serialNumber to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'serialNumber'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) serialNumber.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | serialNumber |
+      | dev-123  | serialNumber |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device serialNumber to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'serialNumber'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long serialNumber.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | serialNumber |
+      | dev-123  | serialNumber |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.serialNumber: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device serialNumber to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # modelId
+
+  Scenario: Creating a Device with no 'modelId'
+  Login as kapua-sys, go to Devices, create a Device without a modelId.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelId |
+      | dev-123  |         |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'modelId'
+  Login as kapua-sys, go to Devices, create a Device with a short modelId.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelId |
+      | dev-123  | d       |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'modelId'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) modelId.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelId                                                                                                                                                                                                                                                         |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'modelId'
+  Login as kapua-sys, go to devices, create a Device with too long modelId.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.modelId: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | modelId                                                                                                                                                                                                                                                          |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'modelId'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a modelId.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelId |
+      | dev-123  | modelId |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device modelId to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'modelId'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short modelId.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelId |
+      | dev-123  | modelId |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device modelId to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'modelId'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) modelId.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelId |
+      | dev-123  | modelId |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device modelId to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'modelId'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long modelId.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelId |
+      | dev-123  | modelId |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.modelId: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device modelId to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # modelName
+
+  Scenario: Creating a Device with no 'modelName'
+  Login as kapua-sys, go to Devices, create a Device without a modelName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelName |
+      | dev-123  |           |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'modelName'
+  Login as kapua-sys, go to Devices, create a Device with a short modelName.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelName |
+      | dev-123  | d         |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'modelName'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) modelName.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelName                                                                                                                                                                                                                                                       |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'modelName'
+  Login as kapua-sys, go to devices, create a Device with too long modelName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.modelName: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | modelName                                                                                                                                                                                                                                                        |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'modelName'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a modelName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelName |
+      | dev-123  | modelName |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device modelName to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'modelName'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short modelName.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelName |
+      | dev-123  | modelName |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device modelName to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'modelName'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) modelName.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelName |
+      | dev-123  | modelName |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device modelName to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'modelName'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long modelName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | modelName |
+      | dev-123  | modelName |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.modelName: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device modelName to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # imei
+
+  Scenario: Creating a Device with no 'imei'
+  Login as kapua-sys, go to Devices, create a Device without a imei.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imei |
+      | dev-123  |      |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'imei'
+  Login as kapua-sys, go to Devices, create a Device with a short imei.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imei |
+      | dev-123  | d    |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'imei'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) imei.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imei                     |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQs |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'imei'
+  Login as kapua-sys, go to devices, create a Device with too long imei.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.imei: Value over than allowed max length. Max length is: 24."
+    And I create a device with parameters
+      | clientId | imei                      |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQs |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'imei'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a imei.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imei |
+      | dev-123  | imei |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device imei to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'imei'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short imei.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imei |
+      | dev-123  | imei |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device imei to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'imei'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) imei.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imei |
+      | dev-123  | imei |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device imei to "duyTkz0YUAlEonkehWsSOMQs"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'imei'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long imei.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imei |
+      | dev-123  | imei |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.imei: Value over than allowed max length. Max length is: 24."
+    And I search for a device with the client ID "dev-123"
+    And I change device imei to "aduyTkz0YUAlEonkehWsSOMQs"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # imsi
+
+  Scenario: Creating a Device with no 'imsi'
+  Login as kapua-sys, go to Devices, create a Device without a imsi.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imsi |
+      | dev-123  |      |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'imsi'
+  Login as kapua-sys, go to Devices, create a Device with a short imsi.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imsi |
+      | dev-123  | d    |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'imsi'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) imsi.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imsi            |
+      | dev-123  | duyTkz0YUAlEonk |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'imsi'
+  Login as kapua-sys, go to devices, create a Device with too long imsi.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.imsi: Value over than allowed max length. Max length is: 15."
+    And I create a device with parameters
+      | clientId | imsi             |
+      | dev-123  | aduyTkz0YUAlEonk |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'imsi'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a imsi.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imsi |
+      | dev-123  | imsi |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device imsi to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'imsi'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short imsi.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imsi |
+      | dev-123  | imsi |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device imsi to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'imsi'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) imsi.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imsi |
+      | dev-123  | imsi |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device imsi to "duyTkz0YUAlEonk"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'imsi'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long imsi.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | imsi |
+      | dev-123  | imsi |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.imsi: Value over than allowed max length. Max length is: 15."
+    And I search for a device with the client ID "dev-123"
+    And I change device imsi to "aduyTkz0YUAlEonk"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # iccid
+
+  Scenario: Creating a Device with no 'iccid'
+  Login as kapua-sys, go to Devices, create a Device without a iccid.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | iccid |
+      | dev-123  |       |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'iccid'
+  Login as kapua-sys, go to Devices, create a Device with a short iccid.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | iccid |
+      | dev-123  | d     |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'iccid'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) iccid.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | iccid                  |
+      | dev-123  | duyTkz0YUAlEonkehWsSOM |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'iccid'
+  Login as kapua-sys, go to devices, create a Device with too long iccid.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.iccid: Value over than allowed max length. Max length is: 22."
+    And I create a device with parameters
+      | clientId | iccid                   |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOM |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'iccid'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a iccid.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | iccid |
+      | dev-123  | iccid |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device iccid to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'iccid'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short iccid.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | iccid |
+      | dev-123  | iccid |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device iccid to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'iccid'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) iccid.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | iccid |
+      | dev-123  | iccid |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device iccid to "duyTkz0YUAlEonkehWsSOM"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'iccid'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long iccid.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | iccid |
+      | dev-123  | iccid |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.iccid: Value over than allowed max length. Max length is: 22."
+    And I search for a device with the client ID "dev-123"
+    And I change device iccid to "aduyTkz0YUAlEonkehWsSOM"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # biosVersion
+
+  Scenario: Creating a Device with no 'biosVersion'
+  Login as kapua-sys, go to Devices, create a Device without a biosVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | biosVersion |
+      | dev-123  |             |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'biosVersion'
+  Login as kapua-sys, go to Devices, create a Device with a short biosVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | biosVersion |
+      | dev-123  | d           |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'biosVersion'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) biosVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | biosVersion                                                                                                                                                                                                                                                     |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'biosVersion'
+  Login as kapua-sys, go to devices, create a Device with too long biosVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.biosVersion: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | biosVersion                                                                                                                                                                                                                                                      |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'biosVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a biosVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | biosVersion |
+      | dev-123  | biosVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device biosVersion to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'biosVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short biosVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | biosVersion |
+      | dev-123  | biosVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device biosVersion to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'biosVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) biosVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | biosVersion |
+      | dev-123  | biosVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device biosVersion to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'biosVersion'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long biosVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | biosVersion |
+      | dev-123  | biosVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.biosVersion: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device biosVersion to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # firmwareVersion
+
+  Scenario: Creating a Device with no 'firmwareVersion'
+  Login as kapua-sys, go to Devices, create a Device without a firmwareVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | firmwareVersion |
+      | dev-123  |                 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'firmwareVersion'
+  Login as kapua-sys, go to Devices, create a Device with a short firmwareVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | firmwareVersion |
+      | dev-123  | d               |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'firmwareVersion'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) firmwareVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | firmwareVersion                                                                                                                                                                                                                                                 |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'firmwareVersion'
+  Login as kapua-sys, go to devices, create a Device with too long firmwareVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.firmwareVersion: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | firmwareVersion                                                                                                                                                                                                                                                  |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'firmwareVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a firmwareVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | firmwareVersion |
+      | dev-123  | firmwareVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device firmwareVersion to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'firmwareVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short firmwareVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | firmwareVersion |
+      | dev-123  | firmwareVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device firmwareVersion to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'firmwareVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) firmwareVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | firmwareVersion |
+      | dev-123  | firmwareVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device firmwareVersion to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'firmwareVersion'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long firmwareVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | firmwareVersion |
+      | dev-123  | firmwareVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.firmwareVersion: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device firmwareVersion to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # osVersion
+
+  Scenario: Creating a Device with no 'osVersion'
+  Login as kapua-sys, go to Devices, create a Device without a osVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osVersion |
+      | dev-123  |           |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'osVersion'
+  Login as kapua-sys, go to Devices, create a Device with a short osVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osVersion |
+      | dev-123  | d         |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'osVersion'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) osVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osVersion                                                                                                                                                                                                                                                       |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'osVersion'
+  Login as kapua-sys, go to devices, create a Device with too long osVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.osVersion: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | osVersion                                                                                                                                                                                                                                                        |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'osVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a osVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osVersion |
+      | dev-123  | osVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device osVersion to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'osVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short osVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osVersion |
+      | dev-123  | osVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device osVersion to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'osVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) osVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osVersion |
+      | dev-123  | osVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device osVersion to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'osVersion'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long osVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osVersion |
+      | dev-123  | osVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.osVersion: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device osVersion to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # jvmVersion
+
+  Scenario: Creating a Device with no 'jvmVersion'
+  Login as kapua-sys, go to Devices, create a Device without a jvmVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | jvmVersion |
+      | dev-123  |            |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'jvmVersion'
+  Login as kapua-sys, go to Devices, create a Device with a short jvmVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | jvmVersion |
+      | dev-123  | d          |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'jvmVersion'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) jvmVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | jvmVersion                                                                                                                                                                                                                                                      |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'jvmVersion'
+  Login as kapua-sys, go to devices, create a Device with too long jvmVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.jvmVersion: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | jvmVersion                                                                                                                                                                                                                                                       |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'jvmVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a jvmVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | jvmVersion |
+      | dev-123  | jvmVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device jvmVersion to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'jvmVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short jvmVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | jvmVersion |
+      | dev-123  | jvmVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device jvmVersion to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'jvmVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) jvmVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | jvmVersion |
+      | dev-123  | jvmVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device jvmVersion to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'jvmVersion'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long jvmVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | jvmVersion |
+      | dev-123  | jvmVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.jvmVersion: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device jvmVersion to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # osgiFrameworkVersion
+
+  Scenario: Creating a Device with no 'osgiFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device without a osgiFrameworkVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osgiFrameworkVersion |
+      | dev-123  |                      |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'osgiFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device with a short osgiFrameworkVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osgiFrameworkVersion |
+      | dev-123  | d                    |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'osgiFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) osgiFrameworkVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osgiFrameworkVersion                                                                                                                                                                                                                                            |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'osgiFrameworkVersion'
+  Login as kapua-sys, go to devices, create a Device with too long osgiFrameworkVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.osgiFrameworkVersion: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | osgiFrameworkVersion                                                                                                                                                                                                                                             |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'osgiFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a osgiFrameworkVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osgiFrameworkVersion |
+      | dev-123  | osgiFrameworkVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device osgiFrameworkVersion to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'osgiFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short osgiFrameworkVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osgiFrameworkVersion |
+      | dev-123  | osgiFrameworkVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device osgiFrameworkVersion to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'osgiFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) osgiFrameworkVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osgiFrameworkVersion |
+      | dev-123  | osgiFrameworkVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device osgiFrameworkVersion to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'osgiFrameworkVersion'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long osgiFrameworkVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | osgiFrameworkVersion |
+      | dev-123  | osgiFrameworkVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.osgiFrameworkVersion: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device osgiFrameworkVersion to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # applicationFrameworkVersion
+
+  Scenario: Creating a Device with no 'applicationFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device without a applicationFrameworkVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationFrameworkVersion |
+      | dev-123  |                             |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'applicationFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device with a short applicationFrameworkVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationFrameworkVersion |
+      | dev-123  | d                           |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'applicationFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) applicationFrameworkVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationFrameworkVersion                                                                                                                                                                                                                                     |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'applicationFrameworkVersion'
+  Login as kapua-sys, go to devices, create a Device with too long applicationFrameworkVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.applicationFrameworkVersion: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | applicationFrameworkVersion                                                                                                                                                                                                                                      |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'applicationFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a applicationFrameworkVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationFrameworkVersion |
+      | dev-123  | applicationFrameworkVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device applicationFrameworkVersion to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'applicationFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short applicationFrameworkVersion.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationFrameworkVersion |
+      | dev-123  | applicationFrameworkVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device applicationFrameworkVersion to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'applicationFrameworkVersion'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) applicationFrameworkVersion.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationFrameworkVersion |
+      | dev-123  | applicationFrameworkVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device applicationFrameworkVersion to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'applicationFrameworkVersion'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long applicationFrameworkVersion.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationFrameworkVersion |
+      | dev-123  | applicationFrameworkVersion |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.applicationFrameworkVersion: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device applicationFrameworkVersion to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # connectionInterface
+
+  Scenario: Creating a Device with no 'connectionInterface'
+  Login as kapua-sys, go to Devices, create a Device without a connectionInterface.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionInterface |
+      | dev-123  |                     |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'connectionInterface'
+  Login as kapua-sys, go to Devices, create a Device with a short connectionInterface.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionInterface |
+      | dev-123  | d                   |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with 255 long 'connectionInterface'
+  Login as kapua-sys, go to Devices, create a Device with a 255 long (valid) connectionInterface.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionInterface                                                                                                                                                                                                                                             |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with 4096 long 'connectionInterface'
+  Login as kapua-sys, go to Devices, create a Device with a 4096 long (valid) connectionInterface.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionInterface                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+      | dev-123  | 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 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'connectionInterface'
+  Login as kapua-sys, go to devices, create a Device with too long connectionInterface.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.connectionInterface: Value over than allowed max length. Max length is: 4096."
+    And I create a device with parameters
+      | clientId | connectionInterface                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+      | dev-123  | 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 |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'connectionInterface'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a connectionInterface.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionInterface |
+      | dev-123  | connectionInterface |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device connectionInterface to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'connectionInterface'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short connectionInterface.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionInterface |
+      | dev-123  | connectionInterface |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device connectionInterface to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with 255 long 'connectionInterface'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a 255 long (valid) connectionInterface.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionInterface |
+      | dev-123  | connectionInterface |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device connectionInterface to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with 4096 long 'connectionInterface'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a 4096 long (valid) connectionInterface.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionInterface |
+      | dev-123  | connectionInterface |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device connectionInterface to "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"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'connectionInterface'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long connectionInterface.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionInterface |
+      | dev-123  | connectionInterface |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.connectionInterface: Value over than allowed max length. Max length is: 4096."
+    And I search for a device with the client ID "dev-123"
+    And I change device connectionInterface to "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"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # connectionIp
+
+  Scenario: Creating a Device with no 'connectionIp'
+  Login as kapua-sys, go to Devices, create a Device without a connectionIp.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionIp |
+      | dev-123  |              |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'connectionIp'
+  Login as kapua-sys, go to Devices, create a Device with a short connectionIp.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionIp |
+      | dev-123  | d            |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with 64 long 'connectionIp'
+  Login as kapua-sys, go to Devices, create a Device with a 64 long (valid) connectionIp.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionIp                                                     |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with 4096 long 'connectionIp'
+  Login as kapua-sys, go to Devices, create a Device with a 4096 long (valid) connectionIp.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionIp                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+      | dev-123  | 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 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'connectionIp'
+  Login as kapua-sys, go to devices, create a Device with too long connectionIp.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.connectionIp: Value over than allowed max length. Max length is: 4096."
+    And I create a device with parameters
+      | clientId | connectionIp                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonke |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'connectionIp'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a connectionIp.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionIp |
+      | dev-123  | connectionIp |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device connectionIp to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'connectionIp'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short connectionIp.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionIp |
+      | dev-123  | connectionIp |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device connectionIp to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with 64 long 'connectionIp'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a 64 long (valid) connectionIp.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionIp |
+      | dev-123  | connectionIp |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device connectionIp to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with 4096 long 'connectionIp'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a 4096 long (valid) connectionIp.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionIp |
+      | dev-123  | connectionIp |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device connectionIp to "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"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'connectionIp'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long connectionIp.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | connectionIp |
+      | dev-123  | connectionIp |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.connectionIp: Value over than allowed max length. Max length is: 4096."
+    And I search for a device with the client ID "dev-123"
+    And I change device connectionIp to "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"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # applicationIdentifiers
+
+  Scenario: Creating a Device with no 'applicationIdentifiers'
+  Login as kapua-sys, go to Devices, create a Device without a applicationIdentifiers.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationIdentifiers |
+      | dev-123  |                        |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'applicationIdentifiers'
+  Login as kapua-sys, go to Devices, create a Device with a short applicationIdentifiers.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationIdentifiers |
+      | dev-123  | d                      |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'applicationIdentifiers'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) applicationIdentifiers.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationIdentifiers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyT |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'applicationIdentifiers'
+  Login as kapua-sys, go to devices, create a Device with too long applicationIdentifiers.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.applicationIdentifiers: Value over than allowed max length. Max length is: 1024."
+    And I create a device with parameters
+      | clientId | applicationIdentifiers                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyT |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'applicationIdentifiers'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a applicationIdentifiers.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationIdentifiers |
+      | dev-123  | applicationIdentifiers |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device applicationIdentifiers to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'applicationIdentifiers'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short applicationIdentifiers.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationIdentifiers |
+      | dev-123  | applicationIdentifiers |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device applicationIdentifiers to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'applicationIdentifiers'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) applicationIdentifiers.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationIdentifiers |
+      | dev-123  | applicationIdentifiers |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device applicationIdentifiers to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyT"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'applicationIdentifiers'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long applicationIdentifiers.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | applicationIdentifiers |
+      | dev-123  | applicationIdentifiers |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.applicationIdentifiers: Value over than allowed max length. Max length is: 1024."
+    And I search for a device with the client ID "dev-123"
+    And I change device applicationIdentifiers to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziLduyT"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # acceptEncoding
+
+  Scenario: Creating a Device with no 'acceptEncoding'
+  Login as kapua-sys, go to Devices, create a Device without a acceptEncoding.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | acceptEncoding |
+      | dev-123  |                |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'acceptEncoding'
+  Login as kapua-sys, go to Devices, create a Device with a short acceptEncoding.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | acceptEncoding |
+      | dev-123  | d              |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'acceptEncoding'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) acceptEncoding.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | acceptEncoding                                                                                                                                                                                                                                                  |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'acceptEncoding'
+  Login as kapua-sys, go to devices, create a Device with too long acceptEncoding.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.acceptEncoding: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | acceptEncoding                                                                                                                                                                                                                                                   |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'acceptEncoding'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a acceptEncoding.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | acceptEncoding |
+      | dev-123  | acceptEncoding |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device acceptEncoding to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'acceptEncoding'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short acceptEncoding.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | acceptEncoding |
+      | dev-123  | acceptEncoding |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device acceptEncoding to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'acceptEncoding'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) acceptEncoding.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | acceptEncoding |
+      | dev-123  | acceptEncoding |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device acceptEncoding to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'acceptEncoding'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long acceptEncoding.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | acceptEncoding |
+      | dev-123  | acceptEncoding |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.acceptEncoding: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device acceptEncoding to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # customAttribute1
+
+  Scenario: Creating a Device with no 'customAttribute1'
+  Login as kapua-sys, go to Devices, create a Device without a customAttribute1.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute1 |
+      | dev-123  |                  |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'customAttribute1'
+  Login as kapua-sys, go to Devices, create a Device with a short customAttribute1.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute1 |
+      | dev-123  | d                |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'customAttribute1'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) customAttribute1.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute1                                                                                                                                                                                                                                                |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'customAttribute1'
+  Login as kapua-sys, go to devices, create a Device with too long customAttribute1.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.customAttribute1: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | customAttribute1                                                                                                                                                                                                                                                 |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'customAttribute1'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a customAttribute1.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute1 |
+      | dev-123  | customAttribute1 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute1 to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'customAttribute1'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short customAttribute1.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute1 |
+      | dev-123  | customAttribute1 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute1 to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'customAttribute1'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) customAttribute1.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute1 |
+      | dev-123  | customAttribute1 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute1 to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'customAttribute1'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long customAttribute1.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute1 |
+      | dev-123  | customAttribute1 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.customAttribute1: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute1 to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # customAttribute2
+
+  Scenario: Creating a Device with no 'customAttribute2'
+  Login as kapua-sys, go to Devices, create a Device without a customAttribute2.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute2 |
+      | dev-123  |                  |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'customAttribute2'
+  Login as kapua-sys, go to Devices, create a Device with a short customAttribute2.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute2 |
+      | dev-123  | d                |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'customAttribute2'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) customAttribute2.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute2                                                                                                                                                                                                                                                |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'customAttribute2'
+  Login as kapua-sys, go to devices, create a Device with too long customAttribute2.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.customAttribute2: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | customAttribute2                                                                                                                                                                                                                                                 |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'customAttribute2'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a customAttribute2.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute2 |
+      | dev-123  | customAttribute2 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute2 to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'customAttribute2'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short customAttribute2.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute2 |
+      | dev-123  | customAttribute2 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute2 to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'customAttribute2'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) customAttribute2.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute2 |
+      | dev-123  | customAttribute2 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute2 to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'customAttribute2'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long customAttribute2.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute2 |
+      | dev-123  | customAttribute2 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.customAttribute2: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute2 to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # customAttribute3
+
+  Scenario: Creating a Device with no 'customAttribute3'
+  Login as kapua-sys, go to Devices, create a Device without a customAttribute3.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute3 |
+      | dev-123  |                  |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'customAttribute3'
+  Login as kapua-sys, go to Devices, create a Device with a short customAttribute3.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute3 |
+      | dev-123  | d                |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'customAttribute3'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) customAttribute3.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute3                                                                                                                                                                                                                                                |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'customAttribute3'
+  Login as kapua-sys, go to devices, create a Device with too long customAttribute3.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.customAttribute3: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | customAttribute3                                                                                                                                                                                                                                                 |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'customAttribute3'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a customAttribute3.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute3 |
+      | dev-123  | customAttribute3 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute3 to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'customAttribute3'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short customAttribute3.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute3 |
+      | dev-123  | customAttribute3 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute3 to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'customAttribute3'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) customAttribute3.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute3 |
+      | dev-123  | customAttribute3 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute3 to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'customAttribute3'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long customAttribute3.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute3 |
+      | dev-123  | customAttribute3 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.customAttribute3: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute3 to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # customAttribute4
+
+  Scenario: Creating a Device with no 'customAttribute4'
+  Login as kapua-sys, go to Devices, create a Device without a customAttribute4.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute4 |
+      | dev-123  |                  |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'customAttribute4'
+  Login as kapua-sys, go to Devices, create a Device with a short customAttribute4.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute4 |
+      | dev-123  | d                |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'customAttribute4'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) customAttribute4.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute4                                                                                                                                                                                                                                                |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'customAttribute4'
+  Login as kapua-sys, go to devices, create a Device with too long customAttribute4.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.customAttribute4: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | customAttribute4                                                                                                                                                                                                                                                 |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'customAttribute4'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a customAttribute4.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute4 |
+      | dev-123  | customAttribute4 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute4 to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'customAttribute4'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short customAttribute4.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute4 |
+      | dev-123  | customAttribute4 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute4 to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'customAttribute4'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) customAttribute4.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute4 |
+      | dev-123  | customAttribute4 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute4 to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'customAttribute4'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long customAttribute4.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute4 |
+      | dev-123  | customAttribute4 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.customAttribute4: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute4 to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
+
+  #
+  # customAttribute5
+
+  Scenario: Creating a Device with no 'customAttribute5'
+  Login as kapua-sys, go to Devices, create a Device without a customAttribute5.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute5 |
+      | dev-123  |                  |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with short 'customAttribute5'
+  Login as kapua-sys, go to Devices, create a Device with a short customAttribute5.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute5 |
+      | dev-123  | d                |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with long 'customAttribute5'
+  Login as kapua-sys, go to Devices, create a Device with a long (valid) customAttribute5.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute5                                                                                                                                                                                                                                                |
+      | dev-123  | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Creating a Device with too long 'customAttribute5'
+  Login as kapua-sys, go to devices, create a Device with too long customAttribute5.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.customAttribute5: Value over than allowed max length. Max length is: 255."
+    And I create a device with parameters
+      | clientId | customAttribute5                                                                                                                                                                                                                                                 |
+      | dev-123  | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with no 'customAttribute5'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device without a customAttribute5.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute5 |
+      | dev-123  | customAttribute5 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute5 to ""
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'customAttribute5'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a short customAttribute5.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute5 |
+      | dev-123  | customAttribute5 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute5 to "d"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'customAttribute5'
+  Login as kapua-sys, go to Devices, create a Device and then update the Device with a long (valid) customAttribute5.
+  Kapua should not return errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute5 |
+      | dev-123  | customAttribute5 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute5 to "duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then No exception was thrown
+    Then The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'customAttribute5'
+  Login as kapua-sys, go to devices, create a Device and then update the Device with too long customAttribute5.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId | customAttribute5 |
+      | dev-123  | customAttribute5 |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.customAttribute5: Value over than allowed max length. Max length is: 255."
+    And I search for a device with the client ID "dev-123"
+    And I change device customAttribute5 to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
+    Then An exception was thrown
+    Then I logout
 
   #
   # Device Querying
