@@ -22,7 +22,6 @@ import org.eclipse.kapua.service.device.management.packages.DevicePackageManagem
 import org.eclipse.kapua.service.device.management.packages.job.definition.DevicePackageDownloadPropertyKeys;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadOptions;
 import org.eclipse.kapua.service.device.management.packages.model.download.DevicePackageDownloadRequest;
-import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceRegistryService;
 import org.eclipse.kapua.service.job.operation.TargetProcessor;
 import org.eclipse.kapua.service.job.targets.JobTarget;
@@ -88,14 +87,5 @@ public class DevicePackageDownloadTargetProcessor extends AbstractDevicePackageT
         }
 
         return JobTargetStatus.AWAITING_COMPLETION;
-    }
-
-    @Override
-    protected String getTargetDisplayName(JobTarget jobTarget) throws KapuaException {
-        Device device = KapuaSecurityUtils.doPrivileged(() -> DEVICE_REGISTRY_SERVICE.find(jobTarget.getScopeId(), jobTarget.getJobTargetId()));;
-        if (device == null) {
-            return "N/A";
-        }
-        return device.getClientId();
     }
 }
