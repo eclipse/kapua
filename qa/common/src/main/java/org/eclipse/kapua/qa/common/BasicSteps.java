@@ -13,6 +13,7 @@
  *******************************************************************************/
 package org.eclipse.kapua.qa.common;
 
+import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -36,6 +37,7 @@ import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.cucumber.CucConnection;
 import org.eclipse.kapua.qa.common.cucumber.CucCredentials;
 import org.eclipse.kapua.qa.common.cucumber.CucDevice;
+import org.eclipse.kapua.qa.common.cucumber.CucDeviceExtendedProperty;
 import org.eclipse.kapua.qa.common.cucumber.CucDomain;
 import org.eclipse.kapua.qa.common.cucumber.CucGroup;
 import org.eclipse.kapua.qa.common.cucumber.CucJobStepProperty;
@@ -161,6 +163,7 @@ public class BasicSteps extends TestBase {
                 Util.parseInteger(entry.get("scopeId")),
                 Util.parseInteger(entry.get("groupId")),
                 Util.parseInteger(entry.get("connectionId")),
+                Util.parseInteger(entry.get("lastEventId")),
                 Util.parseInteger(entry.get("preferredUserId")),
                 entry.get("clientId"),
                 entry.get("displayName"),
@@ -186,6 +189,15 @@ public class BasicSteps extends TestBase {
                 entry.get("customAttribute3"),
                 entry.get("customAttribute4"),
                 entry.get("customAttribute5")
+        );
+    }
+
+    @DataTableType
+    public CucDeviceExtendedProperty cucDeviceExtendedProperty(Map<String, String> entry) {
+        return new CucDeviceExtendedProperty(
+                Strings.emptyToNull(entry.get("groupName")),
+                Strings.emptyToNull(entry.get("name")),
+                Strings.emptyToNull(entry.get("value"))
         );
     }
 

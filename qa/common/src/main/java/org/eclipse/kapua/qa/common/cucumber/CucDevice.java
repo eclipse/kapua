@@ -29,6 +29,8 @@ public class CucDevice {
     KapuaId kScopeId;
     Integer groupId;
     KapuaId kGroupId;
+    Integer lastEventId;
+    KapuaId klastEventId;
     Integer connectionId;
     KapuaId kConnectionId;
     Integer preferredUserId;
@@ -62,6 +64,7 @@ public class CucDevice {
     public CucDevice(Integer scopeId,
                      Integer groupId,
                      Integer connectionId,
+                     Integer lastEventId,
                      Integer preferredUserId,
                      String clientId,
                      String displayName,
@@ -90,6 +93,7 @@ public class CucDevice {
         this.scopeId = scopeId;
         this.groupId = groupId;
         this.connectionId = connectionId;
+        this.lastEventId = lastEventId;
         this.preferredUserId = preferredUserId;
         this.clientId = clientId;
         this.displayName = displayName;
@@ -130,6 +134,10 @@ public class CucDevice {
 
         if (connectionId != null) {
             kConnectionId = new KapuaEid(BigInteger.valueOf(connectionId));
+        }
+
+        if (lastEventId != null) {
+            klastEventId = new KapuaEid(BigInteger.valueOf(lastEventId));
         }
 
         if (preferredUserId != null) {
@@ -184,6 +192,14 @@ public class CucDevice {
 
     public void setConnectionId(KapuaId connectionId) {
         kConnectionId = connectionId;
+    }
+
+    public KapuaId getLastEventId() {
+        return klastEventId;
+    }
+
+    public void setLastEventId(KapuaId lastEventId) {
+        this.klastEventId = lastEventId;
     }
 
     public KapuaId getPreferredUserId() {

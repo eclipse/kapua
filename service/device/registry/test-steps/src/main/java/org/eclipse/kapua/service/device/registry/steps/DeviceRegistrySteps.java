@@ -22,6 +22,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.model.id.KapuaEid;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
@@ -51,6 +52,7 @@ import org.eclipse.kapua.qa.common.TestDomain;
 import org.eclipse.kapua.qa.common.cucumber.CucConfig;
 import org.eclipse.kapua.qa.common.cucumber.CucConnection;
 import org.eclipse.kapua.qa.common.cucumber.CucDevice;
+import org.eclipse.kapua.qa.common.cucumber.CucDeviceExtendedProperty;
 import org.eclipse.kapua.qa.common.cucumber.CucUser;
 import org.eclipse.kapua.service.account.Account;
 import org.eclipse.kapua.service.account.AccountService;
@@ -66,6 +68,7 @@ import org.eclipse.kapua.service.device.registry.ConnectionUserCouplingMode;
 import org.eclipse.kapua.service.device.registry.Device;
 import org.eclipse.kapua.service.device.registry.DeviceAttributes;
 import org.eclipse.kapua.service.device.registry.DeviceCreator;
+import org.eclipse.kapua.service.device.registry.DeviceExtendedProperty;
 import org.eclipse.kapua.service.device.registry.DeviceFactory;
 import org.eclipse.kapua.service.device.registry.DeviceListResult;
 import org.eclipse.kapua.service.device.registry.DeviceQuery;
@@ -103,6 +106,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -143,7 +147,6 @@ public class DeviceRegistrySteps extends TestBase {
     private static final String DEVICE_CREATOR = "DeviceCreator";
     private static final String DEVICE_ID = "DeviceId";
     private static final String DEVICE = "Device";
-    private static final String LAST_DEVICE = "LastDevice";
     private static final String LAST_ACCOUNT = "LastAccount";
     private static final String DEVICE_QUERY = "DeviceQuery";
     private static final String DEVICE_LIST = "DeviceList";
@@ -155,6 +158,9 @@ public class DeviceRegistrySteps extends TestBase {
     private static final String DEVICE_EVENT = "DeviceEvent";
     private static final String DEVICE_EVENT_ID = "DeviceEventId";
     private static final String DEVICE_EVENT_LIST = "DeviceEventList";
+    private static final String DEVICE_EXTENDED_PROPERTY = "DeviceExtendedProperty";
+    private static final String DEVICE_EXTENDED_PROPERTIES = "DeviceExtendedProperties";
+    private static final String DEVICE_EXTENDED_PROPERTY_LONG_VALUE = StringUtils.repeat("a", 524288);
     private static final String PART1 = "part1";
     private static final String PART2 = "part2";
     private static final String RELIAGATE_10_20 = "ReliaGate 10-20";
@@ -285,8 +291,60 @@ public class DeviceRegistrySteps extends TestBase {
     @When("I set the creator client ID to null")
     public void setDeviceCreatorClientToNull() {
         DeviceCreator deviceCreator = (DeviceCreator) stepData.get(DEVICE_CREATOR);
+        Assert.assertNotNull(deviceCreator);
+
         deviceCreator.setClientId(null);
+
         stepData.put(DEVICE_CREATOR, deviceCreator);
+    }
+
+    @And("I add an extended property with very long value to the device creator")
+    public void addDeviceCreatorExtendedPropertiesLongValue() {
+        CucDeviceExtendedProperty cucDeviceExtendedProperty = new CucDeviceExtendedProperty(
+                "extendedPropertyGroupName",
+                "extendedPropertyName",
+                DEVICE_EXTENDED_PROPERTY_LONG_VALUE
+        );
+
+        addDeviceCreatorExtendedProperties(Arrays.asList(cucDeviceExtendedProperty));
+    }
+
+    @And("I add an extended property with too long value to the device creator")
+    public void addDeviceCreatorExtendedPropertiesTooLongValue() {
+        CucDeviceExtendedProperty cucDeviceExtendedProperty = new CucDeviceExtendedProperty(
+                "extendedPropertyGroupName",
+                "extendedPropertyName",
+                "a" + DEVICE_EXTENDED_PROPERTY_LONG_VALUE
+        );
+
+        addDeviceCreatorExtendedProperties(Arrays.asList(cucDeviceExtendedProperty));
+    }
+
+    @And("I add an extended (property)/(properties) to the device creator")
+    public void addDeviceCreatorExtendedProperties(List<CucDeviceExtendedProperty> cucDeviceExtendedProperties) {
+        DeviceCreator deviceCreator = (DeviceCreator) stepData.get(DEVICE_CREATOR);
+        Assert.assertNotNull(deviceCreator);
+
+        stepData.remove(DEVICE_EXTENDED_PROPERTIES);
+        stepData.remove(DEVICE_EXTENDED_PROPERTY);
+
+        DeviceExtendedProperty deviceExtendedProperty = null;
+        List<DeviceExtendedProperty> deviceExtendedProperties = new ArrayList<>();
+        for (CucDeviceExtendedProperty cucDeviceExtendedProperty : cucDeviceExtendedProperties) {
+            deviceExtendedProperty =
+                    deviceFactory.newExtendedProperty(
+                            cucDeviceExtendedProperty.getGroupName(),
+                            cucDeviceExtendedProperty.getName(),
+                            cucDeviceExtendedProperty.getValue()
+                    );
+
+            deviceExtendedProperties.add(deviceExtendedProperty);
+        }
+
+        deviceCreator.setExtendedProperties(deviceExtendedProperties);
+
+        stepData.put(DEVICE_EXTENDED_PROPERTIES, deviceExtendedProperties);
+        stepData.put(DEVICE_EXTENDED_PROPERTY, deviceExtendedProperty);
     }
 
     @Given("The device ID {string}")
@@ -319,15 +377,23 @@ public class DeviceRegistrySteps extends TestBase {
 
     @Given("(A device)/(Devices) such as")
     public void createDevicesSuchAs(List<CucDevice> cucDevices) throws Exception {
-        createDevicesAsSpecifiedInternal(cucDevices);
+        createDevicesAsSpecifiedInternal(cucDevices, null);
     }
 
     @Given("I create (a device)/(devices) with parameters")
     public void createDevicesWithParameters(List<CucDevice> devLst) throws Exception {
-        createDevicesAsSpecifiedInternal(devLst);
+        createDevicesAsSpecifiedInternal(devLst, null);
     }
 
-    private void createDevicesAsSpecifiedInternal(List<CucDevice> cucDevices) throws Exception {
+    @Given("I create (a device)/(devices) with parameters and connection")
+    public void createDevicesWithParametersAndConnection(List<CucDevice> devLst) throws Exception {
+        DeviceConnection deviceConnection = (DeviceConnection) stepData.get(DEVICE_CONNECTION);
+
+        createDevicesAsSpecifiedInternal(devLst, deviceConnection);
+    }
+
+
+    private void createDevicesAsSpecifiedInternal(List<CucDevice> cucDevices, DeviceConnection deviceConnection) throws Exception {
         primeException();
         try {
             stepData.remove(DEVICE);
@@ -336,6 +402,11 @@ public class DeviceRegistrySteps extends TestBase {
                 cucDevice.parse();
 
                 DeviceCreator deviceCreator = prepareDeviceCreatorFromCucDevice(cucDevice);
+
+                if (deviceConnection != null) {
+                    deviceCreator.getConnectionId();
+                }
+
                 stepData.put(DEVICE_CREATOR, deviceCreator);
 
                 device = deviceRegistryService.create(deviceCreator);
@@ -367,7 +438,7 @@ public class DeviceRegistrySteps extends TestBase {
                 "◊Ñˆ¯Èˇ¿";
         Account tmpAcc = (Account) stepData.get("LastAccount");
         for (int i = 0; i < invalidSymbols.length(); i++) {
-            String clientId = "Device" + invalidSymbols.charAt(i);
+            String clientId = DEVICE + invalidSymbols.charAt(i);
             try {
                 DeviceCreator tmpDevCr = deviceFactory.newCreator(tmpAcc.getId(), clientId);
                 Device tmpDev = deviceRegistryService.create(tmpDevCr);
@@ -509,12 +580,12 @@ public class DeviceRegistrySteps extends TestBase {
 
     @When("I search for a device with the client ID {string}")
     public void findDeviceWithClientId(String clientId) throws Exception {
-        String client;
-        if (clientId.trim().toLowerCase().equals("null")) {
-            client = null;
-        } else {
+
+        String client = null;
+        if (!clientId.trim().equalsIgnoreCase("null")) {
             client = clientId;
         }
+
         primeException();
         try {
             stepData.remove(DEVICE);
@@ -527,7 +598,7 @@ public class DeviceRegistrySteps extends TestBase {
 
     @When("I find searched device")
     public void findDevice() throws Exception {
-        Assert.assertNotNull(stepData.get("Device"));
+        Assert.assertNotNull(stepData.get(DEVICE));
     }
 
     @When("I search for a device with a nonexisting registry ID")
@@ -795,6 +866,23 @@ public class DeviceRegistrySteps extends TestBase {
         Assert.assertEquals(deviceCreator.getCustomAttribute3(), device.getCustomAttribute3());
         Assert.assertEquals(deviceCreator.getCustomAttribute4(), device.getCustomAttribute4());
         Assert.assertEquals(deviceCreator.getCustomAttribute5(), device.getCustomAttribute5());
+
+        for (DeviceExtendedProperty deviceCreatorExtendedProperty : deviceCreator.getExtendedProperties()) {
+            boolean matched = false;
+
+            for (DeviceExtendedProperty deviceExtendedProperty : device.getExtendedProperties()) {
+                if (deviceCreatorExtendedProperty.getName().equals(deviceExtendedProperty.getName())) {
+                    matched = true;
+
+                    Assert.assertEquals(deviceCreatorExtendedProperty.getGroupName(), deviceExtendedProperty.getGroupName());
+                    Assert.assertEquals(deviceCreatorExtendedProperty.getValue(), deviceExtendedProperty.getValue());
+                }
+            }
+
+            if (!matched) {
+                Assert.fail("deviceCreator.extendedProperty named " + deviceCreatorExtendedProperty.getName() + " was not found in created Device");
+            }
+        }
     }
 
     @Then("The device was correctly updated")
@@ -836,6 +924,23 @@ public class DeviceRegistrySteps extends TestBase {
             Assert.assertEquals(deviceFromDb.getCustomAttribute3(), device.getCustomAttribute3());
             Assert.assertEquals(deviceFromDb.getCustomAttribute4(), device.getCustomAttribute4());
             Assert.assertEquals(deviceFromDb.getCustomAttribute5(), device.getCustomAttribute5());
+
+            for (DeviceExtendedProperty deviceExtendedProperty : device.getExtendedProperties()) {
+                boolean matched = false;
+
+                for (DeviceExtendedProperty deviceFromDbExtendedProperty : deviceFromDb.getExtendedProperties()) {
+                    if (deviceExtendedProperty.getName().equals(deviceFromDbExtendedProperty.getName())) {
+                        matched = true;
+
+                        Assert.assertEquals(deviceExtendedProperty.getGroupName(), deviceFromDbExtendedProperty.getGroupName());
+                        Assert.assertEquals(deviceExtendedProperty.getValue(), deviceFromDbExtendedProperty.getValue());
+                    }
+                }
+
+                if (!matched) {
+                    Assert.fail("device.extendedProperty named " + deviceExtendedProperty.getName() + " was not found in updated Device");
+                }
+            }
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -953,36 +1058,41 @@ public class DeviceRegistrySteps extends TestBase {
     }
 
     @Given("I have the following connection(s)")
-    public void createConnections(List<CucConnection> connections) throws Exception {
-        KapuaId scopeId = getCurrentScopeId();
-        KapuaId userId = getCurrentUserId();
+    public void createConnections(List<CucConnection> cucConnections) throws Exception {
         primeException();
+
         try {
-            DeviceConnectionCreator connectionCreator = null;
-            DeviceConnection connection = null;
+            KapuaId scopeId = getCurrentScopeId();
+            KapuaId userId = getCurrentUserId();
+
+            stepData.remove(DEVICE_CONNECTION_CREATOR);
             stepData.remove(DEVICE_CONNECTION);
             stepData.remove(DEVICE_CONNECTION_ID);
             stepData.remove(DEVICE_CONNECTION_LIST);
-            for (CucConnection connItem : connections) {
+
+            DeviceConnectionCreator connectionCreator = null;
+            DeviceConnection deviceConnection = null;
+            DeviceConnectionListResult deviceConnections = deviceConnectionFactory.newListResult();
+
+            for (CucConnection cucConnection : cucConnections) {
                 connectionCreator = deviceConnectionFactory.newCreator(scopeId);
                 connectionCreator.setStatus(DeviceConnectionStatus.CONNECTED);
                 connectionCreator.setUserId(userId);
                 connectionCreator.setUserCouplingMode(ConnectionUserCouplingMode.LOOSE);
-                connectionCreator.setClientId(connItem.getClientId());
-                connectionCreator.setClientIp(connItem.getClientIp());
-                connectionCreator.setServerIp(connItem.getServerIp());
-                connectionCreator.setProtocol(connItem.getProtocol());
+                connectionCreator.setClientId(cucConnection.getClientId());
+                connectionCreator.setClientIp(cucConnection.getClientIp());
+                connectionCreator.setServerIp(cucConnection.getServerIp());
+                connectionCreator.setProtocol(cucConnection.getProtocol());
                 connectionCreator.setAllowUserChange(false);
-                connection = deviceConnectionService.create(connectionCreator);
+
+                deviceConnection = deviceConnectionService.create(connectionCreator);
+                deviceConnections.addItem(deviceConnection);
             }
+
             stepData.put(DEVICE_CONNECTION_CREATOR, connectionCreator);
-            stepData.put(DEVICE_CONNECTION, connection);
-            stepData.put(DEVICE_CONNECTION_ID, connection.getId());
-            DeviceConnectionListResult connList = deviceConnectionFactory.newListResult();
-            Vector<DeviceConnection> vec = new Vector<>();
-            vec.add(connection);
-            connList.addItems(vec);
-            stepData.put(DEVICE_CONNECTION_LIST, connList);
+            stepData.put(DEVICE_CONNECTION, deviceConnection);
+            stepData.put(DEVICE_CONNECTION_ID, deviceConnection.getId());
+            stepData.put(DEVICE_CONNECTION_LIST, deviceConnections);
         } catch (KapuaException ex) {
             verifyException(ex);
         }
@@ -1273,14 +1383,16 @@ public class DeviceRegistrySteps extends TestBase {
     public void createRegularEvent(String eventType, String clientId) throws Exception {
         primeException();
         try {
-            Device tmpDev = getDeviceWithClientId(clientId);
-            DeviceEventCreator eventCreator = prepareRegularDeviceEventCreator(getCurrentScopeId(), tmpDev.getId());
-            KapuaMethod tmpMeth = getMethodFromString(eventType);
-            eventCreator.setAction(tmpMeth);
-            stepData.put(DEVICE_EVENT_CREATOR, eventCreator);
             stepData.remove(DEVICE_EVENT);
             stepData.remove(DEVICE_EVENT_ID);
-            DeviceEvent event = eventService.create(eventCreator);
+            Device device = getDeviceWithClientId(clientId);
+            KapuaMethod deviceEventMethod = getMethodFromString(eventType);
+
+            DeviceEventCreator deviceEventCreator = prepareRegularDeviceEventCreator(getCurrentScopeId(), device.getId());
+            deviceEventCreator.setAction(deviceEventMethod);
+            DeviceEvent event = eventService.create(deviceEventCreator);
+
+            stepData.put(DEVICE_EVENT_CREATOR, deviceEventCreator);
             stepData.put(DEVICE_EVENT, event);
             stepData.put(DEVICE_EVENT_ID, event.getId());
         } catch (KapuaException ex) {
@@ -2100,8 +2212,8 @@ public class DeviceRegistrySteps extends TestBase {
 
     private Device getDeviceWithClientId(String clientId) throws KapuaException {
         DeviceQuery tmpQuery = deviceFactory.newQuery(getCurrentScopeId());
-        // Search for the known bios version string
-        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, clientId, AttributePredicate.Operator.EQUAL));
+        tmpQuery.setPredicate(tmpQuery.attributePredicate(DeviceAttributes.CLIENT_ID, clientId));
+
         DeviceListResult deviceList = deviceRegistryService.query(tmpQuery);
         return deviceList.getFirstItem();
     }
@@ -2224,6 +2336,9 @@ public class DeviceRegistrySteps extends TestBase {
         }
         if (cucDevice.getConnectionId() != null) {
             deviceCreator.setConnectionId(cucDevice.getConnectionId());
+        }
+        if (cucDevice.getLastEventId() != null) {
+            deviceCreator.setLastEventId(cucDevice.getLastEventId());
         }
         if (cucDevice.getDisplayName() != null) {
             deviceCreator.setDisplayName(cucDevice.getDisplayName());
@@ -2353,7 +2468,7 @@ public class DeviceRegistrySteps extends TestBase {
         primeException();
         try {
             oldDevice.setClientId(clientId);
-            stepData.remove("Device");
+            stepData.remove(DEVICE);
             Device newDevice = deviceRegistryService.update(oldDevice);
             stepData.put(DEVICE, newDevice);
         } catch (KapuaException ex) {
@@ -2399,14 +2514,14 @@ public class DeviceRegistrySteps extends TestBase {
     @And("I assign tag to device")
     public void iAssignTagToDevice() throws Exception {
         Tag tag = (Tag) stepData.get("tag");
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             Set<KapuaId> tags = device.getTagIds();
             tags.add(tag.getId());
             device.setTagIds(tags);
             Device newDevice = deviceRegistryService.update(device);
             stepData.put("tags", tags);
-            stepData.put("Device", newDevice);
+            stepData.put(DEVICE, newDevice);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2445,7 +2560,7 @@ public class DeviceRegistrySteps extends TestBase {
             KapuaId groupId = foundGroup.getId();
             device.setGroupId(groupId);
             Device newDevice = deviceRegistryService.update(device);
-            stepData.put("Device", newDevice);
+            stepData.put(DEVICE, newDevice);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2453,11 +2568,11 @@ public class DeviceRegistrySteps extends TestBase {
 
     @When("I try to edit devices display name to {string}")
     public void iTryToEditDevicesDisplayNameTo(String displayName) throws Exception {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setDisplayName(displayName);
             device = deviceRegistryService.update(device);
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2489,7 +2604,7 @@ public class DeviceRegistrySteps extends TestBase {
             Device device = deviceRegistryService.query(tmpQuery).getFirstItem();
             device.setGroupId(null);
             device = deviceRegistryService.update(device);
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2498,13 +2613,13 @@ public class DeviceRegistrySteps extends TestBase {
     @Given("I unassign tag from device")
     public void iUnassignTagFromDevice() throws Exception {
         Tag tag = (Tag) stepData.get("tag");
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             Set<KapuaId> tagIds = device.getTagIds();
             tagIds.remove(tag.getId());
             device.setTagIds(tagIds);
             Device newDevice = deviceRegistryService.update(device);
-            stepData.put("Device", newDevice);
+            stepData.put(DEVICE, newDevice);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2539,7 +2654,7 @@ public class DeviceRegistrySteps extends TestBase {
             tagIds.remove(tag.getId());
             device.setTagIds(tagIds);
             Device newDevice = deviceRegistryService.update(device);
-            stepData.put("Device", newDevice);
+            stepData.put(DEVICE, newDevice);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2561,15 +2676,90 @@ public class DeviceRegistrySteps extends TestBase {
         }
     }
 
+    @And("I change device connectionId to null")
+    public void iChangeDeviceConnectionIdNull() throws Throwable {
+        iChangeDeviceConnectionIdTo(null);
+    }
+
+    @And("I change device connectionId to invalid")
+    public void iChangeDeviceConnectionIdInvalid() throws Throwable {
+        iChangeDeviceConnectionIdTo("1");
+    }
+
+    @And("I change device connectionId to valid")
+    public void iChangeDeviceConnectionIdValid() throws Throwable {
+        KapuaId deviceConnectionId = (KapuaId) stepData.get(DEVICE_CONNECTION_ID);
+
+        iChangeDeviceConnectionIdTo(deviceConnectionId.toStringId());
+    }
+
+    @And("I change device connectionId to {string}}")
+    private void iChangeDeviceConnectionIdTo(String connectionId) throws Throwable {
+        Device device = (Device) stepData.get(DEVICE);
+        Assert.assertNotNull(device);
+
+        try {
+            if (Strings.isNullOrEmpty(connectionId)) {
+                device.setConnectionId(null);
+            } else {
+                device.setConnectionId(new KapuaEid(BigInteger.valueOf(Long.parseLong(connectionId))));
+            }
+
+            device = deviceRegistryService.update(device);
+
+            stepData.put(DEVICE, device);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @And("I change device lastEventId to null")
+    public void iChangeDevicelastEventIdNull() throws Throwable {
+        iChangeDeviceLastEventIdTo(null);
+    }
+
+    @And("I change device lastEventId to invalid")
+    public void iChangeDevicelastEventIdInvalid() throws Throwable {
+        iChangeDeviceLastEventIdTo("1");
+    }
+
+    @And("I change device lastEventId to valid")
+    public void iChangeDevicelastEventIdValid() throws Throwable {
+        KapuaId devicelastEventId = (KapuaId) stepData.get(DEVICE_EVENT_ID);
+
+        iChangeDeviceLastEventIdTo(devicelastEventId.toStringId());
+    }
+
+    @And("I change device lastEventId to {string}}")
+    private void iChangeDeviceLastEventIdTo(String lastEventId) throws Throwable {
+        Device device = (Device) stepData.get(DEVICE);
+        Assert.assertNotNull(device);
+
+        try {
+            if (Strings.isNullOrEmpty(lastEventId)) {
+                device.setLastEventId(null);
+            } else {
+                device.setLastEventId(new KapuaEid(BigInteger.valueOf(Long.parseLong(lastEventId))));
+            }
+
+            device = deviceRegistryService.update(device);
+
+            stepData.put(DEVICE, device);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+
     @And("The devices display name is {string}")
     public void theDevicesDisplayNameIs(String displayName) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         Assert.assertEquals(device.getDisplayName(), displayName);
     }
 
     @And("I change device status to {string}")
     public void iChangeDeviceStatusTo(String deviceStatus) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             if (deviceStatus.trim().toLowerCase().equals("enabled")) {
                 device.setStatus(DeviceStatus.ENABLED);
@@ -2577,7 +2767,7 @@ public class DeviceRegistrySteps extends TestBase {
                 device.setStatus(DeviceStatus.DISABLED);
             }
             device = deviceRegistryService.update(device);
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2585,13 +2775,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device serialNumber to {string}")
     public void iChangeDeviceSerialNumberTo(String serialNumber) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setSerialNumber(serialNumber);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2599,13 +2789,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device modelId to {string}")
     public void iChangeDeviceModelIdTo(String modelId) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setModelId(modelId);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2613,13 +2803,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device modelName to {string}")
     public void iChangeDeviceModelNameTo(String modelName) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setModelName(modelName);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2627,13 +2817,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device imei to {string}")
     public void iChangeDeviceImeiTo(String imei) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setImei(imei);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2641,13 +2831,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device imsi to {string}")
     public void iChangeDeviceImsiTo(String imsi) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setImsi(imsi);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2655,13 +2845,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device iccid to {string}")
     public void iChangeDeviceIccidTo(String iccid) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setIccid(iccid);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2669,13 +2859,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device biosVersion to {string}")
     public void iChangeDeviceBiosVersionTo(String biosVersion) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setBiosVersion(biosVersion);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2683,13 +2873,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device firmwareVersion to {string}")
     public void iChangeDeviceFirmwareVersionTo(String firmwareVersion) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setFirmwareVersion(firmwareVersion);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2697,13 +2887,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device osVersion to {string}")
     public void iChangeDeviceOsVersionTo(String osVersion) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setOsVersion(osVersion);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2711,13 +2901,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device jvmVersion to {string}")
     public void iChangeDeviceJvmVersionTo(String jvmVersion) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setJvmVersion(jvmVersion);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2725,13 +2915,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device osgiFrameworkVersion to {string}")
     public void iChangeDeviceOsgiFrameworkVersionTo(String osgiFrameworkVersion) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setOsgiFrameworkVersion(osgiFrameworkVersion);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2739,13 +2929,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device applicationFrameworkVersion to {string}")
     public void iChangeDeviceApplicationFrameworkVersionTo(String applicationFrameworkVersion) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setApplicationFrameworkVersion(applicationFrameworkVersion);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2753,13 +2943,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device connectionInterface to {string}")
     public void iChangeDeviceConnectionInterfaceTo(String connectionInterface) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setConnectionInterface(connectionInterface);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2767,13 +2957,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device connectionIp to {string}")
     public void iChangeDeviceConnectionIpTo(String connectionIp) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setConnectionIp(connectionIp);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2781,13 +2971,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device applicationIdentifiers to {string}")
     public void iChangeDeviceApplicationIdentifiersTo(String applicationIdentifiers) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setApplicationIdentifiers(applicationIdentifiers);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2795,13 +2985,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device acceptEncoding to {string}")
     public void iChangeDeviceAcceptEncodingTo(String acceptEncoding) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setAcceptEncoding(acceptEncoding);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2809,13 +2999,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device customAttribute1 to {string}")
     public void iChangeDeviceCustomAttribute1To(String customAttribute1) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setCustomAttribute1(customAttribute1);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2823,13 +3013,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device customAttribute2 to {string}")
     public void iChangeDeviceCustomAttribute2To(String customAttribute2) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setCustomAttribute2(customAttribute2);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2837,13 +3027,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device customAttribute3 to {string}")
     public void iChangeDeviceCustomAttribute3To(String customAttribute3) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setCustomAttribute3(customAttribute3);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2851,13 +3041,13 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device customAttribute4 to {string}")
     public void iChangeDeviceCustomAttribute4To(String customAttribute4) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setCustomAttribute4(customAttribute4);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -2865,13 +3055,61 @@ public class DeviceRegistrySteps extends TestBase {
 
     @And("I change device customAttribute5 to {string}")
     public void iChangeDeviceCustomAttribute5To(String customAttribute5) throws Throwable {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         try {
             device.setCustomAttribute5(customAttribute5);
 
             device = deviceRegistryService.update(device);
 
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
+        } catch (Exception e) {
+            verifyException(e);
+        }
+    }
+
+    @And("I change device extended property with very long value to the device")
+    public void iChangeDeviceExtendedPropertiesVeryLong() throws Throwable {
+        CucDeviceExtendedProperty cucDeviceExtendedProperty = new CucDeviceExtendedProperty(
+                "extendedPropertyGroupName",
+                "extendedPropertyName",
+                DEVICE_EXTENDED_PROPERTY_LONG_VALUE
+        );
+
+        iChangeDeviceExtendedPropertiesTo(Arrays.asList(cucDeviceExtendedProperty));
+    }
+
+    @And("I change device extended property with too long value to the device")
+    public void iChangeDeviceExtendedPropertiesTooLong() throws Throwable {
+        CucDeviceExtendedProperty cucDeviceExtendedProperty = new CucDeviceExtendedProperty(
+                "extendedPropertyGroupName",
+                "extendedPropertyName",
+                "a" + DEVICE_EXTENDED_PROPERTY_LONG_VALUE
+        );
+
+        iChangeDeviceExtendedPropertiesTo(Arrays.asList(cucDeviceExtendedProperty));
+    }
+
+    @And("I change device extended (property)/(properties) to")
+    public void iChangeDeviceExtendedPropertiesTo(List<CucDeviceExtendedProperty> cucDeviceExtendedProperties) throws Throwable {
+        Device device = (Device) stepData.get(DEVICE);
+        try {
+            List<DeviceExtendedProperty> deviceExtendedProperties = new ArrayList<>();
+            for (CucDeviceExtendedProperty cucDeviceExtendedProperty : cucDeviceExtendedProperties) {
+                DeviceExtendedProperty deviceExtendedProperty =
+                        deviceFactory.newExtendedProperty(
+                                cucDeviceExtendedProperty.getGroupName(),
+                                cucDeviceExtendedProperty.getName(),
+                                cucDeviceExtendedProperty.getValue()
+                        );
+
+                deviceExtendedProperties.add(deviceExtendedProperty);
+            }
+
+            device.setExtendedProperties(deviceExtendedProperties);
+
+            device = deviceRegistryService.update(device);
+
+            stepData.put(DEVICE, device);
         } catch (Exception e) {
             verifyException(e);
         }
@@ -3014,13 +3252,13 @@ public class DeviceRegistrySteps extends TestBase {
     @When("I search for a device with name {string}")
     public void iSearchForADeviceWithName(String clientID) throws Throwable {
         try {
-            stepData.remove("Device");
+            stepData.remove(DEVICE);
             primeException();
             DeviceQuery query = deviceFactory.newQuery(SYS_SCOPE_ID);
             query.setPredicate(query.attributePredicate(DeviceAttributes.CLIENT_ID, clientID, AttributePredicate.Operator.EQUAL));
             DeviceListResult queryResult = deviceRegistryService.query(query);
             Device foundDevice = queryResult.getFirstItem();
-            stepData.put("Device", foundDevice);
+            stepData.put(DEVICE, foundDevice);
             stepData.put("queryResult", queryResult);
         } catch (KapuaException ex) {
             verifyException(ex);
@@ -3034,9 +3272,9 @@ public class DeviceRegistrySteps extends TestBase {
         stepData.put("DeviceCreator", deviceCreator);
         try {
             primeException();
-            stepData.remove("Device");
+            stepData.remove(DEVICE);
             Device device = deviceRegistryService.create(deviceCreator);
-            stepData.put("Device", device);
+            stepData.put(DEVICE, device);
         } catch (Exception ex) {
             verifyException(ex);
         }
@@ -3051,7 +3289,7 @@ public class DeviceRegistrySteps extends TestBase {
             primeException();
             try {
                 Device device = deviceRegistryService.create(deviceCreator);
-                stepData.put("Device", device);
+                stepData.put(DEVICE, device);
                 stepData.put("CurrentDeviceId", device.getId());
             } catch (KapuaException ex) {
                 verifyException(ex);
@@ -3061,7 +3299,7 @@ public class DeviceRegistrySteps extends TestBase {
 
     @When("I update the device clientID from {string} to {string}")
     public void iUpdateTheDeviceClientIDToNewClientId(String oldClientId, String newClientId) throws Exception {
-        Device device = (Device) stepData.get("Device");
+        Device device = (Device) stepData.get(DEVICE);
         Assert.assertEquals(oldClientId, device.getClientId());
         stepData.put("Text", device.getClientId());
         device.setClientId(newClientId);

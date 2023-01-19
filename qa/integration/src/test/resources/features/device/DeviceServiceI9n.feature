@@ -237,9 +237,275 @@ Feature: Device Registry Integration
     And I logout
 
   #
+  # connectionId
+
+  Scenario: Create a Device with no 'connectionId'
+  Login as kapua-sys, go to devices, create a device with no connectionId.
+  Kapua should return error.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId |
+      | Device1  |
+    Then No exception was thrown
+    When I search for a device with the client ID "Device1"
+    Then I find the device
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Create a Device with invalid 'connectionId'
+  Login as kapua-sys, go to devices, create a device with an invalid connectionId.
+  Kapua should return error.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument deviceCreator.connectionId."
+    And I create a device with parameters
+      | clientId | connectionId |
+      | Device1  | 1            |
+    Then An exception was thrown
+    And I logout
+
+  Scenario: Create a Device with valid 'connectionId'
+  Login as kapua-sys, go to devices, create a device with a valid connectionId.
+  Kapua should not return any errors.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I have the following connection
+      | clientId | clientIp    | serverIp   | protocol | allowUserChange |
+      | Device1  | 127.0.0.101 | 127.0.0.10 | tcp      | true            |
+    And No exception was thrown
+    And The connection object matches the creator
+    Then I create a device with parameters and connection
+      | clientId |
+      | Device1  |
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Update a Device with no 'connectionId'
+  Login as kapua-sys, go to devices, create a device with connectionId, update a device with no connectionId.
+  Kapua should return error.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I have the following connection
+      | clientId | clientIp    | serverIp   | protocol | allowUserChange |
+      | Device1  | 127.0.0.101 | 127.0.0.10 | tcp      | true            |
+    And No exception was thrown
+    And The connection object matches the creator
+    And I create a device with parameters and connection
+      | clientId |
+      | Device1  |
+    And No exception was thrown
+    And The device matches the creator parameters
+    Then I search for a device with the client ID "Device1"
+    And I change device connectionId to null
+    And No exception was thrown
+    And The device was correctly updated
+    Then I logout
+
+  Scenario: Update a Device with invalid 'connectionId'
+  Login as kapua-sys, go to devices, create a device with connectionId, update a device with invalid connectionId.
+  Kapua should return error.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters and connection
+      | clientId |
+      | Device1  |
+    And No exception was thrown
+    And The device matches the creator parameters
+    Then I search for a device with the client ID "Device1"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument device.connectionId."
+    And I change device connectionId to invalid
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with valid 'connectionId'
+  Login as kapua-sys, go to devices, create a device with connectionId, update a device with valid connectionId.
+  Kapua should return error.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters and connection
+      | clientId |
+      | Device1  |
+    And No exception was thrown
+    And The device matches the creator parameters
+    And I have the following connection
+      | clientId | clientIp    | serverIp   | protocol | allowUserChange |
+      | Device1  | 127.0.0.101 | 127.0.0.10 | tcp      | true            |
+    And No exception was thrown
+    And The connection object matches the creator
+    Then I search for a device with the client ID "Device1"
+    And I change device connectionId to valid
+    Then No exception was thrown
+    Then I logout
+
+  #
+  # lastEventId
+
+  Scenario: Create a Device with no 'lastEventId'
+  Login as kapua-sys, go to devices, create a device with no lastEventId.
+  Kapua should return error.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId |
+      | Device1  |
+    Then No exception was thrown
+    When I search for a device with the client ID "Device1"
+    Then I find the device
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Create a Device with invalid 'lastEventId'
+  Login as kapua-sys, go to devices, create a device with an invalid lastEventId.
+  Kapua should return error.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument deviceCreator.lastEventId."
+    And I create a device with parameters
+      | clientId | lastEventId |
+      | Device1  | 1           |
+    Then An exception was thrown
+    And I logout
+
+  Scenario: Update a Device with no 'lastEventId'
+  Login as kapua-sys, go to devices, create a device with connectionId, update a device with no lastEventId.
+  Kapua should return error.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId |
+      | Device1  |
+    And No exception was thrown
+    And The device matches the creator parameters
+    And A "CREATE" event from device "Device1"
+    Then I search for a device with the client ID "Device1"
+    And I change device lastEventId to valid
+    Then I search for a device with the client ID "Device1"
+    And I change device lastEventId to null
+    And No exception was thrown
+    And The device was correctly updated
+    Then I logout
+
+  Scenario: Update a Device with invalid 'lastEventId'
+  Login as kapua-sys, go to devices, create a device with connectionId, update a device with invalid lastEventId.
+  Kapua should return error.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId |
+      | Device1  |
+    And No exception was thrown
+    And The device matches the creator parameters
+    And A "CREATE" event from device "Device1"
+    Then I search for a device with the client ID "Device1"
+    And I change device lastEventId to valid
+    Then I search for a device with the client ID "Device1"
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument device.lastEventId."
+    And I change device lastEventId to invalid
+    Then An exception was thrown
+    Then I logout
+
+  Scenario: Update a Device with valid 'lastEventId'
+  Login as kapua-sys, go to devices, create a device with connectionId, update a device with valid lastEventId.
+  Kapua should return error.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And I create a device with parameters
+      | clientId |
+      | Device1  |
+    And No exception was thrown
+    And The device matches the creator parameters
+    And A "CREATE" event from device "Device1"
+    Then I search for a device with the client ID "Device1"
+    And I change device lastEventId to valid
+    And A "WRITE" event from device "Device1"
+    Then I search for a device with the client ID "Device1"
+    And I change device lastEventId to valid
+    Then No exception was thrown
+    Then I logout
+
+  #
   # tagIds
 
-  Scenario: Creating new Device and tagging it with specific Tag
+  Scenario: Create new Device and tagging it with specific Tag
   Procedure of registering a device is executed and device BIRTH message is sent.
   After that device is tagged with Tag KuraDevice and searched by this same tag.
 
@@ -271,7 +537,7 @@ Feature: Device Registry Integration
     And I untag device with "KuraDevice" tag
     And I logout
 
-  Scenario: Creating new Device, tagging it with specific Tag and then deleting this Tag
+  Scenario: Create new Device, tagging it with specific Tag and then deleting this Tag
   Procedure of registering a device is executed and device BIRTH message is sent.
   After that device is tagged with Tag KuraDevice and searched by this same tag, followed
   by deletion of this tag.
@@ -312,7 +578,7 @@ Feature: Device Registry Integration
   #
   # clientId
 
-  Scenario: Creating a Device with unique 'clientId'
+  Scenario: Create a Device with unique 'clientId'
   Login as kapua-sys, go to devices, create a device with unique name.
   Kapua should not return any errors.
 
@@ -333,7 +599,7 @@ Feature: Device Registry Integration
     Then I find the device
     And I logout
 
-  Scenario: Creating a Device with non-unique 'clientId'
+  Scenario: Create a Device with non-unique 'clientId'
   Login as kapua-sys, go to devices, create a device with non-unique name.
   Kapua should throw an exception.
 
@@ -357,7 +623,7 @@ Feature: Device Registry Integration
     Then An exception was thrown
     And I logout
 
-  Scenario: Creating a Device with short 'clientId'
+  Scenario: Create a Device with short 'clientId'
   Login as kapua-sys, go to devices, create a device with short name.
   Kapua should not return any errors.
 
@@ -376,7 +642,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with no 'clientId'
+  Scenario: Create a Device with no 'clientId'
   Login as kapua-sys, go to devices, create a device without a name.
   Kapua should throw an exception.
 
@@ -393,7 +659,7 @@ Feature: Device Registry Integration
     Then An exception was thrown
     And I logout
 
-  Scenario: Creating a Device with 'clientId' containing permitted symbols
+  Scenario: Create a Device with 'clientId' containing permitted symbols
   Login as kapua-sys, go to devices, create a device with permitted symbols in name.
   Kapua should not return any errors
 
@@ -412,7 +678,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with 'clientId' containing invalid symbols
+  Scenario: Create a Device with 'clientId' containing invalid symbols
   Login as kapua-sys, go to devices, create a device with invalid symbols in name.
   Kapua should throw an exception.
 
@@ -429,7 +695,7 @@ Feature: Device Registry Integration
     Then An exception was thrown
     And I logout
 
-  Scenario: Creating a Device with long 'clientId'
+  Scenario: Create a Device with long 'clientId'
   Login as kapua-sys, go to devices, create device with 255 characters long name.
   Kapua should not return any errors.
 
@@ -446,7 +712,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'clientId'
+  Scenario: Create a Device with too long 'clientId'
   Login as kapua-sys, go to devices, create device with too long (256 characters) name.
   Kapua should throw an exception.
 
@@ -489,7 +755,7 @@ Feature: Device Registry Integration
   #
   # status
 
-  Scenario: Creating a Device with 'status' set to 'DISABLED'
+  Scenario: Create a Device with 'status' set to 'DISABLED'
   Login as kapua-sys, go to devices, create a device with its status set to DISABLED.
   Kapua should not return any errors
 
@@ -508,7 +774,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     Then I logout
 
-  Scenario: Creating a Device with 'status' set as 'DISABLED' and trying to connect to the broker.
+  Scenario: Create a Device with 'status' set as 'DISABLED' and trying to connect to the broker.
   Login as kapua-sys, create a device with its status set to DISABLED.
   Then, trying to connect to the broker with a client who's client id equals to the created
   device. Should result in an authentication failure.
@@ -524,7 +790,7 @@ Feature: Device Registry Integration
     When Client with name "dev-123" with client id "dev-123" user "kapua-broker" password "kapua-password" is connected
     Then An exception was thrown
 
-  Scenario: Creating a Device with 'status' set to 'ENABLED'
+  Scenario: Create a Device with 'status' set to 'ENABLED'
   Login as kapua-sys, go to devices, create a device with its status set to ENABLED.
   Kapua should not return errors.
 
@@ -543,7 +809,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     Then I logout
 
-  Scenario: Creating a Device with 'status' set to 'ENABLED' and trying to connect to the broker.
+  Scenario: Create a Device with 'status' set to 'ENABLED' and trying to connect to the broker.
   Login as kapua-sys, create a device with its status set to ENABLED.
   Then, trying to connect to the broker with a client who's client id equals to the created
   device. Should not result in an authentication failure.
@@ -607,7 +873,7 @@ Feature: Device Registry Integration
   #
   # displayName
 
-  Scenario: Creating a Device with unique 'displayName'
+  Scenario: Create a Device with unique 'displayName'
   Login as kapua-sys, go to devices, create a device with a unique display name.
   Kapua should not return any errors.
 
@@ -626,7 +892,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with non-unique 'displayName'
+  Scenario: Create a Device with non-unique 'displayName'
   Login as kapua-sys, go to devices, create two devices with different clientIDs and same Display Names.
   Kapua should not any return errors. Duplicates are allowed.
 
@@ -648,7 +914,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'displayName'
+  Scenario: Create a Device with short 'displayName'
   Login as kapua-sys, go to devices, create a device with a short display name.
   Kapua should not return any errors. Duplicates are allowed.
 
@@ -667,7 +933,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'displayName'
+  Scenario: Create a Device with long 'displayName'
   Login as kapua-sys, go to devices, create a device with a long (valid) display name.
   Kapua should not return errors.
 
@@ -686,7 +952,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'displayName'
+  Scenario: Create a Device with too long 'displayName'
   Login as kapua-sys, go to devices, create a device with too long display name.
   Kapua should throw an exception.
 
@@ -705,7 +971,7 @@ Feature: Device Registry Integration
     Then An exception was thrown
     Then I logout
 
-  Scenario: Creating a Device with permitted symbols in its 'displayName'
+  Scenario: Create a Device with permitted symbols in its 'displayName'
   Login as kapua-sys, go to devices, create a device with special symbols in its display name.
   Kapua should not return any errors. All symbols are permitted.
 
@@ -750,7 +1016,7 @@ Feature: Device Registry Integration
   #
   # serialNumber
 
-  Scenario: Creating a Device with no 'serialNumber'
+  Scenario: Create a Device with no 'serialNumber'
   Login as kapua-sys, go to Devices, create a Device without a serialNumber.
   Kapua should throw an exception.
 
@@ -769,7 +1035,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'serialNumber'
+  Scenario: Create a Device with short 'serialNumber'
   Login as kapua-sys, go to Devices, create a Device with a short serialNumber.
   Kapua should not return any errors.
 
@@ -788,7 +1054,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'serialNumber'
+  Scenario: Create a Device with long 'serialNumber'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) serialNumber.
   Kapua should not return errors.
 
@@ -807,7 +1073,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'serialNumber'
+  Scenario: Create a Device with too long 'serialNumber'
   Login as kapua-sys, go to devices, create a Device with too long serialNumber.
   Kapua should throw an exception.
 
@@ -921,7 +1187,7 @@ Feature: Device Registry Integration
   #
   # modelId
 
-  Scenario: Creating a Device with no 'modelId'
+  Scenario: Create a Device with no 'modelId'
   Login as kapua-sys, go to Devices, create a Device without a modelId.
   Kapua should throw an exception.
 
@@ -940,7 +1206,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'modelId'
+  Scenario: Create a Device with short 'modelId'
   Login as kapua-sys, go to Devices, create a Device with a short modelId.
   Kapua should not return any errors.
 
@@ -959,7 +1225,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'modelId'
+  Scenario: Create a Device with long 'modelId'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) modelId.
   Kapua should not return errors.
 
@@ -978,7 +1244,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'modelId'
+  Scenario: Create a Device with too long 'modelId'
   Login as kapua-sys, go to devices, create a Device with too long modelId.
   Kapua should throw an exception.
 
@@ -1092,7 +1358,7 @@ Feature: Device Registry Integration
   #
   # modelName
 
-  Scenario: Creating a Device with no 'modelName'
+  Scenario: Create a Device with no 'modelName'
   Login as kapua-sys, go to Devices, create a Device without a modelName.
   Kapua should throw an exception.
 
@@ -1111,7 +1377,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'modelName'
+  Scenario: Create a Device with short 'modelName'
   Login as kapua-sys, go to Devices, create a Device with a short modelName.
   Kapua should not return any errors.
 
@@ -1130,7 +1396,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'modelName'
+  Scenario: Create a Device with long 'modelName'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) modelName.
   Kapua should not return errors.
 
@@ -1149,7 +1415,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'modelName'
+  Scenario: Create a Device with too long 'modelName'
   Login as kapua-sys, go to devices, create a Device with too long modelName.
   Kapua should throw an exception.
 
@@ -1263,7 +1529,7 @@ Feature: Device Registry Integration
   #
   # imei
 
-  Scenario: Creating a Device with no 'imei'
+  Scenario: Create a Device with no 'imei'
   Login as kapua-sys, go to Devices, create a Device without a imei.
   Kapua should throw an exception.
 
@@ -1282,7 +1548,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'imei'
+  Scenario: Create a Device with short 'imei'
   Login as kapua-sys, go to Devices, create a Device with a short imei.
   Kapua should not return any errors.
 
@@ -1301,7 +1567,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'imei'
+  Scenario: Create a Device with long 'imei'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) imei.
   Kapua should not return errors.
 
@@ -1320,7 +1586,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'imei'
+  Scenario: Create a Device with too long 'imei'
   Login as kapua-sys, go to devices, create a Device with too long imei.
   Kapua should throw an exception.
 
@@ -1434,7 +1700,7 @@ Feature: Device Registry Integration
   #
   # imsi
 
-  Scenario: Creating a Device with no 'imsi'
+  Scenario: Create a Device with no 'imsi'
   Login as kapua-sys, go to Devices, create a Device without a imsi.
   Kapua should throw an exception.
 
@@ -1453,7 +1719,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'imsi'
+  Scenario: Create a Device with short 'imsi'
   Login as kapua-sys, go to Devices, create a Device with a short imsi.
   Kapua should not return any errors.
 
@@ -1472,7 +1738,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'imsi'
+  Scenario: Create a Device with long 'imsi'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) imsi.
   Kapua should not return errors.
 
@@ -1491,7 +1757,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'imsi'
+  Scenario: Create a Device with too long 'imsi'
   Login as kapua-sys, go to devices, create a Device with too long imsi.
   Kapua should throw an exception.
 
@@ -1605,7 +1871,7 @@ Feature: Device Registry Integration
   #
   # iccid
 
-  Scenario: Creating a Device with no 'iccid'
+  Scenario: Create a Device with no 'iccid'
   Login as kapua-sys, go to Devices, create a Device without a iccid.
   Kapua should throw an exception.
 
@@ -1624,7 +1890,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'iccid'
+  Scenario: Create a Device with short 'iccid'
   Login as kapua-sys, go to Devices, create a Device with a short iccid.
   Kapua should not return any errors.
 
@@ -1643,7 +1909,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'iccid'
+  Scenario: Create a Device with long 'iccid'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) iccid.
   Kapua should not return errors.
 
@@ -1662,7 +1928,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'iccid'
+  Scenario: Create a Device with too long 'iccid'
   Login as kapua-sys, go to devices, create a Device with too long iccid.
   Kapua should throw an exception.
 
@@ -1776,7 +2042,7 @@ Feature: Device Registry Integration
   #
   # biosVersion
 
-  Scenario: Creating a Device with no 'biosVersion'
+  Scenario: Create a Device with no 'biosVersion'
   Login as kapua-sys, go to Devices, create a Device without a biosVersion.
   Kapua should throw an exception.
 
@@ -1795,7 +2061,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'biosVersion'
+  Scenario: Create a Device with short 'biosVersion'
   Login as kapua-sys, go to Devices, create a Device with a short biosVersion.
   Kapua should not return any errors.
 
@@ -1814,7 +2080,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'biosVersion'
+  Scenario: Create a Device with long 'biosVersion'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) biosVersion.
   Kapua should not return errors.
 
@@ -1833,7 +2099,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'biosVersion'
+  Scenario: Create a Device with too long 'biosVersion'
   Login as kapua-sys, go to devices, create a Device with too long biosVersion.
   Kapua should throw an exception.
 
@@ -1947,7 +2213,7 @@ Feature: Device Registry Integration
   #
   # firmwareVersion
 
-  Scenario: Creating a Device with no 'firmwareVersion'
+  Scenario: Create a Device with no 'firmwareVersion'
   Login as kapua-sys, go to Devices, create a Device without a firmwareVersion.
   Kapua should throw an exception.
 
@@ -1966,7 +2232,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'firmwareVersion'
+  Scenario: Create a Device with short 'firmwareVersion'
   Login as kapua-sys, go to Devices, create a Device with a short firmwareVersion.
   Kapua should not return any errors.
 
@@ -1985,7 +2251,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'firmwareVersion'
+  Scenario: Create a Device with long 'firmwareVersion'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) firmwareVersion.
   Kapua should not return errors.
 
@@ -2004,7 +2270,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'firmwareVersion'
+  Scenario: Create a Device with too long 'firmwareVersion'
   Login as kapua-sys, go to devices, create a Device with too long firmwareVersion.
   Kapua should throw an exception.
 
@@ -2118,7 +2384,7 @@ Feature: Device Registry Integration
   #
   # osVersion
 
-  Scenario: Creating a Device with no 'osVersion'
+  Scenario: Create a Device with no 'osVersion'
   Login as kapua-sys, go to Devices, create a Device without a osVersion.
   Kapua should throw an exception.
 
@@ -2137,7 +2403,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'osVersion'
+  Scenario: Create a Device with short 'osVersion'
   Login as kapua-sys, go to Devices, create a Device with a short osVersion.
   Kapua should not return any errors.
 
@@ -2156,7 +2422,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'osVersion'
+  Scenario: Create a Device with long 'osVersion'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) osVersion.
   Kapua should not return errors.
 
@@ -2176,7 +2442,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'osVersion'
+  Scenario: Create a Device with too long 'osVersion'
   Login as kapua-sys, go to devices, create a Device with too long osVersion.
   Kapua should throw an exception.
 
@@ -2290,7 +2556,7 @@ Feature: Device Registry Integration
   #
   # jvmVersion
 
-  Scenario: Creating a Device with no 'jvmVersion'
+  Scenario: Create a Device with no 'jvmVersion'
   Login as kapua-sys, go to Devices, create a Device without a jvmVersion.
   Kapua should throw an exception.
 
@@ -2309,7 +2575,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'jvmVersion'
+  Scenario: Create a Device with short 'jvmVersion'
   Login as kapua-sys, go to Devices, create a Device with a short jvmVersion.
   Kapua should not return any errors.
 
@@ -2328,7 +2594,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'jvmVersion'
+  Scenario: Create a Device with long 'jvmVersion'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) jvmVersion.
   Kapua should not return errors.
 
@@ -2347,7 +2613,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'jvmVersion'
+  Scenario: Create a Device with too long 'jvmVersion'
   Login as kapua-sys, go to devices, create a Device with too long jvmVersion.
   Kapua should throw an exception.
 
@@ -2461,7 +2727,7 @@ Feature: Device Registry Integration
   #
   # osgiFrameworkVersion
 
-  Scenario: Creating a Device with no 'osgiFrameworkVersion'
+  Scenario: Create a Device with no 'osgiFrameworkVersion'
   Login as kapua-sys, go to Devices, create a Device without a osgiFrameworkVersion.
   Kapua should throw an exception.
 
@@ -2480,7 +2746,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'osgiFrameworkVersion'
+  Scenario: Create a Device with short 'osgiFrameworkVersion'
   Login as kapua-sys, go to Devices, create a Device with a short osgiFrameworkVersion.
   Kapua should not return any errors.
 
@@ -2499,7 +2765,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'osgiFrameworkVersion'
+  Scenario: Create a Device with long 'osgiFrameworkVersion'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) osgiFrameworkVersion.
   Kapua should not return errors.
 
@@ -2518,7 +2784,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'osgiFrameworkVersion'
+  Scenario: Create a Device with too long 'osgiFrameworkVersion'
   Login as kapua-sys, go to devices, create a Device with too long osgiFrameworkVersion.
   Kapua should throw an exception.
 
@@ -2632,7 +2898,7 @@ Feature: Device Registry Integration
   #
   # applicationFrameworkVersion
 
-  Scenario: Creating a Device with no 'applicationFrameworkVersion'
+  Scenario: Create a Device with no 'applicationFrameworkVersion'
   Login as kapua-sys, go to Devices, create a Device without a applicationFrameworkVersion.
   Kapua should throw an exception.
 
@@ -2651,7 +2917,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'applicationFrameworkVersion'
+  Scenario: Create a Device with short 'applicationFrameworkVersion'
   Login as kapua-sys, go to Devices, create a Device with a short applicationFrameworkVersion.
   Kapua should not return any errors.
 
@@ -2670,7 +2936,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'applicationFrameworkVersion'
+  Scenario: Create a Device with long 'applicationFrameworkVersion'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) applicationFrameworkVersion.
   Kapua should not return errors.
 
@@ -2689,7 +2955,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'applicationFrameworkVersion'
+  Scenario: Create a Device with too long 'applicationFrameworkVersion'
   Login as kapua-sys, go to devices, create a Device with too long applicationFrameworkVersion.
   Kapua should throw an exception.
 
@@ -2803,7 +3069,7 @@ Feature: Device Registry Integration
   #
   # connectionInterface
 
-  Scenario: Creating a Device with no 'connectionInterface'
+  Scenario: Create a Device with no 'connectionInterface'
   Login as kapua-sys, go to Devices, create a Device without a connectionInterface.
   Kapua should throw an exception.
 
@@ -2822,7 +3088,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'connectionInterface'
+  Scenario: Create a Device with short 'connectionInterface'
   Login as kapua-sys, go to Devices, create a Device with a short connectionInterface.
   Kapua should not return any errors.
 
@@ -2841,7 +3107,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with 255 long 'connectionInterface'
+  Scenario: Create a Device with 255 long 'connectionInterface'
   Login as kapua-sys, go to Devices, create a Device with a 255 long (valid) connectionInterface.
   Kapua should not return errors.
 
@@ -2860,7 +3126,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with 4096 long 'connectionInterface'
+  Scenario: Create a Device with 4096 long 'connectionInterface'
   Login as kapua-sys, go to Devices, create a Device with a 4096 long (valid) connectionInterface.
   Kapua should not return errors.
 
@@ -2879,7 +3145,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'connectionInterface'
+  Scenario: Create a Device with too long 'connectionInterface'
   Login as kapua-sys, go to devices, create a Device with too long connectionInterface.
   Kapua should throw an exception.
 
@@ -3016,7 +3282,7 @@ Feature: Device Registry Integration
   #
   # connectionIp
 
-  Scenario: Creating a Device with no 'connectionIp'
+  Scenario: Create a Device with no 'connectionIp'
   Login as kapua-sys, go to Devices, create a Device without a connectionIp.
   Kapua should throw an exception.
 
@@ -3035,7 +3301,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'connectionIp'
+  Scenario: Create a Device with short 'connectionIp'
   Login as kapua-sys, go to Devices, create a Device with a short connectionIp.
   Kapua should not return any errors.
 
@@ -3054,7 +3320,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with 64 long 'connectionIp'
+  Scenario: Create a Device with 64 long 'connectionIp'
   Login as kapua-sys, go to Devices, create a Device with a 64 long (valid) connectionIp.
   Kapua should not return errors.
 
@@ -3073,7 +3339,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with 4096 long 'connectionIp'
+  Scenario: Create a Device with 4096 long 'connectionIp'
   Login as kapua-sys, go to Devices, create a Device with a 4096 long (valid) connectionIp.
   Kapua should not return errors.
 
@@ -3092,7 +3358,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'connectionIp'
+  Scenario: Create a Device with too long 'connectionIp'
   Login as kapua-sys, go to devices, create a Device with too long connectionIp.
   Kapua should throw an exception.
 
@@ -3229,7 +3495,7 @@ Feature: Device Registry Integration
   #
   # applicationIdentifiers
 
-  Scenario: Creating a Device with no 'applicationIdentifiers'
+  Scenario: Create a Device with no 'applicationIdentifiers'
   Login as kapua-sys, go to Devices, create a Device without a applicationIdentifiers.
   Kapua should throw an exception.
 
@@ -3248,7 +3514,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'applicationIdentifiers'
+  Scenario: Create a Device with short 'applicationIdentifiers'
   Login as kapua-sys, go to Devices, create a Device with a short applicationIdentifiers.
   Kapua should not return any errors.
 
@@ -3267,7 +3533,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'applicationIdentifiers'
+  Scenario: Create a Device with long 'applicationIdentifiers'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) applicationIdentifiers.
   Kapua should not return errors.
 
@@ -3286,7 +3552,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'applicationIdentifiers'
+  Scenario: Create a Device with too long 'applicationIdentifiers'
   Login as kapua-sys, go to devices, create a Device with too long applicationIdentifiers.
   Kapua should throw an exception.
 
@@ -3400,7 +3666,7 @@ Feature: Device Registry Integration
   #
   # acceptEncoding
 
-  Scenario: Creating a Device with no 'acceptEncoding'
+  Scenario: Create a Device with no 'acceptEncoding'
   Login as kapua-sys, go to Devices, create a Device without a acceptEncoding.
   Kapua should throw an exception.
 
@@ -3419,7 +3685,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'acceptEncoding'
+  Scenario: Create a Device with short 'acceptEncoding'
   Login as kapua-sys, go to Devices, create a Device with a short acceptEncoding.
   Kapua should not return any errors.
 
@@ -3438,7 +3704,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'acceptEncoding'
+  Scenario: Create a Device with long 'acceptEncoding'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) acceptEncoding.
   Kapua should not return errors.
 
@@ -3457,7 +3723,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'acceptEncoding'
+  Scenario: Create a Device with too long 'acceptEncoding'
   Login as kapua-sys, go to devices, create a Device with too long acceptEncoding.
   Kapua should throw an exception.
 
@@ -3571,7 +3837,7 @@ Feature: Device Registry Integration
   #
   # customAttribute1
 
-  Scenario: Creating a Device with no 'customAttribute1'
+  Scenario: Create a Device with no 'customAttribute1'
   Login as kapua-sys, go to Devices, create a Device without a customAttribute1.
   Kapua should throw an exception.
 
@@ -3590,7 +3856,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'customAttribute1'
+  Scenario: Create a Device with short 'customAttribute1'
   Login as kapua-sys, go to Devices, create a Device with a short customAttribute1.
   Kapua should not return any errors.
 
@@ -3609,7 +3875,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'customAttribute1'
+  Scenario: Create a Device with long 'customAttribute1'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) customAttribute1.
   Kapua should not return errors.
 
@@ -3628,7 +3894,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'customAttribute1'
+  Scenario: Create a Device with too long 'customAttribute1'
   Login as kapua-sys, go to devices, create a Device with too long customAttribute1.
   Kapua should throw an exception.
 
@@ -3742,7 +4008,7 @@ Feature: Device Registry Integration
   #
   # customAttribute2
 
-  Scenario: Creating a Device with no 'customAttribute2'
+  Scenario: Create a Device with no 'customAttribute2'
   Login as kapua-sys, go to Devices, create a Device without a customAttribute2.
   Kapua should throw an exception.
 
@@ -3761,7 +4027,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'customAttribute2'
+  Scenario: Create a Device with short 'customAttribute2'
   Login as kapua-sys, go to Devices, create a Device with a short customAttribute2.
   Kapua should not return any errors.
 
@@ -3780,7 +4046,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'customAttribute2'
+  Scenario: Create a Device with long 'customAttribute2'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) customAttribute2.
   Kapua should not return errors.
 
@@ -3799,7 +4065,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'customAttribute2'
+  Scenario: Create a Device with too long 'customAttribute2'
   Login as kapua-sys, go to devices, create a Device with too long customAttribute2.
   Kapua should throw an exception.
 
@@ -3913,7 +4179,7 @@ Feature: Device Registry Integration
   #
   # customAttribute3
 
-  Scenario: Creating a Device with no 'customAttribute3'
+  Scenario: Create a Device with no 'customAttribute3'
   Login as kapua-sys, go to Devices, create a Device without a customAttribute3.
   Kapua should throw an exception.
 
@@ -3932,7 +4198,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'customAttribute3'
+  Scenario: Create a Device with short 'customAttribute3'
   Login as kapua-sys, go to Devices, create a Device with a short customAttribute3.
   Kapua should not return any errors.
 
@@ -3951,7 +4217,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'customAttribute3'
+  Scenario: Create a Device with long 'customAttribute3'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) customAttribute3.
   Kapua should not return errors.
 
@@ -3970,7 +4236,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'customAttribute3'
+  Scenario: Create a Device with too long 'customAttribute3'
   Login as kapua-sys, go to devices, create a Device with too long customAttribute3.
   Kapua should throw an exception.
 
@@ -4084,7 +4350,7 @@ Feature: Device Registry Integration
   #
   # customAttribute4
 
-  Scenario: Creating a Device with no 'customAttribute4'
+  Scenario: Create a Device with no 'customAttribute4'
   Login as kapua-sys, go to Devices, create a Device without a customAttribute4.
   Kapua should throw an exception.
 
@@ -4103,7 +4369,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'customAttribute4'
+  Scenario: Create a Device with short 'customAttribute4'
   Login as kapua-sys, go to Devices, create a Device with a short customAttribute4.
   Kapua should not return any errors.
 
@@ -4122,7 +4388,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'customAttribute4'
+  Scenario: Create a Device with long 'customAttribute4'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) customAttribute4.
   Kapua should not return errors.
 
@@ -4141,7 +4407,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'customAttribute4'
+  Scenario: Create a Device with too long 'customAttribute4'
   Login as kapua-sys, go to devices, create a Device with too long customAttribute4.
   Kapua should throw an exception.
 
@@ -4255,7 +4521,7 @@ Feature: Device Registry Integration
   #
   # customAttribute5
 
-  Scenario: Creating a Device with no 'customAttribute5'
+  Scenario: Create a Device with no 'customAttribute5'
   Login as kapua-sys, go to Devices, create a Device without a customAttribute5.
   Kapua should throw an exception.
 
@@ -4274,7 +4540,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with short 'customAttribute5'
+  Scenario: Create a Device with short 'customAttribute5'
   Login as kapua-sys, go to Devices, create a Device with a short customAttribute5.
   Kapua should not return any errors.
 
@@ -4293,7 +4559,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with long 'customAttribute5'
+  Scenario: Create a Device with long 'customAttribute5'
   Login as kapua-sys, go to Devices, create a Device with a long (valid) customAttribute5.
   Kapua should not return errors.
 
@@ -4312,7 +4578,7 @@ Feature: Device Registry Integration
     And The device matches the creator parameters
     And I logout
 
-  Scenario: Creating a Device with too long 'customAttribute5'
+  Scenario: Create a Device with too long 'customAttribute5'
   Login as kapua-sys, go to devices, create a Device with too long customAttribute5.
   Kapua should throw an exception.
 
@@ -4422,6 +4688,614 @@ Feature: Device Registry Integration
     And I change device customAttribute5 to "aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL"
     Then An exception was thrown
     Then I logout
+
+  #
+  # extendedProperties.groupName
+  Scenario: Create a Device with no 'extendedProperties.groupName'
+  Login as kapua-sys, go to Devices, create a Device without a extendedProperties.groupName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName | name                 | value                 |
+      |           | extendedPropertyName | extendedPropertyValue |
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument deviceCreator.extendedProperties[].groupName"
+    Then I create a device from the existing creator
+    Then An exception was thrown
+    And I logout
+
+  Scenario: Create a Device with short 'extendedProperties.groupName'
+  Login as kapua-sys, go to Devices, create a Device with short extendedProperties.groupName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName | name                 | value                 |
+      | d         | extendedPropertyName | extendedPropertyValue |
+    Then I create a device from the existing creator
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Create a Device with long 'extendedProperties.groupName'
+  Login as kapua-sys, go to Devices, create a Device with long extendedProperties.groupName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                                                        | name                 | value                 |
+      | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r | extendedPropertyName | extendedPropertyValue |
+    Then I create a device from the existing creator
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Create a Device with too long 'extendedProperties.groupName'
+  Login as kapua-sys, go to Devices, create a Device with too long extendedProperties.groupName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                                                         | name                 | value                 |
+      | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r | extendedPropertyName | extendedPropertyValue |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.extendedProperties[].groupName: Value over than allowed max length. Max length is: 64."
+    Then I create a device from the existing creator
+    Then An exception was thrown
+    And I logout
+
+  Scenario: Update a Device with no 'extendedProperties.groupName'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property without a extendedProperties.groupName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument device.extendedProperties[].groupName"
+    And I change device extended property to
+      | groupName | name                 | value                 |
+      |           | extendedPropertyName | extendedPropertyValue |
+    And An exception was thrown
+    And I logout
+
+  Scenario: Update a Device with short 'extendedProperties.groupName'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property with short extendedProperties.groupName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    And The device matches the creator parameters
+    And I change device extended property to
+      | groupName | name                 | value                 |
+      | d         | extendedPropertyName | extendedPropertyValue |
+    And No exception was thrown
+    And The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'extendedProperties.groupName'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property with long extendedProperties.groupName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    And The device matches the creator parameters
+    And I change device extended property to
+      | groupName                                                        | name                 | value                 |
+      | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r | extendedPropertyName | extendedPropertyValue |
+    And No exception was thrown
+    And The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'extendedProperties.groupName'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property with too long extendedProperties.groupName.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.extendedProperties[].groupName: Value over than allowed max length. Max length is: 64."
+    And I change device extended property to
+      | groupName                                                         | name                 | value                 |
+      | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r | extendedPropertyName | extendedPropertyValue |
+    Then An exception was thrown
+    And I logout
+
+  #
+  # extendedProperties.name
+
+  Scenario: Create a Device with no 'extendedProperties.name'
+  Login as kapua-sys, go to Devices, create a Device without a extendedProperties.name.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name | value                 |
+      | extendedPropertyGroupName |      | extendedPropertyValue |
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument deviceCreator.extendedProperties[].name"
+    Then I create a device from the existing creator
+    Then An exception was thrown
+    And I logout
+
+  Scenario: Create a Device with short 'extendedProperties.name'
+  Login as kapua-sys, go to Devices, create a Device with short extendedProperties.name.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name | value                 |
+      | extendedPropertyGroupName | d    | extendedPropertyValue |
+    Then I create a device from the existing creator
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Create a Device with long 'extendedProperties.name'
+  Login as kapua-sys, go to Devices, create a Device with long extendedProperties.name.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                                                             | value                 |
+      | extendedPropertyGroupName | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r | extendedPropertyValue |
+    Then I create a device from the existing creator
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Create a Device with too long 'extendedProperties.name'
+  Login as kapua-sys, go to Devices, create a Device with too long extendedProperties.name.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                                                              | value                 |
+      | extendedPropertyGroupName | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r | extendedPropertyValue |
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.extendedProperties[].name: Value over than allowed max length. Max length is: 64."
+    Then I create a device from the existing creator
+    Then An exception was thrown
+    And I logout
+
+  Scenario: Update a Device with no 'extendedProperties.name'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property without a extendedProperties.name.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    Given I expect the exception "KapuaIllegalNullArgumentException" with the text "An illegal null value was provided for the argument device.extendedProperties[].name"
+    And I change device extended property to
+      | groupName                 | name | value                 |
+      | extendedPropertyGroupName |      | extendedPropertyValue |
+    And An exception was thrown
+    And I logout
+
+  Scenario: Update a Device with short 'extendedProperties.name'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property with short extendedProperties.name.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    And The device matches the creator parameters
+    And I change device extended property to
+      | groupName                 | name | value                 |
+      | extendedPropertyGroupName | d    | extendedPropertyValue |
+    And No exception was thrown
+    And The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with long 'extendedProperties.name'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property with long extendedProperties.name.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    And The device matches the creator parameters
+    And I change device extended property to
+      | groupName                 | name                                                             | value                 |
+      | extendedPropertyGroupName | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r | extendedPropertyValue |
+    And No exception was thrown
+    And The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'extendedProperties.name'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property with too long extendedProperties.name.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.extendedProperties[].name: Value over than allowed max length. Max length is: 64."
+    And I change device extended property to
+      | groupName                 | name                                                              | value                 |
+      | extendedPropertyGroupName | aduyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r | extendedPropertyValue |
+    Then An exception was thrown
+    And I logout
+
+  #
+  # extendedProperties.value
+
+  Scenario: Create a Device with no 'extendedProperties.value'
+  Login as kapua-sys, go to Devices, create a Device without a extendedProperties.value.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value |
+      | extendedPropertyGroupName | extendedPropertyName |       |
+    Then I create a device from the existing creator
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Create a Device with short 'extendedProperties.value'
+  Login as kapua-sys, go to Devices, create a Device with short extendedProperties.value.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name | value                 |
+      | extendedPropertyGroupName | d    | extendedPropertyValue |
+    Then I create a device from the existing creator
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Create a Device with 255 long 'extendedProperties.value'
+  Login as kapua-sys, go to Devices, create a Device with 255 long extendedProperties.value.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                                                                                                                                                                                                                                                           |
+      | extendedPropertyGroupName | extendedPropertyName | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    Then I create a device from the existing creator
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Create a Device with 524288 long 'extendedProperties.value'
+  Login as kapua-sys, go to Devices, create a Device with 524288 long extendedProperties.value.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property with very long value to the device creator
+    Then I create a device from the existing creator
+    Then No exception was thrown
+    And The device matches the creator parameters
+    And I logout
+
+  Scenario: Create a Device with too long 'extendedProperties.value'
+  Login as kapua-sys, go to Devices, create a Device with too long extendedProperties.value.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property with too long value to the device creator
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument deviceCreator.extendedProperties[].value: Value over than allowed max length. Max length is: 524288."
+    Then I create a device from the existing creator
+    Then An exception was thrown
+    And I logout
+
+  Scenario: Update a Device with no 'extendedProperties.value'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property without a extendedProperties.value.
+  Kapua should not throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    And I change device extended property to
+      | groupName                 | name                 | value |
+      | extendedPropertyGroupName | extendedPropertyName |       |
+    And No exception was thrown
+    And The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with short 'extendedProperties.value'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property with short extendedProperties.value.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    And The device matches the creator parameters
+    And I change device extended property to
+      | groupName                 | name                 | value |
+      | extendedPropertyGroupName | extendedPropertyName | d     |
+    And No exception was thrown
+    And The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with 255 long 'extendedProperties.value'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property with 255 long extendedProperties.value.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    And The device matches the creator parameters
+    And I change device extended property to
+      | groupName                 | name                 | value                                                                                                                                                                                                                                                           |
+      | extendedPropertyGroupName | extendedPropertyName | duyTkz0YUAlEonkehWsSOMQslBFu1GlXG5D3iadhSu5nHDrofVdWRX4mI5tzdt8r0EaAXJpHf06C4DRdiloQ7yuxZWG5web2szcuu43Hf4Bz3QPYxs1wXl5m40ZytbV3AZBI70SD99mDUImj3X66gW1G5nz5QXelhyNXEEuuPyBMmJPcgJ6w7Y1ZZC1AwDr4ShH3c2lgCyzKQcMREpCHFGWF4wK4dsF1hWa63Q4gAthqiDHIhhqBwxQuzce8ziL |
+    And No exception was thrown
+    And The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with 524288 long 'extendedProperties.value'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property with 524288 long extendedProperties.value.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    And The device matches the creator parameters
+    And I change device extended property with very long value to the device
+    And No exception was thrown
+    And The device was correctly updated
+    And I logout
+
+  Scenario: Update a Device with too long 'extendedProperties.value'
+  Login as kapua-sys, go to Devices, create a Device with extended properties and update with extended property with too long extendedProperties.value.
+  Kapua should throw an exception.
+
+    When I login as user with name "kapua-sys" and password "kapua-password"
+    Given Account
+      | name     | scopeId |
+      | AccountA | 1       |
+    And I configure the device registry service
+      | type    | name                   | value |
+      | boolean | infiniteChildEntities  | true  |
+      | integer | maxNumberChildEntities | 10    |
+    And A regular device creator
+    And I add an extended property to the device creator
+      | groupName                 | name                 | value                 |
+      | extendedPropertyGroupName | extendedPropertyName | extendedPropertyValue |
+    And I create a device from the existing creator
+    And No exception was thrown
+    And The device matches the creator parameters
+    Given I expect the exception "KapuaIllegalArgumentException" with the text "An illegal value was provided for the argument device.extendedProperties[].value: Value over than allowed max length. Max length is: 524288."
+    And I change device extended property with too long value to the device
+    And An exception was thrown
+    And I logout
 
   #
   # Device Querying
