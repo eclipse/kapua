@@ -43,6 +43,8 @@ import java.util.ArrayList;
 @Singleton
 public class JobTargetServiceSteps extends JobServiceTestBase {
 
+    private static final String DEVICE = "Device";
+
     private JobTargetService jobTargetService;
     private JobTargetFactory jobTargetFactory;
 
@@ -326,7 +328,7 @@ public class JobTargetServiceSteps extends JobServiceTestBase {
     //
     private JobTargetCreator prepareJobTargetCreator() {
         KapuaId currentJobId = (KapuaId) stepData.get(CURRENT_JOB_ID);
-        Device device = (Device) stepData.get("LastDevice");
+        Device device = (Device) stepData.get(DEVICE);
         JobTargetCreator tmpCr = jobTargetFactory.newCreator(getCurrentScopeId());
         tmpCr.setJobId(currentJobId);
         tmpCr.setJobTargetId(device.getId());
