@@ -194,15 +194,11 @@
             <artifactId>javax.ws.rs-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
-            <artifactId>jersey-guava</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
         </dependency>
-        <!-- dependencies added otherwise the unix assembly doesn't know the arctifact to add -->
 
+        <!-- dependencies added otherwise the unix assembly doesn't know the arctifact to add -->
         <dependency>
             <groupId>org.eclipse.kapua</groupId>
             <artifactId>kapua-translator-kapua-kura</artifactId>
