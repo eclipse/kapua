@@ -117,23 +117,15 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
         JobLogger jobLogger = jobContextWrapper.getJobLogger();
         jobLogger.setClassLog(LOG);
 
-        JobTargetQuery query = jobTargetFactory.newQuery(jobContextWrapper.getScopeId());
-
-        AndPredicate andPredicate = query.andPredicate(
-            query.attributePredicate(JobTargetAttributes.JOB_ID, jobContextWrapper.getJobId())
-        );
-        query.setPredicate(andPredicate);
-        JobTargetListResult jobTargets = KapuaSecurityUtils.doPrivileged(() -> jobTargetService.query(query));
-
-        jobLogger.info("Reading target: {} (id: {})...", getTargetDisplayName(jobTargets.getItem(0)), jobTargets.getItem(0).getId().toCompactId());
-
-        JobTargetWrapper currentWrappedJobTarget = null;
-        if (jobTargetIndex < wrappedJobTargets.size()) {
-            currentWrappedJobTarget = wrappedJobTargets.get(jobTargetIndex++);
-        }
-
-        jobLogger.info("Reading target: {} (id: {})... DONE!", getTargetDisplayName(jobTargets.getItem(0)), jobTargets.getItem(0).getId().toCompactId());
-        return currentWrappedJobTarget;
+        return KapuaSecurityUtils.doPrivileged(() -> {
+            JobTargetWrapper currentWrappedJobTarget = null;
+            if (jobTargetIndex < wrappedJobTargets.size()) {
+                currentWrappedJobTarget = wrappedJobTargets.get(jobTargetIndex++);
+                JobTarget jobTarget = jobTargetService.find(jobContextWrapper.getScopeId(), currentWrappedJobTarget.getJobTarget().getJobTargetId());
+                jobLogger.info("Read target: {} (id: {})", getTargetDisplayName(jobTarget), jobTarget.getId().toCompactId());
+            }
+            return currentWrappedJobTarget;
+        });
     }
 
     /**
