@@ -121,7 +121,7 @@ public class DefaultTargetReader extends AbstractItemReader implements TargetRea
             JobTargetWrapper currentWrappedJobTarget = null;
             if (jobTargetIndex < wrappedJobTargets.size()) {
                 currentWrappedJobTarget = wrappedJobTargets.get(jobTargetIndex++);
-                JobTarget jobTarget = jobTargetService.find(jobContextWrapper.getScopeId(), currentWrappedJobTarget.getJobTarget().getJobTargetId());
+                JobTarget jobTarget = jobTargetService.find(jobContextWrapper.getScopeId(), currentWrappedJobTarget.getJobTarget().getId());
                 jobLogger.info("Read target: {} (id: {})", getTargetDisplayName(jobTarget), jobTarget.getId().toCompactId());
             }
             return currentWrappedJobTarget;
