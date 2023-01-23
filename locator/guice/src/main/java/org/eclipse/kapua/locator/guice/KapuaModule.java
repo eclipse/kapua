@@ -13,15 +13,13 @@
  *******************************************************************************/
 package org.eclipse.kapua.locator.guice;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
+import com.google.inject.Singleton;
+import com.google.inject.matcher.Matcher;
+import com.google.inject.matcher.Matchers;
+import com.google.inject.multibindings.Multibinder;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaRuntimeException;
@@ -30,20 +28,17 @@ import org.eclipse.kapua.commons.core.InterceptorBind;
 import org.eclipse.kapua.commons.core.ServiceModule;
 import org.eclipse.kapua.commons.core.ServiceModuleProvider;
 import org.eclipse.kapua.commons.core.ServiceModuleProviderImpl;
-import org.eclipse.kapua.commons.util.ResourceUtils;
 import org.eclipse.kapua.locator.KapuaProvider;
 import org.eclipse.kapua.model.KapuaObjectFactory;
 import org.eclipse.kapua.service.KapuaService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.ClassPath;
-import com.google.common.reflect.ClassPath.ClassInfo;
-import com.google.inject.Singleton;
-import com.google.inject.matcher.Matcher;
-import com.google.inject.matcher.Matchers;
-import com.google.inject.multibindings.Multibinder;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class KapuaModule extends AbstractKapuaModule {
 
@@ -54,27 +49,16 @@ public class KapuaModule extends AbstractKapuaModule {
      */
     private static final String SERVICE_RESOURCE = "locator.xml";
 
-    private final String resourceName;
-
     private Multibinder<ServiceModule> serviceModulesBindings;
+    private LocatorConfig locatorConfig;
 
-    public KapuaModule(final String resourceName) {
-        this.resourceName = resourceName;
+    public KapuaModule(final LocatorConfig locatorConfig) {
+        this.locatorConfig = locatorConfig;
     }
 
     @Override
     protected void configureModule() {
         try {
-            // Find locator configuration file
-            List<URL> locatorConfigurations = Arrays.asList(ResourceUtils.getResource(resourceName));
-            if (locatorConfigurations.isEmpty()) {
-                return;
-            }
-
-            // Read configurations from resource files
-            URL locatorConfigURL = locatorConfigurations.get(0);
-            LocatorConfig locatorConfig = LocatorConfig.fromURL(locatorConfigURL);
-
             // Packages are supposed to contain service implementations
             Collection<String> packageNames = locatorConfig.getIncludedPackageNames();
 

@@ -134,7 +134,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         }
 
         final LocatorConfig locatorConfig = LocatorConfig.fromURL(locatorConfigURL);
-        ConfigurationPrinter configurationPrinter =
+        final ConfigurationPrinter configurationPrinter =
                 ConfigurationPrinter
                         .create()
                         .withLogger(LOG)
@@ -158,7 +158,7 @@ public class GuiceLocatorImpl extends KapuaLocator {
         }
 
         // KapuaModule will be removed as soon as bindings will be moved to local modules
-        instantiatedKapuaModules.add(new KapuaModule(locatorConfigName));
+        instantiatedKapuaModules.add(new KapuaModule(locatorConfig));
 
         //
         // Print loaded stuff

@@ -351,12 +351,14 @@ public class ConfigurationPrinter {
         // Title
         String alignedTitleFormat = buildAlignedTitleFormat();
         printLogLeveled(alignedTitleFormat, getTitle());
+        this.title = null;
 
         //
         // Parameters
         for (Configuration configuration : getConfigurations()) {
             printLogLeveled("|  {}", configuration);
         }
+        this.configurations = null;
 
         //
         // End Line - Same length of Title
