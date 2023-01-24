@@ -66,7 +66,7 @@ public class DockerSteps {
     private static final Logger logger = LoggerFactory.getLogger(DockerSteps.class);
 
     private static final String NETWORK_PREFIX = "kapua-net";
-    private static final String KAPUA_VERSION = "2.0.0-SNAPSHOT";
+    private static final String KAPUA_VERSION = "2.0.0-DYN-JAXB-SNAPSHOT";
     private static final String ES_IMAGE = "elasticsearch:7.8.1";
     private static final List<String> DEFAULT_DEPLOYMENT_CONTAINERS_NAME;
     private static final List<String> DEFAULT_BASE_DEPLOYMENT_CONTAINERS_NAME;

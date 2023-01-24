@@ -52,16 +52,16 @@ The following settings are available as system properties when running the migra
 
 Other useful properties from Kapua
 
-| Name                       | Description                  | Default Value  |
-|----------------------------|------------------------------|----------------|
-| commons.db.name            | The target database name     | kapuadb        |
-| commons.db.username        | The target database username | kapua          | 
-| commons.db.password        | The target database password | kapua          | 
-| commons.db.connection.host | The target database host     | 192.168.33.10  |
-| commons.db.connection.port | The target database port     | 3306           | 
+| Name                       | Description                  | Default Value |
+|----------------------------|------------------------------|---------------|
+| commons.db.name            | The target database name     | kapuadb       |
+| commons.db.username        | The target database username | kapua         | 
+| commons.db.password        | The target database password | kapua         | 
+| commons.db.connection.host | The target database host     | 192.168.33.10 |
+| commons.db.connection.port | The target database port     | 3306          | 
 
 #### Example usage
 
 ```bash
-java -Dcommons.db.connection.host=somehost -Dmigrator.encryption.key.old=changeMePlease\!\! -Dmigrator.encryption.key.new=changedMeThanks\! -jar kapua-encryption-migrator-2.0.0-SNAPSHOT-app.jar
+java -Dcommons.db.connection.host=somehost -Dmigrator.encryption.key.old=changeMePlease\!\! -Dmigrator.encryption.key.new=changedMeThanks\! -jar kapua-encryption-migrator-2.0.0-DYN-JAXB-SNAPSHOT-app.jar
 ```
