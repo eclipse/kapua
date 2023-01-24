@@ -11,7 +11,8 @@
     Contributors:
         Eurotech - initial API and implementation
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.eclipse.kapua</groupId>
@@ -58,7 +59,7 @@
         <guava-listenablefuture.version>9999.0-empty-to-avoid-conflict-with-guava</guava-listenablefuture.version>
         <guice.version>4.1.0</guice.version>
         <h2.version>1.4.199</h2.version>
-        <hk2-api.version>2.5.0-b05</hk2-api.version>
+        <hk2-api.version>2.6.1</hk2-api.version>
         <httpcomponents-asyncclient.version>4.1.5</httpcomponents-asyncclient.version>
         <httpcomponents-client.version>4.5.13</httpcomponents-client.version>
         <httpcomponents-core.version>4.4.15</httpcomponents-core.version>
@@ -336,7 +337,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -349,7 +350,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -362,7 +363,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -375,7 +376,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
@@ -2520,8 +2521,8 @@
         <url>https://github.com/eclipse/kapua.git</url>
         <connection>scm:git:ssh://git@github.com/eclipse/kapua.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/eclipse/kapua.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <issueManagement>
         <system>GitHub Issues</system>

@@ -230,6 +230,7 @@
                 <include>org.glassfish.hk2:hk2-api</include>
                 <include>org.glassfish.hk2:hk2-locator</include>
                 <include>org.glassfish.hk2:hk2-utils</include>
+                <include>org.glassfish.jersey.bundles:jaxrs-ri</include>
                 <include>org.glassfish.jersey.core:jersey-client</include>
                 <include>org.glassfish.jersey.core:jersey-common</include>
                 <include>org.glassfish.jersey.ext:jersey-entity-filtering</include>

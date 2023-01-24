@@ -12,13 +12,8 @@
  *******************************************************************************/
 package org.eclipse.kapua.job.engine.app.web;
 
-import java.util.HashMap;
-
-import javax.ws.rs.core.MediaType;
-
 import org.eclipse.kapua.commons.util.xml.XmlUtil;
 import org.eclipse.kapua.job.engine.app.web.jaxb.JobEngineJAXBContextProvider;
-
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -26,6 +21,9 @@ import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.filter.UriConnegFilter;
 import org.glassfish.jersey.server.spi.Container;
 import org.glassfish.jersey.server.spi.ContainerLifecycleListener;
+
+import javax.ws.rs.core.MediaType;
+import java.util.HashMap;
 
 public class JobEngineApplication extends ResourceConfig {
 
@@ -45,7 +43,8 @@ public class JobEngineApplication extends ResourceConfig {
 
             @Override
             public void onStartup(Container container) {
-                ServiceLocator serviceLocator = container.getApplicationHandler().getServiceLocator();
+                ServiceLocator serviceLocator = container.getApplicationHandler().getInjectionManager().getInstance(ServiceLocator.class);
+
                 JobEngineJAXBContextProvider provider = serviceLocator.createAndInitialize(JobEngineJAXBContextProvider.class);
                 XmlUtil.setContextProvider(provider);
             }
