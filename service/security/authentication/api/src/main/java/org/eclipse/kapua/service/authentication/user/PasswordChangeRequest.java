@@ -12,27 +12,27 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.user;
 
-public class PasswordChangeRequest {
-    private String oldPassword;
-    private String newPassword;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
+
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.PROPERTY)
+@XmlType(factoryClass = UserCredentialXmlRegistry.class, factoryMethod = "newPasswordChangeRequest")
+public interface PasswordChangeRequest {
+    @XmlElement(name = "oldPassword")
+    String getOldPassword();
 
 
-    public String getOldPassword() {
-        return oldPassword;
-    }
+    void setOldPassword(String oldPassword);
 
 
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
+    @XmlElement(name = "newPassword")
+    String getNewPassword();
 
 
-    public String getNewPassword() {
-        return newPassword;
-    }
+    void setNewPassword(String newPassword);
 
-
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
-    }
 }
