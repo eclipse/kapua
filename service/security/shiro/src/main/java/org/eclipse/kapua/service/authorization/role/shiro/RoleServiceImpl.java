@@ -57,7 +57,6 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
     private RolePermissionFactory rolePermissionFactory;
-    private final ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * @deprecated since 2.0.0 - please use {@link #RoleServiceImpl(AuthorizationEntityManagerFactory, RoleCacheFactory, PermissionFactory, AuthorizationService, RolePermissionFactory, ServiceConfigurationManager)} instead. This constructor might be removed in future releases.
@@ -66,7 +65,6 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
     public RoleServiceImpl() {
         super(AuthorizationEntityManagerFactory.getInstance(), RoleCacheFactory.getInstance(), null);
         this.rolePermissionFactory = null;
-        serviceConfigurationManager = null;
     }
 
     /**
@@ -90,7 +88,6 @@ public class RoleServiceImpl extends KapuaConfigurableServiceBase implements Rol
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.rolePermissionFactory = rolePermissionFactory;
-        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override

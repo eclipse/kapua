@@ -22,7 +22,6 @@ import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -46,8 +45,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * {@link DeviceConnectionService} implementation.
@@ -58,7 +55,6 @@ import java.util.Optional;
 public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase implements DeviceConnectionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConnectionServiceImpl.class);
-    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Constructor.
@@ -297,20 +293,5 @@ public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase im
         for (DeviceConnection dc : deviceConnectionsToDelete.getItems()) {
             delete(dc.getScopeId(), dc.getId());
         }
-    }
-
-    @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
-    }
-
-    @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigValues(scopeId, true);
-    }
-
-    @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
     }
 }

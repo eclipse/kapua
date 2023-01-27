@@ -67,7 +67,6 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
     private TriggerService triggerService;
     //TODO: make final
     private TriggerFactory triggerFactory;
-    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Default constructor for injection
@@ -91,7 +90,6 @@ public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobS
         this.authorizationService = authorizationService;
         this.triggerService = triggerService;
         this.triggerFactory = triggerFactory;
-        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
