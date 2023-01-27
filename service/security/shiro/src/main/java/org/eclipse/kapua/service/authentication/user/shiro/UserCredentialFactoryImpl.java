@@ -12,20 +12,15 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.authentication.user.shiro;
 
-import com.google.inject.Module;
-import org.eclipse.kapua.commons.core.AbstractKapuaModule;
+import org.eclipse.kapua.service.authentication.user.PasswordChangeRequest;
 import org.eclipse.kapua.service.authentication.user.UserCredentialFactory;
-import org.eclipse.kapua.service.authentication.user.UserCredentialService;
 
-/**
- * {@code kapua-security-shiro} {@link Module} implementation.
- *
- * @since 2.0.0
- */
-public class UserCredentialModule extends AbstractKapuaModule implements Module {
+import javax.inject.Singleton;
+
+@Singleton
+public class UserCredentialFactoryImpl implements UserCredentialFactory {
     @Override
-    protected void configureModule() {
-        bind(UserCredentialService.class).to(UserCredentialServiceImpl.class);
-        bind(UserCredentialFactory.class).to(UserCredentialFactoryImpl.class);
+    public PasswordChangeRequest newPasswordChangeRequest() {
+        return new PasswordChangeRequestImpl();
     }
 }
