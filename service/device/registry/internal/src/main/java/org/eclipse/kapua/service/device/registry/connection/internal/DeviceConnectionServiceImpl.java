@@ -16,13 +16,12 @@ import org.apache.commons.lang.NotImplementedException;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -46,8 +45,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * {@link DeviceConnectionService} implementation.
@@ -55,10 +52,9 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Singleton
-public class DeviceConnectionServiceImpl extends AbstractKapuaService implements DeviceConnectionService {
+public class DeviceConnectionServiceImpl extends KapuaConfigurableServiceBase implements DeviceConnectionService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DeviceConnectionServiceImpl.class);
-    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Constructor.
@@ -80,7 +76,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
      */
     @Deprecated
     public DeviceConnectionServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
-        super(deviceEntityManagerFactory, new DeviceRegistryCacheFactory());
+        super(deviceEntityManagerFactory, new DeviceRegistryCacheFactory(), null);
     }
 
     /**
@@ -97,8 +93,7 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
             DeviceRegistryCacheFactory deviceRegistryCacheFactory,
             @Named("DeviceConnectionServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager
     ) {
-        super(deviceEntityManagerFactory, deviceRegistryCacheFactory);
-        this.serviceConfigurationManager = serviceConfigurationManager;
+        super(deviceEntityManagerFactory, deviceRegistryCacheFactory, serviceConfigurationManager);
     }
 
     @Override
@@ -321,20 +316,5 @@ public class DeviceConnectionServiceImpl extends AbstractKapuaService implements
         for (DeviceConnection dc : deviceConnectionsToDelete.getItems()) {
             delete(dc.getScopeId(), dc.getId());
         }
-    }
-
-    @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
-    }
-
-    @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigValues(scopeId, true);
-    }
-
-    @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
     }
 }

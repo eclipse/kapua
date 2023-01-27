@@ -33,7 +33,6 @@ import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
-import org.eclipse.kapua.service.KapuaService;
 import org.eclipse.kapua.service.authorization.AuthorizationService;
 import org.eclipse.kapua.service.authorization.permission.PermissionFactory;
 import org.eclipse.kapua.service.config.KapuaConfigurableService;
@@ -76,17 +75,6 @@ public class ServiceConfigurationManagerImpl implements ServiceConfigurationMana
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.rootUserTester = rootUserTester;
-    }
-
-    /**
-     * Whether this {@link KapuaService} is enabled for the given scope {@link KapuaId}.
-     *
-     * @param scopeId The scope {@link KapuaId} for which to check.
-     * @return {@code true} if the {@link KapuaService} is enabled, {@code false} otherwise.
-     * @since 1.2.0
-     */
-    protected boolean isServiceEnabled(KapuaId scopeId) {
-        return true;
     }
 
     /**

@@ -16,12 +16,11 @@ import com.google.common.collect.Lists;
 import org.eclipse.kapua.KapuaDuplicateNameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
 import org.eclipse.kapua.service.device.registry.Device;
@@ -38,8 +37,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * {@link DeviceRegistryService} implementation.
@@ -48,11 +45,10 @@ import java.util.Optional;
  */
 @Singleton
 public class DeviceRegistryServiceImpl
-        extends AbstractKapuaService
+        extends KapuaConfigurableServiceBase
         implements DeviceRegistryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DeviceRegistryServiceImpl.class);
-    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Constructor.
@@ -63,7 +59,7 @@ public class DeviceRegistryServiceImpl
      */
     @Deprecated
     public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory) {
-        super(deviceEntityManagerFactory, DeviceRegistryCacheFactory.getInstance());
+        super(deviceEntityManagerFactory, DeviceRegistryCacheFactory.getInstance(), null);
     }
 
     /**
@@ -89,8 +85,7 @@ public class DeviceRegistryServiceImpl
     public DeviceRegistryServiceImpl(DeviceEntityManagerFactory deviceEntityManagerFactory,
                                      DeviceRegistryCacheFactory deviceRegistryCacheFactory,
                                      @Named("DeviceRegistryServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
-        super(deviceEntityManagerFactory, deviceRegistryCacheFactory);
-        this.serviceConfigurationManager = serviceConfigurationManager;
+        super(deviceEntityManagerFactory, deviceRegistryCacheFactory, serviceConfigurationManager);
     }
 
     @Override
@@ -263,20 +258,5 @@ public class DeviceRegistryServiceImpl
         for (Device d : devicesToDelete.getItems()) {
             delete(d.getScopeId(), d.getId());
         }
-    }
-
-    @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
-    }
-
-    @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigValues(scopeId, true);
-    }
-
-    @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
     }
 }

@@ -18,10 +18,10 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalAccessException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.service.internal.cache.NamedEntityCache;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
@@ -30,7 +30,6 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.domain.Domain;
 import org.eclipse.kapua.model.id.KapuaId;
@@ -50,9 +49,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.persistence.TypedQuery;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * {@link AccountService} implementation.
@@ -61,13 +58,12 @@ import java.util.Optional;
  */
 @Singleton
 public class AccountServiceImpl
-        extends AbstractKapuaService
+        extends KapuaConfigurableServiceBase
         implements AccountService {
 
     private static final String NO_EXPIRATION_DATE_SET = "no expiration date set";
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
-    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Constructor.
@@ -77,7 +73,7 @@ public class AccountServiceImpl
      */
     @Deprecated
     public AccountServiceImpl() {
-        super(AccountEntityManagerFactory.getInstance(), AccountCacheFactory.getInstance());
+        super(AccountEntityManagerFactory.getInstance(), AccountCacheFactory.getInstance(), null);
     }
 
     /**
@@ -97,10 +93,9 @@ public class AccountServiceImpl
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             @Named("AccountServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
-        super(accountEntityManagerFactory, accountCacheFactory);
+        super(accountEntityManagerFactory, accountCacheFactory, serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
-        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -211,11 +206,11 @@ public class AccountServiceImpl
         // Check if user tries to change expiration date of the account in which it is defined (the account is not the admin one considering previous checks)
         if (KapuaSecurityUtils.getSession().getScopeId().equals(account.getId())) {
             // Editing self - aka user that edits its account
-             if ( (oldAccount.getExpirationDate() == null && account.getExpirationDate() != null) || //old exp. date was "no expiration" and now the update restricts it
-                     (oldAccount.getExpirationDate() != null && ! oldAccount.getExpirationDate().equals(account.getExpirationDate())) ) { //old exp. date was some date and the update refers to another date
-                 // Editing the expiration date
-                 throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "A user cannot modify expiration date of the account in which it's defined");
-             }
+            if ((oldAccount.getExpirationDate() == null && account.getExpirationDate() != null) || //old exp. date was "no expiration" and now the update restricts it
+                    (oldAccount.getExpirationDate() != null && !oldAccount.getExpirationDate().equals(account.getExpirationDate()))) { //old exp. date was some date and the update refers to another date
+                // Editing the expiration date
+                throw new KapuaAccountException(KapuaAccountErrorCodes.OPERATION_NOT_ALLOWED, null, "A user cannot modify expiration date of the account in which it's defined");
+            }
         }
 
         //
@@ -526,20 +521,5 @@ public class AccountServiceImpl
             permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
         }
         return permissionFactory;
-    }
-
-    @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
-    }
-
-    @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigValues(scopeId, true);
-    }
-
-    @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
     }
 }

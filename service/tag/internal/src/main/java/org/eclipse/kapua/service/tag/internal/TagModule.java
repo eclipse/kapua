@@ -34,11 +34,12 @@ public class TagModule extends AbstractKapuaModule {
     protected void configureModule() {
         bind(TagService.class).to(TagServiceImpl.class);
         bind(TagFactory.class).to(TagFactoryImpl.class);
+        bind(TagEntityManagerFactory.class).toInstance(new TagEntityManagerFactory());
     }
 
     @Provides
     @Named("TagServiceConfigurationManager")
-    ServiceConfigurationManager userServiceConfigurationManager(
+    ServiceConfigurationManager tagServiceConfigurationManager(
             TagEntityManagerFactory entityManagerFactory,
             TagFactory factory,
             PermissionFactory permissionFactory,

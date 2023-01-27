@@ -66,7 +66,7 @@ import java.util.stream.Collectors;
  * Base {@code abstract} {@link KapuaConfigurableService} implementation.
  *
  * @since 1.0.0
- * @deprecated since 2.0.0, in favour of separate configuration component - see {@link ServiceConfigurationManager} and implementations for more details
+ * @deprecated since 2.0.0, in favour of separate configuration component - see {@link ServiceConfigurationManager} and implementations for more details. Can be replaced with {@link KapuaConfigurableServiceBase}
  */
 @Deprecated
 public abstract class AbstractKapuaConfigurableService extends AbstractKapuaService implements KapuaConfigurableService {
@@ -486,6 +486,7 @@ public abstract class AbstractKapuaConfigurableService extends AbstractKapuaServ
      * @since 1.3.0
      */
     protected Map<String, Object> getConfigValues(KapuaId scopeId, boolean excludeDisabled) throws KapuaException {
+        //
         //
         // Argument validation
         ArgumentValidator.notNull(scopeId, "scopeId");

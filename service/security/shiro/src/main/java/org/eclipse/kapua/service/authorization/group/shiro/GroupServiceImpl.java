@@ -14,13 +14,12 @@ package org.eclipse.kapua.service.authorization.group.shiro;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -40,8 +39,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * {@link GroupService} implementation.
@@ -49,19 +46,18 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Singleton
-public class GroupServiceImpl extends AbstractKapuaService implements GroupService {
+public class GroupServiceImpl extends KapuaConfigurableServiceBase implements GroupService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GroupServiceImpl.class);
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
-    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * @deprecated since 2.0.0 - please use {@link #GroupServiceImpl(AuthorizationEntityManagerFactory, GroupFactory, PermissionFactory, AuthorizationService, ServiceConfigurationManager)} instead. This constructor might be removed in later releases.
      */
     @Deprecated
     public GroupServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance(), null);
+        super(AuthorizationEntityManagerFactory.getInstance(), null, null);
     }
 
     /**
@@ -81,10 +77,9 @@ public class GroupServiceImpl extends AbstractKapuaService implements GroupServi
                             AuthorizationService authorizationService,
                             @Named("GroupServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager
     ) {
-        super(authorizationEntityManagerFactory, null);
+        super(authorizationEntityManagerFactory, null, serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
-        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -257,20 +252,5 @@ public class GroupServiceImpl extends AbstractKapuaService implements GroupServi
             permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
         }
         return permissionFactory;
-    }
-
-    @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
-    }
-
-    @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigValues(scopeId, true);
-    }
-
-    @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
     }
 }

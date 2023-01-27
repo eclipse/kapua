@@ -12,21 +12,20 @@
  *******************************************************************************/
 package org.eclipse.kapua.service.tag.internal;
 
-import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.commons.jpa.AbstractEntityManagerFactory;
-import org.eclipse.kapua.commons.jpa.EntityManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerFactory;
+
+import javax.inject.Singleton;
 
 /**
  * {@link TagServiceImpl} {@link EntityManagerFactory} implementation.
  *
  * @since 1.0.0
  */
+@Singleton
 public class TagEntityManagerFactory extends AbstractEntityManagerFactory implements EntityManagerFactory {
 
     private static final String PERSISTENCE_UNIT_NAME = "kapua-tag";
-
-    private static final TagEntityManagerFactory INSTANCE = new TagEntityManagerFactory();
 
     /**
      * Constructor.
@@ -36,25 +35,4 @@ public class TagEntityManagerFactory extends AbstractEntityManagerFactory implem
     public TagEntityManagerFactory() {
         super(PERSISTENCE_UNIT_NAME);
     }
-
-    /**
-     * Returns a {@link EntityManager} instance
-     *
-     * @return A {@link EntityManager} instance.
-     * @since 1.0.0
-     */
-    public static EntityManager getEntityManager() throws KapuaException {
-        return INSTANCE.createEntityManager();
-    }
-
-    /**
-     * Returns the {@link EntityManagerFactory} instance.
-     *
-     * @return The {@link EntityManagerFactory} instance.
-     * @since 1.0.0
-     */
-    public static TagEntityManagerFactory getInstance() {
-        return INSTANCE;
-    }
-
 }

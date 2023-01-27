@@ -17,15 +17,14 @@ import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
 import org.eclipse.kapua.KapuaRuntimeException;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.jpa.EntityManager;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.commons.util.KapuaExceptionUtils;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -58,8 +57,6 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * {@link CredentialService} implementation.
@@ -67,18 +64,13 @@ import java.util.Optional;
  * @since 1.0
  */
 @Singleton
-public class CredentialServiceImpl extends AbstractKapuaService implements CredentialService {
+public class CredentialServiceImpl extends KapuaConfigurableServiceBase implements CredentialService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialServiceImpl.class);
 
     public static final String PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY = "password.minLength";
 
     private SecureRandom random;
-
-    /**
-     * The minimum password length specified for the whole system. If not defined, assume 12; if defined and less than 12, assume 12.
-     */
-    private final CredentialServiceConfigurationManager serviceConfigurationManager;
 
     public static final int SYSTEM_MAXIMUM_PASSWORD_LENGTH = 255;
 
@@ -87,23 +79,19 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
      */
     @Deprecated
     public CredentialServiceImpl() {
-        super(AuthenticationEntityManagerFactory.getInstance(),
-                null);
+        super(AuthenticationEntityManagerFactory.getInstance(), null, null);
         try {
             random = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
             throw KapuaRuntimeException.internalError(e, "Cannot instantiate SecureRandom (SHA1PRNG)");
         }
-        this.serviceConfigurationManager = null;
     }
 
     @Inject
     public CredentialServiceImpl(
             AuthenticationEntityManagerFactory authenticationEntityManagerFactory,
             @Named("CredentialServiceConfigurationManager") CredentialServiceConfigurationManager serviceConfigurationManager) {
-        super(authenticationEntityManagerFactory,
-                null);
-        this.serviceConfigurationManager = serviceConfigurationManager;
+        super(authenticationEntityManagerFactory, null, serviceConfigurationManager);
     }
 
     @Override
@@ -451,7 +439,7 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         // None
 
         // Get system minimum password length
-        int minPasswordLength = serviceConfigurationManager.getSystemMinimumPasswordLength();
+        int minPasswordLength = ((CredentialServiceConfigurationManager) serviceConfigurationManager).getSystemMinimumPasswordLength();
 
         if (!KapuaId.ANY.equals(scopeId)) {
             Object minPasswordLengthAccountConfigValue = getConfigValues(scopeId).get(PASSWORD_MIN_LENGTH_ACCOUNT_CONFIG_KEY);
@@ -553,20 +541,5 @@ public class CredentialServiceImpl extends AbstractKapuaService implements Crede
         authorizationService.checkPermission(permissionFactory.newPermission(AuthenticationDomains.CREDENTIAL_DOMAIN, Actions.read, null));
 
         return entityManagerSession.doAction(em -> CredentialDAO.find(em, scopeId, credentialId));
-    }
-
-    @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
-    }
-
-    @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigValues(scopeId, true);
-    }
-
-    @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
     }
 }

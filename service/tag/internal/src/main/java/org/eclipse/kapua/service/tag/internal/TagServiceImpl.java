@@ -14,12 +14,11 @@ package org.eclipse.kapua.service.tag.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -34,8 +33,6 @@ import org.eclipse.kapua.service.tag.TagService;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * {@link TagService} implementation.
@@ -43,11 +40,10 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Singleton
-public class TagServiceImpl extends AbstractKapuaService implements TagService {
+public class TagServiceImpl extends KapuaConfigurableServiceBase implements TagService {
 
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
-    private final ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Deprecated constructor
@@ -56,8 +52,7 @@ public class TagServiceImpl extends AbstractKapuaService implements TagService {
      */
     @Deprecated
     public TagServiceImpl() {
-        super(TagEntityManagerFactory.getInstance(), null);
-        serviceConfigurationManager = null;
+        super(new TagEntityManagerFactory(), null, null);
     }
 
     /**
@@ -74,10 +69,9 @@ public class TagServiceImpl extends AbstractKapuaService implements TagService {
             PermissionFactory permissionFactory,
             AuthorizationService authorizationService,
             @Named("TagServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
-        super(entityManagerFactory, null);
+        super(entityManagerFactory, null, serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
-        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -230,18 +224,4 @@ public class TagServiceImpl extends AbstractKapuaService implements TagService {
         return permissionFactory;
     }
 
-    @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
-    }
-
-    @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigValues(scopeId, true);
-    }
-
-    @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
-    }
 }

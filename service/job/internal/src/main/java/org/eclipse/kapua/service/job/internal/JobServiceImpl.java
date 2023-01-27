@@ -14,15 +14,14 @@ package org.eclipse.kapua.service.job.internal;
 
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.job.engine.JobEngineService;
 import org.eclipse.kapua.locator.KapuaLocator;
 import org.eclipse.kapua.model.KapuaEntityAttributes;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -46,8 +45,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * {@link JobService} implementation
@@ -55,7 +52,7 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Singleton
-public class JobServiceImpl extends AbstractKapuaService implements JobService {
+public class JobServiceImpl extends KapuaConfigurableServiceBase implements JobService {
 
     private static final Logger LOG = LoggerFactory.getLogger(JobServiceImpl.class);
 
@@ -69,7 +66,6 @@ public class JobServiceImpl extends AbstractKapuaService implements JobService {
     private TriggerService triggerService;
     //TODO: make final
     private TriggerFactory triggerFactory;
-    private ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * Deprecated Constructor
@@ -78,7 +74,7 @@ public class JobServiceImpl extends AbstractKapuaService implements JobService {
      */
     @Deprecated
     public JobServiceImpl() {
-        super(JobEntityManagerFactory.getInstance(), null);
+        super(JobEntityManagerFactory.getInstance(), null, null);
     }
 
     /**
@@ -98,12 +94,11 @@ public class JobServiceImpl extends AbstractKapuaService implements JobService {
                           TriggerService triggerService,
                           TriggerFactory triggerFactory,
                           @Named("JobServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
-        super(jobEntityManagerFactory, null);
+        super(jobEntityManagerFactory, null, serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.triggerService = triggerService;
         this.triggerFactory = triggerFactory;
-        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -310,20 +305,5 @@ public class JobServiceImpl extends AbstractKapuaService implements JobService {
             permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
         }
         return permissionFactory;
-    }
-
-    @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
-    }
-
-    @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigValues(scopeId, true);
-    }
-
-    @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
     }
 }

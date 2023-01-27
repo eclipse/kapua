@@ -18,10 +18,10 @@ import org.eclipse.kapua.KapuaDuplicateExternalUsernameException;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaException;
 import org.eclipse.kapua.KapuaIllegalArgumentException;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
 import org.eclipse.kapua.commons.security.KapuaSecurityUtils;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.setting.system.SystemSetting;
 import org.eclipse.kapua.commons.setting.system.SystemSettingKey;
@@ -29,7 +29,6 @@ import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.commons.util.CommonsValidationRegex;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -50,9 +49,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * {@link UserService} implementation.
@@ -60,7 +57,7 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Singleton
-public class UserServiceImpl extends AbstractKapuaService implements UserService {
+public class UserServiceImpl extends KapuaConfigurableServiceBase implements UserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -74,7 +71,6 @@ public class UserServiceImpl extends AbstractKapuaService implements UserService
     private AuthorizationService authorizationService;
     private PermissionFactory permissionFactory;
     private UserNamedEntityService userNamedEntityService;
-    private ServiceConfigurationManager serviceConfigurationManager;
 
 
     /**
@@ -85,8 +81,7 @@ public class UserServiceImpl extends AbstractKapuaService implements UserService
      */
     @Deprecated
     public UserServiceImpl() {
-        super(new UserEntityManagerFactory(), new UserCacheFactory());
-        this.serviceConfigurationManager = null;
+        super(new UserEntityManagerFactory(), new UserCacheFactory(), null);
         this.authorizationService = null;
         this.permissionFactory = null;
     }
@@ -110,12 +105,10 @@ public class UserServiceImpl extends AbstractKapuaService implements UserService
             UserCacheFactory userCacheFactory,
             UserNamedEntityService userNamedEntityService,
             @Named("UserServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
-        super(userEntityManagerFactory,
-                userCacheFactory);
+        super(userEntityManagerFactory, userCacheFactory, serviceConfigurationManager);
         this.authorizationService = authorizationService;
         this.permissionFactory = permissionFactory;
         this.userNamedEntityService = userNamedEntityService;
-        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -472,20 +465,5 @@ public class UserServiceImpl extends AbstractKapuaService implements UserService
             permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
         }
         return permissionFactory;
-    }
-
-    @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
-    }
-
-    @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigValues(scopeId, true);
-    }
-
-    @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
     }
 }

@@ -15,14 +15,13 @@ package org.eclipse.kapua.service.authorization.role.shiro;
 import org.eclipse.kapua.KapuaEntityNotFoundException;
 import org.eclipse.kapua.KapuaErrorCodes;
 import org.eclipse.kapua.KapuaException;
+import org.eclipse.kapua.commons.configuration.KapuaConfigurableServiceBase;
 import org.eclipse.kapua.commons.configuration.ServiceConfigurationManager;
 import org.eclipse.kapua.commons.jpa.EntityManagerContainer;
-import org.eclipse.kapua.commons.service.internal.AbstractKapuaService;
 import org.eclipse.kapua.commons.service.internal.KapuaNamedEntityServiceUtils;
 import org.eclipse.kapua.commons.util.ArgumentValidator;
 import org.eclipse.kapua.event.ServiceEvent;
 import org.eclipse.kapua.locator.KapuaLocator;
-import org.eclipse.kapua.model.config.metatype.KapuaTocd;
 import org.eclipse.kapua.model.domain.Actions;
 import org.eclipse.kapua.model.id.KapuaId;
 import org.eclipse.kapua.model.query.KapuaQuery;
@@ -45,8 +44,6 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * {@link RoleService} implementation.
@@ -54,23 +51,21 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Singleton
-public class RoleServiceImpl extends AbstractKapuaService implements RoleService {
+public class RoleServiceImpl extends KapuaConfigurableServiceBase implements RoleService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RoleServiceImpl.class);
 
     private PermissionFactory permissionFactory;
     private AuthorizationService authorizationService;
     private RolePermissionFactory rolePermissionFactory;
-    private final ServiceConfigurationManager serviceConfigurationManager;
 
     /**
      * @deprecated since 2.0.0 - please use {@link #RoleServiceImpl(AuthorizationEntityManagerFactory, RoleCacheFactory, PermissionFactory, AuthorizationService, RolePermissionFactory, ServiceConfigurationManager)} instead. This constructor might be removed in future releases.
      */
     @Deprecated
     public RoleServiceImpl() {
-        super(AuthorizationEntityManagerFactory.getInstance(), RoleCacheFactory.getInstance());
+        super(AuthorizationEntityManagerFactory.getInstance(), RoleCacheFactory.getInstance(), null);
         this.rolePermissionFactory = null;
-        serviceConfigurationManager = null;
     }
 
     /**
@@ -90,11 +85,10 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
                            AuthorizationService authorizationService,
                            RolePermissionFactory rolePermissionFactory,
                            @Named("RoleServiceConfigurationManager") ServiceConfigurationManager serviceConfigurationManager) {
-        super(authorizationEntityManagerFactory, roleCacheFactory);
+        super(authorizationEntityManagerFactory, roleCacheFactory, serviceConfigurationManager);
         this.permissionFactory = permissionFactory;
         this.authorizationService = authorizationService;
         this.rolePermissionFactory = rolePermissionFactory;
-        this.serviceConfigurationManager = serviceConfigurationManager;
     }
 
     @Override
@@ -309,20 +303,5 @@ public class RoleServiceImpl extends AbstractKapuaService implements RoleService
             permissionFactory = KapuaLocator.getInstance().getFactory(PermissionFactory.class);
         }
         return permissionFactory;
-    }
-
-    @Override
-    public KapuaTocd getConfigMetadata(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigMetadata(scopeId, true);
-    }
-
-    @Override
-    public Map<String, Object> getConfigValues(KapuaId scopeId) throws KapuaException {
-        return serviceConfigurationManager.getConfigValues(scopeId, true);
-    }
-
-    @Override
-    public void setConfigValues(KapuaId scopeId, KapuaId parentId, Map<String, Object> values) throws KapuaException {
-        serviceConfigurationManager.setConfigValues(scopeId, Optional.ofNullable(parentId), values);
     }
 }
